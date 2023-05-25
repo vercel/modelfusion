@@ -1,8 +1,9 @@
 {
-  "name": "ai-utils",
+  "name": "@lgrammel/ai-utils",
   "version": "0.0.0",
   "license": "MIT",
   "type": "module",
+  "private": false,
   "engines": {
     "node": ">=18"
   },
@@ -53,7 +54,7 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/move-cjs-to-dist.js",
-    "dist:copy-files": "copyfiles package.json dist",
+    "dist:copy-files": "copyfiles package.json README.md LICENSE dist",
     "dist": "npm run clean && npm run build && npm run dist:copy-files"
   },
   "dependencies": {
