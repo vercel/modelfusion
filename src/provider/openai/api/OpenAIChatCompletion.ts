@@ -29,6 +29,7 @@ export type OpenAIChatCompletion = zod.infer<typeof openAIChatCompletionSchema>;
 export type OpenAIChatMessage = {
   role: "user" | "assistant" | "system";
   content: string;
+  name?: string;
 };
 
 export type OpenAIChatCompletionModel = "gpt-4" | "gpt-3.5-turbo";
@@ -38,21 +39,27 @@ export async function generateOpenAIChatCompletion({
   apiKey,
   model,
   messages,
-  n,
   temperature,
+  topP,
+  n,
+  stop,
   maxTokens,
   presencePenalty,
   frequencyPenalty,
+  user,
 }: {
   baseUrl?: string;
   apiKey: string;
-  messages: Array<OpenAIChatMessage>;
   model: OpenAIChatCompletionModel;
-  n?: number;
+  messages: Array<OpenAIChatMessage>;
   temperature?: number;
+  topP?: number;
+  n?: number;
+  stop?: string | string[];
   maxTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
+  user?: string;
 }): Promise<OpenAIChatCompletion> {
   return postToOpenAI({
     url: `${baseUrl}/chat/completions`,
@@ -60,11 +67,14 @@ export async function generateOpenAIChatCompletion({
     body: {
       model,
       messages,
+      top_p: topP,
       n,
-      temperature,
+      stop,
       max_tokens: maxTokens,
+      temperature,
       presence_penalty: presencePenalty,
       frequency_penalty: frequencyPenalty,
+      user,
     },
     responseSchema: openAIChatCompletionSchema,
   });
