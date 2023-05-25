@@ -1,6 +1,6 @@
-export const extractAndExcludeChatPrompt =
-  ({ excludeKeyword }: { excludeKeyword: string }) =>
-  async ({ text, topic }: { text: string; topic: string }) =>
+export const extractTopicAndExcludeChatPrompt =
+  ({ excludeKeyword, topic }: { excludeKeyword: string; topic: string }) =>
+  async ({ text }: { text: string }) =>
     [
       {
         role: "user" as const,
@@ -19,9 +19,9 @@ Say "${excludeKeyword}" if there is no relevant information in the content.`,
       },
     ];
 
-export const extractChatPrompt =
-  () =>
-  async ({ text, topic }: { text: string; topic: string }) =>
+export const extractTopicChatPrompt =
+  ({ topic }: { topic: string }) =>
+  async ({ text }: { text: string }) =>
     [
       {
         role: "user" as const,

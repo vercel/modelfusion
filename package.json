@@ -30,6 +30,11 @@
       "import": "./text/generate/index.js",
       "require": "./text/generate/index.cjs"
     },
+    "./text/map": {
+      "types": "./text/map/index.d.ts",
+      "import": "./text/map/index.js",
+      "require": "./text/map/index.cjs"
+    },
     "./text/split": {
       "types": "./text/split/index.d.ts",
       "import": "./text/split/index.js",
@@ -51,12 +56,14 @@
     "dist:copy-files": "copyfiles package.json dist",
     "dist": "npm run clean && npm run build && npm run dist:copy-files"
   },
+  "dependencies": {
+    "zod": "3.21.4"
+  },
   "devDependencies": {
     "@tsconfig/recommended": "1.0.2",
     "@types/node": "20.2.3",
     "copyfiles": "2.4.1",
     "rimraf": "5.0.1",
-    "typescript": "5.0.4",
-    "zod": "3.21.4"
+    "typescript": "5.0.4"
   }
 }
