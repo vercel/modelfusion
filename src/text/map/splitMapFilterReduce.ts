@@ -1,6 +1,6 @@
-import { SplitFunction } from "text/split/SplitFunction.js";
+import { SplitFunction } from "../split/SplitFunction.js";
 import { MapFunction } from "./MapFunction.js";
-import { RunContext } from "run/RunContext.js";
+import { RunContext } from "../../run/RunContext.js";
 
 export const splitMapFilterReduce = async (
   {
