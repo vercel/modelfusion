@@ -1,0 +1,19 @@
+{
+  "name": "@lgrammel/ai-utils-example-pdf-summarizer",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node src/main.ts"
+  },
+  "private": true,
+  "dependencies": {
+    "@lgrammel/ai-utils": "0.0.0",
+    "commander": "10.0.1",
+    "dotenv": "16.0.3",
+    "pdfjs-dist": "3.6.172"
+  },
+  "devDependencies": {
+    "@types/node": "20.2.3",
+    "ts-node": "10.9.1"
+  }
+}
