@@ -21,9 +21,10 @@ export const openAIChatModel = ({
 }): GeneratorModel<OpenAIChatMessage[], OpenAIChatCompletion, string> => ({
   vendor: "openai",
   name: model,
-  generate: async (input: OpenAIChatMessage[]): Promise<OpenAIChatCompletion> =>
+  generate: async (input, { abortSignal }): Promise<OpenAIChatCompletion> =>
     generateOpenAIChatCompletion({
       baseUrl,
+      abortSignal,
       apiKey,
       messages: input,
       model,

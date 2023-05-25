@@ -55,7 +55,11 @@ export async function generate<
     input: expandedPrompt,
   });
 
-  const rawOutput = await retry(() => model.generate(expandedPrompt));
+  const rawOutput = await retry(() =>
+    model.generate(expandedPrompt, {
+      abortSignal: context?.abortSignal,
+    })
+  );
 
   const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
 

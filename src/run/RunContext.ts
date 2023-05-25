@@ -7,5 +7,6 @@ export type RunContext =
   | {
       recordCallStart?: (call: GenerateCallStartEvent) => void;
       recordCallEnd?: (call: GenerateCallEndEvent) => void;
+      abortSignal?: AbortSignal;
     }
   | undefined;
