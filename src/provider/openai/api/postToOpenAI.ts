@@ -27,10 +27,14 @@ export const postToOpenAI = async <T>({
     });
 
     if (response.status >= 400) {
-      const body = await response.text();
-      const parsedError = openAIErrorDataSchema.parse(SecureJSON.parse(body));
+      const responseBody = await response.text();
+      const parsedError = openAIErrorDataSchema.parse(
+        SecureJSON.parse(responseBody)
+      );
 
       throw new OpenAIError({
+        url,
+        body,
         statusCode: response.status,
         data: parsedError.error,
       });

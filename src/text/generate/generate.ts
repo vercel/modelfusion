@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import { Prompt } from "../../prompt/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
 import { AbortError } from "../../util/AbortError.js";
@@ -13,14 +14,14 @@ export async function generate<
   OUTPUT
 >(
   {
-    id,
+    functionId,
     prompt,
     input,
     model,
     processOutput,
     retry = retryWithExponentialBackoff(),
   }: {
-    id?: string | undefined;
+    functionId?: string | undefined;
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
@@ -36,16 +37,21 @@ export async function generate<
     (performance.timeOrigin + startTime) / 1000
   );
 
+  const callId = createId();
+
+  const startMetadata = {
+    callId,
+    functionId,
+    model: {
+      vendor: model.vendor,
+      name: model.name,
+    },
+    startEpochSeconds,
+  };
+
   context?.recordCallStart?.({
     type: "generate-start",
-    metadata: {
-      id,
-      model: {
-        vendor: model.vendor,
-        name: model.name,
-      },
-      startEpochSeconds,
-    },
+    metadata: startMetadata,
     input: expandedPrompt,
   });
 
@@ -54,14 +60,9 @@ export async function generate<
   const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
 
   const metadata = {
-    id,
-    model: {
-      vendor: model.vendor,
-      name: model.name,
-    },
-    startEpochSeconds,
     durationInMs: textGenerationDurationInMs,
     tries: rawOutput.tries,
+    ...startMetadata,
   };
 
   if (rawOutput.status === "failure") {
@@ -103,13 +104,13 @@ export async function generate<
 
 generate.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT, OUTPUT>({
-    id,
+    functionId,
     prompt,
     model,
     processOutput,
     retry,
   }: {
-    id?: string | undefined;
+    functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
@@ -118,7 +119,7 @@ generate.asFunction =
   async (input: INPUT, context: RunContext) =>
     generate(
       {
-        id,
+        functionId,
         prompt,
         input,
         model,

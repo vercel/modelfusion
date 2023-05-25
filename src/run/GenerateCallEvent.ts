@@ -2,7 +2,8 @@ export type GenerateCallStartEvent = {
   type: "generate-start";
   input: unknown;
   metadata: {
-    id?: string | undefined;
+    callId: string;
+    functionId?: string | undefined;
     model: {
       vendor: string;
       name: string;
@@ -15,7 +16,8 @@ export type GenerateCallEndEvent = {
   type: "generate-end";
   input: unknown;
   metadata: {
-    id?: string | undefined;
+    callId: string;
+    functionId?: string | undefined;
     model: {
       vendor: string;
       name: string;

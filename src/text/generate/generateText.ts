@@ -6,14 +6,14 @@ import { generate } from "./generate.js";
 
 export function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
   {
-    id,
+    functionId,
     input,
     prompt,
     model,
     processOutput = async (output) => output.trim(),
     retry,
   }: {
-    id?: string | undefined;
+    functionId?: string | undefined;
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, string>;
@@ -24,7 +24,7 @@ export function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
 ) {
   return generate(
     {
-      id,
+      functionId,
       input,
       prompt,
       model,
@@ -37,13 +37,13 @@ export function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
 
 generateText.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT>({
-    id,
+    functionId,
     prompt,
     model,
     processOutput,
     retry,
   }: {
-    id?: string | undefined;
+    functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, string>;
     processOutput?: (output: string) => PromiseLike<string>;
@@ -52,7 +52,7 @@ generateText.asFunction =
   async (input: INPUT, context: RunContext) =>
     generateText(
       {
-        id,
+        functionId,
         input,
         prompt,
         model,

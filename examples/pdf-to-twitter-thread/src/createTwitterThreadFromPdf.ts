@@ -28,7 +28,7 @@ export async function createTwitterThreadFromPdf({
         maxChunkSize: 1024 * 4,
       }),
       map: generateText.asFunction({
-        id: "extract-topic",
+        functionId: "extract-topic",
         model,
         prompt: extractTopicAndExcludeChatPrompt({
           excludeKeyword: "IRRELEVANT",
@@ -37,7 +37,7 @@ export async function createTwitterThreadFromPdf({
       }),
       filter: (text) => text !== "IRRELEVANT",
       reduce: generateText.asFunction({
-        id: "write-twitter-thread",
+        functionId: "write-twitter-thread",
         model,
         prompt: async ({ text }) => [
           {
