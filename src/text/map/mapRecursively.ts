@@ -18,10 +18,9 @@ export async function mapRecursively(
 ): Promise<string> {
   const chunks = await split({ text });
 
-  const mappedTexts = [];
-  for (const chunk of chunks) {
-    mappedTexts.push(await map({ text: chunk }, context));
-  }
+  const mappedTexts = await Promise.all(
+    chunks.map((chunk) => map({ text: chunk }, context))
+  );
 
   if (mappedTexts.length === 1) {
     return mappedTexts[0]!;

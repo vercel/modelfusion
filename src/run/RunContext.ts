@@ -1,8 +1,11 @@
-import { EmbedCall } from "./EmbedCall.js";
-import { GenerateCall } from "./GenerateCall.js";
+import {
+  GenerateCallEndEvent,
+  GenerateCallStartEvent,
+} from "./GenerateCallEvent.js";
 
 export type RunContext =
   | {
-      recordCall: null | ((call: GenerateCall | EmbedCall) => void);
+      recordCallStart?: (call: GenerateCallStartEvent) => void;
+      recordCallEnd?: (call: GenerateCallEndEvent) => void;
     }
   | undefined;

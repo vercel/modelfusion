@@ -1,6 +1,6 @@
-import { AbortError } from "util/AbortError.js";
 import { Prompt } from "../../prompt/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
+import { AbortError } from "../../util/AbortError.js";
 import { RetryFunction } from "../../util/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../util/retryWithExponentialBackoff.js";
 import { GeneratorModel } from "./GeneratorModel.js";
@@ -36,6 +36,19 @@ export async function generate<
     (performance.timeOrigin + startTime) / 1000
   );
 
+  context?.recordCallStart?.({
+    type: "generate-start",
+    metadata: {
+      id,
+      model: {
+        vendor: model.vendor,
+        name: model.name,
+      },
+      startEpochSeconds,
+    },
+    input: expandedPrompt,
+  });
+
   const rawOutput = await retry(() => model.generate(expandedPrompt));
 
   const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
@@ -52,8 +65,8 @@ export async function generate<
   };
 
   if (rawOutput.status === "failure") {
-    context?.recordCall?.({
-      type: "generate",
+    context?.recordCallEnd?.({
+      type: "generate-end",
       status: "failure",
       metadata,
       input: expandedPrompt,
@@ -64,8 +77,8 @@ export async function generate<
   }
 
   if (rawOutput.status === "abort") {
-    context?.recordCall?.({
-      type: "generate",
+    context?.recordCallEnd?.({
+      type: "generate-end",
       status: "abort",
       metadata,
       input: expandedPrompt,
@@ -76,8 +89,8 @@ export async function generate<
 
   const extractedOutput = await model.extractOutput(rawOutput.result);
 
-  context?.recordCall?.({
-    type: "generate",
+  context?.recordCallEnd?.({
+    type: "generate-end",
     status: "success",
     metadata,
     input: expandedPrompt,

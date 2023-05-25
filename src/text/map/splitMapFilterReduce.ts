@@ -22,16 +22,11 @@ export const splitMapFilterReduce = async (
 ) => {
   const chunks = await split({ text });
 
-  const mappedTexts = [];
-  for (const chunk of chunks) {
-    const mappedText = await map({ text: chunk }, context);
+  const mappedTexts = await Promise.all(
+    chunks.map((chunk) => map({ text: chunk }, context))
+  );
 
-    if (filter(mappedText)) {
-      mappedTexts.push(mappedText);
-    }
-  }
-
-  return reduce({ text: join(mappedTexts) }, context);
+  return reduce({ text: join(mappedTexts.filter(filter)) }, context);
 };
 
 splitMapFilterReduce.asMapFunction =

@@ -25,8 +25,11 @@ createTwitterThreadFromPdf({
   pdfPath: file,
   openAiApiKey,
   context: {
-    recordCall: (call) => {
-      console.log(`${call.metadata.id ?? "unknown"}...`);
+    recordCallStart: (call) => {
+      console.log(`${call.metadata.id ?? "unknown"} started.`);
+    },
+    recordCallEnd: (call) => {
+      console.log(`${call.metadata.id ?? "unknown"} finished.`);
     },
   },
 })
