@@ -7,11 +7,13 @@ export const postToOpenAI = async <T>({
   apiKey,
   body,
   responseSchema,
+  abortSignal,
 }: {
   url: string;
   apiKey: string;
   body: unknown;
   responseSchema: z.ZodSchema<T>;
+  abortSignal?: AbortSignal;
 }) => {
   try {
     const response = await fetch(url, {
@@ -21,6 +23,7 @@ export const postToOpenAI = async <T>({
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify(body),
+      signal: abortSignal,
     });
 
     if (response.status >= 400) {
@@ -37,6 +40,12 @@ export const postToOpenAI = async <T>({
 
     return responseSchema.parse(data);
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.name === "AbortError") {
+        throw error;
+      }
+    }
+
     // TODO: handle error
     throw error;
   }

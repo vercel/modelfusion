@@ -12,6 +12,7 @@ export type GenerateCall = {
     tries: number;
   };
 } & (
-  | { success: true; rawOutput: unknown; extractedOutput: unknown }
-  | { success: false; error: unknown }
+  | { status: "success"; rawOutput: unknown; extractedOutput: unknown }
+  | { status: "failure"; error: unknown }
+  | { status: "abort" }
 );

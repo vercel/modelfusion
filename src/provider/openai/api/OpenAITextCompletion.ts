@@ -38,6 +38,7 @@ export type OpenAITextCompletionModel =
 
 export async function generateOpenAITextCompletion({
   baseUrl = "https://api.openai.com/v1",
+  abortSignal,
   apiKey,
   model,
   prompt,
@@ -55,6 +56,7 @@ export async function generateOpenAITextCompletion({
   user,
 }: {
   baseUrl?: string;
+  abortSignal?: AbortSignal;
   apiKey: string;
   model: OpenAITextCompletionModel;
   prompt: string;
@@ -91,5 +93,6 @@ export async function generateOpenAITextCompletion({
       user,
     },
     responseSchema: openAITextCompletionSchema,
+    abortSignal,
   });
 }

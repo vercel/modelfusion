@@ -1,3 +1,4 @@
+import { AbortError } from "util/AbortError.js";
 import { Prompt } from "../../prompt/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
 import { RetryFunction } from "../../util/RetryFunction.js";
@@ -50,10 +51,10 @@ export async function generate<
     tries: rawOutput.tries,
   };
 
-  if (!rawOutput.success) {
+  if (rawOutput.status === "failure") {
     context?.recordCall?.({
       type: "generate",
-      success: false,
+      status: "failure",
       metadata,
       input: expandedPrompt,
       error: rawOutput.error,
@@ -62,11 +63,22 @@ export async function generate<
     throw rawOutput.error;
   }
 
+  if (rawOutput.status === "abort") {
+    context?.recordCall?.({
+      type: "generate",
+      status: "abort",
+      metadata,
+      input: expandedPrompt,
+    });
+
+    throw new AbortError();
+  }
+
   const extractedOutput = await model.extractOutput(rawOutput.result);
 
   context?.recordCall?.({
     type: "generate",
-    success: true,
+    status: "success",
     metadata,
     input: expandedPrompt,
     rawOutput: rawOutput.result,

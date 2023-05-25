@@ -36,6 +36,7 @@ export type OpenAIChatCompletionModel = "gpt-4" | "gpt-3.5-turbo";
 
 export async function generateOpenAIChatCompletion({
   baseUrl = "https://api.openai.com/v1",
+  abortSignal,
   apiKey,
   model,
   messages,
@@ -49,6 +50,7 @@ export async function generateOpenAIChatCompletion({
   user,
 }: {
   baseUrl?: string;
+  abortSignal?: AbortSignal;
   apiKey: string;
   model: OpenAIChatCompletionModel;
   messages: Array<OpenAIChatMessage>;
@@ -77,5 +79,6 @@ export async function generateOpenAIChatCompletion({
       user,
     },
     responseSchema: openAIChatCompletionSchema,
+    abortSignal,
   });
 }
