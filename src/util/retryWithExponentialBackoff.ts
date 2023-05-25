@@ -1,3 +1,4 @@
+import { ApiCallError } from "./ApiCallError.js";
 import { RetryFunction } from "./RetryFunction.js";
 
 export const retryWithExponentialBackoff =
@@ -33,10 +34,10 @@ async function _retryWithExponentialBackoff<T>(
     };
   } catch (error) {
     if (
-      // axios.isAxiosError(error) &&
-      // (error.response?.status === 429 || // too many requests
-      //   error.response?.status === 502 ||
-      //   error.response?.status === 520) && // cloudflare error
+      error instanceof ApiCallError &&
+      (error.statusCode === 429 || // too many requests
+        error.statusCode === 502 ||
+        error.statusCode === 520) && // cloudflare error
       maxTries > tryNumber
     ) {
       await new Promise((resolve) => setTimeout(resolve, delay));

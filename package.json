@@ -57,6 +57,7 @@
     "dist": "npm run clean && npm run build && npm run dist:copy-files"
   },
   "dependencies": {
+    "secure-json-parse": "2.7.0",
     "zod": "3.21.4"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import zod from "zod";
-import { withOpenAIErrorHandler } from "./OpenAIError.js";
+import { postToOpenAI } from "./postToOpenAI.js";
 
 export const openAIChatCompletionSchema = zod.object({
   id: zod.string(),
@@ -54,26 +54,18 @@ export async function generateOpenAIChatCompletion({
   presencePenalty?: number;
   frequencyPenalty?: number;
 }): Promise<OpenAIChatCompletion> {
-  return withOpenAIErrorHandler(async () => {
-    const response = await fetch(`${baseUrl}/chat/completions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages,
-        n,
-        temperature,
-        max_tokens: maxTokens,
-        presence_penalty: presencePenalty,
-        frequency_penalty: frequencyPenalty,
-      }),
-    });
-
-    const data = await response.json();
-
-    return openAIChatCompletionSchema.parse(data);
+  return postToOpenAI({
+    url: `${baseUrl}/chat/completions`,
+    apiKey,
+    body: {
+      model,
+      messages,
+      n,
+      temperature,
+      max_tokens: maxTokens,
+      presence_penalty: presencePenalty,
+      frequency_penalty: frequencyPenalty,
+    },
+    responseSchema: openAIChatCompletionSchema,
   });
 }

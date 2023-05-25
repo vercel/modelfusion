@@ -1,32 +1,31 @@
-import zod from "zod";
+import { ApiCallError } from "../../../util/ApiCallError.js";
+import { z } from "zod";
 
-export const OpenAIErrorDataSchema = zod.object({
-  error: zod.object({
-    message: zod.string(),
-    type: zod.string(),
-    param: zod.any().nullable(),
-    code: zod.string(),
+export const openAIErrorDataSchema = z.object({
+  error: z.object({
+    message: z.string(),
+    type: z.string(),
+    param: z.any().nullable(),
+    code: z.string().nullable(),
   }),
 });
 
-export type OpenAIErrorData = zod.infer<typeof OpenAIErrorDataSchema>;
+export type OpenAIErrorData = z.infer<typeof openAIErrorDataSchema>;
 
-export class OpenAIError extends Error {
-  public readonly code: OpenAIErrorData["error"]["code"];
-  public readonly type: OpenAIErrorData["error"]["type"];
+export class OpenAIError extends ApiCallError {
+  public readonly data: OpenAIErrorData["error"];
 
-  constructor({ error: { message, code, type } }: OpenAIErrorData) {
-    super(message);
-    this.code = code;
-    this.type = type;
+  constructor({
+    data,
+    statusCode,
+    message = data.message,
+  }: {
+    message?: string;
+    statusCode: number;
+    data: OpenAIErrorData["error"];
+  }) {
+    super({ message, statusCode });
+
+    this.data = data;
   }
 }
-
-export const withOpenAIErrorHandler = async <T>(fn: () => PromiseLike<T>) => {
-  try {
-    return await fn();
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
