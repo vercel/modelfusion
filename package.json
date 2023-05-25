@@ -15,10 +15,30 @@
       "import": "./provider/openai/index.js",
       "require": "./provider/openai/index.cjs"
     },
+    "./prompt": {
+      "types": "./prompt/index.d.ts",
+      "import": "./prompt/index.js",
+      "require": "./prompt/index.cjs"
+    },
+    "./run": {
+      "types": "./run/index.d.ts",
+      "import": "./run/index.js",
+      "require": "./run/index.cjs"
+    },
     "./text/generate": {
       "types": "./text/generate/index.d.ts",
       "import": "./text/generate/index.js",
       "require": "./text/generate/index.cjs"
+    },
+    "./text/split": {
+      "types": "./text/split/index.d.ts",
+      "import": "./text/split/index.js",
+      "require": "./text/split/index.cjs"
+    },
+    "./util": {
+      "types": "./util/index.d.ts",
+      "import": "./util/index.js",
+      "require": "./util/index.cjs"
     }
   },
   "author": "Lars Grammel",
