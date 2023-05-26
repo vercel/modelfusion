@@ -1,3 +1,4 @@
+import { ChatMessageInput } from "@/component/ChatMessageInput";
 import Head from "next/head";
 
 export default function Home() {
@@ -6,6 +7,12 @@ export default function Home() {
       <Head>
         <title>@lgrammel/ai-utils chat example</title>
       </Head>
+      <ChatMessageInput
+        disabled={true}
+        onSend={(message) => {
+          console.log(`onSend: ${message}`);
+        }}
+      />
     </>
   );
 }
