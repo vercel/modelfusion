@@ -59,7 +59,11 @@ export const ChatMessageInput: React.FC<{
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">
-                  <IconButton disabled onClick={handleSend} edge="end">
+                  <IconButton
+                    disabled={disabled}
+                    onClick={handleSend}
+                    edge="end"
+                  >
                     <SendIcon />
                   </IconButton>
                 </InputAdornment>
