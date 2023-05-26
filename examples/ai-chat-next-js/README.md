@@ -1,6 +1,6 @@
 # AI Chat (Next.js)
 
-> _Next.js app_, _OpenAI GPT-3.5-turbo_, _streaming_, _stream forwarding (secure API key on server)_
+> _Next.js app_, _OpenAI GPT-3.5-turbo_, _streaming_, _stream forwarding (keep API key on server)_
 
 A basic web chat with an AI assistant.
 
