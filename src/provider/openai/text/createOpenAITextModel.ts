@@ -5,7 +5,7 @@ import {
 } from "./OpenAITextCompletion.js";
 import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
 
-export const openAITextModel = ({
+export const createOpenAITextModel = ({
   baseUrl,
   apiKey,
   model,

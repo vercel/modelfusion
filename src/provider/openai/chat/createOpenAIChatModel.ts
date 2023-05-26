@@ -6,7 +6,7 @@ import {
 } from "./OpenAIChatCompletion.js";
 import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
 
-export const openAIChatModel = ({
+export const createOpenAIChatModel = ({
   baseUrl,
   apiKey,
   model,
