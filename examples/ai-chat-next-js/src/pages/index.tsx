@@ -8,6 +8,8 @@ import { Box } from "@mui/material";
 import { createParser } from "eventsource-parser";
 import Head from "next/head";
 import { useState } from "react";
+import SecureJSON from "secure-json-parse";
+import { z } from "zod";
 
 export default function Home() {
   const [messages, setMessages] = useState<
@@ -38,21 +40,31 @@ export default function Home() {
         body: JSON.stringify(messagesToSend),
       });
 
-      const stream = convertReadableStreamToAsyncIterator(
-        response.body!.getReader()
+      const completionDeltaStream = await createCompletionDeltaStream(
+        convertReadableStreamToAsyncIterator(response.body!.getReader())
       );
 
-      const partialMessageStream = await createPartialMessageStream(stream);
-
-      for await (const partialMessage of partialMessageStream) {
-        if (partialMessage != null) {
-          setMessages((currentMessages) => {
-            return [
-              ...currentMessages.slice(0, currentMessages.length - 1),
-              partialMessage,
-            ];
-          });
+      for await (const completionDelta of completionDeltaStream) {
+        if (completionDelta == null) {
+          continue;
         }
+
+        if (completionDelta.type === "error") {
+          console.error(completionDelta.error);
+          continue;
+        }
+
+        const delta = completionDelta.delta[0];
+
+        setMessages((currentMessages) => {
+          return [
+            ...currentMessages.slice(0, currentMessages.length - 1),
+            {
+              role: delta.role ?? "assistant",
+              content: delta.content,
+            },
+          ];
+        });
       }
     } finally {
       setIsSending(false);
@@ -75,52 +87,118 @@ export default function Home() {
   );
 }
 
-async function createPartialMessageStream(stream: AsyncIterable<Uint8Array>) {
-  const queue = new AsyncQueue<{
-    role: "assistant" | "user";
-    content: string;
-  }>();
+const eventSchema = z.object({
+  choices: z.array(
+    z.object({
+      delta: z.object({
+        role: z.enum(["assistant", "user"]).optional(),
+        content: z.string().optional(),
+      }),
+      finish_reason: z.enum(["stop"]).nullable(),
+      index: z.number(),
+    })
+  ),
+  created: z.number(),
+  id: z.string(),
+  model: z.string(),
+  object: z.string(),
+});
 
-  let fullMessage = "";
+type ChoicesDelta = Array<{
+  role: "assistant" | "user" | undefined;
+  content: string;
+  isComplete: boolean;
+  delta: {
+    role?: "assistant" | "user";
+    content?: string;
+  };
+}>;
+
+async function createCompletionDeltaStream(stream: AsyncIterable<Uint8Array>) {
+  const queue = new AsyncQueue<
+    | {
+        type: "delta";
+        delta: ChoicesDelta;
+      }
+    | {
+        type: "error";
+        error: unknown;
+      }
+  >();
+
+  const choices: ChoicesDelta = [];
 
   const parser = createParser((event) => {
-    if (event.type === "event") {
-      const data = event.data;
+    if (event.type !== "event") {
+      return;
+    }
 
-      if (data === "[DONE]") {
+    const data = event.data;
+
+    if (data === "[DONE]") {
+      queue.close();
+      return;
+    }
+
+    try {
+      const json = SecureJSON.parse(data);
+      const parseResult = eventSchema.safeParse(json);
+
+      if (!parseResult.success) {
+        queue.push({
+          type: "error",
+          error: parseResult.error,
+        });
         queue.close();
         return;
       }
 
-      try {
-        const json = JSON.parse(data);
+      const event = parseResult.data;
 
-        if (json.choices[0].finish_reason != null) {
-          queue.close();
-          return;
+      for (let i = 0; i < event.choices.length; i++) {
+        const eventChoice = event.choices[i];
+        const delta = eventChoice.delta;
+
+        if (choices[i] == null) {
+          choices[i] = {
+            role: undefined,
+            content: "",
+            isComplete: false,
+            delta,
+          };
         }
 
-        const text = json.choices[0].delta.content;
+        const choice = choices[i];
 
-        if (text != undefined) {
-          fullMessage += text;
+        choice.delta = delta;
 
-          queue.push({
-            role: "assistant",
-            content: fullMessage,
-          });
+        if (eventChoice.finish_reason != null) {
+          choice.isComplete = true;
         }
-      } catch (error) {
-        queue.close();
-        return;
+
+        if (delta.content != undefined) {
+          choice.content += delta.content;
+        }
+
+        if (delta.role != undefined) {
+          choice.role = delta.role;
+        }
       }
+
+      queue.push({
+        type: "delta",
+        delta: choices,
+      });
+    } catch (error) {
+      queue.push({ type: "error", error });
+      queue.close();
+      return;
     }
   });
 
-  const decoder = new TextDecoder();
-
   // process the stream asynchonously:
   (async () => {
+    const decoder = new TextDecoder();
     for await (const value of stream) {
       parser.feed(decoder.decode(value));
     }
