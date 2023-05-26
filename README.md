@@ -8,7 +8,7 @@ npm install --save @lgrammel/ai-utils
 
 ## Examples
 
-### [PDF to Twitter Thread](https://github.com/lgrammel/ai-utils/tree/main/examples/pdf-to-twitter-thread-console)
+### [PDF to Twitter Thread](https://github.com/lgrammel/ai-utils/tree/main/examples/pdf-to-twitter-thread)
 
 > _terminal app_, _PDF parsing_, _split-map-filter-reduce_, _OpenAI GPT-4_
 
