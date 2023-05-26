@@ -1,9 +1,9 @@
-import { GeneratorModel } from "../../text/generate/GeneratorModel.js";
+import { GeneratorModel } from "../../../text/generate/GeneratorModel.js";
 import {
   OpenAITextCompletion,
   OpenAITextCompletionModel,
-  generateOpenAITextCompletion,
-} from "./api/OpenAITextCompletion.js";
+} from "./OpenAITextCompletion.js";
+import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
 
 export const openAITextModel = ({
   baseUrl,

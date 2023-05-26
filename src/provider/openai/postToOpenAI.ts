@@ -62,7 +62,6 @@ export const postToOpenAI = async <T>({
       }
     }
 
-    // TODO: handle error
     throw error;
   }
 };

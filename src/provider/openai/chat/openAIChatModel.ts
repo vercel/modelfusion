@@ -1,10 +1,10 @@
-import { GeneratorModel } from "../../text/generate/GeneratorModel.js";
+import { GeneratorModel } from "../../../text/generate/GeneratorModel.js";
 import {
   OpenAIChatCompletion,
   OpenAIChatCompletionModel,
   OpenAIChatMessage,
-  generateOpenAIChatCompletion,
-} from "./index.js";
+} from "./OpenAIChatCompletion.js";
+import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
 
 export const openAIChatModel = ({
   baseUrl,

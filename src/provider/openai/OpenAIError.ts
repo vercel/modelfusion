@@ -1,4 +1,4 @@
-import { ApiCallError } from "../../../util/ApiCallError.js";
+import { ApiCallError } from "../../util/ApiCallError.js";
 import { z } from "zod";
 
 export const openAIErrorDataSchema = z.object({
