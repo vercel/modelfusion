@@ -86,18 +86,20 @@ Start the task list with number ${nextTaskId}.`,
   let tasks = [{ id: 1, name: firstTask }];
   let taskIdCounter = 1;
 
+  // Print objective
+  console.log(chalk.bold(chalk.magenta("\n*****OBJECTIVE*****\n")));
+  console.log(objective);
+
   while (tasks.length > 0) {
     // Print the task list
-    console.log();
-    console.log(chalk.green("*****TASK LIST*****"));
+    console.log(chalk.bold(chalk.magenta("\n*****TASK LIST*****\n")));
     for (const task of tasks) {
       console.log(`${task.id}. ${task.name}`);
     }
 
     // Pull the first task
     const task = tasks.shift()!;
-    console.log();
-    console.log(chalk.green(`*****NEXT TASK*****`));
+    console.log(chalk.bold(chalk.greenBright("\n*****NEXT TASK*****\n")));
     console.log(`${task.id}: ${task.name}`);
 
     // Increment task id counter
@@ -105,8 +107,7 @@ Start the task list with number ${nextTaskId}.`,
 
     // Send to execution function to complete the task based on the context
     const result = await executeTask({ objective, task: task.name });
-    console.log();
-    console.log(chalk.green("*****TASK RESULT*****"));
+    console.log(chalk.bold(chalk.magenta("\n*****TASK RESULT*****\n")));
     console.log(result);
 
     // Create new tasks

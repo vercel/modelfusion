@@ -17,5 +17,5 @@ OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 
 ```sh
 npm install
-npx ts-node src/main.ts -objective "Solve world hunger."
+npx ts-node src/main.ts --objective "Solve world hunger."
 ```
