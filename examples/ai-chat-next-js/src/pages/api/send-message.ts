@@ -1,4 +1,4 @@
-import { streamOpenAIChatCompletion } from "@/component/streamOpenAIChatCompletion";
+import { streamOpenAIChatCompletionX } from "@/component/streamOpenAIChatCompletion";
 import { NextApiHandler } from "next";
 import { z } from "zod";
 
@@ -29,7 +29,7 @@ const sendMessage: NextApiHandler = async (request, response) => {
   const messages = parsedData.data;
   const encoder = new TextEncoder();
 
-  await streamOpenAIChatCompletion({
+  await streamOpenAIChatCompletionX({
     apiKey: openAiApiKey,
     model: "gpt-3.5-turbo",
     messages,

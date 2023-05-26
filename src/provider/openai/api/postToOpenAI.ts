@@ -11,6 +11,11 @@ export const createJsonResponseHandler =
     return responseSchema.parse(data);
   };
 
+export const createStreamResponseHandler =
+  (): ResponseHandler<AsyncIterable<Uint8Array>> => async (response) => {
+    return response.body as unknown as AsyncIterable<Uint8Array>;
+  };
+
 export const postToOpenAI = async <T>({
   url,
   apiKey,
