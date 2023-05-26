@@ -1,4 +1,6 @@
 import { Box } from "@mui/material";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import { CodeBlock } from "./CodeBlock";
 
 export const ChatMessage: React.FC<{
   message: {
@@ -22,7 +24,28 @@ export const ChatMessage: React.FC<{
           paddingBottom: 2,
         }}
       >
-        {message.content}
+        <ReactMarkdown
+          components={{
+            code({ node, inline, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || "");
+
+              return !inline ? (
+                <CodeBlock
+                  key={Math.random()}
+                  language={(match && match[1]) || ""}
+                  value={String(children).replace(/\n$/, "")}
+                  {...props}
+                />
+              ) : (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {message.content}
+        </ReactMarkdown>
       </Box>
     </Box>
   );
