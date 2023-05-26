@@ -1,5 +1,5 @@
 import zod from "zod";
-import { postToOpenAI } from "./postToOpenAI.js";
+import { createJsonResponseHandler, postToOpenAI } from "./postToOpenAI.js";
 
 export const openAIChatCompletionSchema = zod.object({
   id: zod.string(),
@@ -78,7 +78,10 @@ export async function generateOpenAIChatCompletion({
       frequency_penalty: frequencyPenalty,
       user,
     },
-    responseSchema: openAIChatCompletionSchema,
+
+    successfulResponseHandler: createJsonResponseHandler(
+      openAIChatCompletionSchema
+    ),
     abortSignal,
   });
 }

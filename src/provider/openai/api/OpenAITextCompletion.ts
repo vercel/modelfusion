@@ -1,5 +1,5 @@
 import zod from "zod";
-import { postToOpenAI } from "./postToOpenAI.js";
+import { createJsonResponseHandler, postToOpenAI } from "./postToOpenAI.js";
 
 export const openAITextCompletionSchema = zod.object({
   id: zod.string(),
@@ -92,7 +92,9 @@ export async function generateOpenAITextCompletion({
       best_of: bestOf,
       user,
     },
-    responseSchema: openAITextCompletionSchema,
+    successfulResponseHandler: createJsonResponseHandler(
+      openAITextCompletionSchema
+    ),
     abortSignal,
   });
 }

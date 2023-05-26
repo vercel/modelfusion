@@ -2,17 +2,26 @@ import { z } from "zod";
 import SecureJSON from "secure-json-parse";
 import { OpenAIError, openAIErrorDataSchema } from "./OpenAIError.js";
 
+export type ResponseHandler<T> = (response: Response) => PromiseLike<T>;
+
+export const createJsonResponseHandler =
+  <T>(responseSchema: z.ZodSchema<T>): ResponseHandler<T> =>
+  async (response) => {
+    const data = await response.json();
+    return responseSchema.parse(data);
+  };
+
 export const postToOpenAI = async <T>({
   url,
   apiKey,
   body,
-  responseSchema,
+  successfulResponseHandler,
   abortSignal,
 }: {
   url: string;
   apiKey: string;
   body: unknown;
-  responseSchema: z.ZodSchema<T>;
+  successfulResponseHandler: ResponseHandler<T>;
   abortSignal?: AbortSignal;
 }) => {
   try {
@@ -40,9 +49,7 @@ export const postToOpenAI = async <T>({
       });
     }
 
-    const data = await response.json();
-
-    return responseSchema.parse(data);
+    return await successfulResponseHandler(response);
   } catch (error) {
     if (error instanceof Error) {
       if (error.name === "AbortError") {
