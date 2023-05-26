@@ -1,9 +1,13 @@
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box } from "@mui/material";
+import {
+  ParsedEvent,
+  ReconnectInterval,
+  createParser,
+} from "eventsource-parser";
 import Head from "next/head";
 import { useState } from "react";
-import { z } from "zod";
 
 export default function Home() {
   const [messages, setMessages] = useState<
@@ -36,47 +40,62 @@ export default function Home() {
 
       const decoder = new TextDecoder();
 
-      const reader = response.body!.getReader();
+      let fullMessage = "";
 
-      let done;
-      let value;
+      const parser = createParser((event: ParsedEvent | ReconnectInterval) => {
+        if (event.type === "event") {
+          const data = event.data;
 
-      let responseMessage = "";
-
-      while (!done) {
-        ({ value, done } = await reader.read());
-
-        const decoded = decoder.decode(value);
-
-        if (decoded === "done") {
-          break;
-        }
-
-        decoded.split("\n").forEach((chunk) => {
-          if (chunk === "") {
+          if (data === "[DONE]") {
             return;
           }
 
-          const parsed = z
-            .object({
-              type: z.literal("chunk"),
-              text: z.string().optional(),
-            })
-            .parse(JSON.parse(chunk));
+          try {
+            const json = JSON.parse(data);
 
-          responseMessage += parsed.text ?? "";
-        });
+            // TODO clean ZOD parse
 
-        // replace text of last entry from messages with new message:
-        setMessages((messages) => {
-          return [
-            ...messages.slice(0, messages.length - 1),
-            {
-              role: "assistant",
-              content: responseMessage,
-            },
-          ];
-        });
+            if (json.choices[0].finish_reason != null) {
+              return;
+            }
+
+            // TODO get role token from delta
+            // TODO support multiple choices
+            const text = json.choices[0].delta.content;
+
+            if (text != undefined) {
+              fullMessage += text;
+
+              // replace text of last entry from messages with new message:
+              setMessages((messages) => {
+                return [
+                  ...messages.slice(0, messages.length - 1),
+                  {
+                    role: "assistant",
+                    content: fullMessage,
+                  },
+                ];
+              });
+            }
+          } catch (error) {
+            // TODO error recovery?
+            console.error(error);
+          }
+        }
+      });
+
+      const reader = response.body!.getReader();
+
+      while (true) {
+        const result = await reader.read();
+
+        if (result.done) {
+          break;
+        }
+
+        const value = result.value;
+
+        parser.feed(decoder.decode(value));
       }
     } finally {
       setIsSending(false);

@@ -1,4 +1,4 @@
-import { streamOpenAIChatCompletionX } from "@/component/streamOpenAIChatCompletion";
+import { streamOpenAIChatCompletion } from "@lgrammel/ai-utils/provider/openai";
 import { NextApiHandler } from "next";
 import { z } from "zod";
 
@@ -27,34 +27,27 @@ const sendMessage: NextApiHandler = async (request, response) => {
   }
 
   const messages = parsedData.data;
-  const encoder = new TextEncoder();
 
-  await streamOpenAIChatCompletionX({
+  const stream = await streamOpenAIChatCompletion({
     apiKey: openAiApiKey,
     model: "gpt-3.5-turbo",
     messages,
-    onCompletionStreamEvent: (event) => {
-      if (event.type === "start") {
-        response.writeHead(200, {
-          Connection: "keep-alive",
-          "Content-Encoding": "none",
-          "Cache-Control": "no-cache",
-          "Content-Type": "text/event-stream",
-        });
-      } else if (event.type === "chunk") {
-        response.write(
-          encoder.encode(
-            JSON.stringify({
-              type: "chunk",
-              text: event.text,
-            }) + "\n"
-          )
-        );
-      } else if (event.type === "end") {
-        response.end();
-      }
-    },
   });
+
+  // forward stream to client:
+
+  response.writeHead(200, {
+    Connection: "keep-alive",
+    "Content-Encoding": "none",
+    "Cache-Control": "no-cache",
+    "Content-Type": "text/event-stream",
+  });
+
+  for await (const chunk of stream) {
+    response.write(chunk);
+  }
+
+  response.end();
 };
 
 export default sendMessage;
