@@ -26,20 +26,10 @@
       "import": "./run/index.js",
       "require": "./run/index.cjs"
     },
-    "./text/generate": {
-      "types": "./text/generate/index.d.ts",
-      "import": "./text/generate/index.js",
-      "require": "./text/generate/index.cjs"
-    },
-    "./text/map": {
-      "types": "./text/map/index.d.ts",
-      "import": "./text/map/index.js",
-      "require": "./text/map/index.cjs"
-    },
-    "./text/split": {
-      "types": "./text/split/index.d.ts",
-      "import": "./text/split/index.js",
-      "require": "./text/split/index.cjs"
+    "./text": {
+      "types": "./text/index.d.ts",
+      "import": "./text/index.js",
+      "require": "./text/index.cjs"
     },
     "./util": {
       "types": "./util/index.d.ts",

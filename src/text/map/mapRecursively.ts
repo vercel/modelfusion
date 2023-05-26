@@ -1,5 +1,5 @@
 import { RunContext } from "../../run/RunContext.js";
-import { SplitFunction } from "../split/index.js";
+import { SplitFunction } from "../split/SplitFunction.js";
 import { MapFunction } from "./MapFunction.js";
 
 export async function mapRecursively(
