@@ -19,3 +19,20 @@ Takes a PDF and a topic and creates a Twitter thread with all content from the P
 > _Next.js app_, _OpenAI GPT-3.5-turbo_, _streaming_, _stream forwarding (secure API key on server)_
 
 A basic web chat with an AI assistant.
+
+## Features
+
+- Text processing chains
+  - recursive text mapping (e.g. for summarization or extraction)
+  - split-map-filter-reduce for text processing
+- Text splitters
+  - Recursive character splitter
+- Run abstraction for progress reporting and abort signals
+- Retry management
+- Error handling
+
+## Integrations
+
+- OpenAI
+  - chat completions (regular, streaming)
+  - text completions (regular)
