@@ -1,5 +1,9 @@
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
+import {
+  AsyncQueue,
+  convertReadableStreamToAsyncIterator,
+} from "@lgrammel/ai-utils/util";
 import { Box } from "@mui/material";
 import { createParser } from "eventsource-parser";
 import Head from "next/head";
@@ -34,7 +38,9 @@ export default function Home() {
         body: JSON.stringify(messagesToSend),
       });
 
-      const stream = responseReader(response.body!.getReader());
+      const stream = convertReadableStreamToAsyncIterator(
+        response.body!.getReader()
+      );
 
       const partialMessageStream = await createPartialMessageStream(stream);
 
@@ -67,66 +73,6 @@ export default function Home() {
       <ChatMessageInput disabled={isSending} onSend={handleSend} />
     </>
   );
-}
-
-async function* responseReader<T>(reader: ReadableStreamDefaultReader<T>) {
-  while (true) {
-    const result = await reader.read();
-
-    if (result.done) {
-      break;
-    }
-
-    yield result.value;
-  }
-}
-
-class AsyncQueue<T> {
-  queue: T[];
-  resolvers: Array<(options: { value: T | undefined; done: boolean }) => void> =
-    [];
-  closed: boolean;
-
-  constructor() {
-    this.queue = [];
-    this.resolvers = [];
-    this.closed = false;
-  }
-
-  push(value: T) {
-    if (this.closed) {
-      throw new Error("Pushing to a closed queue");
-    }
-
-    const resolve = this.resolvers.shift();
-    if (resolve) {
-      resolve({ value, done: false });
-    } else {
-      this.queue.push(value);
-    }
-  }
-
-  close() {
-    while (this.resolvers.length) {
-      const resolve = this.resolvers.shift();
-      resolve?.({ value: undefined, done: true });
-    }
-    this.closed = true;
-  }
-
-  [Symbol.asyncIterator]() {
-    return {
-      next: (): Promise<IteratorResult<T | undefined, T | undefined>> => {
-        if (this.queue.length > 0) {
-          return Promise.resolve({ value: this.queue.shift(), done: false });
-        } else if (this.closed) {
-          return Promise.resolve({ value: undefined, done: true });
-        } else {
-          return new Promise((resolve) => this.resolvers.push(resolve));
-        }
-      },
-    };
-  }
 }
 
 async function createPartialMessageStream(stream: AsyncIterable<Uint8Array>) {
