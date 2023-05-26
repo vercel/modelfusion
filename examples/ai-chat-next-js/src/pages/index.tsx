@@ -3,6 +3,7 @@ import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box } from "@mui/material";
 import Head from "next/head";
 import { useState } from "react";
+import { z } from "zod";
 
 export default function Home() {
   const [messages, setMessages] = useState<
@@ -13,18 +14,73 @@ export default function Home() {
   >([]);
   const [isSending, setIsSending] = useState<boolean>(false);
 
-  const handleSend = (message: string) => {
-    console.log(`onSend: ${message}`);
+  const handleSend = async (message: string) => {
+    try {
+      const userMessage = { role: "user" as const, content: message };
+      const messagesToSend = [...messages, userMessage];
 
-    setIsSending(true);
-    setMessages([
-      ...messages,
-      { role: "user", content: message },
-      {
-        role: "assistant",
-        content: "▍",
-      },
-    ]);
+      setIsSending(true);
+      setMessages([
+        ...messagesToSend,
+        {
+          role: "assistant",
+          content: "...",
+        },
+      ]);
+
+      const response = await fetch("/api/send-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(messagesToSend),
+      });
+
+      const decoder = new TextDecoder();
+
+      const reader = response.body!.getReader();
+
+      let done;
+      let value;
+
+      let responseMessage = "";
+
+      while (!done) {
+        ({ value, done } = await reader.read());
+
+        const decoded = decoder.decode(value);
+
+        if (decoded === "done") {
+          break;
+        }
+
+        decoded.split("\n").forEach((chunk) => {
+          if (chunk === "") {
+            return;
+          }
+
+          const parsed = z
+            .object({
+              type: z.literal("chunk"),
+              text: z.string().optional(),
+            })
+            .parse(JSON.parse(chunk));
+
+          responseMessage += parsed.text ?? "";
+        });
+
+        // replace text of last entry from messages with new message:
+        setMessages((messages) => {
+          return [
+            ...messages.slice(0, messages.length - 1),
+            {
+              role: "assistant",
+              content: responseMessage,
+            },
+          ];
+        });
+      }
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
