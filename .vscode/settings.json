@@ -1,4 +1,11 @@
 {
   "editor.formatOnSave": true,
-  "cSpell.words": ["asynchonously"]
+  "cSpell.words": [
+    "asynchonously",
+    "davinci",
+    "lgrammel",
+    "openai",
+    "reprioritize",
+    "reprioritizing"
+  ]
 }

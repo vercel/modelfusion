@@ -120,7 +120,7 @@ generate.asFunction =
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
   }) =>
-  async (input: INPUT, context: RunContext) =>
+  async (input: INPUT, context?: RunContext) =>
     generate(
       {
         functionId,

@@ -1,0 +1,16 @@
+{
+  "name": "@lgrammel/ai-utils-example-baby-agi",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@lgrammel/ai-utils": "*",
+    "commander": "10.0.1",
+    "dotenv": "16.0.3",
+    "chalk": "^4"
+  },
+  "devDependencies": {
+    "@types/node": "20.2.3",
+    "ts-node": "10.9.1"
+  }
+}

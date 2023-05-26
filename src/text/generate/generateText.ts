@@ -49,7 +49,7 @@ generateText.asFunction =
     processOutput?: (output: string) => PromiseLike<string>;
     retry?: RetryFunction;
   }) =>
-  async (input: INPUT, context: RunContext) =>
+  async (input: INPUT, context?: RunContext) =>
     generateText(
       {
         functionId,
