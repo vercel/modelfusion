@@ -86,15 +86,9 @@ export default function Home() {
 
       const reader = response.body!.getReader();
 
-      while (true) {
-        const result = await reader.read();
+      const stream = responseReader(reader);
 
-        if (result.done) {
-          break;
-        }
-
-        const value = result.value;
-
+      for await (const value of stream) {
         parser.feed(decoder.decode(value));
       }
     } finally {
@@ -116,4 +110,16 @@ export default function Home() {
       <ChatMessageInput disabled={isSending} onSend={handleSend} />
     </>
   );
+}
+
+async function* responseReader<T>(reader: ReadableStreamDefaultReader<T>) {
+  while (true) {
+    const result = await reader.read();
+
+    if (result.done) {
+      break;
+    }
+
+    yield result.value;
+  }
 }
