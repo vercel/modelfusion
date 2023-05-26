@@ -12,6 +12,8 @@ export const ChatMessage: React.FC<{
     <Box
       sx={{
         width: "100%",
+        paddingLeft: 2,
+        paddingRight: 2,
         backgroundColor:
           message.role === "assistant" ? "rgba(66,72,87, 0.5)" : undefined,
       }}
@@ -20,8 +22,7 @@ export const ChatMessage: React.FC<{
         sx={{
           maxWidth: "768px",
           margin: "0 auto",
-          paddingTop: 2,
-          paddingBottom: 2,
+          padding: 1,
         }}
       >
         <ReactMarkdown
