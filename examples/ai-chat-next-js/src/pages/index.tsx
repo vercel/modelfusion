@@ -1,11 +1,7 @@
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box } from "@mui/material";
-import {
-  ParsedEvent,
-  ReconnectInterval,
-  createParser,
-} from "eventsource-parser";
+import { createParser } from "eventsource-parser";
 import Head from "next/head";
 import { useState } from "react";
 
@@ -38,58 +34,19 @@ export default function Home() {
         body: JSON.stringify(messagesToSend),
       });
 
-      const decoder = new TextDecoder();
+      const stream = responseReader(response.body!.getReader());
 
-      let fullMessage = "";
+      const partialMessageStream = await createPartialMessageStream(stream);
 
-      const parser = createParser((event: ParsedEvent | ReconnectInterval) => {
-        if (event.type === "event") {
-          const data = event.data;
-
-          if (data === "[DONE]") {
-            return;
-          }
-
-          try {
-            const json = JSON.parse(data);
-
-            // TODO clean ZOD parse
-
-            if (json.choices[0].finish_reason != null) {
-              return;
-            }
-
-            // TODO get role token from delta
-            // TODO support multiple choices
-            const text = json.choices[0].delta.content;
-
-            if (text != undefined) {
-              fullMessage += text;
-
-              // replace text of last entry from messages with new message:
-              setMessages((messages) => {
-                return [
-                  ...messages.slice(0, messages.length - 1),
-                  {
-                    role: "assistant",
-                    content: fullMessage,
-                  },
-                ];
-              });
-            }
-          } catch (error) {
-            // TODO error recovery?
-            console.error(error);
-          }
+      for await (const partialMessage of partialMessageStream) {
+        if (partialMessage != null) {
+          setMessages((currentMessages) => {
+            return [
+              ...currentMessages.slice(0, currentMessages.length - 1),
+              partialMessage,
+            ];
+          });
         }
-      });
-
-      const reader = response.body!.getReader();
-
-      const stream = responseReader(reader);
-
-      for await (const value of stream) {
-        parser.feed(decoder.decode(value));
       }
     } finally {
       setIsSending(false);
@@ -122,4 +79,106 @@ async function* responseReader<T>(reader: ReadableStreamDefaultReader<T>) {
 
     yield result.value;
   }
+}
+
+class AsyncQueue<T> {
+  queue: T[];
+  resolvers: Array<(options: { value: T | undefined; done: boolean }) => void> =
+    [];
+  closed: boolean;
+
+  constructor() {
+    this.queue = [];
+    this.resolvers = [];
+    this.closed = false;
+  }
+
+  push(value: T) {
+    if (this.closed) {
+      throw new Error("Pushing to a closed queue");
+    }
+
+    const resolve = this.resolvers.shift();
+    if (resolve) {
+      resolve({ value, done: false });
+    } else {
+      this.queue.push(value);
+    }
+  }
+
+  close() {
+    while (this.resolvers.length) {
+      const resolve = this.resolvers.shift();
+      resolve?.({ value: undefined, done: true });
+    }
+    this.closed = true;
+  }
+
+  [Symbol.asyncIterator]() {
+    return {
+      next: (): Promise<IteratorResult<T | undefined, T | undefined>> => {
+        if (this.queue.length > 0) {
+          return Promise.resolve({ value: this.queue.shift(), done: false });
+        } else if (this.closed) {
+          return Promise.resolve({ value: undefined, done: true });
+        } else {
+          return new Promise((resolve) => this.resolvers.push(resolve));
+        }
+      },
+    };
+  }
+}
+
+async function createPartialMessageStream(stream: AsyncIterable<Uint8Array>) {
+  const queue = new AsyncQueue<{
+    role: "assistant" | "user";
+    content: string;
+  }>();
+
+  let fullMessage = "";
+
+  const parser = createParser((event) => {
+    if (event.type === "event") {
+      const data = event.data;
+
+      if (data === "[DONE]") {
+        queue.close();
+        return;
+      }
+
+      try {
+        const json = JSON.parse(data);
+
+        if (json.choices[0].finish_reason != null) {
+          queue.close();
+          return;
+        }
+
+        const text = json.choices[0].delta.content;
+
+        if (text != undefined) {
+          fullMessage += text;
+
+          queue.push({
+            role: "assistant",
+            content: fullMessage,
+          });
+        }
+      } catch (error) {
+        queue.close();
+        return;
+      }
+    }
+  });
+
+  const decoder = new TextDecoder();
+
+  // process the stream asynchonously:
+  (async () => {
+    for await (const value of stream) {
+      parser.feed(decoder.decode(value));
+    }
+  })();
+
+  return queue;
 }
