@@ -26,13 +26,20 @@ A basic web chat with an AI assistant.
 
 TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.
 
+## Design Principles
+
+- TypeScript with automatic type inference
+- Primarily functional programming
+- Easily configurable and extensible - no black magic
+
 ## Features
 
 - Text processing chains
   - recursive text mapping (e.g. for summarization or extraction)
   - split-map-filter-reduce for text processing
 - Text splitters
-  - Recursive character splitter
+  - Recursive character and token splitters
+- Tokenization
 - Run abstraction for progress reporting and abort signals
 - Retry management
 - Error handling
@@ -42,3 +49,4 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 - OpenAI
   - chat completions (regular, streaming)
   - text completions (regular)
+  - tokenization (TikToken) and token counting (incl. message and prompt overhead tokens in chat)
