@@ -32,8 +32,10 @@ export default function Home() {
   };
 
   const handleButtonRelease = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.onstop = async () => {
+    const mediaRecorder = mediaRecorderRef.current;
+
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.onstop = async () => {
         setIsTranscribing(true);
 
         try {
@@ -57,7 +59,9 @@ export default function Home() {
         }
       };
 
-      mediaRecorderRef.current.stop();
+      mediaRecorder.stop();
+      mediaRecorder.stream?.getTracks().forEach((track) => track.stop()); // stop microphone access
+
       setIsRecording(false);
     }
   };
