@@ -1,0 +1,24 @@
+{
+  "name": "@lgrammel/ai-utils-example-voice-recording-summarizer-next-js",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.1"
+  },
+  "dependencies": {
+    "@lgrammel/ai-utils": "*",
+    "@emotion/react": "11.10.8",
+    "@emotion/styled": "11.10.8",
+    "@mui/icons-material": "5.11.16",
+    "@mui/material": "5.12.2",
+    "next": "13.4.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  }
+}
