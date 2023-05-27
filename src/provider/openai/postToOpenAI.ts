@@ -40,7 +40,7 @@ export const postToOpenAI = async <T>({
       signal: abortSignal,
     });
 
-    if (response.status >= 400) {
+    if (!response.ok) {
       const responseBody = await response.text();
       const parsedError = openAIErrorDataSchema.parse(
         SecureJSON.parse(responseBody)

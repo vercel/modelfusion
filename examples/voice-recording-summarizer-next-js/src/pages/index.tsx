@@ -1,4 +1,4 @@
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import Head from "next/head";
 import MicIcon from "@mui/icons-material/Mic";
 import { useRef, useState } from "react";
@@ -8,6 +8,7 @@ export default function Home() {
   const audioChunksRef = useRef<Blob[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [transcription, setTranscription] = useState("");
 
   const handleButtonPress = () => {
     if (isRecording) return;
@@ -42,10 +43,14 @@ export default function Home() {
           const formData = new FormData();
           formData.append("audio", audioBlob, "audio.mp3");
 
-          await fetch("/api/audio", {
+          const response = await fetch("/api/audio", {
             method: "POST",
             body: formData,
           });
+
+          const jsonResponse = await response.json();
+
+          setTranscription(jsonResponse.transcription);
         } finally {
           setIsTranscribing(false);
           audioChunksRef.current = [];
@@ -93,6 +98,14 @@ export default function Home() {
           }}
         >
           {buttonStatus}
+        </Box>
+        <Box
+          sx={{
+            marginTop: "40px",
+            padding: 2,
+          }}
+        >
+          <Typography variant="body1">{transcription}</Typography>
         </Box>
         <Box
           sx={{

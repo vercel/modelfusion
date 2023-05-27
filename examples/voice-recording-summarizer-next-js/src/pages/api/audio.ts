@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { IncomingForm, File } from "formidable";
+import { IncomingForm, File, Files } from "formidable";
 import fs from "fs";
+import { generateOpenAITranscription } from "@lgrammel/ai-utils/provider/openai";
 
 export const config = {
   api: {
@@ -8,28 +9,59 @@ export const config = {
   },
 };
 
+const openAiApiKey = process.env.OPENAI_API_KEY ?? "";
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === "POST") {
+  if (req.method !== "POST") {
+    res.status(405).json({ message: "Method not allowed" });
+    return;
+  }
+
+  try {
     const form = new IncomingForm();
 
-    form.parse(req, (err, fields, files) => {
-      if (err) {
-        res.status(500).json({ message: "Something went wrong", error: err });
-        return;
-      }
+    const parsedForm = await new Promise<{ files: Files }>((resolve, reject) =>
+      form.parse(req, (err, _, files) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve({ files });
+      })
+    );
 
-      // We assume 'audio' contains a single file
-      const audioFile = files.audio as File;
-      const fileData = fs.readFileSync(audioFile.filepath);
+    const { files } = parsedForm;
 
-      // Now you can save `fileData` to a database, a file system, a cloud storage, etc.
+    if (!files || !files.audio) {
+      res.status(400).json({ message: "No files provided" });
+      return;
+    }
 
-      res.status(200).json({ message: "Audio received" });
+    const audioFile = files.audio as File;
+    const fileData = fs.readFileSync(audioFile.filepath);
+
+    const transcription = await generateOpenAITranscription({
+      apiKey: openAiApiKey,
+      model: "whisper-1",
+      file: {
+        data: fileData,
+        name: "audio.mp3",
+      },
+      responseFormat: "verbose_json",
     });
-  } else {
-    res.status(405).json({ message: "Method not allowed" });
+
+    const transcribedText = JSON.parse(transcription).text as string;
+
+    // Remove temporary file
+    fs.unlinkSync(audioFile.filepath);
+
+    res.status(200).json({ transcription: transcribedText });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error?.toString(), error: error });
+    return;
   }
 }

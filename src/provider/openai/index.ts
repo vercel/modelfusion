@@ -1,4 +1,5 @@
 export * from "./OpenAIError.js";
+export * from "./audio/generateOpenAITranscription.js";
 export * from "./chat/OpenAIChatCompletion.js";
 export * from "./chat/OpenAIChatCompletionDeltaStream.js";
 export * from "./chat/OpenAIChatModel.js";
