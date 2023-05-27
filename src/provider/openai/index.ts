@@ -7,3 +7,4 @@ export * from "./chat/streamOpenAIChatCompletion.js";
 export * from "./text/OpenAITextCompletion.js";
 export * from "./text/createOpenAITextModel.js";
 export * from "./text/generateOpenAITextCompletion.js";
+export * from "./tiktoken.js";
