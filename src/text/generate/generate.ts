@@ -44,7 +44,7 @@ export async function generate<
     functionId,
     model: {
       vendor: model.vendor,
-      name: model.name,
+      name: model.model,
     },
     startEpochSeconds,
   };

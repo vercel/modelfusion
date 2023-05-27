@@ -1,6 +1,6 @@
 import { createJsonResponseHandler, postToOpenAI } from "../postToOpenAI.js";
 import {
-  OpenAIChatCompletionModel,
+  OpenAIChatModelType,
   OpenAIChatMessage,
   OpenAIChatCompletion,
   openAIChatCompletionSchema,
@@ -24,7 +24,7 @@ export async function generateOpenAIChatCompletion({
   baseUrl?: string;
   abortSignal?: AbortSignal;
   apiKey: string;
-  model: OpenAIChatCompletionModel;
+  model: OpenAIChatModelType;
   messages: Array<OpenAIChatMessage>;
   temperature?: number;
   topP?: number;

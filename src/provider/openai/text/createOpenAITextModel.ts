@@ -3,7 +3,7 @@ import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tiktoken.js";
 import {
   OpenAITextCompletion,
-  OpenAITextCompletionModel,
+  OpenAITextModelType,
 } from "./OpenAITextCompletion.js";
 import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
 
@@ -27,13 +27,14 @@ export type OpenAITextModel = GeneratorModel<
   string
 > &
   TokenizerModel<number[]> & {
-    maxTokens: number;
-
-    withSettings: (settings: OpenAITextModelSettings) => OpenAITextModel;
+    readonly maxTokens: number;
+    readonly withSettings: (
+      settings: OpenAITextModelSettings
+    ) => OpenAITextModel;
   };
 
 // see https://platform.openai.com/docs/models/
-const maxTokensByModel: Record<OpenAITextCompletionModel, number> = {
+const maxTokensByModel: Record<OpenAITextModelType, number> = {
   "text-davinci-003": 4097,
   "text-davinci-002": 4097,
   "code-davinci-002": 8001,
@@ -54,50 +55,51 @@ export const createOpenAITextModel = ({
 }: {
   baseUrl?: string;
   apiKey: string;
-  model: OpenAITextCompletionModel;
+  model: OpenAITextModelType;
   settings?: OpenAITextModelSettings;
-}): OpenAITextModel => ({
-  vendor: "openai",
-  name: model,
+}): OpenAITextModel => {
+  const tokenizer = getTiktokenTokenizerForModel({ model });
 
-  maxTokens: maxTokensByModel[model],
+  return {
+    vendor: "openai",
+    model,
 
-  generate: async (
-    input: string,
-    { abortSignal }
-  ): Promise<OpenAITextCompletion> =>
-    generateOpenAITextCompletion({
-      baseUrl,
-      abortSignal,
-      apiKey,
-      prompt: input,
-      model,
-      suffix: settings.suffix,
-      maxGeneratedTokens: settings.maxGeneratedTokens,
-      temperature: settings.temperature,
-      topP: settings.topP,
-      n: settings.n,
-      logprobs: settings.logprobs,
-      echo: settings.echo,
-      stop: settings.stop,
-      presencePenalty: settings.presencePenalty,
-      frequencyPenalty: settings.frequencyPenalty,
-      bestOf: settings.bestOf,
-    }),
+    tokenizer,
+    maxTokens: maxTokensByModel[model],
 
-  extractOutput: async (rawOutput: OpenAITextCompletion): Promise<string> => {
-    return rawOutput.choices[0]!.text;
-  },
+    generate: async (
+      input: string,
+      { abortSignal }
+    ): Promise<OpenAITextCompletion> =>
+      generateOpenAITextCompletion({
+        baseUrl,
+        abortSignal,
+        apiKey,
+        prompt: input,
+        model,
+        suffix: settings.suffix,
+        maxGeneratedTokens: settings.maxGeneratedTokens,
+        temperature: settings.temperature,
+        topP: settings.topP,
+        n: settings.n,
+        logprobs: settings.logprobs,
+        echo: settings.echo,
+        stop: settings.stop,
+        presencePenalty: settings.presencePenalty,
+        frequencyPenalty: settings.frequencyPenalty,
+        bestOf: settings.bestOf,
+      }),
 
-  getTokenizer() {
-    return getTiktokenTokenizerForModel({ model });
-  },
+    extractOutput: async (rawOutput: OpenAITextCompletion): Promise<string> => {
+      return rawOutput.choices[0]!.text;
+    },
 
-  withSettings: (additionalSettings: OpenAITextModelSettings) =>
-    createOpenAITextModel({
-      baseUrl,
-      apiKey,
-      model,
-      settings: Object.assign({}, settings, additionalSettings),
-    }),
-});
+    withSettings: (additionalSettings: OpenAITextModelSettings) =>
+      createOpenAITextModel({
+        baseUrl,
+        apiKey,
+        model,
+        settings: Object.assign({}, settings, additionalSettings),
+      }),
+  };
+};

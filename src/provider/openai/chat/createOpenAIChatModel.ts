@@ -3,7 +3,7 @@ import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tiktoken.js";
 import {
   OpenAIChatCompletion,
-  OpenAIChatCompletionModel,
+  OpenAIChatModelType,
   OpenAIChatMessage,
 } from "./OpenAIChatCompletion.js";
 import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
@@ -25,12 +25,14 @@ export type OpenAIChatModel = GeneratorModel<
   string
 > &
   TokenizerModel<number[]> & {
-    maxTokens: number;
-    withSettings: (settings: OpenAIChatModelSettings) => OpenAIChatModel;
+    readonly maxTokens: number;
+    readonly withSettings: (
+      settings: OpenAIChatModelSettings
+    ) => OpenAIChatModel;
   };
 
 // see https://platform.openai.com/docs/models/
-const maxTokensByModel: Record<OpenAIChatCompletionModel, number> = {
+const maxTokensByModel: Record<OpenAIChatModelType, number> = {
   "gpt-4": 8192,
   "gpt-4-0314": 8192,
   "gpt-4-32k": 32768,
@@ -47,43 +49,44 @@ export const createOpenAIChatModel = ({
 }: {
   baseUrl?: string;
   apiKey: string;
-  model: OpenAIChatCompletionModel;
+  model: OpenAIChatModelType;
   settings?: OpenAIChatModelSettings;
-}): OpenAIChatModel => ({
-  vendor: "openai",
-  name: model,
+}): OpenAIChatModel => {
+  const tokenizer = getTiktokenTokenizerForModel({ model });
 
-  maxTokens: maxTokensByModel[model],
+  return {
+    vendor: "openai",
+    model,
 
-  generate: async (input, { abortSignal }): Promise<OpenAIChatCompletion> =>
-    generateOpenAIChatCompletion({
-      baseUrl,
-      abortSignal,
-      apiKey,
-      messages: input,
-      model,
-      temperature: settings.temperature,
-      topP: settings.topP,
-      n: settings.n,
-      stop: settings.stop,
-      maxGeneratedTokens: settings.maxGeneratedTokens,
-      presencePenalty: settings.presencePenalty,
-      frequencyPenalty: settings.frequencyPenalty,
-    }),
+    tokenizer,
+    maxTokens: maxTokensByModel[model],
 
-  extractOutput: async (rawOutput: OpenAIChatCompletion): Promise<string> => {
-    return rawOutput.choices[0]!.message.content;
-  },
+    generate: async (input, { abortSignal }): Promise<OpenAIChatCompletion> =>
+      generateOpenAIChatCompletion({
+        baseUrl,
+        abortSignal,
+        apiKey,
+        messages: input,
+        model,
+        temperature: settings.temperature,
+        topP: settings.topP,
+        n: settings.n,
+        stop: settings.stop,
+        maxGeneratedTokens: settings.maxGeneratedTokens,
+        presencePenalty: settings.presencePenalty,
+        frequencyPenalty: settings.frequencyPenalty,
+      }),
 
-  getTokenizer() {
-    return getTiktokenTokenizerForModel({ model });
-  },
+    extractOutput: async (rawOutput: OpenAIChatCompletion): Promise<string> => {
+      return rawOutput.choices[0]!.message.content;
+    },
 
-  withSettings: (additionalSettings: OpenAIChatModelSettings) =>
-    createOpenAIChatModel({
-      baseUrl,
-      apiKey,
-      model,
-      settings: Object.assign({}, settings, additionalSettings),
-    }),
-});
+    withSettings: (additionalSettings: OpenAIChatModelSettings) =>
+      createOpenAIChatModel({
+        baseUrl,
+        apiKey,
+        model,
+        settings: Object.assign({}, settings, additionalSettings),
+      }),
+  };
+};

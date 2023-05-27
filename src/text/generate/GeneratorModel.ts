@@ -1,6 +1,6 @@
 export type GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT> = {
   vendor: string;
-  name: string;
+  model: string;
 
   generate: (
     value: PROMPT_TYPE,

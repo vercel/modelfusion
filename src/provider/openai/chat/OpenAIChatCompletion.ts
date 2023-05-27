@@ -31,7 +31,7 @@ export type OpenAIChatMessage = {
   name?: string;
 };
 
-export type OpenAIChatCompletionModel =
+export type OpenAIChatModelType =
   | "gpt-4"
   | "gpt-4-0314"
   | "gpt-4-32k"

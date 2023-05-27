@@ -1,6 +1,6 @@
 import { createJsonResponseHandler, postToOpenAI } from "../postToOpenAI.js";
 import {
-  OpenAITextCompletionModel,
+  OpenAITextModelType,
   OpenAITextCompletion,
   openAITextCompletionSchema,
 } from "./OpenAITextCompletion.js";
@@ -27,7 +27,7 @@ export async function generateOpenAITextCompletion({
   baseUrl?: string;
   abortSignal?: AbortSignal;
   apiKey: string;
-  model: OpenAITextCompletionModel;
+  model: OpenAITextModelType;
   prompt: string;
   suffix?: string;
   maxGeneratedTokens?: number;

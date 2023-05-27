@@ -22,7 +22,7 @@ export const openAITextCompletionSchema = zod.object({
 
 export type OpenAITextCompletion = zod.infer<typeof openAITextCompletionSchema>;
 
-export type OpenAITextCompletionModel =
+export type OpenAITextModelType =
   | "text-davinci-003"
   | "text-davinci-002"
   | "code-davinci-002"
