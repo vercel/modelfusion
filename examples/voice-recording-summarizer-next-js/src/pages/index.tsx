@@ -96,7 +96,8 @@ export default function Home() {
             height: "40px",
             display: "flex",
             justifyContent: "center",
-            background: "rgba(0, 0, 0, 0.2)",
+            background: "rgba(0, 0, 0, 0.85)",
+            zIndex: 1,
             color: "lightgray",
             padding: "10px",
           }}
@@ -105,39 +106,47 @@ export default function Home() {
         </Box>
         <Box
           sx={{
-            marginTop: "40px",
-            padding: 2,
+            position: "relative",
+            height: "100%",
+            maxHeight: "100%",
+            overflowY: "auto",
           }}
         >
-          <Typography variant="body1">{transcription}</Typography>
+          <Box sx={{ pt: 7, pl: 2, pr: 2, pb: 2 }}>
+            <Typography variant="body1">{transcription}</Typography>
+            <Box sx={{ height: "96px" }} />
+          </Box>
         </Box>
         <Box
           sx={{
             display: "flex",
             justifyContent: "center",
             position: "absolute",
-            bottom: "20px",
+            bottom: "0",
             left: 0,
             right: 0,
+            background: "rgba(0, 0, 0, 0.85)",
           }}
         >
-          <IconButton
-            style={{
-              background: "darkorange",
-              width: "64px",
-              height: "64px",
-              borderRadius: "50%",
-            }}
-            onTouchStart={handleButtonPress}
-            onTouchEnd={handleButtonRelease}
-            onMouseDown={handleButtonPress}
-            onMouseUp={handleButtonRelease}
-            onMouseLeave={handleButtonRelease}
-            onContextMenu={(e) => e.preventDefault()}
-            disabled={isTranscribing}
-          >
-            <MicIcon sx={{ fontSize: "36px" }} />
-          </IconButton>
+          <Box sx={{ padding: 2 }}>
+            <IconButton
+              style={{
+                background: "darkorange",
+                width: "64px",
+                height: "64px",
+                borderRadius: "50%",
+              }}
+              onTouchStart={handleButtonPress}
+              onTouchEnd={handleButtonRelease}
+              onMouseDown={handleButtonPress}
+              onMouseUp={handleButtonRelease}
+              onMouseLeave={handleButtonRelease}
+              onContextMenu={(e) => e.preventDefault()}
+              disabled={isTranscribing}
+            >
+              <MicIcon sx={{ fontSize: "36px" }} />
+            </IconButton>
+          </Box>
         </Box>
       </Box>
     </>
