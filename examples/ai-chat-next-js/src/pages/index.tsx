@@ -71,13 +71,32 @@ export default function Home() {
       <Head>
         <title>@lgrammel/ai-utils chat example</title>
       </Head>
-      <Box sx={{ height: "100%", overflowY: "auto", marginTop: 4 }}>
-        {messages.map((message, index) => (
-          <ChatMessage key={index} message={message} />
-        ))}
-      </Box>
+      <Box
+        component="main"
+        sx={{
+          position: "relative",
+          flexGrow: 1,
+          height: "100%",
+          overflow: "hidden",
+        }}
+      >
+        <Box
+          sx={{
+            position: "relative",
+            maxHeight: "100%",
+            overflowY: "auto",
+          }}
+        >
+          <Box sx={{ height: "100%", overflowY: "auto", marginTop: 2 }}>
+            {messages.map((message, index) => (
+              <ChatMessage key={index} message={message} />
+            ))}
+            <Box sx={{ height: "160px" }} />
+          </Box>
+        </Box>
 
-      <ChatMessageInput disabled={isSending} onSend={handleSend} />
+        <ChatMessageInput disabled={isSending} onSend={handleSend} />
+      </Box>
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { CodeBlock } from "./CodeBlock";
+import remarkGfm from "remark-gfm";
 
 export const ChatMessage: React.FC<{
   message: {
@@ -26,6 +27,7 @@ export const ChatMessage: React.FC<{
         }}
       >
         <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
           components={{
             code({ node, inline, className, children, ...props }) {
               const match = /language-(\w+)/.exec(className || "");
