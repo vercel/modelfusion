@@ -7,6 +7,20 @@ import {
 } from "./OpenAITextCompletion.js";
 import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
 
+export type OpenAITextModelSettings = {
+  suffix?: string;
+  maxGeneratedTokens?: number;
+  temperature?: number;
+  topP?: number;
+  n?: number;
+  logprobs?: number;
+  echo?: boolean;
+  stop?: string | string[];
+  presencePenalty?: number;
+  frequencyPenalty?: number;
+  bestOf?: number;
+};
+
 export type OpenAITextModel = GeneratorModel<
   string,
   OpenAITextCompletion,
@@ -14,6 +28,8 @@ export type OpenAITextModel = GeneratorModel<
 > &
   TokenizerModel<number[]> & {
     maxTokens: number;
+
+    withSettings: (settings: OpenAITextModelSettings) => OpenAITextModel;
   };
 
 // see https://platform.openai.com/docs/models/
@@ -34,14 +50,12 @@ export const createOpenAITextModel = ({
   baseUrl,
   apiKey,
   model,
-  temperature = 0,
-  maxTokens,
+  settings = {},
 }: {
   baseUrl?: string;
   apiKey: string;
   model: OpenAITextCompletionModel;
-  temperature?: number;
-  maxTokens?: number;
+  settings?: OpenAITextModelSettings;
 }): OpenAITextModel => ({
   vendor: "openai",
   name: model,
@@ -58,8 +72,17 @@ export const createOpenAITextModel = ({
       apiKey,
       prompt: input,
       model,
-      temperature,
-      maxTokens,
+      suffix: settings.suffix,
+      maxGeneratedTokens: settings.maxGeneratedTokens,
+      temperature: settings.temperature,
+      topP: settings.topP,
+      n: settings.n,
+      logprobs: settings.logprobs,
+      echo: settings.echo,
+      stop: settings.stop,
+      presencePenalty: settings.presencePenalty,
+      frequencyPenalty: settings.frequencyPenalty,
+      bestOf: settings.bestOf,
     }),
 
   extractOutput: async (rawOutput: OpenAITextCompletion): Promise<string> => {
@@ -69,4 +92,12 @@ export const createOpenAITextModel = ({
   getTokenizer() {
     return getTiktokenTokenizerForModel({ model });
   },
+
+  withSettings: (additionalSettings: OpenAITextModelSettings) =>
+    createOpenAITextModel({
+      baseUrl,
+      apiKey,
+      model,
+      settings: Object.assign({}, settings, additionalSettings),
+    }),
 });

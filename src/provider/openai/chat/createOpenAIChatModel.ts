@@ -8,6 +8,17 @@ import {
 } from "./OpenAIChatCompletion.js";
 import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
 
+export type OpenAIChatModelSettings = {
+  temperature?: number;
+  topP?: number;
+  n?: number;
+  stop?: string | string[];
+  maxGeneratedTokens?: number;
+  presencePenalty?: number;
+  frequencyPenalty?: number;
+  user?: string;
+};
+
 export type OpenAIChatModel = GeneratorModel<
   OpenAIChatMessage[],
   OpenAIChatCompletion,
@@ -15,6 +26,7 @@ export type OpenAIChatModel = GeneratorModel<
 > &
   TokenizerModel<number[]> & {
     maxTokens: number;
+    withSettings: (settings: OpenAIChatModelSettings) => OpenAIChatModel;
   };
 
 // see https://platform.openai.com/docs/models/
@@ -31,14 +43,12 @@ export const createOpenAIChatModel = ({
   baseUrl,
   apiKey,
   model,
-  temperature = 0,
-  maxTokens,
+  settings = {},
 }: {
   baseUrl?: string;
   apiKey: string;
   model: OpenAIChatCompletionModel;
-  temperature?: number;
-  maxTokens?: number;
+  settings?: OpenAIChatModelSettings;
 }): OpenAIChatModel => ({
   vendor: "openai",
   name: model,
@@ -52,8 +62,13 @@ export const createOpenAIChatModel = ({
       apiKey,
       messages: input,
       model,
-      temperature,
-      maxTokens,
+      temperature: settings.temperature,
+      topP: settings.topP,
+      n: settings.n,
+      stop: settings.stop,
+      maxGeneratedTokens: settings.maxGeneratedTokens,
+      presencePenalty: settings.presencePenalty,
+      frequencyPenalty: settings.frequencyPenalty,
     }),
 
   extractOutput: async (rawOutput: OpenAIChatCompletion): Promise<string> => {
@@ -63,4 +78,12 @@ export const createOpenAIChatModel = ({
   getTokenizer() {
     return getTiktokenTokenizerForModel({ model });
   },
+
+  withSettings: (additionalSettings: OpenAIChatModelSettings) =>
+    createOpenAIChatModel({
+      baseUrl,
+      apiKey,
+      model,
+      settings: Object.assign({}, settings, additionalSettings),
+    }),
 });

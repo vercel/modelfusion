@@ -19,7 +19,7 @@ export async function createTwitterThreadFromPdf({
   openAiApiKey: string;
   context: RunContext;
 }) {
-  const model = createOpenAIChatModel({
+  const gpt4 = createOpenAIChatModel({
     apiKey: openAiApiKey,
     model: "gpt-4",
   });
@@ -27,12 +27,15 @@ export async function createTwitterThreadFromPdf({
   return splitMapFilterReduce(
     {
       split: splitRecursivelyAtTokenForModel.asSplitFunction({
-        model,
-        maxChunkSize: model.maxTokens - 1024,
+        model: gpt4,
+        maxChunkSize: gpt4.maxTokens - 1024,
       }),
       map: generateText.asFunction({
         functionId: "extract-topic",
-        model,
+        model: gpt4.withSettings({
+          temperature: 0,
+          maxGeneratedTokens: 1024,
+        }),
         prompt: extractTopicAndExcludeChatPrompt({
           excludeKeyword: "IRRELEVANT",
           topic,
@@ -41,7 +44,9 @@ export async function createTwitterThreadFromPdf({
       filter: (text) => text !== "IRRELEVANT",
       reduce: generateText.asFunction({
         functionId: "write-twitter-thread",
-        model,
+        model: gpt4.withSettings({
+          temperature: 0.5,
+        }),
         prompt: async ({ text }) => [
           {
             role: "user" as const,

@@ -12,7 +12,7 @@ export async function generateOpenAITextCompletion({
   model,
   prompt,
   suffix,
-  maxTokens,
+  maxGeneratedTokens,
   temperature,
   topP,
   n,
@@ -30,7 +30,7 @@ export async function generateOpenAITextCompletion({
   model: OpenAITextCompletionModel;
   prompt: string;
   suffix?: string;
-  maxTokens?: number;
+  maxGeneratedTokens?: number;
   temperature?: number;
   topP?: number;
   n?: number;
@@ -49,7 +49,7 @@ export async function generateOpenAITextCompletion({
       model,
       prompt,
       suffix,
-      max_tokens: maxTokens,
+      max_tokens: maxGeneratedTokens,
       temperature,
       top_p: topP,
       n,

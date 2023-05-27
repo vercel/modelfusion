@@ -11,12 +11,15 @@ export async function runBabyAGI({
   firstTask: string;
   openAiApiKey: string;
 }) {
+  const model = createOpenAITextModel({
+    apiKey: openAiApiKey,
+    model: "text-davinci-003",
+  });
+
   const executeTask = generate.asFunction({
-    model: createOpenAITextModel({
-      apiKey: openAiApiKey,
-      model: "text-davinci-003",
+    model: model.withSettings({
       temperature: 0.7,
-      maxTokens: 2000,
+      maxGeneratedTokens: 2000,
     }),
     prompt: async ({ objective, task }: { objective: string; task: string }) =>
       `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}
@@ -25,11 +28,9 @@ Response:`,
   });
 
   const generateNewTasks = generate.asFunction({
-    model: createOpenAITextModel({
-      apiKey: openAiApiKey,
-      model: "text-davinci-003",
-      maxTokens: 100,
+    model: model.withSettings({
       temperature: 0.5,
+      maxGeneratedTokens: 100,
     }),
     prompt: async ({
       objective,
@@ -51,11 +52,9 @@ Return the tasks as an array.`,
   });
 
   const prioritizeTasks = generate.asFunction({
-    model: createOpenAITextModel({
-      apiKey: openAiApiKey,
-      model: "text-davinci-003",
-      maxTokens: 1000,
+    model: model.withSettings({
       temperature: 0.5,
+      maxGeneratedTokens: 1000,
     }),
     prompt: async ({
       tasks,
