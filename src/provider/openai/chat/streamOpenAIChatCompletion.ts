@@ -1,8 +1,6 @@
 import { createStreamResponseHandler, postToOpenAI } from "../postToOpenAI.js";
-import {
-  OpenAIChatModelType,
-  OpenAIChatMessage,
-} from "./OpenAIChatCompletion.js";
+import { OpenAIChatMessage } from "./OpenAIChatCompletion.js";
+import { OpenAIChatModelType } from "./OpenAIChatModel.js";
 
 export async function streamOpenAIChatCompletion({
   baseUrl = "https://api.openai.com/v1",
@@ -14,7 +12,7 @@ export async function streamOpenAIChatCompletion({
   topP,
   n,
   stop,
-  maxTokens,
+  maxGeneratedTokens,
   presencePenalty,
   frequencyPenalty,
   user,
@@ -28,7 +26,7 @@ export async function streamOpenAIChatCompletion({
   topP?: number;
   n?: number;
   stop?: string | string[];
-  maxTokens?: number;
+  maxGeneratedTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
   user?: string;
@@ -43,7 +41,7 @@ export async function streamOpenAIChatCompletion({
       top_p: topP,
       n,
       stop,
-      max_tokens: maxTokens,
+      max_tokens: maxGeneratedTokens,
       temperature,
       presence_penalty: presencePenalty,
       frequency_penalty: frequencyPenalty,

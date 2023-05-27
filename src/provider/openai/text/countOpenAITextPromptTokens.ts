@@ -1,5 +1,5 @@
 import { getTiktokenTokenizerForModel } from "../tiktoken.js";
-import { OpenAITextModelType } from "./OpenAITextCompletion.js";
+import { OpenAITextModelType } from "./OpenAITextModel.js";
 
 export async function countOpenAITextPromptTokens({
   prompt,

@@ -1,11 +1,20 @@
 import { GeneratorModel } from "../../../text/generate/GeneratorModel.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tiktoken.js";
-import {
-  OpenAITextCompletion,
-  OpenAITextModelType,
-} from "./OpenAITextCompletion.js";
+import { OpenAITextCompletion } from "./OpenAITextCompletion.js";
 import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
+
+export type OpenAITextModelType =
+  | "text-davinci-003"
+  | "text-davinci-002"
+  | "code-davinci-002"
+  | "text-curie-001"
+  | "text-babbage-001"
+  | "text-ada-001"
+  | "davinci"
+  | "curie"
+  | "babbage"
+  | "ada";
 
 export type OpenAITextModelSettings = {
   suffix?: string;
@@ -34,17 +43,42 @@ export type OpenAITextModel = GeneratorModel<
   };
 
 // see https://platform.openai.com/docs/models/
-const maxTokensByModel: Record<OpenAITextModelType, number> = {
-  "text-davinci-003": 4097,
-  "text-davinci-002": 4097,
-  "code-davinci-002": 8001,
-  "text-curie-001": 2049,
-  "text-babbage-001": 2049,
-  "text-ada-001": 2049,
-  davinci: 2049,
-  curie: 2049,
-  babbage: 2049,
-  ada: 2049,
+export const OpenAITextModelData: Record<
+  OpenAITextModelType,
+  {
+    maxTokens: number;
+  }
+> = {
+  "text-davinci-003": {
+    maxTokens: 4096,
+  },
+  "text-davinci-002": {
+    maxTokens: 4096,
+  },
+  "code-davinci-002": {
+    maxTokens: 8000,
+  },
+  "text-curie-001": {
+    maxTokens: 2048,
+  },
+  "text-babbage-001": {
+    maxTokens: 2048,
+  },
+  "text-ada-001": {
+    maxTokens: 2048,
+  },
+  davinci: {
+    maxTokens: 2048,
+  },
+  curie: {
+    maxTokens: 2048,
+  },
+  babbage: {
+    maxTokens: 2048,
+  },
+  ada: {
+    maxTokens: 2048,
+  },
 };
 
 export const createOpenAITextModel = ({
@@ -65,7 +99,7 @@ export const createOpenAITextModel = ({
     model,
 
     tokenizer,
-    maxTokens: maxTokensByModel[model],
+    maxTokens: OpenAITextModelData[model].maxTokens,
 
     generate: async (
       input: string,

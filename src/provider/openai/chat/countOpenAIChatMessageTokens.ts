@@ -1,8 +1,6 @@
 import { getTiktokenTokenizerForModel } from "../tiktoken.js";
-import {
-  OpenAIChatModelType,
-  OpenAIChatMessage,
-} from "./OpenAIChatCompletion.js";
+import { OpenAIChatMessage } from "./OpenAIChatCompletion.js";
+import { OpenAIChatModelType } from "./OpenAIChatModel.js";
 
 /**
  * Prompt tokens that are included automatically for every full

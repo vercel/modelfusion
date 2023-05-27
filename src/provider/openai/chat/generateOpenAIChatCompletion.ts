@@ -1,10 +1,10 @@
 import { createJsonResponseHandler, postToOpenAI } from "../postToOpenAI.js";
 import {
-  OpenAIChatModelType,
   OpenAIChatMessage,
   OpenAIChatCompletion,
   openAIChatCompletionSchema,
 } from "./OpenAIChatCompletion.js";
+import { OpenAIChatModelType } from "./OpenAIChatModel.js";
 
 export async function generateOpenAIChatCompletion({
   baseUrl = "https://api.openai.com/v1",

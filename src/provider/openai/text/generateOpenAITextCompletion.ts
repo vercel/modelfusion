@@ -1,9 +1,9 @@
 import { createJsonResponseHandler, postToOpenAI } from "../postToOpenAI.js";
 import {
-  OpenAITextModelType,
   OpenAITextCompletion,
   openAITextCompletionSchema,
 } from "./OpenAITextCompletion.js";
+import { OpenAITextModelType } from "./OpenAITextModel.js";
 
 export async function generateOpenAITextCompletion({
   baseUrl = "https://api.openai.com/v1",

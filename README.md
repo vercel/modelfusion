@@ -40,6 +40,8 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 - Text splitters
   - Recursive character and token splitters
 - Tokenization
+- Prompt utilities
+  - Fit recent messages chat prompt into context window
 - Run abstraction for progress reporting and abort signals
 - Retry management
 - Error handling
