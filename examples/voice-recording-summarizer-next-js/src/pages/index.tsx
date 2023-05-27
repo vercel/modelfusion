@@ -8,7 +8,7 @@ export default function Home() {
   const audioChunksRef = useRef<Blob[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
-  const [transcription, setTranscription] = useState("");
+  const [transcriptions, setTranscriptions] = useState<string[]>([]);
 
   const handleButtonPress = () => {
     if (isRecording) return;
@@ -52,7 +52,10 @@ export default function Home() {
 
           const jsonResponse = await response.json();
 
-          setTranscription(jsonResponse.transcription);
+          setTranscriptions((previousTranscriptions) => [
+            ...previousTranscriptions,
+            jsonResponse.transcription,
+          ]);
         } finally {
           setIsTranscribing(false);
           audioChunksRef.current = [];
@@ -112,8 +115,22 @@ export default function Home() {
             overflowY: "auto",
           }}
         >
-          <Box sx={{ pt: 7, pl: 2, pr: 2, pb: 2 }}>
-            <Typography variant="body1">{transcription}</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+              pt: 7,
+              pl: 2,
+              pr: 2,
+              pb: 2,
+            }}
+          >
+            {transcriptions.map((transcription, index) => (
+              <Typography key={index} variant="body1">
+                {transcription}
+              </Typography>
+            ))}
             <Box sx={{ height: "96px" }} />
           </Box>
         </Box>
