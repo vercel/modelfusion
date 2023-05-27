@@ -47,7 +47,7 @@ export type OpenAIChatModelSettings = {
   topP?: number;
   n?: number;
   stop?: string | string[];
-  maxGeneratedTokens?: number;
+  maxCompletionTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
   user?: string;
@@ -93,7 +93,7 @@ export const createOpenAIChatModel = ({
       topP: settings.topP,
       n: settings.n,
       stop: settings.stop,
-      maxGeneratedTokens: settings.maxGeneratedTokens,
+      maxCompletionTokens: settings.maxCompletionTokens,
       presencePenalty: settings.presencePenalty,
       frequencyPenalty: settings.frequencyPenalty,
     }),

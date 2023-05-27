@@ -18,7 +18,7 @@ export type OpenAITextModelType =
 
 export type OpenAITextModelSettings = {
   suffix?: string;
-  maxGeneratedTokens?: number;
+  maxCompletionTokens?: number;
   temperature?: number;
   topP?: number;
   n?: number;
@@ -112,7 +112,7 @@ export const createOpenAITextModel = ({
         prompt: input,
         model,
         suffix: settings.suffix,
-        maxGeneratedTokens: settings.maxGeneratedTokens,
+        maxCompletionTokens: settings.maxCompletionTokens,
         temperature: settings.temperature,
         topP: settings.topP,
         n: settings.n,

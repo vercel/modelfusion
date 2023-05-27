@@ -34,7 +34,7 @@ export async function createTwitterThreadFromPdf({
         functionId: "extract-topic",
         model: gpt4.withSettings({
           temperature: 0,
-          maxGeneratedTokens: 1024,
+          maxCompletionTokens: 1024,
         }),
         prompt: extractTopicAndExcludeChatPrompt({
           excludeKeyword: "IRRELEVANT",

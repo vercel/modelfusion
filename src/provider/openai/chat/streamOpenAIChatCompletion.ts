@@ -12,7 +12,7 @@ export async function streamOpenAIChatCompletion({
   topP,
   n,
   stop,
-  maxGeneratedTokens,
+  maxCompletionTokens,
   presencePenalty,
   frequencyPenalty,
   user,
@@ -26,7 +26,7 @@ export async function streamOpenAIChatCompletion({
   topP?: number;
   n?: number;
   stop?: string | string[];
-  maxGeneratedTokens?: number;
+  maxCompletionTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
   user?: string;
@@ -41,7 +41,7 @@ export async function streamOpenAIChatCompletion({
       top_p: topP,
       n,
       stop,
-      max_tokens: maxGeneratedTokens,
+      max_tokens: maxCompletionTokens,
       temperature,
       presence_penalty: presencePenalty,
       frequency_penalty: frequencyPenalty,
