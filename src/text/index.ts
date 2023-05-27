@@ -7,3 +7,4 @@ export * from "./map/splitMapFilterReduce.js";
 export * from "./split/SplitFunction.js";
 export * from "./split/splitRecursively.js";
 export * from "./tokenize/Tokenizer.js";
+export * from "./tokenize/TokenizerModel.js";

@@ -1,6 +1,9 @@
+import { Tokenizer } from "../tokenize/Tokenizer.js";
+import { TokenizerModel } from "../tokenize/TokenizerModel.js";
 import { SplitFunction } from "./SplitFunction.js";
 
-function splitRecursivelyImplementation({
+// when segments is a string, it splits by character, otherwise according to the provided segments
+export function splitRecursively({
   maxChunkSize,
   segments,
 }: {
@@ -16,11 +19,11 @@ function splitRecursivelyImplementation({
   const right = segments.slice(half);
 
   return [
-    ...splitRecursivelyImplementation({
+    ...splitRecursively({
       segments: left,
       maxChunkSize,
     }),
-    ...splitRecursivelyImplementation({
+    ...splitRecursively({
       segments: right,
       maxChunkSize,
     }),
@@ -34,7 +37,7 @@ export const splitRecursivelyAtCharacter = async ({
   maxChunkSize: number;
   text: string;
 }) =>
-  splitRecursivelyImplementation({
+  splitRecursively({
     maxChunkSize,
     segments: text,
   });
@@ -43,3 +46,63 @@ splitRecursivelyAtCharacter.asSplitFunction =
   ({ maxChunkSize }: { maxChunkSize: number }): SplitFunction =>
   async ({ text }: { text: string }) =>
     splitRecursivelyAtCharacter({ maxChunkSize, text });
+
+export const splitRecursivelyAtToken = async <T>({
+  tokenizer,
+  maxChunkSize,
+  text,
+}: {
+  tokenizer: Tokenizer<T>;
+  maxChunkSize: number;
+  text: string;
+}) =>
+  splitRecursively({
+    maxChunkSize,
+    segments: (await tokenizer.encodeWithTexts(text)).tokenTexts,
+  });
+
+splitRecursivelyAtToken.asSplitFunction =
+  <T>({
+    tokenizer,
+    maxChunkSize,
+  }: {
+    tokenizer: Tokenizer<T>;
+    maxChunkSize: number;
+  }): SplitFunction =>
+  async ({ text }: { text: string }) =>
+    splitRecursivelyAtToken({
+      tokenizer,
+      maxChunkSize,
+      text,
+    });
+
+export const splitRecursivelyAtTokenForModel = async <T>({
+  model,
+  maxChunkSize,
+  text,
+}: {
+  model: TokenizerModel<T>;
+  maxChunkSize: number;
+  text: string;
+}) => {
+  const tokenizer = model.getTokenizer();
+  return splitRecursively({
+    maxChunkSize,
+    segments: (await tokenizer.encodeWithTexts(text)).tokenTexts,
+  });
+};
+
+splitRecursivelyAtTokenForModel.asSplitFunction =
+  <T>({
+    model,
+    maxChunkSize,
+  }: {
+    model: TokenizerModel<T>;
+    maxChunkSize: number;
+  }): SplitFunction =>
+  async ({ text }: { text: string }) =>
+    splitRecursivelyAtTokenForModel({
+      model,
+      maxChunkSize,
+      text,
+    });

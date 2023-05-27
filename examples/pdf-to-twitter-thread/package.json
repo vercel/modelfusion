@@ -7,7 +7,7 @@
   },
   "private": true,
   "dependencies": {
-    "@lgrammel/ai-utils": "0.0.0",
+    "@lgrammel/ai-utils": "*",
     "commander": "10.0.1",
     "dotenv": "16.0.3",
     "pdfjs-dist": "3.6.172"

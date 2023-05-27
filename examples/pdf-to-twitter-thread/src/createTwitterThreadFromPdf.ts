@@ -4,7 +4,7 @@ import { RunContext } from "@lgrammel/ai-utils/run";
 import {
   generateText,
   splitMapFilterReduce,
-  splitRecursivelyAtCharacter,
+  splitRecursivelyAtTokenForModel,
 } from "@lgrammel/ai-utils/text";
 import { loadPdfAsText } from "./loadPdfAsText";
 
@@ -26,7 +26,8 @@ export async function createTwitterThreadFromPdf({
 
   return splitMapFilterReduce(
     {
-      split: splitRecursivelyAtCharacter.asSplitFunction({
+      split: splitRecursivelyAtTokenForModel.asSplitFunction({
+        model,
         maxChunkSize: 1024 * 4,
       }),
       map: generateText.asFunction({

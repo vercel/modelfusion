@@ -1,9 +1,18 @@
 import { GeneratorModel } from "../../../text/generate/GeneratorModel.js";
+import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
+import { getTiktokenTokenizerForModel } from "../tiktoken.js";
 import {
   OpenAITextCompletion,
   OpenAITextCompletionModel,
 } from "./OpenAITextCompletion.js";
 import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
+
+export type OpenAITextModel = GeneratorModel<
+  string,
+  OpenAITextCompletion,
+  string
+> &
+  TokenizerModel<number[]>;
 
 export const createOpenAITextModel = ({
   baseUrl,
@@ -17,9 +26,10 @@ export const createOpenAITextModel = ({
   model: OpenAITextCompletionModel;
   temperature?: number;
   maxTokens?: number;
-}): GeneratorModel<string, OpenAITextCompletion, string> => ({
+}): OpenAITextModel => ({
   vendor: "openai",
   name: model,
+
   generate: async (
     input: string,
     { abortSignal }
@@ -35,5 +45,9 @@ export const createOpenAITextModel = ({
     }),
   extractOutput: async (rawOutput: OpenAITextCompletion): Promise<string> => {
     return rawOutput.choices[0]!.text;
+  },
+
+  getTokenizer() {
+    return getTiktokenTokenizerForModel({ model });
   },
 });
