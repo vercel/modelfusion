@@ -8,15 +8,17 @@
     "lint": "next lint"
   },
   "devDependencies": {
+    "@types/formidable": "^2.0.6",
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.1"
   },
   "dependencies": {
-    "@lgrammel/ai-utils": "*",
     "@emotion/react": "11.10.8",
     "@emotion/styled": "11.10.8",
+    "@lgrammel/ai-utils": "*",
     "@mui/icons-material": "5.11.16",
     "@mui/material": "5.12.2",
+    "formidable": "2.1.1",
     "next": "13.4.2",
     "react": "18.2.0",
     "react-dom": "18.2.0"

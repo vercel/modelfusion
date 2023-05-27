@@ -5,9 +5,9 @@ import { useRef, useState } from "react";
 
 export default function Home() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
 
   const handleButtonPress = () => {
     if (isRecording) return;
@@ -32,19 +32,36 @@ export default function Home() {
 
   const handleButtonRelease = () => {
     if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, {
-          type: "audio/mp3",
-        });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        setAudioUrl(audioUrl);
-        audioChunksRef.current = [];
+      mediaRecorderRef.current.onstop = async () => {
+        setIsTranscribing(true);
+
+        try {
+          const audioBlob = new Blob(audioChunksRef.current, {
+            type: "audio/mp3",
+          });
+          const formData = new FormData();
+          formData.append("audio", audioBlob, "audio.mp3");
+
+          await fetch("/api/audio", {
+            method: "POST",
+            body: formData,
+          });
+        } finally {
+          setIsTranscribing(false);
+          audioChunksRef.current = [];
+        }
       };
 
       mediaRecorderRef.current.stop();
       setIsRecording(false);
     }
   };
+
+  const buttonStatus = isTranscribing
+    ? "Transcribing..."
+    : isRecording
+    ? "Recording..."
+    : "Push to record";
 
   return (
     <>
@@ -70,14 +87,13 @@ export default function Home() {
             height: "40px",
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
-            background: "rgba(0,0,0,0.2)",
+            background: "rgba(0, 0, 0, 0.2)",
             color: "lightgray",
+            padding: "10px",
           }}
         >
-          {isRecording ? "Recording..." : "Push to record"}
+          {buttonStatus}
         </Box>
-
         <Box
           sx={{
             display: "flex",
@@ -101,6 +117,7 @@ export default function Home() {
             onMouseUp={handleButtonRelease}
             onMouseLeave={handleButtonRelease}
             onContextMenu={(e) => e.preventDefault()}
+            disabled={isTranscribing}
           >
             <MicIcon sx={{ fontSize: "36px" }} />
           </IconButton>
