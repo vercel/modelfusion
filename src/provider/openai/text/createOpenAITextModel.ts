@@ -12,7 +12,23 @@ export type OpenAITextModel = GeneratorModel<
   OpenAITextCompletion,
   string
 > &
-  TokenizerModel<number[]>;
+  TokenizerModel<number[]> & {
+    maxTokens: number;
+  };
+
+// see https://platform.openai.com/docs/models/
+const maxTokensByModel: Record<OpenAITextCompletionModel, number> = {
+  "text-davinci-003": 4097,
+  "text-davinci-002": 4097,
+  "code-davinci-002": 8001,
+  "text-curie-001": 2049,
+  "text-babbage-001": 2049,
+  "text-ada-001": 2049,
+  davinci: 2049,
+  curie: 2049,
+  babbage: 2049,
+  ada: 2049,
+};
 
 export const createOpenAITextModel = ({
   baseUrl,
@@ -30,6 +46,8 @@ export const createOpenAITextModel = ({
   vendor: "openai",
   name: model,
 
+  maxTokens: maxTokensByModel[model],
+
   generate: async (
     input: string,
     { abortSignal }
@@ -43,6 +61,7 @@ export const createOpenAITextModel = ({
       temperature,
       maxTokens,
     }),
+
   extractOutput: async (rawOutput: OpenAITextCompletion): Promise<string> => {
     return rawOutput.choices[0]!.text;
   },

@@ -13,7 +13,19 @@ export type OpenAIChatModel = GeneratorModel<
   OpenAIChatCompletion,
   string
 > &
-  TokenizerModel<number[]>;
+  TokenizerModel<number[]> & {
+    maxTokens: number;
+  };
+
+// see https://platform.openai.com/docs/models/
+const maxTokensByModel: Record<OpenAIChatCompletionModel, number> = {
+  "gpt-4": 8192,
+  "gpt-4-0314": 8192,
+  "gpt-4-32k": 32768,
+  "gpt-4-32k-0314": 32768,
+  "gpt-3.5-turbo": 4096,
+  "gpt-3.5-turbo-0301": 4096,
+};
 
 export const createOpenAIChatModel = ({
   baseUrl,
@@ -30,6 +42,8 @@ export const createOpenAIChatModel = ({
 }): OpenAIChatModel => ({
   vendor: "openai",
   name: model,
+
+  maxTokens: maxTokensByModel[model],
 
   generate: async (input, { abortSignal }): Promise<OpenAIChatCompletion> =>
     generateOpenAIChatCompletion({

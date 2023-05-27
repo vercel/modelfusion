@@ -28,7 +28,7 @@ export async function createTwitterThreadFromPdf({
     {
       split: splitRecursivelyAtTokenForModel.asSplitFunction({
         model,
-        maxChunkSize: 1024 * 4,
+        maxChunkSize: model.maxTokens - 1024,
       }),
       map: generateText.asFunction({
         functionId: "extract-topic",
