@@ -5,7 +5,7 @@
 <a href="https://twitter.com/lgrammel" rel="nofollow"><img src="https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg" alt="Created by Lars Grammel" /></a>
 <a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/lgrammel/ai-utils.js" alt="License" /></a>
 
-[Quick Install](#quick-install) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Examples](#examples) | [API Wrappers](#api-wrappers)
+[Quick Install](#quick-install) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#examples)
 
 ## Quick Install
 
@@ -35,11 +35,17 @@ It provides utilities that make it easier to use AI-functionality such as text g
 
 ## Integrations
 
-- OpenAI
-  - chat completions (regular, streaming) - GPT-4, GPT-3.5
-  - text completions (regular) - Davinci, Curie, Babbage, Ada
-  - tokenization (TikToken) and token counting (incl. message and prompt overhead tokens in chat)
-  - transcription - Whisper
+### OpenAI
+
+- chat completions (regular, streaming) - GPT-4, GPT-3.5
+- text completions (regular) - Davinci, Curie, Babbage, Ada
+- tokenization (TikToken) and token counting (incl. message and prompt overhead tokens in chat)
+- transcription - Whisper
+
+## Documentation
+
+- [Concepts](https://ai-utils.dev/concepts)
+- [API](https://ai-utils.dev/api/modules)
 
 ## Examples
 
@@ -66,33 +72,3 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 > _Next.js app_, _OpenAI Whisper_
 
 Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
-
-## API-Wrappers
-
-ai-utils.js provides API wrapper functions for all its integrations. The wrapper functions add types, output parsing and error validation to the APIs to make it more convenient to use them.
-
-### OpenAI
-
-```ts
-import { ... } from "ai-utils.js/provider/openai";
-```
-
-- generateOpenAITranscription
-- generateOpenAIChatCompletion
-- streamOpenAIChatCompletion
-- generateOpenAITextCompletion
-- getTiktokenTokenizerForModel/Encoding
-
-## Models and Functions
-
-ai-utils.js provides a layer of models and functions. It adds runs, call logging, composite and advanced functionality. However, some of the functionality that is available in the API wrappers might not be available on this level.
-
-## Helpers
-
-```ts
-import { ... } from "ai-utils.js/util";
-```
-
-- AsyncQueue
-- convertReadableStreamToAsyncIterator
-- retryWithExponentialBackoff
