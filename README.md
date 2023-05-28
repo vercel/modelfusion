@@ -1,8 +1,9 @@
 # ai-utils.js
+
 > ### A toolkit for building AI apps, chatbots and agents
 
-<a href="https://twitter.com/lgrammel" rel="nofollow"><img src="https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg" alt="Created by Lars Grammel"></a>
-<a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/lgrammel/ai-utils.js" alt="License"></a>
+<a href="https://twitter.com/lgrammel" rel="nofollow"><img src="https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg" alt="Created by Lars Grammel" /></a>
+<a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/lgrammel/ai-utils.js" alt="License" /></a>
 
 [Quick Install](#quick-install) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Examples](#examples) | [API Wrappers](#api-wrappers)
 
@@ -14,7 +15,7 @@ npm install --save ai-utils.js
 
 ## Introduction
 
-AI-Utils is a JavaScript/TypeScript AI-focused toolset, built around the principles of functional programming and automatic type inference. AI-utils is designed to be convenient and at the same time transparent and extensible.
+ai-utils.js is toolkit for using AI in JavaScript and TypeScript applications. It is built around the principles of functional programming and automatic type inference. The library is designed to be convenient and at the same time transparent and extensible.
 
 It provides utilities that make it easier to use AI-functionality such as text generation and voice transcription, and contains [examples](#examples) to show how to build apps with AI. The utilities include convenience methods to call AI APIs (e.g. OpenAI), helpers to make AI-apps production-grade (e.g. token counting, cost calculation, abort & error handling, progress reporting), and more advanced chains (e.g. split/map/filter/reduce for text processing).
 
@@ -68,7 +69,7 @@ Record audio with push-to-talk and transcribe it using Whisper, implemented as a
 
 ## API-Wrappers
 
-AI-Utils provides API wrapper functions for all its integrations. The wrapper functions add types, output parsing and error validation to the APIs to make it more convenient to use them.
+ai-utils.js provides API wrapper functions for all its integrations. The wrapper functions add types, output parsing and error validation to the APIs to make it more convenient to use them.
 
 ### OpenAI
 
@@ -84,7 +85,7 @@ import { ... } from "ai-utils.js/provider/openai";
 
 ## Models and Functions
 
-AI-Utils provides a layer of models and functions. It adds runs, call logging, composite and advanced functionality. However, some of the functionality that is available in the API wrappers might not be available on this level.
+ai-utils.js provides a layer of models and functions. It adds runs, call logging, composite and advanced functionality. However, some of the functionality that is available in the API wrappers might not be available on this level.
 
 ## Helpers
 
