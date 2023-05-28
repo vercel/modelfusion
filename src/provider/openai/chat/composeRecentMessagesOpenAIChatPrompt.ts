@@ -1,7 +1,7 @@
 import { OpenAIChatMessage } from "./OpenAIChatCompletion.js";
 import { OpenAIChatModelData, OpenAIChatModelType } from "./OpenAIChatModel.js";
 import {
-  OPENAI_CHAT_PROMPT_BASE_TOKENS,
+  OPENAI_CHAT_PROMPT_BASE_TOKEN_COUNT,
   countOpenAIChatMessageTokens,
 } from "./countOpenAIChatMessageTokens.js";
 
@@ -22,7 +22,7 @@ export async function composeRecentMessagesOpenAIChatPrompt({
   systemMessage: OpenAIChatMessage;
   messages: { role: "user" | "assistant"; content: string }[];
 }) {
-  let tokenCount = OPENAI_CHAT_PROMPT_BASE_TOKENS;
+  let tokenCount = OPENAI_CHAT_PROMPT_BASE_TOKEN_COUNT;
 
   tokenCount += await countOpenAIChatMessageTokens({
     message: systemMessage,

@@ -6,13 +6,13 @@ import { OpenAIChatModelType } from "./OpenAIChatModel.js";
  * Prompt tokens that are included automatically for every full
  * chat prompt (several messages) that is sent to OpenAI.
  */
-export const OPENAI_CHAT_PROMPT_BASE_TOKENS = 2;
+export const OPENAI_CHAT_PROMPT_BASE_TOKEN_COUNT = 2;
 
 /**
  * Prompt tokens that are included automatically for every
  * message that is sent to OpenAI.
  */
-export const OPENAI_CHAT_MESSAGE_BASE_TOKENS = 5;
+export const OPENAI_CHAT_MESSAGE_BASE_TOKEN_COUNT = 5;
 
 export async function countOpenAIChatMessageTokens({
   message,
@@ -22,7 +22,7 @@ export async function countOpenAIChatMessageTokens({
   model: OpenAIChatModelType;
 }) {
   return (
-    OPENAI_CHAT_MESSAGE_BASE_TOKENS +
+    OPENAI_CHAT_MESSAGE_BASE_TOKEN_COUNT +
     (await getTiktokenTokenizerForModel({ model }).countTokens(message.content))
   );
 }
@@ -34,7 +34,7 @@ export async function countOpenAIChatPromptTokens({
   messages: OpenAIChatMessage[];
   model: OpenAIChatModelType;
 }) {
-  let tokens = OPENAI_CHAT_PROMPT_BASE_TOKENS;
+  let tokens = OPENAI_CHAT_PROMPT_BASE_TOKEN_COUNT;
   for (const message of messages) {
     tokens += await countOpenAIChatMessageTokens({ message, model });
   }
