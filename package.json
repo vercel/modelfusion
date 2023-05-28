@@ -14,7 +14,7 @@
     "llm",
     "baby-agi"
   ],
-  "homepage": "https://ai-utils.vercel.app/",
+  "homepage": "https://ai-utils.dev/",
   "repository": {
     "type": "git",
     "url": "https://github.com/lgrammel/ai-utils.js"
