@@ -1,4 +1,7 @@
-import { createStreamResponseHandler, postToOpenAI } from "../postToOpenAI.js";
+import {
+  createStreamResponseHandler,
+  postJsonToOpenAI,
+} from "../postToOpenAI.js";
 import { OpenAIChatMessage } from "./OpenAIChatCompletion.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";
 
@@ -31,7 +34,7 @@ export async function streamOpenAIChatCompletion({
   frequencyPenalty?: number;
   user?: string;
 }): Promise<AsyncIterable<Uint8Array>> {
-  return postToOpenAI({
+  return postJsonToOpenAI({
     url: `${baseUrl}/chat/completions`,
     apiKey,
     body: {

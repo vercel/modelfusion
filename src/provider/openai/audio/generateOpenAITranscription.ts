@@ -1,16 +1,76 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
-import { OpenAIError, openAIErrorDataSchema } from "../OpenAIError.js";
+import {
+  ResponseHandler,
+  createJsonResponseHandler,
+  createTextResponseHandler,
+  postToOpenAI,
+} from "../postToOpenAI.js";
 
 export type OpenAITranscriptionModelType = "whisper-1";
 
-const OpenAITranscriptionSchema = z.object({
+export type OpenIATranscriptionResponseFormat<T> = {
+  type: "json" | "text" | "srt" | "verbose_json" | "vtt";
+  handler: ResponseHandler<T>;
+};
+
+const openAITranscriptionJsonSchema = z.object({
   text: z.string(),
 });
 
-export type OpenAITranscription = z.infer<typeof OpenAITranscriptionSchema>;
+export type OpenAITranscriptionJson = z.infer<
+  typeof openAITranscriptionJsonSchema
+>;
 
-export async function generateOpenAITranscription({
+export const openAITranscriptionVerboseJsonSchema = z.object({
+  task: z.literal("transcribe"),
+  language: z.string(),
+  duration: z.number(),
+  segments: z.array(
+    z.object({
+      id: z.number(),
+      seek: z.number(),
+      start: z.number(),
+      end: z.number(),
+      text: z.string(),
+      tokens: z.array(z.number()),
+      temperature: z.number(),
+      avg_logprob: z.number(),
+      compression_ratio: z.number(),
+      no_speech_prob: z.number(),
+      transient: z.boolean(),
+    })
+  ),
+  text: z.string(),
+});
+
+export type OpenAITranscriptionVerboseJson = z.infer<
+  typeof openAITranscriptionVerboseJsonSchema
+>;
+
+export const openAITranscriptionResponseFormat = Object.freeze({
+  json: Object.freeze({
+    type: "json" as const,
+    handler: createJsonResponseHandler(openAITranscriptionJsonSchema),
+  }),
+  verboseJson: Object.freeze({
+    type: "verbose_json" as const,
+    handler: createJsonResponseHandler(openAITranscriptionVerboseJsonSchema),
+  }),
+  text: Object.freeze({
+    type: "text" as const,
+    handler: createTextResponseHandler(),
+  }),
+  srt: Object.freeze({
+    type: "srt" as const,
+    handler: createTextResponseHandler(),
+  }),
+  vtt: Object.freeze({
+    type: "vtt" as const,
+    handler: createTextResponseHandler(),
+  }),
+});
+
+export async function generateOpenAITranscription<RESPONSE>({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
   apiKey,
@@ -29,11 +89,11 @@ export async function generateOpenAITranscription({
     data: Buffer;
     name: string;
   };
+  responseFormat: OpenIATranscriptionResponseFormat<RESPONSE>;
   prompt?: string;
-  responseFormat?: "json" | "text" | "srt" | "verbose_json" | "vtt"; // response format determines parsing and return type
   temperature?: number;
   language?: string; // ISO-639-1 code
-}): Promise<string> {
+}): Promise<RESPONSE> {
   const formData = new FormData();
   formData.append("file", new Blob([file.data]), file.name);
   formData.append("model", model);
@@ -43,7 +103,7 @@ export async function generateOpenAITranscription({
   }
 
   if (responseFormat) {
-    formData.append("response_format", responseFormat);
+    formData.append("response_format", responseFormat.type);
   }
 
   if (temperature) {
@@ -54,29 +114,21 @@ export async function generateOpenAITranscription({
     formData.append("language", language);
   }
 
-  const url = `${baseUrl}/audio/transcriptions`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
+  return postToOpenAI({
+    url: `${baseUrl}/audio/transcriptions`,
+    apiKey,
+    contentType: null,
+    body: {
+      content: formData,
+      values: {
+        model,
+        prompt,
+        response_format: responseFormat,
+        temperature,
+        language,
+      },
     },
-    body: formData,
-    signal: abortSignal,
+    successfulResponseHandler: responseFormat.handler,
+    abortSignal,
   });
-
-  if (!response.ok) {
-    const responseBody = await response.text();
-    const parsedError = openAIErrorDataSchema.parse(
-      SecureJSON.parse(responseBody)
-    );
-
-    throw new OpenAIError({
-      url,
-      body: formData,
-      statusCode: response.status,
-      data: parsedError.error,
-    });
-  }
-
-  return await response.text();
 }

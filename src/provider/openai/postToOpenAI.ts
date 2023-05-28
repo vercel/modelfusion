@@ -6,17 +6,18 @@ export type ResponseHandler<T> = (response: Response) => PromiseLike<T>;
 
 export const createJsonResponseHandler =
   <T>(responseSchema: z.ZodSchema<T>): ResponseHandler<T> =>
-  async (response) => {
-    const data = await response.json();
-    return responseSchema.parse(data);
-  };
+  async (response) =>
+    responseSchema.parse(await response.json());
 
 export const createStreamResponseHandler =
-  (): ResponseHandler<AsyncIterable<Uint8Array>> => async (response) => {
-    return response.body as unknown as AsyncIterable<Uint8Array>;
-  };
+  (): ResponseHandler<AsyncIterable<Uint8Array>> => async (response) =>
+    response.body as unknown as AsyncIterable<Uint8Array>;
 
-export const postToOpenAI = async <T>({
+export const createTextResponseHandler =
+  (): ResponseHandler<string> => async (response) =>
+    response.text();
+
+export const postJsonToOpenAI = async <T>({
   url,
   apiKey,
   body,
@@ -29,14 +30,50 @@ export const postToOpenAI = async <T>({
   successfulResponseHandler: ResponseHandler<T>;
   abortSignal?: AbortSignal;
 }) => {
+  return postToOpenAI({
+    url,
+    apiKey,
+    contentType: "application/json",
+    body: {
+      content: JSON.stringify(body),
+      values: body,
+    },
+    successfulResponseHandler,
+    abortSignal,
+  });
+};
+
+export const postToOpenAI = async <T>({
+  url,
+  apiKey,
+  contentType,
+  body,
+  successfulResponseHandler,
+  abortSignal,
+}: {
+  url: string;
+  apiKey: string;
+  contentType: string | null; // set to null when using FormData (to have correct boundary)
+  body: {
+    content: string | FormData;
+    values: unknown;
+  };
+  successfulResponseHandler: ResponseHandler<T>;
+  abortSignal?: AbortSignal;
+}) => {
   try {
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${apiKey}`,
+    };
+
+    if (contentType !== null) {
+      headers["Content-Type"] = contentType;
+    }
+
     const response = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(body),
+      headers,
+      body: body.content,
       signal: abortSignal,
     });
 
@@ -48,7 +85,7 @@ export const postToOpenAI = async <T>({
 
       throw new OpenAIError({
         url,
-        body,
+        body: body.values,
         statusCode: response.status,
         data: parsedError.error,
       });

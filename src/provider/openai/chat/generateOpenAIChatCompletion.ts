@@ -1,4 +1,7 @@
-import { createJsonResponseHandler, postToOpenAI } from "../postToOpenAI.js";
+import {
+  createJsonResponseHandler,
+  postJsonToOpenAI,
+} from "../postToOpenAI.js";
 import {
   OpenAIChatMessage,
   OpenAIChatCompletion,
@@ -35,7 +38,7 @@ export async function generateOpenAIChatCompletion({
   frequencyPenalty?: number;
   user?: string;
 }): Promise<OpenAIChatCompletion> {
-  return postToOpenAI({
+  return postJsonToOpenAI({
     url: `${baseUrl}/chat/completions`,
     apiKey,
     body: {

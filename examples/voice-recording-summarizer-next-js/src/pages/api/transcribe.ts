@@ -1,7 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { IncomingForm, File, Files } from "formidable";
+import {
+  generateOpenAITranscription,
+  openAITranscriptionResponseFormat,
+} from "@lgrammel/ai-utils/provider/openai";
+import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
-import { generateOpenAITranscription } from "@lgrammel/ai-utils/provider/openai";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {
   api: {
@@ -47,18 +50,16 @@ export default async function handler(
       apiKey: openAiApiKey,
       model: "whisper-1",
       file: {
-        data: fileData,
         name: "audio.mp3",
+        data: fileData,
       },
-      responseFormat: "verbose_json",
+      responseFormat: openAITranscriptionResponseFormat.json,
     });
-
-    const transcribedText = JSON.parse(transcription).text as string;
 
     // Remove temporary file
     fs.unlinkSync(audioFile.filepath);
 
-    res.status(200).json({ transcription: transcribedText });
+    res.status(200).json({ transcription: transcription.text });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error?.toString(), error: error });

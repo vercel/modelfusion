@@ -45,7 +45,7 @@ export default function Home() {
           const formData = new FormData();
           formData.append("audio", audioBlob, "audio.mp3");
 
-          const response = await fetch("/api/audio", {
+          const response = await fetch("/api/transcribe", {
             method: "POST",
             body: formData,
           });

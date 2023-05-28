@@ -1,4 +1,7 @@
-import { createJsonResponseHandler, postToOpenAI } from "../postToOpenAI.js";
+import {
+  createJsonResponseHandler,
+  postJsonToOpenAI,
+} from "../postToOpenAI.js";
 import {
   OpenAITextCompletion,
   openAITextCompletionSchema,
@@ -42,7 +45,7 @@ export async function generateOpenAITextCompletion({
   bestOf?: number;
   user?: string;
 }): Promise<OpenAITextCompletion> {
-  return postToOpenAI({
+  return postJsonToOpenAI({
     url: `${baseUrl}/completions`,
     apiKey,
     body: {
