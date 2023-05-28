@@ -1,7 +1,7 @@
 import { RunContext } from "../../run/RunContext.js";
 
 export type MapFunction = (
-  options: {
+  input: {
     text: string;
   },
   context?: RunContext
