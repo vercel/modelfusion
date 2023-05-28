@@ -1,8 +1,28 @@
 {
   "name": "@lgrammel/ai-utils",
+  "description": "JS/TS toolkit for building AI apps, chatbots and agents",
   "version": "0.0.3",
+  "author": "Lars Grammel",
   "license": "MIT",
+  "keywords": [
+    "next.js",
+    "chatbot",
+    "openai",
+    "whisper",
+    "gpt-3",
+    "gpt-4",
+    "llm",
+    "baby-agi"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lgrammel/ai-utils"
+  },
+  "bugs": {
+    "url": "https://github.com/lgrammel/ai-utils/issues"
+  },
   "type": "module",
+  "sideEffects": false,
   "private": false,
   "engines": {
     "node": ">=18"
@@ -37,8 +57,6 @@
       "require": "./util/index.cjs"
     }
   },
-  "author": "Lars Grammel",
-  "keywords": [],
   "scripts": {
     "clean": "rimraf build dist",
     "build": "npm run build:esm && npm run build:cjs",
