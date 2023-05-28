@@ -1,10 +1,10 @@
 {
-  "name": "@lgrammel/ai-utils-example-baby-agi",
+  "name": "@lgrammel/ai-utils.js-example-baby-agi",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@lgrammel/ai-utils": "*",
+    "ai-utils.js": "*",
     "commander": "10.0.1",
     "dotenv": "16.0.3",
     "chalk": "^4"

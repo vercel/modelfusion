@@ -4,7 +4,7 @@ import {
   OpenAIChatModelType,
   composeRecentMessagesOpenAIChatPrompt,
   streamOpenAIChatCompletion,
-} from "@lgrammel/ai-utils/provider/openai";
+} from "ai-utils.js/provider/openai";
 import { NextApiHandler } from "next";
 import { z } from "zod";
 

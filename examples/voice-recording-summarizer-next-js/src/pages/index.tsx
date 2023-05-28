@@ -78,7 +78,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>@lgrammel/ai-utils voice recording summarizer example</title>
+        <title>ai-utils.js voice recording summarizer example</title>
       </Head>
       <Box
         component="main"

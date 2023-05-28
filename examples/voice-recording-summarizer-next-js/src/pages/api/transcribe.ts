@@ -1,7 +1,7 @@
 import {
   generateOpenAITranscription,
   openAITranscriptionResponseFormat,
-} from "@lgrammel/ai-utils/provider/openai";
+} from "ai-utils.js/provider/openai";
 import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";

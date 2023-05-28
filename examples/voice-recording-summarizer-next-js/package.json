@@ -1,5 +1,5 @@
 {
-  "name": "@lgrammel/ai-utils-example-voice-recording-summarizer-next-js",
+  "name": "@lgrammel/ai-utils.js-example-voice-recording-summarizer-next-js",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -15,9 +15,9 @@
   "dependencies": {
     "@emotion/react": "11.10.8",
     "@emotion/styled": "11.10.8",
-    "@lgrammel/ai-utils": "*",
     "@mui/icons-material": "5.11.16",
     "@mui/material": "5.12.2",
+    "ai-utils.js": "*",
     "formidable": "2.1.1",
     "next": "13.4.2",
     "react": "18.2.0",

@@ -1,6 +1,6 @@
 {
-  "name": "@lgrammel/ai-utils",
-  "description": "JS/TS toolkit for building AI apps, chatbots and agents",
+  "name": "ai-utils.js",
+  "description": "A toolkit for building AI apps, chatbots and agents",
   "version": "0.0.3",
   "author": "Lars Grammel",
   "license": "MIT",
@@ -16,10 +16,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/lgrammel/ai-utils"
+    "url": "https://github.com/lgrammel/ai-utils.js"
   },
   "bugs": {
-    "url": "https://github.com/lgrammel/ai-utils/issues"
+    "url": "https://github.com/lgrammel/ai-utils.js/issues"
   },
   "type": "module",
   "sideEffects": false,

@@ -1,5 +1,5 @@
-import { createOpenAITextModel } from "@lgrammel/ai-utils/provider/openai";
-import { generate } from "@lgrammel/ai-utils/text";
+import { createOpenAITextModel } from "ai-utils.js/provider/openai";
+import { generate } from "ai-utils.js/text";
 import chalk from "chalk";
 
 export async function runBabyAGI({

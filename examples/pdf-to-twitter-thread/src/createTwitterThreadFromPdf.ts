@@ -1,11 +1,11 @@
-import { extractTopicAndExcludeChatPrompt } from "@lgrammel/ai-utils/prompt";
-import { createOpenAIChatModel } from "@lgrammel/ai-utils/provider/openai";
-import { RunContext } from "@lgrammel/ai-utils/run";
+import { extractTopicAndExcludeChatPrompt } from "ai-utils.js/prompt";
+import { createOpenAIChatModel } from "ai-utils.js/provider/openai";
+import { RunContext } from "ai-utils.js/run";
 import {
   generateText,
   splitMapFilterReduce,
   splitRecursivelyAtTokenForModel,
-} from "@lgrammel/ai-utils/text";
+} from "ai-utils.js/text";
 import { loadPdfAsText } from "./loadPdfAsText";
 
 export async function createTwitterThreadFromPdf({

@@ -1,7 +1,7 @@
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
-import { createOpenAIChatCompletionDeltaStream } from "@lgrammel/ai-utils/provider/openai";
-import { convertReadableStreamToAsyncIterator } from "@lgrammel/ai-utils/util";
+import { createOpenAIChatCompletionDeltaStream } from "ai-utils.js/provider/openai";
+import { convertReadableStreamToAsyncIterator } from "ai-utils.js/util";
 import { Box } from "@mui/material";
 import Head from "next/head";
 import { useState } from "react";
@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>@lgrammel/ai-utils chat example</title>
+        <title>ai-utils.js chat example</title>
       </Head>
       <Box
         component="main"

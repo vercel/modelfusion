@@ -1,5 +1,5 @@
 {
-  "name": "@lgrammel/ai-utils-example-ai-chat-next-js",
+  "name": "@lgrammel/ai-utils.js-example-ai-chat-next-js",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -13,7 +13,7 @@
     "@types/react-syntax-highlighter": "15.5.6"
   },
   "dependencies": {
-    "@lgrammel/ai-utils": "0.0.0",
+    "ai-utils.js": "*",
     "@emotion/react": "11.10.8",
     "@emotion/styled": "11.10.8",
     "@mui/icons-material": "5.11.16",
