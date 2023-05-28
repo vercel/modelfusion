@@ -61,6 +61,6 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 
 ### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/ai-utils/tree/main/examples/voice-recording-summarizer-next-js)
 
-> _Next.js app_, _OpenAI Whisper_,
+> _Next.js app_, _OpenAI Whisper_
 
 Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
