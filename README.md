@@ -1,4 +1,5 @@
-# ai-utils.js: a toolkit for building AI apps, chatbots and agents
+# ai-utils.js
+> ### A toolkit for building AI apps, chatbots and agents
 
 <a href="https://twitter.com/lgrammel" rel="nofollow"><img src="https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg" alt="Created by Lars Grammel"></a>
 <a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/lgrammel/ai-utils.js" alt="License"></a>
