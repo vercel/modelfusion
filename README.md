@@ -17,7 +17,7 @@ npm install --save ai-utils.js
 
 ai-utils.js is toolkit for using AI in JavaScript and TypeScript applications. It is built around the principles of functional programming and automatic type inference. The library is designed to be convenient and at the same time transparent and extensible.
 
-It provides utilities that make it easier to use AI-functionality such as text generation and voice transcription, and contains [examples](#examples) to show how to build apps with AI. The utilities include convenience methods to call AI APIs (e.g. OpenAI), helpers to make AI-apps production-grade (e.g. token counting, cost calculation, abort & error handling, progress reporting), and more advanced chains (e.g. split/map/filter/reduce for text processing).
+It provides utilities that make it easier to use AI-functionality such as text generation and voice transcription, and contains [examples](#examples) to show how to build apps with AI. The utilities include convenience methods to call AI APIs (e.g. OpenAI), helpers to make AI-apps production-grade (e.g. token counting, abort & error handling, progress reporting), and more advanced chains (e.g. split/map/filter/reduce for text processing).
 
 ## Features
 
