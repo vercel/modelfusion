@@ -1,8 +1,3 @@
-import { RunContext } from "../../run/RunContext.js";
+import { RunFunction } from "../../run/RunFunction.js";
 
-export type MapFunction = (
-  input: {
-    text: string;
-  },
-  context?: RunContext
-) => PromiseLike<string>;
+export type MapFunction = RunFunction<{ text: string }, string>;

@@ -1,6 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { Prompt } from "../../prompt/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
+import { RunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
 import { RetryFunction } from "../../util/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../util/retryWithExponentialBackoff.js";
@@ -123,8 +124,8 @@ generate.asFunction =
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
-  }) =>
-  async (input: INPUT, context?: RunContext): Promise<OUTPUT> =>
+  }): RunFunction<INPUT, OUTPUT> =>
+  async (input: INPUT, context?: RunContext) =>
     generate(
       {
         functionId,

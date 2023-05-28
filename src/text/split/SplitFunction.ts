@@ -1,8 +1,3 @@
-import { RunContext } from "run/RunContext.js";
+import { RunFunction } from "../../run/RunFunction.js";
 
-export type SplitFunction = (
-  input: {
-    text: string;
-  },
-  context?: RunContext
-) => PromiseLike<Array<string>>;
+export type SplitFunction = RunFunction<{ text: string }, Array<string>>;
