@@ -3,7 +3,7 @@
 <a href="https://twitter.com/lgrammel" rel="nofollow"><img src="https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg" alt="Created by Lars Grammel"></a>
 <a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/lgrammel/ai-utils" alt="License"></a>
 
-[Quick Install](#quick-install) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Examples](#examples)
+[Quick Install](#quick-install) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Examples](#examples) | [API Wrappers](#api-wrappers)
 
 ## Quick Install
 
@@ -64,3 +64,33 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 > _Next.js app_, _OpenAI Whisper_
 
 Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
+
+## API-Wrappers
+
+AI-Utils provides API wrapper functions for all its integrations. The wrapper functions add types, output parsing and error validation to the APIs to make it more convenient to use them.
+
+### OpenAI
+
+```ts
+import { ... } from "@lgrammel/ai-utils/provider/openai";
+```
+
+- generateOpenAITranscription
+- generateOpenAIChatCompletion
+- streamOpenAIChatCompletion
+- generateOpenAITextCompletion
+- getTiktokenTokenizerForModel/Encoding
+
+## Models and Functions
+
+AI-Utils provides a layer of models and functions. It adds runs, call logging, composite and advanced functionality. However, some of the functionality that is available in the API wrappers might not be available on this level.
+
+## Helpers
+
+```ts
+import { ... } from "@lgrammel/ai-utils/util";
+```
+
+- AsyncQueue
+- convertReadableStreamToAsyncIterator
+- retryWithExponentialBackoff
