@@ -46,7 +46,7 @@ export default async function handler(
     const audioFile = files.audio as File;
     const fileData = fs.readFileSync(audioFile.filepath);
 
-    const transcription = await generateOpenAITranscription({
+    const transcriptionResponse = await generateOpenAITranscription({
       apiKey: openAiApiKey,
       model: "whisper-1",
       file: {
@@ -59,7 +59,7 @@ export default async function handler(
     // Remove temporary file
     fs.unlinkSync(audioFile.filepath);
 
-    res.status(200).json({ transcription: transcription.text });
+    res.status(200).json({ transcription: transcriptionResponse.text });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error?.toString(), error: error });
