@@ -1,8 +1,8 @@
-# AI Chat (Next.js)
+# Voice recording and transcription (Next.js)
 
-> _Next.js app_, _OpenAI GPT-3.5-turbo_, _streaming_, _stream forwarding (keep API key on server)_
+> _Next.js app_, _OpenAI Whisper_,
 
-A basic web chat with an AI assistant.
+Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
 
 ## Usage
 

@@ -51,10 +51,16 @@ Takes a PDF and a topic and creates a Twitter thread with all content from the P
 
 > _Next.js app_, _OpenAI GPT-3.5-turbo_, _streaming_, _stream forwarding (keep API key on server)_
 
-A basic web chat with an AI assistant.
+A basic web chat with an AI assistant, implemented as a Next.js app.
 
 ### [BabyAGI Classic](https://github.com/lgrammel/ai-utils/tree/main/examples/baby-agi)
 
 > _terminal app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
 
 TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.
+
+### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/ai-utils/tree/main/examples/voice-recording-summarizer-next-js)
+
+> _Next.js app_, _OpenAI Whisper_,
+
+Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.

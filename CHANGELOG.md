@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.0.3 - 2023-05-28
+
+### New
+
+1. Voice recording and transcription Next.js app example.
+1. OpenAI transcription support (Whisper).
+
 ## v0.0.2 - 2023-05-27
 
 ### New
