@@ -17,6 +17,8 @@ export type OpenAITextModelType =
   | "ada";
 
 export type OpenAITextModelSettings = {
+  isUserIdForwardingEnabled?: boolean;
+
   suffix?: string;
   maxCompletionTokens?: number;
   temperature?: number;
@@ -101,13 +103,10 @@ export const createOpenAITextModel = ({
     tokenizer,
     maxTokens: OpenAITextModelData[model].maxTokens,
 
-    generate: async (
-      input: string,
-      { abortSignal }
-    ): Promise<OpenAITextCompletion> =>
+    generate: async (input: string, context): Promise<OpenAITextCompletion> =>
       generateOpenAITextCompletion({
         baseUrl,
-        abortSignal,
+        abortSignal: context?.abortSignal,
         apiKey,
         prompt: input,
         model,
@@ -122,6 +121,7 @@ export const createOpenAITextModel = ({
         presencePenalty: settings.presencePenalty,
         frequencyPenalty: settings.frequencyPenalty,
         bestOf: settings.bestOf,
+        user: settings.isUserIdForwardingEnabled ? context?.userId : undefined,
       }),
 
     extractOutput: async (rawOutput: OpenAITextCompletion): Promise<string> => {

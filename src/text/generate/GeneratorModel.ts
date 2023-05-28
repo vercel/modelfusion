@@ -3,11 +3,10 @@ export type GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT> = {
   model: string;
 
   generate: (
-    value: PROMPT_TYPE,
-    {
-      abortSignal,
-    }: {
+    prompt: PROMPT_TYPE,
+    context: {
       abortSignal?: AbortSignal | undefined;
+      userId?: string | undefined;
     }
   ) => PromiseLike<RAW_OUTPUT>;
 

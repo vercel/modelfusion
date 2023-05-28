@@ -4,10 +4,15 @@ export type GenerateCallStartEvent = {
   metadata: {
     callId: string;
     functionId?: string | undefined;
+    runId?: string | undefined;
+    sessionId?: string | undefined;
+    userId?: string | undefined;
+
     model: {
       vendor: string;
       name: string;
     };
+
     startEpochSeconds: number;
   };
 };
@@ -18,10 +23,15 @@ export type GenerateCallEndEvent = {
   metadata: {
     callId: string;
     functionId?: string | undefined;
+    runId?: string | undefined;
+    sessionId?: string | undefined;
+    userId?: string | undefined;
+
     model: {
       vendor: string;
       name: string;
     };
+
     startEpochSeconds: number;
     durationInMs: number;
     tries: number;

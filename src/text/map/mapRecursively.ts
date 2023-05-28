@@ -49,7 +49,7 @@ mapRecursively.asMapFunction =
     map: MapFunction;
     join?: (texts: Array<string>) => string;
   }): MapFunction =>
-  async ({ text }, context: RunContext) =>
+  async ({ text }, context?: RunContext) =>
     mapRecursively(
       {
         map,

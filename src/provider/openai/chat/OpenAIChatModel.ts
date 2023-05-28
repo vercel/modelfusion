@@ -43,6 +43,8 @@ export const OpenAIChatModelData: Record<
 };
 
 export type OpenAIChatModelSettings = {
+  isUserIdForwardingEnabled?: boolean;
+
   temperature?: number;
   topP?: number;
   n?: number;
@@ -50,7 +52,6 @@ export type OpenAIChatModelSettings = {
   maxCompletionTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
-  user?: string;
 };
 
 export type OpenAIChatModel = GeneratorModel<
@@ -82,10 +83,10 @@ export const createOpenAIChatModel = ({
   tokenizer: getTiktokenTokenizerForModel({ model }),
   maxTokens: OpenAIChatModelData[model].maxTokens,
 
-  generate: async (input, { abortSignal }): Promise<OpenAIChatCompletion> =>
+  generate: async (input, context): Promise<OpenAIChatCompletion> =>
     generateOpenAIChatCompletion({
       baseUrl,
-      abortSignal,
+      abortSignal: context?.abortSignal,
       apiKey,
       messages: input,
       model,
@@ -96,6 +97,7 @@ export const createOpenAIChatModel = ({
       maxCompletionTokens: settings.maxCompletionTokens,
       presencePenalty: settings.presencePenalty,
       frequencyPenalty: settings.frequencyPenalty,
+      user: settings.isUserIdForwardingEnabled ? context?.userId : undefined,
     }),
 
   extractOutput: async (rawOutput: OpenAIChatCompletion): Promise<string> => {

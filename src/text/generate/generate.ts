@@ -42,6 +42,10 @@ export async function generate<
   const startMetadata = {
     callId,
     functionId,
+    runId: context?.runId,
+    sessionId: context?.sessionId,
+    userId: context?.userId,
+
     model: {
       vendor: model.vendor,
       name: model.model,
