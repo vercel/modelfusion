@@ -21,6 +21,8 @@ It provides utilities that make it easier to use AI-functionality such as text g
 
 ## Features
 
+- Text functions
+  - generate, map, split, embed
 - Text processing chains
   - recursive text mapping (e.g. for summarization or extraction)
   - split-map-filter-reduce for text processing
@@ -39,6 +41,7 @@ It provides utilities that make it easier to use AI-functionality such as text g
 
 - chat completions (regular, streaming) - GPT-4, GPT-3.5
 - text completions (regular) - Davinci, Curie, Babbage, Ada
+- embeddings
 - tokenization (TikToken) and token counting (incl. message and prompt overhead tokens in chat)
 - transcription - Whisper
 
@@ -48,6 +51,10 @@ It provides utilities that make it easier to use AI-functionality such as text g
 - [API](https://ai-utils.dev/api/modules)
 
 ## Examples
+
+### [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic)
+
+Small examples of the functions in ai-utils.js
 
 ### [PDF to Twitter Thread](https://github.com/lgrammel/ai-utils.js/tree/main/examples/pdf-to-twitter-thread)
 
@@ -61,14 +68,14 @@ Takes a PDF and a topic and creates a Twitter thread with all content from the P
 
 A basic web chat with an AI assistant, implemented as a Next.js app.
 
-### [BabyAGI Classic](https://github.com/lgrammel/ai-utils.js/tree/main/examples/baby-agi)
-
-> _terminal app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
-
-TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.
-
 ### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/voice-recording-summarizer-next-js)
 
 > _Next.js app_, _OpenAI Whisper_
 
 Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
+
+### [BabyAGI Classic](https://github.com/lgrammel/ai-utils.js/tree/main/examples/baby-agi)
+
+> _terminal app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
+
+TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.
