@@ -8,26 +8,26 @@ import {
 import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
 
 // see https://platform.openai.com/docs/models/
-export const OPENAI_CHAT_MODELS = Object.freeze({
-  "gpt-4": Object.freeze({
+export const OPENAI_CHAT_MODELS = {
+  "gpt-4": {
     maxTokens: 8192,
-  }),
-  "gpt-4-0314": Object.freeze({
+  },
+  "gpt-4-0314": {
     maxTokens: 8192,
-  }),
-  "gpt-4-32k": Object.freeze({
+  },
+  "gpt-4-32k": {
     maxTokens: 32768,
-  }),
-  "gpt-4-32k-0314": Object.freeze({
+  },
+  "gpt-4-32k-0314": {
     maxTokens: 32768,
-  }),
-  "gpt-3.5-turbo": Object.freeze({
+  },
+  "gpt-3.5-turbo": {
     maxTokens: 4096,
-  }),
-  "gpt-3.5-turbo-0301": Object.freeze({
+  },
+  "gpt-3.5-turbo-0301": {
     maxTokens: 4096,
-  }),
-});
+  },
+};
 
 export type OpenAIChatModelType = keyof typeof OPENAI_CHAT_MODELS;
 

@@ -5,38 +5,38 @@ import { OpenAITextCompletion } from "./OpenAITextCompletion.js";
 import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
 
 // see https://platform.openai.com/docs/models/
-export const OPENAI_TEXT_MODELS = Object.freeze({
-  "text-davinci-003": Object.freeze({
+export const OPENAI_TEXT_MODELS = {
+  "text-davinci-003": {
     maxTokens: 4096,
-  }),
-  "text-davinci-002": Object.freeze({
+  },
+  "text-davinci-002": {
     maxTokens: 4096,
-  }),
-  "code-davinci-002": Object.freeze({
+  },
+  "code-davinci-002": {
     maxTokens: 8000,
-  }),
-  "text-curie-001": Object.freeze({
+  },
+  "text-curie-001": {
     maxTokens: 2048,
-  }),
-  "text-babbage-001": Object.freeze({
+  },
+  "text-babbage-001": {
     maxTokens: 2048,
-  }),
-  "text-ada-001": Object.freeze({
+  },
+  "text-ada-001": {
     maxTokens: 2048,
-  }),
-  davinci: Object.freeze({
+  },
+  davinci: {
     maxTokens: 2048,
-  }),
-  curie: Object.freeze({
+  },
+  curie: {
     maxTokens: 2048,
-  }),
-  babbage: Object.freeze({
+  },
+  babbage: {
     maxTokens: 2048,
-  }),
-  ada: Object.freeze({
+  },
+  ada: {
     maxTokens: 2048,
-  }),
-});
+  },
+};
 
 export type OpenAITextModelType = keyof typeof OPENAI_TEXT_MODELS;
 

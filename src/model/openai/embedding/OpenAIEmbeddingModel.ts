@@ -4,11 +4,11 @@ import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import { OpenAIEmbedding } from "./OpenAIEmbedding.js";
 import { generateOpenAIEmbedding } from "./generateOpenAIEmbedding.js";
 
-export const OPENAI_EMBEDDING_MODELS = Object.freeze({
-  "text-embedding-ada-002": Object.freeze({
+export const OPENAI_EMBEDDING_MODELS = {
+  "text-embedding-ada-002": {
     maxTokens: 8192,
-  }),
-});
+  },
+};
 
 export type OpenAIEmbeddingModelType = keyof typeof OPENAI_EMBEDDING_MODELS;
 
