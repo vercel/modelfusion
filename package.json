@@ -62,7 +62,7 @@
     "clean": "rimraf build dist",
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --outDir dist/",
-    "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/move-cjs-to-dist.js",
+    "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
     "dist:copy-files": "copyfiles package.json README.md LICENSE dist",
     "dist": "npm run clean && npm run build && npm run dist:copy-files"
   },

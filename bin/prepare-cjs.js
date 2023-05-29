@@ -6,12 +6,12 @@ function convertToAbsolutePath(relativePath) {
   return resolve(dirname(fileURLToPath(import.meta.url)), relativePath);
 }
 
-async function moveAndRename(source, destination) {
+async function prepareCjs(source, destination) {
   for (const entry of await readdir(convertToAbsolutePath(source), {
     withFileTypes: true,
   })) {
     if (entry.isDirectory()) {
-      await moveAndRename(
+      await prepareCjs(
         `${source}/${entry.name}`,
         `${destination}/${entry.name}`
       );
@@ -42,7 +42,7 @@ async function moveAndRename(source, destination) {
   }
 }
 
-moveAndRename("../build/cjs", "../dist").catch((err) => {
+prepareCjs("../build/cjs", "../dist").catch((err) => {
   console.error(err);
   process.exit(1);
 });
