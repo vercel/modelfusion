@@ -4,22 +4,12 @@ sidebar_position: 1
 
 # Library Structure
 
+The `ai-utils.js` library offers two primary sets of capabilities: low-level integration APIs and models.
+
 ## Low-Level Integration APIs
 
-ai-utils.js provides API client functions for its integrations (e.g., OpenAI). The client functions add **types**, **output parsing & validation**, and **error handling** to make it more convenient to use the integration APIs. They also provide you with a fallback level that you can use when some of the functionality is too specific to be used in other parts of ai-utils.js.
+The library's low-level integration APIs serve as robust client functions for various integrations, like OpenAI. Key features include providing data types for consistency, automatic parsing and validation of API response data, and comprehensive error handling. They act as a reliable fallback for specialized functions not covered elsewhere in the library. [Learn more...](/concepts/low-level-integration-apis)
 
-For example, you can use the Open AI text completion API as follows:
+## Models
 
-```ts
-import { generateOpenAITextCompletion } from "ai-utils.js/model/openai";
-
-const response = await generateOpenAITextCompletion({
-  apiKey: OPENAI_API_KEY,
-  model: "text-davinci-003",
-  prompt: "Write a short story about a robot learning to love:\n\n",
-  temperature: 0.7,
-  maxCompletionTokens: 500,
-});
-
-console.log(response.choices[0].text);
-```
+Models in `ai-utils.js` map specific vendor API calls to broader concepts like text generation. They provide additional information regarding the API, set default parameters, and offer configurable settings for customization. These models help segregate parameter configuration from the actual call, facilitating the integration of API calls into run-aware functions. [Learn more...](/concepts/models)
