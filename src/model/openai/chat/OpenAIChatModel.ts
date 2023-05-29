@@ -8,7 +8,7 @@ import {
 import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
 
 // see https://platform.openai.com/docs/models/
-export const OPENAI_CHAT_MODELS = {
+export const OPENAI_CHAT_MODELS = Object.freeze({
   "gpt-4": Object.freeze({
     maxTokens: 8192,
   }),
@@ -27,7 +27,7 @@ export const OPENAI_CHAT_MODELS = {
   "gpt-3.5-turbo-0301": Object.freeze({
     maxTokens: 4096,
   }),
-};
+});
 
 export type OpenAIChatModelType = keyof typeof OPENAI_CHAT_MODELS;
 
