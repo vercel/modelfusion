@@ -32,7 +32,19 @@ export type ChatCompletionChoicesDelta = Array<{
 
 export async function createOpenAIChatCompletionDeltaStream(
   stream: AsyncIterable<Uint8Array>
-) {
+): Promise<
+  AsyncIterable<
+    | {
+        type: "delta";
+        delta: ChatCompletionChoicesDelta;
+      }
+    | {
+        type: "error";
+        error: unknown;
+      }
+    | undefined
+  >
+> {
   const queue = new AsyncQueue<
     | {
         type: "delta";
@@ -42,6 +54,7 @@ export async function createOpenAIChatCompletionDeltaStream(
         type: "error";
         error: unknown;
       }
+    | undefined
   >();
 
   const choices: ChatCompletionChoicesDelta = [];
@@ -103,9 +116,13 @@ export async function createOpenAIChatCompletionDeltaStream(
         }
       }
 
+      // Since we're mutating the choices array in an async scenario,
+      // we need to make a deep copy:
+      const choiceDeepCopy = JSON.parse(JSON.stringify(choices));
+
       queue.push({
         type: "delta",
-        delta: choices,
+        delta: choiceDeepCopy,
       });
     } catch (error) {
       queue.push({ type: "error", error });

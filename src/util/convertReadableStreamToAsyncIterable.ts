@@ -1,4 +1,4 @@
-export async function* convertReadableStreamToAsyncIterator<T>(
+export async function* convertReadableStreamToAsyncIterable<T>(
   reader: ReadableStreamDefaultReader<T>
 ): AsyncIterable<T> {
   while (true) {
