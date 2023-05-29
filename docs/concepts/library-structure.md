@@ -23,17 +23,3 @@ const response = await generateOpenAITextCompletion({
 
 console.log(response.choices[0].text);
 ```
-
-## Functions and Models
-
-ai-utils.js provides a layer of models and functions. It adds runs, call logging, composite and advanced functionality. However, some of the functionality that is available in the API wrappers might not be available on this level.
-
-## Helpers
-
-```ts
-import { ... } from "ai-utils.js/util";
-```
-
-- AsyncQueue
-- convertReadableStreamToAsyncIterator
-- retryWithExponentialBackoff

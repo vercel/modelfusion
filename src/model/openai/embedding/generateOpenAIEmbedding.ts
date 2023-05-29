@@ -9,6 +9,15 @@ import { OpenAIEmbeddingModelType } from "./OpenAIEmbeddingModel.js";
  * Call the OpenAI Embedding API to generate an embedding for the given input.
  *
  * @see https://platform.openai.com/docs/api-reference/embeddings
+ *
+ * @example
+ * const response = await generateOpenAIEmbedding({
+ *   apiKey: OPENAI_API_KEY,
+ *   model: "text-embedding-ada-002",
+ *   input: "At first, Nox didn't know what to do with the pup.",
+ * });
+ *
+ * console.log(response.data[0].embedding);
  */
 export async function generateOpenAIEmbedding({
   baseUrl = "https://api.openai.com/v1",

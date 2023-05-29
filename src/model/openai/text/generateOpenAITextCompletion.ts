@@ -9,7 +9,7 @@ import {
 import { OpenAITextModelType } from "./OpenAITextModel.js";
 
 /**
- * Generates text completion from a prompt.
+ * Call the OpenAI Text Completion API to generate a text completion for the given prompt.
  *
  * @see https://platform.openai.com/docs/api-reference/completions/create
  *

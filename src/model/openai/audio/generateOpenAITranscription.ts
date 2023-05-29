@@ -70,6 +70,22 @@ export const openAITranscriptionResponseFormat = Object.freeze({
   }),
 });
 
+/**
+ * Call the OpenAI Transcription API to generate a transcription from an audio file.
+ *
+ * @see https://platform.openai.com/docs/api-reference/audio/create
+ *
+ * @example
+ * const transcriptionResponse = await generateOpenAITranscription({
+ *   apiKey: openAiApiKey,
+ *   model: "whisper-1",
+ *   file: {
+ *     name: "audio.mp3",
+ *     data: fileData, // Buffer
+ *   },
+ *   responseFormat: openAITranscriptionResponseFormat.json,
+ * });
+ */
 export async function generateOpenAITranscription<RESPONSE>({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,

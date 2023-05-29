@@ -9,6 +9,32 @@ import {
 } from "./OpenAIChatCompletion.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";
 
+/**
+ * Call the OpenAI chat completion API to generate a chat completion for the messages.
+ *
+ * @see https://platform.openai.com/docs/api-reference/chat/create
+ *
+ * @example
+ * const response = await generateOpenAIChatCompletion({
+ *   apiKey: OPENAI_API_KEY,
+ *   model: "gpt-3.5-turbo",
+ *   messages: [
+ *     {
+ *       role: "system",
+ *       content:
+ *         "You are an AI assistant. Follow the user's instructions carefully.",
+ *     },
+ *     {
+ *       role: "user",
+ *       content: "Hello, how are you?",
+ *     },
+ *   ],
+ *   temperature: 0.7,
+ *   maxCompletionTokens: 500,
+ * });
+ *
+ * console.log(response.choices[0].message.content);
+ */
 export async function generateOpenAIChatCompletion({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
