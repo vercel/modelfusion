@@ -6,7 +6,7 @@ sidebar_position: 1
 
 ## Low-Level Integration APIs
 
-ai-utils.js provides API wrapper functions for its integrations (e.g., OpenAI). The wrapper functions add **types**, **output parsing & validation**, and **error handling** to make it more convenient to use the integration APIs. They also provide you with a fallback level that you can use when some of the functionality is too specific to be used in other parts of ai-utils.js.
+ai-utils.js provides API client functions for its integrations (e.g., OpenAI). The client functions add **types**, **output parsing & validation**, and **error handling** to make it more convenient to use the integration APIs. They also provide you with a fallback level that you can use when some of the functionality is too specific to be used in other parts of ai-utils.js.
 
 For example, you can use the Open AI text completion API as follows:
 

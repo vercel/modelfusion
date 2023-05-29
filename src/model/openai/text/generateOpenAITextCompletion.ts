@@ -8,6 +8,22 @@ import {
 } from "./OpenAITextCompletion.js";
 import { OpenAITextModelType } from "./OpenAITextModel.js";
 
+/**
+ * Generates text completion from a prompt.
+ *
+ * @see https://platform.openai.com/docs/api-reference/completions/create
+ *
+ * @example
+ * const response = await generateOpenAITextCompletion({
+ *   apiKey: OPENAI_API_KEY,
+ *   model: "text-davinci-003",
+ *   prompt: "Write a short story about a robot learning to love:\n\n",
+ *   temperature: 0.7,
+ *   maxCompletionTokens: 500,
+ * });
+ *
+ * console.log(response.choices[0].text);
+ */
 export async function generateOpenAITextCompletion({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
