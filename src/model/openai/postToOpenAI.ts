@@ -1,5 +1,6 @@
-import { z } from "zod";
 import SecureJSON from "secure-json-parse";
+import { z } from "zod";
+import { convertReadableStreamToAsyncIterator } from "../../util/convertReadableStreamToAsyncIterator.js";
 import { OpenAIError, openAIErrorDataSchema } from "./OpenAIError.js";
 
 export type ResponseHandler<T> = (response: Response) => PromiseLike<T>;
@@ -10,8 +11,12 @@ export const createJsonResponseHandler =
     responseSchema.parse(await response.json());
 
 export const createStreamResponseHandler =
+  (): ResponseHandler<ReadableStream<Uint8Array>> => async (response) =>
+    response.body!;
+
+export const createAsyncIterableResponseHandler =
   (): ResponseHandler<AsyncIterable<Uint8Array>> => async (response) =>
-    response.body as unknown as AsyncIterable<Uint8Array>;
+    convertReadableStreamToAsyncIterator(response.body!.getReader());
 
 export const createTextResponseHandler =
   (): ResponseHandler<string> => async (response) =>

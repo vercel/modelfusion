@@ -1,13 +1,29 @@
 import {
+  ResponseHandler,
+  createAsyncIterableResponseHandler,
   createStreamResponseHandler,
   postJsonToOpenAI,
 } from "../postToOpenAI.js";
 import { OpenAIChatMessage } from "./OpenAIChatCompletion.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";
 
-export async function streamOpenAIChatCompletion({
+export type OpenAIStreamChatCompletionResponseFormat<T> = {
+  handler: ResponseHandler<T>;
+};
+
+export const streamOpenAIChatCompletionResponseFormat = Object.freeze({
+  readStream: Object.freeze({
+    handler: createStreamResponseHandler(),
+  }),
+  asyncIterable: Object.freeze({
+    handler: createAsyncIterableResponseHandler(),
+  }),
+});
+
+export async function streamOpenAIChatCompletion<T>({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
+  responseFormat,
   apiKey,
   model,
   messages,
@@ -22,6 +38,7 @@ export async function streamOpenAIChatCompletion({
 }: {
   baseUrl?: string;
   abortSignal?: AbortSignal;
+  responseFormat: OpenAIStreamChatCompletionResponseFormat<T>;
   apiKey: string;
   model: OpenAIChatModelType;
   messages: Array<OpenAIChatMessage>;
@@ -33,7 +50,7 @@ export async function streamOpenAIChatCompletion({
   presencePenalty?: number;
   frequencyPenalty?: number;
   user?: string;
-}): Promise<AsyncIterable<Uint8Array>> {
+}): Promise<T> {
   return postJsonToOpenAI({
     url: `${baseUrl}/chat/completions`,
     apiKey,
@@ -50,7 +67,7 @@ export async function streamOpenAIChatCompletion({
       frequency_penalty: frequencyPenalty,
       user,
     },
-    successfulResponseHandler: createStreamResponseHandler(),
+    successfulResponseHandler: responseFormat.handler,
     abortSignal,
   });
 }

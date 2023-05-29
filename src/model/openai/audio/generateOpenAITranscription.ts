@@ -8,11 +8,6 @@ import {
 
 export type OpenAITranscriptionModelType = "whisper-1";
 
-export type OpenIATranscriptionResponseFormat<T> = {
-  type: "json" | "text" | "srt" | "verbose_json" | "vtt";
-  handler: ResponseHandler<T>;
-};
-
 const openAITranscriptionJsonSchema = z.object({
   text: z.string(),
 });
@@ -46,6 +41,11 @@ export const openAITranscriptionVerboseJsonSchema = z.object({
 export type OpenAITranscriptionVerboseJson = z.infer<
   typeof openAITranscriptionVerboseJsonSchema
 >;
+
+export type OpenAITranscriptionResponseFormat<T> = {
+  type: "json" | "text" | "srt" | "verbose_json" | "vtt";
+  handler: ResponseHandler<T>;
+};
 
 export const openAITranscriptionResponseFormat = Object.freeze({
   json: Object.freeze({
@@ -89,7 +89,7 @@ export async function generateOpenAITranscription<RESPONSE>({
     data: Buffer;
     name: string;
   };
-  responseFormat: OpenIATranscriptionResponseFormat<RESPONSE>;
+  responseFormat: OpenAITranscriptionResponseFormat<RESPONSE>;
   prompt?: string;
   temperature?: number;
   language?: string; // ISO-639-1 code

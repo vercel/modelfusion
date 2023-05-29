@@ -16,7 +16,7 @@ OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 
 ```sh
 npm install
-npx next dev
+npm run dev
 ```
 
 3. Go to http://localhost:3000/ in your browser

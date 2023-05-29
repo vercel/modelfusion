@@ -1,12 +1,15 @@
-import { forwardStreamToClient } from "@/util/forwardStreamToClient";
 import {
   OpenAIChatMessage,
   OpenAIChatModelType,
   composeRecentMessagesOpenAIChatPrompt,
   streamOpenAIChatCompletion,
+  streamOpenAIChatCompletionResponseFormat,
 } from "ai-utils.js/model/openai";
-import { NextApiHandler } from "next";
 import { z } from "zod";
+
+export const config = {
+  runtime: "edge",
+};
 
 const requestSchema = z.array(
   z.object({
@@ -17,19 +20,25 @@ const requestSchema = z.array(
 
 const openAiApiKey = process.env.OPENAI_API_KEY ?? "";
 
-const sendMessage: NextApiHandler = async (request, response) => {
+const sendMessage = async (request: Request): Promise<Response> => {
   if (request.method !== "POST") {
-    return response.status(405).json({
-      error: `Method ${request.method} not allowed. Only POST allowed.`,
-    });
+    return new Response(
+      JSON.stringify({
+        error: `Method ${request.method} not allowed. Only POST allowed.`,
+      }),
+      { status: 405, headers: { "Content-Type": "application/json" } }
+    );
   }
 
-  const parsedData = requestSchema.safeParse(request.body);
+  const parsedData = requestSchema.safeParse(await request.json());
 
   if (parsedData.success === false) {
-    return response
-      .status(400)
-      .json({ error: `Could not parse content. Error: ${parsedData.error}` });
+    return new Response(
+      JSON.stringify({
+        error: `Could not parse content. Error: ${parsedData.error}`,
+      }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
   }
 
   const model = "gpt-3.5-turbo" as OpenAIChatModelType;
@@ -52,9 +61,17 @@ const sendMessage: NextApiHandler = async (request, response) => {
     model,
     messages: messagesToSend,
     maxCompletionTokens,
+    responseFormat: streamOpenAIChatCompletionResponseFormat.readStream,
   });
 
-  forwardStreamToClient({ stream, response });
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+      "Content-Encoding": "none",
+    },
+  });
 };
 
 export default sendMessage;
