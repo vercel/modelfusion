@@ -4,17 +4,41 @@ import { getTiktokenTokenizerForModel } from "../tiktoken.js";
 import { OpenAITextCompletion } from "./OpenAITextCompletion.js";
 import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
 
-export type OpenAITextModelType =
-  | "text-davinci-003"
-  | "text-davinci-002"
-  | "code-davinci-002"
-  | "text-curie-001"
-  | "text-babbage-001"
-  | "text-ada-001"
-  | "davinci"
-  | "curie"
-  | "babbage"
-  | "ada";
+// see https://platform.openai.com/docs/models/
+export const OPENAI_TEXT_MODELS = Object.freeze({
+  "text-davinci-003": Object.freeze({
+    maxTokens: 4096,
+  }),
+  "text-davinci-002": Object.freeze({
+    maxTokens: 4096,
+  }),
+  "code-davinci-002": Object.freeze({
+    maxTokens: 8000,
+  }),
+  "text-curie-001": Object.freeze({
+    maxTokens: 2048,
+  }),
+  "text-babbage-001": Object.freeze({
+    maxTokens: 2048,
+  }),
+  "text-ada-001": Object.freeze({
+    maxTokens: 2048,
+  }),
+  davinci: Object.freeze({
+    maxTokens: 2048,
+  }),
+  curie: Object.freeze({
+    maxTokens: 2048,
+  }),
+  babbage: Object.freeze({
+    maxTokens: 2048,
+  }),
+  ada: Object.freeze({
+    maxTokens: 2048,
+  }),
+});
+
+export type OpenAITextModelType = keyof typeof OPENAI_TEXT_MODELS;
 
 export type OpenAITextModelSettings = {
   isUserIdForwardingEnabled?: boolean;
@@ -44,45 +68,6 @@ export type OpenAITextModel = GeneratorModel<
     ) => OpenAITextModel;
   };
 
-// see https://platform.openai.com/docs/models/
-export const OpenAITextModelData: Record<
-  OpenAITextModelType,
-  {
-    maxTokens: number;
-  }
-> = {
-  "text-davinci-003": {
-    maxTokens: 4096,
-  },
-  "text-davinci-002": {
-    maxTokens: 4096,
-  },
-  "code-davinci-002": {
-    maxTokens: 8000,
-  },
-  "text-curie-001": {
-    maxTokens: 2048,
-  },
-  "text-babbage-001": {
-    maxTokens: 2048,
-  },
-  "text-ada-001": {
-    maxTokens: 2048,
-  },
-  davinci: {
-    maxTokens: 2048,
-  },
-  curie: {
-    maxTokens: 2048,
-  },
-  babbage: {
-    maxTokens: 2048,
-  },
-  ada: {
-    maxTokens: 2048,
-  },
-};
-
 export const createOpenAITextModel = ({
   baseUrl,
   apiKey,
@@ -101,7 +86,7 @@ export const createOpenAITextModel = ({
     model,
 
     tokenizer,
-    maxTokens: OpenAITextModelData[model].maxTokens,
+    maxTokens: OPENAI_TEXT_MODELS[model].maxTokens,
 
     generate: async (input: string, context): Promise<OpenAITextCompletion> =>
       generateOpenAITextCompletion({

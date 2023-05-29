@@ -1,4 +1,8 @@
 import { createId } from "@paralleldrive/cuid2";
+import {
+  GenerateCallEndEvent,
+  GenerateCallStartEvent,
+} from "run/GenerateCallEvent.js";
 import { Prompt } from "../../prompt/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
 import { RunFunction } from "../../run/RunFunction.js";
@@ -21,6 +25,8 @@ export async function generate<
     model,
     processOutput,
     retry = retryWithExponentialBackoff(),
+    onCallStart,
+    onCallEnd,
   }: {
     functionId?: string | undefined;
     input: INPUT;
@@ -28,6 +34,8 @@ export async function generate<
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
+    onCallStart?: (call: GenerateCallStartEvent) => void;
+    onCallEnd?: (call: GenerateCallEndEvent) => void;
   },
   context?: RunContext
 ): Promise<OUTPUT> {
@@ -54,11 +62,14 @@ export async function generate<
     startEpochSeconds,
   };
 
-  context?.recordCallStart?.({
+  const callStartEvent: GenerateCallStartEvent = {
     type: "generate-start",
     metadata: startMetadata,
     input: expandedPrompt,
-  });
+  };
+
+  onCallStart?.(callStartEvent);
+  context?.onCallStart?.(callStartEvent);
 
   const rawOutput = await retry(() =>
     model.generate(expandedPrompt, {
@@ -75,40 +86,51 @@ export async function generate<
   };
 
   if (rawOutput.status === "failure") {
-    context?.recordCallEnd?.({
+    const callEndEvent: GenerateCallEndEvent = {
       type: "generate-end",
       status: "failure",
       metadata,
       input: expandedPrompt,
       error: rawOutput.error,
-    });
+    };
+
+    onCallEnd?.(callEndEvent);
+    context?.onCallEnd?.(callEndEvent);
 
     throw rawOutput.error;
   }
 
   if (rawOutput.status === "abort") {
-    context?.recordCallEnd?.({
+    const callEndEvent: GenerateCallEndEvent = {
       type: "generate-end",
       status: "abort",
       metadata,
       input: expandedPrompt,
-    });
+    };
+
+    onCallEnd?.(callEndEvent);
+    context?.onCallEnd?.(callEndEvent);
 
     throw new AbortError();
   }
 
   const extractedOutput = await model.extractOutput(rawOutput.result);
+  const processedOutput = await processOutput(extractedOutput);
 
-  context?.recordCallEnd?.({
+  const callEndEvent: GenerateCallEndEvent = {
     type: "generate-end",
     status: "success",
     metadata,
     input: expandedPrompt,
     rawOutput: rawOutput.result,
     extractedOutput,
-  });
+    processedOutput,
+  };
 
-  return processOutput(extractedOutput);
+  onCallEnd?.(callEndEvent);
+  context?.onCallEnd?.(callEndEvent);
+
+  return processedOutput;
 }
 
 generate.asFunction =
@@ -118,12 +140,16 @@ generate.asFunction =
     model,
     processOutput,
     retry,
+    onCallStart,
+    onCallEnd,
   }: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
+    onCallStart?: (call: GenerateCallStartEvent) => void;
+    onCallEnd?: (call: GenerateCallEndEvent) => void;
   }): RunFunction<INPUT, OUTPUT> =>
   async (input: INPUT, context?: RunContext) =>
     generate(
@@ -134,6 +160,8 @@ generate.asFunction =
         model,
         processOutput,
         retry,
+        onCallStart,
+        onCallEnd,
       },
       context
     );

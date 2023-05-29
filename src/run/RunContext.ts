@@ -1,11 +1,12 @@
+import { EmbedCallEndEvent, EmbedCallStartEvent } from "./EmbedCallEvent.js";
 import {
   GenerateCallEndEvent,
   GenerateCallStartEvent,
 } from "./GenerateCallEvent.js";
 
 export type RunContext = {
-  recordCallStart?: (call: GenerateCallStartEvent) => void;
-  recordCallEnd?: (call: GenerateCallEndEvent) => void;
+  onCallStart?: (call: GenerateCallStartEvent | EmbedCallStartEvent) => void;
+  onCallEnd?: (call: GenerateCallEndEvent | EmbedCallEndEvent) => void;
 
   /**
    * Unique ID for the run. Used to identify the run in the logs.

@@ -1,7 +1,7 @@
 import { IdMetadata } from "./IdMetadata.js";
 
-export type GenerateCallStartEvent = {
-  type: "generate-start";
+export type EmbedCallStartEvent = {
+  type: "embed-start";
   input: unknown;
   metadata: IdMetadata & {
     model: {
@@ -13,8 +13,8 @@ export type GenerateCallStartEvent = {
   };
 };
 
-export type GenerateCallEndEvent = {
-  type: "generate-end";
+export type EmbedCallEndEvent = {
+  type: "embed-end";
   input: unknown;
   metadata: IdMetadata & {
     model: {
@@ -27,12 +27,7 @@ export type GenerateCallEndEvent = {
     tries: number;
   };
 } & (
-  | {
-      status: "success";
-      rawOutput: unknown;
-      extractedOutput: unknown;
-      processedOutput: unknown;
-    }
+  | { status: "success"; rawOutput: unknown; embedding: unknown }
   | { status: "failure"; error: unknown }
   | { status: "abort" }
 );
