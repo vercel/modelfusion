@@ -34,3 +34,11 @@ console.log(text);
 ```
 
 In this example, the createOpenAITextModel function is used to create a text generation model with specific settings. The withSettings function is then used to refine these settings, and the generate function is used to produce a text completion. Finally, the output is extracted using the extractOutput function.
+
+## Models (List)
+
+### Open AI
+
+- [Chat Model](/api/modules/model_openai#createopenaichatmodel)
+- [Text Model](/api/modules/model_openai#createopenaitextmodel)
+- [Embedding Model](/api/modules/model_openai#createopenaiembeddingmodel)

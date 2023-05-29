@@ -62,12 +62,34 @@ export type OpenAITextModel = GeneratorModel<
   string
 > &
   TokenizerModel<number[]> & {
+    /**
+     * Maximum number of prompt and completion tokens that this model supports.
+     */
     readonly maxTokens: number;
+
     readonly withSettings: (
       settings: OpenAITextModelSettings
     ) => OpenAITextModel;
   };
 
+/**
+ * Create a text generation model that calls the OpenAI text completion API.
+ *
+ * @see https://platform.openai.com/docs/api-reference/completions/create
+ *
+ * @example
+ * const textModel = createOpenAITextModel({
+ *   apiKey: OPENAI_API_KEY,
+ *   model: "text-davinci-003",
+ *   settings: { temperature: 0.7 },
+ * });
+ *
+ * const response = await textModel
+ *   .withSettings({ maxCompletionTokens: 500 })
+ *   .generate("Write a short story about a robot learning to love:\n\n");
+ *
+ * const text = await textModel.extractOutput(response);
+ */
 export const createOpenAITextModel = ({
   baseUrl,
   apiKey,

@@ -4,7 +4,7 @@ sidebar_position: 0
 
 # Getting Started
 
-ai-utils.js is toolkit for using AI in JavaScript and TypeScript applications. It is built around the principles of functional programming and automatic type inference. The library is designed to be convenient and at the same time transparent and extensible.
+`ai-utils.js` is toolkit for using AI in JavaScript and TypeScript applications. It is built around the principles of functional programming and automatic type inference. The library is designed to be convenient and at the same time transparent and extensible.
 
 ## Quick Install
 

@@ -24,6 +24,23 @@ export type OpenAIEmbeddingModel = EmbeddingModel<OpenAIEmbedding, number[]> &
     ) => OpenAIEmbeddingModel;
   };
 
+/**
+ * Create an embedding model that calls the OpenAI embedding API.
+ *
+ * @see https://platform.openai.com/docs/api-reference/embeddings
+ *
+ * @example
+ * const textModel = createOpenAIEmbeddingModel({
+ *   apiKey: OPENAI_API_KEY,
+ *   model: "text-embedding-ada-002",
+ * });
+ *
+ * const response = await textModel.embed(
+ *   "At first, Nox didn't know what to do with the pup."
+ * );
+ *
+ * const embedding = await textModel.extractEmbedding(response);
+ */
 export const createOpenAIEmbeddingModel = ({
   baseUrl,
   apiKey,

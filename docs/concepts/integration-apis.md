@@ -10,11 +10,11 @@ The `ai-utils.js` library includes API client functions for various integrations
 - **Output parsing & validation:** They automatically parse the API response data and validate its structure and values.
 - **Error handling:** They detect and handle errors to ensure the smooth execution of your program.
 
-The low-level API also serves as a fallback level for specific functionalities that might not be generalized enough to be used in other parts of ai-utils.js.
+The low-level API also serves as a fallback level for specific functionalities that might not be generalized enough to be used in other parts of `ai-utils.js`.
 
 ### Example Usage
 
-For instance, you can use the OpenAI text completion API through ai-utils.js as follows:
+For instance, you can use the OpenAI text completion API through `ai-utils.js` as follows:
 
 ```ts
 import { generateOpenAITextCompletion } from "ai-utils.js/model/openai";
