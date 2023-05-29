@@ -2,32 +2,47 @@ import { resolve, dirname, parse, format } from "node:path";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
-function abs(relativePath) {
+function convertToAbsolutePath(relativePath) {
   return resolve(dirname(fileURLToPath(import.meta.url)), relativePath);
 }
 
-async function moveAndRename(source, dest) {
-  for (const file of await readdir(abs(source), { withFileTypes: true })) {
-    if (file.isDirectory()) {
-      await moveAndRename(`${source}/${file.name}`, `${dest}/${file.name}`);
-    } else if (file.isFile()) {
-      const parsed = parse(file.name);
+async function moveAndRename(source, destination) {
+  for (const entry of await readdir(convertToAbsolutePath(source), {
+    withFileTypes: true,
+  })) {
+    if (entry.isDirectory()) {
+      await moveAndRename(
+        `${source}/${entry.name}`,
+        `${destination}/${entry.name}`
+      );
+    }
 
-      // Ignore anything that's not a .js file
-      if (parsed.ext !== ".js") {
+    if (entry.isFile()) {
+      const { ext: extension, name: filename } = parse(entry.name);
+
+      if (extension !== ".js") {
         continue;
       }
 
-      // Rewrite any require statements to use .cjs
-      const content = await readFile(abs(`${source}/${file.name}`), "utf8");
-      const rewritten = content.replace(/require\("(\..+?).js"\)/g, (_, p1) => {
-        return `require("${p1}.cjs")`;
-      });
+      const fileContent = await readFile(
+        convertToAbsolutePath(`${source}/${entry.name}`),
+        "utf8"
+      );
 
-      // Rename the file to .cjs
-      const renamed = format({ name: parsed.name, ext: ".cjs" });
+      const rewrittenContent = fileContent.replace(
+        /require\("(\..+?).js"\)/g,
+        (_, capture) => {
+          return `require("${capture}.cjs")`;
+        }
+      );
 
-      await writeFile(abs(`${dest}/${renamed}`), rewritten, "utf8");
+      const renamed = format({ name: filename, ext: ".cjs" });
+
+      await writeFile(
+        convertToAbsolutePath(`${destination}/${renamed}`),
+        rewrittenContent,
+        "utf8"
+      );
     }
   }
 }
