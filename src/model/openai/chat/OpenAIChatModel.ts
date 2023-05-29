@@ -7,40 +7,29 @@ import {
 } from "./OpenAIChatCompletion.js";
 import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
 
-export type OpenAIChatModelType =
-  | "gpt-4"
-  | "gpt-4-0314"
-  | "gpt-4-32k"
-  | "gpt-4-32k-0314"
-  | "gpt-3.5-turbo"
-  | "gpt-3.5-turbo-0301";
-
 // see https://platform.openai.com/docs/models/
-export const OpenAIChatModelData: Record<
-  OpenAIChatModelType,
-  {
-    maxTokens: number;
-  }
-> = {
-  "gpt-4": {
+export const OPENAI_CHAT_MODELS = {
+  "gpt-4": Object.freeze({
     maxTokens: 8192,
-  },
-  "gpt-4-0314": {
+  }),
+  "gpt-4-0314": Object.freeze({
     maxTokens: 8192,
-  },
-  "gpt-4-32k": {
+  }),
+  "gpt-4-32k": Object.freeze({
     maxTokens: 32768,
-  },
-  "gpt-4-32k-0314": {
+  }),
+  "gpt-4-32k-0314": Object.freeze({
     maxTokens: 32768,
-  },
-  "gpt-3.5-turbo": {
+  }),
+  "gpt-3.5-turbo": Object.freeze({
     maxTokens: 4096,
-  },
-  "gpt-3.5-turbo-0301": {
+  }),
+  "gpt-3.5-turbo-0301": Object.freeze({
     maxTokens: 4096,
-  },
+  }),
 };
+
+export type OpenAIChatModelType = keyof typeof OPENAI_CHAT_MODELS;
 
 export type OpenAIChatModelSettings = {
   isUserIdForwardingEnabled?: boolean;
@@ -109,7 +98,7 @@ export const createOpenAIChatModel = ({
   model,
 
   tokenizer: getTiktokenTokenizerForModel({ model }),
-  maxTokens: OpenAIChatModelData[model].maxTokens,
+  maxTokens: OPENAI_CHAT_MODELS[model].maxTokens,
 
   generate: async (input, context): Promise<OpenAIChatCompletion> =>
     generateOpenAIChatCompletion({

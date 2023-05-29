@@ -1,5 +1,5 @@
 import { OpenAIChatMessage } from "./OpenAIChatCompletion.js";
-import { OpenAIChatModelData, OpenAIChatModelType } from "./OpenAIChatModel.js";
+import { OPENAI_CHAT_MODELS, OpenAIChatModelType } from "./OpenAIChatModel.js";
 import {
   OPENAI_CHAT_PROMPT_BASE_TOKEN_COUNT,
   countOpenAIChatMessageTokens,
@@ -29,7 +29,7 @@ export async function composeRecentMessagesOpenAIChatPrompt({
     model,
   });
 
-  const tokenLimit = OpenAIChatModelData[model].maxTokens - maxCompletionTokens;
+  const tokenLimit = OPENAI_CHAT_MODELS[model].maxTokens - maxCompletionTokens;
 
   const messagesToSend: OpenAIChatMessage[] = [];
   for (let i = messages.length - 1; i >= 0; i--) {
