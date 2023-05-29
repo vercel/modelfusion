@@ -1,6 +1,6 @@
 import { GeneratorModel } from "../../../text/generate/GeneratorModel.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
-import { getTiktokenTokenizerForModel } from "../tiktoken.js";
+import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import {
   OpenAIChatCompletion,
   OpenAIChatMessage,

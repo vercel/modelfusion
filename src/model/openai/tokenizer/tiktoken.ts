@@ -5,7 +5,7 @@ import {
   TiktokenEncoding,
   Tiktoken,
 } from "js-tiktoken";
-import { Tokenizer } from "../../text/tokenize/Tokenizer.js";
+import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 
 export function getTiktokenTokenizerForModel({
   model,
@@ -27,7 +27,7 @@ export function getTiktokenTokenizerForEncoding({
   });
 }
 
-export function getTiktokenTokenizerForEncoder({
+function getTiktokenTokenizerForEncoder({
   encoder: createEncoder,
 }: {
   encoder: () => Tiktoken;

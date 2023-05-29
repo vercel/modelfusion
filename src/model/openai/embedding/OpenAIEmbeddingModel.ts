@@ -1,6 +1,6 @@
 import { EmbeddingModel } from "../../../text/embed/EmbeddingModel.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
-import { getTiktokenTokenizerForModel } from "../tiktoken.js";
+import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import { OpenAIEmbedding } from "./OpenAIEmbedding.js";
 import { generateOpenAIEmbedding } from "./generateOpenAIEmbedding.js";
 
