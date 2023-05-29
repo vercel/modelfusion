@@ -1,13 +1,11 @@
 {
-  "name": "@lgrammel/ai-utils.js-example-semantic-search",
+  "name": "@lgrammel/ai-utils.js-basic-examples",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
     "ai-utils.js": "*",
-    "commander": "10.0.1",
-    "dotenv": "16.0.3",
-    "pdfjs-dist": "3.6.172"
+    "dotenv": "16.0.3"
   },
   "devDependencies": {
     "@types/node": "20.2.3",
