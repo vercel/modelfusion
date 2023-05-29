@@ -24,6 +24,7 @@ export async function generate<
     input,
     model,
     processOutput,
+    extractOutput = model.extractOutput,
     retry = retryWithExponentialBackoff(),
     onCallStart,
     onCallEnd,
@@ -32,6 +33,7 @@ export async function generate<
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
+    extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
     onCallStart?: (call: GenerateCallStartEvent) => void;
@@ -114,7 +116,7 @@ export async function generate<
     throw new AbortError();
   }
 
-  const extractedOutput = await model.extractOutput(rawOutput.result);
+  const extractedOutput = await extractOutput(rawOutput.result);
   const processedOutput = await processOutput(extractedOutput);
 
   const callEndEvent: GenerateCallEndEvent = {
@@ -138,6 +140,7 @@ generate.asFunction =
     functionId,
     prompt,
     model,
+    extractOutput,
     processOutput,
     retry,
     onCallStart,
@@ -146,6 +149,7 @@ generate.asFunction =
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
+    extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
     onCallStart?: (call: GenerateCallStartEvent) => void;
@@ -158,6 +162,7 @@ generate.asFunction =
         prompt,
         input,
         model,
+        extractOutput,
         processOutput,
         retry,
         onCallStart,

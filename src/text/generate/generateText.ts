@@ -14,6 +14,7 @@ export function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     input,
     prompt,
     model,
+    extractOutput,
     processOutput = async (output) => output.trim(),
     retry,
     onCallStart,
@@ -23,6 +24,7 @@ export function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, string>;
+    extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
     retry?: RetryFunction;
     onCallStart?: (call: GenerateCallStartEvent) => void;
@@ -36,6 +38,7 @@ export function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
       input,
       prompt,
       model,
+      extractOutput,
       processOutput,
       retry,
       onCallStart,
@@ -50,6 +53,7 @@ generateText.asFunction =
     functionId,
     prompt,
     model,
+    extractOutput,
     processOutput,
     retry,
     onCallStart,
@@ -58,6 +62,7 @@ generateText.asFunction =
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, string>;
+    extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
     retry?: RetryFunction;
     onCallStart?: (call: GenerateCallStartEvent) => void;
@@ -70,6 +75,7 @@ generateText.asFunction =
         input,
         prompt,
         model,
+        extractOutput,
         processOutput,
         retry,
         onCallStart,
