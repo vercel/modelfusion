@@ -1,7 +1,7 @@
 {
   "name": "ai-utils.js",
   "description": "A toolkit for building AI apps, chatbots and agents",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [

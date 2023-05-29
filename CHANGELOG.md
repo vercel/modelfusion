@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.0.4 - 2023-05-29
+
+### New
+
+1. OpenAI embedding support
+1. Text embedding functions
+1. Chat streams can be returned as ReadableStream or AsyncIterable
+1. Basic examples under `examples/basic`
+1. Initial docs available at [ai-utils.dev](https://ai-utils.dev)
+
 ## v0.0.3 - 2023-05-28
 
 ### New
