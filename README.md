@@ -54,7 +54,7 @@ It provides utilities that make it easier to use AI-functionality such as text g
 
 ### [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic)
 
-Small examples of the functions in ai-utils.js
+Examples for the individual functions and objects.
 
 ### [PDF to Twitter Thread](https://github.com/lgrammel/ai-utils.js/tree/main/examples/pdf-to-twitter-thread)
 
