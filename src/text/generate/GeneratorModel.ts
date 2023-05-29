@@ -4,7 +4,7 @@ export type GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT> = {
 
   generate: (
     prompt: PROMPT_TYPE,
-    context: {
+    context?: {
       abortSignal?: AbortSignal | undefined;
       userId?: string | undefined;
     }
