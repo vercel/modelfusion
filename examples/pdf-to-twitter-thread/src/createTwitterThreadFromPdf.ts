@@ -24,22 +24,30 @@ export async function createTwitterThreadFromPdf({
     model: "gpt-4",
   });
 
+  const reservedCompletionTokens = 1024;
+  const extractTopicPrompt = extractTopicAndExcludeChatPrompt({
+    excludeKeyword: "IRRELEVANT",
+    topic,
+  });
+
   return splitMapFilterReduce(
     {
       split: splitRecursivelyAtTokenForModel.asSplitFunction({
         model: gpt4,
-        maxChunkSize: gpt4.maxTokens - 1024,
+        maxChunkSize:
+          gpt4.maxTokens -
+          reservedCompletionTokens -
+          (await gpt4.countPromptTokens(
+            await extractTopicPrompt({ text: "" })
+          )),
       }),
       map: generateText.asFunction({
         functionId: "extract-topic",
         model: gpt4.withSettings({
           temperature: 0,
-          maxCompletionTokens: 1024,
+          maxCompletionTokens: reservedCompletionTokens,
         }),
-        prompt: extractTopicAndExcludeChatPrompt({
-          excludeKeyword: "IRRELEVANT",
-          topic,
-        }),
+        prompt: extractTopicPrompt,
       }),
       filter: (text) => text !== "IRRELEVANT",
       reduce: generateText.asFunction({
