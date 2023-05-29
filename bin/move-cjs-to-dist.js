@@ -29,18 +29,13 @@ async function moveAndRename(source, destination) {
         "utf8"
       );
 
-      const rewrittenContent = fileContent.replace(
-        /require\("(\..+?).js"\)/g,
-        (_, capture) => {
-          return `require("${capture}.cjs")`;
-        }
-      );
-
-      const renamed = format({ name: filename, ext: ".cjs" });
-
       await writeFile(
-        convertToAbsolutePath(`${destination}/${renamed}`),
-        rewrittenContent,
+        convertToAbsolutePath(
+          `${destination}/${format({ name: filename, ext: ".cjs" })}`
+        ),
+        fileContent.replace(/require\("(\..+?).js"\)/g, (_, capture) => {
+          return `require("${capture}.cjs")`;
+        }),
         "utf8"
       );
     }
