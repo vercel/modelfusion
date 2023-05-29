@@ -63,7 +63,7 @@ const config = {
         // typedoc options:
         entryPoints: [
           "../src/prompt/index.ts",
-          "../src/provider/openai/index.ts",
+          "../src/model/openai/index.ts",
           "../src/run/index.ts",
           "../src/text/index.ts",
           "../src/util/index.ts",

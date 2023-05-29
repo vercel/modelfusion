@@ -1,7 +1,7 @@
 import {
   generateOpenAITranscription,
   openAITranscriptionResponseFormat,
-} from "ai-utils.js/provider/openai";
+} from "ai-utils.js/model/openai";
 import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";

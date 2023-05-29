@@ -11,7 +11,7 @@ ai-utils.js provides API wrapper functions for all its integrations. The wrapper
 ### OpenAI
 
 ```ts
-import { ... } from "ai-utils.js/provider/openai";
+import { ... } from "ai-utils.js/model/openai";
 ```
 
 - generateOpenAITranscription

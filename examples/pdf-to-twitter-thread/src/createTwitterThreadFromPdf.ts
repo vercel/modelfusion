@@ -1,5 +1,5 @@
 import { extractTopicAndExcludeChatPrompt } from "ai-utils.js/prompt";
-import { createOpenAIChatModel } from "ai-utils.js/provider/openai";
+import { createOpenAIChatModel } from "ai-utils.js/model/openai";
 import { RunContext } from "ai-utils.js/run";
 import {
   generateText,
