@@ -4,11 +4,11 @@ sidebar_position: 1
 
 # Library Structure
 
-The `ai-utils.js` library offers two primary sets of capabilities: low-level integration APIs and models.
+The `ai-utils.js` library offers two primary sets of capabilities: integration APIs and models.
 
-## Low-Level Integration APIs
+## Integration APIs
 
-The library's low-level integration APIs serve as robust client functions for various integrations, like OpenAI. Key features include providing data types for consistency, automatic parsing and validation of API response data, and comprehensive error handling. They act as a reliable fallback for specialized functions not covered elsewhere in the library. [Learn more...](/concepts/low-level-integration-apis)
+The library's integration APIs serve as robust client functions for various integrations, like OpenAI. Key features include providing data types for consistency, automatic parsing and validation of API response data, and comprehensive error handling. They act as a reliable fallback for specialized functions not covered elsewhere in the library. [Learn more...](/concepts/integration-apis)
 
 ## Models
 

@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Low-Level Integration APIs
+# Integration APIs
 
 The `ai-utils.js` library includes API client functions for various integrations (for instance, OpenAI). These client functions enhance the integration APIs by including features such as:
 
@@ -35,7 +35,7 @@ console.log(response.choices[0].text);
 ### Open AI
 
 - [Chat Completion](/api/modules/model_openai#generateopenaichatcompletion)
+- [Chat Completion (stream)](/api/modules/model_openai#streamopenaichatcompletion)
 - [Text Completion](/api/modules/model_openai#generateopenaitextcompletion)
-- [Text Completion (stream)](/api/modules/model_openai#streamopenaichatcompletion)
 - [Embedding](/api/modules/model_openai#generateopenaiembedding)
 - [Transcription](/api/modules/model_openai#generateopenaitranscription)
