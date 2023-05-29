@@ -19,6 +19,8 @@ export type OpenAIEmbeddingModelSettings = {
 export type OpenAIEmbeddingModel = EmbeddingModel<OpenAIEmbedding, number[]> &
   TokenizerModel<number[]> & {
     readonly maxTokens: number;
+    readonly countInputTokens: (input: string) => PromiseLike<number>;
+
     readonly withSettings: (
       settings: OpenAIEmbeddingModelSettings
     ) => OpenAIEmbeddingModel;
@@ -60,6 +62,7 @@ export const createOpenAIEmbeddingModel = ({
 
     tokenizer,
     maxTokens: OPENAI_EMBEDDING_MODELS[model].maxTokens,
+    countInputTokens: (input: string) => tokenizer.countTokens(input),
 
     embed: async (input: string, context): Promise<OpenAIEmbedding> =>
       generateOpenAIEmbedding({

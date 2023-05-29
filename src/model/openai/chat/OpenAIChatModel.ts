@@ -5,6 +5,7 @@ import {
   OpenAIChatCompletion,
   OpenAIChatMessage,
 } from "./OpenAIChatCompletion.js";
+import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
 
 // see https://platform.openai.com/docs/models/
@@ -50,6 +51,11 @@ export type OpenAIChatModel = GeneratorModel<
 > &
   TokenizerModel<number[]> & {
     readonly maxTokens: number;
+
+    readonly countPromptTokens: (
+      messages: OpenAIChatMessage[]
+    ) => PromiseLike<number>;
+
     readonly withSettings: (
       settings: OpenAIChatModelSettings
     ) => OpenAIChatModel;
@@ -99,6 +105,11 @@ export const createOpenAIChatModel = ({
 
   tokenizer: getTiktokenTokenizerForModel({ model }),
   maxTokens: OPENAI_CHAT_MODELS[model].maxTokens,
+  countPromptTokens: (messages: OpenAIChatMessage[]) =>
+    countOpenAIChatPromptTokens({
+      messages,
+      model,
+    }),
 
   generate: async (input, context): Promise<OpenAIChatCompletion> =>
     generateOpenAIChatCompletion({

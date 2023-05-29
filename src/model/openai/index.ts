@@ -12,6 +12,5 @@ export * from "./embedding/OpenAIEmbeddingModel.js";
 export * from "./embedding/generateOpenAIEmbedding.js";
 export * from "./text/OpenAITextCompletion.js";
 export * from "./text/OpenAITextModel.js";
-export * from "./text/countOpenAITextPromptTokens.js";
 export * from "./text/generateOpenAITextCompletion.js";
 export * from "./tokenizer/tiktoken.js";

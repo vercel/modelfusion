@@ -67,6 +67,8 @@ export type OpenAITextModel = GeneratorModel<
      */
     readonly maxTokens: number;
 
+    readonly countPromptTokens: (prompt: string) => PromiseLike<number>;
+
     readonly withSettings: (
       settings: OpenAITextModelSettings
     ) => OpenAITextModel;
@@ -109,6 +111,7 @@ export const createOpenAITextModel = ({
 
     tokenizer,
     maxTokens: OPENAI_TEXT_MODELS[model].maxTokens,
+    countPromptTokens: (prompt: string) => tokenizer.countTokens(prompt),
 
     generate: async (input: string, context): Promise<OpenAITextCompletion> =>
       generateOpenAITextCompletion({
