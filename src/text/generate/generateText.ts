@@ -48,6 +48,16 @@ export function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
   );
 }
 
+/**
+ * @example
+ * const generateStory = generateText.asFunction({
+ *   model,
+ *   prompt: async ({ character }: { character: string }) =>
+ *     `Write a short story about ${character} learning to love:\n\n`,
+ * });
+ *
+ * const text = await generateStory({ character: "a robot" });
+ */
 generateText.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT>({
     functionId,

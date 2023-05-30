@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Models
+# Integration Models
 
 The `ai-utils.js` library also provides models. These models map vendor-specific API calls to **higher level** concepts such as text generation. Models include additional functionalities:
 
