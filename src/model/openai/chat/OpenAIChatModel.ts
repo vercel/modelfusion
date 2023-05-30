@@ -118,14 +118,8 @@ export const createOpenAIChatModel = ({
       apiKey,
       messages: input,
       model,
-      temperature: settings.temperature,
-      topP: settings.topP,
-      n: settings.n,
-      stop: settings.stop,
-      maxCompletionTokens: settings.maxCompletionTokens,
-      presencePenalty: settings.presencePenalty,
-      frequencyPenalty: settings.frequencyPenalty,
       user: settings.isUserIdForwardingEnabled ? context?.userId : undefined,
+      ...settings,
     }),
 
   extractOutput: async (rawOutput: OpenAIChatCompletion): Promise<string> => {
