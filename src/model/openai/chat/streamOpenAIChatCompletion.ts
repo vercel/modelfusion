@@ -1,4 +1,4 @@
-import { convertReadableStreamToAsyncIterable } from "internal/convertReadableStreamToAsyncIterable.js";
+import { convertReadableStreamToAsyncIterable } from "../../../internal/convertReadableStreamToAsyncIterable.js";
 import {
   ResponseHandler,
   createAsyncIterableResponseHandler,
