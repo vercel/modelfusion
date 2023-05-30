@@ -1,8 +1,8 @@
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
-import { createOpenAIChatCompletionDeltaStream } from "ai-utils.js/provider/openai";
-import { convertReadableStreamToAsyncIterator } from "ai-utils.js/util";
 import { Box } from "@mui/material";
+import { convertReadableStreamToAsyncIterable } from "ai-utils.js/internal";
+import { createOpenAIChatCompletionDeltaStream } from "ai-utils.js/provider/openai";
 import Head from "next/head";
 import { useState } from "react";
 
@@ -36,7 +36,7 @@ export default function Home() {
       });
 
       const completionDeltaStream = await createOpenAIChatCompletionDeltaStream(
-        convertReadableStreamToAsyncIterator(response.body!.getReader())
+        convertReadableStreamToAsyncIterable(response.body!.getReader())
       );
 
       for await (const completionDelta of completionDeltaStream) {
