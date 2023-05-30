@@ -35,7 +35,7 @@ It provides utilities that make it easier to use AI-functionality such as text g
 - Retry management
 - Error handling
 
-## Integrations
+## Providers
 
 ### OpenAI
 
@@ -48,6 +48,7 @@ It provides utilities that make it easier to use AI-functionality such as text g
 ### Cohere
 
 - text generation
+- embeddings
 
 ## Documentation
 

@@ -45,3 +45,4 @@ console.log(response.choices[0].text);
 ### Cohere
 
 - [Text Completion](/api/modules/provider_cohere#generatecoheretextcompletion)
+- [Embedding](/api/modules/provider_cohere#generatecohereembedding)
