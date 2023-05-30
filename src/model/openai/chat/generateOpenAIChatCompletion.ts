@@ -1,10 +1,11 @@
 import {
   createJsonResponseHandler,
-  postJsonToOpenAI,
-} from "../postToOpenAI.js";
+  postJsonToApi,
+} from "../../../internal/postToApi.js";
+import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import {
-  OpenAIChatMessage,
   OpenAIChatCompletion,
+  OpenAIChatMessage,
   openAIChatCompletionSchema,
 } from "./OpenAIChatCompletion.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";
@@ -64,7 +65,7 @@ export async function generateOpenAIChatCompletion({
   frequencyPenalty?: number;
   user?: string;
 }): Promise<OpenAIChatCompletion> {
-  return postJsonToOpenAI({
+  return postJsonToApi({
     url: `${baseUrl}/chat/completions`,
     apiKey,
     body: {
@@ -79,6 +80,7 @@ export async function generateOpenAIChatCompletion({
       frequency_penalty: frequencyPenalty,
       user,
     },
+    failedResponseHandler: failedOpenAICallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
       openAIChatCompletionSchema
     ),

@@ -45,6 +45,10 @@ It provides utilities that make it easier to use AI-functionality such as text g
 - tokenization (TikToken) and token counting (incl. message and prompt overhead tokens in chat)
 - transcription - Whisper
 
+### Cohere
+
+- text generation
+
 ## Documentation
 
 - [Concepts](https://ai-utils.dev/concepts)

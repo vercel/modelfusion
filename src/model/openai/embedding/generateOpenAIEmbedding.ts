@@ -1,7 +1,8 @@
 import {
   createJsonResponseHandler,
-  postJsonToOpenAI,
-} from "../postToOpenAI.js";
+  postJsonToApi,
+} from "../../../internal/postToApi.js";
+import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { OpenAIEmbedding, openAIEmbeddingSchema } from "./OpenAIEmbedding.js";
 import { OpenAIEmbeddingModelType } from "./OpenAIEmbeddingModel.js";
 
@@ -34,7 +35,7 @@ export async function generateOpenAIEmbedding({
   input: string;
   user?: string;
 }): Promise<OpenAIEmbedding> {
-  return postJsonToOpenAI({
+  return postJsonToApi({
     url: `${baseUrl}/embeddings`,
     apiKey,
     body: {
@@ -42,6 +43,7 @@ export async function generateOpenAIEmbedding({
       input,
       user,
     },
+    failedResponseHandler: failedOpenAICallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(openAIEmbeddingSchema),
     abortSignal,
   });

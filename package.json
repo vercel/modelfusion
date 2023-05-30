@@ -32,10 +32,20 @@
     "./*"
   ],
   "exports": {
+    "./model/cohere": {
+      "types": "./model/cohere/index.d.ts",
+      "import": "./model/cohere/index.js",
+      "require": "./model/cohere/index.cjs"
+    },
     "./model/openai": {
       "types": "./model/openai/index.d.ts",
       "import": "./model/openai/index.js",
       "require": "./model/openai/index.cjs"
+    },
+    "./internal": {
+      "types": "./internal/index.d.ts",
+      "import": "./internal/index.js",
+      "require": "./internal/index.cjs"
     },
     "./prompt": {
       "types": "./prompt/index.d.ts",

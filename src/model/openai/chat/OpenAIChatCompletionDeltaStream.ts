@@ -1,7 +1,7 @@
 import { createParser } from "eventsource-parser";
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
-import { AsyncQueue } from "../../../util/AsyncQueue.js";
+import { AsyncQueue } from "../../../internal/AsyncQueue.js";
 
 const chatCompletionStreamEventSchema = z.object({
   choices: z.array(

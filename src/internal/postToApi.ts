@@ -1,41 +1,49 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
-import { convertReadableStreamToAsyncIterable } from "../../util/convertReadableStreamToAsyncIterable.js";
-import { OpenAIError, openAIErrorDataSchema } from "./OpenAIError.js";
+import { ApiCallError } from "../util/ApiCallError.js";
+import { convertReadableStreamToAsyncIterable } from "./convertReadableStreamToAsyncIterable.js";
 
-export type ResponseHandler<T> = (response: Response) => PromiseLike<T>;
+export type ResponseHandler<T> = (options: {
+  url: string;
+  requestBodyValues: unknown;
+  response: Response;
+}) => PromiseLike<T>;
 
 export const createJsonResponseHandler =
   <T>(responseSchema: z.ZodSchema<T>): ResponseHandler<T> =>
-  async (response) =>
+  async ({ response }) =>
     responseSchema.parse(await response.json());
 
 export const createStreamResponseHandler =
-  (): ResponseHandler<ReadableStream<Uint8Array>> => async (response) =>
+  (): ResponseHandler<ReadableStream<Uint8Array>> =>
+  async ({ response }) =>
     response.body!;
 
 export const createAsyncIterableResponseHandler =
-  (): ResponseHandler<AsyncIterable<Uint8Array>> => async (response) =>
+  (): ResponseHandler<AsyncIterable<Uint8Array>> =>
+  async ({ response }) =>
     convertReadableStreamToAsyncIterable(response.body!.getReader());
 
 export const createTextResponseHandler =
-  (): ResponseHandler<string> => async (response) =>
+  (): ResponseHandler<string> =>
+  async ({ response }) =>
     response.text();
 
-export const postJsonToOpenAI = async <T>({
+export const postJsonToApi = async <T>({
   url,
   apiKey,
   body,
+  failedResponseHandler,
   successfulResponseHandler,
   abortSignal,
 }: {
   url: string;
   apiKey: string;
   body: unknown;
+  failedResponseHandler: ResponseHandler<ApiCallError>;
   successfulResponseHandler: ResponseHandler<T>;
   abortSignal?: AbortSignal;
 }) => {
-  return postToOpenAI({
+  return postToApi({
     url,
     apiKey,
     contentType: "application/json",
@@ -43,17 +51,19 @@ export const postJsonToOpenAI = async <T>({
       content: JSON.stringify(body),
       values: body,
     },
+    failedResponseHandler,
     successfulResponseHandler,
     abortSignal,
   });
 };
 
-export const postToOpenAI = async <T>({
+export const postToApi = async <T>({
   url,
   apiKey,
   contentType,
   body,
   successfulResponseHandler,
+  failedResponseHandler,
   abortSignal,
 }: {
   url: string;
@@ -63,6 +73,7 @@ export const postToOpenAI = async <T>({
     content: string | FormData;
     values: unknown;
   };
+  failedResponseHandler: ResponseHandler<Error>;
   successfulResponseHandler: ResponseHandler<T>;
   abortSignal?: AbortSignal;
 }) => {
@@ -83,20 +94,18 @@ export const postToOpenAI = async <T>({
     });
 
     if (!response.ok) {
-      const responseBody = await response.text();
-      const parsedError = openAIErrorDataSchema.parse(
-        SecureJSON.parse(responseBody)
-      );
-
-      throw new OpenAIError({
+      throw await failedResponseHandler({
+        response,
         url,
-        body: body.values,
-        statusCode: response.status,
-        data: parsedError.error,
+        requestBodyValues: body.values,
       });
     }
 
-    return await successfulResponseHandler(response);
+    return await successfulResponseHandler({
+      response,
+      url,
+      requestBodyValues: body.values,
+    });
   } catch (error) {
     if (error instanceof Error) {
       if (error.name === "AbortError") {

@@ -1,7 +1,8 @@
 import {
   createJsonResponseHandler,
-  postJsonToOpenAI,
-} from "../postToOpenAI.js";
+  postJsonToApi,
+} from "../../../internal/postToApi.js";
+import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import {
   OpenAITextCompletion,
   openAITextCompletionSchema,
@@ -61,7 +62,7 @@ export async function generateOpenAITextCompletion({
   bestOf?: number;
   user?: string;
 }): Promise<OpenAITextCompletion> {
-  return postJsonToOpenAI({
+  return postJsonToApi({
     url: `${baseUrl}/completions`,
     apiKey,
     body: {
@@ -80,6 +81,7 @@ export async function generateOpenAITextCompletion({
       best_of: bestOf,
       user,
     },
+    failedResponseHandler: failedOpenAICallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
       openAITextCompletionSchema
     ),

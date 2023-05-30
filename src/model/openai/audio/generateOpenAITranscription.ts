@@ -3,8 +3,9 @@ import {
   ResponseHandler,
   createJsonResponseHandler,
   createTextResponseHandler,
-  postToOpenAI,
-} from "../postToOpenAI.js";
+  postToApi,
+} from "../../../internal/postToApi.js";
+import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 
 export type OpenAITranscriptionModelType = "whisper-1";
 
@@ -130,7 +131,7 @@ export async function generateOpenAITranscription<RESPONSE>({
     formData.append("language", language);
   }
 
-  return postToOpenAI({
+  return postToApi({
     url: `${baseUrl}/audio/transcriptions`,
     apiKey,
     contentType: null,
@@ -144,6 +145,7 @@ export async function generateOpenAITranscription<RESPONSE>({
         language,
       },
     },
+    failedResponseHandler: failedOpenAICallResponseHandler,
     successfulResponseHandler: responseFormat.handler,
     abortSignal,
   });

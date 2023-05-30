@@ -1,10 +1,11 @@
-import { convertReadableStreamToAsyncIterable } from "../../../util/convertReadableStreamToAsyncIterable.js";
+import { convertReadableStreamToAsyncIterable } from "internal/convertReadableStreamToAsyncIterable.js";
 import {
   ResponseHandler,
   createAsyncIterableResponseHandler,
   createStreamResponseHandler,
-  postJsonToOpenAI,
-} from "../postToOpenAI.js";
+  postJsonToApi,
+} from "../../../internal/postToApi.js";
+import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { OpenAIChatMessage } from "./OpenAIChatCompletion.js";
 import { createOpenAIChatCompletionDeltaStream } from "./OpenAIChatCompletionDeltaStream.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";
@@ -84,7 +85,7 @@ export async function streamOpenAIChatCompletion<T>({
   frequencyPenalty?: number;
   user?: string;
 }): Promise<T> {
-  return postJsonToOpenAI({
+  return postJsonToApi({
     url: `${baseUrl}/chat/completions`,
     apiKey,
     body: {
@@ -100,6 +101,7 @@ export async function streamOpenAIChatCompletion<T>({
       frequency_penalty: frequencyPenalty,
       user,
     },
+    failedResponseHandler: failedOpenAICallResponseHandler,
     successfulResponseHandler: responseFormat.handler,
     abortSignal,
   });

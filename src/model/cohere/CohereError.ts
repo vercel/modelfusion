@@ -1,34 +1,29 @@
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
+import { ResponseHandler } from "../../internal/postToApi.js";
 import { ApiCallError } from "../../util/ApiCallError.js";
-import { ResponseHandler } from "internal/postToApi.js";
 
-export const openAIErrorDataSchema = z.object({
-  error: z.object({
-    message: z.string(),
-    type: z.string(),
-    param: z.any().nullable(),
-    code: z.string().nullable(),
-  }),
+const cohereErrorDataSchema = z.object({
+  message: z.string(),
 });
 
-export type OpenAIErrorData = z.infer<typeof openAIErrorDataSchema>;
+export type CohereErrorData = z.infer<typeof cohereErrorDataSchema>;
 
-export class OpenAIError extends ApiCallError {
-  public readonly data: OpenAIErrorData;
+export class CohereError extends ApiCallError {
+  public readonly data: CohereErrorData;
 
   constructor({
     data,
     statusCode,
     url,
     requestBodyValues,
-    message = data.error.message,
+    message = data.message,
   }: {
     message?: string;
     statusCode: number;
     url: string;
     requestBodyValues: unknown;
-    data: OpenAIErrorData;
+    data: CohereErrorData;
   }) {
     super({ message, statusCode, requestBodyValues, url });
 
@@ -36,15 +31,15 @@ export class OpenAIError extends ApiCallError {
   }
 }
 
-export const failedOpenAICallResponseHandler: ResponseHandler<
+export const failedCohereCallResponseHandler: ResponseHandler<
   ApiCallError
 > = async ({ response, url, requestBodyValues }) => {
   const responseBody = await response.text();
-  const parsedError = openAIErrorDataSchema.parse(
+  const parsedError = cohereErrorDataSchema.parse(
     SecureJSON.parse(responseBody)
   );
 
-  return new OpenAIError({
+  return new CohereError({
     url,
     requestBodyValues,
     statusCode: response.status,

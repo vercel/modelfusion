@@ -41,3 +41,7 @@ console.log(response.choices[0].text);
 - [Transcription](/api/modules/model_openai#generateopenaitranscription)
 - [Tokenization with TikToken (for model)](/api/modules/model_openai#gettiktokentokenizerformodel)
 - [Tokenization with TikToken (for encoding)](/api/modules/model_openai#gettiktokentokenizerforencoding)
+
+### Cohere
+
+- [Text Completion](/api/modules/model_cohere#generatecoheretextcompletion)
