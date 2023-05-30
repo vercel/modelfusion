@@ -6,7 +6,7 @@ sidebar_position: 1
 
 ## Provider API Clients
 
-The provider API clients serve as robust client functions for accessing the APIs of various providers such as OpenAI. Key features include providing data types for consistency, automatic parsing and validation of API response data, and comprehensive error handling. They act as a reliable fallback for specialized functions not covered elsewhere in the library. [Learn more...](/concepts/library-structure/provider-apis)
+The provider API clients serve as robust client functions for accessing the APIs of various providers such as OpenAI. Key features include providing data types for consistency, automatic parsing and validation of API response data, and comprehensive error handling. They act as a reliable fallback for specialized functions not covered elsewhere in the library. [Learn more...](/concepts/library-structure/provider-api-clients)
 
 ## Provider Models
 
