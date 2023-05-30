@@ -1,6 +1,6 @@
 # ai-utils.js
 
-> ### A toolkit for building AI apps, chatbots and agents
+> ### A TypeScript-first toolkit for building production-grade AI apps, chatbots and agents.
 
 <a href="https://twitter.com/lgrammel" rel="nofollow"><img src="https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg" alt="Created by Lars Grammel" /></a>
 <a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/lgrammel/ai-utils.js" alt="License" /></a>
@@ -15,9 +15,27 @@ npm install --save ai-utils.js
 
 ## Introduction
 
-ai-utils.js is toolkit for using AI in JavaScript and TypeScript applications. It is built around the principles of functional programming and automatic type inference. The library is designed to be convenient and at the same time transparent and extensible.
+`ai-utils.js` is a TypeScript-first toolkit for building production-grade AI apps, chatbots and agents.
 
-It provides utilities that make it easier to use AI-functionality such as text generation and voice transcription, and contains [examples](#examples) to show how to build apps with AI. The utilities include convenience methods to call AI APIs (e.g. OpenAI), helpers to make AI-apps production-grade (e.g. token counting, abort & error handling, progress reporting), and more advanced chains (e.g. split/map/filter/reduce for text processing).
+It was built with four key guiding principles in mind:
+
+### TypeScript-First
+
+`ai-utils.js` is built with TypeScript at its core, designed to take full advantage of type inference, static typing, and the robust tooling TypeScript offers. We've prioritized a functional programming style, using objects sparingly and only when necessary, for cleaner and more maintainable code.
+
+### Full User Control
+
+We place control firmly in your hands. Rather than setting rigid control flows or automatic prompts, we provide you the freedom to program control as per your needs. The ability to override most settings is baked right in, and access to all provider API features is readily available should you need to delve into lower levels.
+
+### Ready for Production
+
+`ai-utils.js` isn't just designed for development, but production as well. Essential features like logging, cost and latency tracking, retries, and error handling are integrated from the outset, not as afterthoughts. You're also given the flexibility to provide your own integrations and use provider-specific settings.
+
+### Multi-Modal Support
+
+Recognizing that AI applications involve more than just text, this library supports a variety of content types including voice and images, along with text and embeddings. This broadens its applicability and potential for creating richer, more engaging AI applications.
+
+These principles have shaped the design and function of the library, aiming to provide you with a comprehensive, adaptable tool for your development needs.
 
 ## Features
 
