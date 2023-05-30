@@ -1,4 +1,4 @@
-import { createOpenAITextModel } from "ai-utils.js/model/openai";
+import { createOpenAITextModel } from "ai-utils.js/provider/openai";
 import { generate } from "ai-utils.js/text";
 import chalk from "chalk";
 

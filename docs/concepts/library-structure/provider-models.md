@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Integration Models
+# Provider Models
 
 The `ai-utils.js` library also provides models. These models map vendor-specific API calls to **higher level** concepts such as text generation. Models include additional functionalities:
 
@@ -39,10 +39,10 @@ In this example, the createOpenAITextModel function is used to create a text gen
 
 ### Open AI
 
-- [Chat Model](/api/modules/model_openai#createopenaichatmodel)
-- [Text Model](/api/modules/model_openai#createopenaitextmodel)
-- [Embedding Model](/api/modules/model_openai#createopenaiembeddingmodel)
+- [Chat Model](/api/modules/provider_openai#createopenaichatmodel)
+- [Text Model](/api/modules/provider_openai#createopenaitextmodel)
+- [Embedding Model](/api/modules/provider_openai#createopenaiembeddingmodel)
 
 ### Cohere
 
-- [Text Model](/api/modules/model_cohere#createcoheretextmodel)
+- [Text Model](/api/modules/provider_cohere#createcoheretextmodel)

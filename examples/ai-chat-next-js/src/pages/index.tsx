@@ -1,6 +1,6 @@
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
-import { createOpenAIChatCompletionDeltaStream } from "ai-utils.js/model/openai";
+import { createOpenAIChatCompletionDeltaStream } from "ai-utils.js/provider/openai";
 import { convertReadableStreamToAsyncIterator } from "ai-utils.js/util";
 import { Box } from "@mui/material";
 import Head from "next/head";

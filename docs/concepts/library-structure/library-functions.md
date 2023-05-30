@@ -9,7 +9,7 @@ sidebar_position: 2
 ### Example Usage
 
 ```ts
-// create integration model:
+// create provider model:
 const model = createOpenAITextModel({
   apiKey: OPENAI_API_KEY,
   model: "text-davinci-003",
