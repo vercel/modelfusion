@@ -1,18 +1,19 @@
 {
   "name": "ai-utils.js",
   "description": "A toolkit for building AI apps, chatbots and agents",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
-    "next.js",
-    "chatbot",
+    "llm",
+    "embedding",
     "openai",
-    "whisper",
+    "cohere",
     "gpt-3",
     "gpt-4",
-    "llm",
-    "baby-agi"
+    "whisper",
+    "chatbot",
+    "ai"
   ],
   "homepage": "https://ai-utils.dev/",
   "repository": {
