@@ -2,7 +2,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../internal/postToApi.js";
-import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
+import { failedOpenAICallResponseHandler } from "../internal/failedOpenAICallResponseHandler.js";
 import {
   OpenAITextCompletion,
   openAITextCompletionSchema,

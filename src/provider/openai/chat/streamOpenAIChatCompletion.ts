@@ -5,7 +5,7 @@ import {
   createStreamResponseHandler,
   postJsonToApi,
 } from "../../../internal/postToApi.js";
-import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
+import { failedOpenAICallResponseHandler } from "../internal/failedOpenAICallResponseHandler.js";
 import { OpenAIChatMessage } from "./OpenAIChatCompletion.js";
 import {
   OpenAIChatCompletionDeltaStreamEntry,

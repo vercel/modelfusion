@@ -1,9 +1,7 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
-import { ResponseHandler } from "../../internal/postToApi.js";
 import { ApiCallError } from "../../util/ApiCallError.js";
 
-const cohereErrorDataSchema = z.object({
+export const cohereErrorDataSchema = z.object({
   message: z.string(),
 });
 
@@ -30,19 +28,3 @@ export class CohereError extends ApiCallError {
     this.data = data;
   }
 }
-
-export const failedCohereCallResponseHandler: ResponseHandler<
-  ApiCallError
-> = async ({ response, url, requestBodyValues }) => {
-  const responseBody = await response.text();
-  const parsedError = cohereErrorDataSchema.parse(
-    SecureJSON.parse(responseBody)
-  );
-
-  return new CohereError({
-    url,
-    requestBodyValues,
-    statusCode: response.status,
-    data: parsedError,
-  });
-};

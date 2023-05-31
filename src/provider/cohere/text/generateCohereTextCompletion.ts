@@ -2,7 +2,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../internal/postToApi.js";
-import { failedCohereCallResponseHandler } from "../CohereError.js";
+import { failedCohereCallResponseHandler } from "../internal/failedCohereCallResponseHandler.js";
 import {
   CohereTextCompletion,
   cohereTextCompletionSchema,
