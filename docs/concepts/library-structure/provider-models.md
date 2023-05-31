@@ -17,18 +17,18 @@ The models enable the separation of parameter configuration from the actual call
 The OpenAI text completion API can be used as a model as shown in the following example:
 
 ```ts
-const textModel = createOpenAITextModel({
+const textGenerationModel = createOpenAITextGenerationModel({
   apiKey: OPENAI_API_KEY,
   model: "text-davinci-003",
   settings: { temperature: 0.7 }, // define settings
 });
 
 // Later in the code:
-const response = await textModel
+const response = await textGenerationModel
   .withSettings({ maxCompletionTokens: 500 }) // refine or override settings
   .generate("Write a short story about a robot learning to love:\n\n");
 
-const text = await textModel.extractOutput(response);
+const text = await textGenerationModel.extractOutput(response);
 
 console.log(text);
 ```

@@ -10,7 +10,7 @@ sidebar_position: 2
 
 ```ts
 // create provider model:
-const model = createOpenAITextModel({
+const model = createOpenAITextGenerationModel({
   apiKey: OPENAI_API_KEY,
   model: "text-davinci-003",
   settings: { temperature: 0.7, maxCompletionTokens: 500 },
