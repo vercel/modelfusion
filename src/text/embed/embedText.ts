@@ -8,9 +8,9 @@ import { AbortError } from "../../util/AbortError.js";
 import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
 import { runSafe } from "../../util/runSafe.js";
-import { EmbeddingModel } from "./EmbeddingModel.js";
+import { TextEmbeddingModel } from "./TextEmbeddingModel.js";
 
-export async function embed<RAW_OUTPUT, EMBEDDING>(
+export async function embedText<RAW_OUTPUT, EMBEDDING>(
   {
     functionId,
     model,
@@ -20,7 +20,7 @@ export async function embed<RAW_OUTPUT, EMBEDDING>(
     onCallEnd,
   }: {
     functionId?: string;
-    model: EmbeddingModel<RAW_OUTPUT, EMBEDDING>;
+    model: TextEmbeddingModel<RAW_OUTPUT, EMBEDDING>;
     texts: Array<string>;
     retry?: RetryFunction;
     onCallStart?: (call: EmbedCallStartEvent) => void;
@@ -114,7 +114,7 @@ export async function embed<RAW_OUTPUT, EMBEDDING>(
   // combine the results:
   const embeddings: Array<EMBEDDING> = [];
   for (const rawOutput of rawOutputs) {
-    embeddings.push(...(await model.extractEmbedding(rawOutput)));
+    embeddings.push(...(await model.extractEmbeddings(rawOutput)));
   }
 
   const callEndEvent: EmbedCallEndEvent = {
@@ -132,13 +132,13 @@ export async function embed<RAW_OUTPUT, EMBEDDING>(
   return embeddings;
 }
 
-embed.asFunction =
+embedText.asFunction =
   <RAW_OUTPUT, EMBEDDING>({
     functionId,
     model,
   }: {
     functionId?: string;
-    model: EmbeddingModel<RAW_OUTPUT, EMBEDDING>;
+    model: TextEmbeddingModel<RAW_OUTPUT, EMBEDDING>;
   }) =>
   async ({ texts }: { texts: Array<string> }, context?: RunContext) =>
-    embed({ functionId, model, texts }, context);
+    embedText({ functionId, model, texts }, context);

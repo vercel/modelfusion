@@ -1,4 +1,4 @@
-import { GenerateModel } from "../../../text/generate/GenerateModel.js";
+import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import {
@@ -44,7 +44,7 @@ export type OpenAIChatModelSettings = {
   frequencyPenalty?: number;
 };
 
-export type OpenAIChatModel = GenerateModel<
+export type OpenAIChatModel = TextGenerationModel<
   OpenAIChatMessage[],
   OpenAIChatCompletion,
   string

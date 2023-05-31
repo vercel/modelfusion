@@ -7,7 +7,7 @@ import {
   OpenAITextCompletion,
   openAITextCompletionSchema,
 } from "./OpenAITextCompletion.js";
-import { OpenAITextModelType } from "./OpenAITextModel.js";
+import { OpenAITextGenerationModelType } from "./OpenAITextGenerationModel.js";
 
 /**
  * Call the OpenAI Text Completion API to generate a text completion for the given prompt.
@@ -47,7 +47,7 @@ export async function generateOpenAITextCompletion({
   baseUrl?: string;
   abortSignal?: AbortSignal;
   apiKey: string;
-  model: OpenAITextModelType;
+  model: OpenAITextGenerationModelType;
   prompt: string;
   suffix?: string;
   maxCompletionTokens?: number;

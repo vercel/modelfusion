@@ -1,11 +1,11 @@
-import { GenerateModel } from "../../../text/generate/GenerateModel.js";
+import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import { OpenAITextCompletion } from "./OpenAITextCompletion.js";
 import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
 
 // see https://platform.openai.com/docs/models/
-export const OPENAI_TEXT_MODELS = {
+export const OPENAI_TEXT_GENERATION_MODELS = {
   "text-davinci-003": {
     maxTokens: 4096,
   },
@@ -38,9 +38,10 @@ export const OPENAI_TEXT_MODELS = {
   },
 };
 
-export type OpenAITextModelType = keyof typeof OPENAI_TEXT_MODELS;
+export type OpenAITextGenerationModelType =
+  keyof typeof OPENAI_TEXT_GENERATION_MODELS;
 
-export type OpenAITextModelSettings = {
+export type OpenAITextGenerationModelSettings = {
   isUserIdForwardingEnabled?: boolean;
 
   suffix?: string;
@@ -56,7 +57,7 @@ export type OpenAITextModelSettings = {
   bestOf?: number;
 };
 
-export type OpenAITextModel = GenerateModel<
+export type OpenAITextGenerationModel = TextGenerationModel<
   string,
   OpenAITextCompletion,
   string
@@ -70,8 +71,8 @@ export type OpenAITextModel = GenerateModel<
     readonly countPromptTokens: (prompt: string) => PromiseLike<number>;
 
     readonly withSettings: (
-      settings: OpenAITextModelSettings
-    ) => OpenAITextModel;
+      settings: OpenAITextGenerationModelSettings
+    ) => OpenAITextGenerationModel;
   };
 
 /**
@@ -80,19 +81,19 @@ export type OpenAITextModel = GenerateModel<
  * @see https://platform.openai.com/docs/api-reference/completions/create
  *
  * @example
- * const textModel = createOpenAITextModel({
+ * const textGenerationModel = createOpenAITextGenerationModel({
  *   apiKey: OPENAI_API_KEY,
  *   model: "text-davinci-003",
  *   settings: { temperature: 0.7 },
  * });
  *
- * const response = await textModel
+ * const response = await textGenerationModel
  *   .withSettings({ maxCompletionTokens: 500 })
  *   .generate("Write a short story about a robot learning to love:\n\n");
  *
- * const text = await textModel.extractOutput(response);
+ * const text = await textGenerationModel.extractOutput(response);
  */
-export const createOpenAITextModel = ({
+export const createOpenAITextGenerationModel = ({
   baseUrl,
   apiKey,
   model,
@@ -100,9 +101,9 @@ export const createOpenAITextModel = ({
 }: {
   baseUrl?: string;
   apiKey: string;
-  model: OpenAITextModelType;
-  settings?: OpenAITextModelSettings;
-}): OpenAITextModel => {
+  model: OpenAITextGenerationModelType;
+  settings?: OpenAITextGenerationModelSettings;
+}): OpenAITextGenerationModel => {
   const tokenizer = getTiktokenTokenizerForModel({ model });
 
   return {
@@ -110,7 +111,7 @@ export const createOpenAITextModel = ({
     model,
 
     tokenizer,
-    maxTokens: OPENAI_TEXT_MODELS[model].maxTokens,
+    maxTokens: OPENAI_TEXT_GENERATION_MODELS[model].maxTokens,
     countPromptTokens: (prompt: string) => tokenizer.countTokens(prompt),
 
     generate: async (input: string, context): Promise<OpenAITextCompletion> =>
@@ -128,8 +129,8 @@ export const createOpenAITextModel = ({
       return rawOutput.choices[0]!.text;
     },
 
-    withSettings: (additionalSettings: OpenAITextModelSettings) =>
-      createOpenAITextModel({
+    withSettings: (additionalSettings: OpenAITextGenerationModelSettings) =>
+      createOpenAITextGenerationModel({
         baseUrl,
         apiKey,
         model,

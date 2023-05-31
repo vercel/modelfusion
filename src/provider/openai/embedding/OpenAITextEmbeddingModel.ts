@@ -1,49 +1,53 @@
-import { EmbeddingModel } from "../../../text/embed/EmbeddingModel.js";
+import { TextEmbeddingModel } from "../../../text/embed/TextEmbeddingModel.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import { OpenAIEmbedding } from "./OpenAIEmbedding.js";
 import { generateOpenAIEmbedding } from "./generateOpenAIEmbedding.js";
 
-export const OPENAI_EMBEDDING_MODELS = {
+export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-ada-002": {
     maxTokens: 8192,
   },
 };
 
-export type OpenAIEmbeddingModelType = keyof typeof OPENAI_EMBEDDING_MODELS;
+export type OpenAITextEmbeddingModelType =
+  keyof typeof OPENAI_TEXT_EMBEDDING_MODELS;
 
-export type OpenAIEmbeddingModelSettings = {
+export type OpenAITextEmbeddingModelSettings = {
   isUserIdForwardingEnabled?: boolean;
 };
 
-export type OpenAIEmbeddingModel = EmbeddingModel<OpenAIEmbedding, number[]> &
+export type OpenAITextEmbeddingModel = TextEmbeddingModel<
+  OpenAIEmbedding,
+  number[]
+> &
   TokenizerModel<number[]> & {
     readonly maxTokens: number;
     readonly countInputTokens: (input: string) => PromiseLike<number>;
 
     readonly withSettings: (
-      settings: OpenAIEmbeddingModelSettings
-    ) => OpenAIEmbeddingModel;
+      settings: OpenAITextEmbeddingModelSettings
+    ) => OpenAITextEmbeddingModel;
   };
 
 /**
- * Create an embedding model that calls the OpenAI embedding API.
+ * Create a text embedding model that calls the OpenAI embedding API.
  *
  * @see https://platform.openai.com/docs/api-reference/embeddings
  *
  * @example
- * const textModel = createOpenAIEmbeddingModel({
+ * const embeddingModel = createOpenAITextEmbeddingModel({
  *   apiKey: OPENAI_API_KEY,
  *   model: "text-embedding-ada-002",
  * });
  *
- * const response = await textModel.embed(
- *   "At first, Nox didn't know what to do with the pup."
- * );
+ * const response = await embeddingModel.embed([
+ *   "At first, Nox didn't know what to do with the pup.",
+ * ]);
  *
- * const embedding = await textModel.extractEmbedding(response);
+ * const embeddings = await embeddingModel.extractEmbeddings(response);
  */
-export const createOpenAIEmbeddingModel = ({
+export const createOpenAITextEmbeddingModel = ({
   baseUrl,
   apiKey,
   model,
@@ -51,9 +55,9 @@ export const createOpenAIEmbeddingModel = ({
 }: {
   baseUrl?: string;
   apiKey: string;
-  model: OpenAIEmbeddingModelType;
-  settings?: OpenAIEmbeddingModelSettings;
-}): OpenAIEmbeddingModel => {
+  model: OpenAITextEmbeddingModelType;
+  settings?: OpenAITextEmbeddingModelSettings;
+}): OpenAITextEmbeddingModel => {
   const tokenizer = getTiktokenTokenizerForModel({ model });
 
   return {
@@ -61,7 +65,7 @@ export const createOpenAIEmbeddingModel = ({
     model,
 
     tokenizer,
-    maxTokens: OPENAI_EMBEDDING_MODELS[model].maxTokens,
+    maxTokens: OPENAI_TEXT_EMBEDDING_MODELS[model].maxTokens,
     countInputTokens: (input: string) => tokenizer.countTokens(input),
 
     maxTextsPerCall: 1,
@@ -81,12 +85,12 @@ export const createOpenAIEmbeddingModel = ({
         user: settings.isUserIdForwardingEnabled ? context?.userId : undefined,
       });
     },
-    extractEmbedding: async (
+    extractEmbeddings: async (
       rawOutput: OpenAIEmbedding
     ): Promise<Array<number[]>> => [rawOutput.data[0]!.embedding],
 
-    withSettings: (additionalSettings: OpenAIEmbeddingModelSettings) =>
-      createOpenAIEmbeddingModel({
+    withSettings: (additionalSettings: OpenAITextEmbeddingModelSettings) =>
+      createOpenAITextEmbeddingModel({
         baseUrl,
         apiKey,
         model,

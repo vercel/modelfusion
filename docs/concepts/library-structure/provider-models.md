@@ -39,10 +39,10 @@ In this example, the createOpenAITextModel function is used to create a text gen
 
 ### Open AI
 
-- [Chat Model](/api/modules/provider_openai#createopenaichatmodel)
-- [Text Model](/api/modules/provider_openai#createopenaitextmodel)
-- [Embedding Model](/api/modules/provider_openai#createopenaiembeddingmodel)
+- [Chat Generation Model](/api/modules/provider_openai#createopenaichatmodel)
+- [Text Generation Model](/api/modules/provider_openai#createopenaitextmodel)
+- [Text Embedding Model](/api/modules/provider_openai#createopenaiembeddingmodel)
 
 ### Cohere
 
-- [Text Model](/api/modules/provider_cohere#createcoheretextmodel)
+- [Text Generation Model](/api/modules/provider_cohere#createcoheretextmodel)

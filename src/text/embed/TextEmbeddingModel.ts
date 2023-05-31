@@ -1,4 +1,4 @@
-export type EmbeddingModel<RAW_OUTPUT, EMBEDDING> = {
+export type TextEmbeddingModel<RAW_OUTPUT, EMBEDDING> = {
   readonly provider: string;
   readonly model: string;
 
@@ -12,5 +12,5 @@ export type EmbeddingModel<RAW_OUTPUT, EMBEDDING> = {
     }
   ) => PromiseLike<RAW_OUTPUT>;
 
-  extractEmbedding: (output: RAW_OUTPUT) => PromiseLike<Array<EMBEDDING>>;
+  extractEmbeddings: (output: RAW_OUTPUT) => PromiseLike<Array<EMBEDDING>>;
 };

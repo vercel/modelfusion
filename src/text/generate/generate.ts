@@ -11,7 +11,7 @@ import { SafeResult } from "../../util/SafeResult.js";
 import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
 import { runSafe } from "../../util/runSafe.js";
-import { GenerateModel } from "./GenerateModel.js";
+import { TextGenerationModel } from "./TextGenerationModel.js";
 
 export async function generate<
   INPUT,
@@ -48,7 +48,7 @@ generate.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT, OUTPUT>(options: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: GenerateModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
+    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
@@ -64,7 +64,7 @@ generate.asSafeFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT, OUTPUT>(options: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: GenerateModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
+    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
@@ -95,7 +95,7 @@ async function safeGenerate<
     functionId?: string | undefined;
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: GenerateModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
+    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;

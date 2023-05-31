@@ -1,8 +1,8 @@
-import { GenerateModel } from "../../../text/generate/GenerateModel.js";
+import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
 import { CohereTextCompletion } from "./CohereTextCompletion.js";
 import { generateCohereTextCompletion } from "./generateCohereTextCompletion.js";
 
-export const COHERE_TEXT_MODELS = {
+export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
     maxTokens: 2048,
   },
@@ -17,9 +17,10 @@ export const COHERE_TEXT_MODELS = {
   },
 };
 
-export type CohereTextModelType = keyof typeof COHERE_TEXT_MODELS;
+export type CohereTextGenerationModelType =
+  keyof typeof COHERE_TEXT_GENERATION_MODELS;
 
-export type CohereTextModelSettings = {
+export type CohereTextGenerationModelSettings = {
   numGenerations?: number;
   maxCompletionTokens?: number;
   temperature?: number;
@@ -34,7 +35,7 @@ export type CohereTextModelSettings = {
   truncate?: "NONE" | "START" | "END";
 };
 
-export type CohereTextModel = GenerateModel<
+export type CohereTextGenerationModel = TextGenerationModel<
   string,
   CohereTextCompletion,
   string
@@ -44,7 +45,9 @@ export type CohereTextModel = GenerateModel<
    */
   readonly maxTokens: number;
 
-  readonly withSettings: (settings: CohereTextModelSettings) => CohereTextModel;
+  readonly withSettings: (
+    settings: CohereTextGenerationModelSettings
+  ) => CohereTextGenerationModel;
 };
 
 /**
@@ -53,19 +56,19 @@ export type CohereTextModel = GenerateModel<
  * @see https://docs.cohere.com/reference/generate
  *
  * @example
- * const textModel = createCohereTextModel({
+ * const textGenerationModel = createCohereTextGenerationModel({
  *   apiKey: COHERE_API_KEY,
  *   model: "command-nightly",
  *   settings: { temperature: 0.7 },
  * });
  *
- * const response = await textModel
+ * const response = await textGenerationModel
  *   .withSettings({ maxCompletionTokens: 500 })
  *   .generate("Write a short story about a robot learning to love:\n\n");
  *
- * const text = await textModel.extractOutput(response);
+ * const text = await textGenerationModel.extractOutput(response);
  */
-export const createCohereTextModel = ({
+export const createCohereTextGenerationModel = ({
   baseUrl,
   apiKey,
   model,
@@ -73,14 +76,14 @@ export const createCohereTextModel = ({
 }: {
   baseUrl?: string;
   apiKey: string;
-  model: CohereTextModelType;
-  settings?: CohereTextModelSettings;
-}): CohereTextModel => {
+  model: CohereTextGenerationModelType;
+  settings?: CohereTextGenerationModelSettings;
+}): CohereTextGenerationModel => {
   return {
     provider: "cohere",
     model,
 
-    maxTokens: COHERE_TEXT_MODELS[model].maxTokens,
+    maxTokens: COHERE_TEXT_GENERATION_MODELS[model].maxTokens,
 
     generate: async (input: string, context): Promise<CohereTextCompletion> =>
       generateCohereTextCompletion({
@@ -96,8 +99,8 @@ export const createCohereTextModel = ({
       return rawOutput.generations[0].text;
     },
 
-    withSettings: (additionalSettings: CohereTextModelSettings) =>
-      createCohereTextModel({
+    withSettings: (additionalSettings: CohereTextGenerationModelSettings) =>
+      createCohereTextGenerationModel({
         baseUrl,
         apiKey,
         model,

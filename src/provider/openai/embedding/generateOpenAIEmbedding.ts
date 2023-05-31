@@ -4,7 +4,7 @@ import {
 } from "../../../internal/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { OpenAIEmbedding, openAIEmbeddingSchema } from "./OpenAIEmbedding.js";
-import { OpenAIEmbeddingModelType } from "./OpenAIEmbeddingModel.js";
+import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
 
 /**
  * Call the OpenAI Embedding API to generate an embedding for the given input.
@@ -31,7 +31,7 @@ export async function generateOpenAIEmbedding({
   baseUrl?: string;
   abortSignal?: AbortSignal;
   apiKey: string;
-  model: OpenAIEmbeddingModelType;
+  model: OpenAITextEmbeddingModelType;
   input: string;
   user?: string;
 }): Promise<OpenAIEmbedding> {

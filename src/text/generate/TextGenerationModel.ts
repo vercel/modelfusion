@@ -1,4 +1,4 @@
-export type GenerateModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT> = {
+export type TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT> = {
   readonly provider: string;
   readonly model: string;
 

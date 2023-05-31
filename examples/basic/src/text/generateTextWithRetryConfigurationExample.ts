@@ -1,4 +1,4 @@
-import { createOpenAITextModel } from "ai-utils.js/provider/openai";
+import { createOpenAITextGenerationModel } from "ai-utils.js/provider/openai";
 import { generateText } from "ai-utils.js/text";
 import { retryWithExponentialBackoff } from "ai-utils.js/util";
 import dotenv from "dotenv";
@@ -8,7 +8,7 @@ dotenv.config();
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 
 (async () => {
-  const model = createOpenAITextModel({
+  const model = createOpenAITextGenerationModel({
     apiKey: OPENAI_API_KEY,
     model: "text-davinci-003",
   });
