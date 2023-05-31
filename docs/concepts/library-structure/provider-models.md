@@ -4,13 +4,13 @@ sidebar_position: 1
 
 # Provider Models
 
-The `ai-utils.js` library also provides models. These models map provider-specific API calls to **higher level** concepts such as text generation. They are implemented as classes. Models include additional functionalities:
+Provider models map provider-specific API calls to library functions such as text generation and embedding. They are implemented as classes and are immutable. Models include additional functionalities:
 
-- **Additional information:** They provide more information about the API, such as token limits.
-- **Defaults:** They set default values for certain parameters (e.g., the value to extract from the response).
+- **Additional information:** They provide more information about the underlying API capabilities, such as token limits.
+- **Defaults:** They set default values for specific parameters (e.g., the value to extract from the response).
 - **Configurable settings:** They allow you to customize the API calls according to your needs.
 
-The models enable the separation of parameter configuration from the actual call. This separation is beneficial as most of the time, only the prompt changes, thereby allowing for the integration of API calls into run-aware functions.
+The models enable the separation of configuration parameters from the actual call. This separation is necessary to integrate the models into the library functions while letting you configure the parameters for the underlying API calls.
 
 ### Example Usage
 
