@@ -67,6 +67,11 @@
       "types": "./util/index.d.ts",
       "import": "./util/index.js",
       "require": "./util/index.cjs"
+    },
+    "./vector-db": {
+      "types": "./vector-db/index.d.ts",
+      "import": "./vector-db/index.js",
+      "require": "./vector-db/index.cjs"
     }
   },
   "scripts": {
