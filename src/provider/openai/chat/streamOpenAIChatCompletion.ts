@@ -7,7 +7,10 @@ import {
 } from "../../../internal/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { OpenAIChatMessage } from "./OpenAIChatCompletion.js";
-import { createOpenAIChatCompletionDeltaStream } from "./OpenAIChatCompletionDeltaStream.js";
+import {
+  OpenAIChatCompletionDeltaStreamEntry,
+  createOpenAIChatCompletionDeltaStream,
+} from "./OpenAIChatCompletionDeltaStream.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";
 
 export type OpenAIStreamChatCompletionResponseFormat<T> = {
@@ -22,11 +25,11 @@ export const streamOpenAIChatCompletionResponseFormat = Object.freeze({
     handler: createAsyncIterableResponseHandler(),
   }),
   asyncDeltaIterable: Object.freeze({
-    handler: (response: Response) =>
+    handler: async ({ response }: { response: Response }) =>
       createOpenAIChatCompletionDeltaStream(
         convertReadableStreamToAsyncIterable(response.body!.getReader())
       ),
-  }),
+  } satisfies OpenAIStreamChatCompletionResponseFormat<AsyncIterable<OpenAIChatCompletionDeltaStreamEntry>>),
 });
 
 /**

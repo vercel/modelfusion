@@ -1,7 +1,7 @@
 import {
   streamOpenAIChatCompletion,
   streamOpenAIChatCompletionResponseFormat,
-} from "ai-utils.js/model/openai";
+} from "ai-utils.js/provider/openai";
 import dotenv from "dotenv";
 
 dotenv.config();

@@ -30,21 +30,20 @@ export type ChatCompletionChoicesDelta = Array<{
   };
 }>;
 
+export type OpenAIChatCompletionDeltaStreamEntry =
+  | {
+      type: "delta";
+      delta: ChatCompletionChoicesDelta;
+    }
+  | {
+      type: "error";
+      error: unknown;
+    }
+  | undefined;
+
 export async function createOpenAIChatCompletionDeltaStream(
   stream: AsyncIterable<Uint8Array>
-): Promise<
-  AsyncIterable<
-    | {
-        type: "delta";
-        delta: ChatCompletionChoicesDelta;
-      }
-    | {
-        type: "error";
-        error: unknown;
-      }
-    | undefined
-  >
-> {
+): Promise<AsyncIterable<OpenAIChatCompletionDeltaStreamEntry>> {
   const queue = new AsyncQueue<
     | {
         type: "delta";

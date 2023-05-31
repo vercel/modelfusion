@@ -4,7 +4,7 @@ import {
   composeRecentMessagesOpenAIChatPrompt,
   streamOpenAIChatCompletion,
   streamOpenAIChatCompletionResponseFormat,
-} from "ai-utils.js/model/openai";
+} from "ai-utils.js/provider/openai";
 import { z } from "zod";
 
 export const config = {
