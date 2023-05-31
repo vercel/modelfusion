@@ -24,7 +24,6 @@ export type EmbedCallEndEvent = {
 
     startEpochSeconds: number;
     durationInMs: number;
-    tries: number;
   };
 } & (
   | { status: "success"; rawOutput: unknown; embedding: unknown }

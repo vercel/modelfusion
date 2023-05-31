@@ -5,10 +5,12 @@ import {
 } from "run/GenerateCallEvent.js";
 import { Prompt } from "../../prompt/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
-import { RunFunction } from "../../run/RunFunction.js";
+import { RunFunction, SafeRunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
-import { RetryFunction } from "../../util/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../util/retryWithExponentialBackoff.js";
+import { SafeResult } from "../../util/SafeResult.js";
+import { RetryFunction } from "../../util/retry/RetryFunction.js";
+import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
+import { runSafe } from "../../util/runSafe.js";
 import { GenerateModel } from "./GenerateModel.js";
 
 export async function generate<
@@ -39,7 +41,7 @@ export async function generate<
     throw result.error;
   }
 
-  return result.result;
+  return result.output;
 }
 
 generate.asFunction =
@@ -68,7 +70,7 @@ generate.asSafeFunction =
     retry?: RetryFunction;
     onCallStart?: (call: GenerateCallStartEvent) => void;
     onCallEnd?: (call: GenerateCallEndEvent) => void;
-  }) =>
+  }): SafeRunFunction<INPUT, OUTPUT> =>
   async (input: INPUT, context?: RunContext) =>
     safeGenerate({ input, ...options }, context);
 
@@ -101,10 +103,7 @@ async function safeGenerate<
     onCallEnd?: (call: GenerateCallEndEvent) => void;
   },
   context?: RunContext
-): Promise<
-  | { ok: true; result: OUTPUT }
-  | { ok: false; isAborted: boolean; error?: unknown }
-> {
+): Promise<SafeResult<OUTPUT>> {
   const expandedPrompt = await prompt(input);
 
   const startTime = performance.now();
@@ -137,50 +136,51 @@ async function safeGenerate<
   onCallStart?.(callStartEvent);
   context?.onCallStart?.(callStartEvent);
 
-  const rawOutput = await retry(() =>
-    model.generate(expandedPrompt, {
-      abortSignal: context?.abortSignal,
-    })
+  const result = await runSafe(() =>
+    retry(() =>
+      model.generate(expandedPrompt, {
+        abortSignal: context?.abortSignal,
+      })
+    )
   );
 
   const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
 
   const metadata = {
     durationInMs: textGenerationDurationInMs,
-    tries: rawOutput.tries,
     ...startMetadata,
   };
 
-  if (rawOutput.status === "failure") {
+  if (!result.ok) {
+    if (result.isAborted) {
+      const callEndEvent: GenerateCallEndEvent = {
+        type: "generate-end",
+        status: "abort",
+        metadata,
+        input: expandedPrompt,
+      };
+
+      onCallEnd?.(callEndEvent);
+      context?.onCallEnd?.(callEndEvent);
+
+      return { ok: false, isAborted: true };
+    }
+
     const callEndEvent: GenerateCallEndEvent = {
       type: "generate-end",
       status: "failure",
       metadata,
       input: expandedPrompt,
-      error: rawOutput.error,
+      error: result.error,
     };
 
     onCallEnd?.(callEndEvent);
     context?.onCallEnd?.(callEndEvent);
 
-    return { ok: false, isAborted: false, error: rawOutput.error };
+    return { ok: false, error: result.error };
   }
 
-  if (rawOutput.status === "abort") {
-    const callEndEvent: GenerateCallEndEvent = {
-      type: "generate-end",
-      status: "abort",
-      metadata,
-      input: expandedPrompt,
-    };
-
-    onCallEnd?.(callEndEvent);
-    context?.onCallEnd?.(callEndEvent);
-
-    return { ok: false, isAborted: true };
-  }
-
-  const extractedOutput = await extractOutput(rawOutput.result);
+  const extractedOutput = await extractOutput(result.output);
   const processedOutput = await processOutput(extractedOutput);
 
   const callEndEvent: GenerateCallEndEvent = {
@@ -188,7 +188,7 @@ async function safeGenerate<
     status: "success",
     metadata,
     input: expandedPrompt,
-    rawOutput: rawOutput.result,
+    rawOutput: result.output,
     extractedOutput,
     processedOutput,
   };
@@ -196,5 +196,5 @@ async function safeGenerate<
   onCallEnd?.(callEndEvent);
   context?.onCallEnd?.(callEndEvent);
 
-  return { ok: true, result: processedOutput };
+  return { ok: true, output: processedOutput };
 }

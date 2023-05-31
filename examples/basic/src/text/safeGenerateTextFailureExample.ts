@@ -13,12 +13,12 @@ import { generateText } from "ai-utils.js/text";
       `Write a short story about ${character} learning to love:\n\n`,
   });
 
-  const response = await generateStory({ character: "a robot" });
+  const result = await generateStory({ character: "a robot" });
 
-  if (!response.ok) {
-    console.error(response.error);
+  if (!result.ok) {
+    console.error(result.error);
     return;
   }
 
-  console.log(response.result);
+  console.log(result.output);
 })();

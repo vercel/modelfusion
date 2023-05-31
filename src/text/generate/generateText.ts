@@ -6,7 +6,7 @@ import {
 import { RunContext } from "../../run/RunContext.js";
 import { RunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
-import { RetryFunction } from "../../util/RetryFunction.js";
+import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import { GenerateModel } from "./GenerateModel.js";
 import { generate } from "./generate.js";
 
@@ -24,7 +24,7 @@ export async function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     throw result.error;
   }
 
-  return result.result;
+  return result.output;
 }
 
 generateText.asFunction =

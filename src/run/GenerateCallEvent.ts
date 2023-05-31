@@ -24,7 +24,6 @@ export type GenerateCallEndEvent = {
 
     startEpochSeconds: number;
     durationInMs: number;
-    tries: number;
   };
 } & (
   | {

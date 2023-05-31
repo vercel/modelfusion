@@ -5,8 +5,9 @@ import {
 } from "../../run/EmbedCallEvent.js";
 import { RunContext } from "../../run/RunContext.js";
 import { AbortError } from "../../util/AbortError.js";
-import { RetryFunction } from "../../util/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../util/retryWithExponentialBackoff.js";
+import { RetryFunction } from "../../util/retry/RetryFunction.js";
+import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
+import { runSafe } from "../../util/runSafe.js";
 import { EmbeddingModel } from "./EmbeddingModel.js";
 
 export async function embed<RAW_OUTPUT, GENERATED_OUTPUT>(
@@ -57,53 +58,52 @@ export async function embed<RAW_OUTPUT, GENERATED_OUTPUT>(
   onCallStart?.(callStartEvent);
   context?.onCallStart?.(callStartEvent);
 
-  const rawOutput = await retry(() => model.embed(value, context));
+  const result = await runSafe(() => retry(() => model.embed(value, context)));
 
   const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
 
   const metadata = {
     durationInMs: textGenerationDurationInMs,
-    tries: rawOutput.tries,
     ...startMetadata,
   };
 
-  if (rawOutput.status === "failure") {
+  if (!result.ok) {
+    if (result.isAborted) {
+      const callEndEvent: EmbedCallEndEvent = {
+        type: "embed-end",
+        status: "abort",
+        metadata,
+        input: value,
+      };
+
+      onCallEnd?.(callEndEvent);
+      context?.onCallEnd?.(callEndEvent);
+
+      throw new AbortError();
+    }
+
     const callEndEvent: EmbedCallEndEvent = {
       type: "embed-end",
       status: "failure",
       metadata,
       input: value,
-      error: rawOutput.error,
+      error: result.error,
     };
 
     onCallEnd?.(callEndEvent);
     context?.onCallEnd?.(callEndEvent);
 
-    throw rawOutput.error;
+    throw result.error;
   }
 
-  if (rawOutput.status === "abort") {
-    const callEndEvent: EmbedCallEndEvent = {
-      type: "embed-end",
-      status: "abort",
-      metadata,
-      input: value,
-    };
-
-    onCallEnd?.(callEndEvent);
-    context?.onCallEnd?.(callEndEvent);
-
-    throw new AbortError();
-  }
-
-  const embedding = await model.extractEmbedding(rawOutput.result);
+  const embedding = await model.extractEmbedding(result.output);
 
   const callEndEvent: EmbedCallEndEvent = {
     type: "embed-end",
     status: "success",
     metadata,
     input: value,
-    rawOutput: rawOutput.result,
+    rawOutput: result.output,
     embedding,
   };
 

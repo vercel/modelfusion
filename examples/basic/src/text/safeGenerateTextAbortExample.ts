@@ -16,20 +16,20 @@ import { generateText } from "ai-utils.js/text";
   const abortController = new AbortController();
   abortController.abort(); // this would happen in parallel to generateStory
 
-  const response = await generateStory(
+  const result = await generateStory(
     { character: "a robot" },
     { abortSignal: abortController.signal }
   );
 
-  if (!response.ok) {
-    if (response.isAborted) {
+  if (!result.ok) {
+    if (result.isAborted) {
       console.error("The story generation was aborted.");
       return;
     }
 
-    console.error(response.error);
+    console.error(result.error);
     return;
   }
 
-  console.log(response.result);
+  console.log(result.output);
 })();

@@ -1,3 +1,4 @@
+import { SafeResult } from "../util/SafeResult.js";
 import { RunContext } from "./RunContext.js";
 
 /**
@@ -9,3 +10,8 @@ export type RunFunction<INPUT, OUTPUT> = (
   input: INPUT,
   context?: RunContext
 ) => PromiseLike<OUTPUT>;
+
+export type SafeRunFunction<INPUT, OUTPUT> = (
+  input: INPUT,
+  context?: RunContext
+) => PromiseLike<SafeResult<OUTPUT>>;
