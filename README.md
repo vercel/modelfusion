@@ -92,7 +92,7 @@ Takes a PDF and a topic and creates a Twitter thread with all content from the P
 
 A basic web chat with an AI assistant, implemented as a Next.js app.
 
-### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/voice-recording-summarizer-next-js)
+### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/voice-recording-next-js)
 
 > _Next.js app_, _OpenAI Whisper_
 
