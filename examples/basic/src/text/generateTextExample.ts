@@ -1,4 +1,4 @@
-import { createOpenAITextModel } from "ai-utils.js/model/openai";
+import { createOpenAITextModel } from "ai-utils.js/provider/openai";
 import { generateText } from "ai-utils.js/text";
 import dotenv from "dotenv";
 
