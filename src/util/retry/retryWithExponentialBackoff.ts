@@ -3,13 +3,25 @@ import { RetryFunction } from "./RetryFunction.js";
 import { RetryError } from "./RetryError.js";
 
 export const retryWithExponentialBackoff =
-  ({ maxTries = 5, delay = 2000 } = {}): RetryFunction =>
+  ({
+    maxTries = 5,
+    initialDelay = 2000,
+    backoffFactor = 2,
+  } = {}): RetryFunction =>
   async <OUTPUT>(f: () => PromiseLike<OUTPUT>) =>
-    _retryWithExponentialBackoff(f, { maxTries, delay });
+    _retryWithExponentialBackoff(f, {
+      maxTries,
+      delay: initialDelay,
+      backoffFactor,
+    });
 
 async function _retryWithExponentialBackoff<OUTPUT>(
   f: () => PromiseLike<OUTPUT>,
-  { maxTries = 5, delay = 2000 } = {},
+  {
+    maxTries,
+    delay,
+    backoffFactor,
+  }: { maxTries: number; delay: number; backoffFactor: number },
   errors: unknown[] = []
 ): Promise<OUTPUT> {
   try {
@@ -40,7 +52,7 @@ async function _retryWithExponentialBackoff<OUTPUT>(
         await new Promise((resolve) => setTimeout(resolve, delay));
         return _retryWithExponentialBackoff(
           f,
-          { maxTries, delay: 2 * delay },
+          { maxTries, delay: backoffFactor * delay, backoffFactor },
           newErrors
         );
       }
