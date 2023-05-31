@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Library Functions
 
-`ai-utils.js` offers a variety of high-level functions, e.g. generate text, that are built on top of model interfaces. They can be used directly or in functional composition. The library functions are run-aware and add prompts, retry management, and call logging. They also support swapping out models for other compatible models.
+`ai-utils.js` offers a variety of high-level functions, e.g. generate text, that are built on top of model interfaces. They can be used directly or in functional composition. The library functions are run-aware and add prompts, retry management, error handling, and call logging. They also support swapping out models for other compatible models.
 
 ### Example Usage
 
@@ -35,4 +35,6 @@ console.log(text);
 ### Text
 
 - [generateText](/api/modules/text#generatetext)
+- [generateText.safe](/api/namespaces/text.generateText#safe)
 - [generateText.asFunction](/api/namespaces/text.generateText#asfunction)
+- [generateText.asSafeFunction](/api/namespaces/text.generateText#assafefunction)
