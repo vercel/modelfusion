@@ -1,4 +1,4 @@
-import { GeneratorModel } from "../../../text/generate/GeneratorModel.js";
+import { GenerateModel } from "../../../text/generate/GenerateModel.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import { OpenAITextCompletion } from "./OpenAITextCompletion.js";
@@ -56,7 +56,7 @@ export type OpenAITextModelSettings = {
   bestOf?: number;
 };
 
-export type OpenAITextModel = GeneratorModel<
+export type OpenAITextModel = GenerateModel<
   string,
   OpenAITextCompletion,
   string

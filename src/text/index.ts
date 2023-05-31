@@ -1,4 +1,4 @@
-export * from "./generate/GeneratorModel.js";
+export * from "./generate/GenerateModel.js";
 export * from "./generate/generate.js";
 export * from "./generate/generateText.js";
 export * from "./map/MapFunction.js";

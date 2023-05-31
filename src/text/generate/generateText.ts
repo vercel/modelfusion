@@ -7,7 +7,7 @@ import { RunContext } from "../../run/RunContext.js";
 import { RunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
 import { RetryFunction } from "../../util/RetryFunction.js";
-import { GeneratorModel } from "./GeneratorModel.js";
+import { GenerateModel } from "./GenerateModel.js";
 import { generate } from "./generate.js";
 
 export async function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
@@ -31,7 +31,7 @@ generateText.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT>(options: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, string>;
+    model: GenerateModel<PROMPT_TYPE, RAW_OUTPUT, string>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
     retry?: RetryFunction;
@@ -47,7 +47,7 @@ generateText.asSafeFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT>(options: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, string>;
+    model: GenerateModel<PROMPT_TYPE, RAW_OUTPUT, string>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
     retry?: RetryFunction;
@@ -71,7 +71,7 @@ generateText.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT>(options: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, string>;
+    model: GenerateModel<PROMPT_TYPE, RAW_OUTPUT, string>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
     retry?: RetryFunction;
@@ -96,7 +96,7 @@ function safeGenerateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     functionId?: string | undefined;
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, string>;
+    model: GenerateModel<PROMPT_TYPE, RAW_OUTPUT, string>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
     retry?: RetryFunction;

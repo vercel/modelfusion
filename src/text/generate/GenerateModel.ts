@@ -1,4 +1,4 @@
-export type GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT> = {
+export type GenerateModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT> = {
   vendor: string;
   model: string;
 

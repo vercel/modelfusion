@@ -1,4 +1,4 @@
-import { GeneratorModel } from "../../../text/generate/GeneratorModel.js";
+import { GenerateModel } from "../../../text/generate/GenerateModel.js";
 import { CohereTextCompletion } from "./CohereTextCompletion.js";
 import { generateCohereTextCompletion } from "./generateCohereTextCompletion.js";
 
@@ -34,7 +34,7 @@ export type CohereTextModelSettings = {
   truncate?: "NONE" | "START" | "END";
 };
 
-export type CohereTextModel = GeneratorModel<
+export type CohereTextModel = GenerateModel<
   string,
   CohereTextCompletion,
   string

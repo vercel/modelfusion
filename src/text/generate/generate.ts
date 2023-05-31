@@ -9,7 +9,7 @@ import { RunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
 import { RetryFunction } from "../../util/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../util/retryWithExponentialBackoff.js";
-import { GeneratorModel } from "./GeneratorModel.js";
+import { GenerateModel } from "./GenerateModel.js";
 
 export async function generate<
   INPUT,
@@ -46,7 +46,7 @@ generate.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT, OUTPUT>(options: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
+    model: GenerateModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
@@ -62,7 +62,7 @@ generate.asSafeFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT, OUTPUT>(options: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
+    model: GenerateModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
@@ -93,7 +93,7 @@ async function safeGenerate<
     functionId?: string | undefined;
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
+    model: GenerateModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
