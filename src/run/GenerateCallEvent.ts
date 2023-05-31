@@ -5,7 +5,7 @@ export type GenerateCallStartEvent = {
   input: unknown;
   metadata: IdMetadata & {
     model: {
-      vendor: string;
+      provider: string;
       name: string;
     };
 
@@ -18,7 +18,7 @@ export type GenerateCallEndEvent = {
   input: unknown;
   metadata: IdMetadata & {
     model: {
-      vendor: string;
+      provider: string;
       name: string;
     };
 

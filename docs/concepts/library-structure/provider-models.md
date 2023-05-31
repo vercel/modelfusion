@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Provider Models
 
-The `ai-utils.js` library also provides models. These models map vendor-specific API calls to **higher level** concepts such as text generation. Models include additional functionalities:
+The `ai-utils.js` library also provides models. These models map provider-specific API calls to **higher level** concepts such as text generation. Models include additional functionalities:
 
 - **Additional information:** They provide more information about the API, such as token limits.
 - **Defaults:** They set default values for certain parameters (e.g., the value to extract from the response).

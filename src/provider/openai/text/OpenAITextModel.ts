@@ -106,7 +106,7 @@ export const createOpenAITextModel = ({
   const tokenizer = getTiktokenTokenizerForModel({ model });
 
   return {
-    vendor: "openai",
+    provider: "openai",
     model,
 
     tokenizer,

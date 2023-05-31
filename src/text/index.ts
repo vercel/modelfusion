@@ -1,3 +1,6 @@
+export * from "./embed/EmbedFunction.js";
+export * from "./embed/EmbeddingModel.js";
+export * from "./embed/embed.js";
 export * from "./generate/GenerateModel.js";
 export * from "./generate/generate.js";
 export * from "./generate/generateText.js";

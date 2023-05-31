@@ -2,10 +2,10 @@ import { IdMetadata } from "./IdMetadata.js";
 
 export type EmbedCallStartEvent = {
   type: "embed-start";
-  input: unknown;
+  texts: Array<string>;
   metadata: IdMetadata & {
     model: {
-      vendor: string;
+      provider: string;
       name: string;
     };
 
@@ -15,10 +15,10 @@ export type EmbedCallStartEvent = {
 
 export type EmbedCallEndEvent = {
   type: "embed-end";
-  input: unknown;
+  texts: Array<string>;
   metadata: IdMetadata & {
     model: {
-      vendor: string;
+      provider: string;
       name: string;
     };
 
@@ -26,7 +26,11 @@ export type EmbedCallEndEvent = {
     durationInMs: number;
   };
 } & (
-  | { status: "success"; rawOutput: unknown; embedding: unknown }
+  | {
+      status: "success";
+      rawOutputs: Array<unknown>;
+      embeddings: Array<unknown>;
+    }
   | { status: "failure"; error: unknown }
   | { status: "abort" }
 );

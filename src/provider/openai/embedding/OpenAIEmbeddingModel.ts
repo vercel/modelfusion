@@ -57,25 +57,33 @@ export const createOpenAIEmbeddingModel = ({
   const tokenizer = getTiktokenTokenizerForModel({ model });
 
   return {
-    vendor: "openai",
+    provider: "openai",
     model,
 
     tokenizer,
     maxTokens: OPENAI_EMBEDDING_MODELS[model].maxTokens,
     countInputTokens: (input: string) => tokenizer.countTokens(input),
 
-    embed: async (input: string, context): Promise<OpenAIEmbedding> =>
-      generateOpenAIEmbedding({
+    maxTextsPerCall: 1,
+    embed: async (texts: Array<string>, context): Promise<OpenAIEmbedding> => {
+      if (texts.length > 1) {
+        throw new Error(
+          `OpenAI embedding model "${model}" only supports one text per call`
+        );
+      }
+
+      return generateOpenAIEmbedding({
         baseUrl,
         abortSignal: context?.abortSignal,
         apiKey,
-        input,
+        input: texts[0],
         model,
         user: settings.isUserIdForwardingEnabled ? context?.userId : undefined,
-      }),
-
-    extractEmbedding: async (rawOutput: OpenAIEmbedding): Promise<number[]> =>
-      rawOutput.data[0]!.embedding,
+      });
+    },
+    extractEmbedding: async (
+      rawOutput: OpenAIEmbedding
+    ): Promise<Array<number[]>> => [rawOutput.data[0]!.embedding],
 
     withSettings: (additionalSettings: OpenAIEmbeddingModelSettings) =>
       createOpenAIEmbeddingModel({

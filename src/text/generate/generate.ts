@@ -121,7 +121,7 @@ async function safeGenerate<
     userId: context?.userId,
 
     model: {
-      vendor: model.vendor,
+      provider: model.provider,
       name: model.model,
     },
     startEpochSeconds,

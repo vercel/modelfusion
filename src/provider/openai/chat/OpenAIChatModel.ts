@@ -100,7 +100,7 @@ export const createOpenAIChatModel = ({
   model: OpenAIChatModelType;
   settings?: OpenAIChatModelSettings;
 }): OpenAIChatModel => ({
-  vendor: "openai",
+  provider: "openai",
   model,
 
   tokenizer: getTiktokenTokenizerForModel({ model }),

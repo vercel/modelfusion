@@ -10,24 +10,24 @@ import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponenti
 import { runSafe } from "../../util/runSafe.js";
 import { EmbeddingModel } from "./EmbeddingModel.js";
 
-export async function embed<RAW_OUTPUT, GENERATED_OUTPUT>(
+export async function embed<RAW_OUTPUT, EMBEDDING>(
   {
     functionId,
     model,
-    value,
+    texts,
     retry = retryWithExponentialBackoff(),
     onCallStart,
     onCallEnd,
   }: {
     functionId?: string;
-    model: EmbeddingModel<RAW_OUTPUT, GENERATED_OUTPUT>;
-    value: string;
+    model: EmbeddingModel<RAW_OUTPUT, EMBEDDING>;
+    texts: Array<string>;
     retry?: RetryFunction;
     onCallStart?: (call: EmbedCallStartEvent) => void;
     onCallEnd?: (call: EmbedCallEndEvent) => void;
   },
   context?: RunContext
-): Promise<GENERATED_OUTPUT> {
+): Promise<Array<EMBEDDING>> {
   const startTime = performance.now();
   const startEpochSeconds = Math.floor(
     (performance.timeOrigin + startTime) / 1000
@@ -43,7 +43,7 @@ export async function embed<RAW_OUTPUT, GENERATED_OUTPUT>(
     userId: context?.userId,
 
     model: {
-      vendor: model.vendor,
+      provider: model.provider,
       name: model.model,
     },
     startEpochSeconds,
@@ -52,13 +52,11 @@ export async function embed<RAW_OUTPUT, GENERATED_OUTPUT>(
   const callStartEvent: EmbedCallStartEvent = {
     type: "embed-start",
     metadata: startMetadata,
-    input: value,
+    texts,
   };
 
   onCallStart?.(callStartEvent);
   context?.onCallStart?.(callStartEvent);
-
-  const result = await runSafe(() => retry(() => model.embed(value, context)));
 
   const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
 
@@ -67,59 +65,80 @@ export async function embed<RAW_OUTPUT, GENERATED_OUTPUT>(
     ...startMetadata,
   };
 
-  if (!result.ok) {
-    if (result.isAborted) {
+  // split the texts into groups:
+  const maxTextsPerCall = model.maxTextsPerCall;
+  const textGroups = [];
+  for (let i = 0; i < texts.length; i += maxTextsPerCall) {
+    textGroups.push(texts.slice(i, i + maxTextsPerCall));
+  }
+
+  // embed each group:
+  const rawOutputs: Array<RAW_OUTPUT> = [];
+  for (const textGroup of textGroups) {
+    const result = await runSafe(() =>
+      retry(() => model.embed(textGroup, context))
+    );
+
+    if (!result.ok) {
+      if (result.isAborted) {
+        const callEndEvent: EmbedCallEndEvent = {
+          type: "embed-end",
+          status: "abort",
+          metadata,
+          texts,
+        };
+
+        onCallEnd?.(callEndEvent);
+        context?.onCallEnd?.(callEndEvent);
+
+        throw new AbortError();
+      }
+
       const callEndEvent: EmbedCallEndEvent = {
         type: "embed-end",
-        status: "abort",
+        status: "failure",
         metadata,
-        input: value,
+        texts,
+        error: result.error,
       };
 
       onCallEnd?.(callEndEvent);
       context?.onCallEnd?.(callEndEvent);
 
-      throw new AbortError();
+      throw result.error;
     }
 
-    const callEndEvent: EmbedCallEndEvent = {
-      type: "embed-end",
-      status: "failure",
-      metadata,
-      input: value,
-      error: result.error,
-    };
-
-    onCallEnd?.(callEndEvent);
-    context?.onCallEnd?.(callEndEvent);
-
-    throw result.error;
+    rawOutputs.push(result.output);
   }
 
-  const embedding = await model.extractEmbedding(result.output);
+  // combine the results:
+  const embeddings: Array<EMBEDDING> = [];
+  for (const rawOutput of rawOutputs) {
+    embeddings.push(...(await model.extractEmbedding(rawOutput)));
+  }
 
   const callEndEvent: EmbedCallEndEvent = {
     type: "embed-end",
     status: "success",
     metadata,
-    input: value,
-    rawOutput: result.output,
-    embedding,
+    texts,
+    rawOutputs,
+    embeddings,
   };
 
   onCallEnd?.(callEndEvent);
   context?.onCallEnd?.(callEndEvent);
 
-  return embedding;
+  return embeddings;
 }
 
 embed.asFunction =
-  <RAW_OUTPUT, GENERATED_OUTPUT>({
-    id,
+  <RAW_OUTPUT, EMBEDDING>({
+    functionId,
     model,
   }: {
-    id?: string;
-    model: EmbeddingModel<RAW_OUTPUT, GENERATED_OUTPUT>;
+    functionId?: string;
+    model: EmbeddingModel<RAW_OUTPUT, EMBEDDING>;
   }) =>
-  async ({ value }: { value: string }, context: RunContext) =>
-    embed({ functionId: id, model, value }, context);
+  async ({ texts }: { texts: Array<string> }, context?: RunContext) =>
+    embed({ functionId, model, texts }, context);

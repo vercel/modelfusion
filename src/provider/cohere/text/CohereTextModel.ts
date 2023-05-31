@@ -77,7 +77,7 @@ export const createCohereTextModel = ({
   settings?: CohereTextModelSettings;
 }): CohereTextModel => {
   return {
-    vendor: "cohere",
+    provider: "cohere",
     model,
 
     maxTokens: COHERE_TEXT_MODELS[model].maxTokens,

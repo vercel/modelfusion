@@ -1,6 +1,6 @@
 export type GenerateModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT> = {
-  vendor: string;
-  model: string;
+  readonly provider: string;
+  readonly model: string;
 
   generate: (
     prompt: PROMPT_TYPE,
