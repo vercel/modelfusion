@@ -1,4 +1,6 @@
+import { RunContext } from "../../../run/RunContext.js";
 import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
+import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import { OpenAITextCompletion } from "./OpenAITextCompletion.js";
@@ -57,31 +59,13 @@ export type OpenAITextGenerationModelSettings = {
   bestOf?: number;
 };
 
-export type OpenAITextGenerationModel = TextGenerationModel<
-  string,
-  OpenAITextCompletion,
-  string
-> &
-  TokenizerModel<number[]> & {
-    /**
-     * Maximum number of prompt and completion tokens that this model supports.
-     */
-    readonly maxTokens: number;
-
-    readonly countPromptTokens: (prompt: string) => PromiseLike<number>;
-
-    readonly withSettings: (
-      settings: OpenAITextGenerationModelSettings
-    ) => OpenAITextGenerationModel;
-  };
-
 /**
  * Create a text generation model that calls the OpenAI text completion API.
  *
  * @see https://platform.openai.com/docs/api-reference/completions/create
  *
  * @example
- * const textGenerationModel = createOpenAITextGenerationModel({
+ * const textGenerationModel = new OpenAITextGenerationModel({
  *   apiKey: OPENAI_API_KEY,
  *   model: "text-davinci-003",
  *   settings: { temperature: 0.7 },
@@ -93,48 +77,69 @@ export type OpenAITextGenerationModel = TextGenerationModel<
  *
  * const text = await textGenerationModel.extractOutput(response);
  */
-export const createOpenAITextGenerationModel = ({
-  baseUrl,
-  apiKey,
-  model,
-  settings = {},
-}: {
-  baseUrl?: string;
-  apiKey: string;
-  model: OpenAITextGenerationModelType;
-  settings?: OpenAITextGenerationModelSettings;
-}): OpenAITextGenerationModel => {
-  const tokenizer = getTiktokenTokenizerForModel({ model });
+export class OpenAITextGenerationModel
+  implements
+    TextGenerationModel<string, OpenAITextCompletion, string>,
+    TokenizerModel<number[]>
+{
+  readonly provider = "openai";
 
-  return {
-    provider: "openai",
+  readonly baseUrl?: string;
+  readonly apiKey: string;
+
+  readonly model: OpenAITextGenerationModelType;
+  readonly settings: OpenAITextGenerationModelSettings;
+
+  readonly tokenizer: Tokenizer<number[]>;
+  readonly maxTokens: number;
+
+  constructor({
+    baseUrl,
+    apiKey,
     model,
+    settings = {},
+  }: {
+    baseUrl?: string;
+    apiKey: string;
+    model: OpenAITextGenerationModelType;
+    settings?: OpenAITextGenerationModelSettings;
+  }) {
+    this.baseUrl = baseUrl;
+    this.apiKey = apiKey;
+    this.model = model;
+    this.settings = settings;
 
-    tokenizer,
-    maxTokens: OPENAI_TEXT_GENERATION_MODELS[model].maxTokens,
-    countPromptTokens: (prompt: string) => tokenizer.countTokens(prompt),
+    this.tokenizer = getTiktokenTokenizerForModel({ model });
+    this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[model].maxTokens;
+  }
 
-    generate: async (input: string, context): Promise<OpenAITextCompletion> =>
-      generateOpenAITextCompletion({
-        baseUrl,
-        abortSignal: context?.abortSignal,
-        apiKey,
-        prompt: input,
-        model,
-        user: settings.isUserIdForwardingEnabled ? context?.userId : undefined,
-        ...settings,
-      }),
+  async generate(
+    input: string,
+    context?: RunContext
+  ): Promise<OpenAITextCompletion> {
+    return generateOpenAITextCompletion({
+      baseUrl: this.baseUrl,
+      abortSignal: context?.abortSignal,
+      apiKey: this.apiKey,
+      prompt: input,
+      model: this.model,
+      user: this.settings.isUserIdForwardingEnabled
+        ? context?.userId
+        : undefined,
+      ...this.settings,
+    });
+  }
 
-    extractOutput: async (rawOutput: OpenAITextCompletion): Promise<string> => {
-      return rawOutput.choices[0]!.text;
-    },
+  async extractOutput(rawOutput: OpenAITextCompletion): Promise<string> {
+    return rawOutput.choices[0]!.text;
+  }
 
-    withSettings: (additionalSettings: OpenAITextGenerationModelSettings) =>
-      createOpenAITextGenerationModel({
-        baseUrl,
-        apiKey,
-        model,
-        settings: Object.assign({}, settings, additionalSettings),
-      }),
-  };
-};
+  withSettings(additionalSettings: OpenAITextGenerationModelSettings) {
+    return new OpenAITextGenerationModel({
+      baseUrl: this.baseUrl,
+      apiKey: this.apiKey,
+      model: this.model,
+      settings: Object.assign({}, this.settings, additionalSettings),
+    });
+  }
+}

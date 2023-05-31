@@ -1,4 +1,4 @@
-import { createOpenAIChatModel } from "ai-utils.js/provider/openai";
+import { OpenAIChatModel } from "ai-utils.js/provider/openai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -6,7 +6,7 @@ dotenv.config();
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 
 (async () => {
-  const chatModel = createOpenAIChatModel({
+  const chatModel = new OpenAIChatModel({
     apiKey: OPENAI_API_KEY,
     model: "gpt-3.5-turbo",
     settings: { temperature: 0.7 },

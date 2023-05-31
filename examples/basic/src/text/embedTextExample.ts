@@ -1,4 +1,4 @@
-import { createOpenAITextEmbeddingModel } from "ai-utils.js/provider/openai";
+import { OpenAITextEmbeddingModel } from "ai-utils.js/provider/openai";
 import { embedText } from "ai-utils.js/text";
 import dotenv from "dotenv";
 
@@ -7,7 +7,7 @@ dotenv.config();
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 
 (async () => {
-  const model = createOpenAITextEmbeddingModel({
+  const model = new OpenAITextEmbeddingModel({
     apiKey: OPENAI_API_KEY,
     model: "text-embedding-ada-002",
   });

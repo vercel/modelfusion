@@ -1,4 +1,6 @@
+import { RunContext } from "../../../run/RunContext.js";
 import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
+import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import {
@@ -44,30 +46,13 @@ export type OpenAIChatModelSettings = {
   frequencyPenalty?: number;
 };
 
-export type OpenAIChatModel = TextGenerationModel<
-  OpenAIChatMessage[],
-  OpenAIChatCompletion,
-  string
-> &
-  TokenizerModel<number[]> & {
-    readonly maxTokens: number;
-
-    readonly countPromptTokens: (
-      messages: OpenAIChatMessage[]
-    ) => PromiseLike<number>;
-
-    readonly withSettings: (
-      settings: OpenAIChatModelSettings
-    ) => OpenAIChatModel;
-  };
-
 /**
  * Create a text generation model that calls the OpenAI chat completion API.
  *
  * @see https://platform.openai.com/docs/api-reference/chat/create
  *
  * @example
- * const chatModel = createOpenAIChatModel({
+ * const chatModel = new OpenAIChatModel({
  *   apiKey: OPENAI_API_KEY,
  *   model: "gpt-3.5-turbo",
  *   settings: { temperature: 0.7 },
@@ -89,48 +74,76 @@ export type OpenAIChatModel = TextGenerationModel<
  *
  * const text = await chatModel.extractOutput(response);
  */
-export const createOpenAIChatModel = ({
-  baseUrl,
-  apiKey,
-  model,
-  settings = {},
-}: {
-  baseUrl?: string;
-  apiKey: string;
-  model: OpenAIChatModelType;
-  settings?: OpenAIChatModelSettings;
-}): OpenAIChatModel => ({
-  provider: "openai",
-  model,
+export class OpenAIChatModel
+  implements
+    TextGenerationModel<OpenAIChatMessage[], OpenAIChatCompletion, string>,
+    TokenizerModel<number[]>
+{
+  readonly provider = "openai";
 
-  tokenizer: getTiktokenTokenizerForModel({ model }),
-  maxTokens: OPENAI_CHAT_MODELS[model].maxTokens,
-  countPromptTokens: (messages: OpenAIChatMessage[]) =>
-    countOpenAIChatPromptTokens({
+  readonly baseUrl?: string;
+  readonly apiKey: string;
+
+  readonly model: OpenAIChatModelType;
+  readonly settings: OpenAIChatModelSettings;
+
+  readonly tokenizer: Tokenizer<number[]>;
+  readonly maxTokens: number;
+
+  constructor({
+    baseUrl,
+    apiKey,
+    model,
+    settings = {},
+  }: {
+    baseUrl?: string;
+    apiKey: string;
+    model: OpenAIChatModelType;
+    settings?: OpenAIChatModelSettings;
+  }) {
+    this.baseUrl = baseUrl;
+    this.apiKey = apiKey;
+    this.model = model;
+    this.settings = settings;
+
+    this.tokenizer = getTiktokenTokenizerForModel({ model });
+    this.maxTokens = OPENAI_CHAT_MODELS[model].maxTokens;
+  }
+
+  countPromptTokens(messages: OpenAIChatMessage[]) {
+    return countOpenAIChatPromptTokens({
       messages,
-      model,
-    }),
+      model: this.model,
+    });
+  }
 
-  generate: async (input, context): Promise<OpenAIChatCompletion> =>
-    generateOpenAIChatCompletion({
-      baseUrl,
+  async generate(
+    input: Array<OpenAIChatMessage>,
+    context?: RunContext
+  ): Promise<OpenAIChatCompletion> {
+    return generateOpenAIChatCompletion({
+      baseUrl: this.baseUrl,
       abortSignal: context?.abortSignal,
-      apiKey,
+      apiKey: this.apiKey,
       messages: input,
-      model,
-      user: settings.isUserIdForwardingEnabled ? context?.userId : undefined,
-      ...settings,
-    }),
+      model: this.model,
+      user: this.settings.isUserIdForwardingEnabled
+        ? context?.userId
+        : undefined,
+      ...this.settings,
+    });
+  }
 
-  extractOutput: async (rawOutput: OpenAIChatCompletion): Promise<string> => {
+  async extractOutput(rawOutput: OpenAIChatCompletion): Promise<string> {
     return rawOutput.choices[0]!.message.content;
-  },
+  }
 
-  withSettings: (additionalSettings: OpenAIChatModelSettings) =>
-    createOpenAIChatModel({
-      baseUrl,
-      apiKey,
-      model,
-      settings: Object.assign({}, settings, additionalSettings),
-    }),
-});
+  withSettings(additionalSettings: OpenAIChatModelSettings) {
+    return new OpenAIChatModel({
+      baseUrl: this.baseUrl,
+      apiKey: this.apiKey,
+      model: this.model,
+      settings: Object.assign({}, this.settings, additionalSettings),
+    });
+  }
+}

@@ -1,8 +1,8 @@
-import { createOpenAITextGenerationModel } from "ai-utils.js/provider/openai";
+import { OpenAITextGenerationModel } from "ai-utils.js/provider/openai";
 import { generateText } from "ai-utils.js/text";
 
 (async () => {
-  const model = createOpenAITextGenerationModel({
+  const model = new OpenAITextGenerationModel({
     apiKey: "invalid-api-key",
     model: "text-davinci-003",
   });

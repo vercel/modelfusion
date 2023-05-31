@@ -1,4 +1,6 @@
+import { RunContext } from "../../../run/RunContext.js";
 import { TextEmbeddingModel } from "../../../text/embed/TextEmbeddingModel.js";
+import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import { OpenAIEmbedding } from "./OpenAIEmbedding.js";
@@ -17,26 +19,13 @@ export type OpenAITextEmbeddingModelSettings = {
   isUserIdForwardingEnabled?: boolean;
 };
 
-export type OpenAITextEmbeddingModel = TextEmbeddingModel<
-  OpenAIEmbedding,
-  number[]
-> &
-  TokenizerModel<number[]> & {
-    readonly maxTokens: number;
-    readonly countInputTokens: (input: string) => PromiseLike<number>;
-
-    readonly withSettings: (
-      settings: OpenAITextEmbeddingModelSettings
-    ) => OpenAITextEmbeddingModel;
-  };
-
 /**
  * Create a text embedding model that calls the OpenAI embedding API.
  *
  * @see https://platform.openai.com/docs/api-reference/embeddings
  *
  * @example
- * const embeddingModel = createOpenAITextEmbeddingModel({
+ * const embeddingModel = new OpenAITextEmbeddingModel({
  *   apiKey: OPENAI_API_KEY,
  *   model: "text-embedding-ada-002",
  * });
@@ -47,54 +36,76 @@ export type OpenAITextEmbeddingModel = TextEmbeddingModel<
  *
  * const embeddings = await embeddingModel.extractEmbeddings(response);
  */
-export const createOpenAITextEmbeddingModel = ({
-  baseUrl,
-  apiKey,
-  model,
-  settings = {},
-}: {
-  baseUrl?: string;
-  apiKey: string;
-  model: OpenAITextEmbeddingModelType;
-  settings?: OpenAITextEmbeddingModelSettings;
-}): OpenAITextEmbeddingModel => {
-  const tokenizer = getTiktokenTokenizerForModel({ model });
+export class OpenAITextEmbeddingModel
+  implements
+    TextEmbeddingModel<OpenAIEmbedding, number[]>,
+    TokenizerModel<number[]>
+{
+  readonly provider = "openai";
 
-  return {
-    provider: "openai",
+  readonly baseUrl?: string;
+  readonly apiKey: string;
+
+  readonly model: OpenAITextEmbeddingModelType;
+  readonly settings: OpenAITextEmbeddingModelSettings;
+
+  readonly tokenizer: Tokenizer<number[]>;
+
+  readonly maxTextsPerCall: 1;
+
+  constructor({
+    baseUrl,
+    apiKey,
     model,
+    settings = {},
+  }: {
+    baseUrl?: string;
+    apiKey: string;
+    model: OpenAITextEmbeddingModelType;
+    settings?: OpenAITextEmbeddingModelSettings;
+  }) {
+    this.baseUrl = baseUrl;
+    this.apiKey = apiKey;
+    this.model = model;
+    this.settings = settings;
 
-    tokenizer,
-    maxTokens: OPENAI_TEXT_EMBEDDING_MODELS[model].maxTokens,
-    countInputTokens: (input: string) => tokenizer.countTokens(input),
+    this.tokenizer = getTiktokenTokenizerForModel({ model });
+  }
 
-    maxTextsPerCall: 1,
-    embed: async (texts: Array<string>, context): Promise<OpenAIEmbedding> => {
-      if (texts.length > 1) {
-        throw new Error(
-          `OpenAI embedding model "${model}" only supports one text per call`
-        );
-      }
+  async embed(
+    texts: Array<string>,
+    context?: RunContext
+  ): Promise<OpenAIEmbedding> {
+    if (texts.length > 1) {
+      throw new Error(
+        "The OpenAI embedding API only supports one text per call"
+      );
+    }
 
-      return generateOpenAIEmbedding({
-        baseUrl,
-        abortSignal: context?.abortSignal,
-        apiKey,
-        input: texts[0],
-        model,
-        user: settings.isUserIdForwardingEnabled ? context?.userId : undefined,
-      });
-    },
-    extractEmbeddings: async (
-      rawOutput: OpenAIEmbedding
-    ): Promise<Array<number[]>> => [rawOutput.data[0]!.embedding],
+    return generateOpenAIEmbedding({
+      baseUrl: this.baseUrl,
+      abortSignal: context?.abortSignal,
+      apiKey: this.apiKey,
+      input: texts[0],
+      model: this.model,
+      user: this.settings.isUserIdForwardingEnabled
+        ? context?.userId
+        : undefined,
+    });
+  }
 
-    withSettings: (additionalSettings: OpenAITextEmbeddingModelSettings) =>
-      createOpenAITextEmbeddingModel({
-        baseUrl,
-        apiKey,
-        model,
-        settings: Object.assign({}, settings, additionalSettings),
-      }),
-  };
-};
+  async extractEmbeddings(
+    rawOutput: OpenAIEmbedding
+  ): Promise<Array<number[]>> {
+    return [rawOutput.data[0]!.embedding];
+  }
+
+  withSettings(additionalSettings: OpenAITextEmbeddingModelSettings) {
+    return new OpenAITextEmbeddingModel({
+      baseUrl: this.baseUrl,
+      apiKey: this.apiKey,
+      model: this.model,
+      settings: Object.assign({}, this.settings, additionalSettings),
+    });
+  }
+}

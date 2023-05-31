@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Provider Models
 
-The `ai-utils.js` library also provides models. These models map provider-specific API calls to **higher level** concepts such as text generation. Models include additional functionalities:
+The `ai-utils.js` library also provides models. These models map provider-specific API calls to **higher level** concepts such as text generation. They are implemented as classes. Models include additional functionalities:
 
 - **Additional information:** They provide more information about the API, such as token limits.
 - **Defaults:** They set default values for certain parameters (e.g., the value to extract from the response).
@@ -17,7 +17,7 @@ The models enable the separation of parameter configuration from the actual call
 The OpenAI text completion API can be used as a model as shown in the following example:
 
 ```ts
-const textGenerationModel = createOpenAITextGenerationModel({
+const textGenerationModel = new OpenAITextGenerationModel({
   apiKey: OPENAI_API_KEY,
   model: "text-davinci-003",
   settings: { temperature: 0.7 }, // define settings
@@ -39,10 +39,10 @@ In this example, the createOpenAITextModel function is used to create a text gen
 
 ### Open AI
 
-- [Chat Generation Model](/api/modules/provider_openai#createopenaichatmodel)
-- [Text Generation Model](/api/modules/provider_openai#createopenaitextgenerationmodel)
-- [Text Embedding Model](/api/modules/provider_openai#createopenaitextembeddingmodel)
+- [Chat Generation Model](/api/classes/provider_openai.OpenAIChatModel)
+- [Text Generation Model](/api/classes/provider_openai.OpenAITextGenerationModel)
+- [Text Embedding Model](/api/classes/provider_openai.OpenAITextEmbeddingModel)
 
 ### Cohere
 
-- [Text Generation Model](/api/modules/provider_cohere#createcoheretextgenerationmodel)
+- [Text Generation Model](/api/classes/provider_cohere.CohereTextGenerationModel)

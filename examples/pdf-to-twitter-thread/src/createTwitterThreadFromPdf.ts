@@ -1,5 +1,5 @@
 import { extractTopicAndExcludeChatPrompt } from "ai-utils.js/prompt";
-import { createOpenAIChatModel } from "ai-utils.js/provider/openai";
+import { OpenAIChatModel } from "ai-utils.js/provider/openai";
 import { RunContext } from "ai-utils.js/run";
 import {
   generateText,
@@ -19,7 +19,7 @@ export async function createTwitterThreadFromPdf({
   openAiApiKey: string;
   context: RunContext;
 }) {
-  const gpt4 = createOpenAIChatModel({
+  const gpt4 = new OpenAIChatModel({
     apiKey: openAiApiKey,
     model: "gpt-4",
   });

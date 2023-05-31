@@ -1,3 +1,4 @@
+import { RunContext } from "../../../run/RunContext.js";
 import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
 import { CohereTextCompletion } from "./CohereTextCompletion.js";
 import { generateCohereTextCompletion } from "./generateCohereTextCompletion.js";
@@ -35,28 +36,13 @@ export type CohereTextGenerationModelSettings = {
   truncate?: "NONE" | "START" | "END";
 };
 
-export type CohereTextGenerationModel = TextGenerationModel<
-  string,
-  CohereTextCompletion,
-  string
-> & {
-  /**
-   * Maximum number of prompt and completion tokens that this model supports.
-   */
-  readonly maxTokens: number;
-
-  readonly withSettings: (
-    settings: CohereTextGenerationModelSettings
-  ) => CohereTextGenerationModel;
-};
-
 /**
  * Create a text generation model that calls the Cohere Co.Generate API.
  *
  * @see https://docs.cohere.com/reference/generate
  *
  * @example
- * const textGenerationModel = createCohereTextGenerationModel({
+ * const textGenerationModel = new CohereTextGenerationModel({
  *   apiKey: COHERE_API_KEY,
  *   model: "command-nightly",
  *   settings: { temperature: 0.7 },
@@ -68,43 +54,63 @@ export type CohereTextGenerationModel = TextGenerationModel<
  *
  * const text = await textGenerationModel.extractOutput(response);
  */
-export const createCohereTextGenerationModel = ({
-  baseUrl,
-  apiKey,
-  model,
-  settings = {},
-}: {
-  baseUrl?: string;
-  apiKey: string;
-  model: CohereTextGenerationModelType;
-  settings?: CohereTextGenerationModelSettings;
-}): CohereTextGenerationModel => {
-  return {
-    provider: "cohere",
+export class CohereTextGenerationModel
+  implements TextGenerationModel<string, CohereTextCompletion, string>
+{
+  readonly provider = "cohere";
+
+  readonly baseUrl?: string;
+  readonly apiKey: string;
+
+  readonly model: CohereTextGenerationModelType;
+  readonly settings: CohereTextGenerationModelSettings;
+
+  readonly maxTokens: number;
+
+  constructor({
+    baseUrl,
+    apiKey,
     model,
+    settings = {},
+  }: {
+    baseUrl?: string;
+    apiKey: string;
+    model: CohereTextGenerationModelType;
+    settings?: CohereTextGenerationModelSettings;
+  }) {
+    this.baseUrl = baseUrl;
+    this.apiKey = apiKey;
 
-    maxTokens: COHERE_TEXT_GENERATION_MODELS[model].maxTokens,
+    this.model = model;
+    this.settings = settings;
 
-    generate: async (input: string, context): Promise<CohereTextCompletion> =>
-      generateCohereTextCompletion({
-        baseUrl,
-        abortSignal: context?.abortSignal,
-        apiKey,
-        prompt: input,
-        model,
-        ...settings,
-      }),
+    this.maxTokens = COHERE_TEXT_GENERATION_MODELS[model].maxTokens;
+  }
 
-    extractOutput: async (rawOutput: CohereTextCompletion): Promise<string> => {
-      return rawOutput.generations[0].text;
-    },
+  async generate(
+    input: string,
+    context?: RunContext
+  ): Promise<CohereTextCompletion> {
+    return generateCohereTextCompletion({
+      baseUrl: this.baseUrl,
+      abortSignal: context?.abortSignal,
+      apiKey: this.apiKey,
+      prompt: input,
+      model: this.model,
+      ...this.settings,
+    });
+  }
 
-    withSettings: (additionalSettings: CohereTextGenerationModelSettings) =>
-      createCohereTextGenerationModel({
-        baseUrl,
-        apiKey,
-        model,
-        settings: Object.assign({}, settings, additionalSettings),
-      }),
-  };
-};
+  async extractOutput(rawOutput: CohereTextCompletion): Promise<string> {
+    return rawOutput.generations[0].text;
+  }
+
+  withSettings(additionalSettings: CohereTextGenerationModelSettings) {
+    return new CohereTextGenerationModel({
+      baseUrl: this.baseUrl,
+      apiKey: this.apiKey,
+      model: this.model,
+      settings: Object.assign({}, this.settings, additionalSettings),
+    });
+  }
+}

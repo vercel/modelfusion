@@ -1,4 +1,4 @@
-import { createCohereTextGenerationModel } from "ai-utils.js/provider/cohere";
+import { CohereTextGenerationModel } from "ai-utils.js/provider/cohere";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -6,7 +6,7 @@ dotenv.config();
 const COHERE_API_KEY = process.env.COHERE_API_KEY ?? "";
 
 (async () => {
-  const textGenerationModel = createCohereTextGenerationModel({
+  const textGenerationModel = new CohereTextGenerationModel({
     apiKey: COHERE_API_KEY,
     model: "command-nightly",
     settings: { temperature: 0.7 },

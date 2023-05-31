@@ -9,7 +9,7 @@ It was built with four key guiding principles in mind:
 
 ### TypeScript-First
 
-`ai-utils.js` is built with TypeScript at its core, designed to take full advantage of type inference, static typing, and the robust tooling TypeScript offers. We've prioritized a functional programming style, using objects sparingly and only when necessary, for cleaner and more maintainable code.
+`ai-utils.js` is built with TypeScript at its core, designed to take full advantage of type inference, static typing, and the robust tooling TypeScript offers. We are using a mix of functional and object-oriented programming, with a focus on functional composition and immutability.
 
 ### Full User Control
 

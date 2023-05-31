@@ -1,4 +1,4 @@
-import { createOpenAITextGenerationModel } from "ai-utils.js/provider/openai";
+import { OpenAITextGenerationModel } from "ai-utils.js/provider/openai";
 import { generate } from "ai-utils.js/text";
 import chalk from "chalk";
 
@@ -11,7 +11,7 @@ export async function runBabyAGI({
   firstTask: string;
   openAiApiKey: string;
 }) {
-  const model = createOpenAITextGenerationModel({
+  const model = new OpenAITextGenerationModel({
     apiKey: openAiApiKey,
     model: "text-davinci-003",
   });
