@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.0.6 - 2023-05-31
+
+### New
+
+1. Cohere embedding API support
+1. `generate.safe` and `generate.asSafeFunction` functions
+
+### Changes
+
+1. Restructured retry logic
+1. `embed` embeds many texts at once
+
 ## v0.0.5 - 2023-05-30
 
 ### New
