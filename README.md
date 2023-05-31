@@ -88,7 +88,7 @@ Takes a PDF and a topic and creates a Twitter thread with all content from the P
 
 ### [AI Chat (Next.JS)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/ai-chat-next-js)
 
-> _Next.js app_, _OpenAI GPT-3.5-turbo_, _streaming_
+> _Next.js app_, _OpenAI GPT-3.5-turbo_, _streaming_, _abort handling_
 
 A basic web chat with an AI assistant, implemented as a Next.js app.
 

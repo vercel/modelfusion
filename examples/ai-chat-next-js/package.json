@@ -4,9 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next dev"
   },
   "devDependencies": {
     "@types/react": "18.2.0",

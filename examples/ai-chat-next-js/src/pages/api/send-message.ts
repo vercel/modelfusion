@@ -56,12 +56,21 @@ const sendMessage = async (request: Request): Promise<Response> => {
       maxCompletionTokens,
     });
 
+  // forward the abort signal
+  const controller = new AbortController();
+  request.signal.addEventListener("abort", () => {
+    // TODO current not working because of a Next.js bug:
+    // https://github.com/vercel/next.js/issues/50364
+    return controller.abort();
+  });
+
   const stream = await streamOpenAIChatCompletion({
     apiKey: openAiApiKey,
     model,
     messages: messagesToSend,
     maxCompletionTokens,
     responseFormat: streamOpenAIChatCompletionResponseFormat.readStream,
+    abortSignal: controller.signal,
   });
 
   return new Response(stream, {
