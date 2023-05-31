@@ -6,11 +6,10 @@ Record audio with push-to-talk and transcribe it using Whisper, implemented as a
 
 ## Usage
 
-1. Create .env.local file with the following content (depending on the providers you want to use):
+1. Create .env.local file with the following content:
 
 ```
 OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
-COHERE_API_KEY="YOUR_COHERE_API_KEY"
 ```
 
 2. Run the following commands:
