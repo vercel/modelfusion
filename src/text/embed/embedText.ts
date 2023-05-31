@@ -10,7 +10,7 @@ import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponenti
 import { runSafe } from "../../util/runSafe.js";
 import { TextEmbeddingModel } from "./TextEmbeddingModel.js";
 
-export async function embedText<RAW_OUTPUT, EMBEDDING>(
+export async function embedText<RAW_OUTPUT>(
   {
     functionId,
     model,
@@ -20,14 +20,14 @@ export async function embedText<RAW_OUTPUT, EMBEDDING>(
     onCallEnd,
   }: {
     functionId?: string;
-    model: TextEmbeddingModel<RAW_OUTPUT, EMBEDDING>;
+    model: TextEmbeddingModel<RAW_OUTPUT>;
     texts: Array<string>;
     retry?: RetryFunction;
     onCallStart?: (call: EmbedCallStartEvent) => void;
     onCallEnd?: (call: EmbedCallEndEvent) => void;
   },
   context?: RunContext
-): Promise<Array<EMBEDDING>> {
+): Promise<Array<Array<number>>> {
   const startTime = performance.now();
   const startEpochSeconds = Math.floor(
     (performance.timeOrigin + startTime) / 1000
@@ -112,7 +112,7 @@ export async function embedText<RAW_OUTPUT, EMBEDDING>(
   }
 
   // combine the results:
-  const embeddings: Array<EMBEDDING> = [];
+  const embeddings: Array<Array<number>> = [];
   for (const rawOutput of rawOutputs) {
     embeddings.push(...(await model.extractEmbeddings(rawOutput)));
   }
@@ -133,12 +133,12 @@ export async function embedText<RAW_OUTPUT, EMBEDDING>(
 }
 
 embedText.asFunction =
-  <RAW_OUTPUT, EMBEDDING>({
+  <RAW_OUTPUT>({
     functionId,
     model,
   }: {
     functionId?: string;
-    model: TextEmbeddingModel<RAW_OUTPUT, EMBEDDING>;
+    model: TextEmbeddingModel<RAW_OUTPUT>;
   }) =>
   async ({ texts }: { texts: Array<string> }, context?: RunContext) =>
     embedText({ functionId, model, texts }, context);

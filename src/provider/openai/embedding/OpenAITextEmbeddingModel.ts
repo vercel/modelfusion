@@ -3,12 +3,13 @@ import { TextEmbeddingModel } from "../../../text/embed/TextEmbeddingModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
-import { OpenAIEmbedding } from "./OpenAIEmbedding.js";
-import { generateOpenAIEmbedding } from "./generateOpenAIEmbedding.js";
+import { OpenAITextEmbedding } from "./OpenAITextEmbedding.js";
+import { generateOpenAITextEmbedding } from "./generateOpenAITextEmbedding.js";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-ada-002": {
     maxTokens: 8192,
+    embeddingDimensions: 1536,
   },
 };
 
@@ -37,9 +38,7 @@ export type OpenAITextEmbeddingModelSettings = {
  * const embeddings = await embeddingModel.extractEmbeddings(response);
  */
 export class OpenAITextEmbeddingModel
-  implements
-    TextEmbeddingModel<OpenAIEmbedding, number[]>,
-    TokenizerModel<number[]>
+  implements TextEmbeddingModel<OpenAITextEmbedding>, TokenizerModel<number[]>
 {
   readonly provider = "openai";
 
@@ -51,7 +50,9 @@ export class OpenAITextEmbeddingModel
 
   readonly tokenizer: Tokenizer<number[]>;
 
-  readonly maxTextsPerCall: 1;
+  readonly maxTextsPerCall = 1;
+  readonly maxTextTokens: number;
+  readonly embeddingDimensions: number;
 
   constructor({
     baseUrl,
@@ -70,19 +71,23 @@ export class OpenAITextEmbeddingModel
     this.settings = settings;
 
     this.tokenizer = getTiktokenTokenizerForModel({ model });
+
+    this.maxTextTokens = OPENAI_TEXT_EMBEDDING_MODELS[model].maxTokens;
+    this.embeddingDimensions =
+      OPENAI_TEXT_EMBEDDING_MODELS[model].embeddingDimensions;
   }
 
   async embed(
     texts: Array<string>,
     context?: RunContext
-  ): Promise<OpenAIEmbedding> {
-    if (texts.length > 1) {
+  ): Promise<OpenAITextEmbedding> {
+    if (texts.length > this.maxTextsPerCall) {
       throw new Error(
-        "The OpenAI embedding API only supports one text per call"
+        `The OpenAI embedding API only supports ${this.maxTextsPerCall} texts per API call.`
       );
     }
 
-    return generateOpenAIEmbedding({
+    return generateOpenAITextEmbedding({
       baseUrl: this.baseUrl,
       abortSignal: context?.abortSignal,
       apiKey: this.apiKey,
@@ -95,8 +100,8 @@ export class OpenAITextEmbeddingModel
   }
 
   async extractEmbeddings(
-    rawOutput: OpenAIEmbedding
-  ): Promise<Array<number[]>> {
+    rawOutput: OpenAITextEmbedding
+  ): Promise<Array<Array<number>>> {
     return [rawOutput.data[0]!.embedding];
   }
 

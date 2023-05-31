@@ -3,7 +3,10 @@ import {
   postJsonToApi,
 } from "../../../internal/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
-import { OpenAIEmbedding, openAIEmbeddingSchema } from "./OpenAIEmbedding.js";
+import {
+  OpenAITextEmbedding,
+  openAITextEmbeddingSchema,
+} from "./OpenAITextEmbedding.js";
 import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
 
 /**
@@ -12,7 +15,7 @@ import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
  * @see https://platform.openai.com/docs/api-reference/embeddings
  *
  * @example
- * const response = await generateOpenAIEmbedding({
+ * const response = await generateOpenAITextEmbedding({
  *   apiKey: OPENAI_API_KEY,
  *   model: "text-embedding-ada-002",
  *   input: "At first, Nox didn't know what to do with the pup.",
@@ -20,7 +23,7 @@ import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
  *
  * console.log(response.data[0].embedding);
  */
-export async function generateOpenAIEmbedding({
+export async function generateOpenAITextEmbedding({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
   apiKey,
@@ -34,7 +37,7 @@ export async function generateOpenAIEmbedding({
   model: OpenAITextEmbeddingModelType;
   input: string;
   user?: string;
-}): Promise<OpenAIEmbedding> {
+}): Promise<OpenAITextEmbedding> {
   return postJsonToApi({
     url: `${baseUrl}/embeddings`,
     apiKey,
@@ -44,7 +47,9 @@ export async function generateOpenAIEmbedding({
       user,
     },
     failedResponseHandler: failedOpenAICallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(openAIEmbeddingSchema),
+    successfulResponseHandler: createJsonResponseHandler(
+      openAITextEmbeddingSchema
+    ),
     abortSignal,
   });
 }

@@ -3,7 +3,11 @@ import {
   postJsonToApi,
 } from "../../../internal/postToApi.js";
 import { failedCohereCallResponseHandler } from "../CohereError.js";
-import { CohereEmbedding, cohereEmbeddingSchema } from "./CohereEmbedding.js";
+import {
+  CohereTextEmbedding,
+  cohereTextEmbeddingSchema,
+} from "./CohereTextEmbedding.js";
+import { CohereTextEmbeddingModelType } from "./CohereTextEmbeddingModel.js";
 
 /**
  * Call the Cohere Co.Embed API to generate an embedding for the given input.
@@ -31,13 +35,10 @@ export async function generateCohereEmbedding({
   baseUrl?: string;
   abortSignal?: AbortSignal;
   apiKey: string;
-  model:
-    | "embed-english-light-v2.0"
-    | "embed-english-v2.0"
-    | "embed-multilingual-v2.0";
+  model: CohereTextEmbeddingModelType;
   texts: string[];
   truncate?: "NONE" | "START" | "END";
-}): Promise<CohereEmbedding> {
+}): Promise<CohereTextEmbedding> {
   return postJsonToApi({
     url: `${baseUrl}/embed`,
     apiKey,
@@ -47,7 +48,9 @@ export async function generateCohereEmbedding({
       truncate,
     },
     failedResponseHandler: failedCohereCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(cohereEmbeddingSchema),
+    successfulResponseHandler: createJsonResponseHandler(
+      cohereTextEmbeddingSchema
+    ),
     abortSignal,
   });
 }
