@@ -20,7 +20,7 @@ import { OpenAITextGenerationModelType } from "./OpenAITextGenerationModel.js";
  *   model: "text-davinci-003",
  *   prompt: "Write a short story about a robot learning to love:\n\n",
  *   temperature: 0.7,
- *   maxCompletionTokens: 500,
+ *   maxTokens: 500,
  * });
  *
  * console.log(response.choices[0].text);
@@ -32,7 +32,7 @@ export async function generateOpenAITextCompletion({
   model,
   prompt,
   suffix,
-  maxCompletionTokens,
+  maxTokens,
   temperature,
   topP,
   n,
@@ -50,7 +50,7 @@ export async function generateOpenAITextCompletion({
   model: OpenAITextGenerationModelType;
   prompt: string;
   suffix?: string;
-  maxCompletionTokens?: number;
+  maxTokens?: number;
   temperature?: number;
   topP?: number;
   n?: number;
@@ -69,7 +69,7 @@ export async function generateOpenAITextCompletion({
       model,
       prompt,
       suffix,
-      max_tokens: maxCompletionTokens,
+      max_tokens: maxTokens,
       temperature,
       top_p: topP,
       n,

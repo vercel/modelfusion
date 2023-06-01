@@ -69,6 +69,10 @@ These principles have shaped the design and function of the library, aiming to p
 - text generation
 - embeddings
 
+### Hugging Face
+
+- text generation
+
 ## Documentation
 
 - [Concepts](https://ai-utils.dev/concepts)

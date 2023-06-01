@@ -64,11 +64,13 @@ const config = {
         entryPoints: [
           "../src/prompt/index.ts",
           "../src/provider/cohere/index.ts",
+          "../src/provider/huggingface/index.ts",
           "../src/provider/openai/index.ts",
           "../src/internal/index.ts",
           "../src/run/index.ts",
           "../src/text/index.ts",
           "../src/util/index.ts",
+          "../src/vector-db/index.ts",
         ],
         tsconfig: "../tsconfig.json",
         groupOrder: ["Functions", "Variables", "*"],

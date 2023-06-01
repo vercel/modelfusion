@@ -10,7 +10,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
   const model = new OpenAITextGenerationModel({
     apiKey: OPENAI_API_KEY,
     model: "text-davinci-003",
-    settings: { temperature: 0.7, maxCompletionTokens: 500 },
+    settings: { temperature: 0.7, maxTokens: 500 },
   });
 
   const generateStory = generateText.asFunction({

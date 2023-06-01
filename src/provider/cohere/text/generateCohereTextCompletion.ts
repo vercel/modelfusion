@@ -19,7 +19,7 @@ import {
  *   model: "command-nightly",
  *   prompt: "Write a short story about a robot learning to love:\n\n",
  *   temperature: 0.7,
- *   maxCompletionTokens: 500,
+ *   maxTokens: 500,
  * });
  *
  * console.log(response.generations[0].text);
@@ -31,7 +31,7 @@ export async function generateCohereTextCompletion({
   model,
   prompt,
   numGenerations,
-  maxCompletionTokens,
+  maxTokens,
   temperature,
   k,
   p,
@@ -53,7 +53,7 @@ export async function generateCohereTextCompletion({
     | "command-light-nightly";
   prompt: string;
   numGenerations?: number;
-  maxCompletionTokens?: number;
+  maxTokens?: number;
   temperature?: number;
   k?: number;
   p?: number;
@@ -72,7 +72,7 @@ export async function generateCohereTextCompletion({
       model,
       prompt,
       num_generations: numGenerations,
-      max_tokens: maxCompletionTokens,
+      max_tokens: maxTokens,
       temperature,
       k,
       p,

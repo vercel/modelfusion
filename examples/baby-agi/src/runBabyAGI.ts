@@ -19,7 +19,7 @@ export async function runBabyAGI({
   const executeTask = generate.asFunction({
     model: model.withSettings({
       temperature: 0.7,
-      maxCompletionTokens: 2000,
+      maxTokens: 2000,
     }),
     prompt: async ({ objective, task }: { objective: string; task: string }) =>
       `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}
@@ -30,7 +30,7 @@ Response:`,
   const generateNewTasks = generate.asFunction({
     model: model.withSettings({
       temperature: 0.5,
-      maxCompletionTokens: 100,
+      maxTokens: 100,
     }),
     prompt: async ({
       objective,
@@ -54,7 +54,7 @@ Return the tasks as an array.`,
   const prioritizeTasks = generate.asFunction({
     model: model.withSettings({
       temperature: 0.5,
-      maxCompletionTokens: 1000,
+      maxTokens: 1000,
     }),
     prompt: async ({
       tasks,

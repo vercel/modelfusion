@@ -10,8 +10,21 @@ export type ResponseHandler<T> = (options: {
 
 export const createJsonResponseHandler =
   <T>(responseSchema: z.ZodSchema<T>): ResponseHandler<T> =>
-  async ({ response }) =>
-    responseSchema.parse(await response.json());
+  async ({ response, url, requestBodyValues }) => {
+    const parsedResult = responseSchema.safeParse(await response.json());
+
+    if (!parsedResult.success) {
+      throw new ApiCallError({
+        message: "Invalid JSON response",
+        cause: parsedResult.error,
+        statusCode: response.status,
+        url,
+        requestBodyValues,
+      });
+    }
+
+    return parsedResult.data;
+  };
 
 export const createStreamResponseHandler =
   (): ResponseHandler<ReadableStream<Uint8Array>> =>
@@ -94,18 +107,50 @@ export const postToApi = async <T>({
     });
 
     if (!response.ok) {
-      throw await failedResponseHandler({
+      try {
+        throw await failedResponseHandler({
+          response,
+          url,
+          requestBodyValues: body.values,
+        });
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error.name === "AbortError" || error instanceof ApiCallError) {
+            throw error;
+          }
+        }
+
+        throw new ApiCallError({
+          message: "Failed to process error response",
+          cause: error,
+          statusCode: response.status,
+          url,
+          requestBodyValues: body.values,
+        });
+      }
+    }
+
+    try {
+      return await successfulResponseHandler({
         response,
         url,
         requestBodyValues: body.values,
       });
-    }
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.name === "AbortError" || error instanceof ApiCallError) {
+          throw error;
+        }
+      }
 
-    return await successfulResponseHandler({
-      response,
-      url,
-      requestBodyValues: body.values,
-    });
+      throw new ApiCallError({
+        message: "Failed to process successful response",
+        cause: error,
+        statusCode: response.status,
+        url,
+        requestBodyValues: body.values,
+      });
+    }
   } catch (error) {
     if (error instanceof Error) {
       if (error.name === "AbortError") {

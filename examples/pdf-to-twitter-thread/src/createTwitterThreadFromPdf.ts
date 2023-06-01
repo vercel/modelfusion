@@ -45,7 +45,7 @@ export async function createTwitterThreadFromPdf({
         functionId: "extract-topic",
         model: gpt4.withSettings({
           temperature: 0,
-          maxCompletionTokens: reservedCompletionTokens,
+          maxTokens: reservedCompletionTokens,
         }),
         prompt: extractTopicPrompt,
       }),

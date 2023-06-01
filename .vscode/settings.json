@@ -4,6 +4,7 @@
     "asynchonously",
     "Backoff",
     "davinci",
+    "huggingface",
     "lgrammel",
     "logit",
     "openai",

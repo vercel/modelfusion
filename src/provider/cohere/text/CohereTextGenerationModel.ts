@@ -23,7 +23,7 @@ export type CohereTextGenerationModelType =
 
 export type CohereTextGenerationModelSettings = {
   numGenerations?: number;
-  maxCompletionTokens?: number;
+  maxTokens?: number;
   temperature?: number;
   k?: number;
   p?: number;
@@ -49,7 +49,7 @@ export type CohereTextGenerationModelSettings = {
  * });
  *
  * const response = await textGenerationModel
- *   .withSettings({ maxCompletionTokens: 500 })
+ *   .withSettings({ maxTokens: 500 })
  *   .generate("Write a short story about a robot learning to love:\n\n");
  *
  * const text = await textGenerationModel.extractOutput(response);

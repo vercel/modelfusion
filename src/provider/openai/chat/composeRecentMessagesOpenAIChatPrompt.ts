@@ -9,16 +9,16 @@ import {
  * Includes the system messages and as many messages as possible (from the end)
  * in the prompt, while leaving enough space for the completion.
  *
- * @param maxCompletionTokens The maximum number of tokens that the completion
+ * @param maxTokens The maximum number of tokens that the completion
  */
 export async function composeRecentMessagesOpenAIChatPrompt({
   model,
-  maxCompletionTokens,
+  maxTokens,
   systemMessage,
   messages,
 }: {
   model: OpenAIChatModelType;
-  maxCompletionTokens: number;
+  maxTokens: number;
   systemMessage: OpenAIChatMessage;
   messages: { role: "user" | "assistant"; content: string }[];
 }) {
@@ -29,7 +29,7 @@ export async function composeRecentMessagesOpenAIChatPrompt({
     model,
   });
 
-  const tokenLimit = OPENAI_CHAT_MODELS[model].maxTokens - maxCompletionTokens;
+  const tokenLimit = OPENAI_CHAT_MODELS[model].maxTokens - maxTokens;
 
   const messagesToSend: OpenAIChatMessage[] = [];
   for (let i = messages.length - 1; i >= 0; i--) {

@@ -41,7 +41,7 @@ export type OpenAIChatModelSettings = {
   topP?: number;
   n?: number;
   stop?: string | string[];
-  maxCompletionTokens?: number;
+  maxTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
 };
@@ -59,7 +59,7 @@ export type OpenAIChatModelSettings = {
  * });
  *
  * const response = await chatModel
- *   .withSettings({ maxCompletionTokens: 500 })
+ *   .withSettings({ maxTokens: 500 })
  *   .generate([
  *     {
  *       role: "system",

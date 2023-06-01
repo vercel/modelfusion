@@ -11,7 +11,7 @@ const COHERE_API_KEY = process.env.COHERE_API_KEY ?? "";
     model: "command-nightly",
     prompt: "Write a short story about a robot learning to love:\n\n",
     temperature: 0.7,
-    maxCompletionTokens: 500,
+    maxTokens: 500,
   });
 
   console.log(response.generations[0].text);

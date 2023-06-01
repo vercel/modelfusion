@@ -24,7 +24,7 @@ const response = await generateOpenAITextCompletion({
   model: "text-davinci-003",
   prompt: "Write a short story about a robot learning to love:\n\n",
   temperature: 0.7,
-  maxCompletionTokens: 500,
+  maxTokens: 500,
 });
 
 console.log(response.choices[0].text);
@@ -32,7 +32,7 @@ console.log(response.choices[0].text);
 
 ## Provider API Clients (List)
 
-### Open AI
+### OpenAI
 
 - [Chat Completion](/api/modules/provider_openai#generateopenaichatcompletion)
 - [Chat Completion (stream)](/api/modules/provider_openai#streamopenaichatcompletion)
@@ -46,3 +46,7 @@ console.log(response.choices[0].text);
 
 - [Text Completion](/api/modules/provider_cohere#generatecoheretextcompletion)
 - [Embedding](/api/modules/provider_cohere#generatecohereembedding)
+
+### Hugging Face
+
+- [Text Completion](/api/modules/provider_huggingface#generatehuggingfacetextcompletion)

@@ -38,6 +38,11 @@
       "import": "./provider/cohere/index.js",
       "require": "./provider/cohere/index.cjs"
     },
+    "./provider/huggingface": {
+      "types": "./provider/huggingface/index.d.ts",
+      "import": "./provider/huggingface/index.js",
+      "require": "./provider/huggingface/index.cjs"
+    },
     "./provider/openai": {
       "types": "./provider/openai/index.d.ts",
       "import": "./provider/openai/index.js",

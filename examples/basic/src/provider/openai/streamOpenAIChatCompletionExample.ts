@@ -24,7 +24,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
       },
     ],
     temperature: 0.7,
-    maxCompletionTokens: 500,
+    maxTokens: 500,
     responseFormat: streamOpenAIChatCompletionResponseFormat.asyncDeltaIterable,
   });
 

@@ -12,19 +12,17 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
     settings: { temperature: 0.7 },
   });
 
-  const response = await chatModel
-    .withSettings({ maxCompletionTokens: 500 })
-    .generate([
-      {
-        role: "system",
-        content:
-          "You are an AI assistant. Follow the user's instructions carefully.",
-      },
-      {
-        role: "user",
-        content: "Hello, how are you?",
-      },
-    ]);
+  const response = await chatModel.withSettings({ maxTokens: 500 }).generate([
+    {
+      role: "system",
+      content:
+        "You are an AI assistant. Follow the user's instructions carefully.",
+    },
+    {
+      role: "user",
+      content: "Hello, how are you?",
+    },
+  ]);
 
   const text = await chatModel.extractOutput(response);
 

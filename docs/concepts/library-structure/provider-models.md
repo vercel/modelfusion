@@ -25,7 +25,7 @@ const textGenerationModel = new OpenAITextGenerationModel({
 
 // Later in the code:
 const response = await textGenerationModel
-  .withSettings({ maxCompletionTokens: 500 }) // refine or override settings
+  .withSettings({ maxTokens: 500 }) // refine or override settings
   .generate("Write a short story about a robot learning to love:\n\n");
 
 const text = await textGenerationModel.extractOutput(response);

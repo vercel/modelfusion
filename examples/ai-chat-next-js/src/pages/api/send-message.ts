@@ -42,7 +42,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
   }
 
   const model = "gpt-3.5-turbo" as OpenAIChatModelType;
-  const maxCompletionTokens = 1000;
+  const maxTokens = 1000;
 
   const messagesToSend: OpenAIChatMessage[] =
     await composeRecentMessagesOpenAIChatPrompt({
@@ -53,7 +53,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
           "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.",
       },
       messages: parsedData.data,
-      maxCompletionTokens,
+      maxTokens,
     });
 
   // forward the abort signal
@@ -68,7 +68,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
     apiKey: openAiApiKey,
     model,
     messages: messagesToSend,
-    maxCompletionTokens,
+    maxTokens,
     responseFormat: streamOpenAIChatCompletionResponseFormat.readStream,
     abortSignal: controller.signal,
   });

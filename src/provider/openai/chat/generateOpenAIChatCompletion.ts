@@ -31,7 +31,7 @@ import { OpenAIChatModelType } from "./OpenAIChatModel.js";
  *     },
  *   ],
  *   temperature: 0.7,
- *   maxCompletionTokens: 500,
+ *   maxTokens: 500,
  * });
  *
  * console.log(response.choices[0].message.content);
@@ -46,7 +46,7 @@ export async function generateOpenAIChatCompletion({
   topP,
   n,
   stop,
-  maxCompletionTokens,
+  maxTokens,
   presencePenalty,
   frequencyPenalty,
   user,
@@ -60,7 +60,7 @@ export async function generateOpenAIChatCompletion({
   topP?: number;
   n?: number;
   stop?: string | string[];
-  maxCompletionTokens?: number;
+  maxTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
   user?: string;
@@ -74,7 +74,7 @@ export async function generateOpenAIChatCompletion({
       top_p: topP,
       n,
       stop,
-      max_tokens: maxCompletionTokens,
+      max_tokens: maxTokens,
       temperature,
       presence_penalty: presencePenalty,
       frequency_penalty: frequencyPenalty,
