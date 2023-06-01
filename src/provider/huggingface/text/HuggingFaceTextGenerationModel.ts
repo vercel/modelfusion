@@ -1,6 +1,6 @@
 import { RunContext } from "../../../run/RunContext.js";
 import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
-import { HuggingFaceTextCompletion } from "./HuggingFaceTextCompletion.js";
+import { HuggingFaceTextGenerationResponse } from "./HuggingFaceTextGenerationResponse.js";
 import { generateHuggingFaceTextCompletion } from "./generateHuggingFaceTextCompletion.js";
 
 export type HuggingFaceTextGenerationModelSettings = {
@@ -37,7 +37,8 @@ export type HuggingFaceTextGenerationModelSettings = {
  * const text = await textGenerationModel.extractOutput(response);
  */
 export class HuggingFaceTextGenerationModel
-  implements TextGenerationModel<string, HuggingFaceTextCompletion, string>
+  implements
+    TextGenerationModel<string, HuggingFaceTextGenerationResponse, string>
 {
   readonly provider = "huggingface";
 
@@ -68,7 +69,7 @@ export class HuggingFaceTextGenerationModel
   async generate(
     input: string,
     context?: RunContext
-  ): Promise<HuggingFaceTextCompletion> {
+  ): Promise<HuggingFaceTextGenerationResponse> {
     return generateHuggingFaceTextCompletion({
       baseUrl: this.baseUrl,
       abortSignal: context?.abortSignal,
@@ -83,7 +84,9 @@ export class HuggingFaceTextGenerationModel
     });
   }
 
-  async extractOutput(rawOutput: HuggingFaceTextCompletion): Promise<string> {
+  async extractOutput(
+    rawOutput: HuggingFaceTextGenerationResponse
+  ): Promise<string> {
     return rawOutput[0].generated_text;
   }
 

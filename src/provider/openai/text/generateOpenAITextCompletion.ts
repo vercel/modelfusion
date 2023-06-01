@@ -4,9 +4,9 @@ import {
 } from "../../../internal/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../internal/failedOpenAICallResponseHandler.js";
 import {
-  OpenAITextCompletion,
-  openAITextCompletionSchema,
-} from "./OpenAITextCompletion.js";
+  OpenAITextGenerationResponse,
+  openAITextGenerationResponseSchema,
+} from "./OpenAITextGenerationResponse.js";
 import { OpenAITextGenerationModelType } from "./OpenAITextGenerationModel.js";
 
 /**
@@ -61,7 +61,7 @@ export async function generateOpenAITextCompletion({
   frequencyPenalty?: number;
   bestOf?: number;
   user?: string;
-}): Promise<OpenAITextCompletion> {
+}): Promise<OpenAITextGenerationResponse> {
   return postJsonToApi({
     url: `${baseUrl}/completions`,
     apiKey,
@@ -83,7 +83,7 @@ export async function generateOpenAITextCompletion({
     },
     failedResponseHandler: failedOpenAICallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
-      openAITextCompletionSchema
+      openAITextGenerationResponseSchema
     ),
     abortSignal,
   });

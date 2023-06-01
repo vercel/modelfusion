@@ -3,7 +3,7 @@ import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AsyncQueue } from "../../../internal/AsyncQueue.js";
 
-const chatCompletionStreamEventSchema = z.object({
+const chatResponseStreamEventSchema = z.object({
   choices: z.array(
     z.object({
       delta: z.object({
@@ -20,7 +20,7 @@ const chatCompletionStreamEventSchema = z.object({
   object: z.string(),
 });
 
-export type ChatCompletionChoicesDelta = Array<{
+export type ChatResponseChoicesDelta = Array<{
   role: "assistant" | "user" | undefined;
   content: string;
   isComplete: boolean;
@@ -30,10 +30,10 @@ export type ChatCompletionChoicesDelta = Array<{
   };
 }>;
 
-export type OpenAIChatCompletionDeltaStreamEntry =
+export type OpenAIChatResponseDeltaStreamEntry =
   | {
       type: "delta";
-      delta: ChatCompletionChoicesDelta;
+      delta: ChatResponseChoicesDelta;
     }
   | {
       type: "error";
@@ -41,13 +41,13 @@ export type OpenAIChatCompletionDeltaStreamEntry =
     }
   | undefined;
 
-export async function createOpenAIChatCompletionDeltaStream(
+export async function createOpenAIChatResponseDeltaStream(
   stream: AsyncIterable<Uint8Array>
-): Promise<AsyncIterable<OpenAIChatCompletionDeltaStreamEntry>> {
+): Promise<AsyncIterable<OpenAIChatResponseDeltaStreamEntry>> {
   const queue = new AsyncQueue<
     | {
         type: "delta";
-        delta: ChatCompletionChoicesDelta;
+        delta: ChatResponseChoicesDelta;
       }
     | {
         type: "error";
@@ -56,7 +56,7 @@ export async function createOpenAIChatCompletionDeltaStream(
     | undefined
   >();
 
-  const choices: ChatCompletionChoicesDelta = [];
+  const choices: ChatResponseChoicesDelta = [];
 
   const parser = createParser((event) => {
     if (event.type !== "event") {
@@ -72,7 +72,7 @@ export async function createOpenAIChatCompletionDeltaStream(
 
     try {
       const json = SecureJSON.parse(data);
-      const parseResult = chatCompletionStreamEventSchema.safeParse(json);
+      const parseResult = chatResponseStreamEventSchema.safeParse(json);
 
       if (!parseResult.success) {
         queue.push({

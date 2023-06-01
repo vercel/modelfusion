@@ -3,13 +3,11 @@ import {
   OpenAIChatModelType,
   composeRecentMessagesOpenAIChatPrompt,
   streamOpenAIChatCompletion,
-  streamOpenAIChatCompletionResponseFormat,
+  streamOpenAIChatResponseFormat,
 } from "ai-utils.js/provider/openai";
 import { z } from "zod";
 
-export const config = {
-  runtime: "edge",
-};
+export const config = { runtime: "edge" };
 
 const requestSchema = z.array(
   z.object({
@@ -69,7 +67,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
     model,
     messages: messagesToSend,
     maxTokens,
-    responseFormat: streamOpenAIChatCompletionResponseFormat.readStream,
+    responseFormat: streamOpenAIChatResponseFormat.readStream,
     abortSignal: controller.signal,
   });
 

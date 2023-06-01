@@ -1,6 +1,6 @@
 import { RunContext } from "../../../run/RunContext.js";
 import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
-import { CohereTextCompletion } from "./CohereTextCompletion.js";
+import { CohereTextGenerationResponse } from "./CohereTextGenerationResponse.js";
 import { generateCohereTextCompletion } from "./generateCohereTextCompletion.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
@@ -55,7 +55,7 @@ export type CohereTextGenerationModelSettings = {
  * const text = await textGenerationModel.extractOutput(response);
  */
 export class CohereTextGenerationModel
-  implements TextGenerationModel<string, CohereTextCompletion, string>
+  implements TextGenerationModel<string, CohereTextGenerationResponse, string>
 {
   readonly provider = "cohere";
 
@@ -90,7 +90,7 @@ export class CohereTextGenerationModel
   async generate(
     input: string,
     context?: RunContext
-  ): Promise<CohereTextCompletion> {
+  ): Promise<CohereTextGenerationResponse> {
     return generateCohereTextCompletion({
       baseUrl: this.baseUrl,
       abortSignal: context?.abortSignal,
@@ -101,7 +101,9 @@ export class CohereTextGenerationModel
     });
   }
 
-  async extractOutput(rawOutput: CohereTextCompletion): Promise<string> {
+  async extractOutput(
+    rawOutput: CohereTextGenerationResponse
+  ): Promise<string> {
     return rawOutput.generations[0].text;
   }
 

@@ -4,9 +4,9 @@ import {
 } from "../../../internal/postToApi.js";
 import { failedHuggingFaceCallResponseHandler } from "../internal/failedHuggingFaceCallResponseHandler.js";
 import {
-  HuggingFaceTextCompletion,
-  huggingFaceTextCompletionSchema,
-} from "./HuggingFaceTextCompletion.js";
+  HuggingFaceTextGenerationResponse,
+  huggingFaceTextGenerationResponseSchema,
+} from "./HuggingFaceTextGenerationResponse.js";
 
 /**
  * Call a Hugging Face Inference API Text Generation Task to generate a text completion for the given prompt.
@@ -60,7 +60,7 @@ export async function generateHuggingFaceTextCompletion({
     useCache?: boolean;
     waitForModel?: boolean;
   };
-}): Promise<HuggingFaceTextCompletion> {
+}): Promise<HuggingFaceTextGenerationResponse> {
   return postJsonToApi({
     url: `${baseUrl}/${model}`,
     apiKey,
@@ -83,7 +83,7 @@ export async function generateHuggingFaceTextCompletion({
     },
     failedResponseHandler: failedHuggingFaceCallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
-      huggingFaceTextCompletionSchema
+      huggingFaceTextGenerationResponseSchema
     ),
     abortSignal,
   });

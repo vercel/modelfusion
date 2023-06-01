@@ -3,7 +3,7 @@ import { TextEmbeddingModel } from "../../../text/embed/TextEmbeddingModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
-import { OpenAITextEmbedding } from "./OpenAITextEmbedding.js";
+import { OpenAITextEmbeddingResponse } from "./OpenAITextEmbeddingResponse.js";
 import { generateOpenAITextEmbedding } from "./generateOpenAITextEmbedding.js";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
@@ -38,7 +38,9 @@ export type OpenAITextEmbeddingModelSettings = {
  * const embeddings = await embeddingModel.extractEmbeddings(response);
  */
 export class OpenAITextEmbeddingModel
-  implements TextEmbeddingModel<OpenAITextEmbedding>, TokenizerModel<number[]>
+  implements
+    TextEmbeddingModel<OpenAITextEmbeddingResponse>,
+    TokenizerModel<number[]>
 {
   readonly provider = "openai";
 
@@ -80,7 +82,7 @@ export class OpenAITextEmbeddingModel
   async embed(
     texts: Array<string>,
     context?: RunContext
-  ): Promise<OpenAITextEmbedding> {
+  ): Promise<OpenAITextEmbeddingResponse> {
     if (texts.length > this.maxTextsPerCall) {
       throw new Error(
         `The OpenAI embedding API only supports ${this.maxTextsPerCall} texts per API call.`
@@ -100,7 +102,7 @@ export class OpenAITextEmbeddingModel
   }
 
   async extractEmbeddings(
-    rawOutput: OpenAITextEmbedding
+    rawOutput: OpenAITextEmbeddingResponse
   ): Promise<Array<Array<number>>> {
     return [rawOutput.data[0]!.embedding];
   }

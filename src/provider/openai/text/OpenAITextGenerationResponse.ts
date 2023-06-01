@@ -1,6 +1,6 @@
 import zod from "zod";
 
-export const openAITextCompletionSchema = zod.object({
+export const openAITextGenerationResponseSchema = zod.object({
   id: zod.string(),
   object: zod.literal("text_completion"),
   created: zod.number(),
@@ -20,4 +20,6 @@ export const openAITextCompletionSchema = zod.object({
   }),
 });
 
-export type OpenAITextCompletion = zod.infer<typeof openAITextCompletionSchema>;
+export type OpenAITextGenerationResponse = zod.infer<
+  typeof openAITextGenerationResponseSchema
+>;

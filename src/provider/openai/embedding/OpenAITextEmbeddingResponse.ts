@@ -1,6 +1,6 @@
 import zod from "zod";
 
-export const openAITextEmbeddingSchema = zod.object({
+export const openAITextEmbeddingResponseSchema = zod.object({
   object: zod.literal("list"),
   data: zod
     .array(
@@ -18,4 +18,6 @@ export const openAITextEmbeddingSchema = zod.object({
   }),
 });
 
-export type OpenAITextEmbedding = zod.infer<typeof openAITextEmbeddingSchema>;
+export type OpenAITextEmbeddingResponse = zod.infer<
+  typeof openAITextEmbeddingResponseSchema
+>;

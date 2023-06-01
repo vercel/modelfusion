@@ -3,7 +3,7 @@ import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
-import { OpenAITextCompletion } from "./OpenAITextCompletion.js";
+import { OpenAITextGenerationResponse } from "./OpenAITextGenerationResponse.js";
 import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
 
 // see https://platform.openai.com/docs/models/
@@ -79,7 +79,7 @@ export type OpenAITextGenerationModelSettings = {
  */
 export class OpenAITextGenerationModel
   implements
-    TextGenerationModel<string, OpenAITextCompletion, string>,
+    TextGenerationModel<string, OpenAITextGenerationResponse, string>,
     TokenizerModel<number[]>
 {
   readonly provider = "openai";
@@ -116,7 +116,7 @@ export class OpenAITextGenerationModel
   async generate(
     input: string,
     context?: RunContext
-  ): Promise<OpenAITextCompletion> {
+  ): Promise<OpenAITextGenerationResponse> {
     return generateOpenAITextCompletion({
       baseUrl: this.baseUrl,
       abortSignal: context?.abortSignal,
@@ -130,7 +130,9 @@ export class OpenAITextGenerationModel
     });
   }
 
-  async extractOutput(rawOutput: OpenAITextCompletion): Promise<string> {
+  async extractOutput(
+    rawOutput: OpenAITextGenerationResponse
+  ): Promise<string> {
     return rawOutput.choices[0]!.text;
   }
 

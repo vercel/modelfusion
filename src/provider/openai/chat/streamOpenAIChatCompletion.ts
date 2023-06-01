@@ -6,18 +6,18 @@ import {
   postJsonToApi,
 } from "../../../internal/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../internal/failedOpenAICallResponseHandler.js";
-import { OpenAIChatMessage } from "./OpenAIChatCompletion.js";
+import { OpenAIChatMessage } from "./OpenAIChatResponse.js";
 import {
-  OpenAIChatCompletionDeltaStreamEntry,
-  createOpenAIChatCompletionDeltaStream,
-} from "./OpenAIChatCompletionDeltaStream.js";
+  OpenAIChatResponseDeltaStreamEntry,
+  createOpenAIChatResponseDeltaStream,
+} from "./OpenAIChatResponseDeltaStream.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";
 
 export type OpenAIStreamChatCompletionResponseFormat<T> = {
   handler: ResponseHandler<T>;
 };
 
-export const streamOpenAIChatCompletionResponseFormat = Object.freeze({
+export const streamOpenAIChatResponseFormat = Object.freeze({
   readStream: Object.freeze({
     handler: createStreamResponseHandler(),
   }),
@@ -26,10 +26,10 @@ export const streamOpenAIChatCompletionResponseFormat = Object.freeze({
   }),
   asyncDeltaIterable: Object.freeze({
     handler: async ({ response }: { response: Response }) =>
-      createOpenAIChatCompletionDeltaStream(
+      createOpenAIChatResponseDeltaStream(
         convertReadableStreamToAsyncIterable(response.body!.getReader())
       ),
-  } satisfies OpenAIStreamChatCompletionResponseFormat<AsyncIterable<OpenAIChatCompletionDeltaStreamEntry>>),
+  } satisfies OpenAIStreamChatCompletionResponseFormat<AsyncIterable<OpenAIChatResponseDeltaStreamEntry>>),
 });
 
 /**
@@ -54,7 +54,7 @@ export const streamOpenAIChatCompletionResponseFormat = Object.freeze({
  *   ],
  *   temperature: 0.7,
  *   maxTokens: 500,
- *   responseFormat: streamOpenAIChatCompletionResponseFormat.readStream,
+ *   responseFormat: streamOpenAIChatResponseFormat.readStream,
  * });
  */
 export async function streamOpenAIChatCompletion<T>({

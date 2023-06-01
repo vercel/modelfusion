@@ -1,6 +1,6 @@
 import zod from "zod";
 
-export const cohereTextCompletionSchema = zod.object({
+export const cohereTextGenerationResponseSchema = zod.object({
   id: zod.string(),
   generations: zod.array(
     zod.object({
@@ -16,4 +16,6 @@ export const cohereTextCompletionSchema = zod.object({
   }),
 });
 
-export type CohereTextCompletion = zod.infer<typeof cohereTextCompletionSchema>;
+export type CohereTextGenerationResponse = zod.infer<
+  typeof cohereTextGenerationResponseSchema
+>;

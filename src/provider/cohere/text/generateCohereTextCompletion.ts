@@ -4,9 +4,9 @@ import {
 } from "../../../internal/postToApi.js";
 import { failedCohereCallResponseHandler } from "../internal/failedCohereCallResponseHandler.js";
 import {
-  CohereTextCompletion,
-  cohereTextCompletionSchema,
-} from "./CohereTextCompletion.js";
+  CohereTextGenerationResponse,
+  cohereTextGenerationResponseSchema,
+} from "./CohereTextGenerationResponse.js";
 
 /**
  * Call the Cohere Co.Generate API to generate a text completion for the given prompt.
@@ -64,7 +64,7 @@ export async function generateCohereTextCompletion({
   returnLikelihoods?: "GENERATION" | "ALL" | "NONE";
   logitBias?: Record<string, number>;
   truncate?: "NONE" | "START" | "END";
-}): Promise<CohereTextCompletion> {
+}): Promise<CohereTextGenerationResponse> {
   return postJsonToApi({
     url: `${baseUrl}/generate`,
     apiKey,
@@ -86,7 +86,7 @@ export async function generateCohereTextCompletion({
     },
     failedResponseHandler: failedCohereCallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
-      cohereTextCompletionSchema
+      cohereTextGenerationResponseSchema
     ),
     abortSignal,
   });

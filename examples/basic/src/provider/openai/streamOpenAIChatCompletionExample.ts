@@ -1,6 +1,6 @@
 import {
   streamOpenAIChatCompletion,
-  streamOpenAIChatCompletionResponseFormat,
+  streamOpenAIChatResponseFormat,
 } from "ai-utils.js/provider/openai";
 import dotenv from "dotenv";
 
@@ -25,7 +25,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
     ],
     temperature: 0.7,
     maxTokens: 500,
-    responseFormat: streamOpenAIChatCompletionResponseFormat.asyncDeltaIterable,
+    responseFormat: streamOpenAIChatResponseFormat.asyncDeltaIterable,
   });
 
   for await (const piece of stream) {

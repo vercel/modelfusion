@@ -4,9 +4,9 @@ import {
 } from "../../../internal/postToApi.js";
 import { failedCohereCallResponseHandler } from "../internal/failedCohereCallResponseHandler.js";
 import {
-  CohereTextEmbedding,
-  cohereTextEmbeddingSchema,
-} from "./CohereTextEmbedding.js";
+  CohereTextEmbeddingResponse,
+  cohereTextEmbeddingResponseSchema,
+} from "./CohereTextEmbeddingResponse.js";
 import { CohereTextEmbeddingModelType } from "./CohereTextEmbeddingModel.js";
 
 /**
@@ -38,7 +38,7 @@ export async function generateCohereEmbedding({
   model: CohereTextEmbeddingModelType;
   texts: string[];
   truncate?: "NONE" | "START" | "END";
-}): Promise<CohereTextEmbedding> {
+}): Promise<CohereTextEmbeddingResponse> {
   return postJsonToApi({
     url: `${baseUrl}/embed`,
     apiKey,
@@ -49,7 +49,7 @@ export async function generateCohereEmbedding({
     },
     failedResponseHandler: failedCohereCallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
-      cohereTextEmbeddingSchema
+      cohereTextEmbeddingResponseSchema
     ),
     abortSignal,
   });

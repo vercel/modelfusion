@@ -3,10 +3,7 @@ import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
-import {
-  OpenAIChatCompletion,
-  OpenAIChatMessage,
-} from "./OpenAIChatCompletion.js";
+import { OpenAIChatResponse, OpenAIChatMessage } from "./OpenAIChatResponse.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
 
@@ -76,7 +73,7 @@ export type OpenAIChatModelSettings = {
  */
 export class OpenAIChatModel
   implements
-    TextGenerationModel<OpenAIChatMessage[], OpenAIChatCompletion, string>,
+    TextGenerationModel<OpenAIChatMessage[], OpenAIChatResponse, string>,
     TokenizerModel<number[]>
 {
   readonly provider = "openai";
@@ -120,7 +117,7 @@ export class OpenAIChatModel
   async generate(
     input: Array<OpenAIChatMessage>,
     context?: RunContext
-  ): Promise<OpenAIChatCompletion> {
+  ): Promise<OpenAIChatResponse> {
     return generateOpenAIChatCompletion({
       baseUrl: this.baseUrl,
       abortSignal: context?.abortSignal,
@@ -134,7 +131,7 @@ export class OpenAIChatModel
     });
   }
 
-  async extractOutput(rawOutput: OpenAIChatCompletion): Promise<string> {
+  async extractOutput(rawOutput: OpenAIChatResponse): Promise<string> {
     return rawOutput.choices[0]!.message.content;
   }
 

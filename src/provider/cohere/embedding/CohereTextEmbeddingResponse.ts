@@ -1,6 +1,6 @@
 import zod from "zod";
 
-export const cohereTextEmbeddingSchema = zod.object({
+export const cohereTextEmbeddingResponseSchema = zod.object({
   id: zod.string(),
   texts: zod.array(zod.string()),
   embeddings: zod.array(zod.array(zod.number())),
@@ -11,4 +11,6 @@ export const cohereTextEmbeddingSchema = zod.object({
   }),
 });
 
-export type CohereTextEmbedding = zod.infer<typeof cohereTextEmbeddingSchema>;
+export type CohereTextEmbeddingResponse = zod.infer<
+  typeof cohereTextEmbeddingResponseSchema
+>;

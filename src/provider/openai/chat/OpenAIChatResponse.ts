@@ -1,6 +1,6 @@
 import zod from "zod";
 
-export const openAIChatCompletionSchema = zod.object({
+export const openAIChatResponseSchema = zod.object({
   id: zod.string(),
   object: zod.literal("chat.completion"),
   created: zod.number(),
@@ -23,7 +23,7 @@ export const openAIChatCompletionSchema = zod.object({
   }),
 });
 
-export type OpenAIChatCompletion = zod.infer<typeof openAIChatCompletionSchema>;
+export type OpenAIChatResponse = zod.infer<typeof openAIChatResponseSchema>;
 
 export type OpenAIChatMessage = {
   role: "user" | "assistant" | "system";

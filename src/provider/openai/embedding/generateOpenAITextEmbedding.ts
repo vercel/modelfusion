@@ -4,9 +4,9 @@ import {
 } from "../../../internal/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../internal/failedOpenAICallResponseHandler.js";
 import {
-  OpenAITextEmbedding,
-  openAITextEmbeddingSchema,
-} from "./OpenAITextEmbedding.js";
+  OpenAITextEmbeddingResponse,
+  openAITextEmbeddingResponseSchema,
+} from "./OpenAITextEmbeddingResponse.js";
 import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
 
 /**
@@ -37,7 +37,7 @@ export async function generateOpenAITextEmbedding({
   model: OpenAITextEmbeddingModelType;
   input: string;
   user?: string;
-}): Promise<OpenAITextEmbedding> {
+}): Promise<OpenAITextEmbeddingResponse> {
   return postJsonToApi({
     url: `${baseUrl}/embeddings`,
     apiKey,
@@ -48,7 +48,7 @@ export async function generateOpenAITextEmbedding({
     },
     failedResponseHandler: failedOpenAICallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
-      openAITextEmbeddingSchema
+      openAITextEmbeddingResponseSchema
     ),
     abortSignal,
   });

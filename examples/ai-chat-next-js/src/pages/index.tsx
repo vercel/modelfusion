@@ -3,7 +3,7 @@ import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
 import { convertReadableStreamToAsyncIterable } from "ai-utils.js/internal";
-import { createOpenAIChatCompletionDeltaStream } from "ai-utils.js/provider/openai";
+import { createOpenAIChatResponseDeltaStream } from "ai-utils.js/provider/openai";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
@@ -35,7 +35,7 @@ export default function Home() {
         signal: abortController.current.signal,
       });
 
-      const completionDeltaStream = await createOpenAIChatCompletionDeltaStream(
+      const completionDeltaStream = await createOpenAIChatResponseDeltaStream(
         convertReadableStreamToAsyncIterable(response.body!.getReader())
       );
 

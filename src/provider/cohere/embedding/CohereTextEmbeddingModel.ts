@@ -1,6 +1,6 @@
 import { RunContext } from "../../../run/RunContext.js";
 import { TextEmbeddingModel } from "../../../text/embed/TextEmbeddingModel.js";
-import { CohereTextEmbedding } from "./CohereTextEmbedding.js";
+import { CohereTextEmbeddingResponse } from "./CohereTextEmbeddingResponse.js";
 import { generateCohereEmbedding } from "./generateCohereEmbedding.js";
 
 export const COHERE_TEXT_EMBEDDING_MODELS = {
@@ -44,7 +44,7 @@ export type CohereTextEmbeddingModelSettings = {
  * const embeddings = await embeddingModel.extractEmbeddings(response);
  */
 export class CohereTextEmbeddingModel
-  implements TextEmbeddingModel<CohereTextEmbedding>
+  implements TextEmbeddingModel<CohereTextEmbeddingResponse>
 {
   readonly provider = "cohere";
 
@@ -82,7 +82,7 @@ export class CohereTextEmbeddingModel
   async embed(
     texts: Array<string>,
     context?: RunContext
-  ): Promise<CohereTextEmbedding> {
+  ): Promise<CohereTextEmbeddingResponse> {
     if (texts.length > this.maxTextsPerCall) {
       throw new Error(
         `The Cohere embedding API only supports ${this.maxTextsPerCall} texts per API call.`
@@ -100,7 +100,7 @@ export class CohereTextEmbeddingModel
   }
 
   async extractEmbeddings(
-    rawOutput: CohereTextEmbedding
+    rawOutput: CohereTextEmbeddingResponse
   ): Promise<Array<Array<number>>> {
     return rawOutput.embeddings;
   }
