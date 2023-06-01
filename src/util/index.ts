@@ -1,6 +1,7 @@
 export * from "./AbortError.js";
 export * from "./ApiCallError.js";
 export * from "./SafeResult.js";
+export * from "./cosineSimilarity.js";
 export * from "./retry/RetryError.js";
 export * from "./retry/RetryFunction.js";
 export * from "./retry/retryNever.js";
