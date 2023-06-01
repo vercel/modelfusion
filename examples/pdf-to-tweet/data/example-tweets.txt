@@ -1,0 +1,162 @@
+Got access to copilot chat today and it's a game changer, even if you are already using similar tools like Rubberduck.
+
+The copilot chat integration into @code is very smooth, and it it supports generating code, editing code, and general chat. Love it!
+-----
+I just changed my default search engine in Chrome to @perplexity_ai - I find it way faster and more accurate than Google or ChatGPT.
+-----
+AI demos look super impressive.
+ 
+But demos are cherry-picked, with inputs and environments specifically designed for them. 
+
+Achieving product-level reliability on a larger set of inputs is very hard with AI, because LLM outputs are difficult to predict and non-deterministic.
+-----
+💯 specialized agents are the next step - and it’s possible to get them to work fairly reliably when the domain is well constrained and the task instructions are clear
+-----
+New JS Agent example:
+
+Create a Twitter thread from a PDF (using a topic)
+
+It summarizes all pages using GPT-4 and the given topic and then drafts a Twitter thread.
+-----
+Great post on the security risks of AI agents and some ways to mitigate them.
+-----
+When writing an agent that scrapes websites and uses their content in prompts, you need to assume any website could contain something like this:
+-----
+🔖Tutorial: Create a Wikipedia agent with JS Agent
+
+The agent can:
+- search Wikipedia
+- fully read articles and answer questions
+
+It uses gpt-3.5-turbo and a programmable search engine.
+
+https://js-agent.ai/docs/tutorial-wikipedia-agent/
+
+Here is some example output:
+-----
+JS Agent v0.0.15
+
+- New PDF summarizer example with GPT-4 and extract & rewrite pipeline
+- PDF loading
+- Better text extraction prompts
+- Changed summarize to extract text
+
+#ChatGPT #buildinpublic
+-----
+JS Agent v0.0.12
+
+- agent runs collect all LLM calls to facilitate debugging, optimization and cost analysis
+- agent run controllers can stop agent runs early (e.g. when a maximum number of steps is exceeded)
+
+#babyagi #AutoGPT
+-----
+From my own experience, LLMs are useful for at least these two use cases:
+
+1. Accelerating entry-level learning
+2. Automating tedious one-off programming tasks that require flexibility
+
+When the underlying information is well-represented on the web, the responses tend to be good.
+-----
+I learned a lot about LLM apps from this post - highly recommended read!
+-----
+GPTAgent.js v0.0.8 
+
+- Extracted generalized Loop concept (with generate next step loops and task planning loops)
+- Restructured tools and actions to provide a functional interface
+- ResultFormatters for all tools
+
+https://github.com/lgrammel/gptagent.js
+
+#AutoGPT #typescript
+-----
+GPTAgent.js v0.0.7 🦾
+
+- integrated UpdateTasksLoop concept from #babyagi into library
+- Steps are always associated with agent runs
+- Text summarization is now fully recursive (to support larger texts)
+- Improved agent run observers
+-----
+💯
+
+Longer-running agents definitely go off the rails a lot.
+
+Agents that reliably execute shorter, well-defined tasks using tools in sandboxed environments seem within reach.
+-----
+Many AI coding examples on Twitter are imo cherry-picked to use popular libraries and develop code from scratch (vs working in existing codebases).
+
+If you choose libs that are new, then GPT-4 will have a hard time. If you try to edit existing code, it'll make mistakes, etc.
+-----
+I've been working with AI software development agents that can implement small features, refactor code, write tests, etc. for a few weeks now.
+
+While they are helpful with good instructions, the lack of design, architecture and requirements understanding is a big barrier atm.
+-----
+I've been using GPT-4 in VS Code with Rubberduck for about a day.
+
+I've stopped writing code by hand for the most part. GPT-4 is a big step up when it comes to code editing and code generation. The code it generates is mostly flawless.
+-----
+My take on the generative AI space:
+
+GPT wrapper startups will not unseat established companies. 
+
+GPT / LLMs are a radical innovation, but they are *not* a disruptive technology for most jobs-to-be-done.
+
+Why? 
+
+Because existing customers of incumbents will ask for AI features.
+-----
+AI chat interfaces are currently the hype - but that's not what we'll end up with.
+
+AI chat combines two key features:
+- natural language interaction
+- iteration & refinement
+
+There are better interfaces for many tasks, e.g. simple instruction text boxes.
+
+Example for codegen:
+-----
+Why is a simple text box better than chat here?
+
+Because you are iteratively refining a specification based on the generated output. This is a close feedback loop.
+
+With chat interfaces, the specification is hidden, editing it is indirect and you can end up in a dead end.
+-----
+Proactive AI pair-programmers are a facinating idea!
+
+With current tech hard to achieve imo, bc
+- low accuracy / large # of false positives will lead to frustration
+- constant monitoring of codebase with LLM calls is costly
+- high-level AI project understanding is not there yet
+-----
+The big question is what will happen to websites and their traffic once we use chat interfaces that deliver the content to us.
+
+Monetizing traffic through ads will become hard to impossible, and many bloggers will be impacted.
+-----
+I'm adding a "generate code" feature to Rubberduck.
+
+Even in its basic version I find it pretty useful. And with Rubberduck templates, it'll be super easy to create custom code generator prompts (e.g. for React components).
+
+#vscode #buildinpublic #openai
+-----
+✨Rubberduck v0.0.9 released ✨
+
+Rubberduck now supports starting a chat directly with the `Start chat` command.
+
+Here is an example chat:
+-----
+Someone reported a first issue 😍
+
+Rubberduck was not supporting VS Code 1.72
+
+Since there is no 1.74 specific functionality in the extension, Rubberduck v0.0.8 supports VS Code 1.72 as well 🎉
+-----
+The interface between the webview and the extension libraries is getting more complex.
+
+At its core, it is communication between two separate programs through JSON messages.
+
+I add Zod to have validated types and make the communication more robust:
+-----
+Day 2 of building the Rubberduck AI Chatbot for #VSCode  in public and as open-source.
+
+Yesterday I started from scratch and finished with an extension that can explain code and write unit tests.
+
+Next up: chatting with code explanations.

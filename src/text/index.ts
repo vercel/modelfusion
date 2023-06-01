@@ -1,6 +1,6 @@
 export * from "./embed/TextEmbeddingFunction.js";
 export * from "./embed/TextEmbeddingModel.js";
-export * from "./embed/embedText.js";
+export * from "./embed/embedTexts.js";
 export * from "./generate/TextGenerationModel.js";
 export * from "./generate/generate.js";
 export * from "./generate/generateText.js";
@@ -8,6 +8,7 @@ export * from "./map/MapFunction.js";
 export * from "./map/mapRecursively.js";
 export * from "./map/splitMapFilterReduce.js";
 export * from "./split/SplitFunction.js";
+export * from "./split/splitOnSeparator.js";
 export * from "./split/splitRecursively.js";
 export * from "./tokenize/Tokenizer.js";
 export * from "./tokenize/TokenizerModel.js";

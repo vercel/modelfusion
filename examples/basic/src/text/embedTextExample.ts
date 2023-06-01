@@ -1,5 +1,5 @@
 import { OpenAITextEmbeddingModel } from "ai-utils.js/provider/openai";
-import { embedText } from "ai-utils.js/text";
+import { embedTexts } from "ai-utils.js/text";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -12,7 +12,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
     model: "text-embedding-ada-002",
   });
 
-  const embeddings = await embedText({
+  const embeddings = await embedTexts({
     model,
     texts: [
       "At first, Nox didn't know what to do with the pup.",

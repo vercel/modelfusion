@@ -10,7 +10,7 @@ import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponenti
 import { runSafe } from "../../util/runSafe.js";
 import { TextEmbeddingModel } from "./TextEmbeddingModel.js";
 
-export async function embedText<RAW_OUTPUT>(
+export async function embedTexts<RAW_OUTPUT>(
   {
     functionId,
     model,
@@ -132,7 +132,7 @@ export async function embedText<RAW_OUTPUT>(
   return embeddings;
 }
 
-embedText.asFunction =
+embedTexts.asFunction =
   <RAW_OUTPUT>({
     functionId,
     model,
@@ -141,4 +141,48 @@ embedText.asFunction =
     model: TextEmbeddingModel<RAW_OUTPUT>;
   }) =>
   async ({ texts }: { texts: Array<string> }, context?: RunContext) =>
-    embedText({ functionId, model, texts }, context);
+    embedTexts({ functionId, model, texts }, context);
+
+export async function embedText<RAW_OUTPUT>(
+  {
+    functionId,
+    model,
+    text,
+    retry,
+    onCallStart,
+    onCallEnd,
+  }: {
+    functionId?: string;
+    model: TextEmbeddingModel<RAW_OUTPUT>;
+    text: string;
+    retry?: RetryFunction;
+    onCallStart?: (call: EmbedCallStartEvent) => void;
+    onCallEnd?: (call: EmbedCallEndEvent) => void;
+  },
+  context?: RunContext
+): Promise<Array<number>> {
+  return (
+    await embedTexts(
+      {
+        functionId,
+        model,
+        texts: [text],
+        retry,
+        onCallStart,
+        onCallEnd,
+      },
+      context
+    )
+  )[0];
+}
+
+embedText.asFunction =
+  <RAW_OUTPUT>({
+    functionId,
+    model,
+  }: {
+    functionId?: string;
+    model: TextEmbeddingModel<RAW_OUTPUT>;
+  }) =>
+  async ({ text }: { text: string }, context?: RunContext) =>
+    embedText({ functionId, model, text }, context);

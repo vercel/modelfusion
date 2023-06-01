@@ -90,11 +90,11 @@ These principles have shaped the design and function of the library, aiming to p
 
 Examples for the individual functions and objects.
 
-### [PDF to Twitter Thread](https://github.com/lgrammel/ai-utils.js/tree/main/examples/pdf-to-twitter-thread)
+### [PDF to Tweet](https://github.com/lgrammel/ai-utils.js/tree/main/examples/pdf-to-tweet)
 
-> _terminal app_, _PDF parsing_, _split-map-filter-reduce_, _OpenAI GPT-4_
+> _console app_, _PDF parsing_, _recursive information extraction_, _in memory vector db_, _style example retrieval_, _OpenAI GPT-4_
 
-Takes a PDF and a topic and creates a Twitter thread with all content from the PDF that is relevant to the topic.
+Extracts information about a topic from a PDF and writes a tweet in your own style about it.
 
 ### [AI Chat (Next.JS)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/ai-chat-next-js)
 
