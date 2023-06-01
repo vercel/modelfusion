@@ -102,6 +102,12 @@ Takes a PDF and a topic and creates a Twitter thread with all content from the P
 
 A basic web chat with an AI assistant, implemented as a Next.js app.
 
+### [Image generator (Next.js)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/image-generator-next-js)
+
+> _Next.js app_, _Stability AI image generation_
+
+Create an 19th century painting image for your input.
+
 ### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/voice-recording-next-js)
 
 > _Next.js app_, _OpenAI Whisper_

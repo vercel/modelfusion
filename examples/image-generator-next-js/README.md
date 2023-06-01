@@ -1,15 +1,15 @@
-# Voice recording and transcription (Next.js)
+# Image generator (Next.js)
 
-> _Next.js app_, _OpenAI Whisper_,
+> _Next.js app_, _Stability AI image generation_
 
-Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
+Create an 19th century painting image for your input.
 
 ## Usage
 
 1. Create .env.local file with the following content:
 
 ```
-OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
+STABILITY_API_KEY="YOUR_STABILITY_API_KEY"
 ```
 
 2. Run the following commands:
