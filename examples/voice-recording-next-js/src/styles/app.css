@@ -8,13 +8,6 @@ body {
   background: linear-gradient(to bottom, #0b1220 0%, #202a42 100%);
 }
 
-.chat-textarea {
-  &:focus {
-    outline: solid rgba(255, 255, 255, 0.8) 1px;
-    border: none;
-  }
-}
-
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
