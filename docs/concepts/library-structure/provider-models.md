@@ -47,3 +47,7 @@ In this example, the createOpenAITextModel function is used to create a text gen
 
 - [Text Generation Model](/api/classes/provider_cohere.CohereTextGenerationModel)
 - [Text Embedding Model](/api/classes/provider_cohere.CohereTextEmbeddingModel)
+
+### Hugging Face
+
+- [Text Generation Model](/api/classes/provider_huggingface.HuggingFaceTextGenerationModel)
