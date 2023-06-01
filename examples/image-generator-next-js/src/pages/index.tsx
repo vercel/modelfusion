@@ -1,11 +1,10 @@
+import styled from "@emotion/styled";
 import Head from "next/head";
 import { useState } from "react";
-import { keyframes } from "@emotion/react";
-import styled from "@emotion/styled";
 
 const Placeholder = styled.div`
-  width: 512px;
-  height: 512px;
+  width: 552px;
+  height: 552px;
 
   overflow: hidden;
   padding: 20px;
@@ -23,8 +22,8 @@ const Placeholder = styled.div`
 `;
 
 const StyledImage = styled.img`
-  width: 512px;
-  height: 512px;
+  width: 552px;
+  height: 552px;
 
   overflow: hidden;
   padding: 20px;
@@ -47,20 +46,22 @@ export default function Home() {
     event.preventDefault();
     setIsLoading(true);
 
-    const response = await fetch("/api/generate-image", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text: inputValue }),
-    });
+    try {
+      const response = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: inputValue }),
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      const base64Image = data.artifacts[0].base64;
-      setImageSrc(`data:image/png;base64,${base64Image}`);
+      if (response.ok) {
+        const base64Image = await response.json();
+        setImageSrc(`data:image/png;base64,${base64Image}`);
+      }
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (

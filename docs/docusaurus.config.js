@@ -66,6 +66,7 @@ const config = {
           "../src/provider/cohere/index.ts",
           "../src/provider/huggingface/index.ts",
           "../src/provider/openai/index.ts",
+          "../src/provider/stability/index.ts",
           "../src/internal/index.ts",
           "../src/run/index.ts",
           "../src/text/index.ts",

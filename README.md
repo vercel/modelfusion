@@ -74,9 +74,14 @@ These principles have shaped the design and function of the library, aiming to p
 
 - text generation
 
+### Stability AI
+
+- image generation
+
 ## Documentation
 
 - [Concepts](https://ai-utils.dev/concepts)
+- [Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic)
 - [API](https://ai-utils.dev/api/modules)
 
 ## Examples

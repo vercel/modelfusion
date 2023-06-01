@@ -50,3 +50,7 @@ console.log(response.choices[0].text);
 ### Hugging Face
 
 - [Text Completion](/api/modules/provider_huggingface#generatehuggingfacetextcompletion)
+
+### Stability AI
+
+- [Image Generation](/api/modules/provider_stability#generatestabilityimage)
