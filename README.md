@@ -50,6 +50,7 @@ These principles have shaped the design and function of the library, aiming to p
 - Tokenization
 - Prompt utilities
   - Fit recent messages chat prompt into context window
+- In-memory vector DB
 - Run abstraction for progress reporting and abort signals
 - Retry management
 - Error handling
