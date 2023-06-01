@@ -9,6 +9,8 @@
     "embedding",
     "openai",
     "cohere",
+    "huggingface",
+    "stability-ai",
     "gpt-3",
     "gpt-4",
     "whisper",
