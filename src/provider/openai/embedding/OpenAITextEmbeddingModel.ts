@@ -130,6 +130,8 @@ export class OpenAITextEmbeddingModel
       apiKey: this.apiKey,
       model: this.model,
       settings: Object.assign({}, this.settings, additionalSettings),
+      retry: this.retry,
+      throttle: this.throttle,
     });
   }
 }
