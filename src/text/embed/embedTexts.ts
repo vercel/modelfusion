@@ -68,42 +68,43 @@ export async function embedTexts<RAW_OUTPUT>(
     textGroups.push(texts.slice(i, i + maxTextsPerCall));
   }
 
-  // embed each group:
-  const rawOutputs: Array<RAW_OUTPUT> = [];
-  for (const textGroup of textGroups) {
-    const result = await runSafe(() => model.embed(textGroup, context));
+  // embed each group (run in parallel, throttling should happen at embedding model level):
+  const rawOutputs: Array<RAW_OUTPUT> = await Promise.all(
+    textGroups.map(async (textGroup) => {
+      const result = await runSafe(() => model.embed(textGroup, context));
 
-    if (!result.ok) {
-      if (result.isAborted) {
+      if (!result.ok) {
+        if (result.isAborted) {
+          const callEndEvent: EmbedCallEndEvent = {
+            type: "embed-end",
+            status: "abort",
+            metadata,
+            texts,
+          };
+
+          onCallEnd?.(callEndEvent);
+          context?.onCallEnd?.(callEndEvent);
+
+          throw new AbortError();
+        }
+
         const callEndEvent: EmbedCallEndEvent = {
           type: "embed-end",
-          status: "abort",
+          status: "failure",
           metadata,
           texts,
+          error: result.error,
         };
 
         onCallEnd?.(callEndEvent);
         context?.onCallEnd?.(callEndEvent);
 
-        throw new AbortError();
+        throw result.error;
       }
 
-      const callEndEvent: EmbedCallEndEvent = {
-        type: "embed-end",
-        status: "failure",
-        metadata,
-        texts,
-        error: result.error,
-      };
-
-      onCallEnd?.(callEndEvent);
-      context?.onCallEnd?.(callEndEvent);
-
-      throw result.error;
-    }
-
-    rawOutputs.push(result.output);
-  }
+      return result.output;
+    })
+  );
 
   // combine the results:
   const embeddings: Array<Array<number>> = [];
