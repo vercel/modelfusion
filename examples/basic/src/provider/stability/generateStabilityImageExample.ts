@@ -23,9 +23,8 @@ const STABILITY_API_KEY = process.env.STABILITY_API_KEY ?? "";
   });
 
   imageResponse.artifacts.forEach((image, index) => {
-    fs.writeFileSync(
-      `./stability-image-example-${index}.png`,
-      Buffer.from(image.base64, "base64")
-    );
+    const path = `./stability-image-example-${index}.png`;
+    fs.writeFileSync(path, Buffer.from(image.base64, "base64"));
+    console.log(`Image saved to ${path}`);
   });
 })();

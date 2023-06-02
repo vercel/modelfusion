@@ -63,3 +63,7 @@ In this example, the createOpenAITextModel function is used to create a text gen
 ### Hugging Face
 
 - [Text Generation Model](/api/classes/provider_huggingface.HuggingFaceTextGenerationModel)
+
+### Stability AI
+
+- [Image Generation Model](/api/classes/provider_stability.StabilityImageGenerationModel
