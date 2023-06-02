@@ -1,13 +1,11 @@
 import { IdMetadata } from "./IdMetadata.js";
+import { ModelInformation } from "./ModelInformation.js";
 
 export type GenerateCallStartEvent = {
   type: "generate-start";
   input: unknown;
   metadata: IdMetadata & {
-    model: {
-      provider: string;
-      name: string;
-    };
+    model: ModelInformation;
 
     startEpochSeconds: number;
   };
@@ -17,10 +15,7 @@ export type GenerateCallEndEvent = {
   type: "generate-end";
   input: unknown;
   metadata: IdMetadata & {
-    model: {
-      provider: string;
-      name: string;
-    };
+    model: ModelInformation;
 
     startEpochSeconds: number;
     durationInMs: number;

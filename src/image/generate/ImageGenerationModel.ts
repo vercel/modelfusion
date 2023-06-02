@@ -2,7 +2,7 @@ import { RunContext } from "run/RunContext.js";
 
 export type ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT> = {
   readonly provider: string;
-  readonly model: string;
+  readonly model: string | null;
 
   generate: (
     prompt: PROMPT_TYPE,

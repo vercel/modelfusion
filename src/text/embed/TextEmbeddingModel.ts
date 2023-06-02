@@ -1,6 +1,6 @@
 export type TextEmbeddingModel<RAW_OUTPUT> = {
   readonly provider: string;
-  readonly model: string;
+  readonly model: string | null;
 
   /**
    * The limit of texts that can be processed in a single API call.

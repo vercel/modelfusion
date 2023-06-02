@@ -1,6 +1,6 @@
 export type TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT> = {
   readonly provider: string;
-  readonly model: string;
+  readonly model: string | null;
 
   generate: (
     prompt: PROMPT_TYPE,
