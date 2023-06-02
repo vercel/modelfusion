@@ -5,7 +5,7 @@ import {
 } from "../../../internal/postToApi.js";
 import { failedStabilityCallResponseHandler } from "../internal/failedStabilityCallResponseHandler.js";
 
-export const stabilityImageResponseSchema = z.object({
+export const stabilityImageGenerationResponseSchema = z.object({
   artifacts: z.array(
     z.object({
       base64: z.string(),
@@ -15,9 +15,45 @@ export const stabilityImageResponseSchema = z.object({
   ),
 });
 
-export type StabilityImageResponse = z.infer<
-  typeof stabilityImageResponseSchema
+export type StabilityImageGenerationResponse = z.infer<
+  typeof stabilityImageGenerationResponseSchema
 >;
+
+export type StabilityImageGenerationStylePreset =
+  | "enhance"
+  | "anime"
+  | "photographic"
+  | "digital-art"
+  | "comic-book"
+  | "fantasy-art"
+  | "line-art"
+  | "analog-film"
+  | "neon-punk"
+  | "isometric"
+  | "low-poly"
+  | "origami"
+  | "modeling-compound"
+  | "cinematic"
+  | "3d-model"
+  | "pixel-art"
+  | "tile-texture";
+
+export type StabilityImageGenerationSampler =
+  | "DDIM"
+  | "DDPM"
+  | "K_DPMPP_2M"
+  | "K_DPMPP_2S_ANCESTRAL"
+  | "K_DPM_2"
+  | "K_DPM_2_ANCESTRAL"
+  | "K_EULER"
+  | "K_EULER_ANCESTRAL"
+  | "K_HEUN"
+  | "K_LMS";
+
+export type StabilityImageGenerationPrompt = Array<{
+  text: string;
+  weight?: number;
+}>;
 
 /**
  * Call the Stability AI API for image generation.
@@ -69,45 +105,15 @@ export async function generateStabilityImage({
   engineId: string;
   height?: number;
   width?: number;
-  textPrompts: Array<{
-    text: string;
-    weight?: number;
-  }>;
+  textPrompts: StabilityImageGenerationPrompt;
   cfgScale?: number;
   clipGuidancePreset?: string;
-  sampler?:
-    | "DDIM"
-    | "DDPM"
-    | "K_DPMPP_2M"
-    | "K_DPMPP_2S_ANCESTRAL"
-    | "K_DPM_2"
-    | "K_DPM_2_ANCESTRAL"
-    | "K_EULER"
-    | "K_EULER_ANCESTRAL"
-    | "K_HEUN"
-    | "K_LMS";
+  sampler?: StabilityImageGenerationSampler;
   samples?: number;
   seed?: number;
   steps?: number;
-  stylePreset?:
-    | "enhance"
-    | "anime"
-    | "photographic"
-    | "digital-art"
-    | "comic-book"
-    | "fantasy-art"
-    | "line-art"
-    | "analog-film"
-    | "neon-punk"
-    | "isometric"
-    | "low-poly"
-    | "origami"
-    | "modeling-compound"
-    | "cinematic"
-    | "3d-model"
-    | "pixel-art"
-    | "tile-texture";
-}): Promise<StabilityImageResponse> {
+  stylePreset?: StabilityImageGenerationStylePreset;
+}): Promise<StabilityImageGenerationResponse> {
   return postJsonToApi({
     url: `${baseUrl}/generation/${engineId}/text-to-image`,
     apiKey,
@@ -125,7 +131,7 @@ export async function generateStabilityImage({
     },
     failedResponseHandler: failedStabilityCallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
-      stabilityImageResponseSchema
+      stabilityImageGenerationResponseSchema
     ),
     abortSignal,
   });
