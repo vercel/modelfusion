@@ -23,6 +23,16 @@ const textGenerationModel = new OpenAITextGenerationModel({
   apiKey: OPENAI_API_KEY,
   model: "text-davinci-003",
   settings: { temperature: 0.7 }, // define settings
+
+  // configure retries (optional, retries enabled by default)
+  retry: retryWithExponentialBackoff({
+    maxTries: 8,
+    initialDelayInMs: 1000,
+    backoffFactor: 2,
+  }),
+
+  // configure throttling (optional, calls throttled by default)
+  throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
 });
 
 // Later in the code:

@@ -5,13 +5,13 @@ import { RetryError } from "./RetryError.js";
 export const retryWithExponentialBackoff =
   ({
     maxTries = 5,
-    initialDelay = 2000,
+    initialDelayInMs = 2000,
     backoffFactor = 2,
   } = {}): RetryFunction =>
   async <OUTPUT>(f: () => PromiseLike<OUTPUT>) =>
     _retryWithExponentialBackoff(f, {
       maxTries,
-      delay: initialDelay,
+      delay: initialDelayInMs,
       backoffFactor,
     });
 

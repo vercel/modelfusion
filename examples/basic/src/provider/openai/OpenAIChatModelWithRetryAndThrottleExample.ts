@@ -17,7 +17,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 
     retry: retryWithExponentialBackoff({
       maxTries: 8,
-      initialDelay: 1000,
+      initialDelayInMs: 1000,
       backoffFactor: 2,
     }),
 
