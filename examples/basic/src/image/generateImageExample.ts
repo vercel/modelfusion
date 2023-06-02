@@ -1,4 +1,5 @@
 import { StabilityImageGenerationModel } from "ai-utils.js/provider/stability";
+import { generateImage } from "ai-utils.js/image";
 import dotenv from "dotenv";
 import fs from "node:fs";
 
@@ -7,7 +8,7 @@ dotenv.config();
 const STABILITY_API_KEY = process.env.STABILITY_API_KEY ?? "";
 
 (async () => {
-  const imageGenerationModel = new StabilityImageGenerationModel({
+  const model = new StabilityImageGenerationModel({
     apiKey: STABILITY_API_KEY,
     model: "stable-diffusion-512-v2-1",
     settings: {
@@ -20,14 +21,19 @@ const STABILITY_API_KEY = process.env.STABILITY_API_KEY ?? "";
     },
   });
 
-  const imageResponse = await imageGenerationModel.generate([
-    { text: "the wicked witch of the west" },
-    { text: "style of early 19th century painting", weight: 0.5 },
-  ]);
+  const generatePainting = generateImage.asFunction({
+    model,
+    prompt: async ({ description }: { description: string }) => [
+      { text: description },
+      { text: "style of early 19th century painting", weight: 0.5 },
+    ],
+  });
 
-  const image = await imageGenerationModel.extractImageBase64(imageResponse);
+  const imageBase64 = await generatePainting({
+    description: "the wicked witch of the west",
+  });
 
   const path = `./stability-image-example.png`;
-  fs.writeFileSync(path, Buffer.from(image, "base64"));
+  fs.writeFileSync(path, Buffer.from(imageBase64, "base64"));
   console.log(`Image saved to ${path}`);
 })();

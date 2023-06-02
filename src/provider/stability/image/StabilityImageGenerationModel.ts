@@ -1,3 +1,4 @@
+import { ImageGenerationModel } from "../../../image/generate/ImageGenerationModel.js";
 import { RunContext } from "../../../run/RunContext.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
@@ -23,12 +24,23 @@ export type StabilityImageGenerationModelSettings = {
   stylePreset?: StabilityImageGenerationStylePreset;
 };
 
-export class StabilityImageGenerationModel {
+export class StabilityImageGenerationModel
+  implements
+    ImageGenerationModel<
+      StabilityImageGenerationPrompt,
+      StabilityImageGenerationResponse
+    >
+{
   readonly provider = "stability";
 
   readonly baseUrl?: string;
   readonly apiKey: string;
-  readonly engineId: string;
+
+  /**
+   * The Stability engineId is used as the model.
+   */
+  readonly model: string;
+
   readonly settings: StabilityImageGenerationModelSettings;
 
   readonly retry: RetryFunction;
@@ -37,21 +49,21 @@ export class StabilityImageGenerationModel {
   constructor({
     baseUrl,
     apiKey,
-    engineId,
+    model,
     settings = {},
     retry = retryWithExponentialBackoff(),
     throttle = throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
   }: {
     baseUrl?: string;
     apiKey: string;
-    engineId: string;
+    model: string;
     settings?: StabilityImageGenerationModelSettings;
     retry?: RetryFunction;
     throttle?: ThrottleFunction;
   }) {
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
-    this.engineId = engineId;
+    this.model = model;
     this.settings = settings;
 
     this.retry = retry;
@@ -68,7 +80,7 @@ export class StabilityImageGenerationModel {
           baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
-          engineId: this.engineId,
+          engineId: this.model,
           textPrompts: input,
           ...this.settings,
         })
@@ -86,7 +98,7 @@ export class StabilityImageGenerationModel {
     return new StabilityImageGenerationModel({
       baseUrl: this.baseUrl,
       apiKey: this.apiKey,
-      engineId: this.engineId,
+      model: this.model,
       settings: Object.assign({}, this.settings, additionalSettings),
       retry: this.retry,
       throttle: this.throttle,

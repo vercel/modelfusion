@@ -1,6 +1,6 @@
 {
   "name": "ai-utils.js",
-  "description": "A toolkit for building AI apps, chatbots and agents",
+  "description": "A toolkit for building AI apps, chatbots and agents.",
   "version": "0.0.8",
   "author": "Lars Grammel",
   "license": "MIT",
@@ -35,6 +35,21 @@
     "./*"
   ],
   "exports": {
+    "./image": {
+      "types": "./image/index.d.ts",
+      "import": "./image/index.js",
+      "require": "./image/index.cjs"
+    },
+    "./internal": {
+      "types": "./internal/index.d.ts",
+      "import": "./internal/index.js",
+      "require": "./internal/index.cjs"
+    },
+    "./prompt": {
+      "types": "./prompt/index.d.ts",
+      "import": "./prompt/index.js",
+      "require": "./prompt/index.cjs"
+    },
     "./provider/cohere": {
       "types": "./provider/cohere/index.d.ts",
       "import": "./provider/cohere/index.js",
@@ -54,16 +69,6 @@
       "types": "./provider/stability/index.d.ts",
       "import": "./provider/stability/index.js",
       "require": "./provider/stability/index.cjs"
-    },
-    "./internal": {
-      "types": "./internal/index.d.ts",
-      "import": "./internal/index.js",
-      "require": "./internal/index.cjs"
-    },
-    "./prompt": {
-      "types": "./prompt/index.d.ts",
-      "import": "./prompt/index.js",
-      "require": "./prompt/index.cjs"
     },
     "./run": {
       "types": "./run/index.d.ts",
