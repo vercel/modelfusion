@@ -1,8 +1,8 @@
-import { IdMetadata } from "./IdMetadata.js";
-import { ModelInformation } from "./ModelInformation.js";
+import { IdMetadata } from "../../run/IdMetadata.js";
+import { ModelInformation } from "../../run/ModelInformation.js";
 
-export type EmbedCallStartEvent = {
-  type: "embed-start";
+export type EmbedTextStartEvent = {
+  type: "embed-text-start";
   texts: Array<string>;
   metadata: IdMetadata & {
     model: ModelInformation;
@@ -11,8 +11,8 @@ export type EmbedCallStartEvent = {
   };
 };
 
-export type EmbedCallEndEvent = {
-  type: "embed-end";
+export type EmbedTextEndEvent = {
+  type: "embed-text-end";
   texts: Array<string>;
   metadata: IdMetadata & {
     model: ModelInformation;

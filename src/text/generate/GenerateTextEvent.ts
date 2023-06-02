@@ -1,8 +1,8 @@
-import { IdMetadata } from "./IdMetadata.js";
-import { ModelInformation } from "./ModelInformation.js";
+import { IdMetadata } from "../../run/IdMetadata.js";
+import { ModelInformation } from "../../run/ModelInformation.js";
 
-export type GenerateCallStartEvent = {
-  type: "generate-start";
+export type GenerateTextStartEvent = {
+  type: "generate-text-start";
   input: unknown;
   metadata: IdMetadata & {
     model: ModelInformation;
@@ -11,8 +11,8 @@ export type GenerateCallStartEvent = {
   };
 };
 
-export type GenerateCallEndEvent = {
-  type: "generate-end";
+export type GenerateTextEndEvent = {
+  type: "generate-text-end";
   input: unknown;
   metadata: IdMetadata & {
     model: ModelInformation;

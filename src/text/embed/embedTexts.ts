@@ -1,11 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
-import {
-  EmbedCallEndEvent,
-  EmbedCallStartEvent,
-} from "../../run/EmbedCallEvent.js";
 import { RunContext } from "../../run/RunContext.js";
 import { AbortError } from "../../util/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
+import { EmbedTextEndEvent, EmbedTextStartEvent } from "./EmbedTextEvent.js";
+import { EmbedTextObserver } from "./EmbedTextObserver.js";
 import { TextEmbeddingModel } from "./TextEmbeddingModel.js";
 
 export async function embedTexts<RAW_OUTPUT>(
@@ -13,16 +11,16 @@ export async function embedTexts<RAW_OUTPUT>(
     functionId,
     model,
     texts,
-    onCallStart,
-    onCallEnd,
+    onStart,
+    onEnd,
   }: {
     functionId?: string;
     model: TextEmbeddingModel<RAW_OUTPUT>;
     texts: Array<string>;
-    onCallStart?: (call: EmbedCallStartEvent) => void;
-    onCallEnd?: (call: EmbedCallEndEvent) => void;
+    onStart?: (event: EmbedTextStartEvent) => void;
+    onEnd?: (event: EmbedTextEndEvent) => void;
   },
-  context?: RunContext
+  context?: RunContext & EmbedTextObserver
 ): Promise<Array<Array<number>>> {
   const startTime = performance.now();
   const startEpochSeconds = Math.floor(
@@ -45,14 +43,14 @@ export async function embedTexts<RAW_OUTPUT>(
     startEpochSeconds,
   };
 
-  const callStartEvent: EmbedCallStartEvent = {
-    type: "embed-start",
+  const startEvent: EmbedTextStartEvent = {
+    type: "embed-text-start",
     metadata: startMetadata,
     texts,
   };
 
-  onCallStart?.(callStartEvent);
-  context?.onCallStart?.(callStartEvent);
+  onStart?.(startEvent);
+  context?.onEmbedTextStart?.(startEvent);
 
   const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
 
@@ -75,29 +73,29 @@ export async function embedTexts<RAW_OUTPUT>(
 
       if (!result.ok) {
         if (result.isAborted) {
-          const callEndEvent: EmbedCallEndEvent = {
-            type: "embed-end",
+          const endEvent: EmbedTextEndEvent = {
+            type: "embed-text-end",
             status: "abort",
             metadata,
             texts,
           };
 
-          onCallEnd?.(callEndEvent);
-          context?.onCallEnd?.(callEndEvent);
+          onEnd?.(endEvent);
+          context?.onEmbedTextEnd?.(endEvent);
 
           throw new AbortError();
         }
 
-        const callEndEvent: EmbedCallEndEvent = {
-          type: "embed-end",
+        const endEvent: EmbedTextEndEvent = {
+          type: "embed-text-end",
           status: "failure",
           metadata,
           texts,
           error: result.error,
         };
 
-        onCallEnd?.(callEndEvent);
-        context?.onCallEnd?.(callEndEvent);
+        onEnd?.(endEvent);
+        context?.onEmbedTextEnd?.(endEvent);
 
         throw result.error;
       }
@@ -112,8 +110,8 @@ export async function embedTexts<RAW_OUTPUT>(
     embeddings.push(...(await model.extractEmbeddings(rawOutput)));
   }
 
-  const callEndEvent: EmbedCallEndEvent = {
-    type: "embed-end",
+  const endEvent: EmbedTextEndEvent = {
+    type: "embed-text-end",
     status: "success",
     metadata,
     texts,
@@ -121,8 +119,8 @@ export async function embedTexts<RAW_OUTPUT>(
     embeddings,
   };
 
-  onCallEnd?.(callEndEvent);
-  context?.onCallEnd?.(callEndEvent);
+  onEnd?.(endEvent);
+  context?.onEmbedTextEnd?.(endEvent);
 
   return embeddings;
 }
@@ -135,7 +133,10 @@ embedTexts.asFunction =
     functionId?: string;
     model: TextEmbeddingModel<RAW_OUTPUT>;
   }) =>
-  async ({ texts }: { texts: Array<string> }, context?: RunContext) =>
+  async (
+    { texts }: { texts: Array<string> },
+    context?: RunContext & EmbedTextObserver
+  ) =>
     embedTexts({ functionId, model, texts }, context);
 
 export async function embedText<RAW_OUTPUT>(
@@ -143,16 +144,16 @@ export async function embedText<RAW_OUTPUT>(
     functionId,
     model,
     text,
-    onCallStart,
-    onCallEnd,
+    onStart,
+    onEnd,
   }: {
     functionId?: string;
     model: TextEmbeddingModel<RAW_OUTPUT>;
     text: string;
-    onCallStart?: (call: EmbedCallStartEvent) => void;
-    onCallEnd?: (call: EmbedCallEndEvent) => void;
+    onStart?: (event: EmbedTextStartEvent) => void;
+    onEnd?: (event: EmbedTextEndEvent) => void;
   },
-  context?: RunContext
+  context?: RunContext & EmbedTextObserver
 ): Promise<Array<number>> {
   return (
     await embedTexts(
@@ -160,8 +161,8 @@ export async function embedText<RAW_OUTPUT>(
         functionId,
         model,
         texts: [text],
-        onCallStart,
-        onCallEnd,
+        onStart,
+        onEnd,
       },
       context
     )
@@ -176,5 +177,8 @@ embedText.asFunction =
     functionId?: string;
     model: TextEmbeddingModel<RAW_OUTPUT>;
   }) =>
-  async ({ text }: { text: string }, context?: RunContext) =>
+  async (
+    { text }: { text: string },
+    context?: RunContext & EmbedTextObserver
+  ) =>
     embedText({ functionId, model, text }, context);

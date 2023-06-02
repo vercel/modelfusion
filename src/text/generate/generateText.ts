@@ -1,7 +1,7 @@
 import {
-  GenerateCallEndEvent,
-  GenerateCallStartEvent,
-} from "../../run/GenerateCallEvent.js";
+  GenerateTextEndEvent,
+  GenerateTextStartEvent,
+} from "./GenerateTextEvent.js";
 import { Prompt } from "../../run/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
 import { RunFunction } from "../../run/RunFunction.js";
@@ -35,8 +35,8 @@ generateText.asFunction =
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
     retry?: RetryFunction;
-    onCallStart?: (call: GenerateCallStartEvent) => void;
-    onCallEnd?: (call: GenerateCallEndEvent) => void;
+    onStart?: (event: GenerateTextStartEvent) => void;
+    onEnd?: (event: GenerateTextEndEvent) => void;
   }): RunFunction<INPUT, string> =>
   async (input: INPUT, context?: RunContext) =>
     generateText({ input, ...options }, context);
@@ -51,8 +51,8 @@ generateText.asSafeFunction =
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
     retry?: RetryFunction;
-    onCallStart?: (call: GenerateCallStartEvent) => void;
-    onCallEnd?: (call: GenerateCallEndEvent) => void;
+    onStart?: (event: GenerateTextStartEvent) => void;
+    onEnd?: (event: GenerateTextEndEvent) => void;
   }) =>
   async (input: INPUT, context?: RunContext) =>
     safeGenerateText({ input, ...options }, context);
@@ -75,8 +75,8 @@ generateText.asFunction =
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
     retry?: RetryFunction;
-    onCallStart?: (call: GenerateCallStartEvent) => void;
-    onCallEnd?: (call: GenerateCallEndEvent) => void;
+    onStart?: (event: GenerateTextStartEvent) => void;
+    onEnd?: (event: GenerateTextEndEvent) => void;
   }) =>
   async (input: INPUT, context?: RunContext) =>
     generateText({ input, ...options }, context);
@@ -89,8 +89,8 @@ function safeGenerateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     model,
     extractOutput,
     processOutput = async (output) => output.trim(),
-    onCallStart,
-    onCallEnd,
+    onStart,
+    onEnd,
   }: {
     functionId?: string | undefined;
     input: INPUT;
@@ -98,8 +98,8 @@ function safeGenerateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, string>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
-    onCallStart?: (call: GenerateCallStartEvent) => void;
-    onCallEnd?: (call: GenerateCallEndEvent) => void;
+    onStart?: (event: GenerateTextStartEvent) => void;
+    onEnd?: (event: GenerateTextEndEvent) => void;
   },
   context?: RunContext
 ) {
@@ -111,8 +111,8 @@ function safeGenerateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
       model,
       extractOutput,
       processOutput,
-      onCallStart,
-      onCallEnd,
+      onStart,
+      onEnd,
     },
     context
   );

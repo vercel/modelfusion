@@ -10,7 +10,7 @@ sidebar_position: 1
 
 `ai-utils.js` is built with TypeScript at its core, designed to take full advantage of type inference, static typing, and the robust tooling TypeScript offers. We are using a mix of functional and object-oriented programming, with a focus on functional composition and immutability.
 
-### Control over prompts, models, and control flow
+### Your prompts, model choices, and control flow
 
 Building applications with AI is a complex task, and your requirements mean you must make unique choices. We give you complete control over the prompts, the model choices and settings, and the control flow of your application, because controlling these aspects is essential to building a production-grade application. You can also use our thin Provider API layer directly.
 

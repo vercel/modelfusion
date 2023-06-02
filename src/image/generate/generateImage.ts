@@ -1,8 +1,4 @@
 import { createId } from "@paralleldrive/cuid2";
-import {
-  GenerateCallEndEvent,
-  GenerateCallStartEvent,
-} from "run/GenerateCallEvent.js";
 import { Prompt } from "../../run/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
 import { RunFunction, SafeRunFunction } from "../../run/RunFunction.js";
@@ -10,6 +6,11 @@ import { AbortError } from "../../util/AbortError.js";
 import { SafeResult } from "../../util/SafeResult.js";
 import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import { runSafe } from "../../util/runSafe.js";
+import {
+  GenerateImageEndEvent,
+  GenerateImageStartEvent,
+} from "./GenerateImageEvent.js";
+import { GenerateImageObserver } from "./GenerateImageObserver.js";
 import { ImageGenerationModel } from "./ImageGenerationModel.js";
 
 export async function generateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
@@ -52,10 +53,10 @@ generateImage.asFunction =
     model: ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
     extractBase64Image?: (output: RAW_OUTPUT) => PromiseLike<string>;
     retry?: RetryFunction;
-    onCallStart?: (call: GenerateCallStartEvent) => void;
-    onCallEnd?: (call: GenerateCallEndEvent) => void;
+    onStart?: (event: GenerateImageStartEvent) => void;
+    onEnd?: (event: GenerateImageEndEvent) => void;
   }): RunFunction<INPUT, string> =>
-  async (input: INPUT, context?: RunContext) =>
+  async (input: INPUT, context?: RunContext & GenerateImageObserver) =>
     generateImage({ input, ...options }, context);
 
 generateImage.safe = safeGenerateImage;
@@ -67,10 +68,10 @@ generateImage.asSafeFunction =
     model: ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     retry?: RetryFunction;
-    onCallStart?: (call: GenerateCallStartEvent) => void;
-    onCallEnd?: (call: GenerateCallEndEvent) => void;
+    onStart?: (event: GenerateImageStartEvent) => void;
+    onEnd?: (event: GenerateImageEndEvent) => void;
   }): SafeRunFunction<INPUT, string> =>
-  async (input: INPUT, context?: RunContext) =>
+  async (input: INPUT, context?: RunContext & GenerateImageObserver) =>
     safeGenerateImage({ input, ...options }, context);
 
 async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
@@ -80,18 +81,18 @@ async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     input,
     model,
     extractBase64Image = model.extractImageBase64,
-    onCallStart,
-    onCallEnd,
+    onStart,
+    onEnd,
   }: {
     functionId?: string | undefined;
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
     extractBase64Image?: (output: RAW_OUTPUT) => PromiseLike<string>;
-    onCallStart?: (call: GenerateCallStartEvent) => void;
-    onCallEnd?: (call: GenerateCallEndEvent) => void;
+    onStart?: (event: GenerateImageStartEvent) => void;
+    onEnd?: (event: GenerateImageEndEvent) => void;
   },
-  context?: RunContext
+  context?: RunContext & GenerateImageObserver
 ): Promise<SafeResult<string>> {
   const expandedPrompt = await prompt(input);
 
@@ -116,14 +117,14 @@ async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     startEpochSeconds,
   };
 
-  const callStartEvent: GenerateCallStartEvent = {
-    type: "generate-start",
+  const startEvent: GenerateImageStartEvent = {
+    type: "generate-image-start",
     metadata: startMetadata,
     input: expandedPrompt,
   };
 
-  onCallStart?.(callStartEvent);
-  context?.onCallStart?.(callStartEvent);
+  onStart?.(startEvent);
+  context?.onGenerateImageStart?.(startEvent);
 
   const result = await runSafe(() =>
     model.generate(expandedPrompt, {
@@ -140,47 +141,46 @@ async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
 
   if (!result.ok) {
     if (result.isAborted) {
-      const callEndEvent: GenerateCallEndEvent = {
-        type: "generate-end",
+      const endEvent: GenerateImageEndEvent = {
+        type: "generate-image-end",
         status: "abort",
         metadata,
         input: expandedPrompt,
       };
 
-      onCallEnd?.(callEndEvent);
-      context?.onCallEnd?.(callEndEvent);
+      onEnd?.(endEvent);
+      context?.onGenerateImageEnd?.(endEvent);
 
       return { ok: false, isAborted: true };
     }
 
-    const callEndEvent: GenerateCallEndEvent = {
-      type: "generate-end",
+    const endEvent: GenerateImageEndEvent = {
+      type: "generate-image-end",
       status: "failure",
       metadata,
       input: expandedPrompt,
       error: result.error,
     };
 
-    onCallEnd?.(callEndEvent);
-    context?.onCallEnd?.(callEndEvent);
+    onEnd?.(endEvent);
+    context?.onGenerateImageEnd?.(endEvent);
 
     return { ok: false, error: result.error };
   }
 
   const image = await extractBase64Image(result.output);
 
-  const callEndEvent: GenerateCallEndEvent = {
-    type: "generate-end",
+  const endEvent: GenerateImageEndEvent = {
+    type: "generate-image-end",
     status: "success",
     metadata,
     input: expandedPrompt,
     rawOutput: result.output,
-    extractedOutput: image,
-    processedOutput: image,
+    generatedImageBase64: image,
   };
 
-  onCallEnd?.(callEndEvent);
-  context?.onCallEnd?.(callEndEvent);
+  onEnd?.(endEvent);
+  context?.onGenerateImageEnd?.(endEvent);
 
   return { ok: true, output: image };
 }

@@ -4,6 +4,8 @@ import {
 } from "ai-utils.js/provider/openai";
 import { RunContext } from "ai-utils.js/run";
 import {
+  EmbedTextObserver,
+  GenerateTextObserver,
   embedText,
   generateText,
   mapRecursively,
@@ -25,7 +27,7 @@ export async function createTweetFromPdf({
   pdfPath: string;
   exampleTweetIndexPath: string;
   openAiApiKey: string;
-  context: RunContext;
+  context: RunContext & GenerateTextObserver & EmbedTextObserver;
 }) {
   const embeddingModel = new OpenAITextEmbeddingModel({
     apiKey: openAiApiKey,
@@ -116,10 +118,14 @@ Discard all irrelevant information.`,
   );
 
   // get embedding of draft tweet:
-  const draftTweetEmbedding = await embedText({
-    text: draftTweet,
-    model: embeddingModel,
-  });
+  const draftTweetEmbedding = await embedText(
+    {
+      functionId: "embed-draft-tweet",
+      text: draftTweet,
+      model: embeddingModel,
+    },
+    context
+  );
 
   // search for similar tweets:
   const similarTweets = await exampleTweetStore.search({

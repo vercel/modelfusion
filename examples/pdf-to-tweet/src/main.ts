@@ -27,11 +27,25 @@ createTweetFromPdf({
   exampleTweetIndexPath: examples,
   openAiApiKey,
   context: {
-    onCallStart: (call) => {
-      console.log(`${call.metadata.functionId ?? "unknown"} started.`);
+    onGenerateTextStart: (event) => {
+      console.log(
+        `Generate text ${event.metadata.functionId ?? "unknown"} started.`
+      );
     },
-    onCallEnd: (call) => {
-      console.log(`${call.metadata.functionId ?? "unknown"} finished.`);
+    onGenerateTextEnd: (event) => {
+      console.log(
+        `Generate text ${event.metadata.functionId ?? "unknown"} finished.`
+      );
+    },
+    onEmbedTextStart: (event) => {
+      console.log(
+        `Embed text ${event.metadata.functionId ?? "unknown"} started.`
+      );
+    },
+    onEmbedTextEnd: (event) => {
+      console.log(
+        `Embed text ${event.metadata.functionId ?? "unknown"} finished.`
+      );
     },
   },
 })

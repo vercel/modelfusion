@@ -1,8 +1,8 @@
 import { createId } from "@paralleldrive/cuid2";
 import {
-  GenerateCallEndEvent,
-  GenerateCallStartEvent,
-} from "run/GenerateCallEvent.js";
+  GenerateTextEndEvent,
+  GenerateTextStartEvent,
+} from "text/generate/GenerateTextEvent.js";
 import { Prompt } from "../../run/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
 import { RunFunction, SafeRunFunction } from "../../run/RunFunction.js";
@@ -11,6 +11,7 @@ import { SafeResult } from "../../util/SafeResult.js";
 import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import { runSafe } from "../../util/runSafe.js";
 import { TextGenerationModel } from "./TextGenerationModel.js";
+import { GenerateTextObserver } from "./GenerateTextObserver.js";
 
 export async function generate<
   INPUT,
@@ -28,7 +29,7 @@ export async function generate<
       OUTPUT
     >
   >[0],
-  context?: RunContext
+  context?: RunContext & GenerateTextObserver
 ): Promise<OUTPUT> {
   const result = await safeGenerate(input, context);
 
@@ -51,10 +52,10 @@ generate.asFunction =
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
-    onCallStart?: (call: GenerateCallStartEvent) => void;
-    onCallEnd?: (call: GenerateCallEndEvent) => void;
+    onStart?: (event: GenerateTextStartEvent) => void;
+    onEnd?: (event: GenerateTextEndEvent) => void;
   }): RunFunction<INPUT, OUTPUT> =>
-  async (input: INPUT, context?: RunContext) =>
+  async (input: INPUT, context?: RunContext & GenerateTextObserver) =>
     generate({ input, ...options }, context);
 
 generate.safe = safeGenerate;
@@ -67,10 +68,10 @@ generate.asSafeFunction =
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
     retry?: RetryFunction;
-    onCallStart?: (call: GenerateCallStartEvent) => void;
-    onCallEnd?: (call: GenerateCallEndEvent) => void;
+    onStart?: (event: GenerateTextStartEvent) => void;
+    onEnd?: (event: GenerateTextEndEvent) => void;
   }): SafeRunFunction<INPUT, OUTPUT> =>
-  async (input: INPUT, context?: RunContext) =>
+  async (input: INPUT, context?: RunContext & GenerateTextObserver) =>
     safeGenerate({ input, ...options }, context);
 
 async function safeGenerate<
@@ -87,8 +88,8 @@ async function safeGenerate<
     model,
     processOutput,
     extractOutput = model.extractOutput,
-    onCallStart,
-    onCallEnd,
+    onStart,
+    onEnd,
   }: {
     functionId?: string | undefined;
     input: INPUT;
@@ -96,10 +97,10 @@ async function safeGenerate<
     model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
-    onCallStart?: (call: GenerateCallStartEvent) => void;
-    onCallEnd?: (call: GenerateCallEndEvent) => void;
+    onStart?: (event: GenerateTextStartEvent) => void;
+    onEnd?: (event: GenerateTextEndEvent) => void;
   },
-  context?: RunContext
+  context?: RunContext & GenerateTextObserver
 ): Promise<SafeResult<OUTPUT>> {
   const expandedPrompt = await prompt(input);
 
@@ -124,14 +125,14 @@ async function safeGenerate<
     startEpochSeconds,
   };
 
-  const callStartEvent: GenerateCallStartEvent = {
-    type: "generate-start",
+  const startEvent: GenerateTextStartEvent = {
+    type: "generate-text-start",
     metadata: startMetadata,
     input: expandedPrompt,
   };
 
-  onCallStart?.(callStartEvent);
-  context?.onCallStart?.(callStartEvent);
+  onStart?.(startEvent);
+  context?.onGenerateTextStart?.(startEvent);
 
   const result = await runSafe(() =>
     model.generate(expandedPrompt, {
@@ -148,29 +149,29 @@ async function safeGenerate<
 
   if (!result.ok) {
     if (result.isAborted) {
-      const callEndEvent: GenerateCallEndEvent = {
-        type: "generate-end",
+      const endEvent: GenerateTextEndEvent = {
+        type: "generate-text-end",
         status: "abort",
         metadata,
         input: expandedPrompt,
       };
 
-      onCallEnd?.(callEndEvent);
-      context?.onCallEnd?.(callEndEvent);
+      onEnd?.(endEvent);
+      context?.onGenerateTextEnd?.(endEvent);
 
       return { ok: false, isAborted: true };
     }
 
-    const callEndEvent: GenerateCallEndEvent = {
-      type: "generate-end",
+    const endEvent: GenerateTextEndEvent = {
+      type: "generate-text-end",
       status: "failure",
       metadata,
       input: expandedPrompt,
       error: result.error,
     };
 
-    onCallEnd?.(callEndEvent);
-    context?.onCallEnd?.(callEndEvent);
+    onEnd?.(endEvent);
+    context?.onGenerateTextEnd?.(endEvent);
 
     return { ok: false, error: result.error };
   }
@@ -178,8 +179,8 @@ async function safeGenerate<
   const extractedOutput = await extractOutput(result.output);
   const processedOutput = await processOutput(extractedOutput);
 
-  const callEndEvent: GenerateCallEndEvent = {
-    type: "generate-end",
+  const endEvent: GenerateTextEndEvent = {
+    type: "generate-text-end",
     status: "success",
     metadata,
     input: expandedPrompt,
@@ -188,8 +189,8 @@ async function safeGenerate<
     processedOutput,
   };
 
-  onCallEnd?.(callEndEvent);
-  context?.onCallEnd?.(callEndEvent);
+  onEnd?.(endEvent);
+  context?.onGenerateTextEnd?.(endEvent);
 
   return { ok: true, output: processedOutput };
 }
