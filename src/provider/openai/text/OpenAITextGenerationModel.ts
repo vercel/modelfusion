@@ -2,6 +2,10 @@ import { RunContext } from "../../../run/RunContext.js";
 import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
+import { RetryFunction } from "../../../util/retry/RetryFunction.js";
+import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
+import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
+import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import { OpenAITextGenerationResponse } from "./OpenAITextGenerationResponse.js";
 import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
@@ -86,9 +90,11 @@ export class OpenAITextGenerationModel
 
   readonly baseUrl?: string;
   readonly apiKey: string;
-
   readonly model: OpenAITextGenerationModelType;
   readonly settings: OpenAITextGenerationModelSettings;
+
+  readonly retry: RetryFunction;
+  readonly throttle: ThrottleFunction;
 
   readonly tokenizer: Tokenizer<number[]>;
   readonly maxTokens: number;
@@ -98,16 +104,23 @@ export class OpenAITextGenerationModel
     apiKey,
     model,
     settings = {},
+    retry = retryWithExponentialBackoff(),
+    throttle = throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
   }: {
     baseUrl?: string;
     apiKey: string;
     model: OpenAITextGenerationModelType;
     settings?: OpenAITextGenerationModelSettings;
+    retry?: RetryFunction;
+    throttle?: ThrottleFunction;
   }) {
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
     this.model = model;
     this.settings = settings;
+
+    this.retry = retry;
+    this.throttle = throttle;
 
     this.tokenizer = getTiktokenTokenizerForModel({ model });
     this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[model].maxTokens;
@@ -117,17 +130,21 @@ export class OpenAITextGenerationModel
     input: string,
     context?: RunContext
   ): Promise<OpenAITextGenerationResponse> {
-    return generateOpenAITextCompletion({
-      baseUrl: this.baseUrl,
-      abortSignal: context?.abortSignal,
-      apiKey: this.apiKey,
-      prompt: input,
-      model: this.model,
-      user: this.settings.isUserIdForwardingEnabled
-        ? context?.userId
-        : undefined,
-      ...this.settings,
-    });
+    return this.retry(async () =>
+      this.throttle(async () =>
+        generateOpenAITextCompletion({
+          baseUrl: this.baseUrl,
+          abortSignal: context?.abortSignal,
+          apiKey: this.apiKey,
+          prompt: input,
+          model: this.model,
+          user: this.settings.isUserIdForwardingEnabled
+            ? context?.userId
+            : undefined,
+          ...this.settings,
+        })
+      )
+    );
   }
 
   async extractOutput(

@@ -2,8 +2,12 @@ import { RunContext } from "../../../run/RunContext.js";
 import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
+import { RetryFunction } from "../../../util/retry/RetryFunction.js";
+import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
+import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
+import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
-import { OpenAIChatResponse, OpenAIChatMessage } from "./OpenAIChatResponse.js";
+import { OpenAIChatMessage, OpenAIChatResponse } from "./OpenAIChatResponse.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
 
@@ -80,9 +84,11 @@ export class OpenAIChatModel
 
   readonly baseUrl?: string;
   readonly apiKey: string;
-
   readonly model: OpenAIChatModelType;
   readonly settings: OpenAIChatModelSettings;
+
+  readonly retry: RetryFunction;
+  readonly throttle: ThrottleFunction;
 
   readonly tokenizer: Tokenizer<number[]>;
   readonly maxTokens: number;
@@ -92,16 +98,23 @@ export class OpenAIChatModel
     apiKey,
     model,
     settings = {},
+    retry = retryWithExponentialBackoff(),
+    throttle = throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
   }: {
     baseUrl?: string;
     apiKey: string;
     model: OpenAIChatModelType;
     settings?: OpenAIChatModelSettings;
+    retry?: RetryFunction;
+    throttle?: ThrottleFunction;
   }) {
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
     this.model = model;
     this.settings = settings;
+
+    this.retry = retry;
+    this.throttle = throttle;
 
     this.tokenizer = getTiktokenTokenizerForModel({ model });
     this.maxTokens = OPENAI_CHAT_MODELS[model].maxTokens;
@@ -118,17 +131,21 @@ export class OpenAIChatModel
     input: Array<OpenAIChatMessage>,
     context?: RunContext
   ): Promise<OpenAIChatResponse> {
-    return generateOpenAIChatCompletion({
-      baseUrl: this.baseUrl,
-      abortSignal: context?.abortSignal,
-      apiKey: this.apiKey,
-      messages: input,
-      model: this.model,
-      user: this.settings.isUserIdForwardingEnabled
-        ? context?.userId
-        : undefined,
-      ...this.settings,
-    });
+    return this.retry(async () =>
+      this.throttle(async () =>
+        generateOpenAIChatCompletion({
+          baseUrl: this.baseUrl,
+          abortSignal: context?.abortSignal,
+          apiKey: this.apiKey,
+          messages: input,
+          model: this.model,
+          user: this.settings.isUserIdForwardingEnabled
+            ? context?.userId
+            : undefined,
+          ...this.settings,
+        })
+      )
+    );
   }
 
   async extractOutput(rawOutput: OpenAIChatResponse): Promise<string> {

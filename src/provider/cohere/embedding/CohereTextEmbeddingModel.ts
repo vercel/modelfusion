@@ -1,5 +1,9 @@
 import { RunContext } from "../../../run/RunContext.js";
 import { TextEmbeddingModel } from "../../../text/embed/TextEmbeddingModel.js";
+import { RetryFunction } from "../../../util/retry/RetryFunction.js";
+import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
+import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
+import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { CohereTextEmbeddingResponse } from "./CohereTextEmbeddingResponse.js";
 import { generateCohereEmbedding } from "./generateCohereEmbedding.js";
 
@@ -50,9 +54,11 @@ export class CohereTextEmbeddingModel
 
   readonly baseUrl?: string;
   readonly apiKey: string;
-
   readonly model: CohereTextEmbeddingModelType;
   readonly settings: CohereTextEmbeddingModelSettings;
+
+  readonly retry: RetryFunction;
+  readonly throttle: ThrottleFunction;
 
   readonly maxTextsPerCall = 96;
   readonly maxTextTokens: number;
@@ -63,16 +69,23 @@ export class CohereTextEmbeddingModel
     apiKey,
     model,
     settings = {},
+    retry = retryWithExponentialBackoff(),
+    throttle = throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
   }: {
     baseUrl?: string;
     apiKey: string;
     model: CohereTextEmbeddingModelType;
     settings?: CohereTextEmbeddingModelSettings;
+    retry?: RetryFunction;
+    throttle?: ThrottleFunction;
   }) {
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
     this.model = model;
     this.settings = settings;
+
+    this.retry = retry;
+    this.throttle = throttle;
 
     this.maxTextTokens = COHERE_TEXT_EMBEDDING_MODELS[model].maxTokens;
     this.embeddingDimensions =
@@ -89,14 +102,18 @@ export class CohereTextEmbeddingModel
       );
     }
 
-    return generateCohereEmbedding({
-      baseUrl: this.baseUrl,
-      abortSignal: context?.abortSignal,
-      apiKey: this.apiKey,
-      texts,
-      model: this.model,
-      ...this.settings,
-    });
+    return this.retry(async () =>
+      this.throttle(async () =>
+        generateCohereEmbedding({
+          baseUrl: this.baseUrl,
+          abortSignal: context?.abortSignal,
+          apiKey: this.apiKey,
+          texts,
+          model: this.model,
+          ...this.settings,
+        })
+      )
+    );
   }
 
   async extractEmbeddings(

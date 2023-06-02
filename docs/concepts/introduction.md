@@ -17,7 +17,7 @@ We place control firmly in your hands. Rather than setting rigid control flows o
 
 ### Ready for Production
 
-`ai-utils.js` isn't just designed for development, but production as well. Essential features like logging, cost and latency tracking, retries, and error handling are integrated from the outset, not as afterthoughts. You're also given the flexibility to provide your own integrations and use provider-specific settings.
+`ai-utils.js` is designed for production, not just for prototyping. Essential features like logging, cost and latency tracking, retries, throttling, and error handling are integrated from the outset. You're also given the flexibility to provide your own integrations and use provider-specific settings.
 
 ### Multi-Modal Support
 

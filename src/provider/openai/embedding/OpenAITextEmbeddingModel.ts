@@ -2,6 +2,10 @@ import { RunContext } from "../../../run/RunContext.js";
 import { TextEmbeddingModel } from "../../../text/embed/TextEmbeddingModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
+import { RetryFunction } from "../../../util/retry/RetryFunction.js";
+import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
+import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
+import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
 import { OpenAITextEmbeddingResponse } from "./OpenAITextEmbeddingResponse.js";
 import { generateOpenAITextEmbedding } from "./generateOpenAITextEmbedding.js";
@@ -46,12 +50,13 @@ export class OpenAITextEmbeddingModel
 
   readonly baseUrl?: string;
   readonly apiKey: string;
-
   readonly model: OpenAITextEmbeddingModelType;
   readonly settings: OpenAITextEmbeddingModelSettings;
 
-  readonly tokenizer: Tokenizer<number[]>;
+  readonly retry: RetryFunction;
+  readonly throttle: ThrottleFunction;
 
+  readonly tokenizer: Tokenizer<number[]>;
   readonly maxTextsPerCall = 1;
   readonly maxTextTokens: number;
   readonly embeddingDimensions: number;
@@ -61,19 +66,25 @@ export class OpenAITextEmbeddingModel
     apiKey,
     model,
     settings = {},
+    retry = retryWithExponentialBackoff(),
+    throttle = throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
   }: {
     baseUrl?: string;
     apiKey: string;
     model: OpenAITextEmbeddingModelType;
     settings?: OpenAITextEmbeddingModelSettings;
+    retry?: RetryFunction;
+    throttle?: ThrottleFunction;
   }) {
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
     this.model = model;
     this.settings = settings;
 
-    this.tokenizer = getTiktokenTokenizerForModel({ model });
+    this.retry = retry;
+    this.throttle = throttle;
 
+    this.tokenizer = getTiktokenTokenizerForModel({ model });
     this.maxTextTokens = OPENAI_TEXT_EMBEDDING_MODELS[model].maxTokens;
     this.embeddingDimensions =
       OPENAI_TEXT_EMBEDDING_MODELS[model].embeddingDimensions;
@@ -89,16 +100,20 @@ export class OpenAITextEmbeddingModel
       );
     }
 
-    return generateOpenAITextEmbedding({
-      baseUrl: this.baseUrl,
-      abortSignal: context?.abortSignal,
-      apiKey: this.apiKey,
-      input: texts[0],
-      model: this.model,
-      user: this.settings.isUserIdForwardingEnabled
-        ? context?.userId
-        : undefined,
-    });
+    return this.retry(async () =>
+      this.throttle(async () =>
+        generateOpenAITextEmbedding({
+          baseUrl: this.baseUrl,
+          abortSignal: context?.abortSignal,
+          apiKey: this.apiKey,
+          input: texts[0],
+          model: this.model,
+          user: this.settings.isUserIdForwardingEnabled
+            ? context?.userId
+            : undefined,
+        })
+      )
+    );
   }
 
   async extractEmbeddings(

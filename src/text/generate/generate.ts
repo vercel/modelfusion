@@ -9,7 +9,6 @@ import { RunFunction, SafeRunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
 import { SafeResult } from "../../util/SafeResult.js";
 import { RetryFunction } from "../../util/retry/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
 import { runSafe } from "../../util/runSafe.js";
 import { TextGenerationModel } from "./TextGenerationModel.js";
 
@@ -88,7 +87,6 @@ async function safeGenerate<
     model,
     processOutput,
     extractOutput = model.extractOutput,
-    retry = retryWithExponentialBackoff(),
     onCallStart,
     onCallEnd,
   }: {
@@ -98,7 +96,6 @@ async function safeGenerate<
     model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
-    retry?: RetryFunction;
     onCallStart?: (call: GenerateCallStartEvent) => void;
     onCallEnd?: (call: GenerateCallEndEvent) => void;
   },
@@ -137,11 +134,9 @@ async function safeGenerate<
   context?.onCallStart?.(callStartEvent);
 
   const result = await runSafe(() =>
-    retry(() =>
-      model.generate(expandedPrompt, {
-        abortSignal: context?.abortSignal,
-      })
-    )
+    model.generate(expandedPrompt, {
+      abortSignal: context?.abortSignal,
+    })
   );
 
   const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);

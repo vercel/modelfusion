@@ -5,8 +5,6 @@ import {
 } from "../../run/EmbedCallEvent.js";
 import { RunContext } from "../../run/RunContext.js";
 import { AbortError } from "../../util/AbortError.js";
-import { RetryFunction } from "../../util/retry/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
 import { runSafe } from "../../util/runSafe.js";
 import { TextEmbeddingModel } from "./TextEmbeddingModel.js";
 
@@ -15,14 +13,12 @@ export async function embedTexts<RAW_OUTPUT>(
     functionId,
     model,
     texts,
-    retry = retryWithExponentialBackoff(),
     onCallStart,
     onCallEnd,
   }: {
     functionId?: string;
     model: TextEmbeddingModel<RAW_OUTPUT>;
     texts: Array<string>;
-    retry?: RetryFunction;
     onCallStart?: (call: EmbedCallStartEvent) => void;
     onCallEnd?: (call: EmbedCallEndEvent) => void;
   },
@@ -75,9 +71,7 @@ export async function embedTexts<RAW_OUTPUT>(
   // embed each group:
   const rawOutputs: Array<RAW_OUTPUT> = [];
   for (const textGroup of textGroups) {
-    const result = await runSafe(() =>
-      retry(() => model.embed(textGroup, context))
-    );
+    const result = await runSafe(() => model.embed(textGroup, context));
 
     if (!result.ok) {
       if (result.isAborted) {
@@ -148,14 +142,12 @@ export async function embedText<RAW_OUTPUT>(
     functionId,
     model,
     text,
-    retry,
     onCallStart,
     onCallEnd,
   }: {
     functionId?: string;
     model: TextEmbeddingModel<RAW_OUTPUT>;
     text: string;
-    retry?: RetryFunction;
     onCallStart?: (call: EmbedCallStartEvent) => void;
     onCallEnd?: (call: EmbedCallEndEvent) => void;
   },
@@ -167,7 +159,6 @@ export async function embedText<RAW_OUTPUT>(
         functionId,
         model,
         texts: [text],
-        retry,
         onCallStart,
         onCallEnd,
       },

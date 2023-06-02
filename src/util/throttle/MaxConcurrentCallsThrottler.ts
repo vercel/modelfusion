@@ -1,3 +1,4 @@
+import { ThrottleFunction } from "./ThrottleFunction.js";
 import { Throttler } from "./Throttler.js";
 
 export class MaxConcurrencyThrottler implements Throttler {
@@ -44,4 +45,12 @@ export class MaxConcurrencyThrottler implements Throttler {
   asFunction() {
     return <T>(fn: () => PromiseLike<T>) => this.run(fn);
   }
+}
+
+export function throttleMaxConcurrency({
+  maxConcurrentCalls,
+}: {
+  maxConcurrentCalls: number;
+}): ThrottleFunction {
+  return new MaxConcurrencyThrottler({ maxConcurrentCalls }).asFunction();
 }

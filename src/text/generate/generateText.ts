@@ -89,7 +89,6 @@ function safeGenerateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     model,
     extractOutput,
     processOutput = async (output) => output.trim(),
-    retry,
     onCallStart,
     onCallEnd,
   }: {
@@ -99,7 +98,6 @@ function safeGenerateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, string>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
     processOutput?: (output: string) => PromiseLike<string>;
-    retry?: RetryFunction;
     onCallStart?: (call: GenerateCallStartEvent) => void;
     onCallEnd?: (call: GenerateCallEndEvent) => void;
   },
@@ -113,7 +111,6 @@ function safeGenerateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
       model,
       extractOutput,
       processOutput,
-      retry,
       onCallStart,
       onCallEnd,
     },
