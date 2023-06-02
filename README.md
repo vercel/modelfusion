@@ -42,6 +42,8 @@ These principles have shaped the design and function of the library, aiming to p
 
 - Text functions
   - generate, map, split, embed
+- Image functions
+  - generate
 - Text processing chains
   - recursive text mapping (e.g. for summarization or extraction)
   - split-map-filter-reduce for text processing
@@ -64,6 +66,7 @@ These principles have shaped the design and function of the library, aiming to p
 - embeddings
 - tokenization (TikToken) and token counting (incl. message and prompt overhead tokens in chat)
 - transcription - Whisper
+- image generation - DALL-E
 
 ### Cohere
 

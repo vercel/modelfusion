@@ -9,6 +9,7 @@ export * from "./chat/generateOpenAIChatCompletion.js";
 export * from "./chat/streamOpenAIChatCompletion.js";
 export * from "./embedding/OpenAITextEmbeddingModel.js";
 export * from "./embedding/generateOpenAITextEmbedding.js";
+export * from "./image/generateOpenAIImage.js";
 export * from "./text/OpenAITextGenerationModel.js";
 export * from "./text/generateOpenAITextCompletion.js";
 export * from "./tokenizer/tiktoken.js";
