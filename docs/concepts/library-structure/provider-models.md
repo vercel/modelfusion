@@ -67,4 +67,4 @@ In this example, the createOpenAITextModel function is used to create a text gen
 
 ### Stability AI
 
-- [Image Generation Model](/api/classes/provider_stability.StabilityImageGenerationModel
+- [Image Generation Model](/api/classes/provider_stability.StabilityImageGenerationModel)
