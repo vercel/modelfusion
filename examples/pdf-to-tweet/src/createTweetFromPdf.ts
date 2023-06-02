@@ -1,4 +1,3 @@
-import { extractTopicChatPrompt } from "ai-utils.js/prompt";
 import {
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
@@ -47,7 +46,24 @@ export async function createTweetFromPdf({
 
   // extract information on topic from pdf:
   const reservedCompletionTokens = 1024;
-  const extractTopicPrompt = extractTopicChatPrompt({ topic });
+  const extractTopicPrompt = async ({ text }: { text: string }) => [
+    {
+      role: "user" as const,
+      content: `## TOPIC\n${topic}`,
+    },
+    {
+      role: "system" as const,
+      content: `## ROLE
+You are an expert at extracting information.
+You need to extract and keep all the information on the topic above topic from the text below.
+Only include information that is directly relevant for the topic.`,
+    },
+    {
+      role: "user" as const,
+      content: `## TEXT\n${text}`,
+    },
+  ];
+
   const informationOnTopic = await mapRecursively(
     {
       split: splitRecursivelyAtTokenForModel.asSplitFunction({

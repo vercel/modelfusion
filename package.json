@@ -45,11 +45,6 @@
       "import": "./internal/index.js",
       "require": "./internal/index.cjs"
     },
-    "./prompt": {
-      "types": "./prompt/index.d.ts",
-      "import": "./prompt/index.js",
-      "require": "./prompt/index.cjs"
-    },
     "./provider/cohere": {
       "types": "./provider/cohere/index.d.ts",
       "import": "./provider/cohere/index.js",

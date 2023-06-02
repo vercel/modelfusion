@@ -62,12 +62,12 @@ const config = {
       {
         // typedoc options:
         entryPoints: [
-          "../src/prompt/index.ts",
+          "../src/image/index.ts",
+          "../src/internal/index.ts",
           "../src/provider/cohere/index.ts",
           "../src/provider/huggingface/index.ts",
           "../src/provider/openai/index.ts",
           "../src/provider/stability/index.ts",
-          "../src/internal/index.ts",
           "../src/run/index.ts",
           "../src/text/index.ts",
           "../src/util/index.ts",

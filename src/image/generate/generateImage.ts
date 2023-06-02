@@ -3,7 +3,7 @@ import {
   GenerateCallEndEvent,
   GenerateCallStartEvent,
 } from "run/GenerateCallEvent.js";
-import { Prompt } from "../../prompt/Prompt.js";
+import { Prompt } from "../../run/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
 import { RunFunction, SafeRunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
