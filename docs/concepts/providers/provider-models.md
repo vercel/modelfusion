@@ -46,25 +46,3 @@ console.log(text);
 ```
 
 In this example, the createOpenAITextModel function is used to create a text generation model with specific settings. The withSettings function is then used to refine these settings, and the generate function is used to produce a text completion. Finally, the output is extracted using the extractOutput function.
-
-## Provider Models (List)
-
-### OpenAI
-
-- [Chat Generation Model](/api/classes/provider_openai.OpenAIChatModel)
-- [Text Generation Model](/api/classes/provider_openai.OpenAITextGenerationModel)
-- [Text Embedding Model](/api/classes/provider_openai.OpenAITextEmbeddingModel)
-- [Image Generation Model](/api/classes/provider_openai.OpenAIImageGenerationModel)
-
-### Cohere
-
-- [Text Generation Model](/api/classes/provider_cohere.CohereTextGenerationModel)
-- [Text Embedding Model](/api/classes/provider_cohere.CohereTextEmbeddingModel)
-
-### Hugging Face
-
-- [Text Generation Model](/api/classes/provider_huggingface.HuggingFaceTextGenerationModel)
-
-### Stability AI
-
-- [Image Generation Model](/api/classes/provider_stability.StabilityImageGenerationModel)

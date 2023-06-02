@@ -32,29 +32,3 @@ const response = await generateOpenAITextCompletion({
 
 console.log(response.choices[0].text);
 ```
-
-## Provider API Clients (List)
-
-### OpenAI
-
-- [Chat Generation](/api/modules/provider_openai#generateopenaichatcompletion)
-- [Chat Generation (stream)](/api/modules/provider_openai#streamopenaichatcompletion)
-- [Text Generation](/api/modules/provider_openai#generateopenaitextcompletion)
-- [Embedding](/api/modules/provider_openai#generateopenaiembedding)
-- [Transcription](/api/modules/provider_openai#generateopenaitranscription)
-- [Tokenization with TikToken (for model)](/api/modules/provider_openai#gettiktokentokenizerformodel)
-- [Tokenization with TikToken (for encoding)](/api/modules/provider_openai#gettiktokentokenizerforencoding)
-- [Image Generation](/api/modules/provider_openai#generateopenaiimage)
-
-### Cohere
-
-- [Text Generation](/api/modules/provider_cohere#generatecoheretextcompletion)
-- [Embedding](/api/modules/provider_cohere#generatecohereembedding)
-
-### Hugging Face
-
-- [Text Generation](/api/modules/provider_huggingface#generatehuggingfacetextcompletion)
-
-### Stability AI
-
-- [Image Generation](/api/modules/provider_stability#generatestabilityimage)

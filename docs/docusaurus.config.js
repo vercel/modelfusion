@@ -53,9 +53,9 @@ const config = {
     [
       "@docusaurus/plugin-content-docs",
       {
+        routeBasePath: "docs",
         id: "concepts",
         path: "concepts",
-        routeBasePath: "concepts",
       },
     ],
     [
@@ -104,9 +104,9 @@ const config = {
         // },
         items: [
           {
-            to: "/concepts/",
-            label: "Concepts",
-            activeBaseRegex: `/concepts/`,
+            to: "/docs/",
+            label: "Docs",
+            activeBaseRegex: `/docs/`,
             sidebarId: "concepts",
             position: "left",
           },
@@ -127,11 +127,11 @@ const config = {
         style: "dark",
         links: [
           {
-            title: "Docs",
+            title: "Resources",
             items: [
               {
-                label: "Concepts",
-                to: "/concepts/",
+                label: "Documentation",
+                to: "/docs/",
               },
               {
                 label: "API",
