@@ -24,6 +24,32 @@ export type StabilityImageGenerationModelSettings = {
   stylePreset?: StabilityImageGenerationStylePreset;
 };
 
+/**
+ * Create an image generation model that calls the Stability AI image generation API.
+ *
+ * @see https://api.stability.ai/docs#tag/v1generation/operation/textToImage
+ *
+ * @example
+ * const imageGenerationModel = new StabilityImageGenerationModel({
+ *   apiKey: STABILITY_API_KEY,
+ *   model: "stable-diffusion-512-v2-1",
+ *   settings: {
+ *     cfgScale: 7,
+ *     clipGuidancePreset: "FAST_BLUE",
+ *     height: 512,
+ *     width: 512,
+ *     samples: 1,
+ *     steps: 30,
+ *   },
+ * });
+ *
+ * const imageResponse = await imageGenerationModel.generate([
+ *   { text: "the wicked witch of the west" },
+ *   { text: "style of early 19th century painting", weight: 0.5 },
+ * ]);
+ *
+ * const image = await imageGenerationModel.extractImageBase64(imageResponse);
+ */
 export class StabilityImageGenerationModel
   implements
     ImageGenerationModel<

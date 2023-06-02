@@ -31,6 +31,20 @@ export async function generateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
   return result.output;
 }
 
+/**
+ * @example
+ * const generatePainting = generateImage.asFunction({
+ *   model,
+ *   prompt: async ({ description }: { description: string }) => [
+ *     { text: description },
+ *     { text: "style of early 19th century painting", weight: 0.5 },
+ *   ],
+ * });
+ *
+ * const imageBase64 = await generatePainting({
+ *   description: "the wicked witch of the west",
+ * });
+ */
 generateImage.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT>(options: {
     functionId?: string | undefined;

@@ -6,7 +6,7 @@ sidebar_position: 1
 
 `ai-utils.js` is a TypeScript-first library for building production-grade AI apps, chatbots and agents.
 
-### TypeScript-First
+### TypeScript-first
 
 `ai-utils.js` is built with TypeScript at its core, designed to take full advantage of type inference, static typing, and the robust tooling TypeScript offers. We are using a mix of functional and object-oriented programming, with a focus on functional composition and immutability.
 
@@ -16,11 +16,11 @@ Building applications with AI is a complex task, and your requirements mean you 
 
 Having this amount of control is a trade-off: it'll require more work to get an initial prototype of your app up and running. To help you with this, we provide example prompts, recipes, and demo apps.
 
-### Ready for Production
+### Build for production
 
 `ai-utils.js` is designed for production, not just for prototyping. Essential features like logging, cost and latency tracking, retries, throttling, and error handling are integrated from the outset. You're also given the flexibility to provide your own integrations and use provider-specific settings.
 
-### Multi-Modal Support
+### Multi-modal support
 
 Recognizing that AI applications involve more than just text, this library supports a variety of content types including voice and images, along with text and embeddings. This broadens its applicability and potential for creating richer, more engaging AI applications.
 
