@@ -1,5 +1,5 @@
 import { OpenAITextEmbeddingModel } from "ai-utils.js/provider/openai";
-import { embedTexts } from "ai-utils.js/text";
+import { embedText, embedTexts } from "ai-utils.js/text";
 import { InMemoryVectorDB } from "ai-utils.js/vector-db";
 import dotenv from "dotenv";
 
@@ -29,17 +29,18 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
   const vectorDB = new InMemoryVectorDB();
 
   // store texts in vector db using their embeddings as keys:
-  const textEmbeddings = await embedTexts({ model, texts });
+  const vectorKeys = await embedTexts({ model, texts });
 
   await vectorDB.storeMany({
-    vectorKeys: textEmbeddings,
+    vectorKeys,
     data: texts.map((text) => ({ text })),
   });
 
-  // query the vector store
-  const queryVector = (
-    await embedTexts({ model, texts: ["rainbow and water droplets"] })
-  )[0];
+  // query vector db using a text embedding as a key:
+  const queryVector = await embedText({
+    model,
+    text: "rainbow and water droplets",
+  });
 
   const results = await vectorDB.search({
     queryVector,
