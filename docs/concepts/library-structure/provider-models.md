@@ -54,6 +54,7 @@ In this example, the createOpenAITextModel function is used to create a text gen
 - [Chat Generation Model](/api/classes/provider_openai.OpenAIChatModel)
 - [Text Generation Model](/api/classes/provider_openai.OpenAITextGenerationModel)
 - [Text Embedding Model](/api/classes/provider_openai.OpenAITextEmbeddingModel)
+- [Image Generation Model](/api/classes/provider_openai.OpenAIImageGenerationModel)
 
 ### Cohere
 
