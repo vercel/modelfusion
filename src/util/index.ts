@@ -7,3 +7,5 @@ export * from "./retry/RetryFunction.js";
 export * from "./retry/retryNever.js";
 export * from "./retry/retryWithExponentialBackoff.js";
 export * from "./runSafe.js";
+export * from "./throttle/Throttler.js";
+export * from "./throttle/MaxConcurrentCallsThrottler.js";
