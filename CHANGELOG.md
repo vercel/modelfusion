@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.8 - 2023-06-02
+
+### New
+
+1. Stability AI image generation support
+1. Image generation Next.js example
+
+### Changed
+
+1. Updated PDF to tweet example with style transfer
+
 ## 0.0.7 - 2023-06-01
 
 ### New
