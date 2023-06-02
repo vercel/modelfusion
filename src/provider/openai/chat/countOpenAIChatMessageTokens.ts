@@ -1,5 +1,5 @@
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
-import { OpenAIChatMessage } from "./OpenAIChatResponse.js";
+import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";
 
 /**

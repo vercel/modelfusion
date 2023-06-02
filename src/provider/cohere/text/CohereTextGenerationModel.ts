@@ -4,8 +4,10 @@ import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
-import { CohereTextGenerationResponse } from "./CohereTextGenerationResponse.js";
-import { generateCohereTextCompletion } from "./generateCohereTextCompletion.js";
+import {
+  CohereTextGenerationResponse,
+  generateCohereTextCompletion,
+} from "./generateCohereTextCompletion.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {

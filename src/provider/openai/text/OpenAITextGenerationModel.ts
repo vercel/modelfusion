@@ -7,8 +7,10 @@ import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExpone
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
-import { OpenAITextGenerationResponse } from "./OpenAITextGenerationResponse.js";
-import { generateOpenAITextCompletion } from "./generateOpenAITextCompletion.js";
+import {
+  OpenAITextGenerationResponse,
+  generateOpenAITextCompletion,
+} from "./generateOpenAITextCompletion.js";
 
 // see https://platform.openai.com/docs/models/
 export const OPENAI_TEXT_GENERATION_MODELS = {

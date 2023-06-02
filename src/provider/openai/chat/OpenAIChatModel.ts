@@ -7,9 +7,12 @@ import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExpone
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
-import { OpenAIChatMessage, OpenAIChatResponse } from "./OpenAIChatResponse.js";
+import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
-import { generateOpenAIChatCompletion } from "./generateOpenAIChatCompletion.js";
+import {
+  OpenAIChatResponse,
+  generateOpenAIChatCompletion,
+} from "./generateOpenAIChatCompletion.js";
 
 // see https://platform.openai.com/docs/models/
 export const OPENAI_CHAT_MODELS = {

@@ -4,8 +4,10 @@ import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
-import { CohereTextEmbeddingResponse } from "./CohereTextEmbeddingResponse.js";
-import { generateCohereEmbedding } from "./generateCohereEmbedding.js";
+import {
+  CohereTextEmbeddingResponse,
+  generateCohereEmbedding,
+} from "./generateCohereEmbedding.js";
 
 export const COHERE_TEXT_EMBEDDING_MODELS = {
   "embed-english-light-v2.0": {

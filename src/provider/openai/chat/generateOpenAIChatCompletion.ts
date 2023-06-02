@@ -1,14 +1,37 @@
+import z from "zod";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../internal/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../internal/failedOpenAICallResponseHandler.js";
-import {
-  OpenAIChatResponse,
-  OpenAIChatMessage,
-  openAIChatResponseSchema,
-} from "./OpenAIChatResponse.js";
+
+import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";
+
+export const openAIChatResponseSchema = z.object({
+  id: z.string(),
+  object: z.literal("chat.completion"),
+  created: z.number(),
+  model: z.string(),
+  choices: z.array(
+    z.object({
+      message: z.object({
+        role: z.literal("assistant"),
+        content: z.string(),
+      }),
+      index: z.number(),
+      logprobs: z.nullable(z.any()),
+      finish_reason: z.string(),
+    })
+  ),
+  usage: z.object({
+    prompt_tokens: z.number(),
+    completion_tokens: z.number(),
+    total_tokens: z.number(),
+  }),
+});
+
+export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
 
 /**
  * Call the OpenAI chat completion API to generate a chat completion for the messages.

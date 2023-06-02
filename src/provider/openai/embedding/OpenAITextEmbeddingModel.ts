@@ -7,8 +7,10 @@ import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExpone
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
-import { OpenAITextEmbeddingResponse } from "./OpenAITextEmbeddingResponse.js";
-import { generateOpenAITextEmbedding } from "./generateOpenAITextEmbedding.js";
+import {
+  OpenAITextEmbeddingResponse,
+  generateOpenAITextEmbedding,
+} from "./generateOpenAITextEmbedding.js";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-ada-002": {

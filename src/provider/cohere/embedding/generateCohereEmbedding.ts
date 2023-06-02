@@ -1,13 +1,25 @@
+import z from "zod";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../internal/postToApi.js";
 import { failedCohereCallResponseHandler } from "../internal/failedCohereCallResponseHandler.js";
-import {
-  CohereTextEmbeddingResponse,
-  cohereTextEmbeddingResponseSchema,
-} from "./CohereTextEmbeddingResponse.js";
 import { CohereTextEmbeddingModelType } from "./CohereTextEmbeddingModel.js";
+
+export const cohereTextEmbeddingResponseSchema = z.object({
+  id: z.string(),
+  texts: z.array(z.string()),
+  embeddings: z.array(z.array(z.number())),
+  meta: z.object({
+    api_version: z.object({
+      version: z.string(),
+    }),
+  }),
+});
+
+export type CohereTextEmbeddingResponse = z.infer<
+  typeof cohereTextEmbeddingResponseSchema
+>;
 
 /**
  * Call the Cohere Co.Embed API to generate an embedding for the given input.

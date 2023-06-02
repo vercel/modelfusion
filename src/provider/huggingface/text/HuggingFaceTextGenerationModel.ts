@@ -4,8 +4,10 @@ import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
-import { HuggingFaceTextGenerationResponse } from "./HuggingFaceTextGenerationResponse.js";
-import { generateHuggingFaceTextCompletion } from "./generateHuggingFaceTextCompletion.js";
+import {
+  HuggingFaceTextGenerationResponse,
+  generateHuggingFaceTextCompletion,
+} from "./generateHuggingFaceTextCompletion.js";
 
 export type HuggingFaceTextGenerationModelSettings = {
   topK?: number;

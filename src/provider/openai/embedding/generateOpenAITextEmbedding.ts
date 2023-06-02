@@ -1,13 +1,32 @@
+import z from "zod";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../internal/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../internal/failedOpenAICallResponseHandler.js";
-import {
-  OpenAITextEmbeddingResponse,
-  openAITextEmbeddingResponseSchema,
-} from "./OpenAITextEmbeddingResponse.js";
 import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
+
+export const openAITextEmbeddingResponseSchema = z.object({
+  object: z.literal("list"),
+  data: z
+    .array(
+      z.object({
+        object: z.literal("embedding"),
+        embedding: z.array(z.number()),
+        index: z.number(),
+      })
+    )
+    .length(1),
+  model: z.string(),
+  usage: z.object({
+    prompt_tokens: z.number(),
+    total_tokens: z.number(),
+  }),
+});
+
+export type OpenAITextEmbeddingResponse = z.infer<
+  typeof openAITextEmbeddingResponseSchema
+>;
 
 /**
  * Call the OpenAI Embedding API to generate an embedding for the given input.

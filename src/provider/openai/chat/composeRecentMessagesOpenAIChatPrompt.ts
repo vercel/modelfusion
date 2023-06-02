@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "./OpenAIChatResponse.js";
+import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OPENAI_CHAT_MODELS, OpenAIChatModelType } from "./OpenAIChatModel.js";
 import {
   OPENAI_CHAT_PROMPT_BASE_TOKEN_COUNT,
