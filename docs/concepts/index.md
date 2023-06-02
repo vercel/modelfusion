@@ -4,7 +4,7 @@ sidebar_position: 0
 
 # Getting Started
 
-**`ai-utils.js` is a TypeScript-first toolkit for building production-grade AI apps, chatbots and agents.**
+**`ai-utils.js` is a TypeScript-first library for building production-grade AI apps, chatbots and agents.**
 
 It emphasizes user control, customization, and functional programming. Designed for production readiness, it integrates essential features and supports diverse content types beyond text, such as audio and images.
 

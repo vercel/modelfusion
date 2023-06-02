@@ -7,7 +7,8 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "ai-utils.js",
-  tagline: "A toolkit for building AI apps, chatbots and agents",
+  tagline:
+    "A TypeScript-first library for building production-grade AI apps, chatbots and agents.",
   // favicon: "img/favicon.ico",
   url: "https://ai-utils.js",
   baseUrl: "/",
