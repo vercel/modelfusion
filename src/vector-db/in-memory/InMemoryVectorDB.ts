@@ -9,7 +9,8 @@ type Entry<DATA> = {
 
 /**
  * A very simple vector database that stores all entries in memory. Useful when you only have
- * a small number of entries and don't want to set up a real database.
+ * a small number of entries and don't want to set up a real database, e.g. for conversational memory
+ * that does not need to be persisted.
  */
 export class InMemoryVectorDB<DATA> {
   private readonly entries: Array<Entry<DATA>> = [];
