@@ -86,9 +86,9 @@ These principles have shaped the design and function of the library, aiming to p
 
 ## Documentation
 
-- [Concepts](https://ai-utils.dev/concepts)
+- [Library Documentation](https://ai-utils.dev/docs)
+- [API Documentation](https://ai-utils.dev/api/modules)
 - [Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic)
-- [API](https://ai-utils.dev/api/modules)
 
 ## Examples
 
