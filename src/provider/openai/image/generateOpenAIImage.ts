@@ -86,13 +86,13 @@ export type OpenAIImageGenerationBase64JsonResponse = z.infer<
   typeof openAIImageGenerationBase64JsonSchema
 >;
 
-generateOpenAIImage.responseFormat = Object.freeze({
-  url: Object.freeze({
+generateOpenAIImage.responseFormat = {
+  url: {
     type: "url" as const,
     handler: createJsonResponseHandler(openAIImageGenerationUrlSchema),
-  }),
-  base64Json: Object.freeze({
+  },
+  base64Json: {
     type: "b64_json" as const,
     handler: createJsonResponseHandler(openAIImageGenerationBase64JsonSchema),
-  }),
-});
+  },
+};

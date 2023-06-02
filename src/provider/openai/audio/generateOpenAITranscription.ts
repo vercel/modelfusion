@@ -9,67 +9,10 @@ import { failedOpenAICallResponseHandler } from "../internal/failedOpenAICallRes
 
 export type OpenAITranscriptionModelType = "whisper-1";
 
-const openAITranscriptionJsonSchema = z.object({
-  text: z.string(),
-});
-
-export type OpenAITranscriptionJson = z.infer<
-  typeof openAITranscriptionJsonSchema
->;
-
-export const openAITranscriptionVerboseJsonSchema = z.object({
-  task: z.literal("transcribe"),
-  language: z.string(),
-  duration: z.number(),
-  segments: z.array(
-    z.object({
-      id: z.number(),
-      seek: z.number(),
-      start: z.number(),
-      end: z.number(),
-      text: z.string(),
-      tokens: z.array(z.number()),
-      temperature: z.number(),
-      avg_logprob: z.number(),
-      compression_ratio: z.number(),
-      no_speech_prob: z.number(),
-      transient: z.boolean(),
-    })
-  ),
-  text: z.string(),
-});
-
-export type OpenAITranscriptionVerboseJson = z.infer<
-  typeof openAITranscriptionVerboseJsonSchema
->;
-
 export type OpenAITranscriptionResponseFormat<T> = {
   type: "json" | "text" | "srt" | "verbose_json" | "vtt";
   handler: ResponseHandler<T>;
 };
-
-export const openAITranscriptionResponseFormat = Object.freeze({
-  json: Object.freeze({
-    type: "json" as const,
-    handler: createJsonResponseHandler(openAITranscriptionJsonSchema),
-  }),
-  verboseJson: Object.freeze({
-    type: "verbose_json" as const,
-    handler: createJsonResponseHandler(openAITranscriptionVerboseJsonSchema),
-  }),
-  text: Object.freeze({
-    type: "text" as const,
-    handler: createTextResponseHandler(),
-  }),
-  srt: Object.freeze({
-    type: "srt" as const,
-    handler: createTextResponseHandler(),
-  }),
-  vtt: Object.freeze({
-    type: "vtt" as const,
-    handler: createTextResponseHandler(),
-  }),
-});
 
 /**
  * Call the OpenAI Transcription API to generate a transcription from an audio file.
@@ -84,7 +27,7 @@ export const openAITranscriptionResponseFormat = Object.freeze({
  *     name: "audio.mp3",
  *     data: fileData, // Buffer
  *   },
- *   responseFormat: openAITranscriptionResponseFormat.json,
+ *   responseFormat: generateOpenAITranscription.responseFormat.json,
  * });
  */
 export async function generateOpenAITranscription<RESPONSE>({
@@ -150,3 +93,60 @@ export async function generateOpenAITranscription<RESPONSE>({
     abortSignal,
   });
 }
+
+const openAITranscriptionJsonSchema = z.object({
+  text: z.string(),
+});
+
+export type OpenAITranscriptionJson = z.infer<
+  typeof openAITranscriptionJsonSchema
+>;
+
+export const openAITranscriptionVerboseJsonSchema = z.object({
+  task: z.literal("transcribe"),
+  language: z.string(),
+  duration: z.number(),
+  segments: z.array(
+    z.object({
+      id: z.number(),
+      seek: z.number(),
+      start: z.number(),
+      end: z.number(),
+      text: z.string(),
+      tokens: z.array(z.number()),
+      temperature: z.number(),
+      avg_logprob: z.number(),
+      compression_ratio: z.number(),
+      no_speech_prob: z.number(),
+      transient: z.boolean(),
+    })
+  ),
+  text: z.string(),
+});
+
+export type OpenAITranscriptionVerboseJson = z.infer<
+  typeof openAITranscriptionVerboseJsonSchema
+>;
+
+generateOpenAITranscription.responseFormat = {
+  json: {
+    type: "json" as const,
+    handler: createJsonResponseHandler(openAITranscriptionJsonSchema),
+  },
+  verboseJson: {
+    type: "verbose_json" as const,
+    handler: createJsonResponseHandler(openAITranscriptionVerboseJsonSchema),
+  },
+  text: {
+    type: "text" as const,
+    handler: createTextResponseHandler(),
+  },
+  srt: {
+    type: "srt" as const,
+    handler: createTextResponseHandler(),
+  },
+  vtt: {
+    type: "vtt" as const,
+    handler: createTextResponseHandler(),
+  },
+};

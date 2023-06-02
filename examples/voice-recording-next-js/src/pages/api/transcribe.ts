@@ -1,7 +1,4 @@
-import {
-  generateOpenAITranscription,
-  openAITranscriptionResponseFormat,
-} from "ai-utils.js/provider/openai";
+import { generateOpenAITranscription } from "ai-utils.js/provider/openai";
 import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -53,7 +50,7 @@ export default async function handler(
         name: "audio.mp3",
         data: fileData,
       },
-      responseFormat: openAITranscriptionResponseFormat.json,
+      responseFormat: generateOpenAITranscription.responseFormat.json,
     });
 
     // Remove temporary file

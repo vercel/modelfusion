@@ -3,7 +3,6 @@ import {
   OpenAIChatModelType,
   composeRecentMessagesOpenAIChatPrompt,
   streamOpenAIChatCompletion,
-  streamOpenAIChatResponseFormat,
 } from "ai-utils.js/provider/openai";
 import { z } from "zod";
 
@@ -67,7 +66,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
     model,
     messages: messagesToSend,
     maxTokens,
-    responseFormat: streamOpenAIChatResponseFormat.readStream,
+    responseFormat: streamOpenAIChatCompletion.responseFormat.readStream,
     abortSignal: controller.signal,
   });
 

@@ -17,21 +17,6 @@ export type OpenAIStreamChatCompletionResponseFormat<T> = {
   handler: ResponseHandler<T>;
 };
 
-export const streamOpenAIChatResponseFormat = Object.freeze({
-  readStream: Object.freeze({
-    handler: createStreamResponseHandler(),
-  }),
-  asyncUint8ArrayIterable: Object.freeze({
-    handler: createAsyncIterableResponseHandler(),
-  }),
-  asyncDeltaIterable: Object.freeze({
-    handler: async ({ response }: { response: Response }) =>
-      createOpenAIChatResponseDeltaStream(
-        convertReadableStreamToAsyncIterable(response.body!.getReader())
-      ),
-  } satisfies OpenAIStreamChatCompletionResponseFormat<AsyncIterable<OpenAIChatResponseDeltaStreamEntry>>),
-});
-
 /**
  * Call the OpenAI chat completion API to stream a chat completion for the messages.
  *
@@ -54,7 +39,7 @@ export const streamOpenAIChatResponseFormat = Object.freeze({
  *   ],
  *   temperature: 0.7,
  *   maxTokens: 500,
- *   responseFormat: streamOpenAIChatResponseFormat.readStream,
+ *   responseFormat: streamOpenAIChatCompletion.responseFormat.readStream,
  * });
  */
 export async function streamOpenAIChatCompletion<T>({
@@ -109,3 +94,20 @@ export async function streamOpenAIChatCompletion<T>({
     abortSignal,
   });
 }
+
+streamOpenAIChatCompletion.responseFormat = {
+  readStream: {
+    handler: createStreamResponseHandler(),
+  },
+  asyncUint8ArrayIterable: {
+    handler: createAsyncIterableResponseHandler(),
+  },
+  asyncDeltaIterable: {
+    handler: async ({ response }: { response: Response }) =>
+      createOpenAIChatResponseDeltaStream(
+        convertReadableStreamToAsyncIterable(response.body!.getReader())
+      ),
+  } satisfies OpenAIStreamChatCompletionResponseFormat<
+    AsyncIterable<OpenAIChatResponseDeltaStreamEntry>
+  >,
+};
