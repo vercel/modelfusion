@@ -41,15 +41,18 @@ These principles have shaped the design and function of the library, aiming to p
 ## Features
 
 - Text functions
-  - generate, map, split, embed
+  - generate
+  - map
+    - recursive text mapping (e.g. for summarization or extraction)
+  - split
+    - recursive character and token splitters
+    - separator splitter
+  - embed
+  - tokenize
 - Image functions
   - generate
-- Text processing chains
-  - recursive text mapping (e.g. for summarization or extraction)
-  - split-map-filter-reduce for text processing
-- Text splitters
-  - Recursive character and token splitters
-- Tokenization
+- Audio functions
+  - transcribe
 - Prompt utilities
   - Fit recent messages chat prompt into context window
 - In-memory vector DB
