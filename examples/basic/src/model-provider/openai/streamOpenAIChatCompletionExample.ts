@@ -1,4 +1,4 @@
-import { streamOpenAIChatCompletion } from "ai-utils.js/model-provider/openai";
+import { streamOpenAIChatCompletion } from "ai-utils.js/model/openai";
 import dotenv from "dotenv";
 
 dotenv.config();

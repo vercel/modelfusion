@@ -1,4 +1,4 @@
-import { OpenAITextEmbeddingModel } from "ai-utils.js/model-provider/openai";
+import { OpenAITextEmbeddingModel } from "ai-utils.js/model/openai";
 import { embedText, embedTexts } from "ai-utils.js/text";
 import { InMemoryVectorDB } from "ai-utils.js/vector-db";
 import dotenv from "dotenv";

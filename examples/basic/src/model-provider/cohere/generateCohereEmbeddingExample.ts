@@ -1,4 +1,4 @@
-import { generateCohereEmbedding } from "ai-utils.js/model-provider/cohere";
+import { generateCohereEmbedding } from "ai-utils.js/model/cohere";
 import dotenv from "dotenv";
 
 dotenv.config();

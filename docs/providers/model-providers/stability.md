@@ -4,14 +4,14 @@ sidebar_position: 5
 
 # Stability AI
 
-[API documentation](/api/modules/model_provider_stability)
+[API documentation](/api/modules/model_stability)
 |
-[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/stability)
+[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/stability)
 
 ## Import
 
 ```ts
-import { StabilityImageGenerationModel, ... } from "ai-utils.js/model-provider/stability";
+import { StabilityImageGenerationModel, ... } from "ai-utils.js/model/stability";
 ```
 
 ## Example
@@ -40,8 +40,8 @@ const image = await imageGenerationModel.extractImageBase64(imageResponse);
 
 ## Models
 
-- [Image Generation Model](/api/classes/model_provider_stability.StabilityImageGenerationModel)
+- [Image Generation Model](/api/classes/model_stability.StabilityImageGenerationModel)
 
 ## API Clients
 
-- [Image Generation](/api/modules/model_provider_stability#generatestabilityimage)
+- [Image Generation](/api/modules/model_stability#generatestabilityimage)

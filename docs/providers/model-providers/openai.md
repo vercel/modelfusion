@@ -4,14 +4,14 @@ sidebar_position: 2
 
 # OpenAI
 
-[API documentation](/api/modules/model_provider_openai)
+[API documentation](/api/modules/model_openai)
 |
-[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/openai)
+[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/openai)
 
 ## Import
 
 ```ts
-import { OpenAIChatModel, ... } from "ai-utils.js/model-provider/openai";
+import { OpenAIChatModel, ... } from "ai-utils.js/model/openai";
 ```
 
 ## Example
@@ -40,18 +40,18 @@ const text = await chatModel.extractOutput(response);
 
 ## Models
 
-- [Chat Generation Model (GPT-3.5, GPT-4)](/api/classes/model_provider_openai.OpenAIChatModel)
-- [Text Generation Model](/api/classes/model_provider_openai.OpenAITextGenerationModel)
-- [Text Embedding Model](/api/classes/model_provider_openai.OpenAITextEmbeddingModel)
-- [Image Generation Model (DALL-E)](/api/classes/model_provider_openai.OpenAIImageGenerationModel)
+- [Chat Generation Model (GPT-3.5, GPT-4)](/api/classes/model_openai.OpenAIChatModel)
+- [Text Generation Model](/api/classes/model_openai.OpenAITextGenerationModel)
+- [Text Embedding Model](/api/classes/model_openai.OpenAITextEmbeddingModel)
+- [Image Generation Model (DALL-E)](/api/classes/model_openai.OpenAIImageGenerationModel)
 
 ## API Clients
 
-- [Chat Generation (GPT-3.5, GPT-4)](/api/modules/model_provider_openai#generateopenaichatcompletion)
-- [Chat Generation Streaming (GPT-3.5, GPT-4)](/api/modules/model_provider_openai#streamopenaichatcompletion)
-- [Text Generation](/api/modules/model_provider_openai#generateopenaitextcompletion)
-- [Text Embedding](/api/modules/model_provider_openai#generateopenaiembedding)
-- [Transcription (Whisper)](/api/modules/model_provider_openai#generateopenaitranscription)
-- [Tokenization with TikToken (for model)](/api/modules/model_provider_openai#gettiktokentokenizerformodel)
-- [Tokenization with TikToken (for encoding)](/api/modules/model_provider_openai#gettiktokentokenizerforencoding)
-- [Image Generation (DALL-E)](/api/modules/model_provider_openai#generateopenaiimage)
+- [Chat Generation (GPT-3.5, GPT-4)](/api/modules/model_openai#generateopenaichatcompletion)
+- [Chat Generation Streaming (GPT-3.5, GPT-4)](/api/modules/model_openai#streamopenaichatcompletion)
+- [Text Generation](/api/modules/model_openai#generateopenaitextcompletion)
+- [Text Embedding](/api/modules/model_openai#generateopenaiembedding)
+- [Transcription (Whisper)](/api/modules/model_openai#generateopenaitranscription)
+- [Tokenization with TikToken (for model)](/api/modules/model_openai#gettiktokentokenizerformodel)
+- [Tokenization with TikToken (for encoding)](/api/modules/model_openai#gettiktokentokenizerforencoding)
+- [Image Generation (DALL-E)](/api/modules/model_openai#generateopenaiimage)

@@ -1,5 +1,5 @@
 import { generateImage } from "ai-utils.js/image";
-import { StabilityImageGenerationModel } from "ai-utils.js/model-provider/stability";
+import { StabilityImageGenerationModel } from "ai-utils.js/model/stability";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {

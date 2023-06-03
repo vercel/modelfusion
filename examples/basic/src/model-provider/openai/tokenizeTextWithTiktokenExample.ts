@@ -1,4 +1,4 @@
-import { getTiktokenTokenizerForModel } from "ai-utils.js/model-provider/openai";
+import { getTiktokenTokenizerForModel } from "ai-utils.js/model/openai";
 
 (async () => {
   const tokenizer = getTiktokenTokenizerForModel({

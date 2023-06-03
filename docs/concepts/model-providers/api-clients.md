@@ -20,7 +20,7 @@ The provider API clients also serve as a fallback level for specific functionali
 For instance, you can use the OpenAI text completion API through `ai-utils.js` as follows:
 
 ```ts
-import { generateOpenAITextCompletion } from "ai-utils.js/model-provider/openai";
+import { generateOpenAITextCompletion } from "ai-utils.js/model/openai";
 
 const response = await generateOpenAITextCompletion({
   apiKey: OPENAI_API_KEY,

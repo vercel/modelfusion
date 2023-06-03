@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { generateCohereTextCompletion } from "ai-utils.js/model-provider/cohere";
+import { generateCohereTextCompletion } from "ai-utils.js/model/cohere";
 
 dotenv.config();
 

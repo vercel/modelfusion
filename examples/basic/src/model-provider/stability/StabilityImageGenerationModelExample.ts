@@ -1,4 +1,4 @@
-import { StabilityImageGenerationModel } from "ai-utils.js/model-provider/stability";
+import { StabilityImageGenerationModel } from "ai-utils.js/model/stability";
 import dotenv from "dotenv";
 import fs from "node:fs";
 

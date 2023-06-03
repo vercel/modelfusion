@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { generateOpenAITextCompletion } from "ai-utils.js/model-provider/openai";
+import { generateOpenAITextCompletion } from "ai-utils.js/model/openai";
 
 dotenv.config();
 

@@ -1,4 +1,4 @@
-import { HuggingFaceTextGenerationModel } from "ai-utils.js/model-provider/huggingface";
+import { HuggingFaceTextGenerationModel } from "ai-utils.js/model/huggingface";
 import dotenv from "dotenv";
 
 dotenv.config();

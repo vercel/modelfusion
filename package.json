@@ -45,25 +45,25 @@
       "import": "./internal/index.js",
       "require": "./internal/index.cjs"
     },
-    "./model-provider/cohere": {
-      "types": "./model-provider/cohere/index.d.ts",
-      "import": "./model-provider/cohere/index.js",
-      "require": "./model-provider/cohere/index.cjs"
+    "./model/cohere": {
+      "types": "./model/cohere/index.d.ts",
+      "import": "./model/cohere/index.js",
+      "require": "./model/cohere/index.cjs"
     },
-    "./model-provider/huggingface": {
-      "types": "./model-provider/huggingface/index.d.ts",
-      "import": "./model-provider/huggingface/index.js",
-      "require": "./model-provider/huggingface/index.cjs"
+    "./model/huggingface": {
+      "types": "./model/huggingface/index.d.ts",
+      "import": "./model/huggingface/index.js",
+      "require": "./model/huggingface/index.cjs"
     },
-    "./model-provider/openai": {
-      "types": "./model-provider/openai/index.d.ts",
-      "import": "./model-provider/openai/index.js",
-      "require": "./model-provider/openai/index.cjs"
+    "./model/openai": {
+      "types": "./model/openai/index.d.ts",
+      "import": "./model/openai/index.js",
+      "require": "./model/openai/index.cjs"
     },
-    "./model-provider/stability": {
-      "types": "./model-provider/stability/index.d.ts",
-      "import": "./model-provider/stability/index.js",
-      "require": "./model-provider/stability/index.cjs"
+    "./model/stability": {
+      "types": "./model/stability/index.d.ts",
+      "import": "./model/stability/index.js",
+      "require": "./model/stability/index.cjs"
     },
     "./run": {
       "types": "./run/index.d.ts",

@@ -1,4 +1,4 @@
-import { generateOpenAIImage } from "ai-utils.js/model-provider/openai";
+import { generateOpenAIImage } from "ai-utils.js/model/openai";
 import dotenv from "dotenv";
 import fs from "node:fs";
 

@@ -3,7 +3,7 @@ import {
   OpenAIChatModelType,
   composeRecentMessagesOpenAIChatPrompt,
   streamOpenAIChatCompletion,
-} from "ai-utils.js/model-provider/openai";
+} from "ai-utils.js/model/openai";
 import { z } from "zod";
 
 export const config = { runtime: "edge" };
