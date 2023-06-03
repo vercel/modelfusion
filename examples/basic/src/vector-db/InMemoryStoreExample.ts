@@ -1,9 +1,4 @@
-import {
-  InMemoryVectorDB,
-  OpenAITextEmbeddingModel,
-  embedText,
-  embedTexts,
-} from "ai-utils.js";
+import { InMemoryStore, OpenAITextEmbeddingModel, VectorDB } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -24,29 +19,21 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
     "This is caused by the light being reflected twice on the inside of the droplet before leaving it.`",
   ];
 
-  const model = new OpenAITextEmbeddingModel({
-    apiKey: OPENAI_API_KEY,
-    model: "text-embedding-ada-002",
+  const vectorDB = new VectorDB({
+    store: new InMemoryStore(),
+    embeddingModel: new OpenAITextEmbeddingModel({
+      apiKey: OPENAI_API_KEY,
+      model: "text-embedding-ada-002",
+    }),
   });
 
-  const vectorDB = new InMemoryVectorDB();
-
-  // store texts in vector db using their embeddings as keys:
-  const vectorKeys = await embedTexts({ model, texts });
-
-  await vectorDB.storeMany({
-    vectorKeys,
+  await vectorDB.upsertMany({
+    keyTexts: texts,
     data: texts.map((text) => ({ text })),
   });
 
-  // query vector db using a text embedding as a key:
-  const queryVector = await embedText({
-    model,
-    text: "rainbow and water droplets",
-  });
-
-  const results = await vectorDB.search({
-    queryVector,
+  const results = await vectorDB.queryByText({
+    queryText: "rainbow and water droplets",
     maxResults: 3,
     similarityThreshold: 0.8,
   });
