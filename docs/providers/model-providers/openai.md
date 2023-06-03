@@ -44,6 +44,7 @@ const text = await chatModel.extractOutput(response);
 - [Text Generation Model](/api/classes/model_openai.OpenAITextGenerationModel)
 - [Text Embedding Model](/api/classes/model_openai.OpenAITextEmbeddingModel)
 - [Image Generation Model (DALL-E)](/api/classes/model_openai.OpenAIImageGenerationModel)
+- [Tokenization (TikToken)](/api/classes/model_openai.TikTokenTokenizer)
 
 ## API Clients
 
@@ -53,4 +54,3 @@ const text = await chatModel.extractOutput(response);
 - [Text Embedding](/api/modules/model_openai#generateopenaiembedding)
 - [Image Generation (DALL-E)](/api/modules/model_openai#generateopenaiimage)
 - [Transcription (Whisper)](/api/modules/model_openai#generateopenaitranscription)
-- [Tokenization (TikToken)](/api/classes/model_openai.TikTokenTokenizer)

@@ -4,6 +4,7 @@ import {
 } from "../../../internal/postToApi.js";
 import { failedCohereCallResponseHandler } from "../internal/failedCohereCallResponseHandler.js";
 import z from "zod";
+import { CohereTextGenerationModelType } from "./CohereTextGenerationModel.js";
 
 export const cohereTextGenerationResponseSchema = z.object({
   id: z.string(),
@@ -63,11 +64,7 @@ export async function generateCohereTextCompletion({
   baseUrl?: string;
   abortSignal?: AbortSignal;
   apiKey: string;
-  model:
-    | "command"
-    | "command-nightly"
-    | "command-light"
-    | "command-light-nightly";
+  model: CohereTextGenerationModelType;
   prompt: string;
   numGenerations?: number;
   maxTokens?: number;

@@ -4,6 +4,7 @@
     "asynchonously",
     "Backoff",
     "davinci",
+    "Detokenization",
     "detokenize",
     "huggingface",
     "lgrammel",
