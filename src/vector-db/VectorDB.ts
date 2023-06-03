@@ -12,7 +12,7 @@ import { VectorStore } from "./VectorStore.js";
 export type VectorDBQueryResult<DATA> = Array<{
   id: string;
   data: DATA;
-  similarity: number;
+  similarity?: number;
 }>;
 
 export class VectorDB<DATA> {
@@ -60,11 +60,14 @@ export class VectorDB<DATA> {
     },
     context?: RunContext
   ): Promise<void> {
-    this.store.upsert({
-      id,
-      vector: (await this.embedForStore([keyText], context))[0],
-      data,
-    });
+    this.upsertMany(
+      {
+        ids: [id],
+        keyTexts: [keyText],
+        data: [data],
+      },
+      context
+    );
   }
 
   async upsertMany(
@@ -86,13 +89,14 @@ export class VectorDB<DATA> {
     }
 
     const vectors = await this.embedForStore(keyTexts, context);
-    for (let i = 0; i < vectors.length; i++) {
-      this.store.upsert({
+
+    this.store.upsertMany(
+      vectors.map((vector, i) => ({
         id: ids?.[i] ?? this.generateId(),
-        vector: vectors[i],
+        vector,
         data: data[i],
-      });
-    }
+      }))
+    );
   }
 
   async queryByText(
@@ -103,7 +107,7 @@ export class VectorDB<DATA> {
     }: {
       queryText: string;
       maxResults?: number;
-      similarityThreshold: number;
+      similarityThreshold?: number;
     },
     context?: RunContext
   ): Promise<VectorDBQueryResult<DATA>> {
@@ -114,11 +118,19 @@ export class VectorDB<DATA> {
     });
   }
 
-  async queryByVector(options: {
+  async queryByVector({
+    queryVector,
+    maxResults = 1,
+    similarityThreshold,
+  }: {
     queryVector: Vector;
     maxResults?: number;
-    similarityThreshold: number;
+    similarityThreshold?: number;
   }): Promise<VectorDBQueryResult<DATA>> {
-    return this.store.query(options);
+    return this.store.query({
+      queryVector,
+      maxResults,
+      similarityThreshold,
+    });
   }
 }

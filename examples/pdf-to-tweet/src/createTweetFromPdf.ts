@@ -1,7 +1,7 @@
 import {
   EmbedTextObserver,
   GenerateTextObserver,
-  InMemoryVectorStore,
+  InMemoryStore,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
   RunContext,
@@ -32,7 +32,7 @@ export async function createTweetFromPdf({
   });
 
   const exampleTweetStore = new VectorDB({
-    store: await InMemoryVectorStore.deserialize({
+    store: await InMemoryStore.deserialize({
       serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
       schema: z.object({ tweet: z.string() }),
     }),

@@ -1,8 +1,4 @@
-import {
-  InMemoryVectorStore,
-  OpenAITextEmbeddingModel,
-  VectorDB,
-} from "ai-utils.js";
+import { InMemoryStore, OpenAITextEmbeddingModel, VectorDB } from "ai-utils.js";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import fs from "node:fs";
@@ -30,9 +26,9 @@ if (!openAiApiKey) {
 
   const exampleTweets = inputText.split("\n-----\n");
 
-  const inMemoryVectorStore = new InMemoryVectorStore();
+  const inMemoryStore = new InMemoryStore();
   const vectorDB = new VectorDB({
-    store: inMemoryVectorStore,
+    store: inMemoryStore,
     embeddingModel: new OpenAITextEmbeddingModel({
       apiKey: openAiApiKey,
       model: "text-embedding-ada-002",
@@ -44,5 +40,5 @@ if (!openAiApiKey) {
     data: exampleTweets.map((tweet) => ({ tweet })),
   });
 
-  fs.writeFileSync(outputFile, inMemoryVectorStore.serialize());
+  fs.writeFileSync(outputFile, inMemoryStore.serialize());
 })();

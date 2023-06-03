@@ -14,7 +14,7 @@ type Entry<DATA> = {
  * a small number of entries and don't want to set up a real database, e.g. for conversational memory
  * that does not need to be persisted.
  */
-export class InMemoryVectorStore<DATA> implements VectorStore<DATA> {
+export class InMemoryStore<DATA> implements VectorStore<DATA> {
   static async deserialize<DATA>({
     serializedData,
     schema,
@@ -33,22 +33,31 @@ export class InMemoryVectorStore<DATA> implements VectorStore<DATA> {
       )
       .parse(json);
 
-    const vectorStore = new InMemoryVectorStore<DATA>();
-    for (const entry of parsedJson) {
-      vectorStore.upsert({
-        id: entry.id,
-        vector: entry.vector,
-        data: entry.data as DATA,
-      });
-    }
+    const vectorStore = new InMemoryStore<DATA>();
+
+    vectorStore.upsertMany(
+      parsedJson as Array<{
+        id: string;
+        vector: Vector;
+        data: DATA;
+      }>
+    );
 
     return vectorStore;
   }
 
   private readonly entries: Map<string, Entry<DATA>> = new Map();
 
-  async upsert(entry: { id: string; vector: Vector; data: DATA }) {
-    this.entries.set(entry.id, entry);
+  async upsertMany(
+    data: Array<{
+      id: string;
+      vector: Vector;
+      data: DATA;
+    }>
+  ) {
+    for (const entry of data) {
+      this.entries.set(entry.id, entry);
+    }
   }
 
   async query({
@@ -57,16 +66,21 @@ export class InMemoryVectorStore<DATA> implements VectorStore<DATA> {
     maxResults,
   }: {
     queryVector: Vector;
-    maxResults?: number;
-    similarityThreshold: number;
-  }): Promise<Array<{ id: string; data: DATA; similarity: number }>> {
+    maxResults: number;
+    similarityThreshold?: number;
+  }): Promise<Array<{ id: string; data: DATA; similarity?: number }>> {
     const results = [...this.entries.values()]
       .map((entry) => ({
         id: entry.id,
         similarity: cosineSimilarity(entry.vector, queryVector),
         data: entry.data,
       }))
-      .filter((entry) => entry.similarity > similarityThreshold);
+      .filter(
+        (entry) =>
+          similarityThreshold == undefined ||
+          entry.similarity == undefined ||
+          entry.similarity > similarityThreshold
+      );
 
     results.sort((a, b) => b.similarity - a.similarity);
 
