@@ -64,11 +64,11 @@ function getTiktokenTokenizerForEncoder({
       return encoder.encode(text).length;
     },
 
-    encode: async (text: string) => {
+    tokenize: async (text: string) => {
       return encoder.encode(text);
     },
 
-    encodeWithTexts: async (text: string) => {
+    tokenizeWithTexts: async (text: string) => {
       const tokens = encoder.encode(text);
 
       return {
@@ -77,7 +77,7 @@ function getTiktokenTokenizerForEncoder({
       };
     },
 
-    decode: async (tokens: number[]) => {
+    detokenize: async (tokens: number[]) => {
       return encoder.decode(tokens);
     },
   };
