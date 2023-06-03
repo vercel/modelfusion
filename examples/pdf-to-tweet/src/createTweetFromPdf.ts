@@ -1,10 +1,11 @@
 import {
   EmbedTextObserver,
   GenerateTextObserver,
-  InMemoryVectorDB,
+  InMemoryVectorStore,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
   RunContext,
+  VectorDB,
   generateText,
   mapRecursivelyWithTextGenerationAndTokenSplitting,
 } from "ai-utils.js";
@@ -30,9 +31,11 @@ export async function createTweetFromPdf({
     model: "gpt-4",
   });
 
-  const exampleTweetStore = await InMemoryVectorDB.deserialize({
-    serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
-    schema: z.object({ tweet: z.string() }),
+  const exampleTweetStore = new VectorDB({
+    store: await InMemoryVectorStore.deserialize({
+      serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
+      schema: z.object({ tweet: z.string() }),
+    }),
     embeddingModel: new OpenAITextEmbeddingModel({
       apiKey: openAiApiKey,
       model: "text-embedding-ada-002",
@@ -99,11 +102,14 @@ Discard all irrelevant information.`,
   );
 
   // search for similar tweets:
-  const similarTweets = await exampleTweetStore.queryByText({
-    queryText: draftTweet,
-    maxResults: 1,
-    similarityThreshold: 0.5,
-  });
+  const similarTweets = await exampleTweetStore.queryByText(
+    {
+      queryText: draftTweet,
+      maxResults: 1,
+      similarityThreshold: 0.5,
+    },
+    context
+  );
 
   if (similarTweets.length === 0) {
     return draftTweet;

@@ -9,6 +9,11 @@ type Entry<DATA> = {
   data: DATA;
 };
 
+/**
+ * A very simple vector store that stores all entries in memory. Useful when you only have
+ * a small number of entries and don't want to set up a real database, e.g. for conversational memory
+ * that does not need to be persisted.
+ */
 export class InMemoryVectorStore<DATA> implements VectorStore<DATA> {
   static async deserialize<DATA>({
     serializedData,
@@ -28,16 +33,16 @@ export class InMemoryVectorStore<DATA> implements VectorStore<DATA> {
       )
       .parse(json);
 
-    const database = new InMemoryVectorStore<DATA>();
+    const vectorStore = new InMemoryVectorStore<DATA>();
     for (const entry of parsedJson) {
-      database.upsert({
+      vectorStore.upsert({
         id: entry.id,
         vector: entry.vector,
         data: entry.data as DATA,
       });
     }
 
-    return database;
+    return vectorStore;
   }
 
   private readonly entries: Map<string, Entry<DATA>> = new Map();
