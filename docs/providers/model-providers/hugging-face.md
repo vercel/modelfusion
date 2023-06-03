@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Hugging Face
 
-[API documentation](/api/modules/model-provider_huggingface)
+[API documentation](/api/modules/model_provider_huggingface)
 |
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/huggingface)
 
@@ -32,8 +32,8 @@ const text = await textGenerationModel.extractOutput(response);
 
 ## Models
 
-- [Text Generation Model](/api/classes/model-provider_huggingface.HuggingFaceTextGenerationModel)
+- [Text Generation Model](/api/classes/model_provider_huggingface.HuggingFaceTextGenerationModel)
 
 ## API Clients
 
-- [Text Generation](/api/modules/model-provider_huggingface#generatehuggingfacetextcompletion)
+- [Text Generation](/api/modules/model_provider_huggingface#generatehuggingfacetextcompletion)

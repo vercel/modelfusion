@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Cohere
 
-[API documentation](/api/modules/model-provider_cohere)
+[API documentation](/api/modules/model_provider_cohere)
 |
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/cohere)
 
@@ -32,10 +32,10 @@ const embeddings = await embeddingModel.extractEmbeddings(response);
 
 ## Models
 
-- [Text Generation Model](/api/classes/model-provider_cohere.CohereTextGenerationModel)
-- [Text Embedding Model](/api/classes/model-provider_cohere.CohereTextEmbeddingModel)
+- [Text Generation Model](/api/classes/model_provider_cohere.CohereTextGenerationModel)
+- [Text Embedding Model](/api/classes/model_provider_cohere.CohereTextEmbeddingModel)
 
 ## API Clients
 
-- [Text Generation](/api/modules/model-provider_cohere#generatecoheretextcompletion)
-- [Embedding](/api/modules/model-provider_cohere#generatecohereembedding)
+- [Text Generation](/api/modules/model_provider_cohere#generatecoheretextcompletion)
+- [Embedding](/api/modules/model_provider_cohere#generatecohereembedding)
