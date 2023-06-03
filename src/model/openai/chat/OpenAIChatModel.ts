@@ -1,6 +1,5 @@
 import { RunContext } from "../../../run/RunContext.js";
-import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
-import { TokenizationSupport } from "../../../text/tokenize/TokenizationSupport.js";
+import { TextGenerationModelWithTokenization } from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
@@ -80,8 +79,11 @@ export type OpenAIChatModelSettings = {
  */
 export class OpenAIChatModel
   implements
-    TextGenerationModel<OpenAIChatMessage[], OpenAIChatResponse, string>,
-    TokenizationSupport<OpenAIChatMessage[], number>
+    TextGenerationModelWithTokenization<
+      OpenAIChatMessage[],
+      OpenAIChatResponse,
+      string
+    >
 {
   readonly provider = "openai";
 
@@ -93,7 +95,7 @@ export class OpenAIChatModel
   readonly retry: RetryFunction;
   readonly throttle: ThrottleFunction;
 
-  readonly tokenizer: Tokenizer<number>;
+  readonly tokenizer: Tokenizer;
   readonly maxTokens: number;
 
   constructor({
@@ -127,7 +129,7 @@ export class OpenAIChatModel
    * Counts the prompt tokens required for the messages. This includes the message base tokens
    * and the prompt base tokens.
    */
-  countTokens(messages: OpenAIChatMessage[]) {
+  countPromptTokens(messages: OpenAIChatMessage[]) {
     return countOpenAIChatPromptTokens({
       messages,
       model: this.model,
@@ -168,5 +170,9 @@ export class OpenAIChatModel
       retry: this.retry,
       throttle: this.throttle,
     });
+  }
+
+  withMaxTokens(maxTokens: number) {
+    return this.withSettings({ maxTokens });
   }
 }

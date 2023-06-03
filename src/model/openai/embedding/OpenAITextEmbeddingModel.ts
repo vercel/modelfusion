@@ -46,7 +46,7 @@ export type OpenAITextEmbeddingModelSettings = {
 export class OpenAITextEmbeddingModel
   implements
     TextEmbeddingModel<OpenAITextEmbeddingResponse>,
-    TokenizationSupport<string, number>
+    TokenizationSupport
 {
   readonly provider = "openai";
 
@@ -58,7 +58,7 @@ export class OpenAITextEmbeddingModel
   readonly retry: RetryFunction;
   readonly throttle: ThrottleFunction;
 
-  readonly tokenizer: Tokenizer<number>;
+  readonly tokenizer: Tokenizer;
   readonly maxTokens: number;
 
   readonly maxTextsPerCall = 1;

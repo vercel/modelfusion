@@ -1,9 +1,9 @@
 import {
-  getEncoding,
-  encodingForModel,
-  TiktokenModel,
-  TiktokenEncoding,
   Tiktoken,
+  TiktokenEncoding,
+  TiktokenModel,
+  encodingForModel,
+  getEncoding,
 } from "js-tiktoken";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 
@@ -22,22 +22,18 @@ import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
  * console.log("tokenizeWithTexts", await tokenizer.tokenizeWithTexts(text));
  * console.log("detokenize(tokenize)", await tokenizer.detokenize(await tokenizer.tokenize(text)));
  */
-export class TikTokenTokenizer implements Tokenizer<number> {
+export class TikTokenTokenizer implements Tokenizer {
   /**
    * Get a TikToken tokenizer for a specific model.
    */
-  static forModel({ model }: { model: TiktokenModel }): Tokenizer<number> {
+  static forModel({ model }: { model: TiktokenModel }): Tokenizer {
     return new TikTokenTokenizer({ tiktoken: encodingForModel(model) });
   }
 
   /**
    * Get a TikToken tokenizer for a specific encoding.
    */
-  static forEncoding({
-    encoding,
-  }: {
-    encoding: TiktokenEncoding;
-  }): Tokenizer<number> {
+  static forEncoding({ encoding }: { encoding: TiktokenEncoding }): Tokenizer {
     return new TikTokenTokenizer({ tiktoken: getEncoding(encoding) });
   }
 

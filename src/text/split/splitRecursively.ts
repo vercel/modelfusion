@@ -47,12 +47,12 @@ splitRecursivelyAtCharacter.asSplitFunction =
   async ({ text }: { text: string }) =>
     splitRecursivelyAtCharacter({ maxChunkSize, text });
 
-export const splitRecursivelyAtToken = async <T>({
+export const splitRecursivelyAtToken = async ({
   tokenizer,
   maxChunkSize,
   text,
 }: {
-  tokenizer: Tokenizer<T>;
+  tokenizer: Tokenizer;
   maxChunkSize: number;
   text: string;
 }) =>
@@ -62,11 +62,11 @@ export const splitRecursivelyAtToken = async <T>({
   });
 
 splitRecursivelyAtToken.asSplitFunction =
-  <T>({
+  ({
     tokenizer,
     maxChunkSize,
   }: {
-    tokenizer: Tokenizer<T>;
+    tokenizer: Tokenizer;
     maxChunkSize: number;
   }): SplitFunction =>
   async ({ text }: { text: string }) =>
@@ -81,7 +81,7 @@ export const splitRecursivelyAtTokenForModel = async ({
   maxChunkSize,
   text,
 }: {
-  model: TokenizationSupport<any, any>;
+  model: TokenizationSupport;
   maxChunkSize: number;
   text: string;
 }) => {
@@ -96,7 +96,7 @@ splitRecursivelyAtTokenForModel.asSplitFunction =
     model,
     maxChunkSize,
   }: {
-    model: TokenizationSupport<any, any>;
+    model: TokenizationSupport;
     maxChunkSize: number;
   }): SplitFunction =>
   async ({ text }: { text: string }) =>

@@ -1,6 +1,5 @@
 import { RunContext } from "../../../run/RunContext.js";
-import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
-import { TokenizationSupport } from "../../../text/tokenize/TokenizationSupport.js";
+import { TextGenerationModelWithTokenization } from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
@@ -65,8 +64,11 @@ export type CohereTextGenerationModelSettings = {
  */
 export class CohereTextGenerationModel
   implements
-    TextGenerationModel<string, CohereTextGenerationResponse, string>,
-    TokenizationSupport<string, number>
+    TextGenerationModelWithTokenization<
+      string,
+      CohereTextGenerationResponse,
+      string
+    >
 {
   readonly provider = "cohere";
 
@@ -79,7 +81,7 @@ export class CohereTextGenerationModel
   readonly throttle: ThrottleFunction;
 
   readonly maxTokens: number;
-  readonly tokenizer: Tokenizer<number>;
+  readonly tokenizer: Tokenizer;
 
   constructor({
     baseUrl,
@@ -108,7 +110,7 @@ export class CohereTextGenerationModel
     this.tokenizer = CohereTokenizer.forModel({ apiKey, model });
   }
 
-  async countTokens(input: string) {
+  async countPromptTokens(input: string) {
     return this.tokenizer.countTokens(input);
   }
 
@@ -145,5 +147,9 @@ export class CohereTextGenerationModel
       retry: this.retry,
       throttle: this.throttle,
     });
+  }
+
+  withMaxTokens(maxTokens: number) {
+    return this.withSettings({ maxTokens });
   }
 }

@@ -1,6 +1,5 @@
 import { RunContext } from "../../../run/RunContext.js";
-import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
-import { TokenizationSupport } from "../../../text/tokenize/TokenizationSupport.js";
+import { TextGenerationModelWithTokenization } from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
@@ -85,8 +84,11 @@ export type OpenAITextGenerationModelSettings = {
  */
 export class OpenAITextGenerationModel
   implements
-    TextGenerationModel<string, OpenAITextGenerationResponse, string>,
-    TokenizationSupport<string, number>
+    TextGenerationModelWithTokenization<
+      string,
+      OpenAITextGenerationResponse,
+      string
+    >
 {
   readonly provider = "openai";
 
@@ -98,7 +100,7 @@ export class OpenAITextGenerationModel
   readonly retry: RetryFunction;
   readonly throttle: ThrottleFunction;
 
-  readonly tokenizer: Tokenizer<number>;
+  readonly tokenizer: Tokenizer;
   readonly maxTokens: number;
 
   constructor({
@@ -128,7 +130,7 @@ export class OpenAITextGenerationModel
     this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[model].maxTokens;
   }
 
-  async countTokens(input: string) {
+  async countPromptTokens(input: string) {
     return this.tokenizer.countTokens(input);
   }
 
@@ -168,5 +170,9 @@ export class OpenAITextGenerationModel
       retry: this.retry,
       throttle: this.throttle,
     });
+  }
+
+  withMaxTokens(maxTokens: number) {
+    return this.withSettings({ maxTokens });
   }
 }

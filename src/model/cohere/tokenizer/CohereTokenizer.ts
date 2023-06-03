@@ -30,7 +30,7 @@ export type CohereTokenizerModelType =
  *   await tokenizer.detokenize(await tokenizer.tokenize(text))
  * );
  */
-export class CohereTokenizer implements Tokenizer<number> {
+export class CohereTokenizer implements Tokenizer {
   static forModel({
     baseUrl,
     apiKey,
@@ -39,7 +39,7 @@ export class CohereTokenizer implements Tokenizer<number> {
     baseUrl?: string;
     apiKey: string;
     model: CohereTokenizerModelType;
-  }): Tokenizer<number> {
+  }): Tokenizer {
     return new CohereTokenizer({ baseUrl, apiKey, model });
   }
 

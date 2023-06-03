@@ -8,8 +8,7 @@ import {
   GenerateTextObserver,
   embedText,
   generateText,
-  mapRecursively,
-  splitRecursivelyAtTokenForModel,
+  mapRecursivelyWithTextGenerationAndTokenSplitting,
 } from "ai-utils.js/text";
 import { InMemoryVectorDB } from "ai-utils.js/vector-db";
 import fs from "node:fs";
@@ -47,46 +46,33 @@ export async function createTweetFromPdf({
   const textFromPdf = await loadPdfAsText(pdfPath);
 
   // extract information on topic from pdf:
-  const reservedCompletionTokens = 1024;
-  const extractTopicPrompt = async ({ text }: { text: string }) => [
-    {
-      role: "user" as const,
-      content: `## TOPIC\n${topic}`,
-    },
-    {
-      role: "system" as const,
-      content: `## ROLE
+  const informationOnTopic =
+    await mapRecursivelyWithTextGenerationAndTokenSplitting(
+      {
+        mapFunctionId: "extract-information-on-topic",
+        text: textFromPdf,
+        model: textModel.withSettings({ temperature: 0 }),
+        mapPrompt: async ({ text }: { text: string }) => [
+          {
+            role: "user" as const,
+            content: `## TOPIC\n${topic}`,
+          },
+          {
+            role: "system" as const,
+            content: `## ROLE
 You are an expert at extracting information.
 You need to extract and keep all the information on the topic above topic from the text below.
 Only include information that is directly relevant for the topic.`,
-    },
-    {
-      role: "user" as const,
-      content: `## TEXT\n${text}`,
-    },
-  ];
-
-  const informationOnTopic = await mapRecursively(
-    {
-      split: splitRecursivelyAtTokenForModel.asSplitFunction({
-        model: textModel,
-        maxChunkSize:
-          textModel.maxTokens -
-          reservedCompletionTokens -
-          (await textModel.countTokens(await extractTopicPrompt({ text: "" }))),
-      }),
-      map: generateText.asFunction({
-        functionId: "extract-information-on-topic",
-        model: textModel.withSettings({
-          temperature: 0,
-          maxTokens: reservedCompletionTokens,
-        }),
-        prompt: extractTopicPrompt,
-      }),
-      text: textFromPdf,
-    },
-    context
-  );
+          },
+          {
+            role: "user" as const,
+            content: `## TEXT\n${text}`,
+          },
+        ],
+        reservedCompletionTokens: 1024,
+      },
+      context
+    );
 
   // generate a draft tweet:
   const draftTweet = await generateText(

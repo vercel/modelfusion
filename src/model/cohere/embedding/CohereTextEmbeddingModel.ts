@@ -55,7 +55,7 @@ export type CohereTextEmbeddingModelSettings = {
 export class CohereTextEmbeddingModel
   implements
     TextEmbeddingModel<CohereTextEmbeddingResponse>,
-    TokenizationSupport<string, number>
+    TokenizationSupport
 {
   readonly provider = "cohere";
 
@@ -68,7 +68,7 @@ export class CohereTextEmbeddingModel
   readonly throttle: ThrottleFunction;
 
   readonly maxTokens: number;
-  readonly tokenizer: Tokenizer<number>;
+  readonly tokenizer: Tokenizer;
 
   readonly maxTextsPerCall = 96;
   readonly embeddingDimensions: number;
