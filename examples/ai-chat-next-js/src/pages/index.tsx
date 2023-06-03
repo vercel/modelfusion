@@ -3,7 +3,7 @@ import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
 import { convertReadableStreamToAsyncIterable } from "ai-utils.js/internal";
-import { createOpenAIChatResponseDeltaStream } from "ai-utils.js/provider/openai";
+import { createOpenAIChatResponseDeltaStream } from "ai-utils.js/model-provider/openai";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 

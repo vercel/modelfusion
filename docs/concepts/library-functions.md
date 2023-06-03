@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 # Library Functions
@@ -9,7 +9,7 @@ sidebar_position: 3
 ### Example Usage
 
 ```ts
-// create provider model:
+// create model:
 const model = new OpenAITextGenerationModel({
   apiKey: OPENAI_API_KEY,
   model: "text-davinci-003",

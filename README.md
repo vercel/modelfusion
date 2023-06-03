@@ -30,7 +30,7 @@ Having this amount of control is a trade-off: it'll require more work to get an 
 
 ### Build for production
 
-`ai-utils.js` is designed for production, not just for prototyping. Essential features like logging, cost and latency tracking, retries, throttling, and error handling are integrated from the outset. You're also given the flexibility to provide your own integrations and use provider-specific settings.
+`ai-utils.js` is designed for production, not just for prototyping. Essential features like logging, cost and latency tracking, retries, throttling, and error handling are integrated from the outset. You're also given the flexibility to provide your own integrations and use model-provider-specific settings.
 
 ### Multi-modal support
 
@@ -60,7 +60,7 @@ These principles have shaped the design and function of the library, aiming to p
 - Retry management and throttling
 - Error handling
 
-## Providers
+## Model Providers
 
 ### OpenAI
 

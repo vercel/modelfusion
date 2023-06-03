@@ -1,7 +1,7 @@
 import {
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
-} from "ai-utils.js/provider/openai";
+} from "ai-utils.js/model-provider/openai";
 import { RunContext } from "ai-utils.js/run";
 import {
   EmbedTextObserver,
