@@ -57,6 +57,7 @@ export class PineconeStore<DATA extends object | undefined>
         namespace: this.namespace,
         vector: queryVector,
         topK: maxResults,
+        includeMetadata: true,
       },
     });
 

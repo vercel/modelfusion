@@ -51,6 +51,7 @@ if (
   });
 
   // Note: if this script is run several times, the same texts will be inserted and there will be duplicates.
+  // Note: Pinecone might need some time to index the data.
   await vectorDB.upsertMany({
     keyTexts: texts,
     data: texts.map((text) => ({ text })),
@@ -59,7 +60,6 @@ if (
   const results = await vectorDB.queryByText({
     queryText: "rainbow and water droplets",
     maxResults: 3,
-    similarityThreshold: 0.8,
   });
 
   console.log(results);
