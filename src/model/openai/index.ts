@@ -13,4 +13,4 @@ export * from "./image/OpenAIImageGenerationModel.js";
 export * from "./image/generateOpenAIImage.js";
 export * from "./text/OpenAITextGenerationModel.js";
 export * from "./text/generateOpenAITextCompletion.js";
-export * from "./tokenizer/tiktoken.js";
+export * from "./tokenizer/TikTokenTokenizer.js";

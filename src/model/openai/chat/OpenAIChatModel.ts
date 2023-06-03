@@ -6,7 +6,7 @@ import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
-import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
+import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 import {
@@ -81,7 +81,7 @@ export type OpenAIChatModelSettings = {
 export class OpenAIChatModel
   implements
     TextGenerationModel<OpenAIChatMessage[], OpenAIChatResponse, string>,
-    TokenizerModel<number[]>
+    TokenizerModel<number>
 {
   readonly provider = "openai";
 
@@ -93,7 +93,7 @@ export class OpenAIChatModel
   readonly retry: RetryFunction;
   readonly throttle: ThrottleFunction;
 
-  readonly tokenizer: Tokenizer<number[]>;
+  readonly tokenizer: Tokenizer<number>;
   readonly maxTokens: number;
 
   constructor({
@@ -119,7 +119,7 @@ export class OpenAIChatModel
     this.retry = retry;
     this.throttle = throttle;
 
-    this.tokenizer = getTiktokenTokenizerForModel({ model });
+    this.tokenizer = TikTokenTokenizer.forModel({ model });
     this.maxTokens = OPENAI_CHAT_MODELS[model].maxTokens;
   }
 

@@ -1,9 +1,9 @@
-export type Tokenizer<TOKENS_TYPE> = {
+export type Tokenizer<TOKEN_TYPE> = {
   countTokens: (text: string) => PromiseLike<number>;
-  tokenize: (text: string) => PromiseLike<TOKENS_TYPE>;
+  tokenize: (text: string) => PromiseLike<Array<TOKEN_TYPE>>;
   tokenizeWithTexts: (text: string) => PromiseLike<{
-    tokens: TOKENS_TYPE;
+    tokens: Array<TOKEN_TYPE>;
     tokenTexts: Array<string>;
   }>;
-  detokenize: (tokens: TOKENS_TYPE) => PromiseLike<string>;
+  detokenize: (tokens: Array<TOKEN_TYPE>) => PromiseLike<string>;
 };

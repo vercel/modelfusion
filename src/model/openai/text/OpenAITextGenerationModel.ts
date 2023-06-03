@@ -6,7 +6,7 @@ import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
-import { getTiktokenTokenizerForModel } from "../tokenizer/tiktoken.js";
+import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
 import {
   OpenAITextGenerationResponse,
   generateOpenAITextCompletion,
@@ -86,7 +86,7 @@ export type OpenAITextGenerationModelSettings = {
 export class OpenAITextGenerationModel
   implements
     TextGenerationModel<string, OpenAITextGenerationResponse, string>,
-    TokenizerModel<number[]>
+    TokenizerModel<number>
 {
   readonly provider = "openai";
 
@@ -98,7 +98,7 @@ export class OpenAITextGenerationModel
   readonly retry: RetryFunction;
   readonly throttle: ThrottleFunction;
 
-  readonly tokenizer: Tokenizer<number[]>;
+  readonly tokenizer: Tokenizer<number>;
   readonly maxTokens: number;
 
   constructor({
@@ -124,7 +124,7 @@ export class OpenAITextGenerationModel
     this.retry = retry;
     this.throttle = throttle;
 
-    this.tokenizer = getTiktokenTokenizerForModel({ model });
+    this.tokenizer = TikTokenTokenizer.forModel({ model });
     this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[model].maxTokens;
   }
 
