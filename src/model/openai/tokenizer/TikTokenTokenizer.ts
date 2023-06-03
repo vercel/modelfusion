@@ -7,26 +7,24 @@ import {
 } from "js-tiktoken";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 
+/**
+ * TikToken tokenizer for OpenAI language models.
+ *
+ * @see https://github.com/openai/tiktoken
+ *
+ * @example
+ * const tokenizer = TikTokenTokenizer.forModel({ model: "gpt-4" });
+ *
+ * const text = "At first, Nox didn't know what to do with the pup.";
+ *
+ * console.log("countTokens", await tokenizer.countTokens(text));
+ * console.log("tokenize", await tokenizer.tokenize(text));
+ * console.log("tokenizeWithTexts", await tokenizer.tokenizeWithTexts(text));
+ * console.log("detokenize(tokenize)", await tokenizer.detokenize(await tokenizer.tokenize(text)));
+ */
 export class TikTokenTokenizer implements Tokenizer<number> {
   /**
-   * Get a TikToken tokenizer for an OpenAI model.
-   *
-   * @see https://github.com/openai/tiktoken
-   *
-   * @example
-   * const tokenizer = getTiktokenTokenizerForModel({
-   *   model: "gpt-4",
-   * });
-   *
-   * const text = "At first, Nox didn't know what to do with the pup.";
-   *
-   * console.log("countTokens", await tokenizer.countTokens(text));
-   * console.log("encode", await tokenizer.encode(text));
-   * console.log("encodeWithTexts", await tokenizer.encodeWithTexts(text));
-   * console.log(
-   *   "decode(encode)",
-   *   await tokenizer.decode(await tokenizer.encode(text))
-   * );
+   * Get a TikToken tokenizer for a specific model.
    */
   static forModel({ model }: { model: TiktokenModel }): Tokenizer<number> {
     return new TikTokenTokenizer({ tiktoken: encodingForModel(model) });
@@ -34,8 +32,6 @@ export class TikTokenTokenizer implements Tokenizer<number> {
 
   /**
    * Get a TikToken tokenizer for a specific encoding.
-   *
-   * @see https://github.com/openai/tiktoken
    */
   static forEncoding({
     encoding,
