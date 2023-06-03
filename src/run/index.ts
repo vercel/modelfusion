@@ -5,3 +5,4 @@ export * from "./ModelInformation.js";
 export * from "./Prompt.js";
 export * from "./RunContext.js";
 export * from "./RunFunction.js";
+export * from "./Vector.js";

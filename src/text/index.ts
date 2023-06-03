@@ -2,7 +2,7 @@ export * from "./embed/EmbedTextEvent.js";
 export * from "./embed/EmbedTextObserver.js";
 export * from "./embed/TextEmbeddingFunction.js";
 export * from "./embed/TextEmbeddingModel.js";
-export * from "./embed/embedTexts.js";
+export * from "./embed/embedText.js";
 export * from "./generate/GenerateTextEvent.js";
 export * from "./generate/GenerateTextObserver.js";
 export * from "./generate/TextGenerationModel.js";

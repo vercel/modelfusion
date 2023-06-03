@@ -1,9 +1,14 @@
 import { createId } from "@paralleldrive/cuid2";
 import { RunContext } from "../../run/RunContext.js";
+import { Vector } from "../../run/Vector.js";
 import { AbortError } from "../../util/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { EmbedTextEndEvent, EmbedTextStartEvent } from "./EmbedTextEvent.js";
 import { EmbedTextObserver } from "./EmbedTextObserver.js";
+import {
+  TextEmbeddingFunction,
+  TextsEmbeddingFunction,
+} from "./TextEmbeddingFunction.js";
 import { TextEmbeddingModel } from "./TextEmbeddingModel.js";
 
 export async function embedTexts<RAW_OUTPUT>(
@@ -21,7 +26,7 @@ export async function embedTexts<RAW_OUTPUT>(
     onEnd?: (event: EmbedTextEndEvent) => void;
   },
   context?: RunContext & EmbedTextObserver
-): Promise<Array<Array<number>>> {
+): Promise<Array<Vector>> {
   const startTime = performance.now();
   const startEpochSeconds = Math.floor(
     (performance.timeOrigin + startTime) / 1000
@@ -132,11 +137,8 @@ embedTexts.asFunction =
   }: {
     functionId?: string;
     model: TextEmbeddingModel<RAW_OUTPUT>;
-  }) =>
-  async (
-    { texts }: { texts: Array<string> },
-    context?: RunContext & EmbedTextObserver
-  ) =>
+  }): TextsEmbeddingFunction =>
+  async (texts: Array<string>, context?: RunContext & EmbedTextObserver) =>
     embedTexts({ functionId, model, texts }, context);
 
 export async function embedText<RAW_OUTPUT>(
@@ -176,9 +178,6 @@ embedText.asFunction =
   }: {
     functionId?: string;
     model: TextEmbeddingModel<RAW_OUTPUT>;
-  }) =>
-  async (
-    { text }: { text: string },
-    context?: RunContext & EmbedTextObserver
-  ) =>
+  }): TextEmbeddingFunction =>
+  async (text: string, context?: RunContext & EmbedTextObserver) =>
     embedText({ functionId, model, text }, context);
