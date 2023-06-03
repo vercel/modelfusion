@@ -1,6 +1,6 @@
 # ai-utils.js
 
-> ### A TypeScript-first library for building production-grade AI apps, chatbots and agents.
+> ### A TypeScript-first library for building production-grade AI apps, chatbots, and agents.
 
 [![Created by Lars Grammel](https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg)](https://twitter.com/lgrammel)
 [![NPM Version](https://img.shields.io/npm/v/ai-utils.js?color=33cd56&logo=npm)](https://www.npmjs.com/package/ai-utils.js)
@@ -16,7 +16,7 @@ npm install --save ai-utils.js
 
 ## Introduction
 
-`ai-utils.js` is a TypeScript-first library for building production-grade AI apps, chatbots, and agents. It provides a high-level API for AI concepts such as text generation, embeddings, and image generation. It takes care of the low-level details like retries, throttling, and error handling.
+`ai-utils.js` is a TypeScript-first library for building production-grade AI apps, chatbots, and agents. It provides a high-level API for concepts such as text generation, tokenization, embeddings, and image generation. Different providers are supported, including OpenAI, Cohere, Hugging Face, and Stability AI. `ai-utils.js` takes care of the low-level details like retries, throttling, and error handling.
 
 ### TypeScript-first
 
