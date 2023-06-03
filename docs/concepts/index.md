@@ -4,7 +4,7 @@ sidebar_position: 0
 
 # Introduction
 
-`ai-utils.js` is a TypeScript-first library for building production-grade AI apps, chatbots, and agents. It provides a high-level API for AI concepts such as text generation, embeddings, and image generation. It takes care of the low-level details like retries, throttling, and error handling.
+`ai-utils.js` is a TypeScript-first library for building production-grade AI apps, chatbots, and agents. It provides a high-level API for concepts such as text generation, tokenization, embeddings, and image generation. Different providers are supported, including OpenAI, Cohere, Hugging Face, and Stability AI. `ai-utils.js` takes care of the low-level details like retries, throttling, and error handling.
 
 ### TypeScript-first
 
