@@ -1,0 +1,12 @@
+{
+  "name": "ai-utils-test-environments-commonjs",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "ai-utils.js": "*",
+    "dotenv": "16.0.3"
+  }
+}
