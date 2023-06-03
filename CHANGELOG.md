@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.9 - 2023-06-03
+
+### New
+
+1. OpenAI DALL-E image generation support
+1. `generateImage` function
+1. Throttling and retries on model level
+
 ## 0.0.8 - 2023-06-02
 
 ### New
