@@ -73,9 +73,7 @@ Only include information that is directly relevant for the topic.`,
         maxChunkSize:
           textModel.maxTokens -
           reservedCompletionTokens -
-          (await textModel.countPromptTokens(
-            await extractTopicPrompt({ text: "" })
-          )),
+          (await textModel.countTokens(await extractTopicPrompt({ text: "" }))),
       }),
       map: generateText.asFunction({
         functionId: "extract-information-on-topic",

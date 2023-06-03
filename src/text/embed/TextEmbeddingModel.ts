@@ -10,7 +10,7 @@ export type TextEmbeddingModel<RAW_OUTPUT> = {
   /**
    * The limit of tokens for a single text.
    */
-  readonly maxTextTokens: number;
+  readonly maxTokens: number;
 
   /**
    * The size of the embedding vector.

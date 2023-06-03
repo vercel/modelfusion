@@ -1,5 +1,5 @@
+import { TokenizationSupport } from "../tokenize/TokenizationSupport.js";
 import { Tokenizer } from "../tokenize/Tokenizer.js";
-import { TokenizerModel } from "../tokenize/TokenizerModel.js";
 import { SplitFunction } from "./SplitFunction.js";
 
 // when segments is a string, it splits by character, otherwise according to the provided segments
@@ -76,12 +76,12 @@ splitRecursivelyAtToken.asSplitFunction =
       text,
     });
 
-export const splitRecursivelyAtTokenForModel = async <T>({
+export const splitRecursivelyAtTokenForModel = async ({
   model,
   maxChunkSize,
   text,
 }: {
-  model: TokenizerModel<T>;
+  model: TokenizationSupport<any, any>;
   maxChunkSize: number;
   text: string;
 }) => {
@@ -92,11 +92,11 @@ export const splitRecursivelyAtTokenForModel = async <T>({
 };
 
 splitRecursivelyAtTokenForModel.asSplitFunction =
-  <T>({
+  ({
     model,
     maxChunkSize,
   }: {
-    model: TokenizerModel<T>;
+    model: TokenizationSupport<any, any>;
     maxChunkSize: number;
   }): SplitFunction =>
   async ({ text }: { text: string }) =>

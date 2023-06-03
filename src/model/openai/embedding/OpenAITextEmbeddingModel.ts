@@ -1,7 +1,7 @@
 import { RunContext } from "../../../run/RunContext.js";
 import { TextEmbeddingModel } from "../../../text/embed/TextEmbeddingModel.js";
+import { TokenizationSupport } from "../../../text/tokenize/TokenizationSupport.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
-import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
@@ -46,7 +46,7 @@ export type OpenAITextEmbeddingModelSettings = {
 export class OpenAITextEmbeddingModel
   implements
     TextEmbeddingModel<OpenAITextEmbeddingResponse>,
-    TokenizerModel<number>
+    TokenizationSupport<string, number>
 {
   readonly provider = "openai";
 
@@ -59,8 +59,9 @@ export class OpenAITextEmbeddingModel
   readonly throttle: ThrottleFunction;
 
   readonly tokenizer: Tokenizer<number>;
+  readonly maxTokens: number;
+
   readonly maxTextsPerCall = 1;
-  readonly maxTextTokens: number;
   readonly embeddingDimensions: number;
 
   constructor({
@@ -87,9 +88,14 @@ export class OpenAITextEmbeddingModel
     this.throttle = throttle;
 
     this.tokenizer = TikTokenTokenizer.forModel({ model });
-    this.maxTextTokens = OPENAI_TEXT_EMBEDDING_MODELS[model].maxTokens;
+    this.maxTokens = OPENAI_TEXT_EMBEDDING_MODELS[model].maxTokens;
+
     this.embeddingDimensions =
       OPENAI_TEXT_EMBEDDING_MODELS[model].embeddingDimensions;
+  }
+
+  async countTokens(input: string) {
+    return this.tokenizer.countTokens(input);
   }
 
   async embed(

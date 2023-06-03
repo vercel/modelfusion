@@ -1,9 +1,12 @@
 import { RunContext } from "../../../run/RunContext.js";
 import { TextEmbeddingModel } from "../../../text/embed/TextEmbeddingModel.js";
+import { TokenizationSupport } from "../../../text/tokenize/TokenizationSupport.js";
+import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
+import { CohereTokenizer } from "../tokenizer/CohereTokenizer.js";
 import {
   CohereTextEmbeddingResponse,
   generateCohereEmbedding,
@@ -50,7 +53,9 @@ export type CohereTextEmbeddingModelSettings = {
  * const embeddings = await embeddingModel.extractEmbeddings(response);
  */
 export class CohereTextEmbeddingModel
-  implements TextEmbeddingModel<CohereTextEmbeddingResponse>
+  implements
+    TextEmbeddingModel<CohereTextEmbeddingResponse>,
+    TokenizationSupport<string, number>
 {
   readonly provider = "cohere";
 
@@ -62,8 +67,10 @@ export class CohereTextEmbeddingModel
   readonly retry: RetryFunction;
   readonly throttle: ThrottleFunction;
 
+  readonly maxTokens: number;
+  readonly tokenizer: Tokenizer<number>;
+
   readonly maxTextsPerCall = 96;
-  readonly maxTextTokens: number;
   readonly embeddingDimensions: number;
 
   constructor({
@@ -89,9 +96,15 @@ export class CohereTextEmbeddingModel
     this.retry = retry;
     this.throttle = throttle;
 
-    this.maxTextTokens = COHERE_TEXT_EMBEDDING_MODELS[model].maxTokens;
+    this.maxTokens = COHERE_TEXT_EMBEDDING_MODELS[model].maxTokens;
+    this.tokenizer = CohereTokenizer.forModel({ apiKey, model });
+
     this.embeddingDimensions =
       COHERE_TEXT_EMBEDDING_MODELS[model].embeddingDimensions;
+  }
+
+  async countTokens(input: string) {
+    return this.tokenizer.countTokens(input);
   }
 
   async embed(

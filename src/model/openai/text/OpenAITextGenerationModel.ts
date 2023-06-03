@@ -1,7 +1,7 @@
 import { RunContext } from "../../../run/RunContext.js";
 import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
+import { TokenizationSupport } from "../../../text/tokenize/TokenizationSupport.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
-import { TokenizerModel } from "../../../text/tokenize/TokenizerModel.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
@@ -86,7 +86,7 @@ export type OpenAITextGenerationModelSettings = {
 export class OpenAITextGenerationModel
   implements
     TextGenerationModel<string, OpenAITextGenerationResponse, string>,
-    TokenizerModel<number>
+    TokenizationSupport<string, number>
 {
   readonly provider = "openai";
 
@@ -126,6 +126,10 @@ export class OpenAITextGenerationModel
 
     this.tokenizer = TikTokenTokenizer.forModel({ model });
     this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[model].maxTokens;
+  }
+
+  async countTokens(input: string) {
+    return this.tokenizer.countTokens(input);
   }
 
   async generate(

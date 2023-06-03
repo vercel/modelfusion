@@ -1,9 +1,12 @@
 import { RunContext } from "../../../run/RunContext.js";
 import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
+import { TokenizationSupport } from "../../../text/tokenize/TokenizationSupport.js";
+import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
+import { CohereTokenizer } from "../tokenizer/CohereTokenizer.js";
 import {
   CohereTextGenerationResponse,
   generateCohereTextCompletion,
@@ -61,7 +64,9 @@ export type CohereTextGenerationModelSettings = {
  * const text = await textGenerationModel.extractOutput(response);
  */
 export class CohereTextGenerationModel
-  implements TextGenerationModel<string, CohereTextGenerationResponse, string>
+  implements
+    TextGenerationModel<string, CohereTextGenerationResponse, string>,
+    TokenizationSupport<string, number>
 {
   readonly provider = "cohere";
 
@@ -74,6 +79,7 @@ export class CohereTextGenerationModel
   readonly throttle: ThrottleFunction;
 
   readonly maxTokens: number;
+  readonly tokenizer: Tokenizer<number>;
 
   constructor({
     baseUrl,
@@ -99,6 +105,11 @@ export class CohereTextGenerationModel
     this.throttle = throttle;
 
     this.maxTokens = COHERE_TEXT_GENERATION_MODELS[model].maxTokens;
+    this.tokenizer = CohereTokenizer.forModel({ apiKey, model });
+  }
+
+  async countTokens(input: string) {
+    return this.tokenizer.countTokens(input);
   }
 
   async generate(
