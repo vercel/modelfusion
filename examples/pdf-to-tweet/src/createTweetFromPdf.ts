@@ -5,7 +5,6 @@ import {
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
   RunContext,
-  embedText,
   generateText,
   mapRecursivelyWithTextGenerationAndTokenSplitting,
 } from "ai-utils.js";
@@ -26,11 +25,6 @@ export async function createTweetFromPdf({
   openAiApiKey: string;
   context: RunContext & GenerateTextObserver & EmbedTextObserver;
 }) {
-  const embeddingModel = new OpenAITextEmbeddingModel({
-    apiKey: openAiApiKey,
-    model: "text-embedding-ada-002",
-  });
-
   const textModel = new OpenAIChatModel({
     apiKey: openAiApiKey,
     model: "gpt-4",
@@ -39,6 +33,11 @@ export async function createTweetFromPdf({
   const exampleTweetStore = await InMemoryVectorDB.deserialize({
     serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
     schema: z.object({ tweet: z.string() }),
+    embeddingModel: new OpenAITextEmbeddingModel({
+      apiKey: openAiApiKey,
+      model: "text-embedding-ada-002",
+    }),
+    queryFunctionId: "embed-draft-tweet",
   });
 
   const textFromPdf = await loadPdfAsText(pdfPath);
@@ -99,19 +98,9 @@ Discard all irrelevant information.`,
     context
   );
 
-  // get embedding of draft tweet:
-  const draftTweetEmbedding = await embedText(
-    {
-      functionId: "embed-draft-tweet",
-      text: draftTweet,
-      model: embeddingModel,
-    },
-    context
-  );
-
   // search for similar tweets:
-  const similarTweets = await exampleTweetStore.search({
-    queryVector: draftTweetEmbedding,
+  const similarTweets = await exampleTweetStore.queryByText({
+    queryText: draftTweet,
     maxResults: 1,
     similarityThreshold: 0.5,
   });
