@@ -67,6 +67,14 @@ const config = {
       },
     ],
     [
+      "@docusaurus/plugin-content-docs",
+      {
+        routeBasePath: "recipes",
+        id: "recipes",
+        path: "recipes",
+      },
+    ],
+    [
       "docusaurus-plugin-typedoc",
       {
         // typedoc options:
@@ -106,10 +114,6 @@ const config = {
       // image: "img/docusaurus-social-card.jpg",
       navbar: {
         title: "ai-utils.js",
-        // logo: {
-        //   alt: "Logo",
-        //   src: "img/logo.svg",
-        // },
         items: [
           {
             to: "/concepts/",
@@ -124,6 +128,17 @@ const config = {
             activeBaseRegex: `/providers/`,
             sidebarId: "providers",
             position: "left",
+          },
+          {
+            to: "/recipes/",
+            label: "Recipes",
+            activeBaseRegex: `/recipes/`,
+            sidebarId: "recipes",
+            position: "left",
+          },
+          {
+            href: "https://github.com/lgrammel/ai-utils.js/tree/main/examples",
+            label: "Examples",
           },
           {
             to: "/api/modules/",
@@ -142,7 +157,7 @@ const config = {
         style: "dark",
         links: [
           {
-            title: "Resources",
+            title: "Documentation",
             items: [
               {
                 label: "Concepts",
@@ -151,6 +166,14 @@ const config = {
               {
                 label: "Providers",
                 to: "/providers/model-providers/",
+              },
+              {
+                label: "Recipes",
+                to: "/recipes/",
+              },
+              {
+                href: "https://github.com/lgrammel/ai-utils.js/tree/main/examples",
+                label: "Examples",
               },
               {
                 label: "API",
