@@ -8,12 +8,6 @@ sidebar_position: 3
 |
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/cohere)
 
-## Import
-
-```ts
-import { CohereTextEmbeddingModel, ... } from "ai-utils.js/model/cohere";
-```
-
 ## Example
 
 ```ts

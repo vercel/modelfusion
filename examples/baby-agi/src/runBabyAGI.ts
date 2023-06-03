@@ -1,5 +1,4 @@
-import { OpenAITextGenerationModel } from "ai-utils.js/model/openai";
-import { generate } from "ai-utils.js/text";
+import { OpenAITextGenerationModel, generate } from "ai-utils.js";
 import chalk from "chalk";
 
 export async function runBabyAGI({

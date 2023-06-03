@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { generateHuggingFaceTextCompletion } from "ai-utils.js/model/huggingface";
+import { generateHuggingFaceTextCompletion } from "ai-utils.js";
 
 dotenv.config();
 

@@ -8,12 +8,6 @@ sidebar_position: 4
 |
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/huggingface)
 
-## Import
-
-```ts
-import { HuggingFaceTextGenerationModel, ... } from "ai-utils.js/model/huggingface";
-```
-
 ## Example
 
 ```ts

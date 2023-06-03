@@ -1,4 +1,4 @@
-const { OpenAITextGenerationModel } = require("ai-utils.js/model/openai");
+const { OpenAITextGenerationModel } = require("ai-utils.js");
 
 require("dotenv").config();
 

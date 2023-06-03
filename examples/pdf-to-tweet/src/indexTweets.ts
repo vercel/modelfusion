@@ -1,6 +1,8 @@
-import { OpenAITextEmbeddingModel } from "ai-utils.js/model/openai";
-import { embedTexts } from "ai-utils.js/text";
-import { InMemoryVectorDB } from "ai-utils.js/vector-db";
+import {
+  InMemoryVectorDB,
+  OpenAITextEmbeddingModel,
+  embedTexts,
+} from "ai-utils.js";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import fs from "node:fs";

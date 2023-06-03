@@ -1,4 +1,4 @@
-import { generateOpenAITranscription } from "ai-utils.js/model/openai";
+import { generateOpenAITranscription } from "ai-utils.js";
 import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";

@@ -1,8 +1,8 @@
-import { OpenAIChatModel } from "ai-utils.js/model/openai";
+import { OpenAIChatModel } from "ai-utils.js";
 import {
   retryWithExponentialBackoff,
   throttleMaxConcurrency,
-} from "ai-utils.js/util";
+} from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();

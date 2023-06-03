@@ -1,4 +1,4 @@
-import { CohereTokenizer } from "ai-utils.js/model/cohere";
+import { CohereTokenizer } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();

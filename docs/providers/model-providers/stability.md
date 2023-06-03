@@ -8,12 +8,6 @@ sidebar_position: 5
 |
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/stability)
 
-## Import
-
-```ts
-import { StabilityImageGenerationModel, ... } from "ai-utils.js/model/stability";
-```
-
 ## Example
 
 ```ts

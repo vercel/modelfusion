@@ -1,4 +1,4 @@
-import { TikTokenTokenizer } from "ai-utils.js/model/openai";
+import { TikTokenTokenizer } from "ai-utils.js";
 
 (async () => {
   const tokenizer = TikTokenTokenizer.forModel({ model: "gpt-4" });

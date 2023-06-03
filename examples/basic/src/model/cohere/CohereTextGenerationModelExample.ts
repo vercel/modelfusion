@@ -1,4 +1,4 @@
-import { CohereTextGenerationModel } from "ai-utils.js/model/cohere";
+import { CohereTextGenerationModel } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();

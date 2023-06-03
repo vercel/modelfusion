@@ -1,16 +1,14 @@
 import {
-  OpenAIChatModel,
-  OpenAITextEmbeddingModel,
-} from "ai-utils.js/model/openai";
-import { RunContext } from "ai-utils.js/run";
-import {
   EmbedTextObserver,
   GenerateTextObserver,
+  InMemoryVectorDB,
+  OpenAIChatModel,
+  OpenAITextEmbeddingModel,
+  RunContext,
   embedText,
   generateText,
   mapRecursivelyWithTextGenerationAndTokenSplitting,
-} from "ai-utils.js/text";
-import { InMemoryVectorDB } from "ai-utils.js/vector-db";
+} from "ai-utils.js";
 import fs from "node:fs";
 import z from "zod";
 import { loadPdfAsText } from "./loadPdfAsText";

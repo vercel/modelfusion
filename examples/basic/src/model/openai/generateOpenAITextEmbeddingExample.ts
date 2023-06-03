@@ -1,4 +1,4 @@
-import { generateOpenAITextEmbedding } from "ai-utils.js/model/openai";
+import { generateOpenAITextEmbedding } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();

@@ -1,4 +1,4 @@
-import { generateOpenAIChatCompletion } from "ai-utils.js/model/openai";
+import { generateOpenAIChatCompletion } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();

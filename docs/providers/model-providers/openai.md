@@ -8,12 +8,6 @@ sidebar_position: 2
 |
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/openai)
 
-## Import
-
-```ts
-import { OpenAIChatModel, ... } from "ai-utils.js/model/openai";
-```
-
 ## Example
 
 ```ts
