@@ -4,6 +4,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@pinecone-database/pinecone": "^0.1.6",
     "ai-utils.js": "*",
     "dotenv": "16.0.3"
   },
