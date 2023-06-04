@@ -30,6 +30,7 @@ const generateStory = generateText.asFunction({
   model,
   prompt: async ({ character }: { character: string }) =>
     `Write a short story about ${character} learning to love:\n\n`,
+  processText: async (text) => text.trim(), // default behavior
 });
 
 // Later in the code:
