@@ -1,10 +1,12 @@
 ---
-sidebar_position: 4
+sidebar_position: 1
 ---
 
-# Library Functions
+# Generate Text
 
-`ai-utils.js` offers a variety of high-level functions, e.g. generate text, that are built on top of model interfaces. They can be used directly or in functional composition. The library functions are run-aware and add prompts, error handling, and call logging. They also support swapping out models for other compatible models.
+`ai-utils.js` offers two high-level functions for generating text:
+
+- `generate`
 
 ### Example Usage
 
@@ -30,9 +32,7 @@ const text = await generateStory({ character: "a robot" });
 console.log(text);
 ```
 
-## Library Functions (List)
-
-### Text
+### API
 
 - [generateText](/api/modules/#generatetext)
 - [generateText.safe](/api/namespaces/generateText#safe)
