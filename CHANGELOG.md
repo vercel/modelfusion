@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.10 - 2023-06-04
+
+### New
+
+1. Pinecone VectorDB support
+1. Cohere tokenization support
+
 ## 0.0.9 - 2023-06-03
 
 ### New
