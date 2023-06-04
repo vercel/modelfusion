@@ -61,7 +61,7 @@ export type StabilityImageGenerationPrompt = Array<{
  * @see https://api.stability.ai/docs#tag/v1generation/operation/textToImage
  *
  * @example
- * const imageResponse = await generateStabilityImage({
+ * const imageResponse = await callStabilityImageGenerationAPI({
  *   apiKey: STABILITY_API_KEY,
  *   engineId: "stable-diffusion-512-v2-1",
  *   textPrompts: [
@@ -83,7 +83,7 @@ export type StabilityImageGenerationPrompt = Array<{
  *   );
  * });
  */
-export async function generateStabilityImage({
+export async function callStabilityImageGenerationAPI({
   baseUrl = "https://api.stability.ai/v1",
   abortSignal,
   apiKey,

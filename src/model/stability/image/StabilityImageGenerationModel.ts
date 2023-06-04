@@ -9,8 +9,8 @@ import {
   StabilityImageGenerationResponse,
   StabilityImageGenerationSampler,
   StabilityImageGenerationStylePreset,
-  generateStabilityImage,
-} from "./generateStabilityImage.js";
+  callStabilityImageGenerationAPI,
+} from "./callStabilityImageGenerationAPI.js";
 
 export type StabilityImageGenerationModelSettings = {
   height?: number;
@@ -102,7 +102,7 @@ export class StabilityImageGenerationModel
   ): Promise<StabilityImageGenerationResponse> {
     return this.retry(async () =>
       this.throttle(async () =>
-        generateStabilityImage({
+        callStabilityImageGenerationAPI({
           baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,

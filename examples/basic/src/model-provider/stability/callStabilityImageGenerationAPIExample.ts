@@ -1,4 +1,4 @@
-import { generateStabilityImage } from "ai-utils.js";
+import { callStabilityImageGenerationAPI } from "ai-utils.js";
 import dotenv from "dotenv";
 import fs from "node:fs";
 
@@ -7,7 +7,7 @@ dotenv.config();
 const STABILITY_API_KEY = process.env.STABILITY_API_KEY ?? "";
 
 (async () => {
-  const imageResponse = await generateStabilityImage({
+  const imageResponse = await callStabilityImageGenerationAPI({
     apiKey: STABILITY_API_KEY,
     engineId: "stable-diffusion-512-v2-1",
     textPrompts: [
