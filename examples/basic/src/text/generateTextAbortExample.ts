@@ -1,15 +1,9 @@
 import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 
 (async () => {
   const model = new OpenAITextGenerationModel({
-    apiKey: OPENAI_API_KEY,
+    apiKey: "invalid-api-key",
     model: "text-davinci-003",
-    settings: { temperature: 0.7, maxTokens: 500 },
   });
 
   const generateStory = generateText.asFunction({
@@ -19,7 +13,17 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
     processOutput: async (output: string) => output.trim(),
   });
 
-  const text = await generateStory({ character: "a robot" });
+  try {
+    const abortController = new AbortController();
+    abortController.abort(); // this would happen in parallel to generateStory
 
-  console.log(text);
+    const result = await generateStory(
+      { character: "a robot" },
+      { abortSignal: abortController.signal }
+    );
+
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
 })();

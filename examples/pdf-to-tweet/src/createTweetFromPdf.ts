@@ -97,6 +97,7 @@ Discard all irrelevant information.`,
           content: `## CONTENT\n${content}`,
         },
       ],
+      processOutput: async (output) => output.trim(),
     },
     context
   );
@@ -136,6 +137,7 @@ Rewrite the draft tweet on ${topic} using the style from the example tweet.`,
           content: `## STYLE EXAMPLE\n${exampleTweet}`,
         },
       ],
+      processOutput: async (output) => output.trim(),
     },
     context
   );

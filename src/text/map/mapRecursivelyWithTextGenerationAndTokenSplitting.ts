@@ -39,6 +39,7 @@ export async function mapRecursivelyWithTextGenerationAndTokenSplitting<PROMPT>(
         functionId: mapFunctionId,
         model: model.withMaxTokens(reservedCompletionTokens),
         prompt: mapPrompt,
+        processOutput: async (output) => output.trim(),
       }),
       text,
     },

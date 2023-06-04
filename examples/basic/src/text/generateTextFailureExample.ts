@@ -6,18 +6,18 @@ import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
     model: "text-davinci-003",
   });
 
-  const generateStory = generateText.asSafeFunction({
+  const generateStory = generateText.asFunction({
     model,
     prompt: async ({ character }: { character: string }) =>
       `Write a short story about ${character} learning to love:\n\n`,
+    processOutput: async (output: string) => output.trim(),
   });
 
-  const result = await generateStory({ character: "a robot" });
+  try {
+    const result = await generateStory({ character: "a robot" });
 
-  if (!result.ok) {
-    console.error(result.error);
-    return;
+    console.log(result);
+  } catch (error) {
+    console.log(error);
   }
-
-  console.log(result.output);
 })();

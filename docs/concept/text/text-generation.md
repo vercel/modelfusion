@@ -35,6 +35,4 @@ console.log(text);
 ### API
 
 - [generateText](/api/modules/#generatetext)
-- [generateText.safe](/api/namespaces/generateText#safe)
 - [generateText.asFunction](/api/namespaces/generateText#asfunction)
-- [generateText.asSafeFunction](/api/namespaces/generateText#assafefunction)
