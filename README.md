@@ -43,7 +43,7 @@ These principles have shaped the design and function of the library, aiming to p
 ## Features
 
 - Text functions
-  - generate
+  - [generate text](https://ai-utils.dev/concept/text/generate-text)
   - map
     - recursive text mapping (e.g. for summarization or extraction)
   - split
