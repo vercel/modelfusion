@@ -34,7 +34,7 @@ console.log(text);
 
 ### Text
 
-- [generateText](/api/modules/text#generatetext)
-- [generateText.safe](/api/namespaces/text.generateText#safe)
-- [generateText.asFunction](/api/namespaces/text.generateText#asfunction)
-- [generateText.asSafeFunction](/api/namespaces/text.generateText#assafefunction)
+- [generateText](/api/modules/#generatetext)
+- [generateText.safe](/api/namespaces/generateText#safe)
+- [generateText.asFunction](/api/namespaces/generateText#asfunction)
+- [generateText.asSafeFunction](/api/namespaces/generateText#assafefunction)

@@ -8,7 +8,7 @@ sidebar_position: 0
 
 ### TypeScript-first
 
-`ai-utils.js` is built with TypeScript at its core, designed to take full advantage of type inference, static typing, and the robust tooling TypeScript offers. We use a mix of functional and object-oriented programming, focusing on composition and immutability.
+`ai-utils.js` is built with TypeScript at its core, designed to take full advantage of type inference, static typing, and the robust tooling TypeScript offers. We use a mix of functional and object-oriented programming, focusing on composition and immutability. [Zod](https://github.com/colinhacks/zod) is used for type validation when interacting with external systems, e.g. when retrieving data from vectors DBs or calling APIs.
 
 ### Your prompts, model choices, and control flow
 

@@ -4,8 +4,6 @@ sidebar_position: 5
 
 # Stability AI
 
-[API documentation](/api/modules/model_stability)
-|
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/stability)
 
 ## Example
@@ -34,8 +32,8 @@ const image = await imageGenerationModel.extractImageBase64(imageResponse);
 
 ## Models
 
-- [Image Generation Model](/api/classes/model_stability.StabilityImageGenerationModel)
+- [Image Generation Model](/api/classes/StabilityImageGenerationModel)
 
 ## API Clients
 
-- [Image Generation](/api/modules/model_stability#generatestabilityimage)
+- [Image Generation](/api/modules/#generatestabilityimage)

@@ -4,8 +4,6 @@ sidebar_position: 2
 
 # OpenAI
 
-[API documentation](/api/modules/model_openai)
-|
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/openai)
 
 ## Example
@@ -34,17 +32,17 @@ const text = await chatModel.extractOutput(response);
 
 ## Models
 
-- [Chat Generation Model (GPT-3.5, GPT-4)](/api/classes/model_openai.OpenAIChatModel)
-- [Text Generation Model](/api/classes/model_openai.OpenAITextGenerationModel)
-- [Text Embedding Model](/api/classes/model_openai.OpenAITextEmbeddingModel)
-- [Image Generation Model (DALL-E)](/api/classes/model_openai.OpenAIImageGenerationModel)
-- [Tokenization (TikToken)](/api/classes/model_openai.TikTokenTokenizer)
+- [Chat Generation Model (GPT-3.5, GPT-4)](/api/classes/OpenAIChatModel)
+- [Text Generation Model](/api/classes/OpenAITextGenerationModel)
+- [Text Embedding Model](/api/classes/OpenAITextEmbeddingModel)
+- [Image Generation Model (DALL-E)](/api/classes/OpenAIImageGenerationModel)
+- [Tokenization (TikToken)](/api/classes/TikTokenTokenizer)
 
 ## API Clients
 
-- [Chat Generation (GPT-3.5, GPT-4)](/api/modules/model_openai#generateopenaichatcompletion)
-- [Chat Generation Streaming (GPT-3.5, GPT-4)](/api/modules/model_openai#streamopenaichatcompletion)
-- [Text Generation](/api/modules/model_openai#generateopenaitextcompletion)
-- [Text Embedding](/api/modules/model_openai#generateopenaiembedding)
-- [Image Generation (DALL-E)](/api/modules/model_openai#generateopenaiimage)
-- [Transcription (Whisper)](/api/modules/model_openai#generateopenaitranscription)
+- [Chat Generation (GPT-3.5, GPT-4)](/api/modules/#generateopenaichatcompletion)
+- [Chat Generation Streaming (GPT-3.5, GPT-4)](/api/modules/#streamopenaichatcompletion)
+- [Text Generation](/api/modules/#generateopenaitextcompletion)
+- [Text Embedding](/api/modules/#generateopenaiembedding)
+- [Image Generation (DALL-E)](/api/modules/#generateopenaiimage)
+- [Transcription (Whisper)](/api/modules/#generateopenaitranscription)
