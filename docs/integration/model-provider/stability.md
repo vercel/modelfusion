@@ -36,4 +36,4 @@ const image = await imageGenerationModel.extractImageBase64(imageResponse);
 
 ## API Clients
 
-- [Image Generation](/api/modules/#callStabilityImageGenerationAPI)
+- [Image Generation](/api/modules/#callstabilityimagegenerationapi)
