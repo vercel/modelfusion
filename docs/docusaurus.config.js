@@ -133,9 +133,9 @@ const config = {
             position: "left",
           },
           {
-            to: "/integration/",
+            to: "/integration/model-provider/",
             label: "Integrations",
-            activeBaseRegex: `/integration/`,
+            activeBaseRegex: `/integration/model-provider/`,
             sidebarId: "integration",
             position: "left",
           },
@@ -182,7 +182,7 @@ const config = {
               },
               {
                 label: "Integrations",
-                to: "/integration",
+                to: "/integration/model-provider/",
               },
               {
                 label: "API",

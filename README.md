@@ -70,8 +70,8 @@ These principles have shaped the design and function of the library, aiming to p
 
 ### Vector DBs
 
-- In-memory vector DB
-- Pinecone vector DB
+- [In-Memory](https://ai-utils.dev/integration/vector-db/in-memory)
+- [Pinecone](https://ai-utils.dev/integration/vector-db/pinecone)
 
 ## Documentation (at [ai-utils.dev](https://ai-utils.dev))
 
