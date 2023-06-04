@@ -10,7 +10,7 @@ The `generateText` function generates text using [text generation models](/conce
 
 - `prompt`: This argument is a function that returns a prompt object, which should be in the format expected by the `model`. The parameters of this function will be the inputs for the `generateText` method or the returned function when used with `.asFunction`.
 
-- `processText`: This is an optional function that allows you to further process the model's output. It's called with two arguments: the raw output from the model and the original prompt object. By default, this function trims the whitespace from around the model's output, but you can customize this behavior by providing a different function.
+- `processText`: This is an optional function that allows you to further process the model's output. It's called with extracted text from the model response. By default, this function trims the whitespace from around the model's output, but you can customize this behavior by providing a different function.
 
 The effectiveness of `generateText` largely depends on the suitability and quality of the model and the prompt.
 
