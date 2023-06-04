@@ -38,6 +38,7 @@
 ### New
 
 1. Cohere embedding API support
+1. `generate.safe` and `generate.asSafeFunction` functions
 
 ### Changes
 

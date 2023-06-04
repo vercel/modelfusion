@@ -10,7 +10,6 @@ import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
     model,
     prompt: async ({ character }: { character: string }) =>
       `Write a short story about ${character} learning to love:\n\n`,
-    processOutput: async (output: string) => output.trim(),
   });
 
   try {

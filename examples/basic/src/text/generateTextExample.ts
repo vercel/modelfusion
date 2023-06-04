@@ -16,7 +16,6 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
     model,
     prompt: async ({ character }: { character: string }) =>
       `Write a short story about ${character} learning to love:\n\n`,
-    processOutput: async (output: string) => output.trim(),
   });
 
   const text = await generateStory({ character: "a robot" });

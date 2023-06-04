@@ -1,4 +1,4 @@
-import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
+import { OpenAITextGenerationModel, generate } from "ai-utils.js";
 import chalk from "chalk";
 
 export async function runBabyAGI({
@@ -15,7 +15,7 @@ export async function runBabyAGI({
     model: "text-davinci-003",
   });
 
-  const executeTask = generateText.asFunction({
+  const executeTask = generate.asFunction({
     model: model.withSettings({
       temperature: 0.7,
       maxTokens: 2000,
@@ -26,7 +26,7 @@ Response:`,
     processOutput: async (output) => output.trim(),
   });
 
-  const generateNewTasks = generateText.asFunction({
+  const generateNewTasks = generate.asFunction({
     model: model.withSettings({
       temperature: 0.5,
       maxTokens: 100,
@@ -50,7 +50,7 @@ Return the tasks as an array.`,
     processOutput: async (output) => output.trim().split("\n"),
   });
 
-  const prioritizeTasks = generateText.asFunction({
+  const prioritizeTasks = generate.asFunction({
     model: model.withSettings({
       temperature: 0.5,
       maxTokens: 1000,
