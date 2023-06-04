@@ -40,11 +40,10 @@ export type HuggingFaceTextGenerationModelSettings = {
  *   .withSettings({ maxNewTokens: 500 })
  *   .generate("Write a short story about a robot learning to love:\n\n");
  *
- * const text = await textGenerationModel.extractOutput(response);
+ * const text = await textGenerationModel.extractText(response);
  */
 export class HuggingFaceTextGenerationModel
-  implements
-    TextGenerationModel<string, HuggingFaceTextGenerationResponse, string>
+  implements TextGenerationModel<string, HuggingFaceTextGenerationResponse>
 {
   readonly provider = "huggingface";
 
@@ -102,7 +101,7 @@ export class HuggingFaceTextGenerationModel
     );
   }
 
-  async extractOutput(
+  async extractText(
     rawOutput: HuggingFaceTextGenerationResponse
   ): Promise<string> {
     return rawOutput[0].generated_text;

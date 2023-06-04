@@ -19,7 +19,7 @@ export async function mapRecursivelyWithTextGenerationAndTokenSplitting<PROMPT>(
     reservedCompletionTokens,
   }: {
     text: string;
-    model: TextGenerationModelWithTokenization<PROMPT, any, string>;
+    model: TextGenerationModelWithTokenization<PROMPT, any>;
     mapPrompt: (options: { text: string }) => Promise<PROMPT>;
     mapFunctionId?: string;
     reservedCompletionTokens: number;
@@ -53,7 +53,7 @@ mapRecursivelyWithTextGenerationAndTokenSplitting.asMapFunction =
     mapFunctionId,
     reservedCompletionTokens,
   }: {
-    model: TextGenerationModelWithTokenization<PROMPT, any, string>;
+    model: TextGenerationModelWithTokenization<PROMPT, any>;
     mapPrompt: (options: { text: string }) => Promise<PROMPT>;
     mapFunctionId?: string;
     reservedCompletionTokens: number;

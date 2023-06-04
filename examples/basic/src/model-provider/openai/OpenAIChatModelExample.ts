@@ -24,7 +24,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
     },
   ]);
 
-  const text = await chatModel.extractOutput(response);
+  const text = await chatModel.extractText(response);
 
   console.log(text);
 })();

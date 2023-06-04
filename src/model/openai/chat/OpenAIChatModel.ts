@@ -75,14 +75,13 @@ export type OpenAIChatModelSettings = {
  *     },
  *   ]);
  *
- * const text = await chatModel.extractOutput(response);
+ * const text = await chatModel.extractText(response);
  */
 export class OpenAIChatModel
   implements
     TextGenerationModelWithTokenization<
       OpenAIChatMessage[],
-      OpenAIChatResponse,
-      string
+      OpenAIChatResponse
     >
 {
   readonly provider = "openai";
@@ -157,7 +156,7 @@ export class OpenAIChatModel
     );
   }
 
-  async extractOutput(rawOutput: OpenAIChatResponse): Promise<string> {
+  async extractText(rawOutput: OpenAIChatResponse): Promise<string> {
     return rawOutput.choices[0]!.message.content;
   }
 

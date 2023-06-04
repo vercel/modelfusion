@@ -80,15 +80,11 @@ export type OpenAITextGenerationModelSettings = {
  *   .withSettings({ maxTokens: 500 })
  *   .generate("Write a short story about a robot learning to love:\n\n");
  *
- * const text = await textGenerationModel.extractOutput(response);
+ * const text = await textGenerationModel.extractText(response);
  */
 export class OpenAITextGenerationModel
   implements
-    TextGenerationModelWithTokenization<
-      string,
-      OpenAITextGenerationResponse,
-      string
-    >
+    TextGenerationModelWithTokenization<string, OpenAITextGenerationResponse>
 {
   readonly provider = "openai";
 
@@ -155,9 +151,7 @@ export class OpenAITextGenerationModel
     );
   }
 
-  async extractOutput(
-    rawOutput: OpenAITextGenerationResponse
-  ): Promise<string> {
+  async extractText(rawOutput: OpenAITextGenerationResponse): Promise<string> {
     return rawOutput.choices[0]!.text;
   }
 

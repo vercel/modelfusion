@@ -24,7 +24,7 @@ export type GenerateTextEndEvent = {
   | {
       status: "success";
       rawOutput: unknown;
-      extractedOutput: unknown;
+      extractedText: string;
       processedOutput: unknown;
     }
   | { status: "failure"; error: unknown }

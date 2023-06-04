@@ -36,15 +36,15 @@ export async function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     input,
     prompt,
     model,
-    processOutput = async (output) => output.trim(),
+    processText = async (text) => text.trim(),
     onStart,
     onEnd,
   }: {
     functionId?: string | undefined;
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, string>;
-    processOutput?: (output: string) => PromiseLike<string>;
+    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
+    processText?: (text: string) => PromiseLike<string>;
     onStart?: (event: GenerateTextStartEvent) => void;
     onEnd?: (event: GenerateTextEndEvent) => void;
   },
@@ -56,7 +56,7 @@ export async function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
       input,
       prompt,
       model,
-      processOutput,
+      processText: processText,
       onStart,
       onEnd,
     },
@@ -68,8 +68,8 @@ generateText.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT>(options: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, string>;
-    processOutput?: (output: string) => PromiseLike<string>;
+    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
+    processText?: (text: string) => PromiseLike<string>;
     onStart?: (event: GenerateTextStartEvent) => void;
     onEnd?: (event: GenerateTextEndEvent) => void;
   }) =>

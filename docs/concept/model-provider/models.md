@@ -40,7 +40,7 @@ const response = await textGenerationModel
   .withSettings({ maxTokens: 500 }) // refine or override settings
   .generate("Write a short story about a robot learning to love:\n\n");
 
-const text = await textGenerationModel.extractOutput(response);
+const text = await textGenerationModel.extractText(response);
 
 console.log(text);
 ```

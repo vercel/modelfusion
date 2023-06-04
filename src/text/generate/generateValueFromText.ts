@@ -16,17 +16,10 @@ export async function generateValueFromText<
   INPUT,
   PROMPT_TYPE,
   RAW_OUTPUT,
-  GENERATED_OUTPUT,
   OUTPUT
 >(
   input: Parameters<
-    typeof safeGenerateValueFromText<
-      INPUT,
-      PROMPT_TYPE,
-      RAW_OUTPUT,
-      GENERATED_OUTPUT,
-      OUTPUT
-    >
+    typeof safeGenerateValueFromText<INPUT, PROMPT_TYPE, RAW_OUTPUT, OUTPUT>
   >[0],
   context?: RunContext & GenerateTextObserver
 ): Promise<OUTPUT> {
@@ -44,12 +37,11 @@ export async function generateValueFromText<
 }
 
 generateValueFromText.asFunction =
-  <INPUT, PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT, OUTPUT>(options: {
+  <INPUT, PROMPT_TYPE, RAW_OUTPUT, OUTPUT>(options: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
-    extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
-    processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
+    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
+    processText: (text: string) => PromiseLike<OUTPUT>;
     onStart?: (event: GenerateTextStartEvent) => void;
     onEnd?: (event: GenerateTextEndEvent) => void;
   }): RunFunction<INPUT, OUTPUT> =>
@@ -60,7 +52,6 @@ async function safeGenerateValueFromText<
   INPUT,
   PROMPT_TYPE,
   RAW_OUTPUT,
-  GENERATED_OUTPUT,
   OUTPUT
 >(
   {
@@ -68,17 +59,15 @@ async function safeGenerateValueFromText<
     prompt,
     input,
     model,
-    processOutput,
-    extractOutput = model.extractOutput,
+    processText,
     onStart,
     onEnd,
   }: {
     functionId?: string | undefined;
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
-    extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
-    processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
+    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
+    processText: (text: string) => PromiseLike<OUTPUT>;
     onStart?: (event: GenerateTextStartEvent) => void;
     onEnd?: (event: GenerateTextEndEvent) => void;
   },
@@ -158,8 +147,8 @@ async function safeGenerateValueFromText<
     return { ok: false, error: result.error };
   }
 
-  const extractedOutput = await extractOutput(result.output);
-  const processedOutput = await processOutput(extractedOutput);
+  const extractedText = await model.extractText(result.output);
+  const processedOutput = await processText(extractedText);
 
   const endEvent: GenerateTextEndEvent = {
     type: "generate-text-end",
@@ -167,7 +156,7 @@ async function safeGenerateValueFromText<
     metadata,
     input: expandedPrompt,
     rawOutput: result.output,
-    extractedOutput,
+    extractedText,
     processedOutput,
   };
 

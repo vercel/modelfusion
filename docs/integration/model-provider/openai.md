@@ -27,7 +27,7 @@ const response = await chatModel.generate([
   },
 ]);
 
-const text = await chatModel.extractOutput(response);
+const text = await chatModel.extractText(response);
 ```
 
 ## Models
