@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Stability AI
 
-[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/stability)
+[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/stability)
 
 ## Example
 

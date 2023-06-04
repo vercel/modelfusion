@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Hugging Face
 
-[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/huggingface)
+[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/huggingface)
 
 ## Example
 

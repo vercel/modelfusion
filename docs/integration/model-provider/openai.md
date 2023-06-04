@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # OpenAI
 
-[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/openai)
+[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/openai)
 
 ## Example
 

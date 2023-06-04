@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Cohere
 
-[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model/cohere)
+[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/cohere)
 
 ## Example
 
