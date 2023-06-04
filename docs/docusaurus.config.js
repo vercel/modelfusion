@@ -88,18 +88,7 @@ const config = {
       "docusaurus-plugin-typedoc",
       {
         // typedoc options:
-        entryPoints: [
-          "../src/image/index.ts",
-          "../src/internal/index.ts",
-          "../src/model/cohere/index.ts",
-          "../src/model/huggingface/index.ts",
-          "../src/model/openai/index.ts",
-          "../src/model/stability/index.ts",
-          "../src/run/index.ts",
-          "../src/text/index.ts",
-          "../src/util/index.ts",
-          "../src/vector-db/index.ts",
-        ],
+        entryPoints: ["../src/index.ts"],
         tsconfig: "../tsconfig.json",
         groupOrder: ["Functions", "Variables", "*"],
         excludePrivate: true,
