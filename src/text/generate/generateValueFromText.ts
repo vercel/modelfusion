@@ -8,7 +8,6 @@ import { RunContext } from "../../run/RunContext.js";
 import { RunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
 import { SafeResult } from "../../util/SafeResult.js";
-import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import { runSafe } from "../../util/runSafe.js";
 import { GenerateTextObserver } from "./GenerateTextObserver.js";
 import { TextGenerationModel } from "./TextGenerationModel.js";
@@ -51,7 +50,6 @@ generateValueFromText.asFunction =
     model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
-    retry?: RetryFunction;
     onStart?: (event: GenerateTextStartEvent) => void;
     onEnd?: (event: GenerateTextEndEvent) => void;
   }): RunFunction<INPUT, OUTPUT> =>

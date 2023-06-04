@@ -1,6 +1,5 @@
 import { Prompt } from "../../run/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
-import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import {
   GenerateTextEndEvent,
   GenerateTextStartEvent,
@@ -71,7 +70,6 @@ generateText.asFunction =
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, string>;
     processOutput?: (output: string) => PromiseLike<string>;
-    retry?: RetryFunction;
     onStart?: (event: GenerateTextStartEvent) => void;
     onEnd?: (event: GenerateTextEndEvent) => void;
   }) =>
