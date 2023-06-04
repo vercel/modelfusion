@@ -50,7 +50,7 @@ This result was based on this task description: ${completedTask}.
 These are the incomplete tasks: ${existingTasks.join(", ")}.
 Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.
 Return the tasks as an array.`,
-    processOutput: async (output) => output.trim().split("\n"),
+    processText: async (output) => output.trim().split("\n"),
   });
 
   const prioritizeTasks = generateValueFromText.asFunction({
@@ -74,7 +74,7 @@ Return the result as a numbered list, like:
 #. First task
 #. Second task
 Start the task list with number ${nextTaskId}.`,
-    processOutput: async (output) =>
+    processText: async (output) =>
       output
         .trim()
         .split("\n")
