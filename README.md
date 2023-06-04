@@ -6,7 +6,7 @@
 [![NPM Version](https://img.shields.io/npm/v/ai-utils.js?color=33cd56&logo=npm)](https://www.npmjs.com/package/ai-utils.js)
 [![MIT License](https://img.shields.io/github/license/lgrammel/ai-utils.js)](https://opensource.org/licenses/MIT)
 
-[Quick Install](#quick-install) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#examples)
+[Quick Install](#quick-install) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#examples) | [ai-utils.dev](https://ai-utils.dev)
 
 ## Quick Install
 
@@ -73,11 +73,13 @@ These principles have shaped the design and function of the library, aiming to p
 - In-memory vector DB
 - Pinecone vector DB
 
-## Documentation
+## Documentation (at [ai-utils.dev](https://ai-utils.dev))
 
-- [Library Documentation](https://ai-utils.dev/concepts)
+- [Concepts](https://ai-utils.dev/concept)
+- [Integrations](https://ai-utils.dev/integration)
+- [Recipes](https://ai-utils.dev/recipe)
+- [Prompt library](https://ai-utils.dev/prompt)
 - [API Documentation](https://ai-utils.dev/api/modules)
-- [Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic)
 
 ## Examples
 
