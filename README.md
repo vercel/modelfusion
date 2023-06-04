@@ -55,35 +55,23 @@ These principles have shaped the design and function of the library, aiming to p
   - transcribe
 - Prompt utilities
   - Fit recent messages chat prompt into context window
-- In-memory vector DB
 - Run abstraction for progress reporting and abort signals
 - Retry management and throttling
 - Error handling
 
-## Model Providers
+## Integrations
 
-### OpenAI
+### Model Providers
 
-- chat completions (regular, streaming) - GPT-4, GPT-3.5
-- text completions (regular) - Davinci, Curie, Babbage, Ada
-- embeddings
-- tokenization (TikToken) and token counting (incl. message and prompt overhead tokens in chat)
-- transcription - Whisper
-- image generation - DALL-E
+- [OpenAI](https://ai-utils.dev/providers/model-providers/openai) (text generation, text embedding, tokenization, image generation, audio transcription)
+- [Cohere](https://ai-utils.dev/providers/model-providers/cohere) (text generation, text embedding, tokenization)
+- [Hugging Face](https://ai-utils.dev/providers/model-providers/huggingface) (text generation)
+- [Stability AI](https://ai-utils.dev/providers/model-providers/stability) (image generation)
 
-### Cohere
+### Vector DBs
 
-- text generation
-- embeddings
-- tokenization
-
-### Hugging Face
-
-- text generation
-
-### Stability AI
-
-- image generation
+- In-memory vector DB
+- Pinecone vector DB
 
 ## Documentation
 
