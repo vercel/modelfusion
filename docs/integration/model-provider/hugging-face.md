@@ -28,4 +28,4 @@ const text = await textGenerationModel.extractOutput(response);
 
 ## API Clients
 
-- [Text Generation](/api/modules/#generatehuggingfacetextcompletion)
+- [Text Generation](/api/modules/#callHuggingFaceTextGenerationAPI)

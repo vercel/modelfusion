@@ -6,8 +6,8 @@ import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCall
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import {
   HuggingFaceTextGenerationResponse,
-  generateHuggingFaceTextCompletion,
-} from "./generateHuggingFaceTextCompletion.js";
+  callHuggingFaceTextGenerationAPI,
+} from "./callHuggingFaceTextGenerationAPI.js";
 
 export type HuggingFaceTextGenerationModelSettings = {
   topK?: number;
@@ -86,7 +86,7 @@ export class HuggingFaceTextGenerationModel
   ): Promise<HuggingFaceTextGenerationResponse> {
     return this.retry(async () =>
       this.throttle(async () =>
-        generateHuggingFaceTextCompletion({
+        callHuggingFaceTextGenerationAPI({
           baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,

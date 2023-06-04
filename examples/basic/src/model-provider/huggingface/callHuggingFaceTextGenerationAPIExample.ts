@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
-import { generateHuggingFaceTextCompletion } from "ai-utils.js";
+import { callHuggingFaceTextGenerationAPI } from "ai-utils.js";
 
 dotenv.config();
 
 const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY ?? "";
 
 (async () => {
-  const response = await generateHuggingFaceTextCompletion({
+  const response = await callHuggingFaceTextGenerationAPI({
     apiKey: HUGGINGFACE_API_KEY,
     model: "tiiuae/falcon-7b",
     inputs: "Write a short story about a robot learning to love:\n\n",

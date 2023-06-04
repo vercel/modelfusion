@@ -21,7 +21,7 @@ export type HuggingFaceTextGenerationResponse = z.infer<
  * @see https://huggingface.co/docs/api-inference/detailed_parameters#text-generation-task
  *
  * @example
- * const response = await generateHuggingFaceTextCompletion({
+ * const response = await callHuggingFaceTextGenerationAPI({
  *   apiKey: HUGGINGFACE_API_KEY,
  *   model: "tiiuae/falcon-7b",
  *   inputs: "Write a short story about a robot learning to love:\n\n",
@@ -34,7 +34,7 @@ export type HuggingFaceTextGenerationResponse = z.infer<
  *
  * console.log(response[0].generated_text);
  */
-export async function generateHuggingFaceTextCompletion({
+export async function callHuggingFaceTextGenerationAPI({
   baseUrl = "https://api-inference.huggingface.co/models",
   abortSignal,
   apiKey,
