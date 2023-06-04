@@ -6,7 +6,7 @@ export * from "./embed/embedText.js";
 export * from "./generate/GenerateTextEvent.js";
 export * from "./generate/GenerateTextObserver.js";
 export * from "./generate/TextGenerationModel.js";
-export * from "./generate/generate.js";
+export * from "./generate/generateValueFromText.js";
 export * from "./generate/generateText.js";
 export * from "./map/MapFunction.js";
 export * from "./map/mapRecursively.js";

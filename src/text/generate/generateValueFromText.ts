@@ -5,15 +5,15 @@ import {
 } from "text/generate/GenerateTextEvent.js";
 import { Prompt } from "../../run/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
-import { RunFunction, SafeRunFunction } from "../../run/RunFunction.js";
+import { RunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
 import { SafeResult } from "../../util/SafeResult.js";
 import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import { runSafe } from "../../util/runSafe.js";
-import { TextGenerationModel } from "./TextGenerationModel.js";
 import { GenerateTextObserver } from "./GenerateTextObserver.js";
+import { TextGenerationModel } from "./TextGenerationModel.js";
 
-export async function generate<
+export async function generateValueFromText<
   INPUT,
   PROMPT_TYPE,
   RAW_OUTPUT,
@@ -21,7 +21,7 @@ export async function generate<
   OUTPUT
 >(
   input: Parameters<
-    typeof safeGenerate<
+    typeof safeGenerateValueFromText<
       INPUT,
       PROMPT_TYPE,
       RAW_OUTPUT,
@@ -31,7 +31,7 @@ export async function generate<
   >[0],
   context?: RunContext & GenerateTextObserver
 ): Promise<OUTPUT> {
-  const result = await safeGenerate(input, context);
+  const result = await safeGenerateValueFromText(input, context);
 
   if (!result.ok) {
     if (result.isAborted) {
@@ -44,7 +44,7 @@ export async function generate<
   return result.output;
 }
 
-generate.asFunction =
+generateValueFromText.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT, OUTPUT>(options: {
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
@@ -56,25 +56,9 @@ generate.asFunction =
     onEnd?: (event: GenerateTextEndEvent) => void;
   }): RunFunction<INPUT, OUTPUT> =>
   async (input: INPUT, context?: RunContext & GenerateTextObserver) =>
-    generate({ input, ...options }, context);
+    generateValueFromText({ input, ...options }, context);
 
-generate.safe = safeGenerate;
-
-generate.asSafeFunction =
-  <INPUT, PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT, OUTPUT>(options: {
-    functionId?: string | undefined;
-    prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
-    extractOutput?: (output: RAW_OUTPUT) => PromiseLike<GENERATED_OUTPUT>;
-    processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
-    retry?: RetryFunction;
-    onStart?: (event: GenerateTextStartEvent) => void;
-    onEnd?: (event: GenerateTextEndEvent) => void;
-  }): SafeRunFunction<INPUT, OUTPUT> =>
-  async (input: INPUT, context?: RunContext & GenerateTextObserver) =>
-    safeGenerate({ input, ...options }, context);
-
-async function safeGenerate<
+async function safeGenerateValueFromText<
   INPUT,
   PROMPT_TYPE,
   RAW_OUTPUT,

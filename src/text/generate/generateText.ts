@@ -1,29 +1,45 @@
 import { Prompt } from "../../run/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
-import { AbortError } from "../../util/AbortError.js";
 import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import {
   GenerateTextEndEvent,
   GenerateTextStartEvent,
 } from "./GenerateTextEvent.js";
 import { TextGenerationModel } from "./TextGenerationModel.js";
-import { generate } from "./generate.js";
+import { generateValueFromText } from "./generateValueFromText.js";
 
 export async function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
-  input: Parameters<typeof safeGenerateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>>[0],
+  {
+    functionId,
+    input,
+    prompt,
+    model,
+    processOutput = async (output) => output.trim(),
+    onStart,
+    onEnd,
+  }: {
+    functionId?: string | undefined;
+    input: INPUT;
+    prompt: Prompt<INPUT, PROMPT_TYPE>;
+    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, string>;
+    processOutput?: (output: string) => PromiseLike<string>;
+    onStart?: (event: GenerateTextStartEvent) => void;
+    onEnd?: (event: GenerateTextEndEvent) => void;
+  },
   context?: RunContext
 ): Promise<string> {
-  const result = await safeGenerateText(input, context);
-
-  if (!result.ok) {
-    if (result.isAborted) {
-      throw new AbortError("The generation was aborted.");
-    }
-
-    throw result.error;
-  }
-
-  return result.output;
+  return generateValueFromText(
+    {
+      functionId,
+      input,
+      prompt,
+      model,
+      processOutput,
+      onStart,
+      onEnd,
+    },
+    context
+  );
 }
 
 /**
@@ -48,37 +64,3 @@ generateText.asFunction =
   }) =>
   async (input: INPUT, context?: RunContext) =>
     generateText({ input, ...options }, context);
-
-function safeGenerateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
-  {
-    functionId,
-    input,
-    prompt,
-    model,
-    processOutput = async (output) => output.trim(),
-    onStart,
-    onEnd,
-  }: {
-    functionId?: string | undefined;
-    input: INPUT;
-    prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT, string>;
-    processOutput?: (output: string) => PromiseLike<string>;
-    onStart?: (event: GenerateTextStartEvent) => void;
-    onEnd?: (event: GenerateTextEndEvent) => void;
-  },
-  context?: RunContext
-) {
-  return generate.safe(
-    {
-      functionId,
-      input,
-      prompt,
-      model,
-      processOutput,
-      onStart,
-      onEnd,
-    },
-    context
-  );
-}
