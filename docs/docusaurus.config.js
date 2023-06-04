@@ -196,7 +196,7 @@ const config = {
                 to: "/recipe/",
               },
               {
-                label: "Prompts",
+                label: "Prompt Library",
                 to: "/prompts/",
               },
               {
