@@ -8,6 +8,8 @@
 
 [Quick Install](#quick-install) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#examples) | [ai-utils.dev](https://ai-utils.dev)
 
+**⚠️ `ai-utils.js` is currently in its initial experimental phase. Until version 0.1 there may be breaking changes in each release.**
+
 ## Quick Install
 
 ```bash
