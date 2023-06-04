@@ -16,7 +16,7 @@ import { generateValueFromText } from "./generateValueFromText.js";
  * @param prompt The prompt to use for text generation.
  * It is a function that returns a prompt object in the format that is expected by the model.
  * Its arguments define the inputs (of either the `inputs` parameter or the returned function).
- * @param processOutput A function that processes the output of the model.
+ * @param processText A function that processes the output of the model.
  * It is called with the output of the model and the prompt object.
  * It returns the processed output.
  * The default function trims the whitespace around the output.
