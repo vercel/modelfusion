@@ -23,7 +23,7 @@ export type OpenAIStreamChatCompletionResponseFormat<T> = {
  * @see https://platform.openai.com/docs/api-reference/chat/create
  *
  * @example
- * const stream = await streamOpenAIChatCompletion({
+ * const stream = await streamOpenAIChatCompletionAPI({
  *   apiKey: OPENAI_API_KEY,
  *   model: "gpt-3.5-turbo",
  *   messages: [
@@ -39,10 +39,10 @@ export type OpenAIStreamChatCompletionResponseFormat<T> = {
  *   ],
  *   temperature: 0.7,
  *   maxTokens: 500,
- *   responseFormat: streamOpenAIChatCompletion.responseFormat.readStream,
+ *   responseFormat: streamOpenAIChatCompletionAPI.responseFormat.readStream,
  * });
  */
-export async function streamOpenAIChatCompletion<T>({
+export async function streamOpenAIChatCompletionAPI<T>({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
   responseFormat,
@@ -95,7 +95,7 @@ export async function streamOpenAIChatCompletion<T>({
   });
 }
 
-streamOpenAIChatCompletion.responseFormat = {
+streamOpenAIChatCompletionAPI.responseFormat = {
   readStream: {
     handler: createStreamResponseHandler(),
   },

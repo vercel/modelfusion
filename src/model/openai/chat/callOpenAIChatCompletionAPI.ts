@@ -39,7 +39,7 @@ export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
  * @see https://platform.openai.com/docs/api-reference/chat/create
  *
  * @example
- * const response = await generateOpenAIChatCompletion({
+ * const response = await callOpenAIChatCompletionAPI({
  *   apiKey: OPENAI_API_KEY,
  *   model: "gpt-3.5-turbo",
  *   messages: [
@@ -59,7 +59,7 @@ export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
  *
  * console.log(response.choices[0].message.content);
  */
-export async function generateOpenAIChatCompletion({
+export async function callOpenAIChatCompletionAPI({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
   apiKey,

@@ -1,4 +1,4 @@
-import { generateOpenAIImage } from "ai-utils.js";
+import { callOpenAIImageGenerationAPI } from "ai-utils.js";
 import dotenv from "dotenv";
 import fs from "node:fs";
 
@@ -7,12 +7,12 @@ dotenv.config();
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 
 (async () => {
-  const imageResponse = await generateOpenAIImage({
+  const imageResponse = await callOpenAIImageGenerationAPI({
     apiKey: OPENAI_API_KEY,
     prompt:
       "the wicked witch of the west in the style of early 19th century painting",
     size: "512x512",
-    responseFormat: generateOpenAIImage.responseFormat.base64Json,
+    responseFormat: callOpenAIImageGenerationAPI.responseFormat.base64Json,
   });
 
   imageResponse.data.forEach((image, index) => {

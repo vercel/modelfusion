@@ -17,15 +17,15 @@ export type OpenAIImageGenerationResponseFormat<T> = {
  * @see https://platform.openai.com/docs/api-reference/images/create
  *
  * @example
- * const imageResponse = await generateOpenAIImage({
+ * const imageResponse = await callOpenAIImageGenerationAPI({
  *   apiKey: OPENAI_API_KEY,
  *   prompt:
  *     "the wicked witch of the west in the style of early 19th century painting",
  *   size: "512x512",
- *   responseFormat: generateOpenAIImage.responseFormat.base64Json,
+ *   responseFormat: callOpenAIImageGenerationAPI.responseFormat.base64Json,
  * });
  */
-export async function generateOpenAIImage<RESPONSE>({
+export async function callOpenAIImageGenerationAPI<RESPONSE>({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
   apiKey,
@@ -86,7 +86,7 @@ export type OpenAIImageGenerationBase64JsonResponse = z.infer<
   typeof openAIImageGenerationBase64JsonSchema
 >;
 
-generateOpenAIImage.responseFormat = {
+callOpenAIImageGenerationAPI.responseFormat = {
   url: {
     type: "url" as const,
     handler: createJsonResponseHandler(openAIImageGenerationUrlSchema),

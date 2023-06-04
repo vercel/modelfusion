@@ -10,8 +10,8 @@ import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 import {
   OpenAIChatResponse,
-  generateOpenAIChatCompletion,
-} from "./generateOpenAIChatCompletion.js";
+  callOpenAIChatCompletionAPI,
+} from "./callOpenAIChatCompletionAPI.js";
 
 // see https://platform.openai.com/docs/models/
 export const OPENAI_CHAT_MODELS = {
@@ -142,7 +142,7 @@ export class OpenAIChatModel
   ): Promise<OpenAIChatResponse> {
     return this.retry(async () =>
       this.throttle(async () =>
-        generateOpenAIChatCompletion({
+        callOpenAIChatCompletionAPI({
           baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,

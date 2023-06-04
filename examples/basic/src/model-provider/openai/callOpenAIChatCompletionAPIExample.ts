@@ -1,4 +1,4 @@
-import { generateOpenAIChatCompletion } from "ai-utils.js";
+import { callOpenAIChatCompletionAPI } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -6,7 +6,7 @@ dotenv.config();
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 
 (async () => {
-  const response = await generateOpenAIChatCompletion({
+  const response = await callOpenAIChatCompletionAPI({
     apiKey: OPENAI_API_KEY,
     model: "gpt-3.5-turbo",
     messages: [

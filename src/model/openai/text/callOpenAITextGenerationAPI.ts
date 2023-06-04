@@ -36,7 +36,7 @@ export type OpenAITextGenerationResponse = z.infer<
  * @see https://platform.openai.com/docs/api-reference/completions/create
  *
  * @example
- * const response = await generateOpenAITextCompletion({
+ * const response = await callOpenAITextGenerationAPI({
  *   apiKey: OPENAI_API_KEY,
  *   model: "text-davinci-003",
  *   prompt: "Write a short story about a robot learning to love:\n\n",
@@ -46,7 +46,7 @@ export type OpenAITextGenerationResponse = z.infer<
  *
  * console.log(response.choices[0].text);
  */
-export async function generateOpenAITextCompletion({
+export async function callOpenAITextGenerationAPI({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
   apiKey,

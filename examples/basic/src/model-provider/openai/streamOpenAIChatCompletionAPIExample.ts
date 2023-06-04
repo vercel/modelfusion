@@ -1,4 +1,4 @@
-import { streamOpenAIChatCompletion } from "ai-utils.js";
+import { streamOpenAIChatCompletionAPI } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -6,7 +6,7 @@ dotenv.config();
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 
 (async () => {
-  const stream = await streamOpenAIChatCompletion({
+  const stream = await streamOpenAIChatCompletionAPI({
     apiKey: OPENAI_API_KEY,
     model: "gpt-3.5-turbo",
     messages: [
@@ -23,7 +23,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
     temperature: 0.7,
     maxTokens: 500,
     responseFormat:
-      streamOpenAIChatCompletion.responseFormat.asyncDeltaIterable,
+      streamOpenAIChatCompletionAPI.responseFormat.asyncDeltaIterable,
   });
 
   for await (const piece of stream) {

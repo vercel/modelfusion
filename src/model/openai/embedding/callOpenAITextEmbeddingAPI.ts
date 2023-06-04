@@ -34,7 +34,7 @@ export type OpenAITextEmbeddingResponse = z.infer<
  * @see https://platform.openai.com/docs/api-reference/embeddings
  *
  * @example
- * const response = await generateOpenAITextEmbedding({
+ * const response = await callOpenAITextEmbeddingAPI({
  *   apiKey: OPENAI_API_KEY,
  *   model: "text-embedding-ada-002",
  *   input: "At first, Nox didn't know what to do with the pup.",
@@ -42,7 +42,7 @@ export type OpenAITextEmbeddingResponse = z.infer<
  *
  * console.log(response.data[0].embedding);
  */
-export async function generateOpenAITextEmbedding({
+export async function callOpenAITextEmbeddingAPI({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
   apiKey,

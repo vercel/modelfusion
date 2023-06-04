@@ -6,8 +6,8 @@ import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCall
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import {
   OpenAIImageGenerationBase64JsonResponse,
-  generateOpenAIImage,
-} from "./generateOpenAIImage.js";
+  callOpenAIImageGenerationAPI,
+} from "./callOpenAIImageGenerationAPI.js";
 
 export type OpenAIImageGenerationModelSettings = {
   n?: number;
@@ -75,12 +75,13 @@ export class OpenAIImageGenerationModel
   ): Promise<OpenAIImageGenerationBase64JsonResponse> {
     return this.retry(async () =>
       this.throttle(async () =>
-        generateOpenAIImage({
+        callOpenAIImageGenerationAPI({
           baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
           prompt: input,
-          responseFormat: generateOpenAIImage.responseFormat.base64Json,
+          responseFormat:
+            callOpenAIImageGenerationAPI.responseFormat.base64Json,
           ...this.settings,
         })
       )

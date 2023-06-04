@@ -2,7 +2,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModelType,
   composeRecentMessagesOpenAIChatPrompt,
-  streamOpenAIChatCompletion,
+  streamOpenAIChatCompletionAPI,
 } from "ai-utils.js";
 import { z } from "zod";
 
@@ -61,12 +61,12 @@ const sendMessage = async (request: Request): Promise<Response> => {
     return controller.abort();
   });
 
-  const stream = await streamOpenAIChatCompletion({
+  const stream = await streamOpenAIChatCompletionAPI({
     apiKey: openAiApiKey,
     model,
     messages: messagesToSend,
     maxTokens,
-    responseFormat: streamOpenAIChatCompletion.responseFormat.readStream,
+    responseFormat: streamOpenAIChatCompletionAPI.responseFormat.readStream,
     abortSignal: controller.signal,
   });
 

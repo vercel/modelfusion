@@ -20,17 +20,17 @@ export type OpenAITranscriptionResponseFormat<T> = {
  * @see https://platform.openai.com/docs/api-reference/audio/create
  *
  * @example
- * const transcriptionResponse = await generateOpenAITranscription({
+ * const transcriptionResponse = await callOpenAITranscriptionAPI({
  *   apiKey: openAiApiKey,
  *   model: "whisper-1",
  *   file: {
  *     name: "audio.mp3",
  *     data: fileData, // Buffer
  *   },
- *   responseFormat: generateOpenAITranscription.responseFormat.json,
+ *   responseFormat: callOpenAITranscriptionAPI.responseFormat.json,
  * });
  */
-export async function generateOpenAITranscription<RESPONSE>({
+export async function callOpenAITranscriptionAPI<RESPONSE>({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
   apiKey,
@@ -128,7 +128,7 @@ export type OpenAITranscriptionVerboseJson = z.infer<
   typeof openAITranscriptionVerboseJsonSchema
 >;
 
-generateOpenAITranscription.responseFormat = {
+callOpenAITranscriptionAPI.responseFormat = {
   json: {
     type: "json" as const,
     handler: createJsonResponseHandler(openAITranscriptionJsonSchema),

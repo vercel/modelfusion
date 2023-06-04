@@ -40,9 +40,9 @@ const text = await chatModel.extractOutput(response);
 
 ## API Clients
 
-- [Chat Generation (GPT-3.5, GPT-4)](/api/modules/#generateopenaichatcompletion)
-- [Chat Generation Streaming (GPT-3.5, GPT-4)](/api/modules/#streamopenaichatcompletion)
-- [Text Generation](/api/modules/#generateopenaitextcompletion)
+- [Chat Generation (GPT-3.5, GPT-4)](/api/modules/#callOpenAIChatCompletionAPI)
+- [Chat Generation Streaming (GPT-3.5, GPT-4)](/api/modules/#streamOpenAIChatCompletionAPI)
+- [Text Generation](/api/modules/#callOpenAITextGenerationAPI)
 - [Text Embedding](/api/modules/#generateopenaiembedding)
-- [Image Generation (DALL-E)](/api/modules/#generateopenaiimage)
-- [Transcription (Whisper)](/api/modules/#generateopenaitranscription)
+- [Image Generation (DALL-E)](/api/modules/#callOpenAIImageGenerationAPI)
+- [Transcription (Whisper)](/api/modules/#callOpenAITranscriptionAPI)

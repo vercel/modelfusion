@@ -8,8 +8,8 @@ import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
 import {
   OpenAITextGenerationResponse,
-  generateOpenAITextCompletion,
-} from "./generateOpenAITextCompletion.js";
+  callOpenAITextGenerationAPI,
+} from "./callOpenAITextGenerationAPI.js";
 
 // see https://platform.openai.com/docs/models/
 export const OPENAI_TEXT_GENERATION_MODELS = {
@@ -140,7 +140,7 @@ export class OpenAITextGenerationModel
   ): Promise<OpenAITextGenerationResponse> {
     return this.retry(async () =>
       this.throttle(async () =>
-        generateOpenAITextCompletion({
+        callOpenAITextGenerationAPI({
           baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,

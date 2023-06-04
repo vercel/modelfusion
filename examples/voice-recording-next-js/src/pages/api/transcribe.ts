@@ -1,4 +1,4 @@
-import { generateOpenAITranscription } from "ai-utils.js";
+import { callOpenAITranscriptionAPI } from "ai-utils.js";
 import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -43,14 +43,14 @@ export default async function handler(
     const audioFile = files.audio as File;
     const fileData = fs.readFileSync(audioFile.filepath);
 
-    const transcriptionResponse = await generateOpenAITranscription({
+    const transcriptionResponse = await callOpenAITranscriptionAPI({
       apiKey: openAiApiKey,
       model: "whisper-1",
       file: {
         name: "audio.mp3",
         data: fileData,
       },
-      responseFormat: generateOpenAITranscription.responseFormat.json,
+      responseFormat: callOpenAITranscriptionAPI.responseFormat.json,
     });
 
     // Remove temporary file

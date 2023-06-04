@@ -9,8 +9,8 @@ import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
 import {
   OpenAITextEmbeddingResponse,
-  generateOpenAITextEmbedding,
-} from "./generateOpenAITextEmbedding.js";
+  callOpenAITextEmbeddingAPI,
+} from "./callOpenAITextEmbeddingAPI.js";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-ada-002": {
@@ -110,7 +110,7 @@ export class OpenAITextEmbeddingModel
 
     return this.retry(async () =>
       this.throttle(async () =>
-        generateOpenAITextEmbedding({
+        callOpenAITextEmbeddingAPI({
           baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
