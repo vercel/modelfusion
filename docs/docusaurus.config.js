@@ -197,7 +197,7 @@ const config = {
               },
               {
                 label: "Prompt Library",
-                to: "/prompts/",
+                to: "/prompt/",
               },
               {
                 href: "https://github.com/lgrammel/ai-utils.js/tree/main/examples",
