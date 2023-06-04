@@ -30,7 +30,7 @@ const embeddings = await embeddingModel.extractEmbeddings(response);
 
 ## API Clients
 
-- [Text Generation](/api/modules/#generatecoheretextcompletion)
-- [Embedding](/api/modules/#generatecohereembedding)
+- [Text Generation](/api/modules/#callCohereTextGenerationAPI)
+- [Embedding](/api/modules/#callCohereEmbeddingAPI)
 - [Tokenize](/api/modules/#tokenizecohere)
-- [Detokenize](/api/modules/#detokenizecohere)
+- [Detokenize](/api/modules/#callCohereDetokenizeAPI)

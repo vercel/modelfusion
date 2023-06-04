@@ -8,8 +8,8 @@ import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { CohereTokenizer } from "../tokenizer/CohereTokenizer.js";
 import {
   CohereTextGenerationResponse,
-  generateCohereTextCompletion,
-} from "./generateCohereTextCompletion.js";
+  callCohereTextGenerationAPI,
+} from "./callCohereTextGenerationAPI.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
@@ -120,7 +120,7 @@ export class CohereTextGenerationModel
   ): Promise<CohereTextGenerationResponse> {
     return this.retry(async () =>
       this.throttle(async () =>
-        generateCohereTextCompletion({
+        callCohereTextGenerationAPI({
           baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,

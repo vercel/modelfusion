@@ -1,4 +1,4 @@
-import { generateCohereEmbedding } from "ai-utils.js";
+import { callCohereEmbeddingAPI } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -6,7 +6,7 @@ dotenv.config();
 const COHERE_API_KEY = process.env.COHERE_API_KEY ?? "";
 
 (async () => {
-  const response = await generateCohereEmbedding({
+  const response = await callCohereEmbeddingAPI({
     apiKey: COHERE_API_KEY,
     model: "embed-english-light-v2.0",
     texts: [

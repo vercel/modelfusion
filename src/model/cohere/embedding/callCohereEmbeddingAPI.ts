@@ -27,7 +27,7 @@ export type CohereTextEmbeddingResponse = z.infer<
  * @see https://docs.cohere.com/reference/embed
  *
  * @example
- * const response = await generateCohereEmbedding({
+ * const response = await callCohereEmbeddingAPI({
  *   apiKey: COHERE_API_KEY,
  *   model: "embed-english-light-v2.0",
  *   texts: [
@@ -36,7 +36,7 @@ export type CohereTextEmbeddingResponse = z.infer<
  *   ],
  * });
  */
-export async function generateCohereEmbedding({
+export async function callCohereEmbeddingAPI({
   baseUrl = "https://api.cohere.ai/v1",
   abortSignal,
   apiKey,

@@ -32,7 +32,7 @@ export type CohereTextGenerationResponse = z.infer<
  * @see https://docs.cohere.com/reference/generate
  *
  * @example
- * const response = await generateCohereTextCompletion({
+ * const response = await callCohereTextGenerationAPI({
  *   apiKey: COHERE_API_KEY,
  *   model: "command-nightly",
  *   prompt: "Write a short story about a robot learning to love:\n\n",
@@ -42,7 +42,7 @@ export type CohereTextGenerationResponse = z.infer<
  *
  * console.log(response.generations[0].text);
  */
-export async function generateCohereTextCompletion({
+export async function callCohereTextGenerationAPI({
   baseUrl = "https://api.cohere.ai/v1",
   abortSignal,
   apiKey,

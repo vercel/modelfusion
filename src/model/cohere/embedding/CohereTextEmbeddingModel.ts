@@ -9,8 +9,8 @@ import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { CohereTokenizer } from "../tokenizer/CohereTokenizer.js";
 import {
   CohereTextEmbeddingResponse,
-  generateCohereEmbedding,
-} from "./generateCohereEmbedding.js";
+  callCohereEmbeddingAPI,
+} from "./callCohereEmbeddingAPI.js";
 
 export const COHERE_TEXT_EMBEDDING_MODELS = {
   "embed-english-light-v2.0": {
@@ -119,7 +119,7 @@ export class CohereTextEmbeddingModel
 
     return this.retry(async () =>
       this.throttle(async () =>
-        generateCohereEmbedding({
+        callCohereEmbeddingAPI({
           baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,

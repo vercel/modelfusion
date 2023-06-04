@@ -6,8 +6,9 @@ import {
 import { failedCohereCallResponseHandler } from "../internal/failedCohereCallResponseHandler.js";
 import { CohereTokenizerModelType } from "./CohereTokenizer.js";
 
-export const cohereDetokenizationResponseSchema = z.object({
-  text: z.string(),
+export const cohereTokenizationResponseSchema = z.object({
+  tokens: z.array(z.number()),
+  token_strings: z.array(z.string()),
   meta: z.object({
     api_version: z.object({
       version: z.string(),
@@ -15,38 +16,38 @@ export const cohereDetokenizationResponseSchema = z.object({
   }),
 });
 
-export type CohereDetokenizationResponse = z.infer<
-  typeof cohereDetokenizationResponseSchema
+export type CohereTokenizationResponse = z.infer<
+  typeof cohereTokenizationResponseSchema
 >;
 
 /**
- * Call the Cohere Co.Detokenize API to detokenize a text.
+ * Call the Cohere Co.Tokenize API to tokenize a text.
  *
- * https://docs.cohere.com/reference/detokenize-1
+ * https://docs.cohere.com/reference/tokenize
  */
-export async function detokenizeCohere({
+export async function callCohereTokenizeAPI({
   baseUrl = "https://api.cohere.ai/v1",
   abortSignal,
   apiKey,
   model,
-  tokens,
+  text,
 }: {
   baseUrl?: string;
   abortSignal?: AbortSignal;
   apiKey: string;
   model?: CohereTokenizerModelType;
-  tokens: Array<number>;
-}): Promise<CohereDetokenizationResponse> {
+  text: string;
+}): Promise<CohereTokenizationResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/detokenize`,
+    url: `${baseUrl}/tokenize`,
     apiKey,
     body: {
       model,
-      tokens,
+      text,
     },
     failedResponseHandler: failedCohereCallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
-      cohereDetokenizationResponseSchema
+      cohereTokenizationResponseSchema
     ),
     abortSignal,
   });

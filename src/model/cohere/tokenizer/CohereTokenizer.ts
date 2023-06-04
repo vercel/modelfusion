@@ -1,8 +1,8 @@
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { CohereTextEmbeddingModelType } from "../index.js";
 import { CohereTextGenerationModelType } from "../text/CohereTextGenerationModel.js";
-import { detokenizeCohere } from "./detokenizeCohere.js";
-import { tokenizeCohere } from "./tokenizeCohere.js";
+import { callCohereDetokenizeAPI } from "./callCohereDetokenizeAPI.js";
+import { callCohereTokenizeAPI } from "./callCohereTokenizeAPI.js";
 
 export type CohereTokenizerModelType =
   | CohereTextGenerationModelType
@@ -70,7 +70,7 @@ export class CohereTokenizer implements Tokenizer {
   }
 
   async tokenizeWithTexts(text: string) {
-    const response = await tokenizeCohere({
+    const response = await callCohereTokenizeAPI({
       baseUrl: this.baseUrl,
       apiKey: this.apiKey,
       model: this.model,
@@ -84,7 +84,7 @@ export class CohereTokenizer implements Tokenizer {
   }
 
   async detokenize(tokens: number[]) {
-    const response = await detokenizeCohere({
+    const response = await callCohereDetokenizeAPI({
       baseUrl: this.baseUrl,
       apiKey: this.apiKey,
       model: this.model,
