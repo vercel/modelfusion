@@ -8,7 +8,15 @@ sidebar_position: 2
 |
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-db/PineconeStoreExample.ts)
 
-### Example
+### Installation
+
+You need to install the Pinecone JS client separately:
+
+```bash
+npm install @pinecone-database/pinecone
+```
+
+### Example Usage
 
 ```ts
 import { PineconeClient } from "@pinecone-database/pinecone";
