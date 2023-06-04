@@ -56,6 +56,7 @@ const config = {
         routeBasePath: "concept",
         id: "concept",
         path: "concept",
+        sidebarCollapsible: false,
       },
     ],
     [
@@ -64,6 +65,7 @@ const config = {
         routeBasePath: "integration",
         id: "integration",
         path: "integration",
+        sidebarCollapsible: false,
       },
     ],
     [
