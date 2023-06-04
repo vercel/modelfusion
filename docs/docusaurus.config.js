@@ -53,25 +53,33 @@ const config = {
     [
       "@docusaurus/plugin-content-docs",
       {
-        routeBasePath: "concepts",
-        id: "concepts",
-        path: "concepts",
+        routeBasePath: "concept",
+        id: "concept",
+        path: "concept",
       },
     ],
     [
       "@docusaurus/plugin-content-docs",
       {
-        routeBasePath: "providers",
-        id: "providers",
-        path: "providers",
+        routeBasePath: "integration",
+        id: "integration",
+        path: "integration",
       },
     ],
     [
       "@docusaurus/plugin-content-docs",
       {
-        routeBasePath: "recipes",
-        id: "recipes",
-        path: "recipes",
+        routeBasePath: "prompt",
+        id: "prompt",
+        path: "prompt",
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        routeBasePath: "recipe",
+        id: "recipe",
+        path: "recipe",
       },
     ],
     [
@@ -116,24 +124,31 @@ const config = {
         title: "ai-utils.js",
         items: [
           {
-            to: "/concepts/",
+            to: "/concept/",
             label: "Concepts",
-            activeBaseRegex: `/concepts/`,
-            sidebarId: "concepts",
+            activeBaseRegex: `/concept/`,
+            sidebarId: "concept",
             position: "left",
           },
           {
-            to: "/providers/model-providers/",
-            label: "Providers",
-            activeBaseRegex: `/providers/`,
-            sidebarId: "providers",
+            to: "/integration/",
+            label: "Integrations",
+            activeBaseRegex: `/integration/`,
+            sidebarId: "integration",
             position: "left",
           },
           {
-            to: "/recipes/",
+            to: "/recipe/",
             label: "Recipes",
-            activeBaseRegex: `/recipes/`,
-            sidebarId: "recipes",
+            activeBaseRegex: `/recipe/`,
+            sidebarId: "recipe",
+            position: "left",
+          },
+          {
+            to: "/prompt/",
+            label: "Prompts",
+            activeBaseRegex: `/prompt/`,
+            sidebarId: "prompt",
             position: "left",
           },
           {
@@ -161,19 +176,11 @@ const config = {
             items: [
               {
                 label: "Concepts",
-                to: "/concepts/",
+                to: "/concept/",
               },
               {
-                label: "Providers",
-                to: "/providers/model-providers/",
-              },
-              {
-                label: "Recipes",
-                to: "/recipes/",
-              },
-              {
-                href: "https://github.com/lgrammel/ai-utils.js/tree/main/examples",
-                label: "Examples",
+                label: "Integrations",
+                to: "/integration",
               },
               {
                 label: "API",
@@ -182,17 +189,29 @@ const config = {
             ],
           },
           {
-            title: "Community",
+            title: "Learn",
             items: [
               {
-                label: "Twitter",
-                href: "https://twitter.com/lgrammel",
+                label: "Recipes",
+                to: "/recipe/",
+              },
+              {
+                label: "Prompts",
+                to: "/prompts/",
+              },
+              {
+                href: "https://github.com/lgrammel/ai-utils.js/tree/main/examples",
+                label: "Examples",
               },
             ],
           },
           {
             title: "More",
             items: [
+              {
+                label: "Twitter",
+                href: "https://twitter.com/lgrammel",
+              },
               {
                 label: "GitHub",
                 href: "https://github.com/lgrammel/ai-utils.js",

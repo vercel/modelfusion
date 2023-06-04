@@ -63,10 +63,10 @@ These principles have shaped the design and function of the library, aiming to p
 
 ### Model Providers
 
-- [OpenAI](https://ai-utils.dev/providers/model-providers/openai) (text generation, text embedding, tokenization, image generation, audio transcription)
-- [Cohere](https://ai-utils.dev/providers/model-providers/cohere) (text generation, text embedding, tokenization)
-- [Hugging Face](https://ai-utils.dev/providers/model-providers/huggingface) (text generation)
-- [Stability AI](https://ai-utils.dev/providers/model-providers/stability) (image generation)
+- [OpenAI](https://ai-utils.dev/integration/model-provider/openai) (text generation, text embedding, tokenization, image generation, audio transcription)
+- [Cohere](https://ai-utils.dev/integration/model-provider/cohere) (text generation, text embedding, tokenization)
+- [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface) (text generation)
+- [Stability AI](https://ai-utils.dev/integration/model-provider/stability) (image generation)
 
 ### Vector DBs
 
