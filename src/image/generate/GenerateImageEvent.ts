@@ -24,7 +24,7 @@ export type GenerateImageEndEvent = {
   | {
       status: "success";
       rawOutput: unknown;
-      generatedImageBase64: string;
+      generatedBase64Image: string;
     }
   | { status: "failure"; error: unknown }
   | { status: "abort" }

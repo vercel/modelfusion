@@ -114,7 +114,7 @@ export class StabilityImageGenerationModel
     );
   }
 
-  async extractImageBase64(
+  async extractBase64Image(
     rawOutput: StabilityImageGenerationResponse
   ): Promise<string> {
     return rawOutput.artifacts[0].base64;

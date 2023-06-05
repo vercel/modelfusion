@@ -1,10 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
 import { Prompt } from "../../run/Prompt.js";
 import { RunContext } from "../../run/RunContext.js";
-import { RunFunction, SafeRunFunction } from "../../run/RunFunction.js";
+import { RunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
 import { SafeResult } from "../../util/SafeResult.js";
-import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import { runSafe } from "../../util/runSafe.js";
 import {
   GenerateImageEndEvent,
@@ -51,28 +50,11 @@ generateImage.asFunction =
     functionId?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
-    extractBase64Image?: (output: RAW_OUTPUT) => PromiseLike<string>;
-    retry?: RetryFunction;
     onStart?: (event: GenerateImageStartEvent) => void;
     onEnd?: (event: GenerateImageEndEvent) => void;
   }): RunFunction<INPUT, string> =>
   async (input: INPUT, context?: RunContext & GenerateImageObserver) =>
     generateImage({ input, ...options }, context);
-
-generateImage.safe = safeGenerateImage;
-
-generateImage.asSafeFunction =
-  <INPUT, PROMPT_TYPE, RAW_OUTPUT>(options: {
-    functionId?: string | undefined;
-    prompt: Prompt<INPUT, PROMPT_TYPE>;
-    model: ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
-    extractOutput?: (output: RAW_OUTPUT) => PromiseLike<string>;
-    retry?: RetryFunction;
-    onStart?: (event: GenerateImageStartEvent) => void;
-    onEnd?: (event: GenerateImageEndEvent) => void;
-  }): SafeRunFunction<INPUT, string> =>
-  async (input: INPUT, context?: RunContext & GenerateImageObserver) =>
-    safeGenerateImage({ input, ...options }, context);
 
 async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
   {
@@ -80,7 +62,6 @@ async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     prompt,
     input,
     model,
-    extractBase64Image = model.extractImageBase64,
     onStart,
     onEnd,
   }: {
@@ -88,7 +69,6 @@ async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
-    extractBase64Image?: (output: RAW_OUTPUT) => PromiseLike<string>;
     onStart?: (event: GenerateImageStartEvent) => void;
     onEnd?: (event: GenerateImageEndEvent) => void;
   },
@@ -168,7 +148,7 @@ async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     return { ok: false, error: result.error };
   }
 
-  const image = await extractBase64Image(result.output);
+  const image = await model.extractBase64Image(result.output);
 
   const endEvent: GenerateImageEndEvent = {
     type: "generate-image-end",
@@ -176,7 +156,7 @@ async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     metadata,
     input: expandedPrompt,
     rawOutput: result.output,
-    generatedImageBase64: image,
+    generatedBase64Image: image,
   };
 
   onEnd?.(endEvent);

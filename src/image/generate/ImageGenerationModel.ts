@@ -9,5 +9,5 @@ export type ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT> = {
     context?: RunContext
   ) => PromiseLike<RAW_OUTPUT>;
 
-  extractImageBase64: (output: RAW_OUTPUT) => PromiseLike<string>;
+  extractBase64Image: (output: RAW_OUTPUT) => PromiseLike<string>;
 };

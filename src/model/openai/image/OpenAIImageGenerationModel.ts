@@ -88,7 +88,7 @@ export class OpenAIImageGenerationModel
     );
   }
 
-  async extractImageBase64(
+  async extractBase64Image(
     rawOutput: OpenAIImageGenerationBase64JsonResponse
   ): Promise<string> {
     return rawOutput.data[0].b64_json;
