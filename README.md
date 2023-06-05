@@ -44,12 +44,12 @@ These principles have shaped the design and function of the library, aiming to p
 
 - Text functions
   - [generate text](https://ai-utils.dev/concept/text/generate-text)
+  - [embed text](https://ai-utils.dev/concept/text/embed-text)
   - map
     - recursive text mapping (e.g. for summarization or extraction)
   - split
     - recursive character and token splitters
     - separator splitter
-  - embed
   - tokenize
 - Image functions
   - [generate image](https://ai-utils.dev/concept/image/generate-image)

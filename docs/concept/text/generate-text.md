@@ -17,7 +17,7 @@ The effectiveness of `generateText` largely depends on the suitability and quali
 ### Example Usage
 
 ```ts
-// create model with custom settings:
+// create text generation model with custom settings:
 const model = new OpenAITextGenerationModel({
   apiKey: OPENAI_API_KEY,
   model: "text-davinci-003",
@@ -35,8 +35,6 @@ const generateStory = generateText.asFunction({
 
 // Later in the code:
 const text = await generateStory({ character: "a robot" });
-
-console.log(text);
 ```
 
 ### API
