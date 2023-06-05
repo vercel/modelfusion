@@ -1,6 +1,6 @@
 import { RunContext } from "run/RunContext.js";
 
-export type ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT> = {
+export interface ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT> {
   readonly provider: string;
   readonly model: string | null;
 
@@ -10,4 +10,4 @@ export type ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT> = {
   ) => PromiseLike<RAW_OUTPUT>;
 
   extractBase64Image: (output: RAW_OUTPUT) => PromiseLike<string>;
-};
+}

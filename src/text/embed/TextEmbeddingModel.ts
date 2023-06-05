@@ -1,6 +1,6 @@
 import { Vector } from "../../run/Vector.js";
 
-export type TextEmbeddingModel<RAW_OUTPUT> = {
+export interface TextEmbeddingModel<RAW_OUTPUT> {
   readonly provider: string;
   readonly model: string | null;
 
@@ -28,4 +28,4 @@ export type TextEmbeddingModel<RAW_OUTPUT> = {
   ) => PromiseLike<RAW_OUTPUT>;
 
   extractEmbeddings: (output: RAW_OUTPUT) => PromiseLike<Array<Vector>>;
-};
+}

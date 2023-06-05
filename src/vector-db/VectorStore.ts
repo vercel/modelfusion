@@ -1,6 +1,6 @@
 import { Vector } from "../run/Vector.js";
 
-export type VectorStore<DATA, STORE> = {
+export interface VectorStore<DATA, STORE> {
   upsertMany(
     data: Array<{
       id: string;
@@ -16,4 +16,4 @@ export type VectorStore<DATA, STORE> = {
   }): Promise<Array<{ id: string; data: DATA; similarity?: number }>>;
 
   asStore(): STORE;
-};
+}

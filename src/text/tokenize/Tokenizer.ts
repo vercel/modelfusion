@@ -1,4 +1,4 @@
-export type Tokenizer = {
+export interface Tokenizer {
   countTokens: (text: string) => PromiseLike<number>;
   tokenize: (text: string) => PromiseLike<Array<number>>;
   tokenizeWithTexts: (text: string) => PromiseLike<{
@@ -6,4 +6,4 @@ export type Tokenizer = {
     tokenTexts: Array<string>;
   }>;
   detokenize: (tokens: Array<number>) => PromiseLike<string>;
-};
+}
