@@ -94,6 +94,8 @@ const config = {
         excludePrivate: true,
         name: "ai-utils.js",
         plugin: ["typedoc-plugin-zod"],
+        sourceLinkTemplate:
+          "https://github.com/lgrammel/ai-utils.js/tree/main/{path}#L{line}",
 
         // docusaurus options:
         out: ".",
