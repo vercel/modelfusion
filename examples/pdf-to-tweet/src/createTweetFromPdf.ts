@@ -7,7 +7,7 @@ import {
   RunContext,
   VectorDB,
   generateText,
-  mapRecursivelyWithTextGenerationAndTokenSplitting,
+  summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "ai-utils.js";
 import fs from "node:fs";
 import z from "zod";
@@ -47,12 +47,12 @@ export async function createTweetFromPdf({
 
   // extract information on topic from pdf:
   const informationOnTopic =
-    await mapRecursivelyWithTextGenerationAndTokenSplitting(
+    await summarizeRecursivelyWithTextGenerationAndTokenSplitting(
       {
-        mapFunctionId: "extract-information-on-topic",
+        functionId: "extract-information-on-topic",
         text: textFromPdf,
         model: textModel.withSettings({ temperature: 0 }),
-        mapPrompt: async ({ text }: { text: string }) => [
+        prompt: async ({ text }: { text: string }) => [
           {
             role: "user" as const,
             content: `## TOPIC\n${topic}`,

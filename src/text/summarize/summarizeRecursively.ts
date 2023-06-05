@@ -1,15 +1,15 @@
 import { RunContext } from "../../run/RunContext.js";
 import { SplitFunction } from "../split/SplitFunction.js";
-import { MapFunction } from "./MapFunction.js";
+import { SummarizeFunction } from "./SummarizeFunction.js";
 
-export async function mapRecursively(
+export async function summarizeRecursively(
   {
-    map,
+    summarize,
     split,
     join = (texts) => texts.join("\n\n"),
     text,
   }: {
-    map: MapFunction;
+    summarize: SummarizeFunction;
     split: SplitFunction;
     join?: (texts: Array<string>) => string;
     text: string;
@@ -18,20 +18,20 @@ export async function mapRecursively(
 ): Promise<string> {
   const chunks = await split({ text });
 
-  const mappedTexts = await Promise.all(
-    chunks.map((chunk) => map({ text: chunk }, context))
+  const summarizedTexts = await Promise.all(
+    chunks.map((chunk) => summarize({ text: chunk }, context))
   );
 
-  if (mappedTexts.length === 1) {
-    return mappedTexts[0]!;
+  if (summarizedTexts.length === 1) {
+    return summarizedTexts[0]!;
   }
 
   // recursive mapping: will split joined results as needed to stay
   // within the allowed size limit of the splitter.
-  return mapRecursively(
+  return summarizeRecursively(
     {
-      text: join(mappedTexts),
-      map,
+      text: join(summarizedTexts),
+      summarize,
       split,
       join,
     },
@@ -39,20 +39,20 @@ export async function mapRecursively(
   );
 }
 
-mapRecursively.asMapFunction =
+summarizeRecursively.asFunction =
   ({
     split,
     map,
     join,
   }: {
     split: SplitFunction;
-    map: MapFunction;
+    map: SummarizeFunction;
     join?: (texts: Array<string>) => string;
-  }): MapFunction =>
+  }): SummarizeFunction =>
   async ({ text }, context?: RunContext) =>
-    mapRecursively(
+    summarizeRecursively(
       {
-        map,
+        summarize: map,
         split,
         join,
         text,

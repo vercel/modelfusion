@@ -2,43 +2,45 @@ import { RunContext } from "../../run/RunContext.js";
 import { TextGenerationModelWithTokenization } from "../generate/TextGenerationModel.js";
 import { generateText } from "../generate/generateText.js";
 import { splitRecursivelyAtTokenForModel } from "../split/splitRecursively.js";
-import { MapFunction } from "./MapFunction.js";
-import { mapRecursively } from "./mapRecursively.js";
+import { SummarizeFunction } from "./SummarizeFunction.js";
+import { summarizeRecursively } from "./summarizeRecursively.js";
 
 /**
- * Recursively maps a text using a text generation model, e.g. for summarization or text extraction.
+ * Recursively summarizes a text using a text generation model, e.g. for summarization or text extraction.
  * It automatically splits the text into chunks that are small enough to be processed by the model,
  * while leaving enough space for the model to generate text.
  */
-export async function mapRecursivelyWithTextGenerationAndTokenSplitting<PROMPT>(
+export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
+  PROMPT
+>(
   {
     text,
     model,
-    mapPrompt,
-    mapFunctionId,
+    prompt,
+    functionId,
     reservedCompletionTokens,
   }: {
     text: string;
     model: TextGenerationModelWithTokenization<PROMPT, any>;
-    mapPrompt: (options: { text: string }) => Promise<PROMPT>;
-    mapFunctionId?: string;
+    prompt: (options: { text: string }) => Promise<PROMPT>;
+    functionId?: string;
     reservedCompletionTokens: number;
   },
   context?: RunContext
 ) {
-  return mapRecursively(
+  return summarizeRecursively(
     {
       split: splitRecursivelyAtTokenForModel.asSplitFunction({
         model,
         maxChunkSize:
           model.maxTokens -
           reservedCompletionTokens -
-          (await model.countPromptTokens(await mapPrompt({ text: "" }))),
+          (await model.countPromptTokens(await prompt({ text: "" }))),
       }),
-      map: generateText.asFunction({
-        functionId: mapFunctionId,
+      summarize: generateText.asFunction({
+        functionId,
         model: model.withMaxTokens(reservedCompletionTokens),
-        prompt: mapPrompt,
+        prompt,
       }),
       text,
     },
@@ -46,25 +48,25 @@ export async function mapRecursivelyWithTextGenerationAndTokenSplitting<PROMPT>(
   );
 }
 
-mapRecursivelyWithTextGenerationAndTokenSplitting.asMapFunction =
+summarizeRecursivelyWithTextGenerationAndTokenSplitting.asFunction =
   <PROMPT>({
     model,
-    mapPrompt,
-    mapFunctionId,
+    prompt,
+    functionId,
     reservedCompletionTokens,
   }: {
     model: TextGenerationModelWithTokenization<PROMPT, any>;
-    mapPrompt: (options: { text: string }) => Promise<PROMPT>;
-    mapFunctionId?: string;
+    prompt: (options: { text: string }) => Promise<PROMPT>;
+    functionId?: string;
     reservedCompletionTokens: number;
-  }): MapFunction =>
+  }): SummarizeFunction =>
   async (options: { text: string }, context?: RunContext) =>
-    mapRecursivelyWithTextGenerationAndTokenSplitting(
+    summarizeRecursivelyWithTextGenerationAndTokenSplitting(
       {
         text: options.text,
         model,
-        mapPrompt,
-        mapFunctionId,
+        prompt,
+        functionId,
         reservedCompletionTokens,
       },
       context
