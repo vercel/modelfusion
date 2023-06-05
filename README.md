@@ -78,7 +78,7 @@ These principles have shaped the design and function of the library, aiming to p
 ## Documentation (at [ai-utils.dev](https://ai-utils.dev))
 
 - [Concepts](https://ai-utils.dev/concept)
-- [Integrations](https://ai-utils.dev/integration)
+- [Integrations](https://ai-utils.dev/integration/model-provider)
 - [Recipes](https://ai-utils.dev/recipe)
 - [Prompt library](https://ai-utils.dev/prompt)
 - [API Documentation](https://ai-utils.dev/api/modules)
