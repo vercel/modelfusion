@@ -111,10 +111,10 @@ async function safeGenerateValueFromText<
     })
   );
 
-  const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
+  const generationDurationInMs = Math.ceil(performance.now() - startTime);
 
   const metadata = {
-    durationInMs: textGenerationDurationInMs,
+    durationInMs: generationDurationInMs,
     ...startMetadata,
   };
 

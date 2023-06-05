@@ -112,10 +112,10 @@ async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
     })
   );
 
-  const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
+  const generationDurationInMs = Math.ceil(performance.now() - startTime);
 
   const metadata = {
-    durationInMs: textGenerationDurationInMs,
+    durationInMs: generationDurationInMs,
     ...startMetadata,
   };
 
