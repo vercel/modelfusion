@@ -4,7 +4,7 @@ import { z } from "zod";
 import { Vector } from "../../run/Vector.js";
 
 export class PineconeStore<DATA extends object | undefined>
-  implements VectorStore<DATA>
+  implements VectorStore<DATA, PineconeStore<DATA>>
 {
   readonly index: VectorOperationsApi;
   readonly namespace?: string;
@@ -77,5 +77,9 @@ export class PineconeStore<DATA extends object | undefined>
         data: this.schema.parse(match.metadata),
         similarity: match.score,
       }));
+  }
+
+  asStore(): PineconeStore<DATA> {
+    return this;
   }
 }

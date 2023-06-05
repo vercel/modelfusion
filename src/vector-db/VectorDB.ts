@@ -15,8 +15,8 @@ export type VectorDBQueryResult<DATA> = Array<{
   similarity?: number;
 }>;
 
-export class VectorDB<DATA> {
-  readonly store: VectorStore<DATA>;
+export class VectorDB<DATA, STORE> {
+  private readonly _store: VectorStore<DATA, STORE>;
 
   private readonly generateId: () => string;
 
@@ -30,13 +30,13 @@ export class VectorDB<DATA> {
     queryFunctionId,
     storeFunctionId,
   }: {
-    store: VectorStore<DATA>;
+    store: VectorStore<DATA, STORE>;
     generateId?: () => string;
     embeddingModel: TextEmbeddingModel<any>;
     queryFunctionId?: string;
     storeFunctionId?: string;
   }) {
-    this.store = store;
+    this._store = store;
     this.generateId = generateId;
     this.embedForStore = embedTexts.asFunction({
       model: embeddingModel,
@@ -90,7 +90,7 @@ export class VectorDB<DATA> {
 
     const vectors = await this.embedForStore(keyTexts, context);
 
-    this.store.upsertMany(
+    this._store.upsertMany(
       vectors.map((vector, i) => ({
         id: ids?.[i] ?? this.generateId(),
         vector,
@@ -127,10 +127,14 @@ export class VectorDB<DATA> {
     maxResults?: number;
     similarityThreshold?: number;
   }): Promise<VectorDBQueryResult<DATA>> {
-    return this.store.query({
+    return this._store.query({
       queryVector,
       maxResults,
       similarityThreshold,
     });
+  }
+
+  get store(): STORE {
+    return this._store.asStore();
   }
 }

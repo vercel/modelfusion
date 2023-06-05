@@ -26,9 +26,8 @@ if (!openAiApiKey) {
 
   const exampleTweets = inputText.split("\n-----\n");
 
-  const inMemoryStore = new InMemoryStore();
   const vectorDB = new VectorDB({
-    store: inMemoryStore,
+    store: new InMemoryStore(),
     embeddingModel: new OpenAITextEmbeddingModel({
       apiKey: openAiApiKey,
       model: "text-embedding-ada-002",
@@ -40,5 +39,5 @@ if (!openAiApiKey) {
     data: exampleTweets.map((tweet) => ({ tweet })),
   });
 
-  fs.writeFileSync(outputFile, inMemoryStore.serialize());
+  fs.writeFileSync(outputFile, vectorDB.store.serialize());
 })();

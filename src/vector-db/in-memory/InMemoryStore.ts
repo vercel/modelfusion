@@ -14,7 +14,9 @@ type Entry<DATA> = {
  * a small number of entries and don't want to set up a real database, e.g. for conversational memory
  * that does not need to be persisted.
  */
-export class InMemoryStore<DATA> implements VectorStore<DATA> {
+export class InMemoryStore<DATA>
+  implements VectorStore<DATA, InMemoryStore<DATA>>
+{
   static async deserialize<DATA>({
     serializedData,
     schema,
@@ -89,5 +91,9 @@ export class InMemoryStore<DATA> implements VectorStore<DATA> {
 
   serialize(): string {
     return JSON.stringify([...this.entries.values()]);
+  }
+
+  asStore(): InMemoryStore<DATA> {
+    return this;
   }
 }
