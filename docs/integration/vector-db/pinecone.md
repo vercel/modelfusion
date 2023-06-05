@@ -1,8 +1,9 @@
 ---
 sidebar_position: 2
+title: Pinecone
 ---
 
-# Pinecone Store
+# Pinecone Vector DB
 
 [API documentation](/api/classes/PineconeStore)
 |

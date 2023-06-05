@@ -1,8 +1,9 @@
 ---
 sidebar_position: 4
+title: Hugging Face
 ---
 
-# Hugging Face
+# Hugging Face Model Provider
 
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/huggingface)
 

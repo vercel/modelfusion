@@ -1,8 +1,9 @@
 ---
 sidebar_position: 1
+title: In-Memory
 ---
 
-# In-Memory Store
+# In-Memory Vector DB
 
 [API documentation](/api/classes/InMemoryStore)
 |

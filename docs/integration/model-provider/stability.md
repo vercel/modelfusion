@@ -1,8 +1,9 @@
 ---
 sidebar_position: 5
+title: Stability AI
 ---
 
-# Stability AI
+# Stability AI Model Provider
 
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/stability)
 

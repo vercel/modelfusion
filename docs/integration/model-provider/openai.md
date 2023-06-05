@@ -1,8 +1,9 @@
 ---
 sidebar_position: 2
+title: OpenAI
 ---
 
-# OpenAI
+# OpenAI Model Provider
 
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/openai)
 

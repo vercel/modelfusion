@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 21
 ---
 
 # Model Providers
@@ -13,3 +13,10 @@ The model provider API clients serve as robust client functions for accessing th
 ## Models
 
 Models in `ai-utils.js` map specific model provider API calls to abstract model interfaces like text generation. They provide additional information regarding the API, set default parameters, and offer configurable settings for customization. These models help segregate parameter configuration from the actual call, facilitating the integration of API calls into run-aware functions. [Learn more...](/concept/model-provider/models)
+
+## Available Providers
+
+- [OpenAI](/integration/model-provider/openai)
+- [Cohere](/integration/model-provider/cohere)
+- [Hugging Face](/integration/model-provider/huggingface)
+- [Stability AI](/integration/model-provider/stability)

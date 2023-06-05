@@ -1,8 +1,9 @@
 ---
 sidebar_position: 3
+title: Cohere
 ---
 
-# Cohere
+# Cohere Model Provider
 
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/cohere)
 
