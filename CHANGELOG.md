@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.11 - 2023-06-05
+
+### Changed
+
+1. Various renames.
+
 ## 0.0.10 - 2023-06-04
 
 ### New
