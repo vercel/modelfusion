@@ -52,7 +52,7 @@ These principles have shaped the design and function of the library, aiming to p
   - embed
   - tokenize
 - Image functions
-  - generate
+  - [generate image](https://ai-utils.dev/concept/text/generate-image)
 - Audio functions
   - transcribe
 - Prompt utilities
