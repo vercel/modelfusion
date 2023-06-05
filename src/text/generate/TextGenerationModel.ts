@@ -15,11 +15,11 @@ export interface TextGenerationModel<PROMPT, RAW_OUTPUT> {
   extractText: (output: RAW_OUTPUT) => PromiseLike<string>;
 }
 
-export type TextGenerationModelWithTokenization<PROMPT, RAW_OUTPUT> =
-  TextGenerationModel<PROMPT, RAW_OUTPUT> &
-    TokenizationSupport & {
-      countPromptTokens: (prompt: PROMPT) => PromiseLike<number>;
-      withMaxTokens: (
-        maxTokens: number
-      ) => TextGenerationModelWithTokenization<PROMPT, RAW_OUTPUT>;
-    };
+export interface TextGenerationModelWithTokenization<PROMPT, RAW_OUTPUT>
+  extends TextGenerationModel<PROMPT, RAW_OUTPUT>,
+    TokenizationSupport {
+  countPromptTokens: (prompt: PROMPT) => PromiseLike<number>;
+  withMaxTokens: (
+    maxTokens: number
+  ) => TextGenerationModelWithTokenization<PROMPT, RAW_OUTPUT>;
+}

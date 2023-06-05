@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Generate Image
 
-The `generateImage` function generates images from prompts using [images generation models](/concept/model-provider/models). This function can be called directly or used via `.asFunction` to create a semantically meaningful function for the prompt. Here's more detail about its main arguments:
+The `generateImage` function generates images from prompts using [images generation models](/api/interfaces/ImageGenerationModel). This function can be called directly or used via `.asFunction` to create a semantically meaningful function for the prompt. Here's more detail about its main arguments:
 
 - `model`: Specify the machine learning model that `generateImage` should use for generating the image.
 

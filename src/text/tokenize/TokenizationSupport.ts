@@ -1,6 +1,6 @@
 import { Tokenizer } from "./Tokenizer.js";
 
-export type TokenizationSupport = {
+export interface TokenizationSupport {
   readonly maxTokens: number;
   readonly tokenizer: Tokenizer;
-};
+}

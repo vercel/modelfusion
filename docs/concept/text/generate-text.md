@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Generate Text
 
-The `generateText` function generates text from prompts using [text generation models](/concept/model-provider/models). This function can be called directly or used via `.asFunction` to create a semantically meaningful function for the prompt. Here's more detail about its main arguments:
+The `generateText` function generates text from prompts using [text generation models](/api/interfaces/TextGenerationModel). This function can be called directly or used via `.asFunction` to create a semantically meaningful function for the prompt. Here's more detail about its main arguments:
 
 - `model`: Specify the machine learning model that `generateText` should use for generating text.
 
