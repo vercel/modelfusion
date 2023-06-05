@@ -8,7 +8,7 @@ import { TextGenerationModel } from "./TextGenerationModel.js";
 import { generateValueFromText } from "./generateValueFromText.js";
 
 /**
- * `generateText` allows you to easily generate text from a model using a prompt.
+ * `generateText` generates text from a model using a prompt.
  * You can either call it directly or use `.asFunction` to create a function that uses the arguments
  * of the prompt.
  *
