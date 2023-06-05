@@ -57,6 +57,7 @@ These principles have shaped the design and function of the library, aiming to p
   - transcribe
 - Prompt utilities
   - Fit recent messages chat prompt into context window
+- [Vector DB abstraction](https://ai-utils.dev/concept/vector-db)
 - Run abstraction for progress reporting and abort signals
 - Retry management and throttling
 - Error handling
