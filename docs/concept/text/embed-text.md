@@ -32,6 +32,6 @@ const embeddings = await embedTexts({
 ### API
 
 - [embedText](/api/modules/#embedtext)
-- [embedText.asFunction](/api/namespaces/generateText#asfunction)
+- [embedText.asFunction](/api/namespaces/embedText#asfunction)
 - [embedTexts](/api/modules/#embedtexts)
-- [embedTexts.asFunction](/api/namespaces/generateTexts#asfunction)
+- [embedTexts.asFunction](/api/namespaces/embedTexts#asfunction)
