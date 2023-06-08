@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { Prompt } from "../../run/Prompt.js";
+import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 import { RunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
@@ -52,7 +52,7 @@ export async function generateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
 generateImage.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT>(options: {
     functionId?: string | undefined;
-    prompt: Prompt<INPUT, PROMPT_TYPE>;
+    prompt: PromptTemplate<INPUT, PROMPT_TYPE>;
     model: ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
     onStart?: (event: GenerateImageStartEvent) => void;
     onEnd?: (event: GenerateImageEndEvent) => void;
@@ -71,7 +71,7 @@ async function safeGenerateImage<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
   }: {
     functionId?: string | undefined;
     input: INPUT;
-    prompt: Prompt<INPUT, PROMPT_TYPE>;
+    prompt: PromptTemplate<INPUT, PROMPT_TYPE>;
     model: ImageGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
     onStart?: (event: GenerateImageStartEvent) => void;
     onEnd?: (event: GenerateImageEndEvent) => void;

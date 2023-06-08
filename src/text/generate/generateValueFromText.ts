@@ -3,7 +3,7 @@ import {
   GenerateTextEndEvent,
   GenerateTextStartEvent,
 } from "text/generate/GenerateTextEvent.js";
-import { Prompt } from "../../run/Prompt.js";
+import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 import { RunFunction } from "../../run/RunFunction.js";
 import { AbortError } from "../../util/AbortError.js";
@@ -39,7 +39,7 @@ export async function generateValueFromText<
 generateValueFromText.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT, OUTPUT>(options: {
     functionId?: string | undefined;
-    prompt: Prompt<INPUT, PROMPT_TYPE>;
+    prompt: PromptTemplate<INPUT, PROMPT_TYPE>;
     model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
     processText: (text: string) => PromiseLike<OUTPUT>;
     onStart?: (event: GenerateTextStartEvent) => void;
@@ -65,7 +65,7 @@ async function safeGenerateValueFromText<
   }: {
     functionId?: string | undefined;
     input: INPUT;
-    prompt: Prompt<INPUT, PROMPT_TYPE>;
+    prompt: PromptTemplate<INPUT, PROMPT_TYPE>;
     model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
     processText: (text: string) => PromiseLike<OUTPUT>;
     onStart?: (event: GenerateTextStartEvent) => void;

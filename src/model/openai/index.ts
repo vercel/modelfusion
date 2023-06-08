@@ -12,5 +12,5 @@ export * from "./embedding/callOpenAITextEmbeddingAPI.js";
 export * from "./image/OpenAIImageGenerationModel.js";
 export * from "./image/callOpenAIImageGenerationAPI.js";
 export * from "./text/OpenAITextGenerationModel.js";
-export * from "./text/callOpenAITextGenerationAPI.js";
+// export * from "./text/callOpenAITextGenerationAPI.js";
 export * from "./tokenizer/TikTokenTokenizer.js";

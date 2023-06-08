@@ -10,6 +10,9 @@ import {
   OpenAITextGenerationResponse,
   callOpenAITextGenerationAPI,
 } from "./callOpenAITextGenerationAPI.js";
+import { runSafe } from "../../../util/runSafe.js";
+import { AbortError } from "../../../util/AbortError.js";
+import { PromptTemplate } from "../../../run/PromptTemplate.js";
 
 // see https://platform.openai.com/docs/models/
 export const OPENAI_TEXT_GENERATION_MODELS = {
@@ -49,6 +52,16 @@ export type OpenAITextGenerationModelType =
   keyof typeof OPENAI_TEXT_GENERATION_MODELS;
 
 export type OpenAITextGenerationModelSettings = {
+  model: OpenAITextGenerationModelType;
+
+  baseUrl?: string;
+  apiKey?: string;
+
+  retry?: RetryFunction;
+  throttle?: ThrottleFunction;
+
+  trimOutput?: boolean;
+
   isUserIdForwardingEnabled?: boolean;
 
   suffix?: string;
@@ -71,16 +84,12 @@ export type OpenAITextGenerationModelSettings = {
  *
  * @example
  * const textGenerationModel = new OpenAITextGenerationModel({
- *   apiKey: OPENAI_API_KEY,
  *   model: "text-davinci-003",
- *   settings: { temperature: 0.7 },
+ *   settings: { temperature: 0.7, maxTokens: 500 },
  * });
  *
- * const response = await textGenerationModel
- *   .withSettings({ maxTokens: 500 })
- *   .generate("Write a short story about a robot learning to love:\n\n");
- *
- * const text = await textGenerationModel.extractText(response);
+ * const text = await textGenerationModel
+ *   .generateText("Write a short story about a robot learning to love:\n\n");
  */
 export class OpenAITextGenerationModel
   implements
@@ -88,42 +97,49 @@ export class OpenAITextGenerationModel
 {
   readonly provider = "openai";
 
-  readonly baseUrl?: string;
-  readonly apiKey: string;
-  readonly model: OpenAITextGenerationModelType;
   readonly settings: OpenAITextGenerationModelSettings;
-
-  readonly retry: RetryFunction;
-  readonly throttle: ThrottleFunction;
 
   readonly tokenizer: Tokenizer;
   readonly maxTokens: number;
 
-  constructor({
-    baseUrl,
-    apiKey,
-    model,
-    settings = {},
-    retry = retryWithExponentialBackoff(),
-    throttle = throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
-  }: {
-    baseUrl?: string;
-    apiKey: string;
-    model: OpenAITextGenerationModelType;
-    settings?: OpenAITextGenerationModelSettings;
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  }) {
-    this.baseUrl = baseUrl;
-    this.apiKey = apiKey;
-    this.model = model;
-    this.settings = settings;
+  constructor(settings: OpenAITextGenerationModelSettings) {
+    this.settings = Object.assign(
+      {
+        processText: (text: string) => text.trim(),
+        trimOutput: true,
+      },
+      settings
+    );
 
-    this.retry = retry;
-    this.throttle = throttle;
+    this.tokenizer = TikTokenTokenizer.forModel({ model: settings.model });
+    this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[settings.model].maxTokens;
+  }
 
-    this.tokenizer = TikTokenTokenizer.forModel({ model });
-    this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[model].maxTokens;
+  private get apiKey() {
+    const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
+
+    if (apiKey == null) {
+      throw new Error(
+        `OpenAI API key is missing. Pass it as an argument to the constructor or set it as an environment variable named OPENAI_API_KEY.`
+      );
+    }
+
+    return apiKey;
+  }
+
+  get model() {
+    return this.settings.model;
+  }
+
+  get retry() {
+    return this.settings.retry ?? retryWithExponentialBackoff();
+  }
+
+  get throttle() {
+    return (
+      this.settings.throttle ??
+      throttleMaxConcurrency({ maxConcurrentCalls: 5 })
+    );
   }
 
   async countPromptTokens(input: string) {
@@ -131,42 +147,83 @@ export class OpenAITextGenerationModel
   }
 
   async generate(
-    input: string,
+    prompt: string,
     context?: RunContext
   ): Promise<OpenAITextGenerationResponse> {
+    // TODO add logging etc
+
     return this.retry(async () =>
       this.throttle(async () =>
         callOpenAITextGenerationAPI({
-          baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
-          prompt: input,
-          model: this.model,
+          prompt,
           user: this.settings.isUserIdForwardingEnabled
             ? context?.userId
             : undefined,
-          ...this.settings,
+          ...this.settings, // TODO only send actual settings
         })
       )
     );
   }
 
   async extractText(rawOutput: OpenAITextGenerationResponse): Promise<string> {
-    return rawOutput.choices[0]!.text;
+    const text = rawOutput.choices[0]!.text;
+    return this.settings.trimOutput ? text.trim() : text;
   }
 
-  withSettings(additionalSettings: OpenAITextGenerationModelSettings) {
-    return new OpenAITextGenerationModel({
-      baseUrl: this.baseUrl,
-      apiKey: this.apiKey,
-      model: this.model,
-      settings: Object.assign({}, this.settings, additionalSettings),
-      retry: this.retry,
-      throttle: this.throttle,
-    });
+  withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {
+    return new OpenAITextGenerationModel(
+      Object.assign({}, this.settings, additionalSettings)
+    );
   }
 
   withMaxTokens(maxTokens: number) {
     return this.withSettings({ maxTokens });
+  }
+
+  async generateText(prompt: string, context?: RunContext): Promise<string> {
+    const result = await runSafe(() => this.generate(prompt, context));
+
+    if (!result.ok) {
+      if (result.isAborted) {
+        // const endEvent: GenerateTextEndEvent = {
+        //   type: "generate-text-end",
+        //   status: "abort",
+        //   metadata,
+        //   input: expandedPrompt,
+        // };
+
+        // onEnd?.(endEvent);
+        // context?.onGenerateTextEnd?.(endEvent);
+
+        throw new AbortError();
+      }
+
+      // const endEvent: GenerateTextEndEvent = {
+      //   type: "generate-text-end",
+      //   status: "failure",
+      //   metadata,
+      //   input: expandedPrompt,
+      //   error: result.error,
+      // };
+
+      // onEnd?.(endEvent);
+      // context?.onGenerateTextEnd?.(endEvent);
+
+      // TODO instead throw a generate text error with a cause
+      throw result.error;
+    }
+
+    const extractedText = await this.extractText(result.output);
+
+    return extractedText;
+  }
+
+  generateTextAsFunction<INPUT>(promptTemplate: PromptTemplate<INPUT, string>) {
+    return async (input: INPUT, context?: RunContext) => {
+      const expandedPrompt = await promptTemplate(input);
+      return this.generateText(expandedPrompt, context);
+    };
   }
 }

@@ -1,88 +1,89 @@
-import {
-  OpenAITextGenerationModel,
-  generateText,
-  generateValueFromText,
-} from "ai-utils.js";
+import { OpenAITextGenerationModel } from "ai-utils.js";
 import chalk from "chalk";
 
 export async function runBabyAGI({
   objective,
   firstTask,
-  openAiApiKey,
 }: {
   objective: string;
   firstTask: string;
-  openAiApiKey: string;
 }) {
   const model = new OpenAITextGenerationModel({
-    apiKey: openAiApiKey,
     model: "text-davinci-003",
   });
 
-  const executeTask = generateText.asFunction({
-    model: model.withSettings({
-      temperature: 0.7,
-      maxTokens: 2000,
-    }),
-    prompt: async ({ objective, task }: { objective: string; task: string }) =>
-      `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}
-Response:`,
-  });
+  const executeTask = model
+    .withSettings({ temperature: 0.7, maxTokens: 2000 })
+    .generateTextAsFunction(
+      async ({ objective, task }: { objective: string; task: string }) =>
+        [
+          `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}`,
+          `Response:`,
+        ].join("\n")
+    );
 
-  const generateNewTasks = generateValueFromText.asFunction({
-    model: model.withSettings({
-      temperature: 0.5,
-      maxTokens: 100,
-    }),
-    prompt: async ({
-      objective,
-      completedTask,
-      completedTaskResult,
-      existingTasks,
-    }: {
-      objective: string;
-      completedTask: string;
-      completedTaskResult: string;
-      existingTasks: string[];
-    }) => `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.
-The last completed task has the result: ${completedTaskResult}.
-This result was based on this task description: ${completedTask}.
-These are the incomplete tasks: ${existingTasks.join(", ")}.
-Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.
-Return the tasks as an array.`,
-    processText: async (output) => output.trim().split("\n"),
-  });
+  async function generateNewTasks({
+    objective,
+    completedTask,
+    completedTaskResult,
+    existingTasks,
+  }: {
+    objective: string;
+    completedTask: string;
+    completedTaskResult: string;
+    existingTasks: string[];
+  }) {
+    const newTasksText = await model
+      .withSettings({
+        temperature: 0.5,
+        maxTokens: 100,
+      })
+      .generateText(
+        [
+          `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.`,
+          `The last completed task has the result: ${completedTaskResult}.`,
+          `This result was based on this task description: ${completedTask}.`,
+          `These are the incomplete tasks: ${existingTasks.join(", ")}.`,
+          `Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.`,
+          `Return the tasks as an array.`,
+        ].join("\n")
+      );
 
-  const prioritizeTasks = generateValueFromText.asFunction({
-    model: model.withSettings({
-      temperature: 0.5,
-      maxTokens: 1000,
-    }),
-    prompt: async ({
-      tasks,
-      objective,
-      nextTaskId,
-    }: {
-      tasks: string[];
-      objective: string;
-      nextTaskId: number;
-    }) => `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:
-${tasks.join(", ")}.
-Consider the ultimate objective of your team: ${objective}.
-Do not remove any tasks. 
-Return the result as a numbered list, like:
-#. First task
-#. Second task
-Start the task list with number ${nextTaskId}.`,
-    processText: async (output) =>
-      output
-        .trim()
-        .split("\n")
-        .map((task) => {
-          const [_idPart, ...rest] = task.trim().split(".");
-          return rest.join(".").trim();
-        }),
-  });
+    return newTasksText.split("\n");
+  }
+
+  async function prioritizeTasks({
+    tasks,
+    objective,
+    nextTaskId,
+  }: {
+    tasks: string[];
+    objective: string;
+    nextTaskId: number;
+  }) {
+    const prioritizedTasksText = await model
+      .withSettings({
+        temperature: 0.5,
+        maxTokens: 1000,
+      })
+      .generateText(
+        [
+          `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:`,
+          tasks.join(", "),
+          `Consider the ultimate objective of your team: ${objective}.`,
+          `Do not remove any tasks.`,
+          `Return the result as a numbered list, like:`,
+          `#. First task`,
+          `#. Second task`,
+          `Start the task list with number ${nextTaskId}.`,
+        ].join("\n")
+      );
+
+    return prioritizedTasksText.split("\n").map((task) => {
+      const [_idPart, ...rest] = task.trim().split(".");
+      return rest.join(".").trim();
+    });
+  }
 
   let tasks = [{ id: 1, name: firstTask }];
   let taskIdCounter = 1;

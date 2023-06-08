@@ -1,4 +1,4 @@
-import { Prompt } from "../../run/Prompt.js";
+import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 import {
   GenerateTextEndEvent,
@@ -42,7 +42,7 @@ export async function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
   }: {
     functionId?: string | undefined;
     input: INPUT;
-    prompt: Prompt<INPUT, PROMPT_TYPE>;
+    prompt: PromptTemplate<INPUT, PROMPT_TYPE>;
     model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
     processText?: (text: string) => PromiseLike<string>;
     onStart?: (event: GenerateTextStartEvent) => void;
@@ -67,7 +67,7 @@ export async function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>(
 generateText.asFunction =
   <INPUT, PROMPT_TYPE, RAW_OUTPUT>(options: {
     functionId?: string | undefined;
-    prompt: Prompt<INPUT, PROMPT_TYPE>;
+    prompt: PromptTemplate<INPUT, PROMPT_TYPE>;
     model: TextGenerationModel<PROMPT_TYPE, RAW_OUTPUT>;
     processText?: (text: string) => PromiseLike<string>;
     onStart?: (event: GenerateTextStartEvent) => void;
