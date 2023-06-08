@@ -173,16 +173,6 @@ export class OpenAITextGenerationModel
     return this.settings.trimOutput ? text.trim() : text;
   }
 
-  withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {
-    return new OpenAITextGenerationModel(
-      Object.assign({}, this.settings, additionalSettings)
-    );
-  }
-
-  withMaxTokens(maxTokens: number) {
-    return this.withSettings({ maxTokens });
-  }
-
   async generateText(prompt: string, context?: RunContext): Promise<string> {
     const result = await runSafe(() => this.generate(prompt, context));
 
@@ -226,5 +216,15 @@ export class OpenAITextGenerationModel
       const expandedPrompt = await promptTemplate(input);
       return this.generateText(expandedPrompt, context);
     };
+  }
+
+  withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {
+    return new OpenAITextGenerationModel(
+      Object.assign({}, this.settings, additionalSettings)
+    );
+  }
+
+  withMaxTokens(maxTokens: number) {
+    return this.withSettings({ maxTokens });
   }
 }
