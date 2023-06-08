@@ -83,13 +83,16 @@ export type OpenAITextGenerationModelSettings = {
  * @see https://platform.openai.com/docs/api-reference/completions/create
  *
  * @example
- * const textGenerationModel = new OpenAITextGenerationModel({
+ * const model = new OpenAITextGenerationModel({
  *   model: "text-davinci-003",
- *   settings: { temperature: 0.7, maxTokens: 500 },
+ *   temperature: 0.7,
+ *   maxTokens: 500,
+ *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
- * const text = await textGenerationModel
- *   .generateText("Write a short story about a robot learning to love:\n\n");
+ * const text = await model.generateText(
+ *   "Write a short story about a robot learning to love:\n\n"
+ * );
  */
 export class OpenAITextGenerationModel
   implements
