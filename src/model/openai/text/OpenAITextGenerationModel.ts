@@ -6,13 +6,11 @@ import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExpone
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
-import {
-  OpenAITextGenerationResponse,
-  callOpenAITextGenerationAPI,
-} from "./callOpenAITextGenerationAPI.js";
+import { callOpenAITextGenerationAPI } from "./callOpenAITextGenerationAPI.js";
 import { runSafe } from "../../../util/runSafe.js";
 import { AbortError } from "../../../util/AbortError.js";
 import { PromptTemplate } from "../../../run/PromptTemplate.js";
+import { OpenAITextGenerationResponse } from "./OpenAITextGenerationResponse.js";
 
 // see https://platform.openai.com/docs/models/
 export const OPENAI_TEXT_GENERATION_MODELS = {
