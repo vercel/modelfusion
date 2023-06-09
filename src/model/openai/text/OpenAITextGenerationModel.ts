@@ -64,6 +64,7 @@ export type OpenAITextGenerationModelSettings = {
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
   observers?: Array<RunObserver>;
+  uncaughtErrorHandler?: (error: unknown) => void;
 
   trimOutput?: boolean;
 
@@ -174,6 +175,15 @@ export class OpenAITextGenerationModel
     );
   }
 
+  get uncaughtErrorHandler() {
+    return (
+      this.settings.uncaughtErrorHandler ??
+      ((error) => {
+        console.error(error);
+      })
+    );
+  }
+
   async extractText(rawOutput: OpenAITextGenerationResponse): Promise<string> {
     const text = rawOutput.choices[0]!.text;
     return this.settings.trimOutput ? text.trim() : text;
@@ -212,10 +222,13 @@ export class OpenAITextGenerationModel
       ...(context?.observers ?? []),
     ];
 
-    // TODO try...catch -- SafeCompositeObserver
-    observers.forEach((observer) =>
-      observer?.onGenerateTextStart?.(startEvent)
-    );
+    observers.forEach((observer) => {
+      try {
+        observer?.onGenerateTextStart?.(startEvent);
+      } catch (error) {
+        this.uncaughtErrorHandler(error);
+      }
+    });
 
     const result = await runSafe(() => this.generate(prompt, context));
 
@@ -235,10 +248,13 @@ export class OpenAITextGenerationModel
           prompt,
         };
 
-        // TODO try...catch -- SafeCompositeObserver
-        observers.forEach((observer) =>
-          observer?.onGenerateTextEnd?.(endEvent)
-        );
+        observers.forEach((observer) => {
+          try {
+            observer?.onGenerateTextEnd?.(endEvent);
+          } catch (error) {
+            this.uncaughtErrorHandler(error);
+          }
+        });
 
         throw new AbortError();
       }
@@ -251,8 +267,13 @@ export class OpenAITextGenerationModel
         error: result.error,
       };
 
-      // TODO try...catch -- SafeCompositeObserver
-      observers.forEach((observer) => observer?.onGenerateTextEnd?.(endEvent));
+      observers.forEach((observer) => {
+        try {
+          observer?.onGenerateTextEnd?.(endEvent);
+        } catch (error) {
+          this.uncaughtErrorHandler(error);
+        }
+      });
 
       // TODO instead throw a generate text error with a cause?
       throw result.error;
@@ -268,8 +289,13 @@ export class OpenAITextGenerationModel
       generatedText: extractedText,
     };
 
-    // TODO try...catch -- SafeCompositeObserver
-    observers.forEach((observer) => observer?.onGenerateTextEnd?.(endEvent));
+    observers.forEach((observer) => {
+      try {
+        observer?.onGenerateTextEnd?.(endEvent);
+      } catch (error) {
+        this.uncaughtErrorHandler(error);
+      }
+    });
 
     return extractedText;
   }
