@@ -80,10 +80,10 @@ async function safeGenerateValueFromText<
     (performance.timeOrigin + startTime) / 1000
   );
 
-  const callId = createId();
+  const generateTextCallId = createId();
 
   const startMetadata = {
-    callId,
+    generateTextCallId,
     functionId,
     runId: context?.runId,
     sessionId: context?.sessionId,
@@ -99,7 +99,7 @@ async function safeGenerateValueFromText<
   const startEvent: GenerateTextStartEvent = {
     type: "generate-text-start",
     metadata: startMetadata,
-    input: expandedPrompt,
+    prompt: expandedPrompt,
   };
 
   onStart?.(startEvent);
@@ -124,7 +124,7 @@ async function safeGenerateValueFromText<
         type: "generate-text-end",
         status: "abort",
         metadata,
-        input: expandedPrompt,
+        prompt: expandedPrompt,
       };
 
       onEnd?.(endEvent);
@@ -137,7 +137,7 @@ async function safeGenerateValueFromText<
       type: "generate-text-end",
       status: "failure",
       metadata,
-      input: expandedPrompt,
+      prompt: expandedPrompt,
       error: result.error,
     };
 
@@ -154,10 +154,8 @@ async function safeGenerateValueFromText<
     type: "generate-text-end",
     status: "success",
     metadata,
-    input: expandedPrompt,
-    rawOutput: result.output,
-    extractedText,
-    processedOutput,
+    prompt: expandedPrompt,
+    generatedText: extractedText,
   };
 
   onEnd?.(endEvent);

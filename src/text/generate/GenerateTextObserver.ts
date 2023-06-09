@@ -3,7 +3,7 @@ import {
   GenerateTextStartEvent,
 } from "./GenerateTextEvent.js";
 
-export type GenerateTextObserver = {
+export interface GenerateTextObserver {
   onGenerateTextStart?: (event: GenerateTextStartEvent) => void;
   onGenerateTextEnd?: (event: GenerateTextEndEvent) => void;
-};
+}

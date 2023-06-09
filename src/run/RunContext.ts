@@ -1,4 +1,6 @@
-export type RunContext = {
+import { RunObserver } from "./RunObserver.js";
+
+export interface RunContext {
   /**
    * Unique ID for the run. Used to identify the run in the logs.
    */
@@ -22,4 +24,6 @@ export type RunContext = {
   userId?: string;
 
   abortSignal?: AbortSignal;
-};
+
+  observers?: RunObserver[];
+}

@@ -1,16 +1,22 @@
+import { createId } from "@paralleldrive/cuid2";
+import { PromptTemplate } from "../../../run/PromptTemplate.js";
 import { RunContext } from "../../../run/RunContext.js";
+import { RunObserver } from "../../../run/RunObserver.js";
+import {
+  GenerateTextEndEvent,
+  GenerateTextStartEvent,
+} from "../../../text/generate/GenerateTextEvent.js";
 import { TextGenerationModelWithTokenization } from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
+import { AbortError } from "../../../util/AbortError.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
+import { runSafe } from "../../../util/runSafe.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
-import { callOpenAITextGenerationAPI } from "./callOpenAITextGenerationAPI.js";
-import { runSafe } from "../../../util/runSafe.js";
-import { AbortError } from "../../../util/AbortError.js";
-import { PromptTemplate } from "../../../run/PromptTemplate.js";
 import { OpenAITextGenerationResponse } from "./OpenAITextGenerationResponse.js";
+import { callOpenAITextGenerationAPI } from "./callOpenAITextGenerationAPI.js";
 
 // see https://platform.openai.com/docs/models/
 export const OPENAI_TEXT_GENERATION_MODELS = {
@@ -57,6 +63,7 @@ export type OpenAITextGenerationModelSettings = {
 
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
+  observers?: Array<RunObserver>;
 
   trimOutput?: boolean;
 
@@ -151,10 +158,9 @@ export class OpenAITextGenerationModel
     prompt: string,
     context?: RunContext
   ): Promise<OpenAITextGenerationResponse> {
-    // TODO add logging etc
-
     return this.retry(async () =>
       this.throttle(async () =>
+        // TODO call logging needs to happen here to catch all errors, have real timing, etc
         callOpenAITextGenerationAPI({
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
@@ -174,39 +180,96 @@ export class OpenAITextGenerationModel
   }
 
   async generateText(prompt: string, context?: RunContext): Promise<string> {
+    const startTime = performance.now();
+    const startEpochSeconds = Math.floor(
+      (performance.timeOrigin + startTime) / 1000
+    );
+
+    const generateTextCallId = createId();
+
+    const startMetadata = {
+      generateTextCallId,
+      runId: context?.runId,
+      sessionId: context?.sessionId,
+      userId: context?.userId,
+
+      model: {
+        provider: this.provider,
+        name: this.model,
+      },
+
+      startEpochSeconds,
+    };
+
+    const startEvent: GenerateTextStartEvent = {
+      type: "generate-text-start",
+      metadata: startMetadata,
+      prompt,
+    };
+
+    const observers = [
+      ...(this.settings.observers ?? []),
+      ...(context?.observers ?? []),
+    ];
+
+    // TODO try...catch -- SafeCompositeObserver
+    observers.forEach((observer) =>
+      observer?.onGenerateTextStart?.(startEvent)
+    );
+
     const result = await runSafe(() => this.generate(prompt, context));
+
+    const generationDurationInMs = Math.ceil(performance.now() - startTime);
+
+    const metadata = {
+      durationInMs: generationDurationInMs,
+      ...startMetadata,
+    };
 
     if (!result.ok) {
       if (result.isAborted) {
-        // const endEvent: GenerateTextEndEvent = {
-        //   type: "generate-text-end",
-        //   status: "abort",
-        //   metadata,
-        //   input: expandedPrompt,
-        // };
+        const endEvent: GenerateTextEndEvent = {
+          type: "generate-text-end",
+          status: "abort",
+          metadata,
+          prompt,
+        };
 
-        // onEnd?.(endEvent);
-        // context?.onGenerateTextEnd?.(endEvent);
+        // TODO try...catch -- SafeCompositeObserver
+        observers.forEach((observer) =>
+          observer?.onGenerateTextEnd?.(endEvent)
+        );
 
         throw new AbortError();
       }
 
-      // const endEvent: GenerateTextEndEvent = {
-      //   type: "generate-text-end",
-      //   status: "failure",
-      //   metadata,
-      //   input: expandedPrompt,
-      //   error: result.error,
-      // };
+      const endEvent: GenerateTextEndEvent = {
+        type: "generate-text-end",
+        status: "failure",
+        metadata,
+        prompt,
+        error: result.error,
+      };
 
-      // onEnd?.(endEvent);
-      // context?.onGenerateTextEnd?.(endEvent);
+      // TODO try...catch -- SafeCompositeObserver
+      observers.forEach((observer) => observer?.onGenerateTextEnd?.(endEvent));
 
-      // TODO instead throw a generate text error with a cause
+      // TODO instead throw a generate text error with a cause?
       throw result.error;
     }
 
     const extractedText = await this.extractText(result.output);
+
+    const endEvent: GenerateTextEndEvent = {
+      type: "generate-text-end",
+      status: "success",
+      metadata,
+      prompt,
+      generatedText: extractedText,
+    };
+
+    // TODO try...catch -- SafeCompositeObserver
+    observers.forEach((observer) => observer?.onGenerateTextEnd?.(endEvent));
 
     return extractedText;
   }
