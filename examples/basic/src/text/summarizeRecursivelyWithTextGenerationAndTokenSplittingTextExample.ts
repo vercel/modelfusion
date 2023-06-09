@@ -7,14 +7,9 @@ import fs from "node:fs";
 
 dotenv.config();
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
-
 const summarize =
   summarizeRecursivelyWithTextGenerationAndTokenSplitting.asFunction({
-    model: new OpenAIChatModel({
-      apiKey: OPENAI_API_KEY,
-      model: "gpt-3.5-turbo",
-    }),
+    model: new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     prompt: async ({ text }) => {
       return [
         { role: "system" as const, content: "Summarize the following text:" },
