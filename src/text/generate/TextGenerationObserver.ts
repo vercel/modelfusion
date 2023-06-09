@@ -1,8 +1,13 @@
 import { IdMetadata } from "../../run/IdMetadata.js";
 import { ModelInformation } from "../../run/ModelInformation.js";
 
-export type GenerateTextStartEvent = {
-  type: "generate-text-start";
+export interface TextGenerationObserver {
+  onTextGenerationStarted?: (event: TextGenerationStartedEvent) => void;
+  onTextGenerationFinished?: (event: TextGenerationFinishedEvent) => void;
+}
+
+export type TextGenerationStartedEvent = {
+  type: "text-generation-started";
   metadata: IdMetadata & {
     model: ModelInformation;
     generateTextCallId: string;
@@ -11,8 +16,8 @@ export type GenerateTextStartEvent = {
   prompt: unknown;
 };
 
-export type GenerateTextEndEvent = {
-  type: "generate-text-end";
+export type TextGenerationFinishedEvent = {
+  type: "text-generation-finished";
   metadata: IdMetadata & {
     model: ModelInformation;
     generateTextCallId: string;

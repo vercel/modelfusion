@@ -1,3 +1,3 @@
-import { GenerateTextObserver } from "../text/generate/GenerateTextObserver.js";
+import { TextGenerationObserver } from "../text/generate/TextGenerationObserver.js";
 
-export interface RunObserver extends GenerateTextObserver {}
+export interface RunObserver extends TextGenerationObserver {}

@@ -1,15 +1,15 @@
 import {
-  GenerateTextEndEvent,
-  GenerateTextStartEvent,
-} from "../text/generate/GenerateTextEvent.js";
+  TextGenerationFinishedEvent,
+  TextGenerationStartedEvent,
+} from "../text/generate/TextGenerationObserver.js";
 import { RunObserver } from "./RunObserver.js";
 
 export class ConsoleObserver implements RunObserver {
-  onGenerateTextStart(event: GenerateTextStartEvent) {
+  onTextGenerationStarted(event: TextGenerationStartedEvent) {
     console.log(JSON.stringify(event, null, 2));
   }
 
-  onGenerateTextEnd(event: GenerateTextEndEvent) {
+  onTextGenerationFinished(event: TextGenerationFinishedEvent) {
     console.log(JSON.stringify(event, null, 2));
   }
 }

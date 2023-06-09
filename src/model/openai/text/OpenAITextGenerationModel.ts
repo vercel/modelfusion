@@ -1,11 +1,11 @@
 import { createId } from "@paralleldrive/cuid2";
+import {
+  TextGenerationFinishedEvent,
+  TextGenerationStartedEvent,
+} from "../../../text/generate/TextGenerationObserver.js";
 import { PromptTemplate } from "../../../run/PromptTemplate.js";
 import { RunContext } from "../../../run/RunContext.js";
 import { RunObserver } from "../../../run/RunObserver.js";
-import {
-  GenerateTextEndEvent,
-  GenerateTextStartEvent,
-} from "../../../text/generate/GenerateTextEvent.js";
 import { TextGenerationModelWithTokenization } from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { AbortError } from "../../../util/AbortError.js";
@@ -101,8 +101,7 @@ export type OpenAITextGenerationModelSettings = {
  * );
  */
 export class OpenAITextGenerationModel
-  implements
-    TextGenerationModelWithTokenization<string, OpenAITextGenerationResponse>
+  implements TextGenerationModelWithTokenization<string>
 {
   readonly provider = "openai";
 
@@ -211,8 +210,8 @@ export class OpenAITextGenerationModel
       startEpochSeconds,
     };
 
-    const startEvent: GenerateTextStartEvent = {
-      type: "generate-text-start",
+    const startEvent: TextGenerationStartedEvent = {
+      type: "text-generation-started",
       metadata: startMetadata,
       prompt,
     };
@@ -224,7 +223,7 @@ export class OpenAITextGenerationModel
 
     observers.forEach((observer) => {
       try {
-        observer?.onGenerateTextStart?.(startEvent);
+        observer?.onTextGenerationStarted?.(startEvent);
       } catch (error) {
         this.uncaughtErrorHandler(error);
       }
@@ -241,8 +240,8 @@ export class OpenAITextGenerationModel
 
     if (!result.ok) {
       if (result.isAborted) {
-        const endEvent: GenerateTextEndEvent = {
-          type: "generate-text-end",
+        const endEvent: TextGenerationFinishedEvent = {
+          type: "text-generation-finished",
           status: "abort",
           metadata,
           prompt,
@@ -250,7 +249,7 @@ export class OpenAITextGenerationModel
 
         observers.forEach((observer) => {
           try {
-            observer?.onGenerateTextEnd?.(endEvent);
+            observer?.onTextGenerationFinished?.(endEvent);
           } catch (error) {
             this.uncaughtErrorHandler(error);
           }
@@ -259,8 +258,8 @@ export class OpenAITextGenerationModel
         throw new AbortError();
       }
 
-      const endEvent: GenerateTextEndEvent = {
-        type: "generate-text-end",
+      const endEvent: TextGenerationFinishedEvent = {
+        type: "text-generation-finished",
         status: "failure",
         metadata,
         prompt,
@@ -269,7 +268,7 @@ export class OpenAITextGenerationModel
 
       observers.forEach((observer) => {
         try {
-          observer?.onGenerateTextEnd?.(endEvent);
+          observer?.onTextGenerationFinished?.(endEvent);
         } catch (error) {
           this.uncaughtErrorHandler(error);
         }
@@ -281,8 +280,8 @@ export class OpenAITextGenerationModel
 
     const extractedText = await this.extractText(result.output);
 
-    const endEvent: GenerateTextEndEvent = {
-      type: "generate-text-end",
+    const endEvent: TextGenerationFinishedEvent = {
+      type: "text-generation-finished",
       status: "success",
       metadata,
       prompt,
@@ -291,7 +290,7 @@ export class OpenAITextGenerationModel
 
     observers.forEach((observer) => {
       try {
-        observer?.onGenerateTextEnd?.(endEvent);
+        observer?.onTextGenerationFinished?.(endEvent);
       } catch (error) {
         this.uncaughtErrorHandler(error);
       }
