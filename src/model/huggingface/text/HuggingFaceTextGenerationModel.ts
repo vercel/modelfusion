@@ -126,7 +126,7 @@ export class HuggingFaceTextGenerationModel
     return await doGenerateText({
       prompt,
       generate: () => this.generate(prompt, context),
-      extractText: async (response: HuggingFaceTextGenerationResponse) => {
+      extractText: async (response) => {
         const text = response[0].generated_text;
         return this.settings.trimOutput ? text.trim() : text;
       },

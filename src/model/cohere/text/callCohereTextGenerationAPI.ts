@@ -3,28 +3,11 @@ import {
   postJsonToApi,
 } from "../../../internal/postToApi.js";
 import { failedCohereCallResponseHandler } from "../internal/failedCohereCallResponseHandler.js";
-import z from "zod";
 import { CohereTextGenerationModelType } from "./CohereTextGenerationModel.js";
-
-export const cohereTextGenerationResponseSchema = z.object({
-  id: z.string(),
-  generations: z.array(
-    z.object({
-      id: z.string(),
-      text: z.string(),
-    })
-  ),
-  prompt: z.string(),
-  meta: z.object({
-    api_version: z.object({
-      version: z.string(),
-    }),
-  }),
-});
-
-export type CohereTextGenerationResponse = z.infer<
-  typeof cohereTextGenerationResponseSchema
->;
+import {
+  CohereTextGenerationResponse,
+  cohereTextGenerationResponseSchema,
+} from "./CohereTextGenerationResponse.js";
 
 /**
  * Call the Cohere Co.Generate API to generate a text completion for the given prompt.
