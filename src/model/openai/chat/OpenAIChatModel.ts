@@ -75,18 +75,14 @@ export type OpenAIChatModelSettings = {
  *   maxTokens: 500,
  * });
  *
- * const text = await chatModel
- *   .generate([
- *     {
- *       role: "system",
- *       content:
- *         "You are an AI assistant. Follow the user's instructions carefully.",
- *     },
- *     {
- *       role: "user",
- *       content:  "Write a short story about a robot learning to love:\n\n",
- *     },
- *   ]);
+ * const text = await chatModel.generateText([
+ *   OpenAIChatMessage.system(
+ *     "You are an AI assistant. Follow the user's instructions carefully."
+ *   ),
+ *   OpenAIChatMessage.user(
+ *     "Write a short story about a robot learning to love:"
+ *   ),
+ * ]);
  */
 export class OpenAIChatModel
   implements TextGenerationModelWithTokenization<OpenAIChatMessage[]>

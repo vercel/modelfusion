@@ -1,4 +1,4 @@
-import { OpenAIChatModel } from "ai-utils.js";
+import { OpenAIChatMessage, OpenAIChatModel } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -11,15 +11,12 @@ dotenv.config();
   });
 
   const text = await chatModel.generateText([
-    {
-      role: "system",
-      content:
-        "You are an AI assistant. Follow the user's instructions carefully.",
-    },
-    {
-      role: "user",
-      content: "Write a short story about a robot learning to love:\n\n",
-    },
+    OpenAIChatMessage.system(
+      "You are an AI assistant. Follow the user's instructions carefully."
+    ),
+    OpenAIChatMessage.user(
+      "Write a short story about a robot learning to love:"
+    ),
   ]);
 
   console.log(text);
