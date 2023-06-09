@@ -1,6 +1,5 @@
 import { RunContext } from "../../run/RunContext.js";
 import { TextGenerationModelWithTokenization } from "../generate/TextGenerationModel.js";
-import { generateText } from "../generate/generateText.js";
 import { splitRecursivelyAtTokenForModel } from "../split/splitRecursively.js";
 import { SummarizeFunction } from "./SummarizeFunction.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";
@@ -17,13 +16,11 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     text,
     model,
     prompt,
-    functionId,
     reservedCompletionTokens,
   }: {
     text: string;
-    model: TextGenerationModelWithTokenization<PROMPT, any>;
+    model: TextGenerationModelWithTokenization<PROMPT>;
     prompt: (options: { text: string }) => Promise<PROMPT>;
-    functionId?: string;
     reservedCompletionTokens: number;
   },
   context?: RunContext
@@ -37,11 +34,9 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
           reservedCompletionTokens -
           (await model.countPromptTokens(await prompt({ text: "" }))),
       }),
-      summarize: generateText.asFunction({
-        functionId,
-        model: model.withMaxTokens(reservedCompletionTokens),
-        prompt,
-      }),
+      summarize: model
+        .withMaxTokens(reservedCompletionTokens)
+        .generateTextAsFunction(prompt),
       text,
     },
     context
@@ -52,12 +47,10 @@ summarizeRecursivelyWithTextGenerationAndTokenSplitting.asFunction =
   <PROMPT>({
     model,
     prompt,
-    functionId,
     reservedCompletionTokens,
   }: {
-    model: TextGenerationModelWithTokenization<PROMPT, any>;
+    model: TextGenerationModelWithTokenization<PROMPT>;
     prompt: (options: { text: string }) => Promise<PROMPT>;
-    functionId?: string;
     reservedCompletionTokens: number;
   }): SummarizeFunction =>
   async (options: { text: string }, context?: RunContext) =>
@@ -66,7 +59,6 @@ summarizeRecursivelyWithTextGenerationAndTokenSplitting.asFunction =
         text: options.text,
         model,
         prompt,
-        functionId,
         reservedCompletionTokens,
       },
       context

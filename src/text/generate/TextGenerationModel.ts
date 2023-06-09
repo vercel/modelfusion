@@ -29,7 +29,7 @@ export interface TextGenerationModel<PROMPT> {
   generateText: (prompt: PROMPT, context?: RunContext) => PromiseLike<string>;
 
   generateTextAsFunction<INPUT>(
-    promptTemplate: PromptTemplate<INPUT, string>
+    promptTemplate: PromptTemplate<INPUT, PROMPT>
   ): (input: INPUT, context?: RunContext) => PromiseLike<string>;
 }
 
