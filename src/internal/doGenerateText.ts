@@ -8,7 +8,7 @@ import {
 import { AbortError } from "../util/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
 
-export async function doGenerateText<RESPONSE>({
+export async function doGenerateText<PROMPT, RESPONSE>({
   model,
   prompt,
   generate,
@@ -19,7 +19,7 @@ export async function doGenerateText<RESPONSE>({
   context,
 }: {
   model: ModelInformation;
-  prompt: string;
+  prompt: PROMPT;
   generate: () => PromiseLike<RESPONSE>;
   extractText: (response: RESPONSE) => PromiseLike<string>;
   createId: () => string;
