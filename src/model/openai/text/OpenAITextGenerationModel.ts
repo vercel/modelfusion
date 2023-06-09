@@ -1,17 +1,12 @@
 import { createId } from "@paralleldrive/cuid2";
-import {
-  TextGenerationFinishedEvent,
-  TextGenerationStartedEvent,
-} from "../../../text/generate/TextGenerationObserver.js";
+import { doGenerateText } from "../../../internal/doGenerateText.js";
 import { PromptTemplate } from "../../../run/PromptTemplate.js";
 import { RunContext } from "../../../run/RunContext.js";
 import { RunObserver } from "../../../run/RunObserver.js";
 import { TextGenerationModelWithTokenization } from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
-import { AbortError } from "../../../util/AbortError.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
-import { runSafe } from "../../../util/runSafe.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
@@ -111,13 +106,7 @@ export class OpenAITextGenerationModel
   readonly maxTokens: number;
 
   constructor(settings: OpenAITextGenerationModelSettings) {
-    this.settings = Object.assign(
-      {
-        processText: (text: string) => text.trim(),
-        trimOutput: true,
-      },
-      settings
-    );
+    this.settings = Object.assign({ trimOutput: true }, settings);
 
     this.tokenizer = TikTokenTokenizer.forModel({ model: settings.model });
     this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[settings.model].maxTokens;
@@ -150,6 +139,15 @@ export class OpenAITextGenerationModel
     );
   }
 
+  get uncaughtErrorHandler() {
+    return (
+      this.settings.uncaughtErrorHandler ??
+      ((error) => {
+        console.error(error);
+      })
+    );
+  }
+
   async countPromptTokens(input: string) {
     return this.tokenizer.countTokens(input);
   }
@@ -174,129 +172,20 @@ export class OpenAITextGenerationModel
     );
   }
 
-  get uncaughtErrorHandler() {
-    return (
-      this.settings.uncaughtErrorHandler ??
-      ((error) => {
-        console.error(error);
-      })
-    );
-  }
-
-  async extractText(rawOutput: OpenAITextGenerationResponse): Promise<string> {
-    const text = rawOutput.choices[0]!.text;
-    return this.settings.trimOutput ? text.trim() : text;
-  }
-
   async generateText(prompt: string, context?: RunContext): Promise<string> {
-    const startTime = performance.now();
-    const startEpochSeconds = Math.floor(
-      (performance.timeOrigin + startTime) / 1000
-    );
-
-    const generateTextCallId = createId();
-
-    const startMetadata = {
-      generateTextCallId,
-      runId: context?.runId,
-      sessionId: context?.sessionId,
-      userId: context?.userId,
-
-      model: {
-        provider: this.provider,
-        name: this.model,
+    return await doGenerateText({
+      prompt,
+      generate: () => this.generate(prompt, context),
+      extractText: async (response: OpenAITextGenerationResponse) => {
+        const text = response.choices[0]!.text;
+        return this.settings.trimOutput ? text.trim() : text;
       },
-
-      startEpochSeconds,
-    };
-
-    const startEvent: TextGenerationStartedEvent = {
-      type: "text-generation-started",
-      metadata: startMetadata,
-      prompt,
-    };
-
-    const observers = [
-      ...(this.settings.observers ?? []),
-      ...(context?.observers ?? []),
-    ];
-
-    observers.forEach((observer) => {
-      try {
-        observer?.onTextGenerationStarted?.(startEvent);
-      } catch (error) {
-        this.uncaughtErrorHandler(error);
-      }
+      model: { provider: this.provider, name: this.model },
+      createId,
+      uncaughtErrorHandler: this.uncaughtErrorHandler,
+      observers: this.settings.observers,
+      context,
     });
-
-    const result = await runSafe(() => this.generate(prompt, context));
-
-    const generationDurationInMs = Math.ceil(performance.now() - startTime);
-
-    const metadata = {
-      durationInMs: generationDurationInMs,
-      ...startMetadata,
-    };
-
-    if (!result.ok) {
-      if (result.isAborted) {
-        const endEvent: TextGenerationFinishedEvent = {
-          type: "text-generation-finished",
-          status: "abort",
-          metadata,
-          prompt,
-        };
-
-        observers.forEach((observer) => {
-          try {
-            observer?.onTextGenerationFinished?.(endEvent);
-          } catch (error) {
-            this.uncaughtErrorHandler(error);
-          }
-        });
-
-        throw new AbortError();
-      }
-
-      const endEvent: TextGenerationFinishedEvent = {
-        type: "text-generation-finished",
-        status: "failure",
-        metadata,
-        prompt,
-        error: result.error,
-      };
-
-      observers.forEach((observer) => {
-        try {
-          observer?.onTextGenerationFinished?.(endEvent);
-        } catch (error) {
-          this.uncaughtErrorHandler(error);
-        }
-      });
-
-      // TODO instead throw a generate text error with a cause?
-      throw result.error;
-    }
-
-    const extractedText = await this.extractText(result.output);
-
-    const endEvent: TextGenerationFinishedEvent = {
-      type: "text-generation-finished",
-      status: "success",
-      metadata,
-      prompt,
-      generatedText: extractedText,
-    };
-
-    observers.forEach((observer) => {
-      try {
-        observer?.onTextGenerationFinished?.(endEvent);
-      } catch (error) {
-        this.uncaughtErrorHandler(error);
-      }
-    });
-
-    return extractedText;
   }
 
   generateTextAsFunction<INPUT>(promptTemplate: PromptTemplate<INPUT, string>) {
