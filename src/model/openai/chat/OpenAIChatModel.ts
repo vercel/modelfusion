@@ -70,13 +70,12 @@ export type OpenAIChatModelSettings = {
  *
  * @example
  * const chatModel = new OpenAIChatModel({
- *   apiKey: OPENAI_API_KEY,
  *   model: "gpt-3.5-turbo",
- *   settings: { temperature: 0.7 },
+ *   temperature: 0.7,
+ *   maxTokens: 500,
  * });
  *
- * const response = await chatModel
- *   .withSettings({ maxTokens: 500 })
+ * const text = await chatModel
  *   .generate([
  *     {
  *       role: "system",
@@ -85,11 +84,9 @@ export type OpenAIChatModelSettings = {
  *     },
  *     {
  *       role: "user",
- *       content: "Hello, how are you?",
+ *       content:  "Write a short story about a robot learning to love:\n\n",
  *     },
  *   ]);
- *
- * const text = await chatModel.extractText(response);
  */
 export class OpenAIChatModel
   implements TextGenerationModelWithTokenization<OpenAIChatMessage[]>
