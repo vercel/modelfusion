@@ -16,7 +16,7 @@
 npm install --save ai-utils.js
 ```
 
-## Quick Example
+## Example
 
 ```ts
 import { OpenAITextGenerationModel } from "ai-utils.js";
@@ -90,7 +90,7 @@ Recognizing that AI applications involve more than just text, this library suppo
 - [Prompt library](https://ai-utils.dev/prompt)
 - [API Documentation](https://ai-utils.dev/api/modules)
 
-## Examples
+## More Examples
 
 ### [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic)
 
