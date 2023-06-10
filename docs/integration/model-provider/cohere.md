@@ -7,7 +7,29 @@ title: Cohere
 
 [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/cohere)
 
-## Example
+## Usage
+
+### Text Generation
+
+[Text Generation Model API](/api/classes/CohereTextGenerationModel)
+
+```ts
+import { CohereTextGenerationModel } from "ai-utils.js";
+
+const textGenerationModel = new CohereTextGenerationModel({
+  model: "command-nightly",
+  temperature: 0.7,
+  maxTokens: 500,
+});
+
+const text = await textGenerationModel.generateText(
+  "Write a short story about a robot learning to love:\n\n"
+);
+```
+
+### Text Embedding
+
+[Text Embedding Model API](/api/classes/CohereTextEmbeddingModel)
 
 ```ts
 const embeddingModel = new CohereTextEmbeddingModel({
@@ -23,8 +45,6 @@ const response = await embeddingModel.embed([
 const embeddings = await embeddingModel.extractEmbeddings(response);
 ```
 
-## Models
+### Tokenization
 
-- [Text Generation Model](/api/classes/CohereTextGenerationModel)
-- [Text Embedding Model](/api/classes/CohereTextEmbeddingModel)
-- [Tokenization](/api/classes/CohereTokenizer)
+[Tokenization API](/api/classes/CohereTokenizer)
