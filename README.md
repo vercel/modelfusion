@@ -1,6 +1,6 @@
 # ai-utils.js
 
-> ### A TypeScript-first library for building production-grade AI apps, chatbots, and agents.
+> ### A TypeScript-first library for building AI apps, chatbots, and agents.
 
 [![Created by Lars Grammel](https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg)](https://twitter.com/lgrammel)
 [![NPM Version](https://img.shields.io/npm/v/ai-utils.js?color=33cd56&logo=npm)](https://www.npmjs.com/package/ai-utils.js)

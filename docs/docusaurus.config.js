@@ -8,7 +8,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 const config = {
   title: "ai-utils.js",
   tagline:
-    "A TypeScript-first library for building production-grade AI apps, chatbots and agents.",
+    "A TypeScript-first library for building AI apps, chatbots and agents.",
   // favicon: "img/favicon.ico",
   url: "https://ai-utils.js",
   baseUrl: "/",
