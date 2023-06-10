@@ -26,7 +26,3 @@ const text = await textGenerationModel.extractText(response);
 ## Models
 
 - [Text Generation Model](/api/classes/HuggingFaceTextGenerationModel)
-
-## API Clients
-
-- [Text Generation](/api/modules/#callhuggingfacetextgenerationapi)
