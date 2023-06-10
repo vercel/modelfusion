@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
-import { ResponseHandler } from "../../../internal/postToApi.js";
-import { ApiCallError } from "../../../util/ApiCallError.js";
-import { StabilityError, stabilityErrorDataSchema } from "../StabilityError.js";
+import { ResponseHandler } from "../../internal/postToApi.js";
+import { ApiCallError } from "../../util/ApiCallError.js";
+import { StabilityError, stabilityErrorDataSchema } from "./StabilityError.js";
 
 export const failedStabilityCallResponseHandler: ResponseHandler<
   ApiCallError

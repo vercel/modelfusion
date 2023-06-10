@@ -15,12 +15,16 @@ dotenv.config();
     steps: 30,
   });
 
-  const image = await model.generateImage([
-    { text: "the wicked witch of the west" },
-    { text: "style of early 19th century painting", weight: 0.5 },
-  ]);
+  const generatePainting = model.generateImageAsFunction(
+    async (description: string) => [
+      { text: description },
+      { text: "style of early 19th century painting", weight: 0.5 },
+    ]
+  );
+
+  const imageBase64 = await generatePainting("the wicked witch of the west");
 
   const path = `./stability-image-example.png`;
-  fs.writeFileSync(path, Buffer.from(image, "base64"));
+  fs.writeFileSync(path, Buffer.from(imageBase64, "base64"));
   console.log(`Image saved to ${path}`);
 })();

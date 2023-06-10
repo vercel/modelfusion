@@ -1,30 +1,32 @@
 import { IdMetadata } from "../../run/IdMetadata.js";
 import { ModelInformation } from "../../run/ModelInformation.js";
 
-export type GenerateImageStartEvent = {
-  type: "generate-image-start";
-  input: unknown;
-  metadata: IdMetadata & {
-    model: ModelInformation;
-
-    startEpochSeconds: number;
-  };
+export type ImageGenerationObserver = {
+  onImageGenerationStarted?: (event: ImageGenerationStartedEvent) => void;
+  onImageGenerationFinished?: (event: ImageGenerationFinishedEvent) => void;
 };
 
-export type GenerateImageEndEvent = {
-  type: "generate-image-end";
-  input: unknown;
+export type ImageGenerationStartedEvent = {
+  type: "image-generation-started";
   metadata: IdMetadata & {
     model: ModelInformation;
+    startEpochSeconds: number;
+  };
+  prompt: unknown;
+};
 
+export type ImageGenerationFinishedEvent = {
+  type: "image-generation-finished";
+  metadata: IdMetadata & {
+    model: ModelInformation;
     startEpochSeconds: number;
     durationInMs: number;
   };
+  prompt: unknown;
 } & (
   | {
       status: "success";
-      rawOutput: unknown;
-      generatedBase64Image: string;
+      generatedImage: string;
     }
   | { status: "failure"; error: unknown }
   | { status: "abort" }
