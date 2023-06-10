@@ -3,12 +3,12 @@ import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 import { TokenizationSupport } from "../tokenize/TokenizationSupport.js";
 
-export type BaseTextGenerationModelSettings = {
+export interface BaseTextGenerationModelSettings {
   uncaughtErrorHandler?: (error: unknown) => void;
   observers?: Array<RunObserver>;
 
   trimOutput?: boolean;
-};
+}
 
 export interface TextGenerationModel<
   PROMPT,

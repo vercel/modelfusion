@@ -50,30 +50,30 @@ export const OPENAI_TEXT_GENERATION_MODELS = {
 export type OpenAITextGenerationModelType =
   keyof typeof OPENAI_TEXT_GENERATION_MODELS;
 
-export type OpenAITextGenerationModelSettings =
-  BaseTextGenerationModelSettings & {
-    model: OpenAITextGenerationModelType;
+export interface OpenAITextGenerationModelSettings
+  extends BaseTextGenerationModelSettings {
+  model: OpenAITextGenerationModelType;
 
-    baseUrl?: string;
-    apiKey?: string;
+  baseUrl?: string;
+  apiKey?: string;
 
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
+  retry?: RetryFunction;
+  throttle?: ThrottleFunction;
 
-    isUserIdForwardingEnabled?: boolean;
+  isUserIdForwardingEnabled?: boolean;
 
-    suffix?: string;
-    maxTokens?: number;
-    temperature?: number;
-    topP?: number;
-    n?: number;
-    logprobs?: number;
-    echo?: boolean;
-    stop?: string | string[];
-    presencePenalty?: number;
-    frequencyPenalty?: number;
-    bestOf?: number;
-  };
+  suffix?: string;
+  maxTokens?: number;
+  temperature?: number;
+  topP?: number;
+  n?: number;
+  logprobs?: number;
+  echo?: boolean;
+  stop?: string | string[];
+  presencePenalty?: number;
+  frequencyPenalty?: number;
+  bestOf?: number;
+}
 
 /**
  * Create a text generation model that calls the OpenAI text completion API.
