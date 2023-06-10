@@ -1,7 +1,7 @@
 import { RunObserver } from "../../run/RunObserver.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
-import { TokenizationSupport } from "../tokenize/TokenizationSupport.js";
+import { TokenizationSupport } from "../../text/tokenize/TokenizationSupport.js";
 
 export interface BaseTextGenerationModelSettings {
   uncaughtErrorHandler?: (error: unknown) => void;

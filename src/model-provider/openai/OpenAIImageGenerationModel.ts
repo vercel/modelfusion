@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { AbstractImageGenerationModel } from "../../image/generate/AbstractImageGenerationModel.js";
-import { BaseImageGenerationModelSettings } from "../../image/generate/ImageGenerationModel.js";
+import { AbstractImageGenerationModel } from "../../model/image-generation/AbstractImageGenerationModel.js";
+import { BaseImageGenerationModelSettings } from "../../model/image-generation/ImageGenerationModel.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,

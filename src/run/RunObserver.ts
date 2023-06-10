@@ -1,5 +1,5 @@
-import { ImageGenerationObserver } from "../image/generate/ImageGenerationObserver.js";
-import { TextGenerationObserver } from "../text/generate/TextGenerationObserver.js";
+import { ImageGenerationObserver } from "../model/image-generation/ImageGenerationObserver.js";
+import { TextGenerationObserver } from "../model/text-generation/TextGenerationObserver.js";
 
 export interface RunObserver
   extends TextGenerationObserver,

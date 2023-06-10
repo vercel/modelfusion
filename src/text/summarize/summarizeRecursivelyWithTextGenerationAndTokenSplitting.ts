@@ -1,5 +1,5 @@
 import { RunContext } from "../../run/RunContext.js";
-import { TextGenerationModelWithTokenization } from "../generate/TextGenerationModel.js";
+import { TextGenerationModelWithTokenization } from "../../model/text-generation/TextGenerationModel.js";
 import { splitRecursivelyAtTokenForModel } from "../split/splitRecursively.js";
 import { SummarizeFunction } from "./SummarizeFunction.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";

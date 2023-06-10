@@ -1,6 +1,6 @@
 import { RunContext } from "../../../run/RunContext.js";
-import { AbstractTextGenerationModel } from "../../../text/generate/AbstractTextGenerationModel.js";
-import { BaseTextGenerationModelSettings } from "../../../text/generate/TextGenerationModel.js";
+import { AbstractTextGenerationModel } from "../../../model/text-generation/AbstractTextGenerationModel.js";
+import { BaseTextGenerationModelSettings } from "../../../model/text-generation/TextGenerationModel.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";

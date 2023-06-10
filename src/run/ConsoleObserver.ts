@@ -1,7 +1,7 @@
 import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
-} from "../text/generate/TextGenerationObserver.js";
+} from "../model/text-generation/TextGenerationObserver.js";
 import { RunObserver } from "./RunObserver.js";
 
 export class ConsoleObserver implements RunObserver {
