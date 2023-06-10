@@ -10,3 +10,4 @@ export * from "./runSafe.js";
 export * from "./throttle/MaxConcurrentCallsThrottler.js";
 export * from "./throttle/ThrottleFunction.js";
 export * from "./throttle/Throttler.js";
+export * from "./throttle/UnlimitedConcurrencyThrottler.js";

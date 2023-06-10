@@ -4,7 +4,7 @@ import { RetryError } from "./RetryError.js";
 
 export const retryWithExponentialBackoff =
   ({
-    maxTries = 5,
+    maxTries = 3,
     initialDelayInMs = 2000,
     backoffFactor = 2,
   } = {}): RetryFunction =>

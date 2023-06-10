@@ -1,5 +1,5 @@
-import { AbstractTextGenerationModel } from "../../../text/generate/AbstractTextGenerationModel.js";
 import { RunContext } from "../../../run/RunContext.js";
+import { AbstractTextGenerationModel } from "../../../text/generate/AbstractTextGenerationModel.js";
 import {
   BaseTextGenerationModelSettings,
   TextGenerationModelWithTokenization,
@@ -7,8 +7,8 @@ import {
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
-import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
+import { throttleUnlimitedConcurrency } from "../../../util/throttle/UnlimitedConcurrencyThrottler.js";
 import { CohereTokenizer } from "../tokenizer/CohereTokenizer.js";
 import { CohereTextGenerationResponse } from "./CohereTextGenerationResponse.js";
 import { callCohereTextGenerationAPI } from "./callCohereTextGenerationAPI.js";
@@ -125,10 +125,7 @@ export class CohereTextGenerationModel
   }
 
   private get throttle() {
-    return (
-      this.settings.throttle ??
-      throttleMaxConcurrency({ maxConcurrentCalls: 5 })
-    );
+    return this.settings.throttle ?? throttleUnlimitedConcurrency();
   }
 
   async countPromptTokens(input: string) {

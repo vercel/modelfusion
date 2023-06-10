@@ -1,10 +1,10 @@
-import { AbstractTextGenerationModel } from "../../../text/generate/AbstractTextGenerationModel.js";
 import { RunContext } from "../../../run/RunContext.js";
+import { AbstractTextGenerationModel } from "../../../text/generate/AbstractTextGenerationModel.js";
 import { BaseTextGenerationModelSettings } from "../../../text/generate/TextGenerationModel.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
-import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
+import { throttleUnlimitedConcurrency } from "../../../util/throttle/UnlimitedConcurrencyThrottler.js";
 import { HuggingFaceTextGenerationResponse } from "./HuggingFaceTextGenerationResponse.js";
 import { callHuggingFaceTextGenerationAPI } from "./callHuggingFaceTextGenerationAPI.js";
 
@@ -84,10 +84,7 @@ export class HuggingFaceTextGenerationModel extends AbstractTextGenerationModel<
   }
 
   private get throttle() {
-    return (
-      this.settings.throttle ??
-      throttleMaxConcurrency({ maxConcurrentCalls: 5 })
-    );
+    return this.settings.throttle ?? throttleUnlimitedConcurrency();
   }
 
   async callAPI(

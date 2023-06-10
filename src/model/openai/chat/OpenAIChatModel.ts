@@ -7,7 +7,7 @@ import {
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
-import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
+import { throttleUnlimitedConcurrency } from "../../../util/throttle/UnlimitedConcurrencyThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
@@ -128,10 +128,7 @@ export class OpenAIChatModel
   }
 
   private get throttle() {
-    return (
-      this.settings.throttle ??
-      throttleMaxConcurrency({ maxConcurrentCalls: 5 })
-    );
+    return this.settings.throttle ?? throttleUnlimitedConcurrency();
   }
 
   /**
