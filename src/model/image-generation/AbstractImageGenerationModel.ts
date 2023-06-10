@@ -103,17 +103,8 @@ export abstract class AbstractImageGenerationModel<
       prompt,
     };
 
-    const observers = [
-      ...(this.settings.observers ?? []),
-      ...(run?.observers ?? []),
-    ];
-
-    observers.forEach((observer) => {
-      try {
-        observer?.onImageGenerationStarted?.(startEvent);
-      } catch (error) {
-        this.uncaughtErrorHandler(error);
-      }
+    this.callEachObserver(run, (observer) => {
+      observer?.onImageGenerationStarted?.(startEvent);
     });
 
     const result = await runSafe(() =>
@@ -140,12 +131,8 @@ export abstract class AbstractImageGenerationModel<
           prompt,
         };
 
-        observers.forEach((observer) => {
-          try {
-            observer?.onImageGenerationFinished?.(endEvent);
-          } catch (error) {
-            this.uncaughtErrorHandler(error);
-          }
+        this.callEachObserver(run, (observer) => {
+          observer?.onImageGenerationFinished?.(endEvent);
         });
 
         throw new AbortError();
@@ -159,12 +146,8 @@ export abstract class AbstractImageGenerationModel<
         error: result.error,
       };
 
-      observers.forEach((observer) => {
-        try {
-          observer?.onImageGenerationFinished?.(endEvent);
-        } catch (error) {
-          this.uncaughtErrorHandler(error);
-        }
+      this.callEachObserver(run, (observer) => {
+        observer?.onImageGenerationFinished?.(endEvent);
       });
 
       // TODO instead throw a generate text error with a cause?
@@ -181,12 +164,8 @@ export abstract class AbstractImageGenerationModel<
       generatedImage: extractedImage,
     };
 
-    observers.forEach((observer) => {
-      try {
-        observer?.onImageGenerationFinished?.(endEvent);
-      } catch (error) {
-        this.uncaughtErrorHandler(error);
-      }
+    this.callEachObserver(run, (observer) => {
+      observer?.onImageGenerationFinished?.(endEvent);
     });
 
     return extractedImage;

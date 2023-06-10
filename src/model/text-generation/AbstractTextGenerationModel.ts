@@ -107,17 +107,8 @@ export abstract class AbstractTextGenerationModel<
       prompt,
     };
 
-    const observers = [
-      ...(this.settings.observers ?? []),
-      ...(run?.observers ?? []),
-    ];
-
-    observers.forEach((observer) => {
-      try {
-        observer?.onTextGenerationStarted?.(startEvent);
-      } catch (error) {
-        this.uncaughtErrorHandler(error);
-      }
+    this.callEachObserver(run, (observer) => {
+      observer?.onTextGenerationStarted?.(startEvent);
     });
 
     const result = await runSafe(() =>
@@ -144,12 +135,8 @@ export abstract class AbstractTextGenerationModel<
           prompt,
         };
 
-        observers.forEach((observer) => {
-          try {
-            observer?.onTextGenerationFinished?.(endEvent);
-          } catch (error) {
-            this.uncaughtErrorHandler(error);
-          }
+        this.callEachObserver(run, (observer) => {
+          observer?.onTextGenerationFinished?.(endEvent);
         });
 
         throw new AbortError();
@@ -163,12 +150,8 @@ export abstract class AbstractTextGenerationModel<
         error: result.error,
       };
 
-      observers.forEach((observer) => {
-        try {
-          observer?.onTextGenerationFinished?.(endEvent);
-        } catch (error) {
-          this.uncaughtErrorHandler(error);
-        }
+      this.callEachObserver(run, (observer) => {
+        observer?.onTextGenerationFinished?.(endEvent);
       });
 
       // TODO instead throw a generate text error with a cause?
@@ -187,12 +170,8 @@ export abstract class AbstractTextGenerationModel<
       generatedText: extractedText,
     };
 
-    observers.forEach((observer) => {
-      try {
-        observer?.onTextGenerationFinished?.(endEvent);
-      } catch (error) {
-        this.uncaughtErrorHandler(error);
-      }
+    this.callEachObserver(run, (observer) => {
+      observer?.onTextGenerationFinished?.(endEvent);
     });
 
     return extractedText;

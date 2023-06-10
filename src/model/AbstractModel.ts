@@ -1,5 +1,7 @@
+import { RunContext } from "../run/RunContext.js";
 import { ModelInformation } from "../run/ModelInformation.js";
 import { BaseModelSettings } from "./Model.js";
+import { RunObserver } from "index.js";
 
 export abstract class AbstractModel<SETTINGS extends BaseModelSettings> {
   constructor({ settings }: { settings: SETTINGS }) {
@@ -17,13 +19,31 @@ export abstract class AbstractModel<SETTINGS extends BaseModelSettings> {
     };
   }
 
-  protected get uncaughtErrorHandler() {
+  private get uncaughtErrorHandler() {
     return (
       this.settings.uncaughtErrorHandler ??
       ((error) => {
         console.error(error);
       })
     );
+  }
+
+  protected callEachObserver(
+    run: RunContext | undefined,
+    callObserver: (observer: RunObserver) => void
+  ) {
+    const observers = [
+      ...(this.settings.observers ?? []),
+      ...(run?.observers ?? []),
+    ];
+
+    observers.forEach((observer) => {
+      try {
+        callObserver(observer);
+      } catch (error) {
+        this.uncaughtErrorHandler(error);
+      }
+    });
   }
 
   readonly settings: SETTINGS;
