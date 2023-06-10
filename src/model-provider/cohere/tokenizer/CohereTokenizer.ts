@@ -1,6 +1,6 @@
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { CohereTextEmbeddingModelType } from "../index.js";
-import { CohereTextGenerationModelType } from "../text/CohereTextGenerationModel.js";
+import { CohereTextGenerationModelType } from "../CohereTextGenerationModel.js";
 import { callCohereDetokenizeAPI } from "./callCohereDetokenizeAPI.js";
 import { callCohereTokenizeAPI } from "./callCohereTokenizeAPI.js";
 

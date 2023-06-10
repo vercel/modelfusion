@@ -3,7 +3,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../internal/postToApi.js";
-import { failedCohereCallResponseHandler } from "../internal/failedCohereCallResponseHandler.js";
+import { failedCohereCallResponseHandler } from "../failedCohereCallResponseHandler.js";
 import { CohereTokenizerModelType } from "./CohereTokenizer.js";
 
 export const cohereTokenizationResponseSchema = z.object({

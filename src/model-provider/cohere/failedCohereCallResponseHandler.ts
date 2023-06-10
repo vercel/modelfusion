@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
-import { ResponseHandler } from "../../../internal/postToApi.js";
-import { ApiCallError } from "../../../util/ApiCallError.js";
-import { CohereError, cohereErrorDataSchema } from "../CohereError.js";
+import { ResponseHandler } from "../../internal/postToApi.js";
+import { ApiCallError } from "../../util/ApiCallError.js";
+import { CohereError, cohereErrorDataSchema } from "./CohereError.js";
 
 export const failedCohereCallResponseHandler: ResponseHandler<
   ApiCallError

@@ -116,7 +116,7 @@ export interface StabilityImageGenerationModelSettings
   stylePreset?: StabilityImageGenerationStylePreset;
 }
 
-export const stabilityImageGenerationResponseSchema = z.object({
+const stabilityImageGenerationResponseSchema = z.object({
   artifacts: z.array(
     z.object({
       base64: z.string(),

@@ -1,17 +1,21 @@
-import { RunContext } from "../../../run/RunContext.js";
-import { AbstractTextGenerationModel } from "../../../model/text-generation/AbstractTextGenerationModel.js";
+import { z } from "zod";
+import {
+  createJsonResponseHandler,
+  postJsonToApi,
+} from "../../internal/postToApi.js";
+import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
 import {
   BaseTextGenerationModelSettings,
   TextGenerationModelWithTokenization,
-} from "../../../model/text-generation/TextGenerationModel.js";
-import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
-import { RetryFunction } from "../../../util/retry/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
-import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
-import { throttleUnlimitedConcurrency } from "../../../util/throttle/UnlimitedConcurrencyThrottler.js";
-import { CohereTokenizer } from "../tokenizer/CohereTokenizer.js";
-import { CohereTextGenerationResponse } from "./CohereTextGenerationResponse.js";
-import { callCohereTextGenerationAPI } from "./callCohereTextGenerationAPI.js";
+} from "../../model/text-generation/TextGenerationModel.js";
+import { RunContext } from "../../run/RunContext.js";
+import { Tokenizer } from "../../text/tokenize/Tokenizer.js";
+import { RetryFunction } from "../../util/retry/RetryFunction.js";
+import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
+import { ThrottleFunction } from "../../util/throttle/ThrottleFunction.js";
+import { throttleUnlimitedConcurrency } from "../../util/throttle/UnlimitedConcurrencyThrottler.js";
+import { failedCohereCallResponseHandler } from "./failedCohereCallResponseHandler.js";
+import { CohereTokenizer } from "./tokenizer/CohereTokenizer.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
@@ -157,4 +161,104 @@ export class CohereTextGenerationModel
   withMaxTokens(maxTokens: number) {
     return this.withSettings({ maxTokens });
   }
+}
+
+const cohereTextGenerationResponseSchema = z.object({
+  id: z.string(),
+  generations: z.array(
+    z.object({
+      id: z.string(),
+      text: z.string(),
+    })
+  ),
+  prompt: z.string(),
+  meta: z.object({
+    api_version: z.object({
+      version: z.string(),
+    }),
+  }),
+});
+
+export type CohereTextGenerationResponse = z.infer<
+  typeof cohereTextGenerationResponseSchema
+>;
+
+/**
+ * Call the Cohere Co.Generate API to generate a text completion for the given prompt.
+ *
+ * @see https://docs.cohere.com/reference/generate
+ *
+ * @example
+ * const response = await callCohereTextGenerationAPI({
+ *   apiKey: COHERE_API_KEY,
+ *   model: "command-nightly",
+ *   prompt: "Write a short story about a robot learning to love:\n\n",
+ *   temperature: 0.7,
+ *   maxTokens: 500,
+ * });
+ *
+ * console.log(response.generations[0].text);
+ */
+async function callCohereTextGenerationAPI({
+  baseUrl = "https://api.cohere.ai/v1",
+  abortSignal,
+  apiKey,
+  model,
+  prompt,
+  numGenerations,
+  maxTokens,
+  temperature,
+  k,
+  p,
+  frequencyPenalty,
+  presencePenalty,
+  endSequences,
+  stopSequences,
+  returnLikelihoods,
+  logitBias,
+  truncate,
+}: {
+  baseUrl?: string;
+  abortSignal?: AbortSignal;
+  apiKey: string;
+  model: CohereTextGenerationModelType;
+  prompt: string;
+  numGenerations?: number;
+  maxTokens?: number;
+  temperature?: number;
+  k?: number;
+  p?: number;
+  frequencyPenalty?: number;
+  presencePenalty?: number;
+  endSequences?: string[];
+  stopSequences?: string[];
+  returnLikelihoods?: "GENERATION" | "ALL" | "NONE";
+  logitBias?: Record<string, number>;
+  truncate?: "NONE" | "START" | "END";
+}): Promise<CohereTextGenerationResponse> {
+  return postJsonToApi({
+    url: `${baseUrl}/generate`,
+    apiKey,
+    body: {
+      model,
+      prompt,
+      num_generations: numGenerations,
+      max_tokens: maxTokens,
+      temperature,
+      k,
+      p,
+      frequency_penalty: frequencyPenalty,
+      presence_penalty: presencePenalty,
+      end_sequences: endSequences,
+      stop_sequences: stopSequences,
+      return_likelihoods: returnLikelihoods,
+      logit_bias: logitBias,
+      truncate,
+    },
+    failedResponseHandler: failedCohereCallResponseHandler,
+    successfulResponseHandler: createJsonResponseHandler(
+      cohereTextGenerationResponseSchema
+    ),
+    abortSignal,
+  });
 }
