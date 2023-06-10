@@ -49,7 +49,7 @@ const model = new StabilityImageGenerationModel({
   steps: 30,
 });
 
-const image = await model.generateImage([
+const imageBase64 = await model.generateImage([
   { text: "the wicked witch of the west" },
   { text: "style of early 19th century painting", weight: 0.5 },
 ]);
