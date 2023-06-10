@@ -26,7 +26,7 @@ createTweetFromPdf({
   pdfPath: file,
   exampleTweetIndexPath: examples,
   openAiApiKey,
-  context: {
+  run: {
     onGenerateTextStart: (event) => {
       console.log(
         `Generate text ${event.metadata.functionId ?? "unknown"} started.`

@@ -1,9 +1,9 @@
-import { createId } from "@paralleldrive/cuid2";
-import { doGenerateText } from "../../../internal/doGenerateText.js";
-import { PromptTemplate } from "../../../run/PromptTemplate.js";
+import { AbstractTextGenerationModel } from "../../../internal/AbstractTextGenerationModel.js";
 import { RunContext } from "../../../run/RunContext.js";
-import { RunObserver } from "../../../run/RunObserver.js";
-import { TextGenerationModelWithTokenization } from "../../../text/generate/TextGenerationModel.js";
+import {
+  BaseTextGenerationModelSettings,
+  TextGenerationModelWithTokenization,
+} from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
@@ -39,7 +39,7 @@ export const OPENAI_CHAT_MODELS = {
 
 export type OpenAIChatModelType = keyof typeof OPENAI_CHAT_MODELS;
 
-export type OpenAIChatModelSettings = {
+export type OpenAIChatModelSettings = BaseTextGenerationModelSettings & {
   model: OpenAIChatModelType;
 
   baseUrl?: string;
@@ -47,10 +47,6 @@ export type OpenAIChatModelSettings = {
 
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
-  observers?: Array<RunObserver>;
-  uncaughtErrorHandler?: (error: unknown) => void;
-
-  trimOutput?: boolean;
 
   isUserIdForwardingEnabled?: boolean;
 
@@ -85,21 +81,35 @@ export type OpenAIChatModelSettings = {
  * ]);
  */
 export class OpenAIChatModel
-  implements TextGenerationModelWithTokenization<OpenAIChatMessage[]>
+  extends AbstractTextGenerationModel<
+    OpenAIChatMessage[],
+    OpenAIChatResponse,
+    OpenAIChatModelSettings
+  >
+  implements
+    TextGenerationModelWithTokenization<
+      OpenAIChatMessage[],
+      OpenAIChatModelSettings
+    >
 {
-  readonly provider = "openai";
-
-  readonly settings: OpenAIChatModelSettings;
-
-  readonly tokenizer: Tokenizer;
-  readonly maxTokens: number;
-
   constructor(settings: OpenAIChatModelSettings) {
-    this.settings = settings;
+    super({
+      settings,
+      extractText: (response) => response.choices[0]!.message.content,
+      generateResponse: (prompt, run) => this.callAPI(prompt, run),
+    });
 
     this.tokenizer = TikTokenTokenizer.forModel({ model: this.model });
     this.maxTokens = OPENAI_CHAT_MODELS[this.model].maxTokens;
   }
+
+  readonly provider = "openai";
+  get model() {
+    return this.settings.model;
+  }
+
+  readonly tokenizer: Tokenizer;
+  readonly maxTokens: number;
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
@@ -113,27 +123,14 @@ export class OpenAIChatModel
     return apiKey;
   }
 
-  get model() {
-    return this.settings.model;
-  }
-
-  get retry() {
+  private get retry() {
     return this.settings.retry ?? retryWithExponentialBackoff();
   }
 
-  get throttle() {
+  private get throttle() {
     return (
       this.settings.throttle ??
       throttleMaxConcurrency({ maxConcurrentCalls: 5 })
-    );
-  }
-
-  get uncaughtErrorHandler() {
-    return (
-      this.settings.uncaughtErrorHandler ??
-      ((error) => {
-        console.error(error);
-      })
     );
   }
 
@@ -148,7 +145,7 @@ export class OpenAIChatModel
     });
   }
 
-  async generate(
+  async callAPI(
     input: Array<OpenAIChatMessage>,
     context?: RunContext
   ): Promise<OpenAIChatResponse> {
@@ -167,38 +164,10 @@ export class OpenAIChatModel
     );
   }
 
-  async generateText(
-    prompt: OpenAIChatMessage[],
-    context?: RunContext
-  ): Promise<string> {
-    return await doGenerateText({
-      prompt,
-      generate: () => this.generate(prompt, context),
-      extractText: async (response: OpenAIChatResponse) => {
-        const text = response.choices[0]!.message.content;
-        return this.settings.trimOutput ? text.trim() : text;
-      },
-      model: { provider: this.provider, name: this.model },
-      createId,
-      uncaughtErrorHandler: this.uncaughtErrorHandler,
-      observers: this.settings.observers,
-      context,
-    });
-  }
-
-  generateTextAsFunction<INPUT>(
-    promptTemplate: PromptTemplate<INPUT, OpenAIChatMessage[]>
-  ) {
-    return async (input: INPUT, context?: RunContext) => {
-      const expandedPrompt = await promptTemplate(input);
-      return this.generateText(expandedPrompt, context);
-    };
-  }
-
   withSettings(additionalSettings: Partial<OpenAIChatModelSettings>) {
     return new OpenAIChatModel(
       Object.assign({}, this.settings, additionalSettings)
-    );
+    ) as this;
   }
 
   withMaxTokens(maxTokens: number) {

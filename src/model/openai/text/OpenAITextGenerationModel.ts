@@ -1,9 +1,9 @@
-import { createId } from "@paralleldrive/cuid2";
-import { doGenerateText } from "../../../internal/doGenerateText.js";
-import { PromptTemplate } from "../../../run/PromptTemplate.js";
+import { AbstractTextGenerationModel } from "../../../internal/AbstractTextGenerationModel.js";
 import { RunContext } from "../../../run/RunContext.js";
-import { RunObserver } from "../../../run/RunObserver.js";
-import { TextGenerationModelWithTokenization } from "../../../text/generate/TextGenerationModel.js";
+import {
+  BaseTextGenerationModelSettings,
+  TextGenerationModelWithTokenization,
+} from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
@@ -50,33 +50,30 @@ export const OPENAI_TEXT_GENERATION_MODELS = {
 export type OpenAITextGenerationModelType =
   keyof typeof OPENAI_TEXT_GENERATION_MODELS;
 
-export type OpenAITextGenerationModelSettings = {
-  model: OpenAITextGenerationModelType;
+export type OpenAITextGenerationModelSettings =
+  BaseTextGenerationModelSettings & {
+    model: OpenAITextGenerationModelType;
 
-  baseUrl?: string;
-  apiKey?: string;
+    baseUrl?: string;
+    apiKey?: string;
 
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-  observers?: Array<RunObserver>;
-  uncaughtErrorHandler?: (error: unknown) => void;
+    retry?: RetryFunction;
+    throttle?: ThrottleFunction;
 
-  trimOutput?: boolean;
+    isUserIdForwardingEnabled?: boolean;
 
-  isUserIdForwardingEnabled?: boolean;
-
-  suffix?: string;
-  maxTokens?: number;
-  temperature?: number;
-  topP?: number;
-  n?: number;
-  logprobs?: number;
-  echo?: boolean;
-  stop?: string | string[];
-  presencePenalty?: number;
-  frequencyPenalty?: number;
-  bestOf?: number;
-};
+    suffix?: string;
+    maxTokens?: number;
+    temperature?: number;
+    topP?: number;
+    n?: number;
+    logprobs?: number;
+    echo?: boolean;
+    stop?: string | string[];
+    presencePenalty?: number;
+    frequencyPenalty?: number;
+    bestOf?: number;
+  };
 
 /**
  * Create a text generation model that calls the OpenAI text completion API.
@@ -96,21 +93,35 @@ export type OpenAITextGenerationModelSettings = {
  * );
  */
 export class OpenAITextGenerationModel
-  implements TextGenerationModelWithTokenization<string>
+  extends AbstractTextGenerationModel<
+    string,
+    OpenAITextGenerationResponse,
+    OpenAITextGenerationModelSettings
+  >
+  implements
+    TextGenerationModelWithTokenization<
+      string,
+      OpenAITextGenerationModelSettings
+    >
 {
-  readonly provider = "openai";
-
-  readonly settings: OpenAITextGenerationModelSettings;
-
-  readonly tokenizer: Tokenizer;
-  readonly maxTokens: number;
-
   constructor(settings: OpenAITextGenerationModelSettings) {
-    this.settings = Object.assign({ trimOutput: true }, settings);
+    super({
+      settings,
+      extractText: (response) => response.choices[0]!.text,
+      generateResponse: (prompt, context) => this.callAPI(prompt, context),
+    });
 
     this.tokenizer = TikTokenTokenizer.forModel({ model: settings.model });
     this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[settings.model].maxTokens;
   }
+
+  readonly provider = "openai";
+  get model() {
+    return this.settings.model;
+  }
+
+  readonly tokenizer: Tokenizer;
+  readonly maxTokens: number;
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
@@ -124,27 +135,14 @@ export class OpenAITextGenerationModel
     return apiKey;
   }
 
-  get model() {
-    return this.settings.model;
-  }
-
-  get retry() {
+  private get retry() {
     return this.settings.retry ?? retryWithExponentialBackoff();
   }
 
-  get throttle() {
+  private get throttle() {
     return (
       this.settings.throttle ??
       throttleMaxConcurrency({ maxConcurrentCalls: 5 })
-    );
-  }
-
-  get uncaughtErrorHandler() {
-    return (
-      this.settings.uncaughtErrorHandler ??
-      ((error) => {
-        console.error(error);
-      })
     );
   }
 
@@ -152,7 +150,7 @@ export class OpenAITextGenerationModel
     return this.tokenizer.countTokens(input);
   }
 
-  async generate(
+  async callAPI(
     prompt: string,
     context?: RunContext
   ): Promise<OpenAITextGenerationResponse> {
@@ -172,33 +170,10 @@ export class OpenAITextGenerationModel
     );
   }
 
-  async generateText(prompt: string, context?: RunContext): Promise<string> {
-    return await doGenerateText({
-      prompt,
-      generate: () => this.generate(prompt, context),
-      extractText: async (response: OpenAITextGenerationResponse) => {
-        const text = response.choices[0]!.text;
-        return this.settings.trimOutput ? text.trim() : text;
-      },
-      model: { provider: this.provider, name: this.model },
-      createId,
-      uncaughtErrorHandler: this.uncaughtErrorHandler,
-      observers: this.settings.observers,
-      context,
-    });
-  }
-
-  generateTextAsFunction<INPUT>(promptTemplate: PromptTemplate<INPUT, string>) {
-    return async (input: INPUT, context?: RunContext) => {
-      const expandedPrompt = await promptTemplate(input);
-      return this.generateText(expandedPrompt, context);
-    };
-  }
-
   withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {
     return new OpenAITextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
-    );
+    ) as this;
   }
 
   withMaxTokens(maxTokens: number) {

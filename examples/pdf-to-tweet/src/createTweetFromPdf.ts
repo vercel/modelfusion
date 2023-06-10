@@ -18,13 +18,13 @@ export async function createTweetFromPdf({
   pdfPath,
   exampleTweetIndexPath,
   openAiApiKey,
-  context,
+  run,
 }: {
   topic: string;
   pdfPath: string;
   exampleTweetIndexPath: string;
   openAiApiKey: string;
-  context: RunContext & TextGenerationObserver & EmbedTextObserver;
+  run: RunContext & TextGenerationObserver & EmbedTextObserver;
 }) {
   const chatModel = new OpenAIChatModel({
     apiKey: openAiApiKey,
@@ -65,27 +65,26 @@ export async function createTweetFromPdf({
         ],
         reservedCompletionTokens: 1024,
       },
-      context
+      run
     );
 
   // generate a draft tweet:
-  const draftTweet = await chatModel
-    .withSettings({ temperature: 0.5 })
-    .generateText(
-      [
-        OpenAIChatMessage.user(`## TOPIC\n${topic}`),
-        OpenAIChatMessage.system(
-          [
-            `## TASK`,
-            `Rewrite the content below into coherent tweet on the topic above.`,
-            `Include all relevant information about the topic.`,
-            `Discard all irrelevant information.`,
-          ].join("\n")
-        ),
-        OpenAIChatMessage.user(`## CONTENT\n${informationOnTopic}`),
-      ],
-      context
-    );
+  const draftTweet = await chatModel.generateText(
+    [
+      OpenAIChatMessage.user(`## TOPIC\n${topic}`),
+      OpenAIChatMessage.system(
+        [
+          `## TASK`,
+          `Rewrite the content below into coherent tweet on the topic above.`,
+          `Include all relevant information about the topic.`,
+          `Discard all irrelevant information.`,
+        ].join("\n")
+      ),
+      OpenAIChatMessage.user(`## CONTENT\n${informationOnTopic}`),
+    ],
+    { temperature: 0.5 },
+    run
+  );
 
   // search for similar tweets:
   const similarTweets = await exampleTweetStore.queryByText(
@@ -94,7 +93,7 @@ export async function createTweetFromPdf({
       maxResults: 1,
       similarityThreshold: 0.5,
     },
-    context
+    run
   );
 
   if (similarTweets.length === 0) {
@@ -102,18 +101,17 @@ export async function createTweetFromPdf({
   }
 
   // rewrite the tweet:
-  return await chatModel
-    .withSettings({ temperature: 0.5 })
-    .generateText(
-      [
-        OpenAIChatMessage.system(
-          `## TASK\nRewrite the draft tweet on ${topic} using the style from the example tweet.`
-        ),
-        OpenAIChatMessage.user(`## DRAFT TWEET\n${draftTweet}`),
-        OpenAIChatMessage.user(
-          `## STYLE EXAMPLE\n${similarTweets[0].data.tweet}`
-        ),
-      ],
-      context
-    );
+  return await chatModel.generateText(
+    [
+      OpenAIChatMessage.system(
+        `## TASK\nRewrite the draft tweet on ${topic} using the style from the example tweet.`
+      ),
+      OpenAIChatMessage.user(`## DRAFT TWEET\n${draftTweet}`),
+      OpenAIChatMessage.user(
+        `## STYLE EXAMPLE\n${similarTweets[0].data.tweet}`
+      ),
+    ],
+    { temperature: 0.5 },
+    run
+  );
 }

@@ -1,42 +1,36 @@
-import { createId } from "@paralleldrive/cuid2";
-import { doGenerateText } from "../../../internal/doGenerateText.js";
-import { PromptTemplate } from "../../../run/PromptTemplate.js";
+import { AbstractTextGenerationModel } from "../../../internal/AbstractTextGenerationModel.js";
 import { RunContext } from "../../../run/RunContext.js";
-import { RunObserver } from "../../../run/RunObserver.js";
-import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
+import { BaseTextGenerationModelSettings } from "../../../text/generate/TextGenerationModel.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
-import { callHuggingFaceTextGenerationAPI } from "./callHuggingFaceTextGenerationAPI.js";
 import { HuggingFaceTextGenerationResponse } from "./HuggingFaceTextGenerationResponse.js";
+import { callHuggingFaceTextGenerationAPI } from "./callHuggingFaceTextGenerationAPI.js";
 
-export type HuggingFaceTextGenerationModelSettings = {
-  model: string;
+export type HuggingFaceTextGenerationModelSettings =
+  BaseTextGenerationModelSettings & {
+    model: string;
 
-  baseUrl?: string;
-  apiKey?: string;
+    baseUrl?: string;
+    apiKey?: string;
 
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-  observers?: Array<RunObserver>;
-  uncaughtErrorHandler?: (error: unknown) => void;
+    retry?: RetryFunction;
+    throttle?: ThrottleFunction;
 
-  trimOutput?: boolean;
-
-  topK?: number;
-  topP?: number;
-  temperature?: number;
-  repetitionPenalty?: number;
-  maxNewTokens?: number;
-  maxTime?: number;
-  numReturnSequences?: number;
-  doSample?: boolean;
-  options?: {
-    useCache?: boolean;
-    waitForModel?: boolean;
+    topK?: number;
+    topP?: number;
+    temperature?: number;
+    repetitionPenalty?: number;
+    maxNewTokens?: number;
+    maxTime?: number;
+    numReturnSequences?: number;
+    doSample?: boolean;
+    options?: {
+      useCache?: boolean;
+      waitForModel?: boolean;
+    };
   };
-};
 
 /**
  * Create a text generation model that calls a Hugging Face Inference API Text Generation Task.
@@ -55,15 +49,22 @@ export type HuggingFaceTextGenerationModelSettings = {
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  */
-export class HuggingFaceTextGenerationModel
-  implements TextGenerationModel<string>
-{
-  readonly provider = "huggingface";
-
-  readonly settings: HuggingFaceTextGenerationModelSettings;
-
+export class HuggingFaceTextGenerationModel extends AbstractTextGenerationModel<
+  string,
+  HuggingFaceTextGenerationResponse,
+  HuggingFaceTextGenerationModelSettings
+> {
   constructor(settings: HuggingFaceTextGenerationModelSettings) {
-    this.settings = Object.assign({ trimOutput: true }, settings);
+    super({
+      settings,
+      extractText: (response) => response[0].generated_text,
+      generateResponse: (prompt, response) => this.callAPI(prompt, response),
+    });
+  }
+
+  readonly provider = "huggingface";
+  get model() {
+    return this.settings.model;
   }
 
   private get apiKey() {
@@ -78,31 +79,18 @@ export class HuggingFaceTextGenerationModel
     return apiKey;
   }
 
-  get model() {
-    return this.settings.model;
-  }
-
-  get retry() {
+  private get retry() {
     return this.settings.retry ?? retryWithExponentialBackoff();
   }
 
-  get throttle() {
+  private get throttle() {
     return (
       this.settings.throttle ??
       throttleMaxConcurrency({ maxConcurrentCalls: 5 })
     );
   }
 
-  get uncaughtErrorHandler() {
-    return (
-      this.settings.uncaughtErrorHandler ??
-      ((error) => {
-        console.error(error);
-      })
-    );
-  }
-
-  async generate(
+  async callAPI(
     prompt: string,
     context?: RunContext
   ): Promise<HuggingFaceTextGenerationResponse> {
@@ -122,34 +110,11 @@ export class HuggingFaceTextGenerationModel
     );
   }
 
-  async generateText(prompt: string, context?: RunContext): Promise<string> {
-    return await doGenerateText({
-      prompt,
-      generate: () => this.generate(prompt, context),
-      extractText: async (response) => {
-        const text = response[0].generated_text;
-        return this.settings.trimOutput ? text.trim() : text;
-      },
-      model: { provider: this.provider, name: this.model },
-      createId,
-      uncaughtErrorHandler: this.uncaughtErrorHandler,
-      observers: this.settings.observers,
-      context,
-    });
-  }
-
-  generateTextAsFunction<INPUT>(promptTemplate: PromptTemplate<INPUT, string>) {
-    return async (input: INPUT, context?: RunContext) => {
-      const expandedPrompt = await promptTemplate(input);
-      return this.generateText(expandedPrompt, context);
-    };
-  }
-
   withSettings(
     additionalSettings: Partial<HuggingFaceTextGenerationModelSettings>
   ) {
     return new HuggingFaceTextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
-    );
+    ) as this;
   }
 }

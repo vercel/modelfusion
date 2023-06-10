@@ -1,17 +1,17 @@
-import { createId } from "@paralleldrive/cuid2";
-import { doGenerateText } from "../../../internal/doGenerateText.js";
-import { PromptTemplate } from "../../../run/PromptTemplate.js";
+import { AbstractTextGenerationModel } from "../../../internal/AbstractTextGenerationModel.js";
 import { RunContext } from "../../../run/RunContext.js";
-import { RunObserver } from "../../../run/RunObserver.js";
-import { TextGenerationModelWithTokenization } from "../../../text/generate/TextGenerationModel.js";
+import {
+  BaseTextGenerationModelSettings,
+  TextGenerationModelWithTokenization,
+} from "../../../text/generate/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { CohereTokenizer } from "../tokenizer/CohereTokenizer.js";
-import { callCohereTextGenerationAPI } from "./callCohereTextGenerationAPI.js";
 import { CohereTextGenerationResponse } from "./CohereTextGenerationResponse.js";
+import { callCohereTextGenerationAPI } from "./callCohereTextGenerationAPI.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
@@ -31,32 +31,29 @@ export const COHERE_TEXT_GENERATION_MODELS = {
 export type CohereTextGenerationModelType =
   keyof typeof COHERE_TEXT_GENERATION_MODELS;
 
-export type CohereTextGenerationModelSettings = {
-  model: CohereTextGenerationModelType;
+export type CohereTextGenerationModelSettings =
+  BaseTextGenerationModelSettings & {
+    model: CohereTextGenerationModelType;
 
-  baseUrl?: string;
-  apiKey?: string;
+    baseUrl?: string;
+    apiKey?: string;
 
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-  observers?: Array<RunObserver>;
-  uncaughtErrorHandler?: (error: unknown) => void;
+    retry?: RetryFunction;
+    throttle?: ThrottleFunction;
 
-  trimOutput?: boolean;
-
-  numGenerations?: number;
-  maxTokens?: number;
-  temperature?: number;
-  k?: number;
-  p?: number;
-  frequencyPenalty?: number;
-  presencePenalty?: number;
-  endSequences?: string[];
-  stopSequences?: string[];
-  returnLikelihoods?: "GENERATION" | "ALL" | "NONE";
-  logitBias?: Record<string, number>;
-  truncate?: "NONE" | "START" | "END";
-};
+    numGenerations?: number;
+    maxTokens?: number;
+    temperature?: number;
+    k?: number;
+    p?: number;
+    frequencyPenalty?: number;
+    presencePenalty?: number;
+    endSequences?: string[];
+    stopSequences?: string[];
+    returnLikelihoods?: "GENERATION" | "ALL" | "NONE";
+    logitBias?: Record<string, number>;
+    truncate?: "NONE" | "START" | "END";
+  };
 
 /**
  * Create a text generation model that calls the Cohere Co.Generate API.
@@ -77,17 +74,23 @@ export type CohereTextGenerationModelSettings = {
  * const text = await textGenerationModel.extractText(response);
  */
 export class CohereTextGenerationModel
-  implements TextGenerationModelWithTokenization<string>
+  extends AbstractTextGenerationModel<
+    string,
+    CohereTextGenerationResponse,
+    CohereTextGenerationModelSettings
+  >
+  implements
+    TextGenerationModelWithTokenization<
+      string,
+      CohereTextGenerationModelSettings
+    >
 {
-  readonly provider = "cohere";
-
-  readonly settings: CohereTextGenerationModelSettings;
-
-  readonly maxTokens: number;
-  readonly tokenizer: Tokenizer;
-
   constructor(settings: CohereTextGenerationModelSettings) {
-    this.settings = settings;
+    super({
+      settings,
+      extractText: (response) => response.generations[0].text,
+      generateResponse: (prompt, context) => this.callAPI(prompt, context),
+    });
 
     this.maxTokens =
       COHERE_TEXT_GENERATION_MODELS[this.settings.model].maxTokens;
@@ -96,6 +99,14 @@ export class CohereTextGenerationModel
       model: this.model,
     });
   }
+
+  readonly provider = "cohere";
+  get model() {
+    return this.settings.model;
+  }
+
+  readonly maxTokens: number;
+  readonly tokenizer: Tokenizer;
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.COHERE_API_KEY;
@@ -109,27 +120,14 @@ export class CohereTextGenerationModel
     return apiKey;
   }
 
-  get model() {
-    return this.settings.model;
-  }
-
-  get retry() {
+  private get retry() {
     return this.settings.retry ?? retryWithExponentialBackoff();
   }
 
-  get throttle() {
+  private get throttle() {
     return (
       this.settings.throttle ??
       throttleMaxConcurrency({ maxConcurrentCalls: 5 })
-    );
-  }
-
-  get uncaughtErrorHandler() {
-    return (
-      this.settings.uncaughtErrorHandler ??
-      ((error) => {
-        console.error(error);
-      })
     );
   }
 
@@ -137,7 +135,7 @@ export class CohereTextGenerationModel
     return this.tokenizer.countTokens(input);
   }
 
-  async generate(
+  async callAPI(
     prompt: string,
     context?: RunContext
   ): Promise<CohereTextGenerationResponse> {
@@ -153,33 +151,10 @@ export class CohereTextGenerationModel
     );
   }
 
-  async generateText(prompt: string, context?: RunContext): Promise<string> {
-    return await doGenerateText({
-      prompt,
-      generate: () => this.generate(prompt, context),
-      extractText: async (response) => {
-        const text = response.generations[0].text;
-        return this.settings.trimOutput ? text.trim() : text;
-      },
-      model: { provider: this.provider, name: this.model },
-      createId,
-      uncaughtErrorHandler: this.uncaughtErrorHandler,
-      observers: this.settings.observers,
-      context,
-    });
-  }
-
-  generateTextAsFunction<INPUT>(promptTemplate: PromptTemplate<INPUT, string>) {
-    return async (input: INPUT, context?: RunContext) => {
-      const expandedPrompt = await promptTemplate(input);
-      return this.generateText(expandedPrompt, context);
-    };
-  }
-
   withSettings(additionalSettings: Partial<CohereTextGenerationModelSettings>) {
     return new CohereTextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
-    );
+    ) as this;
   }
 
   withMaxTokens(maxTokens: number) {

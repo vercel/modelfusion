@@ -1,43 +1,44 @@
+import { RunObserver } from "../../run/RunObserver.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 import { TokenizationSupport } from "../tokenize/TokenizationSupport.js";
 
-export interface TextGenerationModel<PROMPT> {
-  /**
-   * `generateText` generates text from a model using a prompt.
-   * You can either call it directly or use `.asFunction` to create a function that uses the arguments
-   * of a prompt template.
-   *
-   * @param model The model to use for text generation.
-   * @param prompt The prompt to use for text generation.
-   * It is a function that returns a prompt object in the format that is expected by the model.
-   * Its arguments define the inputs (of either the `inputs` parameter or the returned function).
-   * @param processText A function that processes the output of the model.
-   * It is called with the extracted text from the model.
-   * It returns the processed output.
-   * The default function trims the whitespace around the output.
-   *
-   * @example
-   * const generateStory = generateText.asFunction({
-   *   model,
-   *   prompt: async ({ character }: { character: string }) =>
-   *     `Write a short story about ${character} learning to love:\n\n`,
-   * });
-   *
-   * const text = await generateStory({ character: "a robot" });
-   */
-  generateText: (prompt: PROMPT, context?: RunContext) => PromiseLike<string>;
+export type BaseTextGenerationModelSettings = {
+  uncaughtErrorHandler?: (error: unknown) => void;
+  observers?: Array<RunObserver>;
+
+  trimOutput?: boolean;
+};
+
+export interface TextGenerationModel<
+  PROMPT,
+  SETTINGS extends BaseTextGenerationModelSettings
+> {
+  generateText(
+    prompt: PROMPT,
+    settings?: Partial<SETTINGS>
+  ): PromiseLike<string>;
+  generateText(
+    prompt: PROMPT,
+    settings: Partial<SETTINGS> | null, // require explicit null when run is set
+    run: RunContext
+  ): PromiseLike<string>;
 
   generateTextAsFunction<INPUT>(
-    promptTemplate: PromptTemplate<INPUT, PROMPT>
-  ): (input: INPUT, context?: RunContext) => PromiseLike<string>;
+    promptTemplate: PromptTemplate<INPUT, PROMPT>,
+    options?: Partial<SETTINGS>
+  ): (input: INPUT, run?: RunContext) => PromiseLike<string>;
+
+  withSettings(additionalSettings: Partial<SETTINGS>): this;
 }
 
-export interface TextGenerationModelWithTokenization<PROMPT>
-  extends TextGenerationModel<PROMPT>,
+export interface TextGenerationModelWithTokenization<
+  PROMPT,
+  SETTINGS extends BaseTextGenerationModelSettings
+> extends TextGenerationModel<PROMPT, SETTINGS>,
     TokenizationSupport {
-  countPromptTokens: (prompt: PROMPT) => PromiseLike<number>;
-  withMaxTokens: (
+  countPromptTokens(prompt: PROMPT): PromiseLike<number>;
+  withMaxTokens(
     maxTokens: number
-  ) => TextGenerationModelWithTokenization<PROMPT>;
+  ): TextGenerationModelWithTokenization<PROMPT, SETTINGS>;
 }

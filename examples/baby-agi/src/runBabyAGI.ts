@@ -12,15 +12,14 @@ export async function runBabyAGI({
     model: "text-davinci-003",
   });
 
-  const executeTask = model
-    .withSettings({ temperature: 0.7, maxTokens: 2000 })
-    .generateTextAsFunction(
-      async ({ objective, task }: { objective: string; task: string }) =>
-        [
-          `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}`,
-          `Response:`,
-        ].join("\n")
-    );
+  const executeTask = model.generateTextAsFunction(
+    async ({ objective, task }: { objective: string; task: string }) =>
+      [
+        `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}`,
+        `Response:`,
+      ].join("\n"),
+    { temperature: 0.7, maxTokens: 2000 }
+  );
 
   async function generateNewTasks({
     objective,
@@ -33,21 +32,17 @@ export async function runBabyAGI({
     completedTaskResult: string;
     existingTasks: string[];
   }) {
-    const newTasksText = await model
-      .withSettings({
-        temperature: 0.5,
-        maxTokens: 100,
-      })
-      .generateText(
-        [
-          `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.`,
-          `The last completed task has the result: ${completedTaskResult}.`,
-          `This result was based on this task description: ${completedTask}.`,
-          `These are the incomplete tasks: ${existingTasks.join(", ")}.`,
-          `Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.`,
-          `Return the tasks as an array.`,
-        ].join("\n")
-      );
+    const newTasksText = await model.generateText(
+      [
+        `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.`,
+        `The last completed task has the result: ${completedTaskResult}.`,
+        `This result was based on this task description: ${completedTask}.`,
+        `These are the incomplete tasks: ${existingTasks.join(", ")}.`,
+        `Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.`,
+        `Return the tasks as an array.`,
+      ].join("\n"),
+      { temperature: 0.5, maxTokens: 100 }
+    );
 
     return newTasksText.split("\n");
   }
@@ -61,23 +56,19 @@ export async function runBabyAGI({
     objective: string;
     nextTaskId: number;
   }) {
-    const prioritizedTasksText = await model
-      .withSettings({
-        temperature: 0.5,
-        maxTokens: 1000,
-      })
-      .generateText(
-        [
-          `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:`,
-          tasks.join(", "),
-          `Consider the ultimate objective of your team: ${objective}.`,
-          `Do not remove any tasks.`,
-          `Return the result as a numbered list, like:`,
-          `#. First task`,
-          `#. Second task`,
-          `Start the task list with number ${nextTaskId}.`,
-        ].join("\n")
-      );
+    const prioritizedTasksText = await model.generateText(
+      [
+        `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:`,
+        tasks.join(", "),
+        `Consider the ultimate objective of your team: ${objective}.`,
+        `Do not remove any tasks.`,
+        `Return the result as a numbered list, like:`,
+        `#. First task`,
+        `#. Second task`,
+        `Start the task list with number ${nextTaskId}.`,
+      ].join("\n"),
+      { temperature: 0.5, maxTokens: 1000 }
+    );
 
     return prioritizedTasksText.split("\n").map((task) => {
       const [_idPart, ...rest] = task.trim().split(".");

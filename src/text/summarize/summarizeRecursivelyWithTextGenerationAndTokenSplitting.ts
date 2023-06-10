@@ -19,7 +19,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     reservedCompletionTokens,
   }: {
     text: string;
-    model: TextGenerationModelWithTokenization<PROMPT>;
+    model: TextGenerationModelWithTokenization<PROMPT, any>;
     prompt: (options: { text: string }) => Promise<PROMPT>;
     reservedCompletionTokens: number;
   },
@@ -49,7 +49,7 @@ summarizeRecursivelyWithTextGenerationAndTokenSplitting.asFunction =
     prompt,
     reservedCompletionTokens,
   }: {
-    model: TextGenerationModelWithTokenization<PROMPT>;
+    model: TextGenerationModelWithTokenization<PROMPT, any>;
     prompt: (options: { text: string }) => Promise<PROMPT>;
     reservedCompletionTokens: number;
   }): SummarizeFunction =>
