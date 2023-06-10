@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.13 - 2023-06-10
+
+### Changed
+
+1. Major rework of text and image generation APIs.
+
 ## 0.0.12 - 2023-06-06
 
 ## 0.0.11 - 2023-06-05
