@@ -1,27 +1,24 @@
-import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
+import { OpenAITextGenerationModel } from "ai-utils.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 (async () => {
   const model = new OpenAITextGenerationModel({
-    apiKey: "invalid-api-key",
     model: "text-davinci-003",
-  });
-
-  const generateStory = generateText.asFunction({
-    model,
-    prompt: async ({ character }: { character: string }) =>
-      `Write a short story about ${character} learning to love:\n\n`,
+    maxTokens: 500,
   });
 
   try {
     const abortController = new AbortController();
     abortController.abort(); // this would happen in parallel to generateStory
 
-    const result = await generateStory(
-      { character: "a robot" },
+    const text = await model.generateText(
+      "Write a short story about a robot learning to love:\n\n",
       { abortSignal: abortController.signal }
     );
 
-    console.log(result);
+    console.log(text);
   } catch (error) {
     console.log(error);
   }

@@ -1,19 +1,12 @@
-import z from "zod";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../internal/postToApi.js";
 import { failedHuggingFaceCallResponseHandler } from "../internal/failedHuggingFaceCallResponseHandler.js";
-
-export const huggingFaceTextGenerationResponseSchema = z.array(
-  z.object({
-    generated_text: z.string(),
-  })
-);
-
-export type HuggingFaceTextGenerationResponse = z.infer<
-  typeof huggingFaceTextGenerationResponseSchema
->;
+import {
+  HuggingFaceTextGenerationResponse,
+  huggingFaceTextGenerationResponseSchema,
+} from "./HuggingFaceTextGenerationResponse.js";
 
 /**
  * Call a Hugging Face Inference API Text Generation Task to generate a text completion for the given prompt.

@@ -1,15 +1,29 @@
+import { createId } from "@paralleldrive/cuid2";
+import { doGenerateText } from "../../../internal/doGenerateText.js";
+import { PromptTemplate } from "../../../run/PromptTemplate.js";
 import { RunContext } from "../../../run/RunContext.js";
+import { RunObserver } from "../../../run/RunObserver.js";
 import { TextGenerationModel } from "../../../text/generate/TextGenerationModel.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
-import {
-  HuggingFaceTextGenerationResponse,
-  callHuggingFaceTextGenerationAPI,
-} from "./callHuggingFaceTextGenerationAPI.js";
+import { callHuggingFaceTextGenerationAPI } from "./callHuggingFaceTextGenerationAPI.js";
+import { HuggingFaceTextGenerationResponse } from "./HuggingFaceTextGenerationResponse.js";
 
 export type HuggingFaceTextGenerationModelSettings = {
+  model: string;
+
+  baseUrl?: string;
+  apiKey?: string;
+
+  retry?: RetryFunction;
+  throttle?: ThrottleFunction;
+  observers?: Array<RunObserver>;
+  uncaughtErrorHandler?: (error: unknown) => void;
+
+  trimOutput?: boolean;
+
   topK?: number;
   topP?: number;
   temperature?: number;
@@ -31,66 +45,73 @@ export type HuggingFaceTextGenerationModelSettings = {
  *
  * @example
  * const textGenerationModel = new HuggingFaceTextGenerationModel({
- *   apiKey: HUGGINGFACE_API_KEY,
  *   model: "tiiuae/falcon-7b",
- *   settings: { temperature: 700 },
+ *   temperature: 0.7,
+ *   maxTokens: 500,
+ *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
- * const response = await textGenerationModel
- *   .withSettings({ maxNewTokens: 500 })
- *   .generate("Write a short story about a robot learning to love:\n\n");
- *
- * const text = await textGenerationModel.extractText(response);
+ * const text = await model.generateText(
+ *   "Write a short story about a robot learning to love:\n\n"
+ * );
  */
 export class HuggingFaceTextGenerationModel
-  implements TextGenerationModel<string, HuggingFaceTextGenerationResponse>
+  implements TextGenerationModel<string>
 {
   readonly provider = "huggingface";
 
-  readonly baseUrl?: string;
-  readonly apiKey: string;
-  readonly model: string;
   readonly settings: HuggingFaceTextGenerationModelSettings;
 
-  readonly retry: RetryFunction;
-  readonly throttle: ThrottleFunction;
+  constructor(settings: HuggingFaceTextGenerationModelSettings) {
+    this.settings = Object.assign({ trimOutput: true }, settings);
+  }
 
-  constructor({
-    baseUrl,
-    apiKey,
-    model,
-    settings = {},
-    retry = retryWithExponentialBackoff(),
-    throttle = throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
-  }: {
-    baseUrl?: string;
-    apiKey: string;
-    model: string;
-    settings?: HuggingFaceTextGenerationModelSettings;
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  }) {
-    this.baseUrl = baseUrl;
-    this.apiKey = apiKey;
-    this.model = model;
-    this.settings = settings;
+  private get apiKey() {
+    const apiKey = this.settings.apiKey ?? process.env.HUGGINGFACE_API_KEY;
 
-    this.retry = retry;
-    this.throttle = throttle;
+    if (apiKey == null) {
+      throw new Error(
+        "No Hugging Face API key provided. Pass it in the constructor or set the HUGGINGFACE_API_KEY environment variable."
+      );
+    }
+
+    return apiKey;
+  }
+
+  get model() {
+    return this.settings.model;
+  }
+
+  get retry() {
+    return this.settings.retry ?? retryWithExponentialBackoff();
+  }
+
+  get throttle() {
+    return (
+      this.settings.throttle ??
+      throttleMaxConcurrency({ maxConcurrentCalls: 5 })
+    );
+  }
+
+  get uncaughtErrorHandler() {
+    return (
+      this.settings.uncaughtErrorHandler ??
+      ((error) => {
+        console.error(error);
+      })
+    );
   }
 
   async generate(
-    input: string,
+    prompt: string,
     context?: RunContext
   ): Promise<HuggingFaceTextGenerationResponse> {
     return this.retry(async () =>
       this.throttle(async () =>
         callHuggingFaceTextGenerationAPI({
-          baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
-          inputs: input,
-          model: this.model,
+          inputs: prompt,
           ...this.settings,
           options: this.settings.options ?? {
             useCache: true,
@@ -101,20 +122,34 @@ export class HuggingFaceTextGenerationModel
     );
   }
 
-  async extractText(
-    rawOutput: HuggingFaceTextGenerationResponse
-  ): Promise<string> {
-    return rawOutput[0].generated_text;
+  async generateText(prompt: string, context?: RunContext): Promise<string> {
+    return await doGenerateText({
+      prompt,
+      generate: () => this.generate(prompt, context),
+      extractText: async (response) => {
+        const text = response[0].generated_text;
+        return this.settings.trimOutput ? text.trim() : text;
+      },
+      model: { provider: this.provider, name: this.model },
+      createId,
+      uncaughtErrorHandler: this.uncaughtErrorHandler,
+      observers: this.settings.observers,
+      context,
+    });
   }
 
-  withSettings(additionalSettings: HuggingFaceTextGenerationModelSettings) {
-    return new HuggingFaceTextGenerationModel({
-      baseUrl: this.baseUrl,
-      apiKey: this.apiKey,
-      model: this.model,
-      settings: Object.assign({}, this.settings, additionalSettings),
-      retry: this.retry,
-      throttle: this.throttle,
-    });
+  generateTextAsFunction<INPUT>(promptTemplate: PromptTemplate<INPUT, string>) {
+    return async (input: INPUT, context?: RunContext) => {
+      const expandedPrompt = await promptTemplate(input);
+      return this.generateText(expandedPrompt, context);
+    };
+  }
+
+  withSettings(
+    additionalSettings: Partial<HuggingFaceTextGenerationModelSettings>
+  ) {
+    return new HuggingFaceTextGenerationModel(
+      Object.assign({}, this.settings, additionalSettings)
+    );
   }
 }

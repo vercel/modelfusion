@@ -1,4 +1,4 @@
-import { OpenAITextGenerationModel } from "ai-utils.js";
+import { OpenAITextGenerationModel, throttleMaxConcurrency } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -8,6 +8,7 @@ dotenv.config();
     model: "text-davinci-003",
     temperature: 0.7,
     maxTokens: 500,
+    throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
   });
 
   const text = await model.generateText(
