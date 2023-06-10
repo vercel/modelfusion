@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AbstractImageGenerationModel } from "../../model/image-generation/AbstractImageGenerationModel.js";
-import { BaseImageGenerationModelSettings } from "../../model/image-generation/ImageGenerationModel.js";
+import { ImageGenerationModelSettings } from "../../model/image-generation/ImageGenerationModel.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
@@ -14,7 +14,7 @@ import { throttleUnlimitedConcurrency } from "../../util/throttle/UnlimitedConcu
 import { failedOpenAICallResponseHandler } from "./internal/failedOpenAICallResponseHandler.js";
 
 export interface OpenAIImageGenerationModelSettings
-  extends BaseImageGenerationModelSettings {
+  extends ImageGenerationModelSettings {
   baseUrl?: string;
   apiKey?: string;
 

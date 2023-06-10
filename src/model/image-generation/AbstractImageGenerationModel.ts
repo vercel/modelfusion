@@ -5,7 +5,7 @@ import { AbortError } from "../../util/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AbstractModel } from "../AbstractModel.js";
 import {
-  BaseImageGenerationModelSettings,
+  ImageGenerationModelSettings,
   ImageGenerationModel,
 } from "./ImageGenerationModel.js";
 import {
@@ -16,7 +16,7 @@ import {
 export abstract class AbstractImageGenerationModel<
     PROMPT,
     RESPONSE,
-    SETTINGS extends BaseImageGenerationModelSettings
+    SETTINGS extends ImageGenerationModelSettings
   >
   extends AbstractModel<SETTINGS>
   implements ImageGenerationModel<PROMPT, SETTINGS>

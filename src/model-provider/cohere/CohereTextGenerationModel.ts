@@ -5,7 +5,7 @@ import {
 } from "../../internal/postToApi.js";
 import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
 import {
-  BaseTextGenerationModelSettings,
+  TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../model/text-generation/TextGenerationModel.js";
 import { RunContext } from "../../run/RunContext.js";
@@ -35,29 +35,29 @@ export const COHERE_TEXT_GENERATION_MODELS = {
 export type CohereTextGenerationModelType =
   keyof typeof COHERE_TEXT_GENERATION_MODELS;
 
-export type CohereTextGenerationModelSettings =
-  BaseTextGenerationModelSettings & {
-    model: CohereTextGenerationModelType;
+export interface CohereTextGenerationModelSettings
+  extends TextGenerationModelSettings {
+  model: CohereTextGenerationModelType;
 
-    baseUrl?: string;
-    apiKey?: string;
+  baseUrl?: string;
+  apiKey?: string;
 
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
+  retry?: RetryFunction;
+  throttle?: ThrottleFunction;
 
-    numGenerations?: number;
-    maxTokens?: number;
-    temperature?: number;
-    k?: number;
-    p?: number;
-    frequencyPenalty?: number;
-    presencePenalty?: number;
-    endSequences?: string[];
-    stopSequences?: string[];
-    returnLikelihoods?: "GENERATION" | "ALL" | "NONE";
-    logitBias?: Record<string, number>;
-    truncate?: "NONE" | "START" | "END";
-  };
+  numGenerations?: number;
+  maxTokens?: number;
+  temperature?: number;
+  k?: number;
+  p?: number;
+  frequencyPenalty?: number;
+  presencePenalty?: number;
+  endSequences?: string[];
+  stopSequences?: string[];
+  returnLikelihoods?: "GENERATION" | "ALL" | "NONE";
+  logitBias?: Record<string, number>;
+  truncate?: "NONE" | "START" | "END";
+}
 
 /**
  * Create a text generation model that calls the Cohere Co.Generate API.

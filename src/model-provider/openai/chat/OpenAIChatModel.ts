@@ -1,7 +1,7 @@
 import { AbstractTextGenerationModel } from "../../../model/text-generation/AbstractTextGenerationModel.js";
 import { RunContext } from "../../../run/RunContext.js";
 import {
-  BaseTextGenerationModelSettings,
+  TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../../model/text-generation/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
@@ -39,7 +39,7 @@ export const OPENAI_CHAT_MODELS = {
 
 export type OpenAIChatModelType = keyof typeof OPENAI_CHAT_MODELS;
 
-export type OpenAIChatModelSettings = BaseTextGenerationModelSettings & {
+export interface OpenAIChatModelSettings extends TextGenerationModelSettings {
   model: OpenAIChatModelType;
 
   baseUrl?: string;
@@ -57,7 +57,7 @@ export type OpenAIChatModelSettings = BaseTextGenerationModelSettings & {
   maxTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
-};
+}
 
 /**
  * Create a text generation model that calls the OpenAI chat completion API.

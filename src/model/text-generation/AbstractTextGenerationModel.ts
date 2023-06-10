@@ -5,7 +5,7 @@ import { AbortError } from "../../util/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AbstractModel } from "../AbstractModel.js";
 import {
-  BaseTextGenerationModelSettings,
+  TextGenerationModelSettings,
   TextGenerationModel,
 } from "./TextGenerationModel.js";
 import {
@@ -16,7 +16,7 @@ import {
 export abstract class AbstractTextGenerationModel<
     PROMPT,
     RESPONSE,
-    SETTINGS extends BaseTextGenerationModelSettings
+    SETTINGS extends TextGenerationModelSettings
   >
   extends AbstractModel<SETTINGS>
   implements TextGenerationModel<PROMPT, SETTINGS>

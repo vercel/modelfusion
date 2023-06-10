@@ -1,13 +1,13 @@
-import { BaseModelSettings } from "model/Model.js";
+import { Model, ModelSettings } from "../Model.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 
-export interface BaseImageGenerationModelSettings extends BaseModelSettings {}
+export interface ImageGenerationModelSettings extends ModelSettings {}
 
 export interface ImageGenerationModel<
   PROMPT,
-  SETTINGS extends BaseImageGenerationModelSettings
-> {
+  SETTINGS extends ImageGenerationModelSettings
+> extends Model<SETTINGS> {
   generateImage(
     prompt: PROMPT,
     settings?: Partial<SETTINGS> & {
@@ -30,6 +30,4 @@ export interface ImageGenerationModel<
       functionId?: string;
     }
   ): (input: INPUT, run?: RunContext) => PromiseLike<string>;
-
-  withSettings(additionalSettings: Partial<SETTINGS>): this;
 }

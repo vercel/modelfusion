@@ -1,4 +1,4 @@
-import { BaseImageGenerationModelSettings } from "index.js";
+import { ImageGenerationModelSettings } from "index.js";
 import { z } from "zod";
 import { AbstractImageGenerationModel } from "../../model/image-generation/AbstractImageGenerationModel.js";
 import {
@@ -96,7 +96,7 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
 }
 
 export interface StabilityImageGenerationModelSettings
-  extends BaseImageGenerationModelSettings {
+  extends ImageGenerationModelSettings {
   model: string;
 
   baseUrl?: string;

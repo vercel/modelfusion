@@ -1,12 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
+import { TextEmbeddingModel } from "../model/text-embedding/TextEmbeddingModel.js";
 import { RunContext } from "../run/RunContext.js";
 import { Vector } from "../run/Vector.js";
-import {
-  TextEmbeddingFunction,
-  TextsEmbeddingFunction,
-} from "../text/embed/TextEmbeddingFunction.js";
-import { TextEmbeddingModel } from "../text/embed/TextEmbeddingModel.js";
-import { embedText, embedTexts } from "../text/embed/embedText.js";
 import { VectorStore } from "./VectorStore.js";
 
 export type VectorDBQueryResult<DATA> = Array<{
@@ -20,8 +15,9 @@ export class VectorDB<DATA, STORE> {
 
   private readonly generateId: () => string;
 
-  private readonly embedForStore: TextsEmbeddingFunction;
-  private readonly embedForQuery: TextEmbeddingFunction;
+  private readonly embeddingModel: TextEmbeddingModel<any>;
+  private readonly queryFunctionId?: string;
+  private readonly storeFunctionId?: string;
 
   constructor({
     store,
@@ -38,14 +34,9 @@ export class VectorDB<DATA, STORE> {
   }) {
     this._store = store;
     this.generateId = generateId;
-    this.embedForStore = embedTexts.asFunction({
-      model: embeddingModel,
-      functionId: storeFunctionId,
-    });
-    this.embedForQuery = embedText.asFunction({
-      model: embeddingModel,
-      functionId: queryFunctionId,
-    });
+    this.embeddingModel = embeddingModel;
+    this.queryFunctionId = queryFunctionId;
+    this.storeFunctionId = storeFunctionId;
   }
 
   async upsert(
@@ -88,7 +79,11 @@ export class VectorDB<DATA, STORE> {
       );
     }
 
-    const vectors = await this.embedForStore(keyTexts, context);
+    const vectors = await this.embeddingModel.embedTexts(
+      keyTexts,
+      { functionId: this.storeFunctionId },
+      context
+    );
 
     this._store.upsertMany(
       vectors.map((vector, i) => ({
@@ -112,7 +107,11 @@ export class VectorDB<DATA, STORE> {
     context?: RunContext
   ): Promise<VectorDBQueryResult<DATA>> {
     return this.queryByVector({
-      queryVector: await this.embedForQuery(queryText, context),
+      queryVector: await this.embeddingModel.embedText(
+        queryText,
+        { functionId: this.queryFunctionId },
+        context
+      ),
       maxResults,
       similarityThreshold,
     });

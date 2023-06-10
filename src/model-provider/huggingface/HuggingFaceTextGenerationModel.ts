@@ -4,7 +4,7 @@ import {
   postJsonToApi,
 } from "../../internal/postToApi.js";
 import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
-import { BaseTextGenerationModelSettings } from "../../model/text-generation/TextGenerationModel.js";
+import { TextGenerationModelSettings } from "../../model/text-generation/TextGenerationModel.js";
 import { RunContext } from "../../run/RunContext.js";
 import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
@@ -13,7 +13,7 @@ import { throttleUnlimitedConcurrency } from "../../util/throttle/UnlimitedConcu
 import { failedHuggingFaceCallResponseHandler } from "./failedHuggingFaceCallResponseHandler.js";
 
 export interface HuggingFaceTextGenerationModelSettings
-  extends BaseTextGenerationModelSettings {
+  extends TextGenerationModelSettings {
   model: string;
 
   baseUrl?: string;

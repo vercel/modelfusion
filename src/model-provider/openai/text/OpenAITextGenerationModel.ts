@@ -1,7 +1,7 @@
 import { RunContext } from "../../../run/RunContext.js";
 import { AbstractTextGenerationModel } from "../../../model/text-generation/AbstractTextGenerationModel.js";
 import {
-  BaseTextGenerationModelSettings,
+  TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../../model/text-generation/TextGenerationModel.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
@@ -51,7 +51,7 @@ export type OpenAITextGenerationModelType =
   keyof typeof OPENAI_TEXT_GENERATION_MODELS;
 
 export interface OpenAITextGenerationModelSettings
-  extends BaseTextGenerationModelSettings {
+  extends TextGenerationModelSettings {
   model: OpenAITextGenerationModelType;
 
   baseUrl?: string;

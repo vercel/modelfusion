@@ -1,11 +1,12 @@
+import { AbstractTextEmbeddingModel } from "../../../model/text-embedding/AbstractTextEmbeddingModel.js";
+import { TextEmbeddingModelSettings } from "../../../model/text-embedding/TextEmbeddingModel.js";
 import { RunContext } from "../../../run/RunContext.js";
-import { TextEmbeddingModel } from "../../../text/embed/TextEmbeddingModel.js";
 import { TokenizationSupport } from "../../../text/tokenize/TokenizationSupport.js";
 import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
 import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
-import { throttleMaxConcurrency } from "../../../util/throttle/MaxConcurrentCallsThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
+import { throttleUnlimitedConcurrency } from "../../../util/throttle/UnlimitedConcurrencyThrottler.js";
 import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
 import {
   OpenAITextEmbeddingResponse,
@@ -22,9 +23,17 @@ export const OPENAI_TEXT_EMBEDDING_MODELS = {
 export type OpenAITextEmbeddingModelType =
   keyof typeof OPENAI_TEXT_EMBEDDING_MODELS;
 
-export type OpenAITextEmbeddingModelSettings = {
+export interface OpenAITextEmbeddingModelSettings
+  extends TextEmbeddingModelSettings {
+  model: OpenAITextEmbeddingModelType;
+
+  baseUrl?: string;
+  apiKey?: string;
+
+  retry?: RetryFunction;
+  throttle?: ThrottleFunction;
   isUserIdForwardingEnabled?: boolean;
-};
+}
 
 /**
  * Create a text embedding model that calls the OpenAI embedding API.
@@ -32,73 +41,72 @@ export type OpenAITextEmbeddingModelSettings = {
  * @see https://platform.openai.com/docs/api-reference/embeddings
  *
  * @example
- * const embeddingModel = new OpenAITextEmbeddingModel({
- *   apiKey: OPENAI_API_KEY,
+ * const model = new OpenAITextEmbeddingModel({
  *   model: "text-embedding-ada-002",
  * });
  *
- * const response = await embeddingModel.embed([
+ * const embeddings = await model.embedTexts([
  *   "At first, Nox didn't know what to do with the pup.",
+ *   "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
  * ]);
- *
- * const embeddings = await embeddingModel.extractEmbeddings(response);
  */
 export class OpenAITextEmbeddingModel
-  implements
-    TextEmbeddingModel<OpenAITextEmbeddingResponse>,
-    TokenizationSupport
+  extends AbstractTextEmbeddingModel<
+    OpenAITextEmbeddingResponse,
+    OpenAITextEmbeddingModelSettings
+  >
+  implements TokenizationSupport
 {
-  readonly provider = "openai";
+  constructor(settings: OpenAITextEmbeddingModelSettings) {
+    super({
+      settings,
+      extractEmbeddings: (response) => [response.data[0]!.embedding],
+      generateResponse: (texts, _, run) => this.callAPI(texts, run),
+    });
 
-  readonly baseUrl?: string;
-  readonly apiKey: string;
-  readonly model: OpenAITextEmbeddingModelType;
-  readonly settings: OpenAITextEmbeddingModelSettings;
+    this.tokenizer = TikTokenTokenizer.forModel({ model: this.modelName });
+    this.maxTokens = OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].maxTokens;
 
-  readonly retry: RetryFunction;
-  readonly throttle: ThrottleFunction;
+    this.embeddingDimensions =
+      OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].embeddingDimensions;
+  }
 
-  readonly tokenizer: Tokenizer;
-  readonly maxTokens: number;
+  readonly provider = "openai" as const;
+  get modelName() {
+    return this.settings.model;
+  }
 
   readonly maxTextsPerCall = 1;
   readonly embeddingDimensions: number;
 
-  constructor({
-    baseUrl,
-    apiKey,
-    model,
-    settings = {},
-    retry = retryWithExponentialBackoff(),
-    throttle = throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
-  }: {
-    baseUrl?: string;
-    apiKey: string;
-    model: OpenAITextEmbeddingModelType;
-    settings?: OpenAITextEmbeddingModelSettings;
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  }) {
-    this.baseUrl = baseUrl;
-    this.apiKey = apiKey;
-    this.model = model;
-    this.settings = settings;
+  readonly tokenizer: Tokenizer;
+  readonly maxTokens: number;
 
-    this.retry = retry;
-    this.throttle = throttle;
+  private get apiKey() {
+    const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
 
-    this.tokenizer = TikTokenTokenizer.forModel({ model });
-    this.maxTokens = OPENAI_TEXT_EMBEDDING_MODELS[model].maxTokens;
+    if (apiKey == null) {
+      throw new Error(
+        `OpenAI API key is missing. Pass it as an argument to the constructor or set it as an environment variable named OPENAI_API_KEY.`
+      );
+    }
 
-    this.embeddingDimensions =
-      OPENAI_TEXT_EMBEDDING_MODELS[model].embeddingDimensions;
+    return apiKey;
+  }
+
+  private get retry() {
+    return this.settings.retry ?? retryWithExponentialBackoff();
+  }
+
+  private get throttle() {
+    return this.settings.throttle ?? throttleUnlimitedConcurrency();
   }
 
   async countTokens(input: string) {
     return this.tokenizer.countTokens(input);
   }
 
-  async embed(
+  async callAPI(
     texts: Array<string>,
     context?: RunContext
   ): Promise<OpenAITextEmbeddingResponse> {
@@ -111,11 +119,10 @@ export class OpenAITextEmbeddingModel
     return this.retry(async () =>
       this.throttle(async () =>
         callOpenAITextEmbeddingAPI({
-          baseUrl: this.baseUrl,
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
           input: texts[0],
-          model: this.model,
+          model: this.modelName,
           user: this.settings.isUserIdForwardingEnabled
             ? context?.userId
             : undefined,
@@ -124,20 +131,9 @@ export class OpenAITextEmbeddingModel
     );
   }
 
-  async extractEmbeddings(
-    rawOutput: OpenAITextEmbeddingResponse
-  ): Promise<Array<Array<number>>> {
-    return [rawOutput.data[0]!.embedding];
-  }
-
   withSettings(additionalSettings: OpenAITextEmbeddingModelSettings) {
-    return new OpenAITextEmbeddingModel({
-      baseUrl: this.baseUrl,
-      apiKey: this.apiKey,
-      model: this.model,
-      settings: Object.assign({}, this.settings, additionalSettings),
-      retry: this.retry,
-      throttle: this.throttle,
-    });
+    return new OpenAITextEmbeddingModel(
+      Object.assign({}, this.settings, additionalSettings)
+    ) as this;
   }
 }

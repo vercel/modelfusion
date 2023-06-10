@@ -1,16 +1,16 @@
-import { BaseModelSettings } from "model/Model.js";
+import { Model, ModelSettings } from "../Model.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 import { TokenizationSupport } from "../../text/tokenize/TokenizationSupport.js";
 
-export interface BaseTextGenerationModelSettings extends BaseModelSettings {
+export interface TextGenerationModelSettings extends ModelSettings {
   trimOutput?: boolean;
 }
 
 export interface TextGenerationModel<
   PROMPT,
-  SETTINGS extends BaseTextGenerationModelSettings
-> {
+  SETTINGS extends TextGenerationModelSettings
+> extends Model<SETTINGS> {
   generateText(
     prompt: PROMPT,
     settings?: Partial<SETTINGS> & {
@@ -33,13 +33,11 @@ export interface TextGenerationModel<
       functionId?: string;
     }
   ): (input: INPUT, run?: RunContext) => PromiseLike<string>;
-
-  withSettings(additionalSettings: Partial<SETTINGS>): this;
 }
 
 export interface TextGenerationModelWithTokenization<
   PROMPT,
-  SETTINGS extends BaseTextGenerationModelSettings
+  SETTINGS extends TextGenerationModelSettings
 > extends TextGenerationModel<PROMPT, SETTINGS>,
     TokenizationSupport {
   countPromptTokens(prompt: PROMPT): PromiseLike<number>;

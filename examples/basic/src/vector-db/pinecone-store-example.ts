@@ -1,11 +1,28 @@
-import { InMemoryStore, OpenAITextEmbeddingModel, VectorDB } from "ai-utils.js";
+import { PineconeClient } from "@pinecone-database/pinecone";
+import { CohereTextEmbeddingModel, PineconeStore, VectorDB } from "ai-utils.js";
 import dotenv from "dotenv";
+import { z } from "zod";
 
 dotenv.config();
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
+const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
+const PINECONE_ENVIRONMENT = process.env.PINECONE_ENVIRONMENT;
+const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
+
+if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
+  throw new Error(
+    "COHERE_API_KEY, PINECONE_API_KEY, PINECONE_ENVIRONMENT and PINECONE_INDEX_NAME must be set"
+  );
+}
 
 (async () => {
+  const client = new PineconeClient();
+  await client.init({
+    apiKey: PINECONE_API_KEY,
+    environment: PINECONE_ENVIRONMENT,
+  });
+  const index = client.Index(PINECONE_INDEX_NAME);
+
   const texts = [
     "A rainbow is an optical phenomenon that can occur under certain meteorological conditions.",
     "It is caused by refraction, internal reflection and dispersion of light in water droplets resulting in a continuous spectrum of light appearing in the sky.",
@@ -20,13 +37,14 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
   ];
 
   const vectorDB = new VectorDB({
-    store: new InMemoryStore(),
-    embeddingModel: new OpenAITextEmbeddingModel({
-      apiKey: OPENAI_API_KEY,
-      model: "text-embedding-ada-002",
+    store: new PineconeStore({ index, schema: z.object({ text: z.string() }) }),
+    embeddingModel: new CohereTextEmbeddingModel({
+      model: "embed-english-light-v2.0",
     }),
   });
 
+  // Note: if this script is run several times, the same texts will be inserted and there will be duplicates.
+  // Note: Pinecone might need some time to index the data.
   await vectorDB.upsertMany({
     keyTexts: texts,
     data: texts.map((text) => ({ text })),
@@ -35,7 +53,6 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
   const results = await vectorDB.queryByText({
     queryText: "rainbow and water droplets",
     maxResults: 3,
-    similarityThreshold: 0.8,
   });
 
   console.log(results);

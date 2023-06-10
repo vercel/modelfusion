@@ -1,9 +1,11 @@
 import { RunContext } from "../run/RunContext.js";
 import { ModelInformation } from "../run/ModelInformation.js";
-import { BaseModelSettings } from "./Model.js";
+import { Model, ModelSettings } from "./Model.js";
 import { RunObserver } from "index.js";
 
-export abstract class AbstractModel<SETTINGS extends BaseModelSettings> {
+export abstract class AbstractModel<SETTINGS extends ModelSettings>
+  implements Model<SETTINGS>
+{
   constructor({ settings }: { settings: SETTINGS }) {
     this.settings = settings;
   }
