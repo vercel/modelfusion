@@ -12,6 +12,7 @@
     "openai",
     "reprioritize",
     "reprioritizing",
-    "Tiktoken"
+    "Tiktoken",
+    "upsert"
   ]
 }
