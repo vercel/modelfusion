@@ -13,10 +13,10 @@
 ## Quick Install
 
 ```bash
-npm install --save ai-utils.js
+npm install ai-utils.js
 ```
 
-## Example
+## Usage Example
 
 ```ts
 import { OpenAITextGenerationModel } from "ai-utils.js";
