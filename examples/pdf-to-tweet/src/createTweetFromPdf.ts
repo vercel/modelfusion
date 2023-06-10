@@ -1,6 +1,6 @@
 import {
-  EmbedTextObserver,
-  InMemoryStore,
+  TextEmbeddingObserver,
+  MemoryStore,
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
@@ -24,7 +24,7 @@ export async function createTweetFromPdf({
   pdfPath: string;
   exampleTweetIndexPath: string;
   openAiApiKey: string;
-  run: RunContext & TextGenerationObserver & EmbedTextObserver;
+  run: RunContext & TextGenerationObserver & TextEmbeddingObserver;
 }) {
   const chatModel = new OpenAIChatModel({
     apiKey: openAiApiKey,
@@ -32,7 +32,7 @@ export async function createTweetFromPdf({
   });
 
   const exampleTweetStore = new VectorDB({
-    store: await InMemoryStore.deserialize({
+    store: await MemoryStore.deserialize({
       serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
       schema: z.object({ tweet: z.string() }),
     }),

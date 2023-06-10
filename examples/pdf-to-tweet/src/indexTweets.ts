@@ -1,4 +1,4 @@
-import { InMemoryStore, OpenAITextEmbeddingModel, VectorDB } from "ai-utils.js";
+import { MemoryStore, OpenAITextEmbeddingModel, VectorDB } from "ai-utils.js";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import fs from "node:fs";
@@ -27,7 +27,7 @@ if (!openAiApiKey) {
   const exampleTweets = inputText.split("\n-----\n");
 
   const vectorDB = new VectorDB({
-    store: new InMemoryStore(),
+    store: new MemoryStore(),
     embeddingModel: new OpenAITextEmbeddingModel({
       apiKey: openAiApiKey,
       model: "text-embedding-ada-002",
