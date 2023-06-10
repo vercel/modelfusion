@@ -12,7 +12,13 @@ sidebar_position: 1
 npm install ai-utils.js
 ```
 
-## Usage Example
+## Requirements
+
+- [Node.js](https://nodejs.org/en/download/) version 18 or above (for 'fetch' support)
+
+## Usage Examples
+
+### Text Generation
 
 ```ts
 import { OpenAITextGenerationModel } from "ai-utils.js";
@@ -28,6 +34,23 @@ const text = await model.generateText(
 );
 ```
 
-## Requirements
+### Image Generation
 
-- [Node.js](https://nodejs.org/en/download/) version 18 or above (for 'fetch' support)
+```ts
+import { StabilityImageGenerationModel } from "ai-utils.js";
+
+const model = new StabilityImageGenerationModel({
+  model: "stable-diffusion-512-v2-1",
+  cfgScale: 7,
+  clipGuidancePreset: "FAST_BLUE",
+  height: 512,
+  width: 512,
+  samples: 1,
+  steps: 30,
+});
+
+const image = await model.generateImage([
+  { text: "the wicked witch of the west" },
+  { text: "style of early 19th century painting", weight: 0.5 },
+]);
+```

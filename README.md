@@ -6,7 +6,7 @@
 [![NPM Version](https://img.shields.io/npm/v/ai-utils.js?color=33cd56&logo=npm)](https://www.npmjs.com/package/ai-utils.js)
 [![MIT License](https://img.shields.io/github/license/lgrammel/ai-utils.js)](https://opensource.org/licenses/MIT)
 
-[Quick Install](#quick-install) | [Usage Example](#usage-example) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#examples) | [ai-utils.dev](https://ai-utils.dev)
+[Quick Install](#quick-install) | [Usage Examples](#usage-examples) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#examples) | [ai-utils.dev](https://ai-utils.dev)
 
 **⚠️ `ai-utils.js` is currently in its initial experimental phase. Until version 0.1 there may be breaking changes in each release.**
 
@@ -16,7 +16,9 @@
 npm install ai-utils.js
 ```
 
-## Usage Example
+## Usage Examples
+
+### Text Generation
 
 ```ts
 import { OpenAITextGenerationModel } from "ai-utils.js";
@@ -30,6 +32,27 @@ const model = new OpenAITextGenerationModel({
 const text = await model.generateText(
   "Write a short story about a robot learning to love:\n\n"
 );
+```
+
+### Image Generation
+
+```ts
+import { StabilityImageGenerationModel } from "ai-utils.js";
+
+const model = new StabilityImageGenerationModel({
+  model: "stable-diffusion-512-v2-1",
+  cfgScale: 7,
+  clipGuidancePreset: "FAST_BLUE",
+  height: 512,
+  width: 512,
+  samples: 1,
+  steps: 30,
+});
+
+const image = await model.generateImage([
+  { text: "the wicked witch of the west" },
+  { text: "style of early 19th century painting", weight: 0.5 },
+]);
 ```
 
 ## Introduction
@@ -126,6 +149,9 @@ Record audio with push-to-talk and transcribe it using Whisper, implemented as a
 
 TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.
 
+````
+
 ```
 
 ```
+````
