@@ -16,6 +16,22 @@
 npm install --save ai-utils.js
 ```
 
+## Quick Example
+
+```ts
+import { OpenAITextGenerationModel } from "ai-utils.js";
+
+const model = new OpenAITextGenerationModel({
+  model: "text-davinci-003",
+  temperature: 0.7,
+  maxTokens: 500,
+});
+
+const text = await model.generateText(
+  "Write a short story about a robot learning to love:\n\n"
+);
+```
+
 ## Introduction
 
 `ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for text generation, tokenization, embeddings, and image generation. Different providers are supported, including OpenAI, Cohere, Hugging Face, and Stability AI.
@@ -109,3 +125,7 @@ Record audio with push-to-talk and transcribe it using Whisper, implemented as a
 > _terminal app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
 
 TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.
+
+```
+
+```
