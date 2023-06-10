@@ -1,22 +1,22 @@
 ---
 sidebar_position: 1
-title: In-Memory
+title: Memory
 ---
 
-# In-Memory Vector DB
+# Memory Vector DB
 
-[API documentation](/api/classes/InMemoryStore)
+[API documentation](/api/classes/MemoryStore)
 |
-[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-db/InMemoryStoreExample.ts)
+[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-db/MemoryStoreExample.ts)
 
-The in-memory vector store is a simple implementation of the [VectorStore](/api/interfaces/VectorStore) interface that stores all vectors in memory. It is helpful for development and prototyping or when you only have a small number of entries and want to avoid setting up a database, e.g., for conversational memory that does not need to be persisted.
+The memory vector store is a simple implementation of the [VectorStore](/api/interfaces/VectorStore) interface that stores all vectors in memory. It is helpful for development and prototyping or when you only have a small number of entries and want to avoid setting up a database, e.g., for conversational memory that does not need to be persisted.
 
 ## Example Usage
 
 ```ts
 // Create an empty store and use it:
 const vectorDB = new VectorDB({
-  store: new InMemoryStore(),
+  store: new MemoryStore(),
   embeddingModel: new OpenAITextEmbeddingModel({
     // ...
   }),
@@ -42,7 +42,7 @@ const results = await vectorDB.queryByText({
 const serializedData = vectorDB.store.serialize();
 
 // The deserialization needs a Zod schema for type validation:
-const deserializedStore = await InMemoryStore.deserialize({
+const deserializedStore = await MemoryStore.deserialize({
   serializedData,
   schema: z.object({ text: z.string() }),
 });

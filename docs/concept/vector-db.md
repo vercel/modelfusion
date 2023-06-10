@@ -14,7 +14,7 @@ In `ai-utils.js`, a vector database is represented by the [VectorDB](/api/classe
 
 ```ts
 const vectorDB = new VectorDB({
-  store: new InMemoryStore(),
+  store: new MemoryStore(),
   embeddingModel: new OpenAITextEmbeddingModel({
     apiKey: OPENAI_API_KEY,
     model: "text-embedding-ada-002",
@@ -51,5 +51,5 @@ const results = await vectorDB.queryByText({
 
 ## Available Vector DBs
 
-- [In-Memory](/integration/vector-db/in-memory)
+- [IMemory](/integration/vector-db/memory)
 - [Pinecone](/integration/vector-db/pinecone)

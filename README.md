@@ -140,7 +140,7 @@ Recognizing that AI applications involve more than just text, this library suppo
 
 ### Vector DBs
 
-- [In-Memory](https://ai-utils.dev/integration/vector-db/in-memory)
+- [Memory](https://ai-utils.dev/integration/vector-db/memory)
 - [Pinecone](https://ai-utils.dev/integration/vector-db/pinecone)
 
 ## Documentation (at [ai-utils.dev](https://ai-utils.dev))

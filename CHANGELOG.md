@@ -45,7 +45,7 @@
 ### New
 
 1. Hugging Face text generation support
-1. In-memory vector DB
+1. Memory vector DB
 
 ## v0.0.6 - 2023-05-31
 
