@@ -1,30 +1,26 @@
-import { StabilityImageGenerationModel, generateImage } from "ai-utils.js";
+import { StabilityImageGenerationModel } from "ai-utils.js";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {
   api: { bodyParser: true },
 };
 
-const stabilityApiKey = process.env.STABILITY_API_KEY ?? "";
+const model = new StabilityImageGenerationModel({
+  model: "stable-diffusion-512-v2-1",
+  clipGuidancePreset: "FAST_BLUE",
+  cfgScale: 10,
+  height: 512,
+  width: 512,
+  samples: 1,
+  steps: 30,
+});
 
-const generatePainting = generateImage.asFunction({
-  model: new StabilityImageGenerationModel({
-    apiKey: stabilityApiKey,
-    model: "stable-diffusion-512-v2-1",
-    settings: {
-      clipGuidancePreset: "FAST_BLUE",
-      cfgScale: 10,
-      height: 512,
-      width: 512,
-      samples: 1,
-      steps: 30,
-    },
-  }),
-  prompt: async ({ description }: { description: string }) => [
+const generatePainting = model.generateImageAsFunction(
+  async (description: string) => [
     { text: description },
     { text: "style of early 19th century painting", weight: 0.5 },
-  ],
-});
+  ]
+);
 
 export default async function handler(
   req: NextApiRequest,
@@ -37,7 +33,7 @@ export default async function handler(
 
   const { text: description } = req.body;
 
-  const imageBase64 = await generatePainting({ description });
+  const imageBase64 = await generatePainting(description);
 
   try {
     res.status(200).json(imageBase64);
