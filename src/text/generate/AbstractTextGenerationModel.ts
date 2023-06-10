@@ -1,17 +1,17 @@
 import { createId } from "@paralleldrive/cuid2";
-import { ModelInformation } from "../run/ModelInformation.js";
-import { PromptTemplate } from "../run/PromptTemplate.js";
-import { RunContext } from "../run/RunContext.js";
+import { ModelInformation } from "../../run/ModelInformation.js";
+import { PromptTemplate } from "../../run/PromptTemplate.js";
+import { RunContext } from "../../run/RunContext.js";
+import { AbortError } from "../../util/AbortError.js";
+import { runSafe } from "../../util/runSafe.js";
 import {
   BaseTextGenerationModelSettings,
   TextGenerationModel,
-} from "../text/generate/TextGenerationModel.js";
+} from "./TextGenerationModel.js";
 import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
-} from "../text/generate/TextGenerationObserver.js";
-import { AbortError } from "../util/AbortError.js";
-import { runSafe } from "../util/runSafe.js";
+} from "./TextGenerationObserver.js";
 
 export abstract class AbstractTextGenerationModel<
   PROMPT,
@@ -28,6 +28,9 @@ export abstract class AbstractTextGenerationModel<
     extractText: (response: RESPONSE) => string;
     generateResponse: (
       prompt: PROMPT,
+      settings: SETTINGS & {
+        functionId?: string;
+      },
       run?: RunContext
     ) => PromiseLike<RESPONSE>;
   }) {
@@ -51,6 +54,9 @@ export abstract class AbstractTextGenerationModel<
   private extractText: (response: RESPONSE) => string;
   private generateResponse: (
     prompt: PROMPT,
+    settings: SETTINGS & {
+      functionId?: string;
+    },
     run?: RunContext
   ) => PromiseLike<RESPONSE>;
 
@@ -69,11 +75,29 @@ export abstract class AbstractTextGenerationModel<
 
   async generateText(
     prompt: PROMPT,
-    options?: Partial<SETTINGS> | null,
+    settings?:
+      | (Partial<SETTINGS> & {
+          functionId?: string;
+        })
+      | null,
     run?: RunContext
   ): Promise<string> {
-    if (options != null) {
-      return this.withSettings(options).generateText(prompt, undefined, run);
+    if (settings != null) {
+      const settingKeys = Object.keys(settings);
+
+      // create new instance when there are settings other than 'functionId':
+      if (
+        settingKeys.length > 1 ||
+        (settingKeys.length === 1 && settingKeys[0] !== "functionId")
+      ) {
+        return this.withSettings(settings).generateText(
+          prompt,
+          {
+            functionId: settings.functionId,
+          } as Partial<SETTINGS> & { functionId?: string },
+          run
+        );
+      }
     }
 
     const startTime = performance.now();
@@ -84,10 +108,12 @@ export abstract class AbstractTextGenerationModel<
     const callId = createId();
 
     const startMetadata = {
-      generateTextCallId: callId,
       runId: run?.runId,
       sessionId: run?.sessionId,
       userId: run?.userId,
+
+      functionId: settings?.functionId,
+      callId,
 
       model: this.modelInformation,
 
@@ -113,7 +139,13 @@ export abstract class AbstractTextGenerationModel<
       }
     });
 
-    const result = await runSafe(() => this.generateResponse(prompt, run));
+    const result = await runSafe(() =>
+      this.generateResponse(
+        prompt,
+        Object.assign({}, this.settings, settings), // include function id
+        run
+      )
+    );
 
     const generationDurationInMs = Math.ceil(performance.now() - startTime);
 
@@ -187,13 +219,15 @@ export abstract class AbstractTextGenerationModel<
 
   generateTextAsFunction<INPUT>(
     promptTemplate: PromptTemplate<INPUT, PROMPT>,
-    options?: Partial<SETTINGS>
+    settings?: Partial<SETTINGS> & {
+      functionId?: string;
+    }
   ) {
-    return async (input: INPUT, context?: RunContext) => {
+    return async (input: INPUT, run?: RunContext) => {
       const expandedPrompt = await promptTemplate(input);
       return this.generateText(
         expandedPrompt,
-        Object.assign({}, options, context)
+        Object.assign({}, settings, run)
       );
     };
   }

@@ -10,7 +10,6 @@ export type TextGenerationStartedEvent = {
   type: "text-generation-started";
   metadata: IdMetadata & {
     model: ModelInformation;
-    generateTextCallId: string;
     startEpochSeconds: number;
   };
   prompt: unknown;
@@ -20,7 +19,6 @@ export type TextGenerationFinishedEvent = {
   type: "text-generation-finished";
   metadata: IdMetadata & {
     model: ModelInformation;
-    generateTextCallId: string;
     startEpochSeconds: number;
     durationInMs: number;
   };

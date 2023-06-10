@@ -63,6 +63,7 @@ export async function createTweetFromPdf({
           ),
           OpenAIChatMessage.user(`## TEXT\n${text}`),
         ],
+        functionId: "extract-information",
         reservedCompletionTokens: 1024,
       },
       run
@@ -82,7 +83,10 @@ export async function createTweetFromPdf({
       ),
       OpenAIChatMessage.user(`## CONTENT\n${informationOnTopic}`),
     ],
-    { temperature: 0.5 },
+    {
+      functionId: "draft-tweet",
+      temperature: 0.5,
+    },
     run
   );
 
@@ -111,7 +115,10 @@ export async function createTweetFromPdf({
         `## STYLE EXAMPLE\n${similarTweets[0].data.tweet}`
       ),
     ],
-    { temperature: 0.5 },
+    {
+      functionId: "rewrite-tweet",
+      temperature: 0.5,
+    },
     run
   );
 }

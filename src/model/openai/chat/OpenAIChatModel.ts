@@ -1,4 +1,4 @@
-import { AbstractTextGenerationModel } from "../../../internal/AbstractTextGenerationModel.js";
+import { AbstractTextGenerationModel } from "../../../text/generate/AbstractTextGenerationModel.js";
 import { RunContext } from "../../../run/RunContext.js";
 import {
   BaseTextGenerationModelSettings,

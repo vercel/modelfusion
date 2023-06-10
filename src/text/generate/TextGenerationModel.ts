@@ -16,17 +16,25 @@ export interface TextGenerationModel<
 > {
   generateText(
     prompt: PROMPT,
-    settings?: Partial<SETTINGS>
+    settings?: Partial<SETTINGS> & {
+      functionId?: string;
+    }
   ): PromiseLike<string>;
   generateText(
     prompt: PROMPT,
-    settings: Partial<SETTINGS> | null, // require explicit null when run is set
+    settings:
+      | (Partial<SETTINGS> & {
+          functionId?: string;
+        })
+      | null, // require explicit null when run is set
     run: RunContext
   ): PromiseLike<string>;
 
   generateTextAsFunction<INPUT>(
     promptTemplate: PromptTemplate<INPUT, PROMPT>,
-    options?: Partial<SETTINGS>
+    settings?: Partial<SETTINGS> & {
+      functionId?: string;
+    }
   ): (input: INPUT, run?: RunContext) => PromiseLike<string>;
 
   withSettings(additionalSettings: Partial<SETTINGS>): this;

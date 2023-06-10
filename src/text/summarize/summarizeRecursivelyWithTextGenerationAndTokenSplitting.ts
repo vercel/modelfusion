@@ -16,11 +16,13 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     text,
     model,
     prompt,
+    functionId,
     reservedCompletionTokens,
   }: {
     text: string;
     model: TextGenerationModelWithTokenization<PROMPT, any>;
     prompt: (options: { text: string }) => Promise<PROMPT>;
+    functionId?: string;
     reservedCompletionTokens: number;
   },
   context?: RunContext
@@ -36,7 +38,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
       }),
       summarize: model
         .withMaxTokens(reservedCompletionTokens)
-        .generateTextAsFunction(prompt),
+        .generateTextAsFunction(prompt, { functionId }),
       text,
     },
     context
@@ -47,10 +49,12 @@ summarizeRecursivelyWithTextGenerationAndTokenSplitting.asFunction =
   <PROMPT>({
     model,
     prompt,
+    functionId,
     reservedCompletionTokens,
   }: {
     model: TextGenerationModelWithTokenization<PROMPT, any>;
     prompt: (options: { text: string }) => Promise<PROMPT>;
+    functionId?: string;
     reservedCompletionTokens: number;
   }): SummarizeFunction =>
   async (options: { text: string }, context?: RunContext) =>
@@ -59,6 +63,7 @@ summarizeRecursivelyWithTextGenerationAndTokenSplitting.asFunction =
         text: options.text,
         model,
         prompt,
+        functionId,
         reservedCompletionTokens,
       },
       context
