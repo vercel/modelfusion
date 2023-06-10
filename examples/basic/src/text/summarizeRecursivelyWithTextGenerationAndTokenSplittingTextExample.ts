@@ -1,4 +1,5 @@
 import {
+  OpenAIChatMessage,
   OpenAIChatModel,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "ai-utils.js";
@@ -12,8 +13,8 @@ const summarize =
     model: new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     prompt: async ({ text }) => {
       return [
-        { role: "system" as const, content: "Summarize the following text:" },
-        { role: "user" as const, content: text },
+        OpenAIChatMessage.system("Summarize the following text:"),
+        OpenAIChatMessage.user(text),
       ];
     },
     reservedCompletionTokens: 1000,
