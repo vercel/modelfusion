@@ -46,8 +46,8 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
     });
   }
 
-  readonly provider = "stability";
-  get model() {
+  readonly provider = "stability" as const;
+  get modelName() {
     return this.settings.model;
   }
 
@@ -80,7 +80,7 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
         callStabilityImageGenerationAPI({
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
-          engineId: this.model,
+          engineId: this.settings.model,
           textPrompts: input,
           ...this.settings,
         })

@@ -1,4 +1,4 @@
 export type ModelInformation = {
   provider: string;
-  name: string | null;
+  modelName: string | null;
 };

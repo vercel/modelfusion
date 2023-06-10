@@ -39,7 +39,7 @@ export async function doEmbedTexts<RAW_OUTPUT>(
 
     model: {
       provider: model.provider,
-      name: model.model,
+      modelName: model.model,
     },
     startEpochSeconds,
   };

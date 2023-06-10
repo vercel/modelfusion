@@ -98,12 +98,12 @@ export class CohereTextGenerationModel
       COHERE_TEXT_GENERATION_MODELS[this.settings.model].maxTokens;
     this.tokenizer = CohereTokenizer.forModel({
       apiKey: this.apiKey,
-      model: this.model,
+      model: this.settings.model,
     });
   }
 
-  readonly provider = "cohere";
-  get model() {
+  readonly provider = "cohere" as const;
+  get modelName() {
     return this.settings.model;
   }
 

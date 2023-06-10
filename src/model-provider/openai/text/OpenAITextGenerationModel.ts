@@ -115,8 +115,8 @@ export class OpenAITextGenerationModel
     this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[settings.model].maxTokens;
   }
 
-  readonly provider = "openai";
-  get model() {
+  readonly provider = "openai" as const;
+  get modelName() {
     return this.settings.model;
   }
 

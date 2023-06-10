@@ -1,10 +1,10 @@
 import SecureJSON from "secure-json-parse";
-import { ResponseHandler } from "../../../internal/postToApi.js";
-import { ApiCallError } from "../../../util/ApiCallError.js";
+import { ResponseHandler } from "../../internal/postToApi.js";
+import { ApiCallError } from "../../util/ApiCallError.js";
 import {
   HuggingFaceError,
   huggingFaceErrorDataSchema,
-} from "../HuggingFaceError.js";
+} from "./HuggingFaceError.js";
 
 export const failedHuggingFaceCallResponseHandler: ResponseHandler<
   ApiCallError

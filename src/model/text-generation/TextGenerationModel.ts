@@ -1,12 +1,9 @@
-import { RunObserver } from "../../run/RunObserver.js";
+import { BaseModelSettings } from "model/Model.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 import { TokenizationSupport } from "../../text/tokenize/TokenizationSupport.js";
 
-export interface BaseTextGenerationModelSettings {
-  uncaughtErrorHandler?: (error: unknown) => void;
-  observers?: Array<RunObserver>;
-
+export interface BaseTextGenerationModelSettings extends BaseModelSettings {
   trimOutput?: boolean;
 }
 

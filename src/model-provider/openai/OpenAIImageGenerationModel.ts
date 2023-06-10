@@ -52,8 +52,8 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
     });
   }
 
-  readonly provider = "openai";
-  readonly model = null;
+  readonly provider = "openai" as const;
+  readonly modelName = null;
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;

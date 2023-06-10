@@ -1,11 +1,8 @@
+import { BaseModelSettings } from "model/Model.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
-import { RunObserver } from "../../run/RunObserver.js";
 
-export interface BaseImageGenerationModelSettings {
-  uncaughtErrorHandler?: (error: unknown) => void;
-  observers?: Array<RunObserver>;
-}
+export interface BaseImageGenerationModelSettings extends BaseModelSettings {}
 
 export interface ImageGenerationModel<
   PROMPT,

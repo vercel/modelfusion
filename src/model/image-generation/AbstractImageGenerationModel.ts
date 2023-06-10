@@ -1,9 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
-import { ModelInformation } from "../../run/ModelInformation.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 import { AbortError } from "../../util/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
+import { AbstractModel } from "../AbstractModel.js";
 import {
   BaseImageGenerationModelSettings,
   ImageGenerationModel,
@@ -14,10 +14,12 @@ import {
 } from "./ImageGenerationObserver.js";
 
 export abstract class AbstractImageGenerationModel<
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends BaseImageGenerationModelSettings
-> implements ImageGenerationModel<PROMPT, SETTINGS>
+    PROMPT,
+    RESPONSE,
+    SETTINGS extends BaseImageGenerationModelSettings
+  >
+  extends AbstractModel<SETTINGS>
+  implements ImageGenerationModel<PROMPT, SETTINGS>
 {
   constructor({
     settings,
@@ -34,22 +36,10 @@ export abstract class AbstractImageGenerationModel<
       run?: RunContext
     ) => PromiseLike<RESPONSE>;
   }) {
-    this.settings = settings;
+    super({ settings });
     this.extractBase64Image = extractBase64Image;
     this.generateResponse = generateResponse;
   }
-
-  abstract readonly provider: string;
-  abstract readonly model: string | null;
-
-  get modelInformation(): ModelInformation {
-    return {
-      provider: this.provider,
-      name: this.model,
-    };
-  }
-
-  readonly settings: SETTINGS;
 
   private extractBase64Image: (response: RESPONSE) => string;
   private generateResponse: (
@@ -59,15 +49,6 @@ export abstract class AbstractImageGenerationModel<
     },
     run?: RunContext
   ) => PromiseLike<RESPONSE>;
-
-  protected get uncaughtErrorHandler() {
-    return (
-      this.settings.uncaughtErrorHandler ??
-      ((error) => {
-        console.error(error);
-      })
-    );
-  }
 
   async generateImage(
     prompt: PROMPT,
@@ -225,6 +206,4 @@ export abstract class AbstractImageGenerationModel<
       );
     };
   }
-
-  abstract withSettings(additionalSettings: Partial<SETTINGS>): this;
 }

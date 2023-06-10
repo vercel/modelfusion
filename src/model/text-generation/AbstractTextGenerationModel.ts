@@ -1,9 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
-import { ModelInformation } from "../../run/ModelInformation.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 import { AbortError } from "../../util/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
+import { AbstractModel } from "../AbstractModel.js";
 import {
   BaseTextGenerationModelSettings,
   TextGenerationModel,
@@ -14,10 +14,12 @@ import {
 } from "./TextGenerationObserver.js";
 
 export abstract class AbstractTextGenerationModel<
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends BaseTextGenerationModelSettings
-> implements TextGenerationModel<PROMPT, SETTINGS>
+    PROMPT,
+    RESPONSE,
+    SETTINGS extends BaseTextGenerationModelSettings
+  >
+  extends AbstractModel<SETTINGS>
+  implements TextGenerationModel<PROMPT, SETTINGS>
 {
   constructor({
     settings,
@@ -34,22 +36,10 @@ export abstract class AbstractTextGenerationModel<
       run?: RunContext
     ) => PromiseLike<RESPONSE>;
   }) {
-    this.settings = settings;
+    super({ settings });
     this.extractText = extractText;
     this.generateResponse = generateResponse;
   }
-
-  abstract readonly provider: string;
-  abstract readonly model: string;
-
-  get modelInformation(): ModelInformation {
-    return {
-      provider: this.provider,
-      name: this.model,
-    };
-  }
-
-  readonly settings: SETTINGS;
 
   private extractText: (response: RESPONSE) => string;
   private generateResponse: (
@@ -59,15 +49,6 @@ export abstract class AbstractTextGenerationModel<
     },
     run?: RunContext
   ) => PromiseLike<RESPONSE>;
-
-  protected get uncaughtErrorHandler() {
-    return (
-      this.settings.uncaughtErrorHandler ??
-      ((error) => {
-        console.error(error);
-      })
-    );
-  }
 
   private get shouldTrimOutput() {
     return this.settings.trimOutput ?? true;
@@ -231,6 +212,4 @@ export abstract class AbstractTextGenerationModel<
       );
     };
   }
-
-  abstract withSettings(additionalSettings: Partial<SETTINGS>): this;
 }

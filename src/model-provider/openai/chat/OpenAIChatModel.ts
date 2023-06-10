@@ -99,12 +99,12 @@ export class OpenAIChatModel
       generateResponse: (prompt, run) => this.callAPI(prompt, run),
     });
 
-    this.tokenizer = TikTokenTokenizer.forModel({ model: this.model });
-    this.maxTokens = OPENAI_CHAT_MODELS[this.model].maxTokens;
+    this.tokenizer = TikTokenTokenizer.forModel({ model: this.settings.model });
+    this.maxTokens = OPENAI_CHAT_MODELS[this.settings.model].maxTokens;
   }
 
-  readonly provider = "openai";
-  get model() {
+  readonly provider = "openai" as const;
+  get modelName() {
     return this.settings.model;
   }
 
@@ -138,7 +138,7 @@ export class OpenAIChatModel
   countPromptTokens(messages: OpenAIChatMessage[]) {
     return countOpenAIChatPromptTokens({
       messages,
-      model: this.model,
+      model: this.modelName,
     });
   }
 
