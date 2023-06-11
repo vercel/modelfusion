@@ -3,26 +3,32 @@ sidebar_position: 4
 title: Hugging Face
 ---
 
-# Hugging Face Model Provider
+# Hugging Face
 
-[Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/huggingface)
+## Setup
 
-## Example
+You can get an API key from [Hugging Face](https://huggingface.co/).
+
+## Usage
+
+[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/huggingface)
+
+The API key can be configured as an environment variable (`HUGGINGFACE_API_KEY`) or passed in as an option.
+
+### Text Generation
+
+[API](/api/classes/HuggingFaceTextGenerationModel)
 
 ```ts
+import { HuggingFaceTextGenerationModel } from "ai-utils.js";
+
 const textGenerationModel = new HuggingFaceTextGenerationModel({
-  apiKey: HUGGINGFACE_API_KEY,
   model: "tiiuae/falcon-7b",
-  settings: { temperature: 700 },
+  temperature: 700,
+  maxNewTokens: 500,
 });
 
-const response = await textGenerationModel
-  .withSettings({ maxNewTokens: 500 })
-  .generate("Write a short story about a robot learning to love:\n\n");
-
-const text = await textGenerationModel.extractText(response);
+const text = await textGenerationModel.generateText(
+  "Write a short story about a robot learning to love:\n\n"
+);
 ```
-
-## Models
-
-- [Text Generation Model](/api/classes/HuggingFaceTextGenerationModel)
