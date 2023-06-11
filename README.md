@@ -93,6 +93,21 @@ const results = await vectorDB.queryByText({
 });
 ```
 
+### Tokenization
+
+```ts
+import { TikTokenTokenizer } from "ai-utils.js";
+
+const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });
+
+const text = "At first, Nox didn't know what to do with the pup.";
+
+const tokenCount = await tokenizer.countTokens(text);
+const tokens = await tokenizer.tokenize(text);
+const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
+const reconstructedText = await tokenizer.detokenize(tokens);
+```
+
 ## Introduction
 
 `ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for text generation, tokenization, embeddings, and image generation. Different providers are supported, including OpenAI, Cohere, Hugging Face, and Stability AI.

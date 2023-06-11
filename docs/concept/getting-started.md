@@ -92,3 +92,18 @@ const results = await vectorDB.queryByText({
   similarityThreshold: 0.8,
 });
 ```
+
+### Tokenization
+
+```ts
+import { TikTokenTokenizer } from "ai-utils.js";
+
+const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });
+
+const text = "At first, Nox didn't know what to do with the pup.";
+
+const tokenCount = await tokenizer.countTokens(text);
+const tokens = await tokenizer.tokenize(text);
+const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
+const reconstructedText = await tokenizer.detokenize(tokens);
+```
