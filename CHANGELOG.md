@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.14 - 2023-06-11
+
+### Changed
+
+1. Major rework of embedding APIs.
+
 ## 0.0.13 - 2023-06-10
 
 ### Changed
