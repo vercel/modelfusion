@@ -35,7 +35,7 @@ const imageBase64 = await model.generateImage([
 ]);
 ```
 
-## generateImageAsFunction
+### generateImageAsFunction
 
 Uses a prompt template to create a function that generates an image.
 The prompt template is a function that takes an input and returns a prompt that matches the model's prompt format.
