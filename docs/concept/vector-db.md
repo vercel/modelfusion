@@ -8,17 +8,20 @@ Vector databases power AI applications through similarity search. They are a key
 
 ## Usage
 
+[API](/api/classes/VectorDB)
+|
+[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-db/)
+
 In `ai-utils.js`, a vector database is represented by the [VectorDB](/api/classes/VectorDB) class. It combines a [VectorStore](/api/interfaces/VectorStore) with a [TextEmbeddingModel](/api/interfaces/TextEmbeddingModel).
 
-### Creating a vector DB
+### Creating a VectorDB
 
 ```ts
+import { VectorDB } from "ai-utils.js";
+
 const vectorDB = new VectorDB({
-  store: new MemoryStore(),
-  embeddingModel: new OpenAITextEmbeddingModel({
-    apiKey: OPENAI_API_KEY,
-    model: "text-embedding-ada-002",
-  }),
+  store: // a vector store
+  embeddingModel: // an embedding model
 });
 ```
 
