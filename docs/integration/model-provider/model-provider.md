@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Model Providers
 
-Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for using AI models, e.g. large language models (LLMs), image generation models, or speech-to-text models. [Learn more...](/concept/model-provider/)
+Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for using AI models, e.g. large language models (LLMs), image generation models, or speech-to-text models.
 
 ## Available Providers
 
