@@ -18,22 +18,6 @@ npm install ai-utils.js
 
 ## Usage Examples
 
-### Text Generation
-
-```ts
-import { OpenAITextGenerationModel } from "ai-utils.js";
-
-const model = new OpenAITextGenerationModel({
-  model: "text-davinci-003",
-  temperature: 0.7,
-  maxTokens: 500,
-});
-
-const text = await model.generateText(
-  "Write a short story about a robot learning to love:\n\n"
-);
-```
-
 ### Image Generation
 
 ```ts
