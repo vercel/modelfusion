@@ -3,21 +3,18 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const COHERE_API_KEY = process.env.COHERE_API_KEY ?? "";
-
 (async () => {
-  const tokenizer = CohereTokenizer.forModel({
-    apiKey: COHERE_API_KEY,
-    model: "command-nightly",
-  });
+  const tokenizer = new CohereTokenizer({ model: "command-nightly" });
 
   const text = "At first, Nox didn't know what to do with the pup.";
 
-  console.log("countTokens", await tokenizer.countTokens(text));
-  console.log("tokenize", await tokenizer.tokenize(text));
-  console.log("tokenizeWithTexts", await tokenizer.tokenizeWithTexts(text));
-  console.log(
-    "detokenize(tokenize)",
-    await tokenizer.detokenize(await tokenizer.tokenize(text))
-  );
+  const tokenCount = await tokenizer.countTokens(text);
+  const tokens = await tokenizer.tokenize(text);
+  const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
+  const reconstructedText = await tokenizer.detokenize(tokens);
+
+  console.log("countTokens", tokenCount);
+  console.log("tokenize", tokens);
+  console.log("tokenizeWithTexts", tokensAndTokenTexts);
+  console.log("detokenize(tokenize)", reconstructedText);
 })();
