@@ -1,21 +1,20 @@
 import { z } from "zod";
-import {
-  createJsonResponseHandler,
-  postJsonToApi,
-} from "../../internal/postToApi.js";
 import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../model/text-generation/TextGenerationModel.js";
 import { RunContext } from "../../run/RunContext.js";
-import { Tokenizer } from "../../text/tokenize/Tokenizer.js";
-import { RetryFunction } from "../../util/retry/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
-import { ThrottleFunction } from "../../util/throttle/ThrottleFunction.js";
-import { throttleUnlimitedConcurrency } from "../../util/throttle/UnlimitedConcurrencyThrottler.js";
-import { failedCohereCallResponseHandler } from "./failedCohereCallResponseHandler.js";
+import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
+import { RetryFunction } from "../../util/api/RetryFunction.js";
+import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
+import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import {
+  createJsonResponseHandler,
+  postJsonToApi,
+} from "../../util/api/postToApi.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
+import { failedCohereCallResponseHandler } from "./failedCohereCallResponseHandler.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
@@ -96,7 +95,7 @@ export class CohereTextGenerationModel
 
     this.maxTokens =
       COHERE_TEXT_GENERATION_MODELS[this.settings.model].maxTokens;
-    this.tokenizer = CohereTokenizer.forModel({
+    this.tokenizer = new CohereTokenizer({
       apiKey: this.apiKey,
       model: this.settings.model,
     });
@@ -122,14 +121,6 @@ export class CohereTextGenerationModel
     return apiKey;
   }
 
-  private get retry() {
-    return this.settings.retry ?? retryWithExponentialBackoff();
-  }
-
-  private get throttle() {
-    return this.settings.throttle ?? throttleUnlimitedConcurrency();
-  }
-
   async countPromptTokens(input: string) {
     return this.tokenizer.countTokens(input);
   }
@@ -138,16 +129,17 @@ export class CohereTextGenerationModel
     prompt: string,
     context?: RunContext
   ): Promise<CohereTextGenerationResponse> {
-    return this.retry(async () =>
-      this.throttle(async () =>
+    return callWithRetryAndThrottle({
+      retry: this.settings.retry,
+      throttle: this.settings.throttle,
+      call: async () =>
         callCohereTextGenerationAPI({
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
           prompt,
           ...this.settings,
-        })
-      )
-    );
+        }),
+    });
   }
 
   withSettings(additionalSettings: Partial<CohereTextGenerationModelSettings>) {

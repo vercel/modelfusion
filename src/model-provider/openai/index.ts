@@ -1,4 +1,4 @@
-export * from "../OpenAITextGenerationModel.js";
+export * from "./OpenAITextGenerationModel.js";
 export * from "./OpenAIError.js";
 export * from "./OpenAIImageGenerationModel.js";
 export * from "./OpenAITextEmbeddingModel.js";

@@ -1,5 +1,5 @@
-import { TokenizationSupport } from "../tokenize/TokenizationSupport.js";
-import { Tokenizer } from "../tokenize/Tokenizer.js";
+import { TokenizationSupport } from "../../model/tokenization/TokenizationSupport.js";
+import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { SplitFunction } from "./SplitFunction.js";
 
 // when segments is a string, it splits by character, otherwise according to the provided segments

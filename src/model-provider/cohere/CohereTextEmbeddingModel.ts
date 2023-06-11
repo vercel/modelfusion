@@ -1,19 +1,18 @@
 import z from "zod";
+import { AbstractTextEmbeddingModel } from "../../model/text-embedding/AbstractTextEmbeddingModel.js";
+import { TextEmbeddingModelSettings } from "../../model/text-embedding/TextEmbeddingModel.js";
+import { TokenizationSupport } from "../../model/tokenization/TokenizationSupport.js";
+import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
+import { RunContext } from "../../run/RunContext.js";
+import { RetryFunction } from "../../util/api/RetryFunction.js";
+import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
+import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../internal/postToApi.js";
-import { AbstractTextEmbeddingModel } from "../../model/text-embedding/AbstractTextEmbeddingModel.js";
-import { TextEmbeddingModelSettings } from "../../model/text-embedding/TextEmbeddingModel.js";
-import { RunContext } from "../../run/RunContext.js";
-import { TokenizationSupport } from "../../text/tokenize/TokenizationSupport.js";
-import { Tokenizer } from "../../text/tokenize/Tokenizer.js";
-import { RetryFunction } from "../../util/retry/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
-import { ThrottleFunction } from "../../util/throttle/ThrottleFunction.js";
-import { throttleUnlimitedConcurrency } from "../../util/throttle/UnlimitedConcurrencyThrottler.js";
-import { failedCohereCallResponseHandler } from "./failedCohereCallResponseHandler.js";
+} from "../../util/api/postToApi.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
+import { failedCohereCallResponseHandler } from "./failedCohereCallResponseHandler.js";
 
 export const COHERE_TEXT_EMBEDDING_MODELS = {
   "embed-english-light-v2.0": {
@@ -76,7 +75,7 @@ export class CohereTextEmbeddingModel
     });
 
     this.maxTokens = COHERE_TEXT_EMBEDDING_MODELS[this.modelName].maxTokens;
-    this.tokenizer = CohereTokenizer.forModel({
+    this.tokenizer = new CohereTokenizer({
       apiKey: this.apiKey,
       model: this.modelName,
     });
@@ -108,14 +107,6 @@ export class CohereTextEmbeddingModel
     return apiKey;
   }
 
-  private get retry() {
-    return this.settings.retry ?? retryWithExponentialBackoff();
-  }
-
-  private get throttle() {
-    return this.settings.throttle ?? throttleUnlimitedConcurrency();
-  }
-
   async countTokens(input: string) {
     return this.tokenizer.countTokens(input);
   }
@@ -130,16 +121,17 @@ export class CohereTextEmbeddingModel
       );
     }
 
-    return this.retry(async () =>
-      this.throttle(async () =>
+    return callWithRetryAndThrottle({
+      retry: this.settings.retry,
+      throttle: this.settings.throttle,
+      call: async () =>
         callCohereEmbeddingAPI({
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
           texts,
           ...this.settings,
-        })
-      )
-    );
+        }),
+    });
   }
 
   withSettings(additionalSettings: Partial<CohereTextEmbeddingModelSettings>) {

@@ -5,3 +5,5 @@ export * from "./text-embedding/TextEmbeddingModel.js";
 export * from "./text-embedding/TextEmbeddingObserver.js";
 export * from "./text-generation/TextGenerationModel.js";
 export * from "./text-generation/TextGenerationObserver.js";
+export * from "./tokenization/TokenizationSupport.js";
+export * from "./tokenization/Tokenizer.js";

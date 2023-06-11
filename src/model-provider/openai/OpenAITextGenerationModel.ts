@@ -1,21 +1,20 @@
 import z from "zod";
-import {
-  createJsonResponseHandler,
-  postJsonToApi,
-} from "../internal/postToApi.js";
-import { AbstractTextGenerationModel } from "../model/text-generation/AbstractTextGenerationModel.js";
+import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
-} from "../model/text-generation/TextGenerationModel.js";
-import { RunContext } from "../run/RunContext.js";
-import { Tokenizer } from "../text/tokenize/Tokenizer.js";
-import { RetryFunction } from "../util/retry/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../util/retry/retryWithExponentialBackoff.js";
-import { ThrottleFunction } from "../util/throttle/ThrottleFunction.js";
-import { throttleUnlimitedConcurrency } from "../util/throttle/UnlimitedConcurrencyThrottler.js";
-import { TikTokenTokenizer } from "./openai/TikTokenTokenizer.js";
-import { failedOpenAICallResponseHandler } from "./openai/failedOpenAICallResponseHandler.js";
+} from "../../model/text-generation/TextGenerationModel.js";
+import { RunContext } from "../../run/RunContext.js";
+import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
+import { RetryFunction } from "../../util/api/RetryFunction.js";
+import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
+import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import {
+  createJsonResponseHandler,
+  postJsonToApi,
+} from "../../util/api/postToApi.js";
+import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
+import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
 // see https://platform.openai.com/docs/models/
 export const OPENAI_TEXT_GENERATION_MODELS = {
@@ -139,14 +138,6 @@ export class OpenAITextGenerationModel
     return apiKey;
   }
 
-  private get retry() {
-    return this.settings.retry ?? retryWithExponentialBackoff();
-  }
-
-  private get throttle() {
-    return this.settings.throttle ?? throttleUnlimitedConcurrency();
-  }
-
   async countPromptTokens(input: string) {
     return this.tokenizer.countTokens(input);
   }
@@ -155,8 +146,10 @@ export class OpenAITextGenerationModel
     prompt: string,
     context?: RunContext
   ): Promise<OpenAITextGenerationResponse> {
-    return this.retry(async () =>
-      this.throttle(async () =>
+    return callWithRetryAndThrottle({
+      retry: this.settings.retry,
+      throttle: this.settings.throttle,
+      call: async () =>
         // TODO call logging needs to happen here to catch all errors, have real timing, etc
         callOpenAITextGenerationAPI({
           abortSignal: context?.abortSignal,
@@ -166,9 +159,8 @@ export class OpenAITextGenerationModel
             ? context?.userId
             : undefined,
           ...this.settings, // TODO only send actual settings
-        })
-      )
-    );
+        }),
+    });
   }
 
   withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {

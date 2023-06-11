@@ -1,7 +1,7 @@
 import { Model, ModelSettings } from "../Model.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
-import { TokenizationSupport } from "../../text/tokenize/TokenizationSupport.js";
+import { TokenizationSupport } from "../tokenization/TokenizationSupport.js";
 
 export interface TextGenerationModelSettings extends ModelSettings {
   trimOutput?: boolean;

@@ -1,7 +1,7 @@
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../../internal/postToApi.js";
+} from "../../../util/api/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";

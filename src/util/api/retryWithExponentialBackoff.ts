@@ -1,4 +1,4 @@
-import { ApiCallError } from "../ApiCallError.js";
+import { ApiCallError } from "./ApiCallError.js";
 import { RetryFunction } from "./RetryFunction.js";
 import { RetryError } from "./RetryError.js";
 

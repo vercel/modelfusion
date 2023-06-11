@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ApiCallError } from "../util/ApiCallError.js";
-import { convertReadableStreamToAsyncIterable } from "./convertReadableStreamToAsyncIterable.js";
+import { ApiCallError } from "./ApiCallError.js";
+import { convertReadableStreamToAsyncIterable } from "../convertReadableStreamToAsyncIterable.js";
 
 export type ResponseHandler<T> = (options: {
   url: string;

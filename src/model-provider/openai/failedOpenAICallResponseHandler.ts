@@ -1,6 +1,6 @@
-import { ResponseHandler } from "../../internal/postToApi.js";
+import { ResponseHandler } from "../../util/api/postToApi.js";
 import SecureJSON from "secure-json-parse";
-import { ApiCallError } from "../../util/ApiCallError.js";
+import { ApiCallError } from "../../util/api/ApiCallError.js";
 import { OpenAIError, openAIErrorDataSchema } from "./OpenAIError.js";
 
 export const failedOpenAICallResponseHandler: ResponseHandler<

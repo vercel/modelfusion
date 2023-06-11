@@ -1,7 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { RunContext } from "../../run/RunContext.js";
 import { Vector } from "../../run/Vector.js";
-import { AbortError } from "../../util/AbortError.js";
+import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AbstractModel } from "../AbstractModel.js";
 import {

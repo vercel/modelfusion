@@ -1,14 +1,13 @@
 import { AbstractTextGenerationModel } from "../../../model/text-generation/AbstractTextGenerationModel.js";
-import { RunContext } from "../../../run/RunContext.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../../model/text-generation/TextGenerationModel.js";
-import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
-import { RetryFunction } from "../../../util/retry/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
-import { throttleUnlimitedConcurrency } from "../../../util/throttle/UnlimitedConcurrencyThrottler.js";
-import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
+import { Tokenizer } from "../../../model/tokenization/Tokenizer.js";
+import { RunContext } from "../../../run/RunContext.js";
+import { RetryFunction } from "../../../util/api/RetryFunction.js";
+import { ThrottleFunction } from "../../../util/api/ThrottleFunction.js";
+import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatResponse.js";
@@ -123,14 +122,6 @@ export class OpenAIChatModel
     return apiKey;
   }
 
-  private get retry() {
-    return this.settings.retry ?? retryWithExponentialBackoff();
-  }
-
-  private get throttle() {
-    return this.settings.throttle ?? throttleUnlimitedConcurrency();
-  }
-
   /**
    * Counts the prompt tokens required for the messages. This includes the message base tokens
    * and the prompt base tokens.
@@ -146,8 +137,10 @@ export class OpenAIChatModel
     input: Array<OpenAIChatMessage>,
     context?: RunContext
   ): Promise<OpenAIChatResponse> {
-    return this.retry(async () =>
-      this.throttle(async () =>
+    return callWithRetryAndThrottle({
+      retry: this.settings.retry,
+      throttle: this.settings.throttle,
+      call: async () =>
         callOpenAIChatCompletionAPI({
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
@@ -156,9 +149,8 @@ export class OpenAIChatModel
             ? context?.userId
             : undefined,
           ...this.settings,
-        })
-      )
-    );
+        }),
+    });
   }
 
   withSettings(additionalSettings: Partial<OpenAIChatModelSettings>) {

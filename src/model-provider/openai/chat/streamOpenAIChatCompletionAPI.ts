@@ -1,10 +1,10 @@
-import { convertReadableStreamToAsyncIterable } from "../../../internal/convertReadableStreamToAsyncIterable.js";
+import { convertReadableStreamToAsyncIterable } from "../../../util/convertReadableStreamToAsyncIterable.js";
 import {
   ResponseHandler,
   createAsyncIterableResponseHandler,
   createStreamResponseHandler,
   postJsonToApi,
-} from "../../../internal/postToApi.js";
+} from "../../../util/api/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";

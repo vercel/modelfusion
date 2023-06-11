@@ -4,7 +4,7 @@ import {
   createJsonResponseHandler,
   createTextResponseHandler,
   postToApi,
-} from "../../../internal/postToApi.js";
+} from "../../../util/api/postToApi.js";
 import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
 
 export type OpenAITranscriptionModelType = "whisper-1";

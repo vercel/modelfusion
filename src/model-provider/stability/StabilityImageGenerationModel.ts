@@ -1,15 +1,14 @@
 import { ImageGenerationModelSettings } from "index.js";
 import { z } from "zod";
 import { AbstractImageGenerationModel } from "../../model/image-generation/AbstractImageGenerationModel.js";
+import { RunContext } from "../../run/RunContext.js";
+import { RetryFunction } from "../../util/api/RetryFunction.js";
+import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
+import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../internal/postToApi.js";
-import { RunContext } from "../../run/RunContext.js";
-import { RetryFunction } from "../../util/retry/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
-import { ThrottleFunction } from "../../util/throttle/ThrottleFunction.js";
-import { throttleUnlimitedConcurrency } from "../../util/throttle/UnlimitedConcurrencyThrottler.js";
+} from "../../util/api/postToApi.js";
 import { failedStabilityCallResponseHandler } from "./failedStabilityCallResponseHandler.js";
 
 /**
@@ -63,31 +62,23 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
     return apiKey;
   }
 
-  private get retry() {
-    return this.settings.retry ?? retryWithExponentialBackoff();
-  }
-
-  private get throttle() {
-    return this.settings.throttle ?? throttleUnlimitedConcurrency();
-  }
-
   async callAPI(
     input: StabilityImageGenerationPrompt,
     context?: RunContext
   ): Promise<StabilityImageGenerationResponse> {
-    return this.retry(async () =>
-      this.throttle(async () =>
+    return callWithRetryAndThrottle({
+      retry: this.settings.retry,
+      throttle: this.settings.throttle,
+      call: async () =>
         callStabilityImageGenerationAPI({
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
           engineId: this.settings.model,
           textPrompts: input,
           ...this.settings,
-        })
-      )
-    );
+        }),
+    });
   }
-
   withSettings(additionalSettings: StabilityImageGenerationModelSettings) {
     return new StabilityImageGenerationModel(
       Object.assign({}, this.settings, additionalSettings)

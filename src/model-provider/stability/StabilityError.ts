@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ApiCallError } from "../../util/ApiCallError.js";
+import { ApiCallError } from "../../util/api/ApiCallError.js";
 
 export const stabilityErrorDataSchema = z.object({
   message: z.string(),

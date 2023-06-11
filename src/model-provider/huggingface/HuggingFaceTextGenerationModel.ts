@@ -1,15 +1,14 @@
 import z from "zod";
-import {
-  createJsonResponseHandler,
-  postJsonToApi,
-} from "../../internal/postToApi.js";
 import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
 import { TextGenerationModelSettings } from "../../model/text-generation/TextGenerationModel.js";
 import { RunContext } from "../../run/RunContext.js";
-import { RetryFunction } from "../../util/retry/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
-import { ThrottleFunction } from "../../util/throttle/ThrottleFunction.js";
-import { throttleUnlimitedConcurrency } from "../../util/throttle/UnlimitedConcurrencyThrottler.js";
+import { RetryFunction } from "../../util/api/RetryFunction.js";
+import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
+import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import {
+  createJsonResponseHandler,
+  postJsonToApi,
+} from "../../util/api/postToApi.js";
 import { failedHuggingFaceCallResponseHandler } from "./failedHuggingFaceCallResponseHandler.js";
 
 export interface HuggingFaceTextGenerationModelSettings
@@ -83,20 +82,14 @@ export class HuggingFaceTextGenerationModel extends AbstractTextGenerationModel<
     return apiKey;
   }
 
-  private get retry() {
-    return this.settings.retry ?? retryWithExponentialBackoff();
-  }
-
-  private get throttle() {
-    return this.settings.throttle ?? throttleUnlimitedConcurrency();
-  }
-
   async callAPI(
     prompt: string,
     context?: RunContext
   ): Promise<HuggingFaceTextGenerationResponse> {
-    return this.retry(async () =>
-      this.throttle(async () =>
+    return callWithRetryAndThrottle({
+      retry: this.settings.retry,
+      throttle: this.settings.throttle,
+      call: async () =>
         callHuggingFaceTextGenerationAPI({
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
@@ -106,9 +99,8 @@ export class HuggingFaceTextGenerationModel extends AbstractTextGenerationModel<
             useCache: true,
             waitForModel: true,
           },
-        })
-      )
-    );
+        }),
+    });
   }
 
   withSettings(

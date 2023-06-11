@@ -5,7 +5,7 @@ import {
   encodingForModel,
   getEncoding,
 } from "js-tiktoken";
-import { Tokenizer } from "../../text/tokenize/Tokenizer.js";
+import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 
 /**
  * TikToken tokenizer for OpenAI language models.

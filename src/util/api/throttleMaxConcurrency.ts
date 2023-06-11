@@ -1,7 +1,6 @@
 import { ThrottleFunction } from "./ThrottleFunction.js";
-import { Throttler } from "./Throttler.js";
 
-export class MaxConcurrencyThrottler implements Throttler {
+class MaxConcurrencyThrottler {
   private maxConcurrentCalls: number;
   private activeCallCount: number;
   private callQueue: Array<() => Promise<any>>;

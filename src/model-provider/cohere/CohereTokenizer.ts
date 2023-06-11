@@ -2,8 +2,8 @@ import z from "zod";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../internal/postToApi.js";
-import { Tokenizer } from "../../text/tokenize/Tokenizer.js";
+} from "../../util/api/postToApi.js";
+import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { CohereTextGenerationModelType } from "./CohereTextGenerationModel.js";
 import { failedCohereCallResponseHandler } from "./failedCohereCallResponseHandler.js";
 import { CohereTextEmbeddingModelType } from "./index.js";
