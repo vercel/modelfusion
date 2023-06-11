@@ -12,9 +12,6 @@ dotenv.config();
 
   const text = await chatModel.generateText([
     OpenAIChatMessage.system(
-      "You are an AI assistant. Follow the user's instructions carefully."
-    ),
-    OpenAIChatMessage.user(
       "Write a short story about a robot learning to love:"
     ),
   ]);
