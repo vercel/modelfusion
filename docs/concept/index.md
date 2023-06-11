@@ -4,7 +4,7 @@ sidebar_position: 0
 
 # Introduction
 
-`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for text generation, tokenization, embeddings, and image generation. A vector database abstraction allows you to store and query text embeddings (with similarity search).
+`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/text-generation), tokenization, [embeddings](https://ai-utils.dev/concept/text-embedding), and [image generation](https://ai-utils.dev/concept/image-generation). A vector database abstraction allows you to store and query text embeddings (with similarity search).
 
 ## TypeScript-first
 

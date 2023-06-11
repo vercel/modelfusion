@@ -16,6 +16,16 @@ export interface TextEmbeddingModel<SETTINGS extends TextEmbeddingModelSettings>
    */
   readonly embeddingDimensions: number;
 
+  /**
+   * Generate an embedding for a single text.
+   *
+   * @example
+   * const model = new OpenAITextEmbeddingModel(...);
+   *
+   * const embedding = await model.embedText(
+   *   "At first, Nox didn't know what to do with the pup."
+   * );
+   */
   embedText(
     text: string,
     settings?: Partial<SETTINGS> & {
@@ -33,6 +43,17 @@ export interface TextEmbeddingModel<SETTINGS extends TextEmbeddingModelSettings>
     run: RunContext
   ): PromiseLike<Vector>;
 
+  /**
+   * Generate embeddings for multiple texts.
+   *
+   * @example
+   * const model = new OpenAITextEmbeddingModel(...);
+   *
+   * const embeddings = await model.embedTexts([
+   *   "At first, Nox didn't know what to do with the pup.",
+   *   "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+   * ]);
+   */
   embedTexts(
     texts: string[],
     settings?: Partial<SETTINGS> & {
