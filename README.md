@@ -110,7 +110,7 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 ## Introduction
 
-`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/text-generation), tokenization, [embeddings](https://ai-utils.dev/concept/text-embedding), and [image generation](https://ai-utils.dev/concept/image-generation). The [vector DB abstraction](https://ai-utils.dev/concept/vector-db) allows you to store and query text embeddings with similarity search.
+`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/text-generation), [tokenization](https://ai-utils.dev/concept/tokenizer), [embeddings](https://ai-utils.dev/concept/text-embedding), and [image generation](https://ai-utils.dev/concept/image-generation). The [vector DB abstraction](https://ai-utils.dev/concept/vector-db) allows you to store and query text embeddings with similarity search.
 
 ### TypeScript-first
 
@@ -136,7 +136,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 - [Text generation](https://ai-utils.dev/concept/text-generation)
 - [Text embedding](https://ai-utils.dev/concept/text-embedding)
-- Text tokenization
+- [Text tokenization](https://ai-utils.dev/concept/tokenizer)
 - Text summarization
 - Text splitting
 - [Image generation](https://ai-utils.dev/concept/image-generation)
