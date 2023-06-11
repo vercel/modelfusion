@@ -51,5 +51,5 @@ const results = await vectorDB.queryByText({
 
 ## Available Vector DBs
 
-- [IMemory](/integration/vector-db/memory)
+- [Memory](/integration/vector-db/memory)
 - [Pinecone](/integration/vector-db/pinecone)

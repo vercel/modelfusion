@@ -136,9 +136,9 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 - [Text generation](https://ai-utils.dev/concept/text-generation)
 - Text embedding
+- Text tokenization
 - Text summarization
 - Text splitting
-- Text tokenization
 - [Image generation](https://ai-utils.dev/concept/image-generation)
 - Audio transcription
 - Vector DBs
