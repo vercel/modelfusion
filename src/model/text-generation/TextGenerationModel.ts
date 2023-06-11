@@ -15,6 +15,13 @@ export interface TextGenerationModel<
    * Generates a text using a prompt.
    * The prompt format depends on the model.
    * For example, OpenAI text models expect a string prompt, and OpenAI chat models expect an array of chat messages.
+   *
+   * @example
+   * const model = new OpenAITextGenerationModel(...);
+   *
+   * const text = await model.generateText(
+   *   "Write a short story about a robot learning to love:\n\n"
+   * );
    */
   generateText(
     prompt: PROMPT,
@@ -22,11 +29,6 @@ export interface TextGenerationModel<
       functionId?: string;
     }
   ): PromiseLike<string>;
-  /**
-   * Generates a text using a prompt.
-   * The prompt format depends on the model.
-   * For example, OpenAI text models expect a string prompt, and OpenAI chat models expect an array of chat messages.
-   */
   generateText(
     prompt: PROMPT,
     settings:
@@ -41,6 +43,16 @@ export interface TextGenerationModel<
    * Uses a prompt template to create a function that generates text.
    * The prompt template is a function that takes an input and returns a prompt that matches the model's prompt format.
    * The input signature of the prompt templates becomes the call signature of the generated function.
+   *
+   * @example
+   * const model = new OpenAITextGenerationModel(...);
+   *
+   * const generateStoryAbout = model.generateTextAsFunction(
+   *   async (character: string) =>
+   *     `Write a short story about ${character} learning to love:\n\n`
+   * );
+   *
+   * const story = await generateStoryAbout("a robot");
    */
   generateTextAsFunction<INPUT>(
     promptTemplate: PromptTemplate<INPUT, PROMPT>,

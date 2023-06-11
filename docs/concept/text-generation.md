@@ -73,3 +73,9 @@ const story = await generateStoryAbout({
   topic: "enjoying a bicycle ride",
 });
 ```
+
+## Providers
+
+- [OpenAI](/integration/model-provider/openai)
+- [Cohere](/integration/model-provider/cohere)
+- [Hugging Face](/integration/model-provider/huggingface)

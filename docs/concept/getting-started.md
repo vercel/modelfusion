@@ -18,20 +18,6 @@ npm install ai-utils.js
 
 ## Usage Examples
 
-### Image Generation
-
-```ts
-import { OpenAIImageGenerationModel } from "ai-utils.js";
-
-const model = new OpenAIImageGenerationModel({
-  size: "512x512",
-});
-
-const imageBase64 = await model.generateImage(
-  "the wicked witch of the west in the style of early 19th century painting"
-);
-```
-
 ### Text Embedding
 
 ```ts
