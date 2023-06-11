@@ -16,9 +16,13 @@ The models enable the separation of configuration parameters from the actual cal
 
 ## Usage
 
-### Model Creation
+[Model API](/api/interfaces/Model)
 
-The creation of an OpenAITextCompletionModel is shown in the following example:
+### new Model
+
+Models are created using a constructor call. The constructors take a single configuration object as an argument. The configuration object is specific to the model.
+
+#### Example: OpenAITextGenerationModel
 
 ```ts
 const model = new OpenAITextGenerationModel({
@@ -36,9 +40,21 @@ const model = new OpenAITextGenerationModel({
   // configure throttling (optional, calls throttled by default)
   throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
 });
+```
 
-// Later in the code:
-const text = await model.generateText(
-  "Write a short story about a robot learning to love:\n\n"
-);
+### withSettings
+
+The `withSettings` method creates a new model with the same configuration as the original model, but with the specified settings changed.
+
+#### Example
+
+```ts
+const model = new OpenAITextGenerationModel({
+  model: "text-davinci-003",
+  maxTokens: 500,
+});
+
+const modelWithMoreTokens = model.withSettings({
+  maxTokens: 1000,
+});
 ```
