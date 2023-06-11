@@ -91,9 +91,10 @@ const config = {
         entryPoints: ["../src/index.ts"],
         tsconfig: "../tsconfig.json",
         groupOrder: ["Functions", "Variables", "*"],
-        excludePrivate: true,
         name: "ai-utils.js",
         plugin: ["typedoc-plugin-zod"],
+        excludePrivate: true,
+        excludeProtected: true,
         sourceLinkTemplate:
           "https://github.com/lgrammel/ai-utils.js/tree/main/{path}#L{line}",
 
