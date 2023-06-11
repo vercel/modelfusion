@@ -44,6 +44,11 @@ export interface CohereTextGenerationModelSettings
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
 
+  tokenizerSettings?: {
+    retry?: RetryFunction;
+    throttle?: ThrottleFunction;
+  };
+
   numGenerations?: number;
   maxTokens?: number;
   temperature?: number;
@@ -95,9 +100,13 @@ export class CohereTextGenerationModel
 
     this.maxTokens =
       COHERE_TEXT_GENERATION_MODELS[this.settings.model].maxTokens;
+
     this.tokenizer = new CohereTokenizer({
-      apiKey: this.apiKey,
+      baseUrl: this.settings.baseUrl,
+      apiKey: this.settings.apiKey,
       model: this.settings.model,
+      retry: this.settings.tokenizerSettings?.retry,
+      throttle: this.settings.tokenizerSettings?.throttle,
     });
   }
 

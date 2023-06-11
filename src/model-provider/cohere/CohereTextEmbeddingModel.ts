@@ -42,6 +42,11 @@ export interface CohereTextEmbeddingModelSettings
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
 
+  tokenizerSettings?: {
+    retry?: RetryFunction;
+    throttle?: ThrottleFunction;
+  };
+
   truncate?: "NONE" | "START" | "END";
 }
 
@@ -75,9 +80,13 @@ export class CohereTextEmbeddingModel
     });
 
     this.maxTokens = COHERE_TEXT_EMBEDDING_MODELS[this.modelName].maxTokens;
+
     this.tokenizer = new CohereTokenizer({
-      apiKey: this.apiKey,
-      model: this.modelName,
+      baseUrl: this.settings.baseUrl,
+      apiKey: this.settings.apiKey,
+      model: this.settings.model,
+      retry: this.settings.tokenizerSettings?.retry,
+      throttle: this.settings.tokenizerSettings?.throttle,
     });
 
     this.embeddingDimensions =

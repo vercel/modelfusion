@@ -1,9 +1,13 @@
 import z from "zod";
+import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
+import { RunContext } from "../../run/RunContext.js";
+import { RetryFunction } from "../../util/api/RetryFunction.js";
+import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
+import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
-import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { CohereTextGenerationModelType } from "./CohereTextGenerationModel.js";
 import { failedCohereCallResponseHandler } from "./failedCohereCallResponseHandler.js";
 import { CohereTextEmbeddingModelType } from "./index.js";
@@ -11,6 +15,16 @@ import { CohereTextEmbeddingModelType } from "./index.js";
 export type CohereTokenizerModelType =
   | CohereTextGenerationModelType
   | CohereTextEmbeddingModelType;
+
+export interface CohereTokenizerSettings {
+  model: CohereTokenizerModelType;
+
+  baseUrl?: string;
+  apiKey?: string;
+
+  retry?: RetryFunction;
+  throttle?: ThrottleFunction;
+}
 
 /**
  * Tokenizer for the Cohere models. It uses the Co.Tokenize and Co.Detokenize APIs.
@@ -35,22 +49,56 @@ export type CohereTokenizerModelType =
  * );
  */
 export class CohereTokenizer implements Tokenizer {
-  readonly baseUrl?: string;
-  readonly apiKey: string;
-  readonly model: CohereTokenizerModelType;
+  readonly settings: CohereTokenizerSettings;
 
-  constructor({
-    baseUrl,
-    apiKey,
-    model,
-  }: {
-    baseUrl?: string;
-    apiKey: string;
-    model: CohereTokenizerModelType;
-  }) {
-    this.baseUrl = baseUrl;
-    this.apiKey = apiKey;
-    this.model = model;
+  constructor(settings: CohereTokenizerSettings) {
+    this.settings = settings;
+  }
+
+  private get apiKey() {
+    const apiKey = this.settings.apiKey ?? process.env.COHERE_API_KEY;
+
+    if (apiKey == null) {
+      throw new Error(
+        "No Cohere API key provided. Pass an API key to the constructor or set the COHERE_API_KEY environment variable."
+      );
+    }
+
+    return apiKey;
+  }
+
+  async callTokenizeAPI(
+    text: string,
+    context?: RunContext
+  ): Promise<CohereTokenizationResponse> {
+    return callWithRetryAndThrottle({
+      retry: this.settings.retry,
+      throttle: this.settings.throttle,
+      call: async () =>
+        callCohereTokenizeAPI({
+          abortSignal: context?.abortSignal,
+          apiKey: this.apiKey,
+          text,
+          ...this.settings,
+        }),
+    });
+  }
+
+  async callDeTokenizeAPI(
+    tokens: number[],
+    context?: RunContext
+  ): Promise<CohereDetokenizationResponse> {
+    return callWithRetryAndThrottle({
+      retry: this.settings.retry,
+      throttle: this.settings.throttle,
+      call: async () =>
+        callCohereDetokenizeAPI({
+          abortSignal: context?.abortSignal,
+          apiKey: this.apiKey,
+          tokens,
+          ...this.settings,
+        }),
+    });
   }
 
   async countTokens(text: string) {
@@ -62,12 +110,7 @@ export class CohereTokenizer implements Tokenizer {
   }
 
   async tokenizeWithTexts(text: string) {
-    const response = await callCohereTokenizeAPI({
-      baseUrl: this.baseUrl,
-      apiKey: this.apiKey,
-      model: this.model,
-      text,
-    });
+    const response = await this.callTokenizeAPI(text);
 
     return {
       tokens: response.tokens,
@@ -76,12 +119,7 @@ export class CohereTokenizer implements Tokenizer {
   }
 
   async detokenize(tokens: number[]) {
-    const response = await callCohereDetokenizeAPI({
-      baseUrl: this.baseUrl,
-      apiKey: this.apiKey,
-      model: this.model,
-      tokens,
-    });
+    const response = await this.callDeTokenizeAPI(tokens);
 
     return response.text;
   }
