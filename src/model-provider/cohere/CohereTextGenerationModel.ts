@@ -15,7 +15,7 @@ import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponenti
 import { ThrottleFunction } from "../../util/throttle/ThrottleFunction.js";
 import { throttleUnlimitedConcurrency } from "../../util/throttle/UnlimitedConcurrencyThrottler.js";
 import { failedCohereCallResponseHandler } from "./failedCohereCallResponseHandler.js";
-import { CohereTokenizer } from "./tokenizer/CohereTokenizer.js";
+import { CohereTokenizer } from "./CohereTokenizer.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
