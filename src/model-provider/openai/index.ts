@@ -1,3 +1,4 @@
+export * from "../OpenAITextGenerationModel.js";
 export * from "./OpenAIError.js";
 export * from "./OpenAIImageGenerationModel.js";
 export * from "./TikTokenTokenizer.js";
@@ -11,5 +12,3 @@ export * from "./chat/countOpenAIChatMessageTokens.js";
 export * from "./chat/streamOpenAIChatCompletionAPI.js";
 export * from "./embedding/OpenAITextEmbeddingModel.js";
 export * from "./embedding/callOpenAITextEmbeddingAPI.js";
-export * from "./text/OpenAITextGenerationModel.js";
-export * from "./text/OpenAITextGenerationResponse.js";
