@@ -1,5 +1,6 @@
 export * from "./OpenAIError.js";
 export * from "./OpenAIImageGenerationModel.js";
+export * from "./TikTokenTokenizer.js";
 export * from "./audio/callOpenAITranscriptionAPI.js";
 export * from "./chat/OpenAIChatMessage.js";
 export * from "./chat/OpenAIChatModel.js";
@@ -12,4 +13,3 @@ export * from "./embedding/OpenAITextEmbeddingModel.js";
 export * from "./embedding/callOpenAITextEmbeddingAPI.js";
 export * from "./text/OpenAITextGenerationModel.js";
 export * from "./text/OpenAITextGenerationResponse.js";
-export * from "./tokenizer/TikTokenTokenizer.js";

@@ -9,7 +9,7 @@ import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { throttleUnlimitedConcurrency } from "../../../util/throttle/UnlimitedConcurrencyThrottler.js";
-import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
+import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAITextGenerationResponse } from "./OpenAITextGenerationResponse.js";
 import { callOpenAITextGenerationAPI } from "./callOpenAITextGenerationAPI.js";
 
@@ -111,7 +111,7 @@ export class OpenAITextGenerationModel
       generateResponse: (prompt, context) => this.callAPI(prompt, context),
     });
 
-    this.tokenizer = TikTokenTokenizer.forModel({ model: settings.model });
+    this.tokenizer = new TikTokenTokenizer({ model: settings.model });
     this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[settings.model].maxTokens;
   }
 

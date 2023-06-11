@@ -9,7 +9,7 @@ import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { throttleUnlimitedConcurrency } from "../../../util/throttle/UnlimitedConcurrencyThrottler.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
-import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
+import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatResponse.js";
 import { callOpenAIChatCompletionAPI } from "./callOpenAIChatCompletionAPI.js";
@@ -99,7 +99,7 @@ export class OpenAIChatModel
       generateResponse: (prompt, run) => this.callAPI(prompt, run),
     });
 
-    this.tokenizer = TikTokenTokenizer.forModel({ model: this.settings.model });
+    this.tokenizer = new TikTokenTokenizer({ model: this.settings.model });
     this.maxTokens = OPENAI_CHAT_MODELS[this.settings.model].maxTokens;
   }
 

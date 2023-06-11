@@ -7,7 +7,7 @@ import { RetryFunction } from "../../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
 import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
 import { throttleUnlimitedConcurrency } from "../../../util/throttle/UnlimitedConcurrencyThrottler.js";
-import { TikTokenTokenizer } from "../tokenizer/TikTokenTokenizer.js";
+import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import {
   OpenAITextEmbeddingResponse,
   callOpenAITextEmbeddingAPI,
@@ -64,7 +64,7 @@ export class OpenAITextEmbeddingModel
       generateResponse: (texts, _, run) => this.callAPI(texts, run),
     });
 
-    this.tokenizer = TikTokenTokenizer.forModel({ model: this.modelName });
+    this.tokenizer = new TikTokenTokenizer({ model: this.modelName });
     this.maxTokens = OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].maxTokens;
 
     this.embeddingDimensions =
