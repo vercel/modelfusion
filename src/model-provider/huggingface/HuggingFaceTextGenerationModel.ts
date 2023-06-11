@@ -141,7 +141,7 @@ export type HuggingFaceTextGenerationResponse = z.infer<
  *
  * console.log(response[0].generated_text);
  */
-export async function callHuggingFaceTextGenerationAPI({
+async function callHuggingFaceTextGenerationAPI({
   baseUrl = "https://api-inference.huggingface.co/models",
   abortSignal,
   apiKey,
