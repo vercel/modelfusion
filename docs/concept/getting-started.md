@@ -33,36 +33,6 @@ const embeddings = await model.embedTexts([
 ]);
 ```
 
-### Vector DB
-
-```ts
-import { MemoryStore, OpenAITextEmbeddingModel, VectorDB } from "ai-utils.js";
-
-const texts = [
-  "A rainbow is an optical phenomenon that can occur under certain meteorological conditions.",
-  "It is caused by refraction, internal reflection and dispersion of light in water droplets resulting in a continuous spectrum of light appearing in the sky.",
-  // ...
-];
-
-const vectorDB = new VectorDB({
-  store: new MemoryStore(),
-  embeddingModel: new OpenAITextEmbeddingModel({
-    model: "text-embedding-ada-002",
-  }),
-});
-
-await vectorDB.upsertMany({
-  keyTexts: texts,
-  data: texts.map((text) => ({ text })),
-});
-
-const results = await vectorDB.queryByText({
-  queryText: "rainbow and water droplets",
-  maxResults: 3,
-  similarityThreshold: 0.8,
-});
-```
-
 ### Tokenization
 
 ```ts

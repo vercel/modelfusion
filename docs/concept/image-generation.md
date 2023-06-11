@@ -56,7 +56,7 @@ const generatePainting = model.generateImageAsFunction(
 const imageBase64 = await generatePainting("the wicked witch of the west");
 ```
 
-## Providers
+## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)
 - [Stability AI](/integration/model-provider/stability)

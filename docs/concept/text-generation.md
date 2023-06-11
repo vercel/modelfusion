@@ -74,7 +74,7 @@ const story = await generateStoryAbout({
 });
 ```
 
-## Providers
+## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)
 - [Cohere](/integration/model-provider/cohere)
