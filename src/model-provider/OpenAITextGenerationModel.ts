@@ -15,7 +15,7 @@ import { retryWithExponentialBackoff } from "../util/retry/retryWithExponentialB
 import { ThrottleFunction } from "../util/throttle/ThrottleFunction.js";
 import { throttleUnlimitedConcurrency } from "../util/throttle/UnlimitedConcurrencyThrottler.js";
 import { TikTokenTokenizer } from "./openai/TikTokenTokenizer.js";
-import { failedOpenAICallResponseHandler } from "./openai/internal/failedOpenAICallResponseHandler.js";
+import { failedOpenAICallResponseHandler } from "./openai/failedOpenAICallResponseHandler.js";
 
 // see https://platform.openai.com/docs/models/
 export const OPENAI_TEXT_GENERATION_MODELS = {

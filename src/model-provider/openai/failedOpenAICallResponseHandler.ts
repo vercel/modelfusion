@@ -1,7 +1,7 @@
 import { ResponseHandler } from "internal/postToApi.js";
 import SecureJSON from "secure-json-parse";
-import { ApiCallError } from "../../../util/ApiCallError.js";
-import { OpenAIError, openAIErrorDataSchema } from "../OpenAIError.js";
+import { ApiCallError } from "../../util/ApiCallError.js";
+import { OpenAIError, openAIErrorDataSchema } from "./OpenAIError.js";
 
 export const failedOpenAICallResponseHandler: ResponseHandler<
   ApiCallError

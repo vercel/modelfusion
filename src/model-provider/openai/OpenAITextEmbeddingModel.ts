@@ -1,17 +1,19 @@
-import { AbstractTextEmbeddingModel } from "../../../model/text-embedding/AbstractTextEmbeddingModel.js";
-import { TextEmbeddingModelSettings } from "../../../model/text-embedding/TextEmbeddingModel.js";
-import { RunContext } from "../../../run/RunContext.js";
-import { TokenizationSupport } from "../../../text/tokenize/TokenizationSupport.js";
-import { Tokenizer } from "../../../text/tokenize/Tokenizer.js";
-import { RetryFunction } from "../../../util/retry/RetryFunction.js";
-import { retryWithExponentialBackoff } from "../../../util/retry/retryWithExponentialBackoff.js";
-import { ThrottleFunction } from "../../../util/throttle/ThrottleFunction.js";
-import { throttleUnlimitedConcurrency } from "../../../util/throttle/UnlimitedConcurrencyThrottler.js";
-import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
+import { AbstractTextEmbeddingModel } from "../../model/text-embedding/AbstractTextEmbeddingModel.js";
+import { TextEmbeddingModelSettings } from "../../model/text-embedding/TextEmbeddingModel.js";
+import { RunContext } from "../../run/RunContext.js";
+import { TokenizationSupport } from "../../text/tokenize/TokenizationSupport.js";
+import { Tokenizer } from "../../text/tokenize/Tokenizer.js";
+import { RetryFunction } from "../../util/retry/RetryFunction.js";
+import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
+import { ThrottleFunction } from "../../util/throttle/ThrottleFunction.js";
+import { throttleUnlimitedConcurrency } from "../../util/throttle/UnlimitedConcurrencyThrottler.js";
+import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
+import z from "zod";
 import {
-  OpenAITextEmbeddingResponse,
-  callOpenAITextEmbeddingAPI,
-} from "./callOpenAITextEmbeddingAPI.js";
+  createJsonResponseHandler,
+  postJsonToApi,
+} from "../../internal/postToApi.js";
+import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-ada-002": {
@@ -136,4 +138,71 @@ export class OpenAITextEmbeddingModel
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
+}
+
+const openAITextEmbeddingResponseSchema = z.object({
+  object: z.literal("list"),
+  data: z
+    .array(
+      z.object({
+        object: z.literal("embedding"),
+        embedding: z.array(z.number()),
+        index: z.number(),
+      })
+    )
+    .length(1),
+  model: z.string(),
+  usage: z.object({
+    prompt_tokens: z.number(),
+    total_tokens: z.number(),
+  }),
+});
+
+export type OpenAITextEmbeddingResponse = z.infer<
+  typeof openAITextEmbeddingResponseSchema
+>;
+
+/**
+ * Call the OpenAI Embedding API to generate an embedding for the given input.
+ *
+ * @see https://platform.openai.com/docs/api-reference/embeddings
+ *
+ * @example
+ * const response = await callOpenAITextEmbeddingAPI({
+ *   apiKey: OPENAI_API_KEY,
+ *   model: "text-embedding-ada-002",
+ *   input: "At first, Nox didn't know what to do with the pup.",
+ * });
+ *
+ * console.log(response.data[0].embedding);
+ */
+async function callOpenAITextEmbeddingAPI({
+  baseUrl = "https://api.openai.com/v1",
+  abortSignal,
+  apiKey,
+  model,
+  input,
+  user,
+}: {
+  baseUrl?: string;
+  abortSignal?: AbortSignal;
+  apiKey: string;
+  model: OpenAITextEmbeddingModelType;
+  input: string;
+  user?: string;
+}): Promise<OpenAITextEmbeddingResponse> {
+  return postJsonToApi({
+    url: `${baseUrl}/embeddings`,
+    apiKey,
+    body: {
+      model,
+      input,
+      user,
+    },
+    failedResponseHandler: failedOpenAICallResponseHandler,
+    successfulResponseHandler: createJsonResponseHandler(
+      openAITextEmbeddingResponseSchema
+    ),
+    abortSignal,
+  });
 }

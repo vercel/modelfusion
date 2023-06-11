@@ -11,7 +11,7 @@ import { RetryFunction } from "../../util/retry/RetryFunction.js";
 import { retryWithExponentialBackoff } from "../../util/retry/retryWithExponentialBackoff.js";
 import { ThrottleFunction } from "../../util/throttle/ThrottleFunction.js";
 import { throttleUnlimitedConcurrency } from "../../util/throttle/UnlimitedConcurrencyThrottler.js";
-import { failedOpenAICallResponseHandler } from "./internal/failedOpenAICallResponseHandler.js";
+import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
 export interface OpenAIImageGenerationModelSettings
   extends ImageGenerationModelSettings {
