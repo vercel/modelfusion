@@ -203,6 +203,6 @@ Record audio with push-to-talk and transcribe it using Whisper, implemented as a
 
 ### [BabyAGI Classic](https://github.com/lgrammel/ai-utils.js/tree/main/examples/baby-agi)
 
-> _terminal app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
+> _console app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
 
 TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.

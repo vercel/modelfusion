@@ -1,6 +1,6 @@
 # BabyAGI Classic
 
-> _terminal app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
+> _console app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
 
 TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.
 It uses `ai-utils` for the generate calls.
