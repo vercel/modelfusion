@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.15 - 2023-06-12
+
+### Changed
+
+1. Documentation update.
+
 ## 0.0.14 - 2023-06-11
 
 ### Changed
