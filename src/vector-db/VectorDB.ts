@@ -1,4 +1,4 @@
-import { createId } from "@paralleldrive/cuid2";
+import { nanoid as createId } from "nanoid";
 import { TextEmbeddingModel } from "../model/text-embedding/TextEmbeddingModel.js";
 import { RunContext } from "../run/RunContext.js";
 import { Vector } from "../run/Vector.js";

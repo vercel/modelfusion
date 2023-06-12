@@ -1,4 +1,4 @@
-import { createId } from "@paralleldrive/cuid2";
+import { nanoid as createId } from "nanoid";
 import { RunContext } from "../../run/RunContext.js";
 import { Vector } from "../../run/Vector.js";
 import { AbortError } from "../../util/api/AbortError.js";

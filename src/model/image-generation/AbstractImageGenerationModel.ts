@@ -1,4 +1,4 @@
-import { createId } from "@paralleldrive/cuid2";
+import { nanoid as createId } from "nanoid";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { RunContext } from "../../run/RunContext.js";
 import { AbortError } from "../../util/api/AbortError.js";
