@@ -1,3 +1,4 @@
+import z from "zod";
 import { AbstractTextGenerationModel } from "../../../model/text-generation/AbstractTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
@@ -8,10 +9,13 @@ import { RunContext } from "../../../run/RunContext.js";
 import { RetryFunction } from "../../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
+import {
+  createJsonResponseHandler,
+  postJsonToApi,
+} from "../../../util/api/postToApi.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
+import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import { OpenAIChatResponse } from "./OpenAIChatResponse.js";
-import { callOpenAIChatCompletionAPI } from "./callOpenAIChatCompletionAPI.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 
 // see https://platform.openai.com/docs/models/
@@ -159,4 +163,107 @@ export class OpenAIChatModel
   withMaxTokens(maxTokens: number) {
     return this.withSettings({ maxTokens });
   }
+}
+
+const openAIChatResponseSchema = z.object({
+  id: z.string(),
+  object: z.literal("chat.completion"),
+  created: z.number(),
+  model: z.string(),
+  choices: z.array(
+    z.object({
+      message: z.object({
+        role: z.literal("assistant"),
+        content: z.string(),
+      }),
+      index: z.number(),
+      logprobs: z.nullable(z.any()),
+      finish_reason: z.string(),
+    })
+  ),
+  usage: z.object({
+    prompt_tokens: z.number(),
+    completion_tokens: z.number(),
+    total_tokens: z.number(),
+  }),
+});
+
+export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
+
+/**
+ * Call the OpenAI chat completion API to generate a chat completion for the messages.
+ *
+ * @see https://platform.openai.com/docs/api-reference/chat/create
+ *
+ * @example
+ * const response = await callOpenAIChatCompletionAPI({
+ *   apiKey: OPENAI_API_KEY,
+ *   model: "gpt-3.5-turbo",
+ *   messages: [
+ *     {
+ *       role: "system",
+ *       content:
+ *         "You are an AI assistant. Follow the user's instructions carefully.",
+ *     },
+ *     {
+ *       role: "user",
+ *       content: "Hello, how are you?",
+ *     },
+ *   ],
+ *   temperature: 0.7,
+ *   maxTokens: 500,
+ * });
+ *
+ * console.log(response.choices[0].message.content);
+ */
+async function callOpenAIChatCompletionAPI({
+  baseUrl = "https://api.openai.com/v1",
+  abortSignal,
+  apiKey,
+  model,
+  messages,
+  temperature,
+  topP,
+  n,
+  stop,
+  maxTokens,
+  presencePenalty,
+  frequencyPenalty,
+  user,
+}: {
+  baseUrl?: string;
+  abortSignal?: AbortSignal;
+  apiKey: string;
+  model: OpenAIChatModelType;
+  messages: Array<OpenAIChatMessage>;
+  temperature?: number;
+  topP?: number;
+  n?: number;
+  stop?: string | string[];
+  maxTokens?: number;
+  presencePenalty?: number;
+  frequencyPenalty?: number;
+  user?: string;
+}): Promise<OpenAIChatResponse> {
+  return postJsonToApi({
+    url: `${baseUrl}/chat/completions`,
+    apiKey,
+    body: {
+      model,
+      messages,
+      top_p: topP,
+      n,
+      stop,
+      max_tokens: maxTokens,
+      temperature,
+      presence_penalty: presencePenalty,
+      frequency_penalty: frequencyPenalty,
+      user,
+    },
+    failedResponseHandler: failedOpenAICallResponseHandler,
+    successfulResponseHandler: createJsonResponseHandler(
+      openAIChatResponseSchema
+    ),
+    abortSignal,
+  });
 }
