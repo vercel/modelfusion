@@ -47,7 +47,14 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
     super({
       settings,
       extractBase64Image: (response) => response.data[0].b64_json,
-      generateResponse: (prompt, context) => this.callAPI(prompt, context),
+      generateResponse: (prompt, context) =>
+        this.callAPI(
+          prompt,
+          {
+            responseFormat: OpenAIImageGenerationResponseFormat.base64Json,
+          },
+          context
+        ),
     });
   }
 
@@ -66,20 +73,40 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
     return apiKey;
   }
 
-  async callAPI(
+  async callAPI<RESULT>(
     input: string,
+    settings: {
+      baseUrl?: string;
+      apiKey?: string;
+
+      retry?: RetryFunction;
+      throttle?: ThrottleFunction;
+
+      responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
+
+      n?: number;
+      size?: "256x256" | "512x512" | "1024x1024";
+
+      user?: string;
+    },
     context?: RunContext
-  ): Promise<OpenAIImageGenerationBase64JsonResponse> {
+  ): Promise<RESULT> {
+    const callSettings = Object.assign(
+      {
+        apiKey: this.apiKey,
+      },
+      this.settings,
+      settings
+    );
+
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.retry,
+      throttle: callSettings.throttle,
       call: async () =>
         callOpenAIImageGenerationAPI({
           abortSignal: context?.abortSignal,
-          apiKey: this.apiKey,
           prompt: input,
-          responseFormat: OpenAIImageGenerationResponseFormat.base64Json,
-          ...this.settings,
+          ...callSettings,
         }),
     });
   }
@@ -96,7 +123,8 @@ export type OpenAIImageGenerationResponseFormatType<T> = {
   type: "b64_json" | "url";
   handler: ResponseHandler<T>;
 };
-export const openAIImageGenerationUrlSchema = z.object({
+
+const openAIImageGenerationUrlSchema = z.object({
   created: z.number(),
   data: z.array(
     z.object({
@@ -109,7 +137,7 @@ export type OpenAIImageGenerationUrlResponse = z.infer<
   typeof openAIImageGenerationUrlSchema
 >;
 
-export const openAIImageGenerationBase64JsonSchema = z.object({
+const openAIImageGenerationBase64JsonSchema = z.object({
   created: z.number(),
   data: z.array(
     z.object({
