@@ -2,6 +2,10 @@ import { ApiCallError } from "./ApiCallError.js";
 import { RetryFunction } from "./RetryFunction.js";
 import { RetryError } from "./RetryError.js";
 
+/**
+ * The `retryWithExponentialBackoff` strategy retries a failed API call with an exponential backoff.
+ * You can configure the maximum number of tries, the initial delay, and the backoff factor.
+ */
 export const retryWithExponentialBackoff =
   ({
     maxTries = 3,
