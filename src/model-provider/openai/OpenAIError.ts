@@ -28,7 +28,17 @@ export class OpenAIError extends ApiCallError {
     requestBodyValues: unknown;
     data: OpenAIErrorData;
   }) {
-    super({ message, statusCode, requestBodyValues, url });
+    super({
+      message,
+      statusCode,
+      requestBodyValues,
+      url,
+      isRetryable:
+        (statusCode === 429 &&
+          // insufficient_quota is also reported as a 429, but it's not retryable:
+          data.error.type !== "insufficient_quota") ||
+        statusCode >= 500,
+    });
 
     this.data = data;
   }

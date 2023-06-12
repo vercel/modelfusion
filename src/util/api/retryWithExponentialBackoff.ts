@@ -49,8 +49,7 @@ async function _retryWithExponentialBackoff<OUTPUT>(
 
       if (
         error instanceof ApiCallError &&
-        (error.statusCode === 429 || // too many requests
-          error.statusCode >= 500) && // internal server errors
+        error.isRetryable &&
         tryNumber < maxTries
       ) {
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -62,8 +61,10 @@ async function _retryWithExponentialBackoff<OUTPUT>(
       }
     }
 
+    const errorMessage = error instanceof Error ? error.message : String(error);
+
     throw new RetryError({
-      message: `Failed after ${tryNumber} tries with an error that is not retryable.`,
+      message: `Failed after ${tryNumber} attempt(s) with non-retryable error: '${errorMessage}'`,
       reason: "errorNotRetryable",
       errors: newErrors,
     });
