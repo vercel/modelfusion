@@ -143,7 +143,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 - Audio transcription
 - [Vector DBs](https://ai-utils.dev/concept/vector-db)
 - Run abstraction for progress reporting and abort signals
-- [Retry strategies](https://ai-utils.dev/concept/retry)
+- [Retry strategies](https://ai-utils.dev/concept/util/retry)
 - Throttling
 - Error handling
 
