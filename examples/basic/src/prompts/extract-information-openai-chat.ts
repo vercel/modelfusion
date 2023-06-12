@@ -5,13 +5,13 @@ import fs from "node:fs";
 dotenv.config();
 
 (async () => {
-  const chatModel = new OpenAIChatModel({
+  const model = new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,
     maxTokens: 500,
   });
 
-  const extractText = chatModel.generateTextAsFunction(
+  const extractText = model.generateTextAsFunction(
     async ({ text, topic }: { text: string; topic: string }) => [
       OpenAIChatMessage.system(
         [

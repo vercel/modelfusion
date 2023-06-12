@@ -64,13 +64,13 @@ export interface OpenAIChatModelSettings extends TextGenerationModelSettings {
  * @see https://platform.openai.com/docs/api-reference/chat/create
  *
  * @example
- * const chatModel = new OpenAIChatModel({
+ * const model = new OpenAIChatModel({
  *   model: "gpt-3.5-turbo",
  *   temperature: 0.7,
  *   maxTokens: 500,
  * });
  *
- * const text = await chatModel.generateText([
+ * const text = await model.generateText([
  *   OpenAIChatMessage.system(
  *     "Write a short story about a robot learning to love:"
  *   ),

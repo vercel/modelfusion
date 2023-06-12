@@ -26,7 +26,7 @@ export async function createTweetFromPdf({
   openAiApiKey: string;
   run: RunContext & TextGenerationObserver & TextEmbeddingObserver;
 }) {
-  const chatModel = new OpenAIChatModel({
+  const model = new OpenAIChatModel({
     apiKey: openAiApiKey,
     model: "gpt-4",
   });
@@ -50,7 +50,7 @@ export async function createTweetFromPdf({
     await summarizeRecursivelyWithTextGenerationAndTokenSplitting(
       {
         text: textFromPdf,
-        model: chatModel.withSettings({ temperature: 0 }),
+        model: model.withSettings({ temperature: 0 }),
         prompt: async ({ text }: { text: string }) => [
           OpenAIChatMessage.user(`## TOPIC\n${topic}`),
           OpenAIChatMessage.system(
@@ -70,7 +70,7 @@ export async function createTweetFromPdf({
     );
 
   // generate a draft tweet:
-  const draftTweet = await chatModel.generateText(
+  const draftTweet = await model.generateText(
     [
       OpenAIChatMessage.user(`## TOPIC\n${topic}`),
       OpenAIChatMessage.system(
@@ -105,7 +105,7 @@ export async function createTweetFromPdf({
   }
 
   // rewrite the tweet:
-  return await chatModel.generateText(
+  return await model.generateText(
     [
       OpenAIChatMessage.system(
         `## TASK\nRewrite the draft tweet on ${topic} using the style from the example tweet.`
