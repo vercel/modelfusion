@@ -46,11 +46,11 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
     super({
       settings,
       extractBase64Image: (response) => response.data[0].b64_json,
-      generateResponse: (prompt, context) =>
+      generateResponse: (prompt, run) =>
         this.callAPI(
           prompt,
           { responseFormat: OpenAIImageGenerationResponseFormat.base64Json },
-          context
+          run
         ),
     });
   }
@@ -150,20 +150,6 @@ export const OpenAIImageGenerationResponseFormat = {
   },
 };
 
-/**
- * Call the OpenAI Image Creation API to generate an image for the given prompt.
- *
- * @see https://platform.openai.com/docs/api-reference/images/create
- *
- * @example
- * const imageResponse = await callOpenAIImageGenerationAPI({
- *   apiKey: OPENAI_API_KEY,
- *   prompt:
- *     "the wicked witch of the west in the style of early 19th century painting",
- *   size: "512x512",
- *   responseFormat: callOpenAIImageGenerationAPI.responseFormat.base64Json,
- * });
- */
 async function callOpenAIImageGenerationAPI<RESPONSE>({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,

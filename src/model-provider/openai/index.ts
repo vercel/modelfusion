@@ -10,4 +10,3 @@ export * from "./chat/OpenAIChatModel.js";
 export * from "./chat/OpenAIChatResponseDeltaStream.js";
 export * from "./chat/composeRecentMessagesOpenAIChatPrompt.js";
 export * from "./chat/countOpenAIChatMessageTokens.js";
-export * from "./chat/streamOpenAIChatCompletionAPI.js";

@@ -1,8 +1,8 @@
 import {
   OpenAIChatMessage,
-  OpenAIChatModelType,
+  OpenAIChatResponseFormat,
   composeRecentMessagesOpenAIChatPrompt,
-  streamOpenAIChatCompletionAPI,
+  OpenAIChatModel,
 } from "ai-utils.js";
 import { z } from "zod";
 
@@ -15,7 +15,10 @@ const requestSchema = z.array(
   })
 );
 
-const openAiApiKey = process.env.OPENAI_API_KEY ?? "";
+const model = new OpenAIChatModel({
+  model: "gpt-3.5-turbo",
+  maxTokens: 1000,
+});
 
 const sendMessage = async (request: Request): Promise<Response> => {
   if (request.method !== "POST") {
@@ -38,19 +41,14 @@ const sendMessage = async (request: Request): Promise<Response> => {
     );
   }
 
-  const model = "gpt-3.5-turbo" as OpenAIChatModelType;
-  const maxTokens = 1000;
-
   const messagesToSend: OpenAIChatMessage[] =
     await composeRecentMessagesOpenAIChatPrompt({
-      model,
-      systemMessage: {
-        role: "system",
-        content:
-          "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.",
-      },
+      model: model.modelName,
+      systemMessage: OpenAIChatMessage.system(
+        "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown."
+      ),
       messages: parsedData.data,
-      maxTokens,
+      maxTokens: model.settings.maxTokens ?? 100,
     });
 
   // forward the abort signal
@@ -61,14 +59,11 @@ const sendMessage = async (request: Request): Promise<Response> => {
     return controller.abort();
   });
 
-  const stream = await streamOpenAIChatCompletionAPI({
-    apiKey: openAiApiKey,
-    model,
-    messages: messagesToSend,
-    maxTokens,
-    responseFormat: streamOpenAIChatCompletionAPI.responseFormat.readStream,
-    abortSignal: controller.signal,
-  });
+  const stream = await model.callAPI(
+    messagesToSend,
+    { responseFormat: OpenAIChatResponseFormat.readStream },
+    { abortSignal: controller.signal }
+  );
 
   return new Response(stream, {
     headers: {

@@ -2,8 +2,10 @@ import { ChatInputArea } from "@/component/ChatInputArea";
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
-import { convertReadableStreamToAsyncIterable } from "ai-utils.js/internal";
-import { createOpenAIChatResponseDeltaStream } from "ai-utils.js";
+import {
+  convertReadableStreamToAsyncIterable,
+  createOpenAIChatResponseDeltaStream,
+} from "ai-utils.js";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 

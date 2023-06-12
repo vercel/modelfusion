@@ -8,13 +8,18 @@ import { Tokenizer } from "../../../model/tokenization/Tokenizer.js";
 import { RunContext } from "../../../run/RunContext.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
+  ResponseHandler,
+  createAsyncIterableResponseHandler,
   createJsonResponseHandler,
+  createStreamResponseHandler,
   postJsonToApi,
 } from "../../../util/api/postToApi.js";
+import { convertReadableStreamToAsyncIterable } from "../../../util/convertReadableStreamToAsyncIterable.js";
 import { OpenAIModelSettings } from "../OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
+import { createOpenAIChatResponseDeltaStream } from "./OpenAIChatResponseDeltaStream.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 
 // see https://platform.openai.com/docs/models/
@@ -93,7 +98,12 @@ export class OpenAIChatModel
     super({
       settings,
       extractText: (response) => response.choices[0]!.message.content,
-      generateResponse: (prompt, run) => this.callAPI(prompt, run),
+      generateResponse: (prompt, run) =>
+        this.callAPI(
+          prompt,
+          { responseFormat: OpenAIChatResponseFormat.json },
+          run
+        ),
     });
 
     this.tokenizer = new TikTokenTokenizer({ model: this.settings.model });
@@ -131,14 +141,15 @@ export class OpenAIChatModel
     });
   }
 
-  async callAPI(
+  async callAPI<RESULT>(
     input: Array<OpenAIChatMessage>,
     settings: Partial<OpenAIChatCallSettings> &
       OpenAIModelSettings & {
+        responseFormat: OpenAIChatResponseFormatType<RESULT>;
         user?: string;
-      } = {},
+      },
     context?: RunContext
-  ): Promise<OpenAIChatResponse> {
+  ): Promise<RESULT> {
     const callSettings = Object.assign(
       {
         apiKey: this.apiKey,
@@ -198,35 +209,10 @@ const openAIChatResponseSchema = z.object({
 
 export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
 
-/**
- * Call the OpenAI chat completion API to generate a chat completion for the messages.
- *
- * @see https://platform.openai.com/docs/api-reference/chat/create
- *
- * @example
- * const response = await callOpenAIChatCompletionAPI({
- *   apiKey: OPENAI_API_KEY,
- *   model: "gpt-3.5-turbo",
- *   messages: [
- *     {
- *       role: "system",
- *       content:
- *         "You are an AI assistant. Follow the user's instructions carefully.",
- *     },
- *     {
- *       role: "user",
- *       content: "Hello, how are you?",
- *     },
- *   ],
- *   temperature: 0.7,
- *   maxTokens: 500,
- * });
- *
- * console.log(response.choices[0].message.content);
- */
-async function callOpenAIChatCompletionAPI({
+async function callOpenAIChatCompletionAPI<RESPONSE>({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
+  responseFormat,
   apiKey,
   model,
   messages,
@@ -238,17 +224,27 @@ async function callOpenAIChatCompletionAPI({
   presencePenalty,
   frequencyPenalty,
   user,
-}: OpenAIChatCallSettings & {
+}: {
   baseUrl?: string;
   abortSignal?: AbortSignal;
+  responseFormat: OpenAIChatResponseFormatType<RESPONSE>;
   apiKey: string;
+  model: OpenAIChatModelType;
   messages: Array<OpenAIChatMessage>;
+  temperature?: number;
+  topP?: number;
+  n?: number;
+  stop?: string | string[];
+  maxTokens?: number;
+  presencePenalty?: number;
+  frequencyPenalty?: number;
   user?: string;
-}): Promise<OpenAIChatResponse> {
+}): Promise<RESPONSE> {
   return postJsonToApi({
     url: `${baseUrl}/chat/completions`,
     apiKey,
     body: {
+      stream: responseFormat.stream,
       model,
       messages,
       top_p: topP,
@@ -261,9 +257,34 @@ async function callOpenAIChatCompletionAPI({
       user,
     },
     failedResponseHandler: failedOpenAICallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      openAIChatResponseSchema
-    ),
+    successfulResponseHandler: responseFormat.handler,
     abortSignal,
   });
 }
+
+export type OpenAIChatResponseFormatType<T> = {
+  stream: boolean;
+  handler: ResponseHandler<T>;
+};
+
+export const OpenAIChatResponseFormat = {
+  json: {
+    stream: false,
+    handler: createJsonResponseHandler(openAIChatResponseSchema),
+  },
+  readStream: {
+    stream: true,
+    handler: createStreamResponseHandler(),
+  },
+  asyncUint8ArrayIterable: {
+    stream: true,
+    handler: createAsyncIterableResponseHandler(),
+  },
+  asyncDeltaIterable: {
+    stream: true,
+    handler: async ({ response }: { response: Response }) =>
+      createOpenAIChatResponseDeltaStream(
+        convertReadableStreamToAsyncIterable(response.body!.getReader())
+      ),
+  },
+};
