@@ -2,26 +2,25 @@ import { z } from "zod";
 import { AbstractImageGenerationModel } from "../../model/image-generation/AbstractImageGenerationModel.js";
 import { ImageGenerationModelSettings } from "../../model/image-generation/ImageGenerationModel.js";
 import { RunContext } from "../../run/RunContext.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
-export interface OpenAIImageGenerationModelSettings
-  extends ImageGenerationModelSettings {
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-
+export interface OpenAIImageGenerationCallSettings {
   n?: number;
   size?: "256x256" | "512x512" | "1024x1024";
+}
+
+export interface OpenAIImageGenerationSettings
+  extends ImageGenerationModelSettings,
+    OpenAIImageGenerationCallSettings,
+    OpenAIModelSettings {
+  isUserIdForwardingEnabled?: boolean;
 }
 
 /**
@@ -41,18 +40,16 @@ export interface OpenAIImageGenerationModelSettings
 export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
   string,
   OpenAIImageGenerationBase64JsonResponse,
-  OpenAIImageGenerationModelSettings
+  OpenAIImageGenerationSettings
 > {
-  constructor(settings: OpenAIImageGenerationModelSettings) {
+  constructor(settings: OpenAIImageGenerationSettings) {
     super({
       settings,
       extractBase64Image: (response) => response.data[0].b64_json,
       generateResponse: (prompt, context) =>
         this.callAPI(
           prompt,
-          {
-            responseFormat: OpenAIImageGenerationResponseFormat.base64Json,
-          },
+          { responseFormat: OpenAIImageGenerationResponseFormat.base64Json },
           context
         ),
     });
@@ -75,25 +72,19 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
 
   async callAPI<RESULT>(
     input: string,
-    settings: {
-      baseUrl?: string;
-      apiKey?: string;
-
-      retry?: RetryFunction;
-      throttle?: ThrottleFunction;
-
-      responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
-
-      n?: number;
-      size?: "256x256" | "512x512" | "1024x1024";
-
-      user?: string;
-    },
+    settings: OpenAIImageGenerationCallSettings &
+      OpenAIModelSettings & {
+        responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
+        user?: string;
+      },
     context?: RunContext
   ): Promise<RESULT> {
     const callSettings = Object.assign(
       {
         apiKey: this.apiKey,
+        user: this.settings.isUserIdForwardingEnabled
+          ? context?.userId
+          : undefined,
       },
       this.settings,
       settings
@@ -110,9 +101,7 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
         }),
     });
   }
-  withSettings(
-    additionalSettings: Partial<OpenAIImageGenerationModelSettings>
-  ) {
+  withSettings(additionalSettings: Partial<OpenAIImageGenerationSettings>) {
     return new OpenAIImageGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
@@ -184,13 +173,11 @@ async function callOpenAIImageGenerationAPI<RESPONSE>({
   size,
   responseFormat,
   user,
-}: {
+}: OpenAIImageGenerationCallSettings & {
   baseUrl?: string;
   abortSignal?: AbortSignal;
   apiKey: string;
   prompt: string;
-  n?: number;
-  size?: "256x256" | "512x512" | "1024x1024";
   responseFormat: OpenAIImageGenerationResponseFormatType<RESPONSE>;
   user?: string;
 }): Promise<RESPONSE> {

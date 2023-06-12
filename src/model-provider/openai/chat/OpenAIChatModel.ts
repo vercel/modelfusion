@@ -6,13 +6,12 @@ import {
 } from "../../../model/text-generation/TextGenerationModel.js";
 import { Tokenizer } from "../../../model/tokenization/Tokenizer.js";
 import { RunContext } from "../../../run/RunContext.js";
-import { RetryFunction } from "../../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../util/api/postToApi.js";
+import { OpenAIModelSettings } from "../OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
@@ -42,17 +41,8 @@ export const OPENAI_CHAT_MODELS = {
 
 export type OpenAIChatModelType = keyof typeof OPENAI_CHAT_MODELS;
 
-export interface OpenAIChatModelSettings extends TextGenerationModelSettings {
+export interface OpenAIChatCallSettings {
   model: OpenAIChatModelType;
-
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-
-  isUserIdForwardingEnabled?: boolean;
-
   temperature?: number;
   topP?: number;
   n?: number;
@@ -60,6 +50,13 @@ export interface OpenAIChatModelSettings extends TextGenerationModelSettings {
   maxTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
+}
+
+export interface OpenAIChatSettings
+  extends TextGenerationModelSettings,
+    OpenAIModelSettings,
+    OpenAIChatCallSettings {
+  isUserIdForwardingEnabled?: boolean;
 }
 
 /**
@@ -84,15 +81,15 @@ export class OpenAIChatModel
   extends AbstractTextGenerationModel<
     OpenAIChatMessage[],
     OpenAIChatResponse,
-    OpenAIChatModelSettings
+    OpenAIChatSettings
   >
   implements
     TextGenerationModelWithTokenization<
       OpenAIChatMessage[],
-      OpenAIChatModelSettings
+      OpenAIChatSettings
     >
 {
-  constructor(settings: OpenAIChatModelSettings) {
+  constructor(settings: OpenAIChatSettings) {
     super({
       settings,
       extractText: (response) => response.choices[0]!.message.content,
@@ -136,25 +133,36 @@ export class OpenAIChatModel
 
   async callAPI(
     input: Array<OpenAIChatMessage>,
+    settings: Partial<OpenAIChatCallSettings> &
+      OpenAIModelSettings & {
+        user?: string;
+      } = {},
     context?: RunContext
   ): Promise<OpenAIChatResponse> {
+    const callSettings = Object.assign(
+      {
+        apiKey: this.apiKey,
+        user: this.settings.isUserIdForwardingEnabled
+          ? context?.userId
+          : undefined,
+      },
+      this.settings,
+      settings
+    );
+
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
       throttle: this.settings.throttle,
       call: async () =>
         callOpenAIChatCompletionAPI({
           abortSignal: context?.abortSignal,
-          apiKey: this.apiKey,
           messages: input,
-          user: this.settings.isUserIdForwardingEnabled
-            ? context?.userId
-            : undefined,
-          ...this.settings,
+          ...callSettings,
         }),
     });
   }
 
-  withSettings(additionalSettings: Partial<OpenAIChatModelSettings>) {
+  withSettings(additionalSettings: Partial<OpenAIChatSettings>) {
     return new OpenAIChatModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
@@ -230,19 +238,11 @@ async function callOpenAIChatCompletionAPI({
   presencePenalty,
   frequencyPenalty,
   user,
-}: {
+}: OpenAIChatCallSettings & {
   baseUrl?: string;
   abortSignal?: AbortSignal;
   apiKey: string;
-  model: OpenAIChatModelType;
   messages: Array<OpenAIChatMessage>;
-  temperature?: number;
-  topP?: number;
-  n?: number;
-  stop?: string | string[];
-  maxTokens?: number;
-  presencePenalty?: number;
-  frequencyPenalty?: number;
   user?: string;
 }): Promise<OpenAIChatResponse> {
   return postJsonToApi({
