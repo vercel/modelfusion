@@ -18,6 +18,8 @@ npm install ai-utils.js
 
 ## Usage Examples
 
+You can provide API keys for the different providers using environment variables (e.g., `OPENAI_API_KEY`) or by passing them in as options to the model constructors.
+
 ### Text Generation
 
 ```ts
