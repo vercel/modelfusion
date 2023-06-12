@@ -1,4 +1,9 @@
-import { MemoryStore, OpenAITextEmbeddingModel, VectorDB } from "ai-utils.js";
+import {
+  MemoryStore,
+  OpenAITextEmbeddingModel,
+  VectorDB,
+  throttleMaxConcurrency,
+} from "ai-utils.js";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import fs from "node:fs";
@@ -31,6 +36,9 @@ if (!openAiApiKey) {
     embeddingModel: new OpenAITextEmbeddingModel({
       apiKey: openAiApiKey,
       model: "text-embedding-ada-002",
+      throttle: throttleMaxConcurrency({
+        maxConcurrentCalls: 5,
+      }),
     }),
   });
 
