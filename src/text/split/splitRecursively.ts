@@ -61,7 +61,7 @@ export const splitRecursivelyAtToken = async ({
     segments: (await tokenizer.tokenizeWithTexts(text)).tokenTexts,
   });
 
-splitRecursivelyAtToken.asSplitFunction =
+export const splitRecursivelyAtTokenAsSplitFunction =
   ({
     tokenizer,
     maxChunkSize,
