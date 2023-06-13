@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { ApiCallError } from "./ApiCallError.js";
-import { convertReadableStreamToAsyncIterable } from "../convertReadableStreamToAsyncIterable.js";
 
 export type ResponseHandler<T> = (options: {
   url: string;
@@ -30,11 +29,6 @@ export const createStreamResponseHandler =
   (): ResponseHandler<ReadableStream<Uint8Array>> =>
   async ({ response }) =>
     response.body!;
-
-export const createAsyncIterableResponseHandler =
-  (): ResponseHandler<AsyncIterable<Uint8Array>> =>
-  async ({ response }) =>
-    convertReadableStreamToAsyncIterable(response.body!.getReader());
 
 export const createTextResponseHandler =
   (): ResponseHandler<string> =>

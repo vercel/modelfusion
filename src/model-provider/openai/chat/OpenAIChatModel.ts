@@ -9,7 +9,6 @@ import { RunContext } from "../../../run/RunContext.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
-  createAsyncIterableResponseHandler,
   createJsonResponseHandler,
   createStreamResponseHandler,
   postJsonToApi,
@@ -19,10 +18,17 @@ import { OpenAIModelSettings } from "../OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import { createOpenAIChatResponseDeltaStream } from "./OpenAIChatResponseDeltaStream.js";
+import {
+  createOpenAIChatFullDeltaIterable,
+  createOpenAIChatTextDeltaIterable,
+} from "./OpenAIChatStreamIterable.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 
-// see https://platform.openai.com/docs/models/
+/*
+ * Available OpenAI chat models and their token limits.
+ *
+ * @see https://platform.openai.com/docs/models/
+ */
 export const OPENAI_CHAT_MODELS = {
   "gpt-4": {
     maxTokens: 8192,
@@ -268,22 +274,42 @@ export type OpenAIChatResponseFormatType<T> = {
 };
 
 export const OpenAIChatResponseFormat = {
+  /**
+   * Returns the response as a JSON object.
+   */
   json: {
     stream: false,
     handler: createJsonResponseHandler(openAIChatResponseSchema),
   },
-  readStream: {
+
+  /**
+   * Returns the response as a ReadableStream. This is useful for forwarding,
+   * e.g. from a serverless function to the client.
+   */
+  readableStream: {
     stream: true,
     handler: createStreamResponseHandler(),
   },
-  asyncUint8ArrayIterable: {
-    stream: true,
-    handler: createAsyncIterableResponseHandler(),
-  },
-  asyncDeltaIterable: {
+
+  /**
+   * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
+   * of the response stream.
+   */
+  fullDeltaIterable: {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
-      createOpenAIChatResponseDeltaStream(
+      createOpenAIChatFullDeltaIterable(
+        convertReadableStreamToAsyncIterable(response.body!.getReader())
+      ),
+  },
+
+  /**
+   * Returns an async iterable over the text deltas (only the tex different of the first choice).
+   */
+  textDeltaIterable: {
+    stream: true,
+    handler: async ({ response }: { response: Response }) =>
+      createOpenAIChatTextDeltaIterable(
         convertReadableStreamToAsyncIterable(response.body!.getReader())
       ),
   },

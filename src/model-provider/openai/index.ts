@@ -7,6 +7,6 @@ export * from "./TikTokenTokenizer.js";
 export * from "./audio/callOpenAITranscriptionAPI.js";
 export * from "./chat/OpenAIChatMessage.js";
 export * from "./chat/OpenAIChatModel.js";
-export * from "./chat/OpenAIChatResponseDeltaStream.js";
+export * from "./chat/OpenAIChatStreamIterable.js";
 export * from "./chat/composeRecentMessagesOpenAIChatPrompt.js";
 export * from "./chat/countOpenAIChatMessageTokens.js";

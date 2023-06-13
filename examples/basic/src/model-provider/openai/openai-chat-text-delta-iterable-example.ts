@@ -14,18 +14,16 @@ dotenv.config();
     maxTokens: 500,
   });
 
-  const stream = await model.callAPI(
+  const deltas = await model.callAPI(
     [
       OpenAIChatMessage.system(
         "Write a short story about a robot learning to love:"
       ),
     ],
-    { responseFormat: OpenAIChatResponseFormat.asyncDeltaIterable }
+    { responseFormat: OpenAIChatResponseFormat.textDeltaIterable }
   );
 
-  for await (const piece of stream) {
-    if (piece?.type === "delta") {
-      process.stdout.write(piece.delta[0].delta.content ?? "");
-    }
+  for await (const delta of deltas) {
+    process.stdout.write(delta);
   }
 })();

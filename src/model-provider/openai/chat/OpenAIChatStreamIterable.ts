@@ -20,7 +20,7 @@ const chatResponseStreamEventSchema = z.object({
   object: z.string(),
 });
 
-export type ChatResponseChoicesDelta = Array<{
+export type OpenAIChatFullDelta = Array<{
   role: "assistant" | "user" | undefined;
   content: string;
   isComplete: boolean;
@@ -30,10 +30,10 @@ export type ChatResponseChoicesDelta = Array<{
   };
 }>;
 
-export type OpenAIChatResponseDeltaStreamEntry =
+type OpenAIChatFullDeltaEvent =
   | {
       type: "delta";
-      delta: ChatResponseChoicesDelta;
+      fullDelta: OpenAIChatFullDelta;
     }
   | {
       type: "error";
@@ -41,22 +41,12 @@ export type OpenAIChatResponseDeltaStreamEntry =
     }
   | undefined;
 
-export async function createOpenAIChatResponseDeltaStream(
+async function createOpenAIChatFullDeltaIterableQueue(
   stream: AsyncIterable<Uint8Array>
-): Promise<AsyncIterable<OpenAIChatResponseDeltaStreamEntry>> {
-  const queue = new AsyncQueue<
-    | {
-        type: "delta";
-        delta: ChatResponseChoicesDelta;
-      }
-    | {
-        type: "error";
-        error: unknown;
-      }
-    | undefined
-  >();
+): Promise<AsyncIterable<OpenAIChatFullDeltaEvent>> {
+  const queue = new AsyncQueue<OpenAIChatFullDeltaEvent>();
 
-  const choices: ChatResponseChoicesDelta = [];
+  const streamDelta: OpenAIChatFullDelta = [];
 
   const parser = createParser((event) => {
     if (event.type !== "event") {
@@ -89,8 +79,8 @@ export async function createOpenAIChatResponseDeltaStream(
         const eventChoice = event.choices[i];
         const delta = eventChoice.delta;
 
-        if (choices[i] == null) {
-          choices[i] = {
+        if (streamDelta[i] == null) {
+          streamDelta[i] = {
             role: undefined,
             content: "",
             isComplete: false,
@@ -98,7 +88,7 @@ export async function createOpenAIChatResponseDeltaStream(
           };
         }
 
-        const choice = choices[i];
+        const choice = streamDelta[i];
 
         choice.delta = delta;
 
@@ -117,11 +107,11 @@ export async function createOpenAIChatResponseDeltaStream(
 
       // Since we're mutating the choices array in an async scenario,
       // we need to make a deep copy:
-      const choiceDeepCopy = JSON.parse(JSON.stringify(choices));
+      const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
 
       queue.push({
         type: "delta",
-        delta: choiceDeepCopy,
+        fullDelta: streamDeltaDeepCopy,
       });
     } catch (error) {
       queue.push({ type: "error", error });
@@ -139,4 +129,48 @@ export async function createOpenAIChatResponseDeltaStream(
   })();
 
   return queue;
+}
+
+async function* extractTextDelta(
+  fullDeltaIterable: AsyncIterable<OpenAIChatFullDeltaEvent>
+): AsyncIterable<string> {
+  for await (const event of fullDeltaIterable) {
+    if (event?.type === "error") {
+      throw event.error;
+    }
+
+    if (event?.type === "delta") {
+      const delta = event.fullDelta[0]?.delta.content;
+
+      if (delta != null && delta.length > 0) {
+        yield delta;
+      }
+    }
+  }
+}
+
+export async function createOpenAIChatTextDeltaIterable(
+  stream: AsyncIterable<Uint8Array>
+): Promise<AsyncIterable<string>> {
+  return extractTextDelta(await createOpenAIChatFullDeltaIterableQueue(stream));
+}
+
+async function* extractFullDelta(
+  fullDeltaIterable: AsyncIterable<OpenAIChatFullDeltaEvent>
+): AsyncIterable<OpenAIChatFullDelta> {
+  for await (const event of fullDeltaIterable) {
+    if (event?.type === "error") {
+      throw event.error;
+    }
+
+    if (event?.type === "delta") {
+      yield event.fullDelta;
+    }
+  }
+}
+
+export async function createOpenAIChatFullDeltaIterable(
+  stream: AsyncIterable<Uint8Array>
+): Promise<AsyncIterable<OpenAIChatFullDelta>> {
+  return extractFullDelta(await createOpenAIChatFullDeltaIterableQueue(stream));
 }
