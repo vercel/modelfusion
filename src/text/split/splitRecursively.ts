@@ -42,7 +42,7 @@ export const splitRecursivelyAtCharacter = async ({
     segments: text,
   });
 
-splitRecursivelyAtCharacter.asSplitFunction =
+export const splitRecursivelyAtCharacterAsSplitFunction =
   ({ maxChunkSize }: { maxChunkSize: number }): SplitFunction =>
   async ({ text }: { text: string }) =>
     splitRecursivelyAtCharacter({ maxChunkSize, text });
@@ -91,7 +91,7 @@ export const splitRecursivelyAtTokenForModel = async ({
   });
 };
 
-splitRecursivelyAtTokenForModel.asSplitFunction =
+export const splitRecursivelyAtTokenForModelAsSplitFunction =
   ({
     model,
     maxChunkSize,

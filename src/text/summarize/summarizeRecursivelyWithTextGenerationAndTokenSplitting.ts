@@ -1,6 +1,6 @@
-import { RunContext } from "../../run/RunContext.js";
 import { TextGenerationModelWithTokenization } from "../../model/text-generation/TextGenerationModel.js";
-import { splitRecursivelyAtTokenForModel } from "../split/splitRecursively.js";
+import { RunContext } from "../../run/RunContext.js";
+import { splitRecursivelyAtTokenForModelAsSplitFunction } from "../split/splitRecursively.js";
 import { SummarizationFunction } from "./SummarizationFunction.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";
 
@@ -35,7 +35,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
 
   return summarizeRecursively(
     {
-      split: splitRecursivelyAtTokenForModel.asSplitFunction({
+      split: splitRecursivelyAtTokenForModelAsSplitFunction({
         model,
         maxChunkSize:
           model.maxTokens - reservedCompletionTokens - emptyPromptTokens,

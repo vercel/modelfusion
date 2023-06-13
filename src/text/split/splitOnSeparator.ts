@@ -10,7 +10,7 @@ export const splitOnSeparator = async ({
   return text.split(separator);
 };
 
-splitOnSeparator.asSplitFunction =
+export const splitOnSeparatorAsSplitFunction =
   ({ separator }: { separator: string }): SplitFunction =>
   async ({ text }: { text: string }) =>
     splitOnSeparator({
