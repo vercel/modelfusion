@@ -1,4 +1,4 @@
-import { callOpenAITranscriptionAPI } from "ai-utils.js";
+import { OpenAITranscriptionModel } from "ai-utils.js";
 import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -9,7 +9,9 @@ export const config = {
   },
 };
 
-const openAiApiKey = process.env.OPENAI_API_KEY ?? "";
+const model = new OpenAITranscriptionModel({
+  model: "whisper-1",
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -43,20 +45,15 @@ export default async function handler(
     const audioFile = files.audio as File;
     const fileData = fs.readFileSync(audioFile.filepath);
 
-    const transcriptionResponse = await callOpenAITranscriptionAPI({
-      apiKey: openAiApiKey,
-      model: "whisper-1",
-      file: {
-        name: "audio.mp3",
-        data: fileData,
-      },
-      responseFormat: callOpenAITranscriptionAPI.responseFormat.json,
+    const transcription = await model.transcribe({
+      type: "mp3",
+      data: fileData,
     });
 
     // Remove temporary file
     fs.unlinkSync(audioFile.filepath);
 
-    res.status(200).json({ transcription: transcriptionResponse.text });
+    res.status(200).json({ transcription });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error?.toString(), error: error });

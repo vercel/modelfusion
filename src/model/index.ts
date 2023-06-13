@@ -7,3 +7,5 @@ export * from "./text-generation/TextGenerationModel.js";
 export * from "./text-generation/TextGenerationObserver.js";
 export * from "./tokenization/TokenizationSupport.js";
 export * from "./tokenization/Tokenizer.js";
+export * from "./transcription/TranscriptionModel.js";
+export * from "./transcription/TranscriptionObserver.js";
