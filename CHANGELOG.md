@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.0.16 - 2023-06-13
+
+### Fixed
+
+1. Retry is not attempted when you ran out of OpenAI credits.
+1. Vercel edge function support (switched to nanoid for unique IDs).
+
+### Changed
+
+1. Improved OpenAI chat streaming API.
+1. Changed `asFunction` variants from namespaced functions into stand-alone functions.
+
 ## 0.0.15 - 2023-06-12
 
 ### Changed
