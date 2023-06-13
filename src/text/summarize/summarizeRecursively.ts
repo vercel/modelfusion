@@ -1,6 +1,6 @@
 import { RunContext } from "../../run/RunContext.js";
 import { SplitFunction } from "../split/SplitFunction.js";
-import { SummarizeFunction } from "./SummarizeFunction.js";
+import { SummarizationFunction } from "./SummarizationFunction.js";
 
 export async function summarizeRecursively(
   {
@@ -9,7 +9,7 @@ export async function summarizeRecursively(
     join = (texts) => texts.join("\n\n"),
     text,
   }: {
-    summarize: SummarizeFunction;
+    summarize: SummarizationFunction;
     split: SplitFunction;
     join?: (texts: Array<string>) => string;
     text: string;
@@ -39,16 +39,16 @@ export async function summarizeRecursively(
   );
 }
 
-summarizeRecursively.asFunction =
+export const summarizeRecursivelyAsFunction =
   ({
     split,
     map,
     join,
   }: {
     split: SplitFunction;
-    map: SummarizeFunction;
+    map: SummarizationFunction;
     join?: (texts: Array<string>) => string;
-  }): SummarizeFunction =>
+  }): SummarizationFunction =>
   async ({ text }, context?: RunContext) =>
     summarizeRecursively(
       {

@@ -1,12 +1,12 @@
 import { RunContext } from "../../run/RunContext.js";
 import { TextGenerationModelWithTokenization } from "../../model/text-generation/TextGenerationModel.js";
 import { splitRecursivelyAtTokenForModel } from "../split/splitRecursively.js";
-import { SummarizeFunction } from "./SummarizeFunction.js";
+import { SummarizationFunction } from "./SummarizationFunction.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";
 
 /**
  * Recursively summarizes a text using a text generation model, e.g. for summarization or text extraction.
- * It automatically splits the text into chunks that are small enough to be processed by the model,
+ * It automatically splits the text into optimal chunks that are small enough to be processed by the model,
  * while leaving enough space for the model to generate text.
  */
 export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
@@ -16,55 +16,64 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     text,
     model,
     prompt,
-    functionId,
     reservedCompletionTokens,
+    functionId,
+    join,
   }: {
     text: string;
     model: TextGenerationModelWithTokenization<PROMPT, any>;
-    prompt: (options: { text: string }) => Promise<PROMPT>;
-    functionId?: string;
+    prompt: (input: { text: string }) => Promise<PROMPT>;
     reservedCompletionTokens: number;
+    join?: (texts: Array<string>) => string;
+    functionId?: string;
   },
   context?: RunContext
 ) {
+  const emptyPromptTokens = await model.countPromptTokens(
+    await prompt({ text: "" })
+  );
+
   return summarizeRecursively(
     {
       split: splitRecursivelyAtTokenForModel.asSplitFunction({
         model,
         maxChunkSize:
-          model.maxTokens -
-          reservedCompletionTokens -
-          (await model.countPromptTokens(await prompt({ text: "" }))),
+          model.maxTokens - reservedCompletionTokens - emptyPromptTokens,
       }),
       summarize: model
         .withMaxTokens(reservedCompletionTokens)
         .generateTextAsFunction(prompt, { functionId }),
+      join,
       text,
     },
     context
   );
 }
 
-summarizeRecursivelyWithTextGenerationAndTokenSplitting.asFunction =
-  <PROMPT>({
-    model,
-    prompt,
-    functionId,
-    reservedCompletionTokens,
-  }: {
-    model: TextGenerationModelWithTokenization<PROMPT, any>;
-    prompt: (options: { text: string }) => Promise<PROMPT>;
-    functionId?: string;
-    reservedCompletionTokens: number;
-  }): SummarizeFunction =>
-  async (options: { text: string }, context?: RunContext) =>
-    summarizeRecursivelyWithTextGenerationAndTokenSplitting(
-      {
-        text: options.text,
-        model,
-        prompt,
-        functionId,
-        reservedCompletionTokens,
-      },
-      context
-    );
+export const summarizeRecursivelyWithTextGenerationAndTokenSplittingAsFunction =
+
+    <PROMPT>({
+      model,
+      prompt,
+      reservedCompletionTokens,
+      join,
+      functionId,
+    }: {
+      model: TextGenerationModelWithTokenization<PROMPT, any>;
+      prompt: (input: { text: string }) => Promise<PROMPT>;
+      reservedCompletionTokens: number;
+      join?: (texts: Array<string>) => string;
+      functionId?: string;
+    }): SummarizationFunction =>
+    async (input: { text: string }, context?: RunContext) =>
+      summarizeRecursivelyWithTextGenerationAndTokenSplitting(
+        {
+          text: input.text,
+          model,
+          prompt,
+          reservedCompletionTokens,
+          join,
+          functionId,
+        },
+        context
+      );

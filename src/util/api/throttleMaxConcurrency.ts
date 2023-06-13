@@ -40,10 +40,6 @@ class MaxConcurrencyThrottler {
       }
     });
   }
-
-  asFunction() {
-    return <T>(fn: () => PromiseLike<T>) => this.run(fn);
-  }
 }
 
 export function throttleMaxConcurrency({
@@ -51,5 +47,6 @@ export function throttleMaxConcurrency({
 }: {
   maxConcurrentCalls: number;
 }): ThrottleFunction {
-  return new MaxConcurrencyThrottler({ maxConcurrentCalls }).asFunction();
+  const throttler = new MaxConcurrencyThrottler({ maxConcurrentCalls });
+  return <T>(fn: () => PromiseLike<T>) => throttler.run(fn);
 }
