@@ -41,7 +41,12 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
     super({
       settings,
       extractBase64Image: (response) => response.artifacts[0].base64,
-      generateResponse: (prompt, context) => this.callAPI(prompt, context),
+      generateResponse: (prompt, options) =>
+        this.callAPI(prompt, {
+          functionId: options?.functionId,
+          settings: options?.settings,
+          run: options?.run,
+        }),
     });
   }
 
@@ -64,18 +69,30 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
 
   async callAPI(
     input: StabilityImageGenerationPrompt,
-    context?: RunContext
+    options?: {
+      functionId?: string;
+      settings?: Partial<StabilityImageGenerationModelSettings>;
+      run?: RunContext;
+    }
   ): Promise<StabilityImageGenerationResponse> {
+    const run = options?.run;
+    const settings = options?.settings;
+
+    const callSettings = Object.assign(
+      { apiKey: this.apiKey },
+      this.settings,
+      settings
+    );
+
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
       throttle: this.settings.throttle,
       call: async () =>
         callStabilityImageGenerationAPI({
-          abortSignal: context?.abortSignal,
-          apiKey: this.apiKey,
+          abortSignal: run?.abortSignal,
           engineId: this.settings.model,
           textPrompts: input,
-          ...this.settings,
+          ...callSettings,
         }),
     });
   }

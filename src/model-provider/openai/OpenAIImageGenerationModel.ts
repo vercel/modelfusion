@@ -46,12 +46,13 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
     super({
       settings,
       extractBase64Image: (response) => response.data[0].b64_json,
-      generateResponse: (prompt, run) =>
-        this.callAPI(
-          prompt,
-          { responseFormat: OpenAIImageGenerationResponseFormat.base64Json },
-          run
-        ),
+      generateResponse: (prompt, options) =>
+        this.callAPI(prompt, {
+          responseFormat: OpenAIImageGenerationResponseFormat.base64Json,
+          functionId: options?.functionId,
+          settings: options?.settings,
+          run: options?.run,
+        }),
     });
   }
 
@@ -72,19 +73,24 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
 
   async callAPI<RESULT>(
     input: string,
-    settings: OpenAIImageGenerationCallSettings &
-      OpenAIModelSettings & {
-        responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
-        user?: string;
-      },
-    context?: RunContext
+    options: {
+      functionId?: string;
+      responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
+      settings?: Partial<
+        OpenAIImageGenerationCallSettings &
+          OpenAIModelSettings & { user?: string }
+      >;
+      run?: RunContext;
+    }
   ): Promise<RESULT> {
+    const run = options?.run;
+    const settings = options?.settings;
+    const responseFormat = options?.responseFormat;
+
     const callSettings = Object.assign(
       {
         apiKey: this.apiKey,
-        user: this.settings.isUserIdForwardingEnabled
-          ? context?.userId
-          : undefined,
+        user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
       },
       this.settings,
       settings
@@ -95,9 +101,10 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
       throttle: callSettings.throttle,
       call: async () =>
         callOpenAIImageGenerationAPI({
-          abortSignal: context?.abortSignal,
+          abortSignal: run?.abortSignal,
           prompt: input,
           ...callSettings,
+          responseFormat,
         }),
     });
   }

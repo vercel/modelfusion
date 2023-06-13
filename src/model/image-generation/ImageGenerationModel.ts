@@ -23,18 +23,11 @@ export interface ImageGenerationModel<
    */
   generateImage(
     prompt: PROMPT,
-    settings?: Partial<SETTINGS> & {
+    options?: {
       functionId?: string;
+      settings?: Partial<SETTINGS>;
+      run?: RunContext;
     }
-  ): PromiseLike<string>;
-  generateImage(
-    prompt: PROMPT,
-    settings:
-      | (Partial<SETTINGS> & {
-          functionId?: string;
-        })
-      | null, // require explicit null when run is set
-    run: RunContext
   ): PromiseLike<string>;
 
   /**
@@ -56,8 +49,16 @@ export interface ImageGenerationModel<
    */
   generateImageAsFunction<INPUT>(
     promptTemplate: PromptTemplate<INPUT, PROMPT>,
-    settings?: Partial<SETTINGS> & {
+    options?: {
       functionId?: string;
+      settings?: Partial<SETTINGS>;
     }
-  ): (input: INPUT, run?: RunContext) => PromiseLike<string>;
+  ): (
+    input: INPUT,
+    options?: {
+      functionId?: string;
+      settings?: Partial<SETTINGS>;
+      run?: RunContext;
+    }
+  ) => PromiseLike<string>;
 }

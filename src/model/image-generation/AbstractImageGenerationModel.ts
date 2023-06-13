@@ -30,10 +30,11 @@ export abstract class AbstractImageGenerationModel<
     extractBase64Image: (response: RESPONSE) => string;
     generateResponse: (
       prompt: PROMPT,
-      settings: SETTINGS & {
+      options?: {
         functionId?: string;
-      },
-      run?: RunContext
+        settings?: Partial<SETTINGS>;
+        run?: RunContext;
+      }
     ) => PromiseLike<RESPONSE>;
   }) {
     super({ settings });
@@ -44,38 +45,29 @@ export abstract class AbstractImageGenerationModel<
   private extractBase64Image: (response: RESPONSE) => string;
   private generateResponse: (
     prompt: PROMPT,
-    settings: SETTINGS & {
+    options?: {
       functionId?: string;
-    },
-    run?: RunContext
+      settings?: Partial<SETTINGS>;
+      run?: RunContext;
+    }
   ) => PromiseLike<RESPONSE>;
 
   async generateImage(
     prompt: PROMPT,
-    settings?:
-      | (Partial<SETTINGS> & {
-          functionId?: string;
-        })
-      | null,
-    run?: RunContext
-  ): Promise<string> {
-    if (settings != null) {
-      const settingKeys = Object.keys(settings);
-
-      // create new instance when there are settings other than 'functionId':
-      if (
-        settingKeys.length > 1 ||
-        (settingKeys.length === 1 && settingKeys[0] !== "functionId")
-      ) {
-        return this.withSettings(settings).generateImage(
-          prompt,
-          {
-            functionId: settings.functionId,
-          } as Partial<SETTINGS> & { functionId?: string },
-          run
-        );
-      }
+    options?: {
+      functionId?: string;
+      settings?: Partial<SETTINGS>;
+      run?: RunContext;
     }
+  ): Promise<string> {
+    if (options?.settings != null) {
+      return this.withSettings(options.settings).generateImage(prompt, {
+        functionId: options.functionId,
+        run: options.run,
+      });
+    }
+
+    const run = options?.run;
 
     const startTime = performance.now();
     const startEpochSeconds = Math.floor(
@@ -89,7 +81,7 @@ export abstract class AbstractImageGenerationModel<
       sessionId: run?.sessionId,
       userId: run?.userId,
 
-      functionId: settings?.functionId,
+      functionId: options?.functionId,
       callId,
 
       model: this.modelInformation,
@@ -103,16 +95,16 @@ export abstract class AbstractImageGenerationModel<
       prompt,
     };
 
-    this.callEachObserver(run, (observer) => {
+    this.callEachObserver(run ?? undefined, (observer) => {
       observer?.onImageGenerationStarted?.(startEvent);
     });
 
     const result = await runSafe(() =>
-      this.generateResponse(
-        prompt,
-        Object.assign({}, this.settings, settings), // include function id
-        run
-      )
+      this.generateResponse(prompt, {
+        functionId: options?.functionId,
+        settings: this.settings, // options.setting is null here
+        run,
+      })
     );
 
     const generationDurationInMs = Math.ceil(performance.now() - startTime);
@@ -173,16 +165,29 @@ export abstract class AbstractImageGenerationModel<
 
   generateImageAsFunction<INPUT>(
     promptTemplate: PromptTemplate<INPUT, PROMPT>,
-    settings?: Partial<SETTINGS> & {
+    generateOptions?: {
       functionId?: string;
+      settings?: Partial<SETTINGS>;
     }
   ) {
-    return async (input: INPUT, run?: RunContext) => {
+    return async (
+      input: INPUT,
+      options?: {
+        functionId?: string;
+        settings?: Partial<SETTINGS>;
+        run?: RunContext;
+      }
+    ) => {
       const expandedPrompt = await promptTemplate(input);
-      return this.generateImage(
-        expandedPrompt,
-        Object.assign({}, settings, run)
-      );
+      return this.generateImage(expandedPrompt, {
+        functionId: options?.functionId ?? generateOptions?.functionId,
+        settings: Object.assign(
+          {},
+          generateOptions?.settings,
+          options?.settings
+        ),
+        run: options?.run,
+      });
     };
   }
 }
