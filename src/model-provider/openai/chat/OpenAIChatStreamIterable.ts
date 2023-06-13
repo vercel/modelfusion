@@ -2,6 +2,7 @@ import { createParser } from "eventsource-parser";
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AsyncQueue } from "../../../util/AsyncQueue.js";
+import { convertReadableStreamToAsyncIterable } from "../../../util/convertReadableStreamToAsyncIterable.js";
 
 const chatResponseStreamEventSchema = z.object({
   choices: z.array(
@@ -42,7 +43,7 @@ type OpenAIChatFullDeltaEvent =
   | undefined;
 
 async function createOpenAIChatFullDeltaIterableQueue(
-  stream: AsyncIterable<Uint8Array>
+  stream: ReadableStream<Uint8Array>
 ): Promise<AsyncIterable<OpenAIChatFullDeltaEvent>> {
   const queue = new AsyncQueue<OpenAIChatFullDeltaEvent>();
 
@@ -123,7 +124,8 @@ async function createOpenAIChatFullDeltaIterableQueue(
   // process the stream asynchonously:
   (async () => {
     const decoder = new TextDecoder();
-    for await (const value of stream) {
+    const iterable = convertReadableStreamToAsyncIterable(stream.getReader());
+    for await (const value of iterable) {
       parser.feed(decoder.decode(value));
     }
   })();
@@ -150,7 +152,7 @@ async function* extractTextDelta(
 }
 
 export async function createOpenAIChatTextDeltaIterable(
-  stream: AsyncIterable<Uint8Array>
+  stream: ReadableStream<Uint8Array>
 ): Promise<AsyncIterable<string>> {
   return extractTextDelta(await createOpenAIChatFullDeltaIterableQueue(stream));
 }
@@ -170,7 +172,7 @@ async function* extractFullDelta(
 }
 
 export async function createOpenAIChatFullDeltaIterable(
-  stream: AsyncIterable<Uint8Array>
+  stream: ReadableStream<Uint8Array>
 ): Promise<AsyncIterable<OpenAIChatFullDelta>> {
   return extractFullDelta(await createOpenAIChatFullDeltaIterableQueue(stream));
 }

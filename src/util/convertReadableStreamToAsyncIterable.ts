@@ -1,3 +1,6 @@
+/**
+ * @internal
+ */
 export async function* convertReadableStreamToAsyncIterable<T>(
   reader: ReadableStreamDefaultReader<T>
 ): AsyncIterable<T> {

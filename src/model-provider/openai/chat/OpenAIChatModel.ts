@@ -13,7 +13,6 @@ import {
   createStreamResponseHandler,
   postJsonToApi,
 } from "../../../util/api/postToApi.js";
-import { convertReadableStreamToAsyncIterable } from "../../../util/convertReadableStreamToAsyncIterable.js";
 import { OpenAIModelSettings } from "../OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
@@ -298,9 +297,7 @@ export const OpenAIChatResponseFormat = {
   fullDeltaIterable: {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
-      createOpenAIChatFullDeltaIterable(
-        convertReadableStreamToAsyncIterable(response.body!.getReader())
-      ),
+      createOpenAIChatFullDeltaIterable(response.body!),
   },
 
   /**
@@ -309,8 +306,6 @@ export const OpenAIChatResponseFormat = {
   textDeltaIterable: {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
-      createOpenAIChatTextDeltaIterable(
-        convertReadableStreamToAsyncIterable(response.body!.getReader())
-      ),
+      createOpenAIChatTextDeltaIterable(response.body!),
   },
 };

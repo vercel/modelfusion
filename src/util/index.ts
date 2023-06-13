@@ -8,6 +8,5 @@ export * from "./api/retryNever.js";
 export * from "./api/retryWithExponentialBackoff.js";
 export * from "./api/throttleMaxConcurrency.js";
 export * from "./api/throttleUnlimitedConcurrency.js";
-export * from "./convertReadableStreamToAsyncIterable.js";
 export * from "./cosineSimilarity.js";
 export * from "./runSafe.js";

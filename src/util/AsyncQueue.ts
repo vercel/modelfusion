@@ -1,3 +1,6 @@
+/**
+ * @internal
+ */
 export class AsyncQueue<T> implements AsyncIterable<T | undefined> {
   queue: T[];
   resolvers: Array<(options: { value: T | undefined; done: boolean }) => void> =

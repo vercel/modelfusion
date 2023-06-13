@@ -2,10 +2,7 @@ import { ChatInputArea } from "@/component/ChatInputArea";
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
-import {
-  convertReadableStreamToAsyncIterable,
-  createOpenAIChatFullDeltaIterable,
-} from "ai-utils.js";
+import { createOpenAIChatFullDeltaIterable } from "ai-utils.js";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
@@ -37,9 +34,7 @@ export default function Home() {
         signal: abortController.current.signal,
       });
 
-      const deltas = await createOpenAIChatFullDeltaIterable(
-        convertReadableStreamToAsyncIterable(response.body!.getReader())
-      );
+      const deltas = await createOpenAIChatFullDeltaIterable(response.body!);
 
       for await (const fullDelta of deltas) {
         const delta = fullDelta[0];
