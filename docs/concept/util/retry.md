@@ -1,5 +1,5 @@
 ---
-sidebar_position: 100
+sidebar_position: 10
 ---
 
 # Retry Strategies
@@ -44,8 +44,6 @@ import { retryNever } from "ai-utils.js";
 
 const text = await model.generateText(
   "Write a short story about a robot learning to love:\n\n",
-  {
-    retry: retryNever(),
-  }
+  { settings: { retry: retryNever() } }
 );
 ```

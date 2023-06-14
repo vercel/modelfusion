@@ -152,18 +152,21 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 ## Features
 
-- [Text generation](https://ai-utils.dev/concept/model/text-generation)
-- [Text embedding](https://ai-utils.dev/concept/model/text-embedding)
-- [Text tokenization](https://ai-utils.dev/concept/model/text-tokenization)
+- Models
+  - [Text generation](https://ai-utils.dev/concept/model/text-generation)
+  - [Text embedding](https://ai-utils.dev/concept/model/text-embedding)
+  - [Text tokenization](https://ai-utils.dev/concept/model/text-tokenization)
+  - [Transcription](https://ai-utils.dev/concept/model/transcription)
+  - [Image generation](https://ai-utils.dev/concept/model/image-generation)
 - Text summarization
 - Text splitting
-- [Transcription](https://ai-utils.dev/concept/model/transcription)
-- [Image generation](https://ai-utils.dev/concept/model/image-generation)
 - [Vector DBs](https://ai-utils.dev/concept/vector-db)
-- Run abstraction for progress reporting and abort signals
-- [Retry strategies](https://ai-utils.dev/concept/util/retry)
-- Throttling
-- Error handling
+- Utilities
+  - Run abstraction for progress reporting and abort signals
+  - [Retry strategies](https://ai-utils.dev/concept/util/retry)
+  - [Throttling](https://ai-utils.dev/concept/util/throttle)
+  - Error handling
+  - Logging
 
 ## Integrations
 

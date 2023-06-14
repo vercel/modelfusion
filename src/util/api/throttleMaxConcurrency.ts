@@ -42,6 +42,9 @@ class MaxConcurrencyThrottler {
   }
 }
 
+/**
+ * The `throttleMaxConcurrency` strategy limits the number of parallel API calls.
+ */
 export function throttleMaxConcurrency({
   maxConcurrentCalls,
 }: {
