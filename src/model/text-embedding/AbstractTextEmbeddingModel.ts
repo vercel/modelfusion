@@ -145,7 +145,6 @@ export abstract class AbstractTextEmbeddingModel<
         observer?.onTextEmbeddingFinished?.(endEvent);
       });
 
-      // TODO instead throw a embed text error with a cause?
       throw result.error;
     }
 

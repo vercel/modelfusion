@@ -130,7 +130,6 @@ export abstract class AbstractImageGenerationModel<
         observer?.onImageGenerationFinished?.(endEvent);
       });
 
-      // TODO instead throw a generate text error with a cause?
       throw result.error;
     }
 

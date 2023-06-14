@@ -154,7 +154,6 @@ export abstract class AbstractTextGenerationModel<
         observer?.onTextGenerationFinished?.(endEvent);
       });
 
-      // TODO instead throw a generate text error with a cause?
       throw result.error;
     }
 

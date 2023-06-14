@@ -127,7 +127,6 @@ export abstract class AbstractTranscriptionModel<
         observer?.onTranscriptionFinished?.(endEvent);
       });
 
-      // TODO instead throw a generate text error with a cause?
       throw result.error;
     }
 

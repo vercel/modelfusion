@@ -150,7 +150,6 @@ export class OpenAITextGenerationModel
       retry: this.settings.retry,
       throttle: this.settings.throttle,
       call: async () =>
-        // TODO call logging needs to happen here to catch all errors, have real timing, etc
         callOpenAITextGenerationAPI({
           abortSignal: context?.abortSignal,
           apiKey: this.apiKey,
@@ -158,7 +157,7 @@ export class OpenAITextGenerationModel
           user: this.settings.isUserIdForwardingEnabled
             ? context?.userId
             : undefined,
-          ...this.settings, // TODO only send actual settings
+          ...this.settings,
         }),
     });
   }
