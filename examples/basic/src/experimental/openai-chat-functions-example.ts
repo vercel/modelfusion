@@ -32,7 +32,7 @@ dotenv.config();
         functionCall: "auto",
         functions: [
           {
-            name: "get_current_weather",
+            name: "getCurrentWeather",
             description: "Get the current weather in a given location",
             parameters: {
               type: "object",
