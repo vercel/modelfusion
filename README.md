@@ -164,7 +164,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 - Utilities
   - Run abstraction for progress reporting and abort signals
   - [Retry strategies](https://ai-utils.dev/concept/util/retry)
-  - [Throttling](https://ai-utils.dev/concept/util/throttle)
+  - [Throttling strategies](https://ai-utils.dev/concept/util/throttle)
   - Error handling
   - Logging
 
