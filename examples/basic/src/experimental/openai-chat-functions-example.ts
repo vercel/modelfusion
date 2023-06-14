@@ -7,17 +7,17 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-function getCurrentWeather(location: string, unit: string = "fahrenheit") {
-  return {
-    location,
-    temperature: "72",
-    unit,
-    forecast: ["sunny", "windy"],
-  };
-}
-
 // example from https://platform.openai.com/docs/guides/gpt/function-calling
 (async () => {
+  function getCurrentWeather(location: string, unit: string = "fahrenheit") {
+    return {
+      location,
+      temperature: "72",
+      unit,
+      forecast: ["sunny", "windy"],
+    };
+  }
+
   const model = new OpenAIChatModel({
     model: "gpt-3.5-turbo-0613",
     temperature: 0,
