@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.0.17 - 2023-06-14
+
+### New
+
+1. Updated OpenAI models.
+1. Low-level support for OpenAI chat functions API (via `OpenAIChatModel.callApi`).
+1. TranscriptionModel and OpenAITranscriptionModel (using `whisper`)
+
+### Changed
+
+1. Single optional parameter for functions/method that contains run, functionId, etc.
+
 ## 0.0.16 - 2023-06-13
 
 ### Fixed
