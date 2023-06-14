@@ -112,7 +112,7 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 ## Introduction
 
-`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/model/text-generation), [tokenization](https://ai-utils.dev/concept/model/text-tokenization), [embeddings](https://ai-utils.dev/concept/model/text-embedding), and [image generation](https://ai-utils.dev/concept/model/image-generation). The [vector DB abstraction](https://ai-utils.dev/concept/vector-db) allows you to store and query text embeddings with similarity search.
+`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/model/text-generation), [tokenization](https://ai-utils.dev/concept/model/text-tokenization), [embeddings](https://ai-utils.dev/concept/model/text-embedding), [transcription](https://ai-utils.dev/concept/model/transcription), and [image generation](https://ai-utils.dev/concept/model/image-generation). The [vector DB abstraction](https://ai-utils.dev/concept/vector-db) allows you to store and query text embeddings with similarity search.
 
 ### TypeScript-first
 
@@ -141,8 +141,8 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 - [Text tokenization](https://ai-utils.dev/concept/model/text-tokenization)
 - Text summarization
 - Text splitting
+- [Transcription](https://ai-utils.dev/concept/model/transcription)
 - [Image generation](https://ai-utils.dev/concept/model/image-generation)
-- Audio transcription
 - [Vector DBs](https://ai-utils.dev/concept/vector-db)
 - Run abstraction for progress reporting and abort signals
 - [Retry strategies](https://ai-utils.dev/concept/util/retry)

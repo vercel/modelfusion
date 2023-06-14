@@ -39,10 +39,9 @@ export type OpenAITranscriptionInput = {
  *
  * @example
  * const data = await fs.promises.readFile("data/test.mp3");
- *
  * const model = new OpenAITranscriptionModel({ model: "whisper-1" });
  *
- *  const transcription = await model.transcribe({
+ * const transcription = await model.transcribe({
  *   type: "mp3",
  *   data,
  * });
