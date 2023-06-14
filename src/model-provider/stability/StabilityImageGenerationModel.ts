@@ -65,27 +65,28 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
 
   async callAPI(
     input: StabilityImageGenerationPrompt,
-    options?: Partial<FunctionOptions<StabilityImageGenerationModelSettings>>
+    options?: FunctionOptions<StabilityImageGenerationModelSettings>
   ): Promise<StabilityImageGenerationResponse> {
     const run = options?.run;
     const settings = options?.settings;
 
     const callSettings = Object.assign(
-      { apiKey: this.apiKey },
+      {
+        apiKey: this.apiKey,
+      },
       this.settings,
-      settings
+      settings,
+      {
+        abortSignal: run?.abortSignal,
+        engineId: this.settings.model,
+        textPrompts: input,
+      }
     );
 
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
       throttle: this.settings.throttle,
-      call: async () =>
-        callStabilityImageGenerationAPI({
-          abortSignal: run?.abortSignal,
-          engineId: this.settings.model,
-          textPrompts: input,
-          ...callSettings,
-        }),
+      call: async () => callStabilityImageGenerationAPI(callSettings),
     });
   }
 

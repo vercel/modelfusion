@@ -1,6 +1,6 @@
-import { Model, ModelSettings } from "../Model.js";
-import { RunContext } from "../../run/RunContext.js";
 import { Vector } from "../../run/Vector.js";
+import { FunctionOptions } from "../FunctionOptions.js";
+import { Model, ModelSettings } from "../Model.js";
 
 export interface TextEmbeddingModelSettings extends ModelSettings {}
 
@@ -28,19 +28,7 @@ export interface TextEmbeddingModel<SETTINGS extends TextEmbeddingModelSettings>
    */
   embedText(
     text: string,
-    settings?: Partial<SETTINGS> & {
-      functionId?: string;
-    },
-    run?: RunContext
-  ): PromiseLike<Vector>;
-  embedText(
-    text: string,
-    settings:
-      | (Partial<SETTINGS> & {
-          functionId?: string;
-        })
-      | null, // require explicit null when run is set
-    run: RunContext
+    options?: FunctionOptions<SETTINGS>
   ): PromiseLike<Vector>;
 
   /**
@@ -56,18 +44,6 @@ export interface TextEmbeddingModel<SETTINGS extends TextEmbeddingModelSettings>
    */
   embedTexts(
     texts: string[],
-    settings?: Partial<SETTINGS> & {
-      functionId?: string;
-    },
-    run?: RunContext
-  ): PromiseLike<Vector[]>;
-  embedTexts(
-    texts: string[],
-    settings:
-      | (Partial<SETTINGS> & {
-          functionId?: string;
-        })
-      | null, // require explicit null when run is set
-    run: RunContext
+    options?: FunctionOptions<SETTINGS>
   ): PromiseLike<Vector[]>;
 }

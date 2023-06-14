@@ -1,7 +1,7 @@
 import z from "zod";
+import { FunctionOptions } from "../../model/FunctionOptions.js";
 import { AbstractTextEmbeddingModel } from "../../model/text-embedding/AbstractTextEmbeddingModel.js";
 import { TextEmbeddingModelSettings } from "../../model/text-embedding/TextEmbeddingModel.js";
-import { RunContext } from "../../run/RunContext.js";
 import { TokenizationSupport } from "../../model/tokenization/TokenizationSupport.js";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
@@ -62,7 +62,15 @@ export class OpenAITextEmbeddingModel
     super({
       settings,
       extractEmbeddings: (response) => [response.data[0]!.embedding],
-      generateResponse: (texts, _, run) => this.callAPI(texts, run),
+      generateResponse: (texts, options) => {
+        if (texts.length > this.maxTextsPerCall) {
+          throw new Error(
+            `The OpenAI embedding API only supports ${this.maxTextsPerCall} texts per API call.`
+          );
+        }
+
+        return this.callAPI(texts[0], options);
+      },
     });
 
     this.tokenizer = new TikTokenTokenizer({ model: this.modelName });
@@ -100,28 +108,29 @@ export class OpenAITextEmbeddingModel
   }
 
   async callAPI(
-    texts: Array<string>,
-    context?: RunContext
+    text: string,
+    options?: FunctionOptions<OpenAITextEmbeddingModelSettings>
   ): Promise<OpenAITextEmbeddingResponse> {
-    if (texts.length > this.maxTextsPerCall) {
-      throw new Error(
-        `The OpenAI embedding API only supports ${this.maxTextsPerCall} texts per API call.`
-      );
-    }
+    const run = options?.run;
+    const settings = options?.settings;
+
+    const callSettings = Object.assign(
+      {
+        apiKey: this.apiKey,
+        user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
+      },
+      this.settings,
+      settings,
+      {
+        abortSignal: run?.abortSignal,
+        input: text,
+      }
+    );
 
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
       throttle: this.settings.throttle,
-      call: async () =>
-        callOpenAITextEmbeddingAPI({
-          abortSignal: context?.abortSignal,
-          apiKey: this.apiKey,
-          input: texts[0],
-          model: this.modelName,
-          user: this.settings.isUserIdForwardingEnabled
-            ? context?.userId
-            : undefined,
-        }),
+      call: async () => callOpenAITextEmbeddingAPI(callSettings),
     });
   }
 

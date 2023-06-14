@@ -72,7 +72,7 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
   }
 
   async callAPI<RESULT>(
-    input: string,
+    prompt: string,
     options: {
       responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
     } & FunctionOptions<
@@ -92,19 +92,18 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
         user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
       },
       this.settings,
-      settings
+      settings,
+      {
+        abortSignal: run?.abortSignal,
+        prompt,
+        responseFormat,
+      }
     );
 
     return callWithRetryAndThrottle({
       retry: callSettings.retry,
       throttle: callSettings.throttle,
-      call: async () =>
-        callOpenAIImageGenerationAPI({
-          abortSignal: run?.abortSignal,
-          prompt: input,
-          ...callSettings,
-          responseFormat,
-        }),
+      call: async () => callOpenAIImageGenerationAPI(callSettings),
     });
   }
   withSettings(additionalSettings: Partial<OpenAIImageGenerationSettings>) {

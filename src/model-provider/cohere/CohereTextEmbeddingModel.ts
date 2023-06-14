@@ -1,9 +1,9 @@
 import z from "zod";
+import { FunctionOptions } from "../../model/FunctionOptions.js";
 import { AbstractTextEmbeddingModel } from "../../model/text-embedding/AbstractTextEmbeddingModel.js";
 import { TextEmbeddingModelSettings } from "../../model/text-embedding/TextEmbeddingModel.js";
 import { TokenizationSupport } from "../../model/tokenization/TokenizationSupport.js";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
-import { RunContext } from "../../run/RunContext.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -76,7 +76,7 @@ export class CohereTextEmbeddingModel
     super({
       settings,
       extractEmbeddings: (response) => response.embeddings,
-      generateResponse: (texts, _, run) => this.callAPI(texts, run),
+      generateResponse: (texts, options) => this.callAPI(texts, options),
     });
 
     this.maxTokens = COHERE_TEXT_EMBEDDING_MODELS[this.modelName].maxTokens;
@@ -122,7 +122,7 @@ export class CohereTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    context?: RunContext
+    options?: FunctionOptions<CohereTextEmbeddingModelSettings>
   ): Promise<CohereTextEmbeddingResponse> {
     if (texts.length > this.maxTextsPerCall) {
       throw new Error(
@@ -130,16 +130,25 @@ export class CohereTextEmbeddingModel
       );
     }
 
+    const run = options?.run;
+    const settings = options?.settings;
+
+    const callSettings = Object.assign(
+      {
+        apiKey: this.apiKey,
+      },
+      this.settings,
+      settings,
+      {
+        abortSignal: run?.abortSignal,
+        texts,
+      }
+    );
+
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
       throttle: this.settings.throttle,
-      call: async () =>
-        callCohereEmbeddingAPI({
-          abortSignal: context?.abortSignal,
-          apiKey: this.apiKey,
-          texts,
-          ...this.settings,
-        }),
+      call: async () => callCohereEmbeddingAPI(callSettings),
     });
   }
 

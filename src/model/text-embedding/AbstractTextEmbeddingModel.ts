@@ -1,9 +1,9 @@
 import { nanoid as createId } from "nanoid";
-import { RunContext } from "../../run/RunContext.js";
 import { Vector } from "../../run/Vector.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AbstractModel } from "../AbstractModel.js";
+import { FunctionOptions } from "../FunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
@@ -29,10 +29,7 @@ export abstract class AbstractTextEmbeddingModel<
     extractEmbeddings: (response: RESPONSE) => Vector[];
     generateResponse: (
       texts: string[],
-      settings: SETTINGS & {
-        functionId?: string;
-      },
-      run?: RunContext
+      options?: FunctionOptions<SETTINGS>
     ) => PromiseLike<RESPONSE>;
   }) {
     super({ settings });
@@ -48,38 +45,21 @@ export abstract class AbstractTextEmbeddingModel<
   private extractEmbeddings: (response: RESPONSE) => Vector[];
   private generateResponse: (
     texts: string[],
-    settings: SETTINGS & {
-      functionId?: string;
-    },
-    run?: RunContext
+    options?: FunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
 
   async embedTexts(
     texts: string[],
-    settings?:
-      | (Partial<SETTINGS> & {
-          functionId?: string;
-        })
-      | null,
-    run?: RunContext
+    options?: FunctionOptions<SETTINGS>
   ): Promise<Vector[]> {
-    if (settings != null) {
-      const settingKeys = Object.keys(settings);
-
-      // create new instance when there are settings other than 'functionId':
-      if (
-        settingKeys.length > 1 ||
-        (settingKeys.length === 1 && settingKeys[0] !== "functionId")
-      ) {
-        return this.withSettings(settings).embedTexts(
-          texts,
-          {
-            functionId: settings.functionId,
-          } as Partial<SETTINGS> & { functionId?: string },
-          run
-        );
-      }
+    if (options?.settings != null) {
+      return this.withSettings(options.settings).embedTexts(texts, {
+        functionId: options.functionId,
+        run: options.run,
+      });
     }
+
+    const run = options?.run;
 
     const startTime = performance.now();
     const startEpochSeconds = Math.floor(
@@ -93,7 +73,7 @@ export abstract class AbstractTextEmbeddingModel<
       sessionId: run?.sessionId,
       userId: run?.userId,
 
-      functionId: settings?.functionId,
+      functionId: options?.functionId,
       callId,
 
       model: this.modelInformation,
@@ -121,11 +101,11 @@ export abstract class AbstractTextEmbeddingModel<
     const result = await runSafe(() =>
       Promise.all(
         textGroups.map((textGroup) =>
-          this.generateResponse(
-            textGroup,
-            Object.assign({}, this.settings, settings), // include function id
-            run
-          )
+          this.generateResponse(textGroup, {
+            functionId: options?.functionId,
+            settings: this.settings, // options.setting is null here
+            run,
+          })
         )
       )
     );
@@ -172,7 +152,7 @@ export abstract class AbstractTextEmbeddingModel<
     // combine the results:
     const embeddings: Array<Vector> = [];
     for (const response of result.output) {
-      embeddings.push(...(await this.extractEmbeddings(response)));
+      embeddings.push(...this.extractEmbeddings(response));
     }
 
     const endEvent: TextEmbeddingFinishedEvent = {
@@ -192,13 +172,8 @@ export abstract class AbstractTextEmbeddingModel<
 
   async embedText(
     text: string,
-    settings?:
-      | (Partial<SETTINGS> & {
-          functionId?: string;
-        })
-      | null,
-    run?: RunContext
+    options?: FunctionOptions<SETTINGS>
   ): Promise<Vector> {
-    return (await this.embedTexts([text], settings, run))[0];
+    return (await this.embedTexts([text], options))[0];
   }
 }
