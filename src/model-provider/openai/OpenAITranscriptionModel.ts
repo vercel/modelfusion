@@ -36,6 +36,16 @@ export type OpenAITranscriptionInput = {
  * Create a transcription model that calls the OpenAI transcription API.
  *
  * @see https://platform.openai.com/docs/api-reference/audio/create
+ *
+ * @example
+ * const data = await fs.promises.readFile("data/test.mp3");
+ *
+ * const model = new OpenAITranscriptionModel({ model: "whisper-1" });
+ *
+ *  const transcription = await model.transcribe({
+ *   type: "mp3",
+ *   data,
+ * });
  */
 export class OpenAITranscriptionModel extends AbstractTranscriptionModel<
   OpenAITranscriptionInput,
