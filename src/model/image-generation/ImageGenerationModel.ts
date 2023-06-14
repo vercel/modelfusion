@@ -1,6 +1,6 @@
-import { Model, ModelSettings } from "../Model.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
-import { RunContext } from "../../run/RunContext.js";
+import { FunctionOptions } from "../FunctionOptions.js";
+import { Model, ModelSettings } from "../Model.js";
 
 export interface ImageGenerationModelSettings extends ModelSettings {}
 
@@ -23,11 +23,7 @@ export interface ImageGenerationModel<
    */
   generateImage(
     prompt: PROMPT,
-    options?: {
-      functionId?: string;
-      settings?: Partial<SETTINGS>;
-      run?: RunContext;
-    }
+    options?: FunctionOptions<SETTINGS>
   ): PromiseLike<string>;
 
   /**
@@ -49,16 +45,6 @@ export interface ImageGenerationModel<
    */
   generateImageAsFunction<INPUT>(
     promptTemplate: PromptTemplate<INPUT, PROMPT>,
-    options?: {
-      functionId?: string;
-      settings?: Partial<SETTINGS>;
-    }
-  ): (
-    input: INPUT,
-    options?: {
-      functionId?: string;
-      settings?: Partial<SETTINGS>;
-      run?: RunContext;
-    }
-  ) => PromiseLike<string>;
+    options?: Omit<FunctionOptions<SETTINGS>, "run">
+  ): (input: INPUT, options?: FunctionOptions<SETTINGS>) => PromiseLike<string>;
 }

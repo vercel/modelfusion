@@ -1,12 +1,12 @@
 import { nanoid as createId } from "nanoid";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
-import { RunContext } from "../../run/RunContext.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AbstractModel } from "../AbstractModel.js";
+import { FunctionOptions } from "../FunctionOptions.js";
 import {
-  ImageGenerationModelSettings,
   ImageGenerationModel,
+  ImageGenerationModelSettings,
 } from "./ImageGenerationModel.js";
 import {
   ImageGenerationFinishedEvent,
@@ -30,11 +30,7 @@ export abstract class AbstractImageGenerationModel<
     extractBase64Image: (response: RESPONSE) => string;
     generateResponse: (
       prompt: PROMPT,
-      options?: {
-        functionId?: string;
-        settings?: Partial<SETTINGS>;
-        run?: RunContext;
-      }
+      options?: FunctionOptions<SETTINGS>
     ) => PromiseLike<RESPONSE>;
   }) {
     super({ settings });
@@ -45,20 +41,12 @@ export abstract class AbstractImageGenerationModel<
   private extractBase64Image: (response: RESPONSE) => string;
   private generateResponse: (
     prompt: PROMPT,
-    options?: {
-      functionId?: string;
-      settings?: Partial<SETTINGS>;
-      run?: RunContext;
-    }
+    options?: FunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
 
   async generateImage(
     prompt: PROMPT,
-    options?: {
-      functionId?: string;
-      settings?: Partial<SETTINGS>;
-      run?: RunContext;
-    }
+    options?: FunctionOptions<SETTINGS>
   ): Promise<string> {
     if (options?.settings != null) {
       return this.withSettings(options.settings).generateImage(prompt, {
@@ -165,19 +153,9 @@ export abstract class AbstractImageGenerationModel<
 
   generateImageAsFunction<INPUT>(
     promptTemplate: PromptTemplate<INPUT, PROMPT>,
-    generateOptions?: {
-      functionId?: string;
-      settings?: Partial<SETTINGS>;
-    }
+    generateOptions?: Omit<FunctionOptions<SETTINGS>, "run">
   ) {
-    return async (
-      input: INPUT,
-      options?: {
-        functionId?: string;
-        settings?: Partial<SETTINGS>;
-        run?: RunContext;
-      }
-    ) => {
+    return async (input: INPUT, options?: FunctionOptions<SETTINGS>) => {
       const expandedPrompt = await promptTemplate(input);
       return this.generateImage(expandedPrompt, {
         functionId: options?.functionId ?? generateOptions?.functionId,

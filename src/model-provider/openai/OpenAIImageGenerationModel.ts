@@ -1,7 +1,7 @@
 import { z } from "zod";
+import { FunctionOptions } from "../../model/FunctionOptions.js";
 import { AbstractImageGenerationModel } from "../../model/image-generation/AbstractImageGenerationModel.js";
 import { ImageGenerationModelSettings } from "../../model/image-generation/ImageGenerationModel.js";
-import { RunContext } from "../../run/RunContext.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -74,14 +74,13 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
   async callAPI<RESULT>(
     input: string,
     options: {
-      functionId?: string;
       responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
-      settings?: Partial<
+    } & FunctionOptions<
+      Partial<
         OpenAIImageGenerationCallSettings &
           OpenAIModelSettings & { user?: string }
-      >;
-      run?: RunContext;
-    }
+      >
+    >
   ): Promise<RESULT> {
     const run = options?.run;
     const settings = options?.settings;

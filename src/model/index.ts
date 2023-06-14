@@ -1,3 +1,4 @@
+export * from "./FunctionOptions.js";
 export * from "./Model.js";
 export * from "./image-generation/ImageGenerationModel.js";
 export * from "./image-generation/ImageGenerationObserver.js";

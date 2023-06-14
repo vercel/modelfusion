@@ -1,7 +1,7 @@
-import { ImageGenerationModelSettings } from "index.js";
 import { z } from "zod";
+import { FunctionOptions } from "../../model/FunctionOptions.js";
 import { AbstractImageGenerationModel } from "../../model/image-generation/AbstractImageGenerationModel.js";
-import { RunContext } from "../../run/RunContext.js";
+import { ImageGenerationModelSettings } from "../../model/image-generation/ImageGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -41,16 +41,12 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
     super({
       settings,
       extractBase64Image: (response) => response.artifacts[0].base64,
-      generateResponse: (prompt, options) =>
-        this.callAPI(prompt, {
-          functionId: options?.functionId,
-          settings: options?.settings,
-          run: options?.run,
-        }),
+      generateResponse: (prompt, options) => this.callAPI(prompt, options),
     });
   }
 
   readonly provider = "stability" as const;
+
   get modelName() {
     return this.settings.model;
   }
@@ -69,11 +65,7 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
 
   async callAPI(
     input: StabilityImageGenerationPrompt,
-    options?: {
-      functionId?: string;
-      settings?: Partial<StabilityImageGenerationModelSettings>;
-      run?: RunContext;
-    }
+    options?: Partial<FunctionOptions<StabilityImageGenerationModelSettings>>
   ): Promise<StabilityImageGenerationResponse> {
     const run = options?.run;
     const settings = options?.settings;
@@ -96,6 +88,7 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
         }),
     });
   }
+
   withSettings(additionalSettings: StabilityImageGenerationModelSettings) {
     return new StabilityImageGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
