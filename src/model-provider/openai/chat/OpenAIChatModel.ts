@@ -68,6 +68,12 @@ export type OpenAIChatModelType = keyof typeof OPENAI_CHAT_MODELS;
 
 export interface OpenAIChatCallSettings {
   model: OpenAIChatModelType;
+  functions?: Array<{
+    name: string;
+    description?: string;
+    parameters: any; // TODO JSON schema format validation?
+  }>;
+  functionCall?: "none" | "auto" | { name: string };
   temperature?: number;
   topP?: number;
   n?: number;
@@ -117,7 +123,7 @@ export class OpenAIChatModel
   constructor(settings: OpenAIChatSettings) {
     super({
       settings,
-      extractText: (response) => response.choices[0]!.message.content,
+      extractText: (response) => response.choices[0]!.message.content!,
       generateResponse: (prompt, options) =>
         this.callAPI(prompt, {
           responseFormat: OpenAIChatResponseFormat.json,
@@ -215,7 +221,13 @@ const openAIChatResponseSchema = z.object({
     z.object({
       message: z.object({
         role: z.literal("assistant"),
-        content: z.string(),
+        content: z.string().nullable(),
+        function_call: z
+          .object({
+            name: z.string(),
+            arguments: z.string(),
+          })
+          .optional(),
       }),
       index: z.number(),
       logprobs: z.nullable(z.any()),
@@ -238,6 +250,8 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
   apiKey,
   model,
   messages,
+  functions,
+  functionCall,
   temperature,
   topP,
   n,
@@ -246,20 +260,12 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
   presencePenalty,
   frequencyPenalty,
   user,
-}: {
+}: OpenAIChatCallSettings & {
   baseUrl?: string;
   abortSignal?: AbortSignal;
   responseFormat: OpenAIChatResponseFormatType<RESPONSE>;
   apiKey: string;
-  model: OpenAIChatModelType;
   messages: Array<OpenAIChatMessage>;
-  temperature?: number;
-  topP?: number;
-  n?: number;
-  stop?: string | string[];
-  maxTokens?: number;
-  presencePenalty?: number;
-  frequencyPenalty?: number;
   user?: string;
 }): Promise<RESPONSE> {
   return postJsonToApi({
@@ -269,11 +275,13 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
       stream: responseFormat.stream,
       model,
       messages,
+      functions,
+      function_call: functionCall,
+      temperature,
       top_p: topP,
       n,
       stop,
       max_tokens: maxTokens,
-      temperature,
       presence_penalty: presencePenalty,
       frequency_penalty: frequencyPenalty,
       user,
