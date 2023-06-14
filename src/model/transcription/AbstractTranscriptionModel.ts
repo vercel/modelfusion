@@ -1,8 +1,8 @@
 import { nanoid as createId } from "nanoid";
-import { RunContext } from "../../run/RunContext.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AbstractModel } from "../AbstractModel.js";
+import { FunctionOptions } from "../FunctionOptions.js";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
@@ -29,10 +29,7 @@ export abstract class AbstractTranscriptionModel<
     extractTranscription: (response: RESPONSE) => string;
     generateResponse: (
       data: DATA,
-      settings: SETTINGS & {
-        functionId?: string;
-      },
-      run?: RunContext
+      options?: FunctionOptions<SETTINGS>
     ) => PromiseLike<RESPONSE>;
   }) {
     super({ settings });
@@ -43,38 +40,21 @@ export abstract class AbstractTranscriptionModel<
   private extractTranscription: (response: RESPONSE) => string;
   private generateResponse: (
     data: DATA,
-    settings: SETTINGS & {
-      functionId?: string;
-    },
-    run?: RunContext
+    options?: FunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
 
   async transcribe(
     data: DATA,
-    settings?:
-      | (Partial<SETTINGS> & {
-          functionId?: string;
-        })
-      | null,
-    run?: RunContext
+    options?: FunctionOptions<SETTINGS>
   ): Promise<string> {
-    if (settings != null) {
-      const settingKeys = Object.keys(settings);
-
-      // create new instance when there are settings other than 'functionId':
-      if (
-        settingKeys.length > 1 ||
-        (settingKeys.length === 1 && settingKeys[0] !== "functionId")
-      ) {
-        return this.withSettings(settings).transcribe(
-          data,
-          {
-            functionId: settings.functionId,
-          } as Partial<SETTINGS> & { functionId?: string },
-          run
-        );
-      }
+    if (options?.settings != null) {
+      return this.withSettings(options.settings).transcribe(data, {
+        functionId: options.functionId,
+        run: options.run,
+      });
     }
+
+    const run = options?.run;
 
     const startTime = performance.now();
     const startEpochSeconds = Math.floor(
@@ -86,7 +66,7 @@ export abstract class AbstractTranscriptionModel<
       sessionId: run?.sessionId,
       userId: run?.userId,
 
-      functionId: settings?.functionId,
+      functionId: options?.functionId,
       callId: createId(),
 
       model: this.modelInformation,
@@ -105,11 +85,11 @@ export abstract class AbstractTranscriptionModel<
     });
 
     const result = await runSafe(() =>
-      this.generateResponse(
-        data,
-        Object.assign({}, this.settings, settings), // include function id
-        run
-      )
+      this.generateResponse(data, {
+        functionId: options?.functionId,
+        settings: this.settings, // options.setting is null here
+        run,
+      })
     );
 
     const generationDurationInMs = Math.ceil(performance.now() - startTime);

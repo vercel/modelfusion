@@ -1,7 +1,7 @@
 import z from "zod";
+import { FunctionOptions } from "../../model/FunctionOptions.js";
 import { AbstractTranscriptionModel } from "../../model/transcription/AbstractTranscriptionModel.js";
 import { TranscriptionModelSettings } from "../../model/transcription/TranscriptionModel.js";
-import { RunContext } from "../../run/RunContext.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -46,12 +46,13 @@ export class OpenAITranscriptionModel extends AbstractTranscriptionModel<
     super({
       settings,
       extractTranscription: (response) => response.text,
-      generateResponse: (texts, _, run) =>
-        this.callAPI(
-          texts,
-          { responseFormat: OpenAITranscriptionResponseFormat.verboseJson },
-          run
-        ),
+      generateResponse: (prompt, options) =>
+        this.callAPI(prompt, {
+          responseFormat: OpenAITranscriptionResponseFormat.verboseJson,
+          functionId: options?.functionId,
+          settings: options?.settings,
+          run: options?.run,
+        }),
     });
   }
 
@@ -74,31 +75,36 @@ export class OpenAITranscriptionModel extends AbstractTranscriptionModel<
 
   async callAPI<RESULT>(
     data: OpenAITranscriptionInput,
-    settings: Partial<OpenAITranscriptionModelSettings> &
-      OpenAIModelSettings & {
-        responseFormat: OpenAITranscriptionResponseFormatType<RESULT>;
-        user?: string;
-      },
-    context?: RunContext
+    options: {
+      responseFormat: OpenAITranscriptionResponseFormatType<RESULT>;
+    } & FunctionOptions<
+      Partial<OpenAITranscriptionModelSettings & OpenAIModelSettings>
+    >
   ): Promise<RESULT> {
+    const run = options?.run;
+    const settings = options?.settings;
+    const responseFormat = options?.responseFormat;
+
     const callSettings = Object.assign(
-      { apiKey: this.apiKey },
+      {
+        apiKey: this.apiKey,
+      },
       this.settings,
-      settings
+      settings,
+      {
+        abortSignal: run?.abortSignal,
+        file: {
+          name: `audio.${data.type}`,
+          data: data.data,
+        },
+        responseFormat,
+      }
     );
 
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
       throttle: this.settings.throttle,
-      call: async () =>
-        callOpenAITranscriptionAPI({
-          abortSignal: context?.abortSignal,
-          file: {
-            name: `audio.${data.type}`,
-            data: data.data,
-          },
-          ...callSettings,
-        }),
+      call: async () => callOpenAITranscriptionAPI(callSettings),
     });
   }
 

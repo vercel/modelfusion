@@ -1,4 +1,4 @@
-import { RunContext } from "../../run/RunContext.js";
+import { FunctionOptions } from "../FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
 export interface TranscriptionModelSettings extends ModelSettings {}
@@ -9,17 +9,6 @@ export interface TranscriptionModel<
 > extends Model<SETTINGS> {
   transcribe(
     data: DATA,
-    settings?: Partial<SETTINGS> & {
-      functionId?: string;
-    }
-  ): PromiseLike<string>;
-  transcribe(
-    data: DATA,
-    settings:
-      | (Partial<SETTINGS> & {
-          functionId?: string;
-        })
-      | null, // require explicit null when run is set
-    run: RunContext
+    options?: FunctionOptions<SETTINGS>
   ): PromiseLike<string>;
 }
