@@ -25,7 +25,7 @@ export const OpenAIChatMessage = {
     return { role: "assistant", content };
   },
 
-  func(name: string, content: string): OpenAIChatMessage {
+  functionCall(name: string, content: string): OpenAIChatMessage {
     return { role: "function", name, content };
   },
 };
