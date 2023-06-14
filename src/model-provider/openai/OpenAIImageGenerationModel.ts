@@ -106,6 +106,7 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
       call: async () => callOpenAIImageGenerationAPI(callSettings),
     });
   }
+
   withSettings(additionalSettings: Partial<OpenAIImageGenerationSettings>) {
     return new OpenAIImageGenerationModel(
       Object.assign({}, this.settings, additionalSettings)

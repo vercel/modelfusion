@@ -49,7 +49,7 @@ export class VectorDB<DATA, STORE> {
       keyText: string;
       data: DATA;
     },
-    context?: RunContext
+    options?: { run?: RunContext }
   ): Promise<void> {
     this.upsertMany(
       {
@@ -57,7 +57,7 @@ export class VectorDB<DATA, STORE> {
         keyTexts: [keyText],
         data: [data],
       },
-      context
+      options
     );
   }
 
@@ -71,7 +71,7 @@ export class VectorDB<DATA, STORE> {
       keyTexts: Array<string>;
       data: DATA[];
     },
-    run?: RunContext
+    options?: { run?: RunContext }
   ) {
     if (keyTexts.length !== data.length) {
       throw new Error(
@@ -81,7 +81,7 @@ export class VectorDB<DATA, STORE> {
 
     const vectors = await this.embeddingModel.embedTexts(keyTexts, {
       functionId: this.storeFunctionId,
-      run,
+      run: options?.run,
     });
 
     this._store.upsertMany(
@@ -103,12 +103,12 @@ export class VectorDB<DATA, STORE> {
       maxResults?: number;
       similarityThreshold?: number;
     },
-    run?: RunContext
+    options?: { run?: RunContext }
   ): Promise<VectorDBQueryResult<DATA>> {
     return this.queryByVector({
       queryVector: await this.embeddingModel.embedText(queryText, {
         functionId: this.queryFunctionId,
-        run,
+        run: options?.run,
       }),
       maxResults,
       similarityThreshold,

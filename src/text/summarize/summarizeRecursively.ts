@@ -14,12 +14,12 @@ export async function summarizeRecursively(
     join?: (texts: Array<string>) => string;
     text: string;
   },
-  context?: RunContext
+  options?: { run?: RunContext }
 ): Promise<string> {
   const chunks = await split({ text });
 
   const summarizedTexts = await Promise.all(
-    chunks.map((chunk) => summarize({ text: chunk }, context))
+    chunks.map((chunk) => summarize({ text: chunk }, options))
   );
 
   if (summarizedTexts.length === 1) {
@@ -35,7 +35,7 @@ export async function summarizeRecursively(
       split,
       join,
     },
-    context
+    options
   );
 }
 
@@ -49,7 +49,7 @@ export const summarizeRecursivelyAsFunction =
     map: SummarizationFunction;
     join?: (texts: Array<string>) => string;
   }): SummarizationFunction =>
-  async ({ text }, context?: RunContext) =>
+  async ({ text }, options?: { run?: RunContext }) =>
     summarizeRecursively(
       {
         summarize: map,
@@ -57,5 +57,5 @@ export const summarizeRecursivelyAsFunction =
         join,
         text,
       },
-      context
+      options
     );

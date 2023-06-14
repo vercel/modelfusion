@@ -1,10 +1,10 @@
 import { z } from "zod";
+import { FunctionOptions } from "../../model/FunctionOptions.js";
 import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../model/text-generation/TextGenerationModel.js";
-import { RunContext } from "../../run/RunContext.js";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
@@ -95,7 +95,7 @@ export class CohereTextGenerationModel
     super({
       settings,
       extractText: (response) => response.generations[0].text,
-      generateResponse: (prompt, context) => this.callAPI(prompt, context),
+      generateResponse: (prompt, options) => this.callAPI(prompt, options),
     });
 
     this.maxTokens =
@@ -136,18 +136,27 @@ export class CohereTextGenerationModel
 
   async callAPI(
     prompt: string,
-    context?: RunContext
+    options?: FunctionOptions<CohereTextGenerationModelSettings>
   ): Promise<CohereTextGenerationResponse> {
+    const run = options?.run;
+    const settings = options?.settings;
+
+    const callSettings = Object.assign(
+      {
+        apiKey: this.apiKey,
+      },
+      this.settings,
+      settings,
+      {
+        abortSignal: run?.abortSignal,
+        prompt,
+      }
+    );
+
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
       throttle: this.settings.throttle,
-      call: async () =>
-        callCohereTextGenerationAPI({
-          abortSignal: context?.abortSignal,
-          apiKey: this.apiKey,
-          prompt,
-          ...this.settings,
-        }),
+      call: async () => callCohereTextGenerationAPI(callSettings),
     });
   }
 

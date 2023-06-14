@@ -8,10 +8,14 @@ import { RunContext } from "./RunContext.js";
  */
 export type RunFunction<INPUT, OUTPUT> = (
   input: INPUT,
-  context?: RunContext
+  options?: {
+    run?: RunContext;
+  }
 ) => PromiseLike<OUTPUT>;
 
 export type SafeRunFunction<INPUT, OUTPUT> = (
   input: INPUT,
-  context?: RunContext
+  options?: {
+    run?: RunContext;
+  }
 ) => PromiseLike<SafeResult<OUTPUT>>;

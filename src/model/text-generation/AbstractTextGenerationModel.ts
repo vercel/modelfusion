@@ -1,12 +1,12 @@
 import { nanoid as createId } from "nanoid";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
-import { RunContext } from "../../run/RunContext.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AbstractModel } from "../AbstractModel.js";
+import { FunctionOptions } from "../FunctionOptions.js";
 import {
-  TextGenerationModelSettings,
   TextGenerationModel,
+  TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
 import {
   TextGenerationFinishedEvent,
@@ -30,10 +30,7 @@ export abstract class AbstractTextGenerationModel<
     extractText: (response: RESPONSE) => string;
     generateResponse: (
       prompt: PROMPT,
-      settings: SETTINGS & {
-        functionId?: string;
-      },
-      run?: RunContext
+      options?: FunctionOptions<SETTINGS>
     ) => PromiseLike<RESPONSE>;
   }) {
     super({ settings });
@@ -44,10 +41,7 @@ export abstract class AbstractTextGenerationModel<
   private extractText: (response: RESPONSE) => string;
   private generateResponse: (
     prompt: PROMPT,
-    settings: SETTINGS & {
-      functionId?: string;
-    },
-    run?: RunContext
+    options?: FunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
 
   private get shouldTrimOutput() {
@@ -56,30 +50,16 @@ export abstract class AbstractTextGenerationModel<
 
   async generateText(
     prompt: PROMPT,
-    settings?:
-      | (Partial<SETTINGS> & {
-          functionId?: string;
-        })
-      | null,
-    run?: RunContext
+    options?: FunctionOptions<SETTINGS>
   ): Promise<string> {
-    if (settings != null) {
-      const settingKeys = Object.keys(settings);
-
-      // create new instance when there are settings other than 'functionId':
-      if (
-        settingKeys.length > 1 ||
-        (settingKeys.length === 1 && settingKeys[0] !== "functionId")
-      ) {
-        return this.withSettings(settings).generateText(
-          prompt,
-          {
-            functionId: settings.functionId,
-          } as Partial<SETTINGS> & { functionId?: string },
-          run
-        );
-      }
+    if (options?.settings != null) {
+      return this.withSettings(options.settings).generateText(prompt, {
+        functionId: options.functionId,
+        run: options.run,
+      });
     }
+
+    const run = options?.run;
 
     const startTime = performance.now();
     const startEpochSeconds = Math.floor(
@@ -93,7 +73,7 @@ export abstract class AbstractTextGenerationModel<
       sessionId: run?.sessionId,
       userId: run?.userId,
 
-      functionId: settings?.functionId,
+      functionId: options?.functionId,
       callId,
 
       model: this.modelInformation,
@@ -112,11 +92,11 @@ export abstract class AbstractTextGenerationModel<
     });
 
     const result = await runSafe(() =>
-      this.generateResponse(
-        prompt,
-        Object.assign({}, this.settings, settings), // include function id
-        run
-      )
+      this.generateResponse(prompt, {
+        functionId: options?.functionId,
+        settings: this.settings, // options.setting is null here
+        run,
+      })
     );
 
     const generationDurationInMs = Math.ceil(performance.now() - startTime);
@@ -178,16 +158,19 @@ export abstract class AbstractTextGenerationModel<
 
   generateTextAsFunction<INPUT>(
     promptTemplate: PromptTemplate<INPUT, PROMPT>,
-    settings?: Partial<SETTINGS> & {
-      functionId?: string;
-    }
+    generateOptions?: Omit<FunctionOptions<SETTINGS>, "run">
   ) {
-    return async (input: INPUT, run?: RunContext) => {
+    return async (input: INPUT, options?: FunctionOptions<SETTINGS>) => {
       const expandedPrompt = await promptTemplate(input);
-      return this.generateText(
-        expandedPrompt,
-        Object.assign({}, settings, run)
-      );
+      return this.generateText(expandedPrompt, {
+        functionId: options?.functionId ?? generateOptions?.functionId,
+        settings: Object.assign(
+          {},
+          generateOptions?.settings,
+          options?.settings
+        ),
+        run: options?.run,
+      });
     };
   }
 }

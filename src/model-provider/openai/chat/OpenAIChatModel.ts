@@ -1,11 +1,11 @@
 import z from "zod";
+import { FunctionOptions } from "../../../model/FunctionOptions.js";
 import { AbstractTextGenerationModel } from "../../../model/text-generation/AbstractTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../../model/text-generation/TextGenerationModel.js";
 import { Tokenizer } from "../../../model/tokenization/Tokenizer.js";
-import { RunContext } from "../../../run/RunContext.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -103,12 +103,13 @@ export class OpenAIChatModel
     super({
       settings,
       extractText: (response) => response.choices[0]!.message.content,
-      generateResponse: (prompt, run) =>
-        this.callAPI(
-          prompt,
-          { responseFormat: OpenAIChatResponseFormat.json },
-          run
-        ),
+      generateResponse: (prompt, options) =>
+        this.callAPI(prompt, {
+          responseFormat: OpenAIChatResponseFormat.json,
+          functionId: options?.functionId,
+          settings: options?.settings,
+          run: options?.run,
+        }),
     });
 
     this.tokenizer = new TikTokenTokenizer({ model: this.settings.model });
@@ -147,34 +148,35 @@ export class OpenAIChatModel
   }
 
   async callAPI<RESULT>(
-    input: Array<OpenAIChatMessage>,
-    settings: Partial<OpenAIChatCallSettings> &
-      OpenAIModelSettings & {
-        responseFormat: OpenAIChatResponseFormatType<RESULT>;
-        user?: string;
-      },
-    context?: RunContext
+    messages: Array<OpenAIChatMessage>,
+    options: {
+      responseFormat: OpenAIChatResponseFormatType<RESULT>;
+    } & FunctionOptions<
+      Partial<OpenAIChatCallSettings & OpenAIModelSettings & { user?: string }>
+    >
   ): Promise<RESULT> {
+    const run = options?.run;
+    const settings = options?.settings;
+    const responseFormat = options?.responseFormat;
+
     const callSettings = Object.assign(
       {
         apiKey: this.apiKey,
-        user: this.settings.isUserIdForwardingEnabled
-          ? context?.userId
-          : undefined,
+        user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
       },
       this.settings,
-      settings
+      settings,
+      {
+        abortSignal: run?.abortSignal,
+        messages,
+        responseFormat,
+      }
     );
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
-      call: async () =>
-        callOpenAIChatCompletionAPI({
-          abortSignal: context?.abortSignal,
-          messages: input,
-          ...callSettings,
-        }),
+      retry: callSettings.retry,
+      throttle: callSettings.throttle,
+      call: async () => callOpenAIChatCompletionAPI(callSettings),
     });
   }
 

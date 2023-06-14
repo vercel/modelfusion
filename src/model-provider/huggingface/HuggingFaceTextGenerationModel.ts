@@ -1,7 +1,7 @@
 import z from "zod";
+import { FunctionOptions } from "../../model/FunctionOptions.js";
 import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
 import { TextGenerationModelSettings } from "../../model/text-generation/TextGenerationModel.js";
-import { RunContext } from "../../run/RunContext.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -61,7 +61,7 @@ export class HuggingFaceTextGenerationModel extends AbstractTextGenerationModel<
     super({
       settings,
       extractText: (response) => response[0].generated_text,
-      generateResponse: (prompt, response) => this.callAPI(prompt, response),
+      generateResponse: (prompt, options) => this.callAPI(prompt, options),
     });
   }
 
@@ -84,22 +84,31 @@ export class HuggingFaceTextGenerationModel extends AbstractTextGenerationModel<
 
   async callAPI(
     prompt: string,
-    context?: RunContext
+    options?: FunctionOptions<HuggingFaceTextGenerationModelSettings>
   ): Promise<HuggingFaceTextGenerationResponse> {
+    const run = options?.run;
+    const settings = options?.settings;
+
+    const callSettings = Object.assign(
+      {
+        apiKey: this.apiKey,
+        options: {
+          useCache: true,
+          waitForModel: true,
+        },
+      },
+      this.settings,
+      settings,
+      {
+        abortSignal: run?.abortSignal,
+        inputs: prompt,
+      }
+    );
+
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
       throttle: this.settings.throttle,
-      call: async () =>
-        callHuggingFaceTextGenerationAPI({
-          abortSignal: context?.abortSignal,
-          apiKey: this.apiKey,
-          inputs: prompt,
-          ...this.settings,
-          options: this.settings.options ?? {
-            useCache: true,
-            waitForModel: true,
-          },
-        }),
+      call: async () => callHuggingFaceTextGenerationAPI(callSettings),
     });
   }
 

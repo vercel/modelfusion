@@ -63,10 +63,12 @@ export async function createTweetFromPdf({
           ),
           OpenAIChatMessage.user(`## TEXT\n${text}`),
         ],
-        functionId: "extract-information",
         reservedCompletionTokens: 1024,
       },
-      run
+      {
+        functionId: "extract-information",
+        run,
+      }
     );
 
   // generate a draft tweet:
@@ -85,9 +87,9 @@ export async function createTweetFromPdf({
     ],
     {
       functionId: "draft-tweet",
-      temperature: 0.5,
-    },
-    run
+      settings: { temperature: 0.5 },
+      run,
+    }
   );
 
   // search for similar tweets:
@@ -97,7 +99,7 @@ export async function createTweetFromPdf({
       maxResults: 1,
       similarityThreshold: 0.5,
     },
-    run
+    { run }
   );
 
   if (similarTweets.length === 0) {
@@ -117,8 +119,8 @@ export async function createTweetFromPdf({
     ],
     {
       functionId: "rewrite-tweet",
-      temperature: 0.5,
-    },
-    run
+      settings: { temperature: 0.5 },
+      run,
+    }
   );
 }

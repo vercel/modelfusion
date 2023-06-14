@@ -10,9 +10,7 @@ dotenv.config();
 
   const text = await model.generateText(
     "Write a short story about a robot learning to love:\n\n",
-    {
-      retry: retryNever(),
-    }
+    { settings: { retry: retryNever() } }
   );
 
   console.log(text);

@@ -1,10 +1,10 @@
 import z from "zod";
+import { FunctionOptions } from "../../model/FunctionOptions.js";
 import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../model/text-generation/TextGenerationModel.js";
-import { RunContext } from "../../run/RunContext.js";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
@@ -13,6 +13,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { OpenAIImageGenerationCallSettings } from "./OpenAIImageGenerationModel.js";
+import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
@@ -111,7 +113,7 @@ export class OpenAITextGenerationModel
     super({
       settings,
       extractText: (response) => response.choices[0]!.text,
-      generateResponse: (prompt, context) => this.callAPI(prompt, context),
+      generateResponse: (prompt, options) => this.callAPI(prompt, options),
     });
 
     this.tokenizer = new TikTokenTokenizer({ model: settings.model });
@@ -144,21 +146,33 @@ export class OpenAITextGenerationModel
 
   async callAPI(
     prompt: string,
-    context?: RunContext
+    options?: FunctionOptions<
+      Partial<
+        OpenAIImageGenerationCallSettings &
+          OpenAIModelSettings & { user?: string }
+      >
+    >
   ): Promise<OpenAITextGenerationResponse> {
+    const run = options?.run;
+    const settings = options?.settings;
+
+    const callSettings = Object.assign(
+      {
+        apiKey: this.apiKey,
+        user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
+      },
+      this.settings,
+      settings,
+      {
+        abortSignal: run?.abortSignal,
+        prompt,
+      }
+    );
+
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
-      call: async () =>
-        callOpenAITextGenerationAPI({
-          abortSignal: context?.abortSignal,
-          apiKey: this.apiKey,
-          prompt,
-          user: this.settings.isUserIdForwardingEnabled
-            ? context?.userId
-            : undefined,
-          ...this.settings,
-        }),
+      retry: callSettings.retry,
+      throttle: callSettings.throttle,
+      call: async () => callOpenAITextGenerationAPI(callSettings),
     });
   }
 

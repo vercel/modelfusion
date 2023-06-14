@@ -17,7 +17,6 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     model,
     prompt,
     reservedCompletionTokens,
-    functionId,
     join,
   }: {
     text: string;
@@ -25,10 +24,14 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     prompt: (input: { text: string }) => Promise<PROMPT>;
     reservedCompletionTokens: number;
     join?: (texts: Array<string>) => string;
-    functionId?: string;
   },
-  context?: RunContext
+  options?: {
+    functionId?: string;
+    run?: RunContext;
+  }
 ) {
+  const functionId = options?.functionId;
+
   const emptyPromptTokens = await model.countPromptTokens(
     await prompt({ text: "" })
   );
@@ -46,7 +49,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
       join,
       text,
     },
-    context
+    options
   );
 }
 
@@ -65,7 +68,13 @@ export const summarizeRecursivelyWithTextGenerationAndTokenSplittingAsFunction =
       join?: (texts: Array<string>) => string;
       functionId?: string;
     }): SummarizationFunction =>
-    async (input: { text: string }, context?: RunContext) =>
+    async (
+      input: { text: string },
+      options?: {
+        functionId?: string;
+        run?: RunContext;
+      }
+    ) =>
       summarizeRecursivelyWithTextGenerationAndTokenSplitting(
         {
           text: input.text,
@@ -73,7 +82,9 @@ export const summarizeRecursivelyWithTextGenerationAndTokenSplittingAsFunction =
           prompt,
           reservedCompletionTokens,
           join,
-          functionId,
         },
-        context
+        {
+          functionId: options?.functionId ?? functionId,
+          run: options?.run,
+        }
       );

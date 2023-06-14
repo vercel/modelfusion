@@ -59,11 +59,10 @@ const sendMessage = async (request: Request): Promise<Response> => {
     return controller.abort();
   });
 
-  const stream = await model.callAPI(
-    messagesToSend,
-    { responseFormat: OpenAIChatResponseFormat.readableStream },
-    { abortSignal: controller.signal }
-  );
+  const stream = await model.callAPI(messagesToSend, {
+    responseFormat: OpenAIChatResponseFormat.readableStream,
+    run: { abortSignal: controller.signal },
+  });
 
   return new Response(stream, {
     headers: {
