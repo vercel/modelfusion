@@ -1,9 +1,9 @@
 import { ModelInformation } from "../run/ModelInformation.js";
-import { RunObserver } from "../run/RunObserver.js";
+import { ModelCallObserver } from "./ModelCallObserver.js";
 
 export interface ModelSettings {
   uncaughtErrorHandler?: (error: unknown) => void;
-  observers?: Array<RunObserver>;
+  observers?: Array<ModelCallObserver>;
 }
 
 export interface Model<SETTINGS> {

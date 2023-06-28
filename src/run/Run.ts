@@ -1,4 +1,4 @@
-import { RunObserver } from "./RunObserver.js";
+import { ModelCallObserver } from "../model/ModelCallObserver.js";
 
 export interface Run {
   /**
@@ -25,5 +25,5 @@ export interface Run {
 
   abortSignal?: AbortSignal;
 
-  observers?: RunObserver[];
+  observers?: ModelCallObserver[];
 }

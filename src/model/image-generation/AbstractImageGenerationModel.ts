@@ -46,39 +46,31 @@ export abstract class AbstractImageGenerationModel<
       model: this,
       options,
       callModel: (model, options) => model.generateImage(prompt, options),
-      notifyObserverAboutStart: (observer, startMetadata) => {
-        observer?.onImageGenerationStarted?.({
-          type: "image-generation-started",
-          metadata: startMetadata,
-          prompt,
-        });
-      },
-      notifyObserverAboutAbort(observer, metadata) {
-        observer?.onImageGenerationFinished?.({
-          type: "image-generation-finished",
-          status: "abort",
-          metadata,
-          prompt,
-        });
-      },
-      notifyObserverAboutFailure(observer, metadata, error) {
-        observer?.onImageGenerationFinished?.({
-          type: "image-generation-finished",
-          status: "failure",
-          metadata,
-          prompt,
-          error,
-        });
-      },
-      notifyObserverAboutSuccess(observer, metadata, output) {
-        observer?.onImageGenerationFinished?.({
-          type: "image-generation-finished",
-          status: "success",
-          metadata,
-          prompt,
-          generatedImage: output,
-        });
-      },
+      getStartEvent: (metadata) => ({
+        type: "image-generation-started",
+        metadata,
+        prompt,
+      }),
+      getAbortEvent: (metadata) => ({
+        type: "image-generation-finished",
+        status: "abort",
+        metadata,
+        prompt,
+      }),
+      getFailureEvent: (metadata, error) => ({
+        type: "image-generation-finished",
+        status: "failure",
+        metadata,
+        prompt,
+        error,
+      }),
+      getSuccessEvent: (metadata, output) => ({
+        type: "image-generation-finished",
+        status: "success",
+        metadata,
+        prompt,
+        generatedImage: output,
+      }),
       errorHandler: this.uncaughtErrorHandler,
       generateResponse: (options) => this.generateResponse(prompt, options),
       extractOutputValue: this.extractBase64Image,

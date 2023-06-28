@@ -1,10 +1,6 @@
 import { Command } from "commander";
 import dotenv from "dotenv";
 import { createTweetFromPdf } from "./createTweetFromPdf";
-import {
-  TextGenerationFinishedEvent,
-  TextGenerationStartedEvent,
-} from "ai-utils.js";
 
 dotenv.config();
 
@@ -33,28 +29,31 @@ createTweetFromPdf({
   run: {
     observers: [
       {
-        onTextGenerationStarted(event: TextGenerationStartedEvent) {
-          console.log(
-            `Generate text ${event.metadata.functionId ?? "unknown"} started.`
-          );
+        onModelCallStarted(event) {
+          if (event.type === "text-generation-started") {
+            console.log(
+              `Generate text ${event.metadata.functionId ?? "unknown"} started.`
+            );
+          } else if (event.type === "text-embedding-started") {
+            console.log(
+              `Embed text ${event.metadata.functionId ?? "unknown"} started.`
+            );
+          }
         },
 
-        onTextGenerationFinished(event: TextGenerationFinishedEvent) {
-          console.log(
-            `Generate text ${event.metadata.functionId ?? "unknown"} finished.`
-          );
+        onModelCallFinished(event) {
+          if (event.type === "text-generation-finished") {
+            console.log(
+              `Generate text ${
+                event.metadata.functionId ?? "unknown"
+              } finished.`
+            );
+          } else if (event.type === "text-embedding-finished") {
+            console.log(
+              `Embed text ${event.metadata.functionId ?? "unknown"} finished.`
+            );
+          }
         },
-
-        // onEmbedTextStart: (event) => {
-        //   console.log(
-        //     `Embed text ${event.metadata.functionId ?? "unknown"} started.`
-        //   );
-        // },
-        // onEmbedTextEnd: (event) => {
-        //   console.log(
-        //     `Embed text ${event.metadata.functionId ?? "unknown"} finished.`
-        //   );
-        // },
       },
     ],
   },

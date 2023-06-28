@@ -1,11 +1,16 @@
 import { nanoid as createId } from "nanoid";
-import { ModelInformation } from "../run/ModelInformation.js";
-import { RunObserver } from "../run/RunObserver.js";
 import { ErrorHandler } from "../util/ErrorHandler.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
 import { FunctionOptions } from "./FunctionOptions.js";
 import { Model, ModelSettings } from "./Model.js";
+import { ModelCallEventSource } from "./ModelCallEventSource.js";
+import {
+  ModelCallFinishedEvent,
+  ModelCallFinishedEventMetadata,
+  ModelCallStartedEvent,
+  ModelCallStartedEventMetadata,
+} from "./ModelCallObserver.js";
 
 export async function executeCall<
   SETTINGS extends ModelSettings,
@@ -16,10 +21,10 @@ export async function executeCall<
   model,
   options,
   callModel,
-  notifyObserverAboutStart,
-  notifyObserverAboutAbort,
-  notifyObserverAboutFailure,
-  notifyObserverAboutSuccess,
+  getStartEvent,
+  getAbortEvent,
+  getFailureEvent,
+  getSuccessEvent,
   errorHandler,
   generateResponse,
   extractOutputValue,
@@ -30,47 +35,20 @@ export async function executeCall<
     model: MODEL,
     options: FunctionOptions<SETTINGS>
   ) => PromiseLike<OUTPUT>;
-  notifyObserverAboutStart: (
-    observer: RunObserver,
-    startMetadata: {
-      model: ModelInformation;
-      runId?: string;
-      sessionId?: string;
-      startEpochSeconds: number;
-    }
-  ) => void;
-  notifyObserverAboutAbort: (
-    observer: RunObserver,
-    metadata: {
-      model: ModelInformation;
-      runId?: string;
-      sessionId?: string;
-      startEpochSeconds: number;
-      durationInMs: number;
-    }
-  ) => void;
-  notifyObserverAboutFailure: (
-    observer: RunObserver,
-    metadata: {
-      model: ModelInformation;
-      runId?: string;
-      sessionId?: string;
-      startEpochSeconds: number;
-      durationInMs: number;
-    },
+  getStartEvent: (
+    metadata: ModelCallStartedEventMetadata
+  ) => ModelCallStartedEvent;
+  getAbortEvent: (
+    metadata: ModelCallFinishedEventMetadata
+  ) => ModelCallFinishedEvent;
+  getFailureEvent: (
+    metadata: ModelCallFinishedEventMetadata,
     error: unknown
-  ) => void;
-  notifyObserverAboutSuccess: (
-    observer: RunObserver,
-    metadata: {
-      model: ModelInformation;
-      runId?: string;
-      sessionId?: string;
-      startEpochSeconds: number;
-      durationInMs: number;
-    },
+  ) => ModelCallFinishedEvent;
+  getSuccessEvent: (
+    metadata: ModelCallFinishedEventMetadata,
     output: OUTPUT
-  ) => void;
+  ) => ModelCallFinishedEvent;
   errorHandler: ErrorHandler;
   generateResponse: (
     options: FunctionOptions<SETTINGS>
@@ -86,20 +64,11 @@ export async function executeCall<
 
   const run = options?.run;
 
-  const notifyObservers = (observerMethod: (observer: RunObserver) => void) => {
-    const observers = [
-      ...(model.settings.observers ?? []),
-      ...(run?.observers ?? []),
-    ];
+  const eventSource = new ModelCallEventSource({
+    observers: [...(model.settings.observers ?? []), ...(run?.observers ?? [])],
+    errorHandler,
+  });
 
-    observers.forEach((observer) => {
-      try {
-        observerMethod(observer);
-      } catch (error) {
-        errorHandler(error);
-      }
-    });
-  };
   const startTime = performance.now();
   const startEpochSeconds = Math.floor(
     (performance.timeOrigin + startTime) / 1000
@@ -111,55 +80,42 @@ export async function executeCall<
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
-
     functionId: options?.functionId,
     callId,
-
     model: model.modelInformation,
-
     startEpochSeconds,
   };
 
-  notifyObservers((observer) =>
-    notifyObserverAboutStart(observer, startMetadata)
-  );
+  eventSource.notifyModelCallStarted(getStartEvent(startMetadata));
 
   const result = await runSafe(() =>
     generateResponse({
       functionId: options?.functionId,
-      settings: model.settings, // options.setting is null here
+      settings: model.settings, // options.setting is null here because of the initial guard
       run,
     })
   );
 
   const generationDurationInMs = Math.ceil(performance.now() - startTime);
 
-  const metadata = {
-    durationInMs: generationDurationInMs,
+  const finishMetadata = {
     ...startMetadata,
+    durationInMs: generationDurationInMs,
   };
 
   if (!result.ok) {
     if (result.isAborted) {
-      notifyObservers((observer) =>
-        notifyObserverAboutAbort(observer, metadata)
-      );
-
+      eventSource.notifyModelCallFinished(getAbortEvent(finishMetadata));
       throw new AbortError();
     }
 
-    notifyObservers((observer) =>
-      notifyObserverAboutFailure(observer, metadata, result.error)
+    eventSource.notifyModelCallFinished(
+      getFailureEvent(finishMetadata, result.error)
     );
-
     throw result.error;
   }
 
   const output = extractOutputValue(result.output);
-
-  notifyObservers((observer) =>
-    notifyObserverAboutSuccess(observer, metadata, output)
-  );
-
+  eventSource.notifyModelCallFinished(getSuccessEvent(finishMetadata, output));
   return output;
 }

@@ -45,39 +45,31 @@ export abstract class AbstractTranscriptionModel<
       model: this,
       options,
       callModel: (model, options) => model.transcribe(data, options),
-      notifyObserverAboutStart: (observer, startMetadata) => {
-        observer?.onTranscriptionStarted?.({
-          type: "transcription-started",
-          metadata: startMetadata,
-          data,
-        });
-      },
-      notifyObserverAboutAbort(observer, metadata) {
-        observer?.onTranscriptionFinished?.({
-          type: "transcription-finished",
-          status: "abort",
-          metadata,
-          data,
-        });
-      },
-      notifyObserverAboutFailure(observer, metadata, error) {
-        observer?.onTranscriptionFinished?.({
-          type: "transcription-finished",
-          status: "failure",
-          metadata,
-          data,
-          error,
-        });
-      },
-      notifyObserverAboutSuccess(observer, metadata, output) {
-        observer?.onTranscriptionFinished?.({
-          type: "transcription-finished",
-          status: "success",
-          metadata,
-          data,
-          transcription: output,
-        });
-      },
+      getStartEvent: (metadata) => ({
+        type: "transcription-started",
+        metadata,
+        data,
+      }),
+      getAbortEvent: (metadata) => ({
+        type: "transcription-finished",
+        status: "abort",
+        metadata,
+        data,
+      }),
+      getFailureEvent: (metadata, error) => ({
+        type: "transcription-finished",
+        status: "failure",
+        metadata,
+        data,
+        error,
+      }),
+      getSuccessEvent: (metadata, output) => ({
+        type: "transcription-finished",
+        status: "success",
+        metadata,
+        data,
+        transcription: output,
+      }),
       errorHandler: this.uncaughtErrorHandler,
       generateResponse: (options) => this.generateResponse(data, options),
       extractOutputValue: this.extractTranscription,

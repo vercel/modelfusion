@@ -1,22 +1,17 @@
 import {
-  FinishedEventMetadata,
-  StartedEventMetadata,
-} from "../EventMetadata.js";
-
-export type ImageGenerationObserver = {
-  onImageGenerationStarted?: (event: ImageGenerationStartedEvent) => void;
-  onImageGenerationFinished?: (event: ImageGenerationFinishedEvent) => void;
-};
+  ModelCallFinishedEventMetadata,
+  ModelCallStartedEventMetadata,
+} from "model/ModelCallObserver.js";
 
 export type ImageGenerationStartedEvent = {
   type: "image-generation-started";
-  metadata: StartedEventMetadata;
+  metadata: ModelCallStartedEventMetadata;
   prompt: unknown;
 };
 
 export type ImageGenerationFinishedEvent = {
   type: "image-generation-finished";
-  metadata: FinishedEventMetadata;
+  metadata: ModelCallFinishedEventMetadata;
   prompt: unknown;
 } & (
   | {

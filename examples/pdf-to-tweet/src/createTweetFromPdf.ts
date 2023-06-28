@@ -1,11 +1,9 @@
 import {
-  TextEmbeddingObserver,
   MemoryStore,
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
   Run,
-  TextGenerationObserver,
   VectorDB,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "ai-utils.js";
@@ -24,7 +22,7 @@ export async function createTweetFromPdf({
   pdfPath: string;
   exampleTweetIndexPath: string;
   openAiApiKey: string;
-  run: Run & TextGenerationObserver & TextEmbeddingObserver;
+  run: Run;
 }) {
   const model = new OpenAIChatModel({
     apiKey: openAiApiKey,

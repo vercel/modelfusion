@@ -46,39 +46,31 @@ export abstract class AbstractTextGenerationModel<
       model: this,
       options,
       callModel: (model, options) => model.generateText(prompt, options),
-      notifyObserverAboutStart: (observer, startMetadata) => {
-        observer?.onTextGenerationStarted?.({
-          type: "text-generation-started",
-          metadata: startMetadata,
-          prompt,
-        });
-      },
-      notifyObserverAboutAbort(observer, metadata) {
-        observer?.onTextGenerationFinished?.({
-          type: "text-generation-finished",
-          status: "abort",
-          metadata,
-          prompt,
-        });
-      },
-      notifyObserverAboutFailure(observer, metadata, error) {
-        observer?.onTextGenerationFinished?.({
-          type: "text-generation-finished",
-          status: "failure",
-          metadata,
-          prompt,
-          error,
-        });
-      },
-      notifyObserverAboutSuccess(observer, metadata, output) {
-        observer?.onTextGenerationFinished?.({
-          type: "text-generation-finished",
-          status: "success",
-          metadata,
-          prompt,
-          generatedText: output,
-        });
-      },
+      getStartEvent: (metadata) => ({
+        type: "text-generation-started",
+        metadata,
+        prompt,
+      }),
+      getAbortEvent: (metadata) => ({
+        type: "text-generation-finished",
+        status: "abort",
+        metadata,
+        prompt,
+      }),
+      getFailureEvent: (metadata, error) => ({
+        type: "text-generation-finished",
+        status: "failure",
+        metadata,
+        prompt,
+        error,
+      }),
+      getSuccessEvent: (metadata, output) => ({
+        type: "text-generation-finished",
+        status: "success",
+        metadata,
+        prompt,
+        generatedText: output,
+      }),
       errorHandler: this.uncaughtErrorHandler,
       generateResponse: (options) => this.generateResponse(prompt, options),
       extractOutputValue: (result) => {

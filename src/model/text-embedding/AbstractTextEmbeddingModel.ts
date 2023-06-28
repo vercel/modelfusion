@@ -50,39 +50,31 @@ export abstract class AbstractTextEmbeddingModel<
       model: this,
       options,
       callModel: (model, options) => model.embedTexts(texts, options),
-      notifyObserverAboutStart: (observer, startMetadata) => {
-        observer?.onTextEmbeddingStarted?.({
-          type: "text-embedding-started",
-          metadata: startMetadata,
-          texts,
-        });
-      },
-      notifyObserverAboutAbort(observer, metadata) {
-        observer?.onTextEmbeddingFinished?.({
-          type: "text-embedding-finished",
-          status: "abort",
-          metadata,
-          texts,
-        });
-      },
-      notifyObserverAboutFailure(observer, metadata, error) {
-        observer?.onTextEmbeddingFinished?.({
-          type: "text-embedding-finished",
-          status: "failure",
-          metadata,
-          error,
-          texts,
-        });
-      },
-      notifyObserverAboutSuccess(observer, metadata, output) {
-        observer?.onTextEmbeddingFinished?.({
-          type: "text-embedding-finished",
-          status: "success",
-          metadata,
-          texts,
-          generatedEmbeddings: output,
-        });
-      },
+      getStartEvent: (metadata) => ({
+        type: "text-embedding-started",
+        metadata,
+        texts,
+      }),
+      getAbortEvent: (metadata) => ({
+        type: "text-embedding-finished",
+        status: "abort",
+        metadata,
+        texts,
+      }),
+      getFailureEvent: (metadata, error) => ({
+        type: "text-embedding-finished",
+        status: "failure",
+        metadata,
+        error,
+        texts,
+      }),
+      getSuccessEvent: (metadata, output) => ({
+        type: "text-embedding-finished",
+        status: "success",
+        metadata,
+        texts,
+        generatedEmbeddings: output,
+      }),
       errorHandler: this.uncaughtErrorHandler,
       generateResponse: (options) => {
         // split the texts into groups that are small enough to be sent in one call:

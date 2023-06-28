@@ -1,6 +1,4 @@
 import { ModelInformation } from "../run/ModelInformation.js";
-import { Run } from "../run/Run.js";
-import { RunObserver } from "../run/RunObserver.js";
 import { Model, ModelSettings } from "./Model.js";
 
 export abstract class AbstractModel<SETTINGS extends ModelSettings>
@@ -28,24 +26,6 @@ export abstract class AbstractModel<SETTINGS extends ModelSettings>
         console.error(error);
       })
     );
-  }
-
-  protected callEachObserver(
-    run: Run | undefined,
-    callObserver: (observer: RunObserver) => void
-  ) {
-    const observers = [
-      ...(this.settings.observers ?? []),
-      ...(run?.observers ?? []),
-    ];
-
-    observers.forEach((observer) => {
-      try {
-        callObserver(observer);
-      } catch (error) {
-        this.uncaughtErrorHandler(error);
-      }
-    });
   }
 
   readonly settings: SETTINGS;
