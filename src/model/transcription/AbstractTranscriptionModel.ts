@@ -44,7 +44,7 @@ export abstract class AbstractTranscriptionModel<
     return executeCall({
       model: this,
       options,
-      callModel: (options) => this.transcribe(data, options),
+      callModel: (model, options) => model.transcribe(data, options),
       notifyObserverAboutStart: (observer, startMetadata) => {
         observer?.onTranscriptionStarted?.({
           type: "transcription-started",
