@@ -167,12 +167,13 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
   - [Throttling strategies](https://ai-utils.dev/concept/util/throttle)
   - Error handling
   - Logging
+  - Cost calculation
 
 ## Integrations
 
 ### Model Providers
 
-- [OpenAI](https://ai-utils.dev/integration/model-provider/openai) (text generation, text embedding, tokenization, image generation, audio transcription)
+- [OpenAI](https://ai-utils.dev/integration/model-provider/openai) (text generation, text embedding, tokenization, image generation, audio transcription, cost calculation)
 - [Cohere](https://ai-utils.dev/integration/model-provider/cohere) (text generation, text embedding, tokenization)
 - [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface) (text generation)
 - [Stability AI](https://ai-utils.dev/integration/model-provider/stability) (image generation)
@@ -198,7 +199,7 @@ Examples for the individual functions and objects.
 
 ### [PDF to Tweet](https://github.com/lgrammel/ai-utils.js/tree/main/examples/pdf-to-tweet)
 
-> _console app_, _PDF parsing_, _recursive information extraction_, _in memory vector db_, _style example retrieval_, _OpenAI GPT-4_
+> _console app_, _PDF parsing_, _recursive information extraction_, _in memory vector db_, _style example retrieval_, _OpenAI GPT-4_, _cost calculation_
 
 Extracts information about a topic from a PDF and writes a tweet in your own style about it.
 

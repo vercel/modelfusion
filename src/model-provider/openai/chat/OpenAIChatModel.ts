@@ -24,47 +24,74 @@ import {
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 
 /*
- * Available OpenAI chat models and their token limits.
+ * Available OpenAI chat models, their token limits, and pricing.
  *
  * @see https://platform.openai.com/docs/models/
+ * @see https://openai.com/pricing
  */
 export const OPENAI_CHAT_MODELS = {
   "gpt-4": {
     maxTokens: 8192,
+    promptTokenCostInMillicent: 3,
+    completionTokenCostInMillicent: 6,
   },
   "gpt-4-0314": {
     maxTokens: 8192,
+    promptTokenCostInMillicent: 3,
+    completionTokenCostInMillicent: 6,
   },
   "gpt-4-0613": {
     maxTokens: 8192,
+    promptTokenCostInMillicent: 3,
+    completionTokenCostInMillicent: 6,
   },
   "gpt-4-32k": {
     maxTokens: 32768,
+    promptTokenCostInMillicent: 6,
+    completionTokenCostInMillicent: 12,
   },
   "gpt-4-32k-0314": {
     maxTokens: 32768,
+    promptTokenCostInMillicent: 6,
+    completionTokenCostInMillicent: 12,
   },
   "gpt-4-32k-0613": {
     maxTokens: 32768,
+    promptTokenCostInMillicent: 6,
+    completionTokenCostInMillicent: 12,
   },
   "gpt-3.5-turbo": {
     maxTokens: 4096,
+    promptTokenCostInMillicent: 0.15,
+    completionTokenCostInMillicent: 0.2,
   },
   "gpt-3.5-turbo-0301": {
     maxTokens: 4096,
+    promptTokenCostInMillicent: 0.15,
+    completionTokenCostInMillicent: 0.2,
   },
   "gpt-3.5-turbo-0613": {
     maxTokens: 4096,
+    promptTokenCostInMillicent: 0.15,
+    completionTokenCostInMillicent: 0.2,
   },
   "gpt-3.5-turbo-16k": {
     maxTokens: 16384,
+    promptTokenCostInMillicent: 0.3,
+    completionTokenCostInMillicent: 0.4,
   },
   "gpt-3.5-turbo-16k-0613": {
     maxTokens: 16384,
+    promptTokenCostInMillicent: 0.3,
+    completionTokenCostInMillicent: 0.4,
   },
 };
 
 export type OpenAIChatModelType = keyof typeof OPENAI_CHAT_MODELS;
+
+export const isOpenAIChatModel = (
+  model: string
+): model is OpenAIChatModelType => model in OPENAI_CHAT_MODELS;
 
 export interface OpenAIChatCallSettings {
   model: OpenAIChatModelType;
@@ -89,6 +116,18 @@ export interface OpenAIChatSettings
     OpenAIChatCallSettings {
   isUserIdForwardingEnabled?: boolean;
 }
+
+export const calculateOpenAIChatCostInMillicent = ({
+  model,
+  output,
+}: {
+  model: OpenAIChatModelType;
+  output: OpenAIChatResponse;
+}): number =>
+  output.usage.prompt_tokens *
+    OPENAI_CHAT_MODELS[model].promptTokenCostInMillicent +
+  output.usage.completion_tokens *
+    OPENAI_CHAT_MODELS[model].completionTokenCostInMillicent;
 
 /**
  * Create a text generation model that calls the OpenAI chat completion API.

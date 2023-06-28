@@ -1,6 +1,11 @@
 import { Command } from "commander";
 import dotenv from "dotenv";
 import { createTweetFromPdf } from "./createTweetFromPdf";
+import {
+  CostCalculator,
+  ModelCallFinishedEvent,
+  OpenAICostCalculator,
+} from "ai-utils.js";
 
 dotenv.config();
 
@@ -20,6 +25,8 @@ const openAiApiKey = process.env.OPENAI_API_KEY;
 if (!openAiApiKey) {
   throw new Error("OPENAI_API_KEY is not set");
 }
+
+const modelCalls: ModelCallFinishedEvent[] = [];
 
 createTweetFromPdf({
   topic,
@@ -42,6 +49,8 @@ createTweetFromPdf({
         },
 
         onModelCallFinished(event) {
+          modelCalls.push(event);
+
           if (event.type === "text-generation-finished") {
             console.log(
               `Generate text ${
@@ -58,9 +67,17 @@ createTweetFromPdf({
     ],
   },
 })
-  .then((result) => {
+  .then(async (result) => {
+    const costCalculator = new CostCalculator({
+      providerCostCalculators: [new OpenAICostCalculator()],
+    });
+
+    const cost = await costCalculator.calculateCostInMillicent(modelCalls);
+
     console.log();
     console.log(result);
+    console.log();
+    console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
   })
   .catch((error) => {
     console.error(error);

@@ -18,11 +18,17 @@ export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-ada-002": {
     maxTokens: 8192,
     embeddingDimensions: 1536,
+    tokenCostInMillicent: 0.01,
   },
 };
 
 export type OpenAITextEmbeddingModelType =
   keyof typeof OPENAI_TEXT_EMBEDDING_MODELS;
+
+export const isOpenAIEmbeddingModel = (
+  model: string
+): model is OpenAITextEmbeddingModelType =>
+  model in OPENAI_TEXT_EMBEDDING_MODELS;
 
 export interface OpenAITextEmbeddingModelSettings
   extends TextEmbeddingModelSettings {
@@ -35,6 +41,24 @@ export interface OpenAITextEmbeddingModelSettings
   throttle?: ThrottleFunction;
   isUserIdForwardingEnabled?: boolean;
 }
+
+export const calculateOpenAIEmbeddingCostInMillicent = ({
+  model,
+  output,
+}: {
+  model: OpenAITextEmbeddingModelType;
+  output: OpenAITextEmbeddingResponse[];
+}): number => {
+  let amountInMilliseconds = 0;
+
+  for (const response of output) {
+    amountInMilliseconds +=
+      response.usage.total_tokens *
+      OPENAI_TEXT_EMBEDDING_MODELS[model].tokenCostInMillicent;
+  }
+
+  return amountInMilliseconds;
+};
 
 /**
  * Create a text embedding model that calls the OpenAI embedding API.

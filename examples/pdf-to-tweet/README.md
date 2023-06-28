@@ -1,6 +1,6 @@
 # PDF to Tweet
 
-> _console app_, _PDF parsing_, _recursive information extraction_, _in memory vector db_, _style example retrieval_, _OpenAI GPT-4_
+> _console app_, _PDF parsing_, _recursive information extraction_, _in memory vector db_, _style example retrieval_, _OpenAI GPT-4_, _cost calculation_
 
 Extracts information about a topic from a PDF and writes a tweet in your own style about it.
 
