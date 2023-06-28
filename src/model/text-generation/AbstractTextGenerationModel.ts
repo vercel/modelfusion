@@ -1,15 +1,11 @@
-import { executeCall } from "../executeCall.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { AbstractModel } from "../AbstractModel.js";
 import { FunctionOptions } from "../FunctionOptions.js";
+import { executeCall } from "../executeCall.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
-import {
-  TextGenerationFinishedEvent,
-  TextGenerationStartedEvent,
-} from "./TextGenerationObserver.js";
 
 export abstract class AbstractTextGenerationModel<
     PROMPT,
@@ -42,10 +38,6 @@ export abstract class AbstractTextGenerationModel<
     options?: FunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
 
-  private get shouldTrimOutput() {
-    return this.settings.trimOutput ?? true;
-  }
-
   async generateText(
     prompt: PROMPT,
     options?: FunctionOptions<SETTINGS>
@@ -57,50 +49,43 @@ export abstract class AbstractTextGenerationModel<
         return model.generateText(prompt, options);
       },
       notifyObserverAboutStart: (observer, startMetadata) => {
-        const startEvent: TextGenerationStartedEvent = {
+        observer?.onTextGenerationStarted?.({
           type: "text-generation-started",
           metadata: startMetadata,
           prompt,
-        };
-
-        observer?.onTextGenerationStarted?.(startEvent);
+        });
       },
       notifyObserverAboutAbort(observer, metadata) {
-        const endEvent: TextGenerationFinishedEvent = {
+        observer?.onTextGenerationFinished?.({
           type: "text-generation-finished",
           status: "abort",
           metadata,
           prompt,
-        };
-
-        observer?.onTextGenerationFinished?.(endEvent);
+        });
       },
       notifyObserverAboutError(observer, error, metadata) {
-        const endEvent: TextGenerationFinishedEvent = {
+        observer?.onTextGenerationFinished?.({
           type: "text-generation-finished",
           status: "failure",
           metadata,
           prompt,
           error,
-        };
-
-        observer?.onTextGenerationFinished?.(endEvent);
+        });
       },
       notifyObserverAboutFinish(observer, output, metadata) {
-        const endEvent: TextGenerationFinishedEvent = {
+        observer?.onTextGenerationFinished?.({
           type: "text-generation-finished",
           status: "success",
           metadata,
           prompt,
           generatedText: output,
-        };
-
-        observer?.onTextGenerationFinished?.(endEvent);
+        });
       },
       errorHandler: this.uncaughtErrorHandler,
       generateResponse: (options) => this.generateResponse(prompt, options),
       extractOutputValue(model, result) {
-        return model.shouldTrimOutput
+        const shouldTrimOutput = model.settings.trimOutput ?? true;
+        return shouldTrimOutput
           ? model.extractText(result).trim()
           : model.extractText(result);
       },
