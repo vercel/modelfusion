@@ -1,4 +1,4 @@
-import { RunContext } from "../../run/RunContext.js";
+import { Run } from "../../run/Run.js";
 import { SplitFunction } from "../split/SplitFunction.js";
 import { SummarizationFunction } from "./SummarizationFunction.js";
 
@@ -14,7 +14,7 @@ export async function summarizeRecursively(
     join?: (texts: Array<string>) => string;
     text: string;
   },
-  options?: { run?: RunContext }
+  options?: { run?: Run }
 ): Promise<string> {
   const chunks = await split({ text });
 
@@ -49,7 +49,7 @@ export const summarizeRecursivelyAsFunction =
     map: SummarizationFunction;
     join?: (texts: Array<string>) => string;
   }): SummarizationFunction =>
-  async ({ text }, options?: { run?: RunContext }) =>
+  async ({ text }, options?: { run?: Run }) =>
     summarizeRecursively(
       {
         summarize: map,

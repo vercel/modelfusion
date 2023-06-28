@@ -1,5 +1,5 @@
 import { ModelInformation } from "../run/ModelInformation.js";
-import { RunContext } from "../run/RunContext.js";
+import { Run } from "../run/Run.js";
 import { RunObserver } from "../run/RunObserver.js";
 import { Model, ModelSettings } from "./Model.js";
 
@@ -31,7 +31,7 @@ export abstract class AbstractModel<SETTINGS extends ModelSettings>
   }
 
   protected callEachObserver(
-    run: RunContext | undefined,
+    run: Run | undefined,
     callObserver: (observer: RunObserver) => void
   ) {
     const observers = [

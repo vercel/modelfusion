@@ -1,6 +1,6 @@
 import { RunObserver } from "./RunObserver.js";
 
-export interface RunContext {
+export interface Run {
   /**
    * Unique ID for the run. Used to identify the run in the logs.
    */

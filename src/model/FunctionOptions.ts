@@ -1,7 +1,7 @@
-import { RunContext } from "../run/RunContext.js";
+import { Run } from "../run/Run.js";
 
 export interface FunctionOptions<SETTINGS> {
   functionId?: string;
   settings?: Partial<SETTINGS>;
-  run?: RunContext;
+  run?: Run;
 }

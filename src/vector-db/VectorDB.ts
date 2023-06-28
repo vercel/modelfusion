@@ -1,6 +1,6 @@
 import { nanoid as createId } from "nanoid";
 import { TextEmbeddingModel } from "../model/text-embedding/TextEmbeddingModel.js";
-import { RunContext } from "../run/RunContext.js";
+import { Run } from "../run/Run.js";
 import { Vector } from "../run/Vector.js";
 import { VectorStore } from "./VectorStore.js";
 
@@ -49,7 +49,7 @@ export class VectorDB<DATA, STORE> {
       keyText: string;
       data: DATA;
     },
-    options?: { run?: RunContext }
+    options?: { run?: Run }
   ): Promise<void> {
     this.upsertMany(
       {
@@ -71,7 +71,7 @@ export class VectorDB<DATA, STORE> {
       keyTexts: Array<string>;
       data: DATA[];
     },
-    options?: { run?: RunContext }
+    options?: { run?: Run }
   ) {
     if (keyTexts.length !== data.length) {
       throw new Error(
@@ -103,7 +103,7 @@ export class VectorDB<DATA, STORE> {
       maxResults?: number;
       similarityThreshold?: number;
     },
-    options?: { run?: RunContext }
+    options?: { run?: Run }
   ): Promise<VectorDBQueryResult<DATA>> {
     return this.queryByVector({
       queryVector: await this.embeddingModel.embedText(queryText, {

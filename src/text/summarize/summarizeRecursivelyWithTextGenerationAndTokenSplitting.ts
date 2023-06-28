@@ -1,5 +1,5 @@
 import { TextGenerationModelWithTokenization } from "../../model/text-generation/TextGenerationModel.js";
-import { RunContext } from "../../run/RunContext.js";
+import { Run } from "../../run/Run.js";
 import { splitRecursivelyAtTokenForModelAsSplitFunction } from "../split/splitRecursively.js";
 import { SummarizationFunction } from "./SummarizationFunction.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";
@@ -27,7 +27,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
   },
   options?: {
     functionId?: string;
-    run?: RunContext;
+    run?: Run;
   }
 ) {
   const functionId = options?.functionId;
@@ -72,7 +72,7 @@ export const summarizeRecursivelyWithTextGenerationAndTokenSplittingAsFunction =
       input: { text: string },
       options?: {
         functionId?: string;
-        run?: RunContext;
+        run?: Run;
       }
     ) =>
       summarizeRecursivelyWithTextGenerationAndTokenSplitting(

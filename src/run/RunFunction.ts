@@ -1,5 +1,5 @@
 import { SafeResult } from "../util/SafeResult.js";
-import { RunContext } from "./RunContext.js";
+import { Run } from "./Run.js";
 
 /**
  * Standardized function signature for functions that are part of a run.
@@ -9,13 +9,13 @@ import { RunContext } from "./RunContext.js";
 export type RunFunction<INPUT, OUTPUT> = (
   input: INPUT,
   options?: {
-    run?: RunContext;
+    run?: Run;
   }
 ) => PromiseLike<OUTPUT>;
 
 export type SafeRunFunction<INPUT, OUTPUT> = (
   input: INPUT,
   options?: {
-    run?: RunContext;
+    run?: Run;
   }
 ) => PromiseLike<SafeResult<OUTPUT>>;

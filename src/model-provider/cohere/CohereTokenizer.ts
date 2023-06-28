@@ -1,6 +1,6 @@
 import z from "zod";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
-import { RunContext } from "../../run/RunContext.js";
+import { Run } from "../../run/Run.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -63,7 +63,7 @@ export class CohereTokenizer implements Tokenizer {
 
   async callTokenizeAPI(
     text: string,
-    context?: RunContext
+    context?: Run
   ): Promise<CohereTokenizationResponse> {
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
@@ -80,7 +80,7 @@ export class CohereTokenizer implements Tokenizer {
 
   async callDeTokenizeAPI(
     tokens: number[],
-    context?: RunContext
+    context?: Run
   ): Promise<CohereDetokenizationResponse> {
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
