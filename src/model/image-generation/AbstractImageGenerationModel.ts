@@ -64,11 +64,12 @@ export abstract class AbstractImageGenerationModel<
         prompt,
         error,
       }),
-      getSuccessEvent: (metadata, output) => ({
+      getSuccessEvent: (metadata, response, output) => ({
         type: "image-generation-finished",
         status: "success",
         metadata,
         prompt,
+        response,
         generatedImage: output,
       }),
       errorHandler: this.uncaughtErrorHandler,

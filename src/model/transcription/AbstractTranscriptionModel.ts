@@ -44,7 +44,10 @@ export abstract class AbstractTranscriptionModel<
     return executeCall({
       model: this,
       options,
+      errorHandler: this.uncaughtErrorHandler,
       callModel: (model, options) => model.transcribe(data, options),
+      generateResponse: (options) => this.generateResponse(data, options),
+      extractOutputValue: this.extractTranscription,
       getStartEvent: (metadata) => ({
         type: "transcription-started",
         metadata,
@@ -63,16 +66,14 @@ export abstract class AbstractTranscriptionModel<
         data,
         error,
       }),
-      getSuccessEvent: (metadata, output) => ({
+      getSuccessEvent: (metadata, response, output) => ({
         type: "transcription-finished",
         status: "success",
         metadata,
         data,
+        response,
         transcription: output,
       }),
-      errorHandler: this.uncaughtErrorHandler,
-      generateResponse: (options) => this.generateResponse(data, options),
-      extractOutputValue: this.extractTranscription,
     });
   }
 }

@@ -47,6 +47,7 @@ export async function executeCall<
   ) => ModelCallFinishedEvent;
   getSuccessEvent: (
     metadata: ModelCallFinishedEventMetadata,
+    response: RESPONSE,
     output: OUTPUT
   ) => ModelCallFinishedEvent;
   errorHandler: ErrorHandler;
@@ -115,7 +116,12 @@ export async function executeCall<
     throw result.error;
   }
 
-  const output = extractOutputValue(result.output);
-  eventSource.notifyModelCallFinished(getSuccessEvent(finishMetadata, output));
+  const response = result.output;
+  const output = extractOutputValue(response);
+
+  eventSource.notifyModelCallFinished(
+    getSuccessEvent(finishMetadata, response, output)
+  );
+
   return output;
 }

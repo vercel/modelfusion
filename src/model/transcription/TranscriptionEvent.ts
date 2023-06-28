@@ -16,6 +16,7 @@ export type TranscriptionFinishedEvent = {
 } & (
   | {
       status: "success";
+      response: unknown;
       transcription: string;
     }
   | { status: "failure"; error: unknown }

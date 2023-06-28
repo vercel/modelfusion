@@ -16,6 +16,7 @@ export type TextGenerationFinishedEvent = {
 } & (
   | {
       status: "success";
+      response: unknown;
       generatedText: string;
     }
   | { status: "failure"; error: unknown }

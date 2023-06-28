@@ -17,6 +17,7 @@ export type TextEmbeddingFinishedEvent = {
 } & (
   | {
       status: "success";
+      response: unknown;
       generatedEmbeddings: Array<Vector>;
     }
   | { status: "failure"; error: unknown }

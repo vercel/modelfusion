@@ -49,33 +49,8 @@ export abstract class AbstractTextEmbeddingModel<
     return executeCall<SETTINGS, this, Vector[], RESPONSE[]>({
       model: this,
       options,
-      callModel: (model, options) => model.embedTexts(texts, options),
-      getStartEvent: (metadata) => ({
-        type: "text-embedding-started",
-        metadata,
-        texts,
-      }),
-      getAbortEvent: (metadata) => ({
-        type: "text-embedding-finished",
-        status: "abort",
-        metadata,
-        texts,
-      }),
-      getFailureEvent: (metadata, error) => ({
-        type: "text-embedding-finished",
-        status: "failure",
-        metadata,
-        error,
-        texts,
-      }),
-      getSuccessEvent: (metadata, output) => ({
-        type: "text-embedding-finished",
-        status: "success",
-        metadata,
-        texts,
-        generatedEmbeddings: output,
-      }),
       errorHandler: this.uncaughtErrorHandler,
+      callModel: (model, options) => model.embedTexts(texts, options),
       generateResponse: (options) => {
         // split the texts into groups that are small enough to be sent in one call:
         const maxTextsPerCall = this.maxTextsPerCall;
@@ -97,6 +72,32 @@ export abstract class AbstractTextEmbeddingModel<
         }
         return embeddings;
       },
+      getStartEvent: (metadata) => ({
+        type: "text-embedding-started",
+        metadata,
+        texts,
+      }),
+      getAbortEvent: (metadata) => ({
+        type: "text-embedding-finished",
+        status: "abort",
+        metadata,
+        texts,
+      }),
+      getFailureEvent: (metadata, error) => ({
+        type: "text-embedding-finished",
+        status: "failure",
+        metadata,
+        error,
+        texts,
+      }),
+      getSuccessEvent: (metadata, response, output) => ({
+        type: "text-embedding-finished",
+        status: "success",
+        metadata,
+        texts,
+        response,
+        generatedEmbeddings: output,
+      }),
     });
   }
 

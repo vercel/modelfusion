@@ -16,6 +16,7 @@ export type ImageGenerationFinishedEvent = {
 } & (
   | {
       status: "success";
+      response: unknown;
       generatedImage: string;
     }
   | { status: "failure"; error: unknown }

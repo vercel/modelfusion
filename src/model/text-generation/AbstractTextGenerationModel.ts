@@ -45,7 +45,15 @@ export abstract class AbstractTextGenerationModel<
     return executeCall({
       model: this,
       options,
+      errorHandler: this.uncaughtErrorHandler,
       callModel: (model, options) => model.generateText(prompt, options),
+      generateResponse: (options) => this.generateResponse(prompt, options),
+      extractOutputValue: (result) => {
+        const shouldTrimOutput = this.settings.trimOutput ?? true;
+        return shouldTrimOutput
+          ? this.extractText(result).trim()
+          : this.extractText(result);
+      },
       getStartEvent: (metadata) => ({
         type: "text-generation-started",
         metadata,
@@ -64,21 +72,14 @@ export abstract class AbstractTextGenerationModel<
         prompt,
         error,
       }),
-      getSuccessEvent: (metadata, output) => ({
+      getSuccessEvent: (metadata, response, output) => ({
         type: "text-generation-finished",
         status: "success",
         metadata,
         prompt,
+        response,
         generatedText: output,
       }),
-      errorHandler: this.uncaughtErrorHandler,
-      generateResponse: (options) => this.generateResponse(prompt, options),
-      extractOutputValue: (result) => {
-        const shouldTrimOutput = this.settings.trimOutput ?? true;
-        return shouldTrimOutput
-          ? this.extractText(result).trim()
-          : this.extractText(result);
-      },
     });
   }
 
