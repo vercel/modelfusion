@@ -42,12 +42,10 @@ export class CostCalculator {
       costInMillicent += cost;
     }
 
-    return Promise.resolve(
-      new Cost({
-        costInMillicent,
-        hasUnknownCost: callsWithUnknownCost.length > 0,
-        callsWithUnknownCost,
-      })
-    );
+    return new Cost({
+      costInMillicent,
+      hasUnknownCost: callsWithUnknownCost.length > 0,
+      callsWithUnknownCost,
+    });
   }
 }
