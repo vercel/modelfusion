@@ -30,18 +30,6 @@ export const isOpenAIEmbeddingModel = (
 ): model is OpenAITextEmbeddingModelType =>
   model in OPENAI_TEXT_EMBEDDING_MODELS;
 
-export interface OpenAITextEmbeddingModelSettings
-  extends TextEmbeddingModelSettings {
-  model: OpenAITextEmbeddingModelType;
-
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-  isUserIdForwardingEnabled?: boolean;
-}
-
 export const calculateOpenAIEmbeddingCostInMillicent = ({
   model,
   responses,
@@ -59,6 +47,18 @@ export const calculateOpenAIEmbeddingCostInMillicent = ({
 
   return amountInMilliseconds;
 };
+
+export interface OpenAITextEmbeddingModelSettings
+  extends TextEmbeddingModelSettings {
+  model: OpenAITextEmbeddingModelType;
+
+  baseUrl?: string;
+  apiKey?: string;
+
+  retry?: RetryFunction;
+  throttle?: ThrottleFunction;
+  isUserIdForwardingEnabled?: boolean;
+}
 
 /**
  * Create a text embedding model that calls the OpenAI embedding API.

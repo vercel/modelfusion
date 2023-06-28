@@ -18,42 +18,70 @@ import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
-// see https://platform.openai.com/docs/models/
+/**
+ * @see https://platform.openai.com/docs/models/
+ * @see https://openai.com/pricing
+ */
 export const OPENAI_TEXT_GENERATION_MODELS = {
   "text-davinci-003": {
     maxTokens: 4096,
+    tokenCostInMillicent: 2,
   },
   "text-davinci-002": {
     maxTokens: 4096,
+    tokenCostInMillicent: 2,
   },
   "code-davinci-002": {
     maxTokens: 8000,
-  },
-  "text-curie-001": {
-    maxTokens: 2048,
-  },
-  "text-babbage-001": {
-    maxTokens: 2048,
-  },
-  "text-ada-001": {
-    maxTokens: 2048,
+    tokenCostInMillicent: 2,
   },
   davinci: {
     maxTokens: 2048,
+    tokenCostInMillicent: 2,
+  },
+  "text-curie-001": {
+    maxTokens: 2048,
+    tokenCostInMillicent: 0.2,
   },
   curie: {
     maxTokens: 2048,
+    tokenCostInMillicent: 0.2,
+  },
+  "text-babbage-001": {
+    maxTokens: 2048,
+    tokenCostInMillicent: 0.05,
   },
   babbage: {
     maxTokens: 2048,
+    tokenCostInMillicent: 0.05,
+  },
+  "text-ada-001": {
+    maxTokens: 2048,
+    tokenCostInMillicent: 0.04,
   },
   ada: {
     maxTokens: 2048,
+    tokenCostInMillicent: 0.04,
   },
 };
 
 export type OpenAITextGenerationModelType =
   keyof typeof OPENAI_TEXT_GENERATION_MODELS;
+
+export const isOpenAITextGenerationModel = (
+  model: string
+): model is OpenAITextGenerationModelType =>
+  model in OPENAI_TEXT_GENERATION_MODELS;
+
+export const calculateOpenAITextGenerationCostInMillicent = ({
+  model,
+  response,
+}: {
+  model: OpenAITextGenerationModelType;
+  response: OpenAITextGenerationResponse;
+}) =>
+  response.usage.total_tokens *
+  OPENAI_TEXT_GENERATION_MODELS[model].tokenCostInMillicent;
 
 export interface OpenAITextGenerationModelSettings
   extends TextGenerationModelSettings {

@@ -93,6 +93,18 @@ export const isOpenAIChatModel = (
   model: string
 ): model is OpenAIChatModelType => model in OPENAI_CHAT_MODELS;
 
+export const calculateOpenAIChatCostInMillicent = ({
+  model,
+  response,
+}: {
+  model: OpenAIChatModelType;
+  response: OpenAIChatResponse;
+}): number =>
+  response.usage.prompt_tokens *
+    OPENAI_CHAT_MODELS[model].promptTokenCostInMillicent +
+  response.usage.completion_tokens *
+    OPENAI_CHAT_MODELS[model].completionTokenCostInMillicent;
+
 export interface OpenAIChatCallSettings {
   model: OpenAIChatModelType;
   functions?: Array<{
@@ -116,18 +128,6 @@ export interface OpenAIChatSettings
     OpenAIChatCallSettings {
   isUserIdForwardingEnabled?: boolean;
 }
-
-export const calculateOpenAIChatCostInMillicent = ({
-  model,
-  response,
-}: {
-  model: OpenAIChatModelType;
-  response: OpenAIChatResponse;
-}): number =>
-  response.usage.prompt_tokens *
-    OPENAI_CHAT_MODELS[model].promptTokenCostInMillicent +
-  response.usage.completion_tokens *
-    OPENAI_CHAT_MODELS[model].completionTokenCostInMillicent;
 
 /**
  * Create a text generation model that calls the OpenAI chat completion API.

@@ -6,6 +6,11 @@ import {
   isOpenAIEmbeddingModel,
 } from "./OpenAITextEmbeddingModel.js";
 import {
+  OpenAITextGenerationResponse,
+  calculateOpenAITextGenerationCostInMillicent,
+  isOpenAITextGenerationModel,
+} from "./OpenAITextGenerationModel.js";
+import {
   OpenAIChatResponse,
   calculateOpenAIChatCostInMillicent,
   isOpenAIChatModel,
@@ -34,6 +39,14 @@ export class OpenAICostCalculator implements ProviderCostCalculator {
             response: call.response as OpenAIChatResponse,
           });
         }
+
+        if (isOpenAITextGenerationModel(model)) {
+          return calculateOpenAITextGenerationCostInMillicent({
+            model,
+            response: call.response as OpenAITextGenerationResponse,
+          });
+        }
+
         break;
       }
 
