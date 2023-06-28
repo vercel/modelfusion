@@ -18,8 +18,8 @@ export async function executeCall<
   callModel,
   notifyObserverAboutStart,
   notifyObserverAboutAbort,
-  notifyObserverAboutError,
-  notifyObserverAboutFinish,
+  notifyObserverAboutFailure,
+  notifyObserverAboutSuccess,
   errorHandler,
   generateResponse,
   extractOutputValue,
@@ -49,33 +49,33 @@ export async function executeCall<
       durationInMs: number;
     }
   ) => void;
-  notifyObserverAboutError: (
+  notifyObserverAboutFailure: (
     observer: RunObserver,
-    error: unknown,
     metadata: {
       model: ModelInformation;
       runId?: string;
       sessionId?: string;
       startEpochSeconds: number;
       durationInMs: number;
-    }
+    },
+    error: unknown
   ) => void;
-  notifyObserverAboutFinish: (
+  notifyObserverAboutSuccess: (
     observer: RunObserver,
-    output: OUTPUT,
     metadata: {
       model: ModelInformation;
       runId?: string;
       sessionId?: string;
       startEpochSeconds: number;
       durationInMs: number;
-    }
+    },
+    output: OUTPUT
   ) => void;
   errorHandler: ErrorHandler;
   generateResponse: (
     options: FunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
-  extractOutputValue: (model: MODEL, response: RESPONSE) => OUTPUT;
+  extractOutputValue: (response: RESPONSE) => OUTPUT;
 }): Promise<OUTPUT> {
   if (options?.settings != null) {
     return callModel(model.withSettings(options.settings), {
@@ -149,16 +149,16 @@ export async function executeCall<
     }
 
     notifyObservers((observer) =>
-      notifyObserverAboutError(observer, result.error, metadata)
+      notifyObserverAboutFailure(observer, metadata, result.error)
     );
 
     throw result.error;
   }
 
-  const output = extractOutputValue(model, result.output);
+  const output = extractOutputValue(result.output);
 
   notifyObservers((observer) =>
-    notifyObserverAboutFinish(observer, output, metadata)
+    notifyObserverAboutSuccess(observer, metadata, output)
   );
 
   return output;

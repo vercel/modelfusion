@@ -45,9 +45,7 @@ export abstract class AbstractTextGenerationModel<
     return executeCall({
       model: this,
       options,
-      callModel: (model, options) => {
-        return model.generateText(prompt, options);
-      },
+      callModel: (model, options) => model.generateText(prompt, options),
       notifyObserverAboutStart: (observer, startMetadata) => {
         observer?.onTextGenerationStarted?.({
           type: "text-generation-started",
@@ -63,7 +61,7 @@ export abstract class AbstractTextGenerationModel<
           prompt,
         });
       },
-      notifyObserverAboutError(observer, error, metadata) {
+      notifyObserverAboutFailure(observer, metadata, error) {
         observer?.onTextGenerationFinished?.({
           type: "text-generation-finished",
           status: "failure",
@@ -72,7 +70,7 @@ export abstract class AbstractTextGenerationModel<
           error,
         });
       },
-      notifyObserverAboutFinish(observer, output, metadata) {
+      notifyObserverAboutSuccess(observer, metadata, output) {
         observer?.onTextGenerationFinished?.({
           type: "text-generation-finished",
           status: "success",
@@ -83,11 +81,11 @@ export abstract class AbstractTextGenerationModel<
       },
       errorHandler: this.uncaughtErrorHandler,
       generateResponse: (options) => this.generateResponse(prompt, options),
-      extractOutputValue(model, result) {
-        const shouldTrimOutput = model.settings.trimOutput ?? true;
+      extractOutputValue: (result) => {
+        const shouldTrimOutput = this.settings.trimOutput ?? true;
         return shouldTrimOutput
-          ? model.extractText(result).trim()
-          : model.extractText(result);
+          ? this.extractText(result).trim()
+          : this.extractText(result);
       },
     });
   }
