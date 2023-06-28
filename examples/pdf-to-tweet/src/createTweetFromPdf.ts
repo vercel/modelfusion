@@ -4,7 +4,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
-  RunContext,
+  Run,
   TextGenerationObserver,
   VectorDB,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
@@ -24,7 +24,7 @@ export async function createTweetFromPdf({
   pdfPath: string;
   exampleTweetIndexPath: string;
   openAiApiKey: string;
-  run: RunContext & TextGenerationObserver & TextEmbeddingObserver;
+  run: Run & TextGenerationObserver & TextEmbeddingObserver;
 }) {
   const model = new OpenAIChatModel({
     apiKey: openAiApiKey,
