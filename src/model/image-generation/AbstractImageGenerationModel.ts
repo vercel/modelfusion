@@ -1,7 +1,7 @@
-import { executeCall } from "model/executeCall.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { AbstractModel } from "../AbstractModel.js";
 import { FunctionOptions } from "../FunctionOptions.js";
+import { executeCall } from "../executeCall.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
