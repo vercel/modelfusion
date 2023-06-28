@@ -1,5 +1,7 @@
-import { IdMetadata } from "../../run/IdMetadata.js";
-import { ModelInformation } from "../../run/ModelInformation.js";
+import {
+  FinishedEventMetadata,
+  StartedEventMetadata,
+} from "../EventMetadata.js";
 
 export type ImageGenerationObserver = {
   onImageGenerationStarted?: (event: ImageGenerationStartedEvent) => void;
@@ -8,20 +10,13 @@ export type ImageGenerationObserver = {
 
 export type ImageGenerationStartedEvent = {
   type: "image-generation-started";
-  metadata: IdMetadata & {
-    model: ModelInformation;
-    startEpochSeconds: number;
-  };
+  metadata: StartedEventMetadata;
   prompt: unknown;
 };
 
 export type ImageGenerationFinishedEvent = {
   type: "image-generation-finished";
-  metadata: IdMetadata & {
-    model: ModelInformation;
-    startEpochSeconds: number;
-    durationInMs: number;
-  };
+  metadata: FinishedEventMetadata;
   prompt: unknown;
 } & (
   | {

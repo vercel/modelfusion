@@ -1,7 +1,7 @@
-import { RunContext } from "../run/RunContext.js";
 import { ModelInformation } from "../run/ModelInformation.js";
+import { RunContext } from "../run/RunContext.js";
+import { RunObserver } from "../run/RunObserver.js";
 import { Model, ModelSettings } from "./Model.js";
-import { RunObserver } from "index.js";
 
 export abstract class AbstractModel<SETTINGS extends ModelSettings>
   implements Model<SETTINGS>
@@ -21,7 +21,7 @@ export abstract class AbstractModel<SETTINGS extends ModelSettings>
     };
   }
 
-  private get uncaughtErrorHandler() {
+  protected get uncaughtErrorHandler() {
     return (
       this.settings.uncaughtErrorHandler ??
       ((error) => {

@@ -1,6 +1,8 @@
+import {
+  FinishedEventMetadata,
+  StartedEventMetadata,
+} from "../EventMetadata.js";
 import { Vector } from "../../run/Vector.js";
-import { IdMetadata } from "../../run/IdMetadata.js";
-import { ModelInformation } from "../../run/ModelInformation.js";
 
 export type TextEmbeddingObserver = {
   onTextEmbeddingStarted?: (event: TextEmbeddingStartedEvent) => void;
@@ -9,20 +11,13 @@ export type TextEmbeddingObserver = {
 
 export type TextEmbeddingStartedEvent = {
   type: "text-embedding-started";
-  metadata: IdMetadata & {
-    model: ModelInformation;
-    startEpochSeconds: number;
-  };
+  metadata: StartedEventMetadata;
   texts: Array<string>;
 };
 
 export type TextEmbeddingFinishedEvent = {
   type: "text-embedding-finished";
-  metadata: IdMetadata & {
-    model: ModelInformation;
-    startEpochSeconds: number;
-    durationInMs: number;
-  };
+  metadata: FinishedEventMetadata;
   texts: Array<string>;
 } & (
   | {

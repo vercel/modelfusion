@@ -1,3 +1,4 @@
+import { ModelInformation } from "../run/ModelInformation.js";
 import { RunObserver } from "../run/RunObserver.js";
 
 export interface ModelSettings {
@@ -6,6 +7,9 @@ export interface ModelSettings {
 }
 
 export interface Model<SETTINGS> {
+  modelInformation: ModelInformation;
+  readonly settings: SETTINGS;
+
   /**
    * The `withSettings` method creates a new model with the same configuration as the original model, but with the specified settings changed.
    *

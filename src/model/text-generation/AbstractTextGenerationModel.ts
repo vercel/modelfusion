@@ -1,7 +1,5 @@
-import { nanoid as createId } from "nanoid";
+import { executeCall } from "../executeCall.js";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
-import { AbortError } from "../../util/api/AbortError.js";
-import { runSafe } from "../../util/runSafe.js";
 import { AbstractModel } from "../AbstractModel.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import {
@@ -52,62 +50,22 @@ export abstract class AbstractTextGenerationModel<
     prompt: PROMPT,
     options?: FunctionOptions<SETTINGS>
   ): Promise<string> {
-    if (options?.settings != null) {
-      return this.withSettings(options.settings).generateText(prompt, {
-        functionId: options.functionId,
-        run: options.run,
-      });
-    }
+    return executeCall({
+      model: this,
+      options,
+      callModel: (model, options) => {
+        return model.generateText(prompt, options);
+      },
+      notifyObserverAboutStart: (observer, startMetadata) => {
+        const startEvent: TextGenerationStartedEvent = {
+          type: "text-generation-started",
+          metadata: startMetadata,
+          prompt,
+        };
 
-    const run = options?.run;
-
-    const startTime = performance.now();
-    const startEpochSeconds = Math.floor(
-      (performance.timeOrigin + startTime) / 1000
-    );
-
-    const callId = createId();
-
-    const startMetadata = {
-      runId: run?.runId,
-      sessionId: run?.sessionId,
-      userId: run?.userId,
-
-      functionId: options?.functionId,
-      callId,
-
-      model: this.modelInformation,
-
-      startEpochSeconds,
-    };
-
-    const startEvent: TextGenerationStartedEvent = {
-      type: "text-generation-started",
-      metadata: startMetadata,
-      prompt,
-    };
-
-    this.callEachObserver(run, (observer) => {
-      observer?.onTextGenerationStarted?.(startEvent);
-    });
-
-    const result = await runSafe(() =>
-      this.generateResponse(prompt, {
-        functionId: options?.functionId,
-        settings: this.settings, // options.setting is null here
-        run,
-      })
-    );
-
-    const generationDurationInMs = Math.ceil(performance.now() - startTime);
-
-    const metadata = {
-      durationInMs: generationDurationInMs,
-      ...startMetadata,
-    };
-
-    if (!result.ok) {
-      if (result.isAborted) {
+        observer?.onTextGenerationStarted?.(startEvent);
+      },
+      notifyObserverAboutAbort(observer, metadata) {
         const endEvent: TextGenerationFinishedEvent = {
           type: "text-generation-finished",
           status: "abort",
@@ -115,45 +73,38 @@ export abstract class AbstractTextGenerationModel<
           prompt,
         };
 
-        this.callEachObserver(run, (observer) => {
-          observer?.onTextGenerationFinished?.(endEvent);
-        });
-
-        throw new AbortError();
-      }
-
-      const endEvent: TextGenerationFinishedEvent = {
-        type: "text-generation-finished",
-        status: "failure",
-        metadata,
-        prompt,
-        error: result.error,
-      };
-
-      this.callEachObserver(run, (observer) => {
         observer?.onTextGenerationFinished?.(endEvent);
-      });
+      },
+      notifyObserverAboutError(observer, error, metadata) {
+        const endEvent: TextGenerationFinishedEvent = {
+          type: "text-generation-finished",
+          status: "failure",
+          metadata,
+          prompt,
+          error,
+        };
 
-      throw result.error;
-    }
+        observer?.onTextGenerationFinished?.(endEvent);
+      },
+      notifyObserverAboutFinish(observer, output, metadata) {
+        const endEvent: TextGenerationFinishedEvent = {
+          type: "text-generation-finished",
+          status: "success",
+          metadata,
+          prompt,
+          generatedText: output,
+        };
 
-    const extractedText = this.shouldTrimOutput
-      ? this.extractText(result.output).trim()
-      : this.extractText(result.output);
-
-    const endEvent: TextGenerationFinishedEvent = {
-      type: "text-generation-finished",
-      status: "success",
-      metadata,
-      prompt,
-      generatedText: extractedText,
-    };
-
-    this.callEachObserver(run, (observer) => {
-      observer?.onTextGenerationFinished?.(endEvent);
+        observer?.onTextGenerationFinished?.(endEvent);
+      },
+      errorHandler: this.uncaughtErrorHandler,
+      generateResponse: (options) => this.generateResponse(prompt, options),
+      extractOutputValue(model, result) {
+        return model.shouldTrimOutput
+          ? model.extractText(result).trim()
+          : model.extractText(result);
+      },
     });
-
-    return extractedText;
   }
 
   generateTextAsFunction<INPUT>(
