@@ -1,7 +1,7 @@
 import {
   ModelCallFinishedEventMetadata,
   ModelCallStartedEventMetadata,
-} from "model/ModelCallObserver.js";
+} from "model/ModelCallEvent.js";
 
 export type ImageGenerationStartedEvent = {
   type: "image-generation-started";

@@ -1,9 +1,9 @@
 import { ErrorHandler } from "../util/ErrorHandler.js";
 import {
   ModelCallFinishedEvent,
-  ModelCallObserver,
   ModelCallStartedEvent,
-} from "./ModelCallObserver.js";
+} from "./ModelCallEvent.js";
+import { ModelCallObserver } from "./ModelCallObserver.js";
 
 export class ModelCallEventSource {
   readonly observers: ModelCallObserver[];

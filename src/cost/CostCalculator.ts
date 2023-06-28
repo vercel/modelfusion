@@ -1,6 +1,6 @@
-import { ModelCallFinishedEvent } from "../model/ModelCallObserver.js";
 import { Cost } from "./Cost.js";
 import { ProviderCostCalculator } from "./ProviderCostCalculator.js";
+import { SuccessfulModelCall } from "./SuccessfulModelCall.js";
 
 export class CostCalculator {
   readonly providerCostCalculators: ProviderCostCalculator[];
@@ -13,35 +13,29 @@ export class CostCalculator {
     this.providerCostCalculators = providerCostCalculators;
   }
 
-  async calculateCostInMillicent(
-    events: ModelCallFinishedEvent[]
-  ): Promise<Cost> {
+  async calculateCost(calls: SuccessfulModelCall[]): Promise<Cost> {
     let costInMillicent = 0;
-    const eventsWithUnknownCost: ModelCallFinishedEvent[] = [];
+    const callsWithUnknownCost: SuccessfulModelCall[] = [];
 
-    for (const event of events) {
-      if (event.status !== "success") {
-        continue;
-      }
-
-      const model = event.metadata.model;
+    for (const call of calls) {
+      const model = call.model;
       const providerCostCalculator = this.providerCostCalculators.find(
         (providerCostCalculator) =>
           providerCostCalculator.provider === model.provider
       );
 
       if (!providerCostCalculator) {
-        eventsWithUnknownCost.push(event);
+        callsWithUnknownCost.push(call);
         continue;
       }
 
       const cost = await providerCostCalculator.calculateCostInMillicent({
         model: model.modelName,
-        event,
+        call,
       });
 
       if (cost === null) {
-        eventsWithUnknownCost.push(event);
+        callsWithUnknownCost.push(call);
         continue;
       }
 
@@ -51,8 +45,8 @@ export class CostCalculator {
     return Promise.resolve(
       new Cost({
         costInMillicent,
-        hasUnknownCost: eventsWithUnknownCost.length > 0,
-        eventsWithUnknownCost,
+        hasUnknownCost: callsWithUnknownCost.length > 0,
+        callsWithUnknownCost,
       })
     );
   }

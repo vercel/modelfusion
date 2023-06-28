@@ -1,5 +1,11 @@
-import { ModelCallFinishedEvent } from "../model/ModelCallObserver.js";
+import { ModelInformation } from "../model/ModelInformation.js";
 
-export type SuccessfulModelCall = ModelCallFinishedEvent & {
-  status: "success";
+export type SuccessfulModelCall = {
+  type:
+    | "image-generation"
+    | "text-generation"
+    | "text-embedding"
+    | "transcription";
+  model: ModelInformation;
+  response: unknown;
 };

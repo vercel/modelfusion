@@ -1,11 +1,7 @@
+import { CostCalculator, DefaultRun, OpenAICostCalculator } from "ai-utils.js";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import { createTweetFromPdf } from "./createTweetFromPdf";
-import {
-  CostCalculator,
-  ModelCallFinishedEvent,
-  OpenAICostCalculator,
-} from "ai-utils.js";
 
 dotenv.config();
 
@@ -26,53 +22,48 @@ if (!openAiApiKey) {
   throw new Error("OPENAI_API_KEY is not set");
 }
 
-const modelCalls: ModelCallFinishedEvent[] = [];
+const run = new DefaultRun({
+  costCalculator: new CostCalculator({
+    providerCostCalculators: [new OpenAICostCalculator()],
+  }),
+  observers: [
+    {
+      onModelCallStarted(event) {
+        if (event.type === "text-generation-started") {
+          console.log(
+            `Generate text ${event.metadata.functionId ?? "unknown"} started.`
+          );
+        } else if (event.type === "text-embedding-started") {
+          console.log(
+            `Embed text ${event.metadata.functionId ?? "unknown"} started.`
+          );
+        }
+      },
+
+      onModelCallFinished(event) {
+        if (event.type === "text-generation-finished") {
+          console.log(
+            `Generate text ${event.metadata.functionId ?? "unknown"} finished.`
+          );
+        } else if (event.type === "text-embedding-finished") {
+          console.log(
+            `Embed text ${event.metadata.functionId ?? "unknown"} finished.`
+          );
+        }
+      },
+    },
+  ],
+});
 
 createTweetFromPdf({
   topic,
   pdfPath: file,
   exampleTweetIndexPath: examples,
   openAiApiKey,
-  run: {
-    observers: [
-      {
-        onModelCallStarted(event) {
-          if (event.type === "text-generation-started") {
-            console.log(
-              `Generate text ${event.metadata.functionId ?? "unknown"} started.`
-            );
-          } else if (event.type === "text-embedding-started") {
-            console.log(
-              `Embed text ${event.metadata.functionId ?? "unknown"} started.`
-            );
-          }
-        },
-
-        onModelCallFinished(event) {
-          modelCalls.push(event);
-
-          if (event.type === "text-generation-finished") {
-            console.log(
-              `Generate text ${
-                event.metadata.functionId ?? "unknown"
-              } finished.`
-            );
-          } else if (event.type === "text-embedding-finished") {
-            console.log(
-              `Embed text ${event.metadata.functionId ?? "unknown"} finished.`
-            );
-          }
-        },
-      },
-    ],
-  },
+  run,
 })
   .then(async (result) => {
-    const costCalculator = new CostCalculator({
-      providerCostCalculators: [new OpenAICostCalculator()],
-    });
-
-    const cost = await costCalculator.calculateCostInMillicent(modelCalls);
+    const cost = await run.calculateCost();
 
     console.log();
     console.log(result);

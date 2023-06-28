@@ -1,22 +1,22 @@
-import { ModelCallFinishedEvent } from "../model/ModelCallObserver.js";
+import { SuccessfulModelCall } from "./SuccessfulModelCall.js";
 
 export class Cost {
   readonly costInMillicent: number;
   readonly hasUnknownCost: boolean;
-  readonly eventsWithUnknownCost: ModelCallFinishedEvent[];
+  readonly callsWithUnknownCost: SuccessfulModelCall[];
 
   constructor({
     costInMillicent,
     hasUnknownCost,
-    eventsWithUnknownCost,
+    callsWithUnknownCost,
   }: {
     costInMillicent: number;
     hasUnknownCost: boolean;
-    eventsWithUnknownCost: ModelCallFinishedEvent[];
+    callsWithUnknownCost: SuccessfulModelCall[];
   }) {
     this.costInMillicent = costInMillicent;
     this.hasUnknownCost = hasUnknownCost;
-    this.eventsWithUnknownCost = eventsWithUnknownCost;
+    this.callsWithUnknownCost = callsWithUnknownCost;
   }
 
   get costInCent(): number {

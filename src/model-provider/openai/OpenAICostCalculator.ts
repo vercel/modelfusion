@@ -16,32 +16,32 @@ export class OpenAICostCalculator implements ProviderCostCalculator {
 
   async calculateCostInMillicent({
     model,
-    event,
+    call,
   }: {
     model: string | null;
-    event: SuccessfulModelCall;
+    call: SuccessfulModelCall;
   }): Promise<number | null> {
     if (model == null) {
       return null;
     }
 
-    const type = event.type;
+    const type = call.type;
     switch (type) {
-      case "text-generation-finished": {
+      case "text-generation": {
         if (isOpenAIChatModel(model)) {
           return calculateOpenAIChatCostInMillicent({
             model,
-            output: event.response as OpenAIChatResponse,
+            response: call.response as OpenAIChatResponse,
           });
         }
         break;
       }
 
-      case "text-embedding-finished": {
+      case "text-embedding": {
         if (isOpenAIEmbeddingModel(model)) {
           return calculateOpenAIEmbeddingCostInMillicent({
             model,
-            output: event.response as OpenAITextEmbeddingResponse[],
+            responses: call.response as OpenAITextEmbeddingResponse[],
           });
         }
         break;

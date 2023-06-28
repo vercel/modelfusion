@@ -44,14 +44,14 @@ export interface OpenAITextEmbeddingModelSettings
 
 export const calculateOpenAIEmbeddingCostInMillicent = ({
   model,
-  output,
+  responses,
 }: {
   model: OpenAITextEmbeddingModelType;
-  output: OpenAITextEmbeddingResponse[];
+  responses: OpenAITextEmbeddingResponse[];
 }): number => {
   let amountInMilliseconds = 0;
 
-  for (const response of output) {
+  for (const response of responses) {
     amountInMilliseconds +=
       response.usage.total_tokens *
       OPENAI_TEXT_EMBEDDING_MODELS[model].tokenCostInMillicent;

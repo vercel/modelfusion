@@ -8,6 +8,6 @@ export interface ProviderCostCalculator {
    */
   calculateCostInMillicent(options: {
     model: string | null;
-    event: SuccessfulModelCall;
+    call: SuccessfulModelCall;
   }): PromiseLike<number | null>;
 }

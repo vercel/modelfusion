@@ -1,4 +1,4 @@
-import { ModelInformation } from "../run/ModelInformation.js";
+import { ModelInformation } from "./ModelInformation.js";
 import { ModelCallObserver } from "./ModelCallObserver.js";
 
 export interface ModelSettings {

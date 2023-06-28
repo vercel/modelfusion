@@ -119,14 +119,14 @@ export interface OpenAIChatSettings
 
 export const calculateOpenAIChatCostInMillicent = ({
   model,
-  output,
+  response,
 }: {
   model: OpenAIChatModelType;
-  output: OpenAIChatResponse;
+  response: OpenAIChatResponse;
 }): number =>
-  output.usage.prompt_tokens *
+  response.usage.prompt_tokens *
     OPENAI_CHAT_MODELS[model].promptTokenCostInMillicent +
-  output.usage.completion_tokens *
+  response.usage.completion_tokens *
     OPENAI_CHAT_MODELS[model].completionTokenCostInMillicent;
 
 /**

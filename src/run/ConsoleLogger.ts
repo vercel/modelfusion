@@ -1,8 +1,8 @@
 import {
   ModelCallFinishedEvent,
-  ModelCallObserver,
   ModelCallStartedEvent,
-} from "../model/ModelCallObserver.js";
+} from "../model/ModelCallEvent.js";
+import { ModelCallObserver } from "../model/ModelCallObserver.js";
 
 export class ConsoleLogger implements ModelCallObserver {
   onModelCallStarted(event: ModelCallStartedEvent) {

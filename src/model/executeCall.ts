@@ -10,7 +10,7 @@ import {
   ModelCallFinishedEventMetadata,
   ModelCallStartedEvent,
   ModelCallStartedEventMetadata,
-} from "./ModelCallObserver.js";
+} from "./ModelCallEvent.js";
 
 export async function executeCall<
   SETTINGS extends ModelSettings,
