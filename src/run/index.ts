@@ -1,4 +1,4 @@
-export * from "./ConsoleObserver.js";
+export * from "./ConsoleLogger.js";
 export * from "./IdMetadata.js";
 export * from "./ModelInformation.js";
 export * from "./PromptTemplate.js";
