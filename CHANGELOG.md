@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.18 - 2023-06-28
+
+### New
+
+- Cost calculation for Open AI text generation, chat and embedding models.
+
+### Changed
+
+- Renamed RunContext to Run. Introduced DefaultRun.
+- Changed events and observers.
+
 ## 0.0.17 - 2023-06-14
 
 ### New
