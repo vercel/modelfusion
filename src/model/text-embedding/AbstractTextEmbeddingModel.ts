@@ -72,28 +72,32 @@ export abstract class AbstractTextEmbeddingModel<
         }
         return embeddings;
       },
-      getStartEvent: (metadata) => ({
+      getStartEvent: (metadata, settings) => ({
         type: "text-embedding-started",
         metadata,
+        settings,
         texts,
       }),
-      getAbortEvent: (metadata) => ({
+      getAbortEvent: (metadata, settings) => ({
         type: "text-embedding-finished",
         status: "abort",
         metadata,
+        settings,
         texts,
       }),
-      getFailureEvent: (metadata, error) => ({
+      getFailureEvent: (metadata, settings, error) => ({
         type: "text-embedding-finished",
         status: "failure",
         metadata,
+        settings,
         error,
         texts,
       }),
-      getSuccessEvent: (metadata, response, output) => ({
+      getSuccessEvent: (metadata, settings, response, output) => ({
         type: "text-embedding-finished",
         status: "success",
         metadata,
+        settings,
         texts,
         response,
         generatedEmbeddings: output,

@@ -64,6 +64,7 @@ export class DefaultRun implements Run {
       .map(
         (event): SuccessfulModelCall => ({
           model: event.metadata.model,
+          settings: event.settings,
           response: event.response,
           type: eventTypeToCostType[event.type],
         })

@@ -1,6 +1,10 @@
 import { ProviderCostCalculator } from "../../cost/ProviderCostCalculator.js";
 import { SuccessfulModelCall } from "../../cost/SuccessfulModelCall.js";
 import {
+  OpenAIImageGenerationSettings,
+  calculateOpenAIImageGenerationCostInMillcent,
+} from "./OpenAIImageGenerationModel.js";
+import {
   OpenAITextEmbeddingResponse,
   calculateOpenAIEmbeddingCostInMillicent,
   isOpenAIEmbeddingModel,
@@ -26,13 +30,33 @@ export class OpenAICostCalculator implements ProviderCostCalculator {
     model: string | null;
     call: SuccessfulModelCall;
   }): Promise<number | null> {
-    if (model == null) {
-      return null;
-    }
-
     const type = call.type;
     switch (type) {
+      case "image-generation": {
+        return calculateOpenAIImageGenerationCostInMillcent({
+          settings: call.settings as OpenAIImageGenerationSettings,
+        });
+      }
+
+      case "text-embedding": {
+        if (model == null) {
+          return null;
+        }
+
+        if (isOpenAIEmbeddingModel(model)) {
+          return calculateOpenAIEmbeddingCostInMillicent({
+            model,
+            responses: call.response as OpenAITextEmbeddingResponse[],
+          });
+        }
+        break;
+      }
+
       case "text-generation": {
+        if (model == null) {
+          return null;
+        }
+
         if (isOpenAIChatModel(model)) {
           return calculateOpenAIChatCostInMillicent({
             model,
@@ -47,16 +71,6 @@ export class OpenAICostCalculator implements ProviderCostCalculator {
           });
         }
 
-        break;
-      }
-
-      case "text-embedding": {
-        if (isOpenAIEmbeddingModel(model)) {
-          return calculateOpenAIEmbeddingCostInMillicent({
-            model,
-            responses: call.response as OpenAITextEmbeddingResponse[],
-          });
-        }
         break;
       }
     }

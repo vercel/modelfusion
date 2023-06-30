@@ -7,5 +7,6 @@ export type SuccessfulModelCall = {
     | "text-embedding"
     | "transcription";
   model: ModelInformation;
+  settings: unknown;
   response: unknown;
 };

@@ -36,17 +36,21 @@ export async function executeCall<
     options: FunctionOptions<SETTINGS>
   ) => PromiseLike<OUTPUT>;
   getStartEvent: (
-    metadata: ModelCallStartedEventMetadata
+    metadata: ModelCallStartedEventMetadata,
+    settings: SETTINGS
   ) => ModelCallStartedEvent;
   getAbortEvent: (
-    metadata: ModelCallFinishedEventMetadata
+    metadata: ModelCallFinishedEventMetadata,
+    settings: SETTINGS
   ) => ModelCallFinishedEvent;
   getFailureEvent: (
     metadata: ModelCallFinishedEventMetadata,
+    settings: SETTINGS,
     error: unknown
   ) => ModelCallFinishedEvent;
   getSuccessEvent: (
     metadata: ModelCallFinishedEventMetadata,
+    settings: SETTINGS,
     response: RESPONSE,
     output: OUTPUT
   ) => ModelCallFinishedEvent;
@@ -64,9 +68,10 @@ export async function executeCall<
   }
 
   const run = options?.run;
+  const settings = model.settings;
 
   const eventSource = new ModelCallEventSource({
-    observers: [...(model.settings.observers ?? []), ...(run?.observers ?? [])],
+    observers: [...(settings.observers ?? []), ...(run?.observers ?? [])],
     errorHandler,
   });
 
@@ -87,12 +92,12 @@ export async function executeCall<
     startEpochSeconds,
   };
 
-  eventSource.notifyModelCallStarted(getStartEvent(startMetadata));
+  eventSource.notifyModelCallStarted(getStartEvent(startMetadata, settings));
 
   const result = await runSafe(() =>
     generateResponse({
       functionId: options?.functionId,
-      settings: model.settings, // options.setting is null here because of the initial guard
+      settings: settings, // options.setting is null here because of the initial guard
       run,
     })
   );
@@ -106,12 +111,14 @@ export async function executeCall<
 
   if (!result.ok) {
     if (result.isAborted) {
-      eventSource.notifyModelCallFinished(getAbortEvent(finishMetadata));
+      eventSource.notifyModelCallFinished(
+        getAbortEvent(finishMetadata, settings)
+      );
       throw new AbortError();
     }
 
     eventSource.notifyModelCallFinished(
-      getFailureEvent(finishMetadata, result.error)
+      getFailureEvent(finishMetadata, settings, result.error)
     );
     throw result.error;
   }
@@ -120,7 +127,7 @@ export async function executeCall<
   const output = extractOutputValue(response);
 
   eventSource.notifyModelCallFinished(
-    getSuccessEvent(finishMetadata, response, output)
+    getSuccessEvent(finishMetadata, settings, response, output)
   );
 
   return output;

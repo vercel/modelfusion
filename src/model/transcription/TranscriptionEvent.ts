@@ -6,12 +6,14 @@ import {
 export type TranscriptionStartedEvent = {
   type: "transcription-started";
   metadata: ModelCallStartedEventMetadata;
+  settings: unknown;
   data: unknown;
 };
 
 export type TranscriptionFinishedEvent = {
   type: "transcription-finished";
   metadata: ModelCallFinishedEventMetadata;
+  settings: unknown;
   data: unknown;
 } & (
   | {

@@ -54,28 +54,32 @@ export abstract class AbstractTextGenerationModel<
           ? this.extractText(result).trim()
           : this.extractText(result);
       },
-      getStartEvent: (metadata) => ({
+      getStartEvent: (metadata, settings) => ({
         type: "text-generation-started",
         metadata,
+        settings,
         prompt,
       }),
-      getAbortEvent: (metadata) => ({
+      getAbortEvent: (metadata, settings) => ({
         type: "text-generation-finished",
         status: "abort",
         metadata,
+        settings,
         prompt,
       }),
-      getFailureEvent: (metadata, error) => ({
+      getFailureEvent: (metadata, settings, error) => ({
         type: "text-generation-finished",
         status: "failure",
         metadata,
+        settings,
         prompt,
         error,
       }),
-      getSuccessEvent: (metadata, response, output) => ({
+      getSuccessEvent: (metadata, settings, response, output) => ({
         type: "text-generation-finished",
         status: "success",
         metadata,
+        settings,
         prompt,
         response,
         generatedText: output,

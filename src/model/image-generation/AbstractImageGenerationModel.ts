@@ -46,28 +46,32 @@ export abstract class AbstractImageGenerationModel<
       model: this,
       options,
       callModel: (model, options) => model.generateImage(prompt, options),
-      getStartEvent: (metadata) => ({
+      getStartEvent: (metadata, settings) => ({
         type: "image-generation-started",
         metadata,
+        settings,
         prompt,
       }),
-      getAbortEvent: (metadata) => ({
+      getAbortEvent: (metadata, settings) => ({
         type: "image-generation-finished",
         status: "abort",
         metadata,
+        settings,
         prompt,
       }),
-      getFailureEvent: (metadata, error) => ({
+      getFailureEvent: (metadata, settings, error) => ({
         type: "image-generation-finished",
         status: "failure",
         metadata,
+        settings,
         prompt,
         error,
       }),
-      getSuccessEvent: (metadata, response, output) => ({
+      getSuccessEvent: (metadata, settings, response, output) => ({
         type: "image-generation-finished",
         status: "success",
         metadata,
+        settings,
         prompt,
         response,
         generatedImage: output,

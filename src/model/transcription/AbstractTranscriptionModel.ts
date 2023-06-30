@@ -48,28 +48,32 @@ export abstract class AbstractTranscriptionModel<
       callModel: (model, options) => model.transcribe(data, options),
       generateResponse: (options) => this.generateResponse(data, options),
       extractOutputValue: this.extractTranscription,
-      getStartEvent: (metadata) => ({
+      getStartEvent: (metadata, settings) => ({
         type: "transcription-started",
         metadata,
+        settings,
         data,
       }),
-      getAbortEvent: (metadata) => ({
+      getAbortEvent: (metadata, settings) => ({
         type: "transcription-finished",
         status: "abort",
+        settings,
         metadata,
         data,
       }),
-      getFailureEvent: (metadata, error) => ({
+      getFailureEvent: (metadata, settings, error) => ({
         type: "transcription-finished",
         status: "failure",
         metadata,
+        settings,
         data,
         error,
       }),
-      getSuccessEvent: (metadata, response, output) => ({
+      getSuccessEvent: (metadata, settings, response, output) => ({
         type: "transcription-finished",
         status: "success",
         metadata,
+        settings,
         data,
         response,
         transcription: output,
