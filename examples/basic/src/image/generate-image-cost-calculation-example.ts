@@ -8,12 +8,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 (async () => {
-  const run = new DefaultRun({
-    costCalculators: [new OpenAICostCalculator()],
-  });
-
   const model = new OpenAIImageGenerationModel({
     size: "512x512",
+  });
+
+  const run = new DefaultRun({
+    costCalculators: [new OpenAICostCalculator()],
   });
 
   await model.generateImage(

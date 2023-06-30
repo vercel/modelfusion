@@ -14,7 +14,36 @@ import {
 import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
-export type OpenAITranscriptionModelType = "whisper-1";
+/**
+ * @see https://openai.com/pricing
+ */
+export const OPENAI_TRANSCRIPTION_MODELS = {
+  "whisper-1": {
+    costInMillicentPerSecond: 10, // = 600 / 60,
+  },
+};
+
+export type OpenAITranscriptionModelType =
+  keyof typeof OPENAI_TRANSCRIPTION_MODELS;
+
+export const calculateOpenAITranscriptionCostInMillicent = ({
+  model,
+  response,
+}: {
+  model: OpenAITranscriptionModelType;
+  response: OpenAITranscriptionVerboseJsonResponse;
+}): number | null => {
+  if (model !== "whisper-1") {
+    return null;
+  }
+
+  const durationInSeconds = response.duration;
+
+  return (
+    Math.ceil(durationInSeconds) *
+    OPENAI_TRANSCRIPTION_MODELS[model].costInMillicentPerSecond
+  );
+};
 
 export interface OpenAITranscriptionModelSettings
   extends TranscriptionModelSettings {

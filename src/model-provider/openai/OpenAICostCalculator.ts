@@ -15,6 +15,11 @@ import {
   isOpenAITextGenerationModel,
 } from "./OpenAITextGenerationModel.js";
 import {
+  OpenAITranscriptionModelType,
+  OpenAITranscriptionVerboseJsonResponse,
+  calculateOpenAITranscriptionCostInMillicent,
+} from "./OpenAITranscriptionModel.js";
+import {
   OpenAIChatResponse,
   calculateOpenAIChatCostInMillicent,
   isOpenAIChatModel,
@@ -72,6 +77,17 @@ export class OpenAICostCalculator implements ProviderCostCalculator {
         }
 
         break;
+      }
+
+      case "transcription": {
+        if (model == null) {
+          return null;
+        }
+
+        return calculateOpenAITranscriptionCostInMillicent({
+          model: model as OpenAITranscriptionModelType,
+          response: call.response as OpenAITranscriptionVerboseJsonResponse,
+        });
       }
     }
 
