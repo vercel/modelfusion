@@ -32,58 +32,58 @@ import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 export const OPENAI_CHAT_MODELS = {
   "gpt-4": {
     maxTokens: 8192,
-    promptTokenCostInMillicent: 3,
-    completionTokenCostInMillicent: 6,
+    promptTokenCostInMillicents: 3,
+    completionTokenCostInMillicents: 6,
   },
   "gpt-4-0314": {
     maxTokens: 8192,
-    promptTokenCostInMillicent: 3,
-    completionTokenCostInMillicent: 6,
+    promptTokenCostInMillicents: 3,
+    completionTokenCostInMillicents: 6,
   },
   "gpt-4-0613": {
     maxTokens: 8192,
-    promptTokenCostInMillicent: 3,
-    completionTokenCostInMillicent: 6,
+    promptTokenCostInMillicents: 3,
+    completionTokenCostInMillicents: 6,
   },
   "gpt-4-32k": {
     maxTokens: 32768,
-    promptTokenCostInMillicent: 6,
-    completionTokenCostInMillicent: 12,
+    promptTokenCostInMillicents: 6,
+    completionTokenCostInMillicents: 12,
   },
   "gpt-4-32k-0314": {
     maxTokens: 32768,
-    promptTokenCostInMillicent: 6,
-    completionTokenCostInMillicent: 12,
+    promptTokenCostInMillicents: 6,
+    completionTokenCostInMillicents: 12,
   },
   "gpt-4-32k-0613": {
     maxTokens: 32768,
-    promptTokenCostInMillicent: 6,
-    completionTokenCostInMillicent: 12,
+    promptTokenCostInMillicents: 6,
+    completionTokenCostInMillicents: 12,
   },
   "gpt-3.5-turbo": {
     maxTokens: 4096,
-    promptTokenCostInMillicent: 0.15,
-    completionTokenCostInMillicent: 0.2,
+    promptTokenCostInMillicents: 0.15,
+    completionTokenCostInMillicents: 0.2,
   },
   "gpt-3.5-turbo-0301": {
     maxTokens: 4096,
-    promptTokenCostInMillicent: 0.15,
-    completionTokenCostInMillicent: 0.2,
+    promptTokenCostInMillicents: 0.15,
+    completionTokenCostInMillicents: 0.2,
   },
   "gpt-3.5-turbo-0613": {
     maxTokens: 4096,
-    promptTokenCostInMillicent: 0.15,
-    completionTokenCostInMillicent: 0.2,
+    promptTokenCostInMillicents: 0.15,
+    completionTokenCostInMillicents: 0.2,
   },
   "gpt-3.5-turbo-16k": {
     maxTokens: 16384,
-    promptTokenCostInMillicent: 0.3,
-    completionTokenCostInMillicent: 0.4,
+    promptTokenCostInMillicents: 0.3,
+    completionTokenCostInMillicents: 0.4,
   },
   "gpt-3.5-turbo-16k-0613": {
     maxTokens: 16384,
-    promptTokenCostInMillicent: 0.3,
-    completionTokenCostInMillicent: 0.4,
+    promptTokenCostInMillicents: 0.3,
+    completionTokenCostInMillicents: 0.4,
   },
 };
 
@@ -93,7 +93,7 @@ export const isOpenAIChatModel = (
   model: string
 ): model is OpenAIChatModelType => model in OPENAI_CHAT_MODELS;
 
-export const calculateOpenAIChatCostInMillicent = ({
+export const calculateOpenAIChatCostInMillicents = ({
   model,
   response,
 }: {
@@ -101,9 +101,9 @@ export const calculateOpenAIChatCostInMillicent = ({
   response: OpenAIChatResponse;
 }): number =>
   response.usage.prompt_tokens *
-    OPENAI_CHAT_MODELS[model].promptTokenCostInMillicent +
+    OPENAI_CHAT_MODELS[model].promptTokenCostInMillicents +
   response.usage.completion_tokens *
-    OPENAI_CHAT_MODELS[model].completionTokenCostInMillicent;
+    OPENAI_CHAT_MODELS[model].completionTokenCostInMillicents;
 
 export interface OpenAIChatCallSettings {
   model: OpenAIChatModelType;

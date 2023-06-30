@@ -18,7 +18,7 @@ export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-ada-002": {
     maxTokens: 8192,
     embeddingDimensions: 1536,
-    tokenCostInMillicent: 0.01,
+    tokenCostInMillicents: 0.01,
   },
 };
 
@@ -30,7 +30,7 @@ export const isOpenAIEmbeddingModel = (
 ): model is OpenAITextEmbeddingModelType =>
   model in OPENAI_TEXT_EMBEDDING_MODELS;
 
-export const calculateOpenAIEmbeddingCostInMillicent = ({
+export const calculateOpenAIEmbeddingCostInMillicents = ({
   model,
   responses,
 }: {
@@ -42,7 +42,7 @@ export const calculateOpenAIEmbeddingCostInMillicent = ({
   for (const response of responses) {
     amountInMilliseconds +=
       response.usage.total_tokens *
-      OPENAI_TEXT_EMBEDDING_MODELS[model].tokenCostInMillicent;
+      OPENAI_TEXT_EMBEDDING_MODELS[model].tokenCostInMillicents;
   }
 
   return amountInMilliseconds;

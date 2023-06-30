@@ -25,43 +25,43 @@ import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandl
 export const OPENAI_TEXT_GENERATION_MODELS = {
   "text-davinci-003": {
     maxTokens: 4096,
-    tokenCostInMillicent: 2,
+    tokenCostInMillicents: 2,
   },
   "text-davinci-002": {
     maxTokens: 4096,
-    tokenCostInMillicent: 2,
+    tokenCostInMillicents: 2,
   },
   "code-davinci-002": {
     maxTokens: 8000,
-    tokenCostInMillicent: 2,
+    tokenCostInMillicents: 2,
   },
   davinci: {
     maxTokens: 2048,
-    tokenCostInMillicent: 2,
+    tokenCostInMillicents: 2,
   },
   "text-curie-001": {
     maxTokens: 2048,
-    tokenCostInMillicent: 0.2,
+    tokenCostInMillicents: 0.2,
   },
   curie: {
     maxTokens: 2048,
-    tokenCostInMillicent: 0.2,
+    tokenCostInMillicents: 0.2,
   },
   "text-babbage-001": {
     maxTokens: 2048,
-    tokenCostInMillicent: 0.05,
+    tokenCostInMillicents: 0.05,
   },
   babbage: {
     maxTokens: 2048,
-    tokenCostInMillicent: 0.05,
+    tokenCostInMillicents: 0.05,
   },
   "text-ada-001": {
     maxTokens: 2048,
-    tokenCostInMillicent: 0.04,
+    tokenCostInMillicents: 0.04,
   },
   ada: {
     maxTokens: 2048,
-    tokenCostInMillicent: 0.04,
+    tokenCostInMillicents: 0.04,
   },
 };
 
@@ -73,7 +73,7 @@ export const isOpenAITextGenerationModel = (
 ): model is OpenAITextGenerationModelType =>
   model in OPENAI_TEXT_GENERATION_MODELS;
 
-export const calculateOpenAITextGenerationCostInMillicent = ({
+export const calculateOpenAITextGenerationCostInMillicents = ({
   model,
   response,
 }: {
@@ -81,7 +81,7 @@ export const calculateOpenAITextGenerationCostInMillicent = ({
   response: OpenAITextGenerationResponse;
 }) =>
   response.usage.total_tokens *
-  OPENAI_TEXT_GENERATION_MODELS[model].tokenCostInMillicent;
+  OPENAI_TEXT_GENERATION_MODELS[model].tokenCostInMillicents;
 
 export interface OpenAITextGenerationModelSettings
   extends TextGenerationModelSettings {

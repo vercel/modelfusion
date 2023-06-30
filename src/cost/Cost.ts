@@ -1,26 +1,26 @@
 import { SuccessfulModelCall } from "./SuccessfulModelCall.js";
 
 export class Cost {
-  readonly costInMillicent: number;
+  readonly costInMillicents: number;
   readonly hasUnknownCost: boolean;
   readonly callsWithUnknownCost: SuccessfulModelCall[];
 
   constructor({
-    costInMillicent,
+    costInMillicents,
     hasUnknownCost,
     callsWithUnknownCost,
   }: {
-    costInMillicent: number;
+    costInMillicents: number;
     hasUnknownCost: boolean;
     callsWithUnknownCost: SuccessfulModelCall[];
   }) {
-    this.costInMillicent = costInMillicent;
+    this.costInMillicents = costInMillicents;
     this.hasUnknownCost = hasUnknownCost;
     this.callsWithUnknownCost = callsWithUnknownCost;
   }
 
   get costInCent(): number {
-    return this.costInMillicent / 1000;
+    return this.costInMillicents / 1000;
   }
 
   get costInDollar(): number {

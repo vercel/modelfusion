@@ -14,7 +14,7 @@ export class CostCalculator {
   }
 
   async calculateCost(calls: SuccessfulModelCall[]): Promise<Cost> {
-    let costInMillicent = 0;
+    let costInMillicents = 0;
     const callsWithUnknownCost: SuccessfulModelCall[] = [];
 
     for (const call of calls) {
@@ -29,7 +29,7 @@ export class CostCalculator {
         continue;
       }
 
-      const cost = await providerCostCalculator.calculateCostInMillicent({
+      const cost = await providerCostCalculator.calculateCostInMillicents({
         model: model.modelName,
         call,
       });
@@ -39,11 +39,11 @@ export class CostCalculator {
         continue;
       }
 
-      costInMillicent += cost;
+      costInMillicents += cost;
     }
 
     return new Cost({
-      costInMillicent,
+      costInMillicents,
       hasUnknownCost: callsWithUnknownCost.length > 0,
       callsWithUnknownCost,
     });

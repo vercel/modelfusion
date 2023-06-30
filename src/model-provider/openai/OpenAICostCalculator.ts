@@ -6,29 +6,29 @@ import {
 } from "./OpenAIImageGenerationModel.js";
 import {
   OpenAITextEmbeddingResponse,
-  calculateOpenAIEmbeddingCostInMillicent,
+  calculateOpenAIEmbeddingCostInMillicents,
   isOpenAIEmbeddingModel,
 } from "./OpenAITextEmbeddingModel.js";
 import {
   OpenAITextGenerationResponse,
-  calculateOpenAITextGenerationCostInMillicent,
+  calculateOpenAITextGenerationCostInMillicents,
   isOpenAITextGenerationModel,
 } from "./OpenAITextGenerationModel.js";
 import {
   OpenAITranscriptionModelType,
   OpenAITranscriptionVerboseJsonResponse,
-  calculateOpenAITranscriptionCostInMillicent,
+  calculateOpenAITranscriptionCostInMillicents,
 } from "./OpenAITranscriptionModel.js";
 import {
   OpenAIChatResponse,
-  calculateOpenAIChatCostInMillicent,
+  calculateOpenAIChatCostInMillicents,
   isOpenAIChatModel,
 } from "./chat/OpenAIChatModel.js";
 
 export class OpenAICostCalculator implements ProviderCostCalculator {
   readonly provider = "openai";
 
-  async calculateCostInMillicent({
+  async calculateCostInMillicents({
     model,
     call,
   }: {
@@ -49,7 +49,7 @@ export class OpenAICostCalculator implements ProviderCostCalculator {
         }
 
         if (isOpenAIEmbeddingModel(model)) {
-          return calculateOpenAIEmbeddingCostInMillicent({
+          return calculateOpenAIEmbeddingCostInMillicents({
             model,
             responses: call.response as OpenAITextEmbeddingResponse[],
           });
@@ -63,14 +63,14 @@ export class OpenAICostCalculator implements ProviderCostCalculator {
         }
 
         if (isOpenAIChatModel(model)) {
-          return calculateOpenAIChatCostInMillicent({
+          return calculateOpenAIChatCostInMillicents({
             model,
             response: call.response as OpenAIChatResponse,
           });
         }
 
         if (isOpenAITextGenerationModel(model)) {
-          return calculateOpenAITextGenerationCostInMillicent({
+          return calculateOpenAITextGenerationCostInMillicents({
             model,
             response: call.response as OpenAITextGenerationResponse,
           });
@@ -84,7 +84,7 @@ export class OpenAICostCalculator implements ProviderCostCalculator {
           return null;
         }
 
-        return calculateOpenAITranscriptionCostInMillicent({
+        return calculateOpenAITranscriptionCostInMillicents({
           model: model as OpenAITranscriptionModelType,
           response: call.response as OpenAITranscriptionVerboseJsonResponse,
         });

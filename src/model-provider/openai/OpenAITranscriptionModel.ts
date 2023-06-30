@@ -19,14 +19,14 @@ import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandl
  */
 export const OPENAI_TRANSCRIPTION_MODELS = {
   "whisper-1": {
-    costInMillicentPerSecond: 10, // = 600 / 60,
+    costInMillicentsPerSecond: 10, // = 600 / 60,
   },
 };
 
 export type OpenAITranscriptionModelType =
   keyof typeof OPENAI_TRANSCRIPTION_MODELS;
 
-export const calculateOpenAITranscriptionCostInMillicent = ({
+export const calculateOpenAITranscriptionCostInMillicents = ({
   model,
   response,
 }: {
@@ -41,7 +41,7 @@ export const calculateOpenAITranscriptionCostInMillicent = ({
 
   return (
     Math.ceil(durationInSeconds) *
-    OPENAI_TRANSCRIPTION_MODELS[model].costInMillicentPerSecond
+    OPENAI_TRANSCRIPTION_MODELS[model].costInMillicentsPerSecond
   );
 };
 

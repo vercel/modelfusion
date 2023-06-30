@@ -19,7 +19,7 @@ export interface OpenAIImageGenerationCallSettings {
 /**
  * @see https://openai.com/pricing
  */
-const sizeToCostInMillicent = {
+const sizeToCostInMillicents = {
   "1024x1024": 2000,
   "512x512": 1800,
   "256x256": 1600,
@@ -30,7 +30,7 @@ export const calculateOpenAIImageGenerationCostInMillcent = ({
 }: {
   settings: OpenAIImageGenerationSettings;
 }): number =>
-  (settings.n ?? 1) * sizeToCostInMillicent[settings.size ?? "1024x1024"];
+  (settings.n ?? 1) * sizeToCostInMillicents[settings.size ?? "1024x1024"];
 
 export interface OpenAIImageGenerationSettings
   extends ImageGenerationModelSettings,

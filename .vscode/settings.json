@@ -9,6 +9,7 @@
     "huggingface",
     "lgrammel",
     "logit",
+    "Millicents",
     "openai",
     "reprioritize",
     "reprioritizing",
