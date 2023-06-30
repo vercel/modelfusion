@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.19 - 2023-06-30
+
+### New
+
+- Cost calculation for OpenAI image generation and transcription models.
+
 ## 0.0.18 - 2023-06-28
 
 ### New
