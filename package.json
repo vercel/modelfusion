@@ -67,7 +67,7 @@
     "@types/node": "20.3.2",
     "copyfiles": "2.4.1",
     "rimraf": "5.0.1",
-    "typescript": "5.1.5"
+    "typescript": "5.1.6"
   },
   "peerDependencies": {
     "@pinecone-database/pinecone": "*"
