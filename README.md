@@ -162,13 +162,14 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 - Text splitting
 - [Vector DBs](https://ai-utils.dev/concept/vector-db)
 - [Run abstraction](https://ai-utils.dev/concept/run/)
-  - for progress reporting and abort signals
+  - Abort signals
+  - Logging
+  - Cost calculation
 - Utilities
   - [Retry strategies](https://ai-utils.dev/concept/util/retry)
   - [Throttling strategies](https://ai-utils.dev/concept/util/throttle)
   - Error handling
   - Logging
-  - Cost calculation
 
 ## Integrations
 
