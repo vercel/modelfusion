@@ -169,7 +169,6 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
   - [Retry strategies](https://ai-utils.dev/concept/util/retry)
   - [Throttling strategies](https://ai-utils.dev/concept/util/throttle)
   - Error handling
-  - Logging
 
 ## Integrations
 
