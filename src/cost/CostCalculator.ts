@@ -29,10 +29,7 @@ export class CostCalculator {
         continue;
       }
 
-      const cost = await providerCostCalculator.calculateCostInMillicents({
-        model: model.modelName,
-        call,
-      });
+      const cost = await providerCostCalculator.calculateCostInMillicents(call);
 
       if (cost === null) {
         callsWithUnknownCost.push(call);
