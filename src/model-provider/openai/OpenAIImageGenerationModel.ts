@@ -25,7 +25,7 @@ const sizeToCostInMillicents = {
   "256x256": 1600,
 };
 
-export const calculateOpenAIImageGenerationCostInMillcent = ({
+export const calculateOpenAIImageGenerationCostInMillicents = ({
   settings,
 }: {
   settings: OpenAIImageGenerationSettings;

@@ -6,8 +6,7 @@ export interface ProviderCostCalculator {
   /**
    * @return null if the cost is unknown, otherwise the cost in Millicents (0 if free)
    */
-  calculateCostInMillicents(options: {
-    model: string | null;
-    call: SuccessfulModelCall;
-  }): PromiseLike<number | null>;
+  calculateCostInMillicents(
+    call: SuccessfulModelCall
+  ): PromiseLike<number | null>;
 }

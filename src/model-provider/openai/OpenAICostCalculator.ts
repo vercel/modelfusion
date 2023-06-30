@@ -2,7 +2,7 @@ import { ProviderCostCalculator } from "../../cost/ProviderCostCalculator.js";
 import { SuccessfulModelCall } from "../../cost/SuccessfulModelCall.js";
 import {
   OpenAIImageGenerationSettings,
-  calculateOpenAIImageGenerationCostInMillcent,
+  calculateOpenAIImageGenerationCostInMillicents,
 } from "./OpenAIImageGenerationModel.js";
 import {
   OpenAITextEmbeddingResponse,
@@ -28,17 +28,15 @@ import {
 export class OpenAICostCalculator implements ProviderCostCalculator {
   readonly provider = "openai";
 
-  async calculateCostInMillicents({
-    model,
-    call,
-  }: {
-    model: string | null;
-    call: SuccessfulModelCall;
-  }): Promise<number | null> {
+  async calculateCostInMillicents(
+    call: SuccessfulModelCall
+  ): Promise<number | null> {
     const type = call.type;
+    const model = call.model.modelName;
+
     switch (type) {
       case "image-generation": {
-        return calculateOpenAIImageGenerationCostInMillcent({
+        return calculateOpenAIImageGenerationCostInMillicents({
           settings: call.settings as OpenAIImageGenerationSettings,
         });
       }
