@@ -1,4 +1,4 @@
-import { CostCalculator, DefaultRun, OpenAICostCalculator } from "ai-utils.js";
+import { DefaultRun, OpenAICostCalculator } from "ai-utils.js";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import { createTweetFromPdf } from "./createTweetFromPdf";
@@ -23,9 +23,7 @@ if (!openAiApiKey) {
 }
 
 const run = new DefaultRun({
-  costCalculator: new CostCalculator({
-    providerCostCalculators: [new OpenAICostCalculator()],
-  }),
+  costCalculators: [new OpenAICostCalculator()],
   observers: [
     {
       onModelCallStarted(event) {

@@ -7,6 +7,7 @@ import {
 } from "../model/ModelCallEvent.js";
 import { ModelCallObserver } from "../model/ModelCallObserver.js";
 import { Run } from "./Run.js";
+import { ProviderCostCalculator } from "index.js";
 
 export class DefaultRun implements Run {
   readonly runId: string;
@@ -27,20 +28,22 @@ export class DefaultRun implements Run {
     userId,
     abortSignal,
     observers,
-    costCalculator = new CostCalculator({ providerCostCalculators: [] }),
+    costCalculators = [],
   }: {
     runId?: string;
     sessionId?: string;
     userId?: string;
     abortSignal?: AbortSignal;
     observers?: ModelCallObserver[];
-    costCalculator?: CostCalculator;
+    costCalculators?: ProviderCostCalculator[];
   } = {}) {
     this.runId = runId;
     this.sessionId = sessionId;
     this.userId = userId;
     this.abortSignal = abortSignal;
-    this.costCalculator = costCalculator;
+    this.costCalculator = new CostCalculator({
+      providerCostCalculators: costCalculators,
+    });
 
     this.observers = [
       {

@@ -1,5 +1,4 @@
 import {
-  CostCalculator,
   DefaultRun,
   OpenAICostCalculator,
   OpenAIImageGenerationModel,
@@ -10,9 +9,7 @@ dotenv.config();
 
 (async () => {
   const run = new DefaultRun({
-    costCalculator: new CostCalculator({
-      providerCostCalculators: [new OpenAICostCalculator()],
-    }),
+    costCalculators: [new OpenAICostCalculator()],
   });
 
   const model = new OpenAIImageGenerationModel({
