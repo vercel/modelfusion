@@ -163,8 +163,8 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 - [Vector DBs](https://ai-utils.dev/concept/vector-db)
 - [Run abstraction](https://ai-utils.dev/concept/run/)
   - Abort signals
-  - Logging
-  - Cost calculation
+  - Model call recording
+  - [Cost calculation](https://ai-utils.dev/concept/run/cost-calculation)
 - Utilities
   - [Retry strategies](https://ai-utils.dev/concept/util/retry)
   - [Throttling strategies](https://ai-utils.dev/concept/util/throttle)
