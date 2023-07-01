@@ -1,4 +1,4 @@
-import { ProviderCostCalculator } from "../../cost/ProviderCostCalculator.js";
+import { CostCalculator } from "../../cost/CostCalculator.js";
 import { SuccessfulModelCall } from "../../cost/SuccessfulModelCall.js";
 import {
   OpenAIImageGenerationSettings,
@@ -25,7 +25,7 @@ import {
   isOpenAIChatModel,
 } from "./chat/OpenAIChatModel.js";
 
-export class OpenAICostCalculator implements ProviderCostCalculator {
+export class OpenAICostCalculator implements CostCalculator {
   readonly provider = "openai";
 
   async calculateCostInMillicents(
