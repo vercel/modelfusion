@@ -6,6 +6,8 @@ sidebar_position: 3
 
 Calls to generative models such as OpenAI's API can get expensive quickly. To keep track of your costs and to enable you to understand them, `ai-utils.js` contains a cost calculation framework. You can use it to log the costs of [runs](/concept/run/) or even implement budgeting that automatically aborts a run when it exceeds a certain cost.
 
+> ⚠️ Cost calculation is currently only supported for OpenAI models. It depends on the current pricing of the API. The cost calculation can be inaccurate when the pricing changes or when there are e.g. aborted calls.
+
 ### Example
 
 ```ts
