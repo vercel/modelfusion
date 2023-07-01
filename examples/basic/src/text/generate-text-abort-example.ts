@@ -15,8 +15,7 @@ dotenv.config();
 
     const text = await model.generateText(
       "Write a short story about a robot learning to love:\n\n",
-      null,
-      { abortSignal: abortController.signal }
+      { run: { abortSignal: abortController.signal } }
     );
 
     console.log(text);
