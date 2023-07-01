@@ -3,6 +3,7 @@ export * from "./Model.js";
 export * from "./ModelCallEvent.js";
 export * from "./ModelCallObserver.js";
 export * from "./ModelInformation.js";
+export * from "./SuccessfulModelCall.js";
 export * from "./image-generation/ImageGenerationEvent.js";
 export * from "./image-generation/ImageGenerationModel.js";
 export * from "./text-embedding/TextEmbeddingEvent.js";

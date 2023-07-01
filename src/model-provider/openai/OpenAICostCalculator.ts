@@ -1,5 +1,5 @@
 import { CostCalculator } from "../../cost/CostCalculator.js";
-import { SuccessfulModelCall } from "../../cost/SuccessfulModelCall.js";
+import { SuccessfulModelCall } from "../../model/SuccessfulModelCall.js";
 import {
   OpenAIImageGenerationSettings,
   calculateOpenAIImageGenerationCostInMillicents,
