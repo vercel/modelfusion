@@ -1,4 +1,4 @@
-import { OpenAITextGenerationModel } from "ai-utils.js";
+import { AbortError, OpenAITextGenerationModel } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -9,17 +9,20 @@ dotenv.config();
     maxTokens: 500,
   });
 
-  try {
-    const abortController = new AbortController();
-    abortController.abort(); // this would happen in parallel to generateStory
+  const abortController = new AbortController();
 
-    const text = await model.generateText(
-      "Write a short story about a robot learning to love:\n\n",
-      { run: { abortSignal: abortController.signal } }
-    );
+  model
+    .generateText("Write a short story about a robot learning to love:\n\n", {
+      run: { abortSignal: abortController.signal },
+    })
+    .then((text) => {
+      console.log(text);
+    })
+    .catch((error) => {
+      if (error instanceof AbortError) {
+        console.log("the run was aborted");
+      }
+    });
 
-    console.log(text);
-  } catch (error) {
-    console.log(error);
-  }
+  abortController.abort(); // aborts the running generate text call
 })();
