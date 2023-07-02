@@ -97,7 +97,7 @@ export async function executeCall<
   const result = await runSafe(() =>
     generateResponse({
       functionId: options?.functionId,
-      settings: settings, // options.setting is null here because of the initial guard
+      settings, // options.setting is null here because of the initial guard
       run,
     })
   );

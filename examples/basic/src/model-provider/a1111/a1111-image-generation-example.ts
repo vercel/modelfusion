@@ -6,12 +6,16 @@ dotenv.config();
 
 (async () => {
   const model = new A1111ImageGenerationModel({
-    model: "no",
+    model: "aZovyaRPGArtistTools_v3.safetensors [25ba966c5d]",
+    steps: 30,
+    sampler: "DPM++ 2M Karras",
   });
 
   const image = await model.generateImage({
     prompt:
       "(the wicked witch of the west) (style of early 19th century painting)",
+    negativePrompt:
+      "poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected limbs, mutation, mutated, ugly, blurry",
   });
 
   const path = `./a1111-image-example.png`;

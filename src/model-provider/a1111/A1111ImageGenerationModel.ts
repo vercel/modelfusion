@@ -9,7 +9,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
-import { failedA1111CallResponseHandler } from "./failedA1111CallResponseHandler.js";
+import { failedA1111CallResponseHandler } from "./A1111Error.js";
 
 /**
  * Create an image generation model that calls the AUTOMATIC1111 Stable Diffusion Web UI API.
@@ -64,12 +64,16 @@ export class A1111ImageGenerationModel extends AbstractImageGenerationModel<
 
 export interface A1111ImageGenerationModelSettings
   extends ImageGenerationModelSettings {
-  model: string;
-
   baseUrl?: string;
 
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
+
+  model: string;
+  height?: number;
+  width?: number;
+  sampler?: string;
+  steps?: number;
 }
 
 const a1111ImageGenerationResponseSchema = z.object({
@@ -84,6 +88,8 @@ export type A1111ImageGenerationResponse = z.infer<
 
 export type A111ImageGenerationPrompt = {
   prompt: string;
+  negativePrompt?: string;
+  seed?: number;
 };
 
 async function callA1111ImageGenerationAPI({
@@ -92,12 +98,22 @@ async function callA1111ImageGenerationAPI({
   height,
   width,
   prompt,
+  negativePrompt,
+  sampler,
+  steps,
+  seed,
+  model,
 }: {
   baseUrl?: string;
   abortSignal?: AbortSignal;
   height?: number;
   width?: number;
   prompt: String;
+  negativePrompt?: string;
+  sampler?: string;
+  steps?: number;
+  seed?: number;
+  model?: string;
 }): Promise<A1111ImageGenerationResponse> {
   return postJsonToApi({
     url: `${baseUrl}/sdapi/v1/txt2img`,
@@ -105,6 +121,13 @@ async function callA1111ImageGenerationAPI({
       height,
       width,
       prompt,
+      negative_prompt: negativePrompt,
+      sampler_index: sampler,
+      steps,
+      seed,
+      override_settings: {
+        sd_model_checkpoint: model,
+      },
     },
     failedResponseHandler: failedA1111CallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(

@@ -1,8 +1,13 @@
 import { z } from "zod";
+import SecureJSON from "secure-json-parse";
+import { ResponseHandler } from "../../util/api/postToApi.js";
 import { ApiCallError } from "../../util/api/ApiCallError.js";
 
 export const a1111ErrorDataSchema = z.object({
-  message: z.string(),
+  error: z.string(),
+  detail: z.string(),
+  body: z.string(),
+  errors: z.string(),
 });
 
 export type A1111ErrorData = z.infer<typeof a1111ErrorDataSchema>;
@@ -15,7 +20,7 @@ export class A1111Error extends ApiCallError {
     statusCode,
     url,
     requestBodyValues,
-    message = data.message,
+    message = data.detail,
   }: {
     message?: string;
     statusCode: number;
@@ -28,3 +33,20 @@ export class A1111Error extends ApiCallError {
     this.data = data;
   }
 }
+
+export const failedA1111CallResponseHandler: ResponseHandler<
+  ApiCallError
+> = async ({ response, url, requestBodyValues }) => {
+  const responseBody = await response.text();
+
+  const parsedError = a1111ErrorDataSchema.parse(
+    SecureJSON.parse(responseBody)
+  );
+
+  return new A1111Error({
+    url,
+    requestBodyValues,
+    statusCode: response.status,
+    data: parsedError,
+  });
+};
