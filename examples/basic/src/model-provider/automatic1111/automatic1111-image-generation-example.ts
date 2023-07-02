@@ -1,11 +1,11 @@
-import { A1111ImageGenerationModel } from "ai-utils.js";
+import { Automatic1111ImageGenerationModel } from "ai-utils.js";
 import dotenv from "dotenv";
 import fs from "node:fs";
 
 dotenv.config();
 
 (async () => {
-  const model = new A1111ImageGenerationModel({
+  const model = new Automatic1111ImageGenerationModel({
     model: "aZovyaRPGArtistTools_v3.safetensors [25ba966c5d]",
     steps: 30,
     sampler: "DPM++ 2M Karras",

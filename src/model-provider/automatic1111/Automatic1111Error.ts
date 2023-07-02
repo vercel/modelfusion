@@ -3,17 +3,19 @@ import SecureJSON from "secure-json-parse";
 import { ResponseHandler } from "../../util/api/postToApi.js";
 import { ApiCallError } from "../../util/api/ApiCallError.js";
 
-export const a1111ErrorDataSchema = z.object({
+export const Automatic1111ErrorDataSchema = z.object({
   error: z.string(),
   detail: z.string(),
   body: z.string(),
   errors: z.string(),
 });
 
-export type A1111ErrorData = z.infer<typeof a1111ErrorDataSchema>;
+export type Automatic1111ErrorData = z.infer<
+  typeof Automatic1111ErrorDataSchema
+>;
 
-export class A1111Error extends ApiCallError {
-  public readonly data: A1111ErrorData;
+export class Automatic1111Error extends ApiCallError {
+  public readonly data: Automatic1111ErrorData;
 
   constructor({
     data,
@@ -26,7 +28,7 @@ export class A1111Error extends ApiCallError {
     statusCode: number;
     url: string;
     requestBodyValues: unknown;
-    data: A1111ErrorData;
+    data: Automatic1111ErrorData;
   }) {
     super({ message, statusCode, requestBodyValues, url });
 
@@ -34,16 +36,16 @@ export class A1111Error extends ApiCallError {
   }
 }
 
-export const failedA1111CallResponseHandler: ResponseHandler<
+export const failedAutomatic1111CallResponseHandler: ResponseHandler<
   ApiCallError
 > = async ({ response, url, requestBodyValues }) => {
   const responseBody = await response.text();
 
-  const parsedError = a1111ErrorDataSchema.parse(
+  const parsedError = Automatic1111ErrorDataSchema.parse(
     SecureJSON.parse(responseBody)
   );
 
-  return new A1111Error({
+  return new Automatic1111Error({
     url,
     requestBodyValues,
     statusCode: response.status,

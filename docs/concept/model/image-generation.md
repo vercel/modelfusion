@@ -60,3 +60,4 @@ const imageBase64 = await generatePainting("the wicked witch of the west");
 
 - [OpenAI](/integration/model-provider/openai)
 - [Stability AI](/integration/model-provider/stability)
+- [Automatic1111 (local)](/integration/model-provider/automatic1111)
