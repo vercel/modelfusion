@@ -9,8 +9,8 @@ import {
 } from "../model/ModelCallEvent.js";
 import { ModelCallObserver } from "../model/ModelCallObserver.js";
 import { Run } from "./Run.js";
-import { CostCalculator } from "cost/CostCalculator.js";
-import { calculateCost } from "cost/calculateCost.js";
+import { CostCalculator } from "../cost/CostCalculator.js";
+import { calculateCost } from "../cost/calculateCost.js";
 export class DefaultRun implements Run {
   readonly runId: string;
   readonly sessionId?: string;
