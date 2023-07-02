@@ -1,8 +1,5 @@
 import { Automatic1111ImageGenerationModel } from "ai-utils.js";
-import dotenv from "dotenv";
 import fs from "node:fs";
-
-dotenv.config();
 
 (async () => {
   const model = new Automatic1111ImageGenerationModel({
@@ -13,9 +10,9 @@ dotenv.config();
 
   const image = await model.generateImage({
     prompt:
-      "(the wicked witch of the west) (style of early 19th century painting)",
+      "(lonely inn at the edge of a forest and at the side of a lake) (late spring evening before sunset) (clear sky) (plains) (nordic climate) (german early medieval architecture) (rpg) (fantasy) (Best quality) (masterpiece) (highly intricate details) (ultra realistic)",
     negativePrompt:
-      "poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected limbs, mutation, mutated, ugly, blurry",
+      "(worst quality, low quality, bad_pictures) (deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected limbs, mutation, mutated, ugly, blurry, amputation, (watermark) (label) (signature) (text) (cropped) (castle) (mountain) (monastery)",
   });
 
   const path = `./a1111-image-example.png`;
