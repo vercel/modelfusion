@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.20 - 2023-07-02
+
+### New
+
+- Automatic1111 image generation provider.
+
 ## 0.0.19 - 2023-06-30
 
 ### New
