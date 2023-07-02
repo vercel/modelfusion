@@ -18,7 +18,7 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 
 ### Image Generation
 
-[API](/api/classes/A1111ImageGenerationModel)
+[API](/api/classes/Automatic1111ImageGenerationModel)
 
 ```ts
 import { Automatic1111ImageGenerationModel } from "ai-utils.js";
