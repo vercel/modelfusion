@@ -44,13 +44,13 @@ export const postJsonToApi = async <T>({
   abortSignal,
 }: {
   url: string;
-  apiKey: string;
+  apiKey?: string;
   body: unknown;
   failedResponseHandler: ResponseHandler<ApiCallError>;
   successfulResponseHandler: ResponseHandler<T>;
   abortSignal?: AbortSignal;
-}) => {
-  return postToApi({
+}) =>
+  postToApi({
     url,
     apiKey,
     contentType: "application/json",
@@ -62,7 +62,6 @@ export const postJsonToApi = async <T>({
     successfulResponseHandler,
     abortSignal,
   });
-};
 
 export const postToApi = async <T>({
   url,
@@ -74,7 +73,7 @@ export const postToApi = async <T>({
   abortSignal,
 }: {
   url: string;
-  apiKey: string;
+  apiKey?: string;
   contentType: string | null; // set to null when using FormData (to have correct boundary)
   body: {
     content: string | FormData;
@@ -85,9 +84,11 @@ export const postToApi = async <T>({
   abortSignal?: AbortSignal;
 }) => {
   try {
-    const headers: Record<string, string> = {
-      Authorization: `Bearer ${apiKey}`,
-    };
+    const headers: Record<string, string> = {};
+
+    if (apiKey !== undefined) {
+      headers["Authorization"] = `Bearer ${apiKey}`;
+    }
 
     if (contentType !== null) {
       headers["Content-Type"] = contentType;
