@@ -8,6 +8,7 @@ export * from "./image-generation/ImageGenerationEvent.js";
 export * from "./image-generation/ImageGenerationModel.js";
 export * from "./json-generation/JsonGenerationEvent.js";
 export * from "./json-generation/JsonGenerationModel.js";
+export * from "./json-generation/generateJson.js";
 export * from "./text-embedding/TextEmbeddingEvent.js";
 export * from "./text-embedding/TextEmbeddingModel.js";
 export * from "./text-generation/TextGenerationEvent.js";

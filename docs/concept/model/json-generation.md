@@ -6,9 +6,9 @@ sidebar_position: 5
 
 ## Usage
 
-[JsonGenerationModel API](/api/interfaces/JsonGenerationModel)
-
 ### generateJson
+
+[JsonGenerationModel API](/api/interfaces/JsonGenerationModel)
 
 Generates JSON using a prompt and a structure.
 The prompt format depends on the model.
@@ -18,9 +18,8 @@ The parameters must be a Zod object schema.
 #### With OpenAI chat model
 
 ```ts
-const model = new OpenAIChatModel(/* ... */);
-
-const story = await model.generateJson(
+const story = await generateJson(
+  new OpenAIChatModel(/* ... */),
   [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
     OpenAIChatMessage.user("A robot learning to love"),
@@ -45,9 +44,8 @@ The input signature of the prompt templates becomes the call signature of the ge
 #### With OpenAI chat model
 
 ```ts
-const model = new OpenAITextGenerationModel(/* ... */);
-
-const generateStoryAbout = model.generateJsonAsFunction(
+const generateStoryAbout = generateJsonAsFunction(
+  new OpenAITextGenerationModel(/* ... */),
   async (theme: string) => [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
     OpenAIChatMessage.user(theme),

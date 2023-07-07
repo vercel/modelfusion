@@ -23,8 +23,6 @@ You can provide API keys for the different [providers](https://ai-utils.dev/inte
 ### Text Generation
 
 ```ts
-import { OpenAITextGenerationModel } from "ai-utils.js";
-
 const model = new OpenAITextGenerationModel({
   model: "text-davinci-003",
   temperature: 0.7,
@@ -39,13 +37,12 @@ const text = await model.generateText(
 ### JSON generation
 
 ```ts
-const model = new OpenAIChatModel({
-  model: "gpt-3.5-turbo",
-  temperature: 0.7,
-  maxTokens: 1000,
-});
-
-const json = await model.generateJson(
+const json = await generateJson(
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    temperature: 0.7,
+    maxTokens: 1000,
+  }),
   [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
     OpenAIChatMessage.user("A robot learning to love"),
@@ -64,16 +61,11 @@ const json = await model.generateJson(
 ### Transcription
 
 ```ts
-import fs from "node:fs";
-import { OpenAITranscriptionModel, transcribe } from "ai-utils.js";
-
-const data = await fs.promises.readFile("data/test.mp3");
-
 const transcription = await transcribe(
   new OpenAITranscriptionModel({ model: "whisper-1" }),
   {
     type: "mp3",
-    data,
+    data: await fs.promises.readFile("data/test.mp3"),
   }
 );
 ```
