@@ -1,0 +1,52 @@
+import { OpenAIChatMessage, OpenAIChatModel } from "ai-utils.js";
+import dotenv from "dotenv";
+import { z } from "zod";
+
+dotenv.config();
+
+(async () => {
+  const model = new OpenAIChatModel({
+    model: "gpt-4",
+    temperature: 0, // remove randomness
+    maxTokens: 500, // enough tokens for reasoning and sentiment
+  });
+
+  const analyzeSentiment = model.generateJsonAsFunction(
+    async (productReview: string) => [
+      OpenAIChatMessage.system(
+        "You are a sentiment evaluator. Analyze the sentiment of the following product review:"
+      ),
+      OpenAIChatMessage.user(productReview),
+    ],
+    {
+      name: "sentiment",
+      description: "Write the sentiment analysis",
+      parameters: z.object({
+        // Reason first to improve results:
+        reasoning: z.string().describe("Reasoning to explain the sentiment."),
+        // Report sentiment after reasoning:
+        sentiment: z
+          .enum(["positive", "neutral", "negative"])
+          .describe("Sentiment."),
+      }),
+    }
+  );
+
+  const result1 = await analyzeSentiment(
+    "After I opened the package, I was met by a very unpleasant smell " +
+      "that did not disappear even after washing. The towel also stained " +
+      "extremely well and also turned the seal of my washing machine red. " +
+      "Never again!"
+  );
+
+  console.log(JSON.stringify(result1, null, 2));
+
+  const result2 = await analyzeSentiment(
+    "I love this towel so much! " +
+      "It dries so fast and carries so much water. " +
+      "It's so light and thin, I will take it everywhere I go! " +
+      "I will definitely purchase again."
+  );
+
+  console.log(JSON.stringify(result2, null, 2));
+})();
