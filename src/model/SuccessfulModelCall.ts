@@ -7,6 +7,7 @@ import { ModelInformation } from "./ModelInformation.js";
 export type SuccessfulModelCall = {
   type:
     | "image-generation"
+    | "json-generation"
     | "text-generation"
     | "text-embedding"
     | "transcription";
@@ -37,5 +38,6 @@ const eventTypeToCostType = {
   "image-generation-finished": "image-generation" as const,
   "text-embedding-finished": "text-embedding" as const,
   "text-generation-finished": "text-generation" as const,
+  "json-generation-finished": "json-generation" as const,
   "transcription-finished": "transcription" as const,
 };

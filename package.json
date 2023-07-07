@@ -59,7 +59,8 @@
     "js-tiktoken": "1.0.7",
     "nanoid": "3.3.6",
     "secure-json-parse": "2.7.0",
-    "zod": "3.21.4"
+    "zod": "3.21.4",
+    "zod-to-json-schema": "3.21.2"
   },
   "devDependencies": {
     "@pinecone-database/pinecone": "^0.1.6",

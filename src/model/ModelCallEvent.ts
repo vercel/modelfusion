@@ -9,6 +9,10 @@ import {
   TextEmbeddingStartedEvent,
 } from "./text-embedding/TextEmbeddingEvent.js";
 import {
+  JsonGenerationFinishedEvent,
+  JsonGenerationStartedEvent,
+} from "./text-generation/JsonGenerationEvent.js";
+import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
 } from "./text-generation/TextGenerationEvent.js";
@@ -26,6 +30,7 @@ export type ModelCallStartedEventMetadata = IdMetadata & {
 
 export type ModelCallStartedEvent =
   | ImageGenerationStartedEvent
+  | JsonGenerationStartedEvent
   | TextEmbeddingStartedEvent
   | TextGenerationStartedEvent
   | TranscriptionStartedEvent;
@@ -36,6 +41,7 @@ export type ModelCallFinishedEventMetadata = ModelCallStartedEventMetadata & {
 
 export type ModelCallFinishedEvent =
   | ImageGenerationFinishedEvent
+  | JsonGenerationFinishedEvent
   | TextEmbeddingFinishedEvent
   | TextGenerationFinishedEvent
   | TranscriptionFinishedEvent;

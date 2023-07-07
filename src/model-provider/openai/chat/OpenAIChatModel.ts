@@ -1,11 +1,18 @@
 import z from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
 import { FunctionOptions } from "../../../model/FunctionOptions.js";
+import { executeCall } from "../../../model/executeCall.js";
 import { AbstractTextGenerationModel } from "../../../model/text-generation/AbstractTextGenerationModel.js";
+import {
+  JsonGenerationModel,
+  JsonGenerationSchema,
+} from "../../../model/text-generation/JsonGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../../model/text-generation/TextGenerationModel.js";
 import { Tokenizer } from "../../../model/tokenization/Tokenizer.js";
+import { PromptTemplate } from "../../../run/PromptTemplate.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -157,7 +164,8 @@ export class OpenAIChatModel
     TextGenerationModelWithTokenization<
       OpenAIChatMessage[],
       OpenAIChatSettings
-    >
+    >,
+    JsonGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
 {
   constructor(settings: OpenAIChatSettings) {
     super({
@@ -238,6 +246,105 @@ export class OpenAIChatModel
       throttle: callSettings.throttle,
       call: async () => callOpenAIChatCompletionAPI(callSettings),
     });
+  }
+
+  generateJson<T>(
+    prompt: OpenAIChatMessage[],
+    schema: {
+      name: string;
+      description?: string;
+      parameters: z.ZodSchema<T>;
+    },
+    options?: FunctionOptions<OpenAIChatSettings> | undefined
+  ): PromiseLike<T> {
+    return executeCall({
+      model: this,
+      options,
+      errorHandler: this.uncaughtErrorHandler,
+      callModel: (model, options) =>
+        model.generateJson(prompt, schema, options),
+      generateResponse: (options) => {
+        const settingsWithFunctionCall = Object.assign({}, options.settings, {
+          functionCall: {
+            name: schema.name,
+          },
+          functions: [
+            {
+              name: schema.name,
+              description: schema.description,
+              parameters: zodToJsonSchema(schema.parameters),
+            },
+          ],
+        });
+
+        return this.callAPI(prompt, {
+          responseFormat: OpenAIChatResponseFormat.json,
+          functionId: options?.functionId,
+          settings: settingsWithFunctionCall,
+          run: options?.run,
+        });
+      },
+      extractOutputValue: (result) => {
+        const jsonText = result.choices[0]!.message.function_call!.arguments;
+        return schema.parameters.parse(JSON.parse(jsonText));
+      },
+      getStartEvent: (metadata, settings) => ({
+        type: "json-generation-started",
+        metadata,
+        settings,
+        prompt,
+        schema,
+      }),
+      getAbortEvent: (metadata, settings) => ({
+        type: "json-generation-finished",
+        status: "abort",
+        metadata,
+        settings,
+        prompt,
+        schema,
+      }),
+      getFailureEvent: (metadata, settings, error) => ({
+        type: "json-generation-finished",
+        status: "failure",
+        metadata,
+        settings,
+        prompt,
+        schema,
+        error,
+      }),
+      getSuccessEvent: (metadata, settings, response, output) => ({
+        type: "json-generation-finished",
+        status: "success",
+        metadata,
+        settings,
+        prompt,
+        schema,
+        response,
+        generatedJson: output,
+      }),
+    });
+  }
+
+  generateJsonAsFunction<INPUT, T>(
+    promptTemplate: PromptTemplate<INPUT, OpenAIChatMessage[]>,
+    schema: JsonGenerationSchema<T>,
+    generateOptions?: Omit<FunctionOptions<OpenAIChatSettings>, "run">
+  ) {
+    return async (
+      input: INPUT,
+      options?: FunctionOptions<OpenAIChatSettings>
+    ) => {
+      const expandedPrompt = await promptTemplate(input);
+      return this.generateJson<T>(expandedPrompt, schema, {
+        functionId: options?.functionId ?? generateOptions?.functionId,
+        settings: Object.assign(
+          {},
+          generateOptions?.settings,
+          options?.settings
+        ),
+        run: options?.run,
+      });
+    };
   }
 
   withSettings(additionalSettings: Partial<OpenAIChatSettings>) {
