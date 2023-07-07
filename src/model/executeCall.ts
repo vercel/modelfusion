@@ -79,7 +79,7 @@ export async function executeCall<
     (performance.timeOrigin + startTime) / 1000
   );
 
-  const callId = createId();
+  const callId = `call-${createId()}`;
 
   const startMetadata = {
     runId: run?.runId,
