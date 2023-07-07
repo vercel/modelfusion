@@ -171,12 +171,8 @@ const config = {
             title: "Learn",
             items: [
               {
-                label: "Recipes",
+                label: "Recipes & Prompts",
                 to: "/recipe/",
-              },
-              {
-                label: "Prompt Library",
-                to: "/prompt/",
               },
               {
                 href: "https://github.com/lgrammel/ai-utils.js/tree/main/examples",
