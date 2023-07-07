@@ -64,7 +64,7 @@
   "devDependencies": {
     "@pinecone-database/pinecone": "^0.1.6",
     "@tsconfig/recommended": "1.0.2",
-    "@types/node": "20.3.2",
+    "@types/node": "20.4.0",
     "copyfiles": "2.4.1",
     "rimraf": "5.0.1",
     "typescript": "5.1.6"
