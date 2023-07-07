@@ -1,8 +1,10 @@
 import z from "zod";
+import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
-import { AbstractTextEmbeddingModel } from "../../model/text-embedding/AbstractTextEmbeddingModel.js";
-import { TextEmbeddingModelSettings } from "../../model/text-embedding/TextEmbeddingModel.js";
-import { TokenizationSupport } from "../../model/tokenization/TokenizationSupport.js";
+import {
+  TextEmbeddingModel,
+  TextEmbeddingModelSettings,
+} from "../../model/text-embedding/TextEmbeddingModel.js";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
@@ -56,28 +58,24 @@ export interface CohereTextEmbeddingModelSettings
  * @see https://docs.cohere.com/reference/embed
  *
  * @example
- * const model = new CohereTextEmbeddingModel({
- *   model: "embed-english-light-v2.0",
- * });
- *
- * const embeddings = await model.embedTexts([
- *   "At first, Nox didn't know what to do with the pup.",
- *   "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
- * ]);
+ * const embeddings = await embedTexts(
+ *   new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
+ *   [
+ *     "At first, Nox didn't know what to do with the pup.",
+ *     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+ *   ]
+ * );
  */
 export class CohereTextEmbeddingModel
-  extends AbstractTextEmbeddingModel<
-    CohereTextEmbeddingResponse,
-    CohereTextEmbeddingModelSettings
-  >
-  implements TokenizationSupport
+  extends AbstractModel<CohereTextEmbeddingModelSettings>
+  implements
+    TextEmbeddingModel<
+      CohereTextEmbeddingResponse,
+      CohereTextEmbeddingModelSettings
+    >
 {
   constructor(settings: CohereTextEmbeddingModelSettings) {
-    super({
-      settings,
-      extractEmbeddings: (response) => response.embeddings,
-      generateResponse: (texts, options) => this.callAPI(texts, options),
-    });
+    super({ settings });
 
     this.maxTokens = COHERE_TEXT_EMBEDDING_MODELS[this.modelName].maxTokens;
 
@@ -98,7 +96,7 @@ export class CohereTextEmbeddingModel
     return this.settings.model;
   }
 
-  protected readonly maxTextsPerCall = 96;
+  readonly maxTextsPerCall = 96;
   readonly embeddingDimensions: number;
 
   readonly maxTokens: number;
@@ -150,6 +148,17 @@ export class CohereTextEmbeddingModel
       throttle: this.settings.throttle,
       call: async () => callCohereEmbeddingAPI(callSettings),
     });
+  }
+
+  generateEmbeddingResponse(
+    texts: string[],
+    options?: FunctionOptions<CohereTextEmbeddingModelSettings>
+  ) {
+    return this.callAPI(texts, options);
+  }
+
+  extractEmbeddings(response: CohereTextEmbeddingResponse) {
+    return response.embeddings;
   }
 
   withSettings(additionalSettings: Partial<CohereTextEmbeddingModelSettings>) {

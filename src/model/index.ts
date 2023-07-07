@@ -12,6 +12,7 @@ export * from "./json-generation/JsonGenerationModel.js";
 export * from "./json-generation/generateJson.js";
 export * from "./text-embedding/TextEmbeddingEvent.js";
 export * from "./text-embedding/TextEmbeddingModel.js";
+export * from "./text-embedding/embedText.js";
 export * from "./text-generation/TextGenerationEvent.js";
 export * from "./text-generation/TextGenerationModel.js";
 export * from "./text-generation/generateText.js";

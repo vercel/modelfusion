@@ -90,16 +90,15 @@ const json = await generateJson(
 [API](/api/classes/OpenAITextEmbeddingModel)
 
 ```ts
-import { OpenAITextEmbeddingModel } from "ai-utils.js";
+import { OpenAITextEmbeddingModel, embedTexts } from "ai-utils.js";
 
-const model = new OpenAITextEmbeddingModel({
-  model: "text-embedding-ada-002",
-});
-
-const embeddings = await model.embedTexts([
-  "At first, Nox didn't know what to do with the pup.",
-  "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-]);
+const embeddings = await embedTexts(
+  new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
+  [
+    "At first, Nox didn't know what to do with the pup.",
+    "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+  ]
+);
 ```
 
 ### Tokenization (TikToken)

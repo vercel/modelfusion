@@ -15,9 +15,8 @@ Generate an embedding for a single text.
 #### With OpenAI embedding model
 
 ```ts
-const model = new OpenAITextEmbeddingModel(/* ... */);
-
-const embedding = await model.embedText(
+const embedding = await embedText(
+  new OpenAITextEmbeddingModel(/* ... */),
   "At first, Nox didn't know what to do with the pup."
 );
 ```
@@ -29,12 +28,15 @@ Generate embeddings for multiple texts.
 #### With OpenAI embedding model
 
 ```ts
-const model = new OpenAITextEmbeddingModel(/* ... */);
-
-const embeddings = await model.embedTexts([
-  "At first, Nox didn't know what to do with the pup.",
-  "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-]);
+const embeddings = await embedTexts(
+  new OpenAITextEmbeddingModel({
+    /* ... */
+  }),
+  [
+    "At first, Nox didn't know what to do with the pup.",
+    "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+  ]
+);
 ```
 
 ## Available Providers

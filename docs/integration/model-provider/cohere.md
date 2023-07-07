@@ -37,16 +37,15 @@ const text = await generateText(
 [API](/api/classes/CohereTextEmbeddingModel)
 
 ```ts
-import { CohereTextEmbeddingModel } from "ai-utils.js";
+import { CohereTextEmbeddingModel, embedTexts } from "ai-utils.js";
 
-const embeddingModel = new CohereTextEmbeddingModel({
-  model: "embed-english-light-v2.0",
-});
-
-const embeddings = await model.embedTexts([
-  "At first, Nox didn't know what to do with the pup.",
-  "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-]);
+const embeddings = await embedTexts(
+  new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
+  [
+    "At first, Nox didn't know what to do with the pup.",
+    "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+  ]
+);
 ```
 
 ### Tokenization

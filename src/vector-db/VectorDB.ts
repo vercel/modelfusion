@@ -1,5 +1,6 @@
 import { nanoid as createId } from "nanoid";
 import { TextEmbeddingModel } from "../model/text-embedding/TextEmbeddingModel.js";
+import { embedText, embedTexts } from "../model/text-embedding/embedText.js";
 import { Run } from "../run/Run.js";
 import { Vector } from "../run/Vector.js";
 import { VectorStore } from "./VectorStore.js";
@@ -15,7 +16,7 @@ export class VectorDB<DATA, STORE> {
 
   private readonly generateId: () => string;
 
-  private readonly embeddingModel: TextEmbeddingModel<any>;
+  private readonly embeddingModel: TextEmbeddingModel<any, any>;
   private readonly queryFunctionId?: string;
   private readonly storeFunctionId?: string;
 
@@ -28,7 +29,7 @@ export class VectorDB<DATA, STORE> {
   }: {
     store: VectorStore<DATA, STORE>;
     generateId?: () => string;
-    embeddingModel: TextEmbeddingModel<any>;
+    embeddingModel: TextEmbeddingModel<any, any>;
     queryFunctionId?: string;
     storeFunctionId?: string;
   }) {
@@ -79,7 +80,7 @@ export class VectorDB<DATA, STORE> {
       );
     }
 
-    const vectors = await this.embeddingModel.embedTexts(keyTexts, {
+    const vectors = await embedTexts(this.embeddingModel, keyTexts, {
       functionId: this.storeFunctionId,
       run: options?.run,
     });
@@ -106,7 +107,7 @@ export class VectorDB<DATA, STORE> {
     options?: { run?: Run }
   ): Promise<VectorDBQueryResult<DATA>> {
     return this.queryByVector({
-      queryVector: await this.embeddingModel.embedText(queryText, {
+      queryVector: await embedText(this.embeddingModel, queryText, {
         functionId: this.queryFunctionId,
         run: options?.run,
       }),

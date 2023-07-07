@@ -1,7 +1,10 @@
 import z from "zod";
+import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
-import { AbstractTextEmbeddingModel } from "../../model/text-embedding/AbstractTextEmbeddingModel.js";
-import { TextEmbeddingModelSettings } from "../../model/text-embedding/TextEmbeddingModel.js";
+import {
+  TextEmbeddingModel,
+  TextEmbeddingModelSettings,
+} from "../../model/text-embedding/TextEmbeddingModel.js";
 import { TokenizationSupport } from "../../model/tokenization/TokenizationSupport.js";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
@@ -66,36 +69,25 @@ export interface OpenAITextEmbeddingModelSettings
  * @see https://platform.openai.com/docs/api-reference/embeddings
  *
  * @example
- * const model = new OpenAITextEmbeddingModel({
- *   model: "text-embedding-ada-002",
- * });
- *
- * const embeddings = await model.embedTexts([
- *   "At first, Nox didn't know what to do with the pup.",
- *   "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
- * ]);
+ * const embeddings = await embedTexts(
+ *   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
+ *   [
+ *     "At first, Nox didn't know what to do with the pup.",
+ *     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+ *   ]
+ * );
  */
 export class OpenAITextEmbeddingModel
-  extends AbstractTextEmbeddingModel<
-    OpenAITextEmbeddingResponse,
-    OpenAITextEmbeddingModelSettings
-  >
-  implements TokenizationSupport
+  extends AbstractModel<OpenAITextEmbeddingModelSettings>
+  implements
+    TextEmbeddingModel<
+      OpenAITextEmbeddingResponse,
+      OpenAITextEmbeddingModelSettings
+    >,
+    TokenizationSupport
 {
   constructor(settings: OpenAITextEmbeddingModelSettings) {
-    super({
-      settings,
-      extractEmbeddings: (response) => [response.data[0]!.embedding],
-      generateResponse: (texts, options) => {
-        if (texts.length > this.maxTextsPerCall) {
-          throw new Error(
-            `The OpenAI embedding API only supports ${this.maxTextsPerCall} texts per API call.`
-          );
-        }
-
-        return this.callAPI(texts[0], options);
-      },
-    });
+    super({ settings });
 
     this.tokenizer = new TikTokenTokenizer({ model: this.modelName });
     this.maxTokens = OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].maxTokens;
@@ -156,6 +148,23 @@ export class OpenAITextEmbeddingModel
       throttle: this.settings.throttle,
       call: async () => callOpenAITextEmbeddingAPI(callSettings),
     });
+  }
+
+  generateEmbeddingResponse(
+    texts: string[],
+    options?: FunctionOptions<OpenAITextEmbeddingModelSettings>
+  ) {
+    if (texts.length > this.maxTextsPerCall) {
+      throw new Error(
+        `The OpenAI embedding API only supports ${this.maxTextsPerCall} texts per API call.`
+      );
+    }
+
+    return this.callAPI(texts[0], options);
+  }
+
+  extractEmbeddings(response: OpenAITextEmbeddingResponse) {
+    return [response.data[0]!.embedding];
   }
 
   withSettings(additionalSettings: OpenAITextEmbeddingModelSettings) {
