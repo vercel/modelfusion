@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.22 - 2023-07-08
+
+### Changed
+
+- Convert all main methods (e.g. `model.generateText(...)`) to a functional API (i.e., `generateText(model, ...)`).
+
 ## 0.0.21 - 2023-07-07
 
 ### New
