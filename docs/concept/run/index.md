@@ -13,11 +13,8 @@ const run = new DefaultRun({
   costCalculators: [new OpenAICostCalculator()],
 });
 
-const model = new OpenAITextGenerationModel({
-  // ...
-});
-
-const text = await model.generateText(
+const text = await generateText(
+  new OpenAITextGenerationModel(/* ... */),
   "Write a short story about a robot learning to love:\n\n",
   { run } // pass in the run in the second parameter
 );

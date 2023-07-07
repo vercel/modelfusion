@@ -14,6 +14,7 @@ export * from "./text-embedding/TextEmbeddingEvent.js";
 export * from "./text-embedding/TextEmbeddingModel.js";
 export * from "./text-generation/TextGenerationEvent.js";
 export * from "./text-generation/TextGenerationModel.js";
+export * from "./text-generation/generateText.js";
 export * from "./tokenization/TokenizationSupport.js";
 export * from "./tokenization/Tokenizer.js";
 export * from "./transcription/TranscriptionEvent.js";

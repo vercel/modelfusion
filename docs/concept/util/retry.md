@@ -23,6 +23,7 @@ The `retryWithExponentialBackoff` strategy retries a failed API call with an exp
 import { retryWithExponentialBackoff } from "ai-utils.js";
 
 const model = new OpenAITextGenerationModel({
+  model: // ...,
   retry: retryWithExponentialBackoff({
     maxTries: 8,
     initialDelayInMs: 1000,
@@ -42,7 +43,8 @@ The `retryNever` strategy never retries a failed API call.
 ```ts
 import { retryNever } from "ai-utils.js";
 
-const text = await model.generateText(
+const text = await generateText(
+  model,
   "Write a short story about a robot learning to love:\n\n",
   { settings: { retry: retryNever() } }
 );

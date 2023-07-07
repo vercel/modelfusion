@@ -1,6 +1,6 @@
 import z from "zod";
+import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
-import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
@@ -126,23 +126,16 @@ export interface OpenAITextGenerationModelSettings
  * );
  */
 export class OpenAITextGenerationModel
-  extends AbstractTextGenerationModel<
-    string,
-    OpenAITextGenerationResponse,
-    OpenAITextGenerationModelSettings
-  >
+  extends AbstractModel<OpenAITextGenerationModelSettings>
   implements
     TextGenerationModelWithTokenization<
       string,
+      OpenAITextGenerationResponse,
       OpenAITextGenerationModelSettings
     >
 {
   constructor(settings: OpenAITextGenerationModelSettings) {
-    super({
-      settings,
-      extractText: (response) => response.choices[0]!.text,
-      generateResponse: (prompt, options) => this.callAPI(prompt, options),
-    });
+    super({ settings });
 
     this.tokenizer = new TikTokenTokenizer({ model: settings.model });
     this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[settings.model].maxTokens;
@@ -202,6 +195,17 @@ export class OpenAITextGenerationModel
       throttle: callSettings.throttle,
       call: async () => callOpenAITextGenerationAPI(callSettings),
     });
+  }
+
+  generateTextResponse(
+    prompt: string,
+    options?: FunctionOptions<OpenAITextGenerationModelSettings>
+  ) {
+    return this.callAPI(prompt, options);
+  }
+
+  extractText(response: OpenAITextGenerationResponse): string {
+    return response.choices[0]!.text;
   }
 
   withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {

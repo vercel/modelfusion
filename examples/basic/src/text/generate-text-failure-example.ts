@@ -1,15 +1,14 @@
-import { OpenAITextGenerationModel } from "ai-utils.js";
+import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
 
 (async () => {
-  const model = new OpenAITextGenerationModel({
-    apiKey: "invalid-api-key",
-    model: "text-davinci-003",
-    temperature: 0.7,
-    maxTokens: 500,
-  });
-
   try {
-    const text = await model.generateText(
+    const text = await generateText(
+      new OpenAITextGenerationModel({
+        apiKey: "invalid-api-key",
+        model: "text-davinci-003",
+        temperature: 0.7,
+        maxTokens: 500,
+      }),
       "Write a short story about a robot learning to love:\n\n"
     );
 

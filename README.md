@@ -23,13 +23,8 @@ You can provide API keys for the different [providers](https://ai-utils.dev/inte
 ### Text Generation
 
 ```ts
-const model = new OpenAITextGenerationModel({
-  model: "text-davinci-003",
-  temperature: 0.7,
-  maxTokens: 500,
-});
-
-const text = await model.generateText(
+const text = await generateText(
+  new OpenAITextGenerationModel({ model: "text-davinci-003" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -38,11 +33,7 @@ const text = await model.generateText(
 
 ```ts
 const json = await generateJson(
-  new OpenAIChatModel({
-    model: "gpt-3.5-turbo",
-    temperature: 0.7,
-    maxTokens: 1000,
-  }),
+  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
   [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
     OpenAIChatMessage.user("A robot learning to love"),

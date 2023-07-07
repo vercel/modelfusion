@@ -20,15 +20,14 @@ The API key can be configured as an environment variable (`COHERE_API_KEY`) or p
 [API](/api/classes/CohereTextGenerationModel)
 
 ```ts
-import { CohereTextGenerationModel } from "ai-utils.js";
+import { CohereTextGenerationModel, generateText } from "ai-utils.js";
 
-const textGenerationModel = new CohereTextGenerationModel({
-  model: "command-nightly",
-  temperature: 0.7,
-  maxTokens: 500,
-});
-
-const text = await textGenerationModel.generateText(
+const text = await generateText(
+  new CohereTextGenerationModel({
+    model: "command-nightly",
+    temperature: 0.7,
+    maxTokens: 500,
+  }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```

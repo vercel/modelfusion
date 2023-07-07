@@ -1,17 +1,20 @@
-import { OpenAIChatMessage, OpenAIChatModel } from "ai-utils.js";
+import {
+  OpenAIChatMessage,
+  OpenAIChatModel,
+  generateTextAsFunction,
+} from "ai-utils.js";
 import dotenv from "dotenv";
 import fs from "node:fs";
 
 dotenv.config();
 
 (async () => {
-  const model = new OpenAIChatModel({
-    model: "gpt-4",
-    temperature: 0, // remove randomness as much as possible
-    maxTokens: 500,
-  });
-
-  const extractText = model.generateTextAsFunction(
+  const extractText = generateTextAsFunction(
+    new OpenAIChatModel({
+      model: "gpt-4",
+      temperature: 0, // remove randomness as much as possible
+      maxTokens: 500,
+    }),
     async ({ text, topic }: { text: string; topic: string }) => [
       OpenAIChatMessage.system(
         [

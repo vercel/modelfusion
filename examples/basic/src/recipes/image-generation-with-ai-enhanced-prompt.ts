@@ -3,6 +3,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   generateImage,
+  generateText,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 import fs from "node:fs";
@@ -10,19 +11,20 @@ import fs from "node:fs";
 dotenv.config();
 
 async function generateImageWithAIPrompt(prompt: string) {
-  const textModel = new OpenAIChatModel({
-    model: "gpt-4",
-    temperature: 0, // remove randomness
-    maxTokens: 500, // enough tokens for prompt
-  });
-
-  const aiPrompt = await textModel.generateText([
-    OpenAIChatMessage.system(
-      "You generate Stable Diffusion prompts for image generation." +
-        "Generate a prompt for the following request:"
-    ),
-    OpenAIChatMessage.user(prompt),
-  ]);
+  const aiPrompt = await generateText(
+    new OpenAIChatModel({
+      model: "gpt-4",
+      temperature: 0, // remove randomness
+      maxTokens: 500, // enough tokens for prompt
+    }),
+    [
+      OpenAIChatMessage.system(
+        "You generate Stable Diffusion prompts for image generation." +
+          "Generate a prompt for the following request:"
+      ),
+      OpenAIChatMessage.user(prompt),
+    ]
+  );
 
   const image = await generateImage(
     new Automatic1111ImageGenerationModel({

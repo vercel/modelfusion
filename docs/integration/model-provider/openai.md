@@ -20,15 +20,14 @@ The API key can be configured as an environment variable (`OPENAI_API_KEY`) or p
 [API](/api/classes/OpenAITextGenerationModel)
 
 ```ts
-import { OpenAITextGenerationModel } from "ai-utils.js";
+import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
 
-const model = new OpenAITextGenerationModel({
-  model: "text-davinci-003",
-  temperature: 0.7,
-  maxTokens: 500,
-});
-
-const text = await model.generateText(
+const text = await generateText(
+  new OpenAITextGenerationModel({
+    model: "text-davinci-003",
+    temperature: 0.7,
+    maxTokens: 500,
+  }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -40,19 +39,20 @@ const text = await model.generateText(
 The OpenAI chat models include GPT-3.5-turbo and GPT-4.
 
 ```ts
-import { OpenAIChatMessage, OpenAIChatModel } from "ai-utils.js";
+import { OpenAIChatMessage, OpenAIChatModel, generateText } from "ai-utils.js";
 
-const model = new OpenAIChatModel({
-  model: "gpt-3.5-turbo",
-  temperature: 0.7,
-  maxTokens: 500,
-});
-
-const text = await model.generateText([
-  OpenAIChatMessage.system(
-    "Write a short story about a robot learning to love:"
-  ),
-]);
+const text = await generateText(
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    temperature: 0.7,
+    maxTokens: 500,
+  }),
+  [
+    OpenAIChatMessage.system(
+      "Write a short story about a robot learning to love:"
+    ),
+  ]
+);
 ```
 
 ### JSON Generation (Chat Model)

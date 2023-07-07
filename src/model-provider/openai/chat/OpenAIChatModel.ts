@@ -1,11 +1,11 @@
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
+import { AbstractModel } from "../../../model/AbstractModel.js";
 import { FunctionOptions } from "../../../model/FunctionOptions.js";
 import {
   JsonGenerationModel,
   JsonGenerationSchema,
 } from "../../../model/json-generation/JsonGenerationModel.js";
-import { AbstractTextGenerationModel } from "../../../model/text-generation/AbstractTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
@@ -153,14 +153,11 @@ export interface OpenAIChatSettings
  * ]);
  */
 export class OpenAIChatModel
-  extends AbstractTextGenerationModel<
-    OpenAIChatMessage[],
-    OpenAIChatResponse,
-    OpenAIChatSettings
-  >
+  extends AbstractModel<OpenAIChatSettings>
   implements
     TextGenerationModelWithTokenization<
       OpenAIChatMessage[],
+      OpenAIChatResponse,
       OpenAIChatSettings
     >,
     JsonGenerationModel<
@@ -170,17 +167,7 @@ export class OpenAIChatModel
     >
 {
   constructor(settings: OpenAIChatSettings) {
-    super({
-      settings,
-      extractText: (response) => response.choices[0]!.message.content!,
-      generateResponse: (prompt, options) =>
-        this.callAPI(prompt, {
-          responseFormat: OpenAIChatResponseFormat.json,
-          functionId: options?.functionId,
-          settings: options?.settings,
-          run: options?.run,
-        }),
-    });
+    super({ settings });
 
     this.tokenizer = new TikTokenTokenizer({ model: this.settings.model });
     this.maxTokens = OPENAI_CHAT_MODELS[this.settings.model].maxTokens;
@@ -248,6 +235,22 @@ export class OpenAIChatModel
       throttle: callSettings.throttle,
       call: async () => callOpenAIChatCompletionAPI(callSettings),
     });
+  }
+
+  generateTextResponse(
+    prompt: OpenAIChatMessage[],
+    options?: FunctionOptions<OpenAIChatSettings>
+  ) {
+    return this.callAPI(prompt, {
+      responseFormat: OpenAIChatResponseFormat.json,
+      functionId: options?.functionId,
+      settings: options?.settings,
+      run: options?.run,
+    });
+  }
+
+  extractText(response: OpenAIChatResponse): string {
+    return response.choices[0]!.message.content!;
   }
 
   /**
