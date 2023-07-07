@@ -19,15 +19,6 @@ export abstract class AbstractModel<SETTINGS extends ModelSettings>
     };
   }
 
-  protected get uncaughtErrorHandler() {
-    return (
-      this.settings.uncaughtErrorHandler ??
-      ((error) => {
-        console.error(error);
-      })
-    );
-  }
-
   readonly settings: SETTINGS;
 
   abstract withSettings(additionalSettings: Partial<SETTINGS>): this;

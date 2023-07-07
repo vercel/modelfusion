@@ -1,16 +1,15 @@
 import { nanoid as createId } from "nanoid";
-import { ErrorHandler } from "../util/ErrorHandler.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
 import { FunctionOptions } from "./FunctionOptions.js";
 import { Model, ModelSettings } from "./Model.js";
-import { ModelCallEventSource } from "./ModelCallEventSource.js";
 import {
   ModelCallFinishedEvent,
   ModelCallFinishedEventMetadata,
   ModelCallStartedEvent,
   ModelCallStartedEventMetadata,
 } from "./ModelCallEvent.js";
+import { ModelCallEventSource } from "./ModelCallEventSource.js";
 
 export async function executeCall<
   SETTINGS extends ModelSettings,
@@ -53,7 +52,6 @@ export async function executeCall<
     response: RESPONSE,
     output: OUTPUT
   ) => ModelCallFinishedEvent;
-  errorHandler?: ErrorHandler; // TODO remove
   generateResponse: (
     options: FunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;

@@ -2,7 +2,6 @@ import { ModelInformation } from "./ModelInformation.js";
 import { ModelCallObserver } from "./ModelCallObserver.js";
 
 export interface ModelSettings {
-  uncaughtErrorHandler?: (error: unknown) => void; // TODO remove
   observers?: Array<ModelCallObserver>;
 }
 
