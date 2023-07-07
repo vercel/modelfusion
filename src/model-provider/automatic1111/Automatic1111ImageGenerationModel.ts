@@ -1,7 +1,10 @@
 import { z } from "zod";
+import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
-import { AbstractImageGenerationModel } from "../../model/image-generation/AbstractImageGenerationModel.js";
-import { ImageGenerationModelSettings } from "../../model/image-generation/ImageGenerationModel.js";
+import {
+  ImageGenerationModel,
+  ImageGenerationModelSettings,
+} from "../../model/image-generation/ImageGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -16,17 +19,17 @@ import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js"
  *
  * @see https://github.com/AUTOMATIC1111/stable-diffusion-webui
  */
-export class Automatic1111ImageGenerationModel extends AbstractImageGenerationModel<
-  A111ImageGenerationPrompt,
-  Automatic1111ImageGenerationResponse,
-  Automatic1111ImageGenerationModelSettings
-> {
+export class Automatic1111ImageGenerationModel
+  extends AbstractModel<Automatic1111ImageGenerationModelSettings>
+  implements
+    ImageGenerationModel<
+      A111ImageGenerationPrompt,
+      Automatic1111ImageGenerationResponse,
+      Automatic1111ImageGenerationModelSettings
+    >
+{
   constructor(settings: Automatic1111ImageGenerationModelSettings) {
-    super({
-      settings,
-      extractBase64Image: (response) => response.images[0],
-      generateResponse: (prompt, options) => this.callAPI(prompt, options),
-    });
+    super({ settings });
   }
 
   readonly provider = "Automatic1111" as const;
@@ -53,6 +56,17 @@ export class Automatic1111ImageGenerationModel extends AbstractImageGenerationMo
       throttle: this.settings.throttle,
       call: async () => callAutomatic1111ImageGenerationAPI(callSettings),
     });
+  }
+
+  generateImageResponse(
+    prompt: A111ImageGenerationPrompt,
+    options?: FunctionOptions<Automatic1111ImageGenerationModelSettings>
+  ) {
+    return this.callAPI(prompt, options);
+  }
+
+  extractBase64Image(response: Automatic1111ImageGenerationResponse): string {
+    return response.images[0];
   }
 
   withSettings(additionalSettings: Automatic1111ImageGenerationModelSettings) {

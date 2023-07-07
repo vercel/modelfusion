@@ -1,7 +1,10 @@
 import { z } from "zod";
+import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
-import { AbstractImageGenerationModel } from "../../model/image-generation/AbstractImageGenerationModel.js";
-import { ImageGenerationModelSettings } from "../../model/image-generation/ImageGenerationModel.js";
+import {
+  ImageGenerationModel,
+  ImageGenerationModelSettings,
+} from "../../model/image-generation/ImageGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -45,31 +48,22 @@ export interface OpenAIImageGenerationSettings
  * @see https://platform.openai.com/docs/api-reference/images/create
  *
  * @example
- * const model = new OpenAIImageGenerationModel({
- *   size: "512x512",
- * });
- *
- * const image = await model.generateImage(
+ * const image = await generateImage(
+ *   new OpenAIImageGenerationModel({ size: "512x512" }),
  *   "the wicked witch of the west in the style of early 19th century painting"
  * );
  */
-export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
-  string,
-  OpenAIImageGenerationBase64JsonResponse,
-  OpenAIImageGenerationSettings
-> {
+export class OpenAIImageGenerationModel
+  extends AbstractModel<OpenAIImageGenerationSettings>
+  implements
+    ImageGenerationModel<
+      string,
+      OpenAIImageGenerationBase64JsonResponse,
+      OpenAIImageGenerationSettings
+    >
+{
   constructor(settings: OpenAIImageGenerationSettings) {
-    super({
-      settings,
-      extractBase64Image: (response) => response.data[0].b64_json,
-      generateResponse: (prompt, options) =>
-        this.callAPI(prompt, {
-          responseFormat: OpenAIImageGenerationResponseFormat.base64Json,
-          functionId: options?.functionId,
-          settings: options?.settings,
-          run: options?.run,
-        }),
-    });
+    super({ settings });
   }
 
   readonly provider = "openai" as const;
@@ -121,6 +115,24 @@ export class OpenAIImageGenerationModel extends AbstractImageGenerationModel<
       throttle: callSettings.throttle,
       call: async () => callOpenAIImageGenerationAPI(callSettings),
     });
+  }
+
+  generateImageResponse(
+    prompt: string,
+    options?: FunctionOptions<OpenAIImageGenerationSettings>
+  ) {
+    return this.callAPI(prompt, {
+      responseFormat: OpenAIImageGenerationResponseFormat.base64Json,
+      functionId: options?.functionId,
+      settings: options?.settings,
+      run: options?.run,
+    });
+  }
+
+  extractBase64Image(
+    response: OpenAIImageGenerationBase64JsonResponse
+  ): string {
+    return response.data[0].b64_json;
   }
 
   withSettings(additionalSettings: Partial<OpenAIImageGenerationSettings>) {

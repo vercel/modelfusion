@@ -20,20 +20,21 @@ The API key can be configured as an environment variable (`STABILITY_API_KEY`) o
 [API](/api/classes/StabilityImageGenerationModel)
 
 ```ts
-import { StabilityImageGenerationModel } from "ai-utils.js";
+import { StabilityImageGenerationModel, generateImage } from "ai-utils.js";
 
-const model = new StabilityImageGenerationModel({
-  model: "stable-diffusion-512-v2-1",
-  cfgScale: 7,
-  clipGuidancePreset: "FAST_BLUE",
-  height: 512,
-  width: 512,
-  samples: 1,
-  steps: 30,
-});
-
-const imageBase64 = await model.generateImage([
-  { text: "the wicked witch of the west" },
-  { text: "style of early 19th century painting", weight: 0.5 },
-]);
+const imageBase64 = await generateImage(
+  new StabilityImageGenerationModel({
+    model: "stable-diffusion-512-v2-1",
+    cfgScale: 7,
+    clipGuidancePreset: "FAST_BLUE",
+    height: 512,
+    width: 512,
+    samples: 1,
+    steps: 30,
+  }),
+  [
+    { text: "the wicked witch of the west" },
+    { text: "style of early 19th century painting", weight: 0.5 },
+  ]
+);
 ```

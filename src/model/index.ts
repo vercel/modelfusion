@@ -6,6 +6,7 @@ export * from "./ModelInformation.js";
 export * from "./SuccessfulModelCall.js";
 export * from "./image-generation/ImageGenerationEvent.js";
 export * from "./image-generation/ImageGenerationModel.js";
+export * from "./image-generation/generateImage.js";
 export * from "./json-generation/JsonGenerationEvent.js";
 export * from "./json-generation/JsonGenerationModel.js";
 export * from "./json-generation/generateJson.js";

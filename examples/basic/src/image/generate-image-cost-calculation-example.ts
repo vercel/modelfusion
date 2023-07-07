@@ -2,21 +2,19 @@ import {
   DefaultRun,
   OpenAICostCalculator,
   OpenAIImageGenerationModel,
+  generateImage,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 (async () => {
-  const model = new OpenAIImageGenerationModel({
-    size: "512x512",
-  });
-
   const run = new DefaultRun({
     costCalculators: [new OpenAICostCalculator()],
   });
 
-  await model.generateImage(
+  await generateImage(
+    new OpenAIImageGenerationModel({ size: "512x512" }),
     "the wicked witch of the west in the style of early 19th century painting",
     { run }
   );

@@ -1,7 +1,10 @@
 import { z } from "zod";
+import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
-import { AbstractImageGenerationModel } from "../../model/image-generation/AbstractImageGenerationModel.js";
-import { ImageGenerationModelSettings } from "../../model/image-generation/ImageGenerationModel.js";
+import {
+  ImageGenerationModel,
+  ImageGenerationModelSettings,
+} from "../../model/image-generation/ImageGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -17,32 +20,33 @@ import { failedStabilityCallResponseHandler } from "./failedStabilityCallRespons
  * @see https://api.stability.ai/docs#tag/v1generation/operation/textToImage
  *
  * @example
- * const model = new StabilityImageGenerationModel({
- *   model: "stable-diffusion-512-v2-1",
- *   cfgScale: 7,
- *   clipGuidancePreset: "FAST_BLUE",
- *   height: 512,
- *   width: 512,
- *   samples: 1,
- *   steps: 30,
- * });
- *
- * const image = await model.generateImage([
- *   { text: "the wicked witch of the west" },
- *   { text: "style of early 19th century painting", weight: 0.5 },
- * ]);
+ * const image = await generateImage(
+ *   new StabilityImageGenerationModel({
+ *     model: "stable-diffusion-512-v2-1",
+ *     cfgScale: 7,
+ *     clipGuidancePreset: "FAST_BLUE",
+ *     height: 512,
+ *     width: 512,
+ *     samples: 1,
+ *     steps: 30,
+ *   })
+ *   [
+ *     { text: "the wicked witch of the west" },
+ *     { text: "style of early 19th century painting", weight: 0.5 },
+ *   ]
+ * );
  */
-export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
-  StabilityImageGenerationPrompt,
-  StabilityImageGenerationResponse,
-  StabilityImageGenerationModelSettings
-> {
+export class StabilityImageGenerationModel
+  extends AbstractModel<StabilityImageGenerationModelSettings>
+  implements
+    ImageGenerationModel<
+      StabilityImageGenerationPrompt,
+      StabilityImageGenerationResponse,
+      StabilityImageGenerationModelSettings
+    >
+{
   constructor(settings: StabilityImageGenerationModelSettings) {
-    super({
-      settings,
-      extractBase64Image: (response) => response.artifacts[0].base64,
-      generateResponse: (prompt, options) => this.callAPI(prompt, options),
-    });
+    super({ settings });
   }
 
   readonly provider = "stability" as const;
@@ -88,6 +92,17 @@ export class StabilityImageGenerationModel extends AbstractImageGenerationModel<
       throttle: this.settings.throttle,
       call: async () => callStabilityImageGenerationAPI(callSettings),
     });
+  }
+
+  generateImageResponse(
+    prompt: StabilityImageGenerationPrompt,
+    options?: FunctionOptions<StabilityImageGenerationModelSettings>
+  ) {
+    return this.callAPI(prompt, options);
+  }
+
+  extractBase64Image(response: StabilityImageGenerationResponse): string {
+    return response.artifacts[0].base64;
   }
 
   withSettings(additionalSettings: StabilityImageGenerationModelSettings) {

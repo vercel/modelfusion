@@ -17,9 +17,8 @@ For example, OpenAI image models expect a string prompt, and Stability AI models
 #### With OpenAI image model
 
 ```ts
-const model = new OpenAIImageGenerationModel(/* ... */);
-
-const imageBase64 = await model.generateImage(
+const imageBase64 = await generateImage(
+  new OpenAIImageGenerationModel(/* ... */),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```
@@ -27,12 +26,13 @@ const imageBase64 = await model.generateImage(
 #### With Stability AI model
 
 ```ts
-const model = new StabilityImageGenerationModel(/* ... */);
-
-const imageBase64 = await model.generateImage([
-  { text: "the wicked witch of the west" },
-  { text: "style of early 19th century painting", weight: 0.5 },
-]);
+const imageBase64 = await generateImage(
+  new StabilityImageGenerationModel(/* ... */),
+  [
+    { text: "the wicked witch of the west" },
+    { text: "style of early 19th century painting", weight: 0.5 },
+  ]
+);
 ```
 
 ### generateImageAsFunction
@@ -44,9 +44,8 @@ The input signature of the prompt templates becomes the call signature of the ge
 #### With Stability AI model
 
 ```ts
-const model = new StabilityImageGenerationModel(/* ... */);
-
-const generatePainting = model.generateImageAsFunction(
+const generatePainting = generateImageAsFunction(
+  new StabilityImageGenerationModel(/* ... */),
   async (description: string) => [
     { text: description },
     { text: "style of early 19th century painting", weight: 0.5 },

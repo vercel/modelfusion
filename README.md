@@ -73,13 +73,8 @@ const transcription = await transcribe(
 ### Image Generation
 
 ```ts
-import { OpenAIImageGenerationModel } from "ai-utils.js";
-
-const model = new OpenAIImageGenerationModel({
-  size: "512x512",
-});
-
-const imageBase64 = await model.generateImage(
+const imageBase64 = await generateImage(
+  new OpenAIImageGenerationModel({ size: "512x512" }),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```

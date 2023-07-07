@@ -145,13 +145,10 @@ OpenAI provides a model called DALL-E that can generate images from text descrip
 [API](/api/classes/OpenAIImageGenerationModel)
 
 ```ts
-import { OpenAIImageGenerationModel } from "ai-utils.js";
+import { OpenAIImageGenerationModel, generateImage } from "ai-utils.js";
 
-const model = new OpenAIImageGenerationModel({
-  size: "512x512",
-});
-
-const imageBase64 = await model.generateImage(
+const imageBase64 = await generateImage(
+  new OpenAIImageGenerationModel({ size: "512x512" }),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```
