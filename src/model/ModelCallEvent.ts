@@ -11,7 +11,7 @@ import {
 import {
   JsonGenerationFinishedEvent,
   JsonGenerationStartedEvent,
-} from "./text-generation/JsonGenerationEvent.js";
+} from "./json-generation/JsonGenerationEvent.js";
 import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,

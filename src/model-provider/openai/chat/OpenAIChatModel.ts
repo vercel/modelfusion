@@ -6,7 +6,7 @@ import { AbstractTextGenerationModel } from "../../../model/text-generation/Abst
 import {
   JsonGenerationModel,
   JsonGenerationSchema,
-} from "../../../model/text-generation/JsonGenerationModel.js";
+} from "../../../model/json-generation/JsonGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
