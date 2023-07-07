@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.21 - 2023-07-07
+
+### New
+
+- JSON generation model.
+
 ## 0.0.20 - 2023-07-02
 
 ### New

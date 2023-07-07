@@ -1,7 +1,7 @@
 import {
   ModelCallFinishedEventMetadata,
   ModelCallStartedEventMetadata,
-} from "model/ModelCallEvent.js";
+} from "../ModelCallEvent.js";
 import { JsonGenerationSchema } from "./JsonGenerationModel.js";
 
 export type JsonGenerationStartedEvent = {
