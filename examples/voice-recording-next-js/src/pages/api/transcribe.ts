@@ -1,4 +1,4 @@
-import { OpenAITranscriptionModel } from "ai-utils.js";
+import { OpenAITranscriptionModel, transcribe } from "ai-utils.js";
 import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -8,10 +8,6 @@ export const config = {
     bodyParser: false,
   },
 };
-
-const model = new OpenAITranscriptionModel({
-  model: "whisper-1",
-});
 
 export default async function handler(
   req: NextApiRequest,
@@ -45,10 +41,13 @@ export default async function handler(
     const audioFile = files.audio as File;
     const fileData = fs.readFileSync(audioFile.filepath);
 
-    const transcription = await model.transcribe({
-      type: "mp3",
-      data: fileData,
-    });
+    const transcription = await transcribe(
+      new OpenAITranscriptionModel({ model: "whisper-1" }),
+      {
+        type: "mp3",
+        data: fileData,
+      }
+    );
 
     // Remove temporary file
     fs.unlinkSync(audioFile.filepath);

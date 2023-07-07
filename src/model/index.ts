@@ -16,3 +16,4 @@ export * from "./tokenization/TokenizationSupport.js";
 export * from "./tokenization/Tokenizer.js";
 export * from "./transcription/TranscriptionEvent.js";
 export * from "./transcription/TranscriptionModel.js";
+export * from "./transcription/transcribe.js";

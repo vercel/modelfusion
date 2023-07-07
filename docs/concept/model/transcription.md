@@ -16,12 +16,14 @@ Transcribe audio data into text.
 
 ```ts
 const data = await fs.promises.readFile("data/test.mp3");
-const model = new OpenAITranscriptionModel(/* ... */);
 
-const transcription = await model.transcribe({
-  type: "mp3",
-  data,
-});
+const transcription = await transcribe(
+  new OpenAITranscriptionModel({ model: "whisper-1" }),
+  {
+    type: "mp3",
+    data,
+  }
+);
 ```
 
 ## Available Providers

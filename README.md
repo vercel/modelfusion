@@ -65,16 +65,17 @@ const json = await model.generateJson(
 
 ```ts
 import fs from "node:fs";
-import { OpenAITranscriptionModel } from "ai-utils.js";
+import { OpenAITranscriptionModel, transcribe } from "ai-utils.js";
 
 const data = await fs.promises.readFile("data/test.mp3");
 
-const model = new OpenAITranscriptionModel({ model: "whisper-1" });
-
-const transcription = await model.transcribe({
-  type: "mp3",
-  data,
-});
+const transcription = await transcribe(
+  new OpenAITranscriptionModel({ model: "whisper-1" }),
+  {
+    type: "mp3",
+    data,
+  }
+);
 ```
 
 ### Image Generation
