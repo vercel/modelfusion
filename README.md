@@ -163,7 +163,7 @@ Building applications with AI is a complex task, and your requirements mean you 
 
 ### Example recipes, prompts, and demo apps
 
-Having this amount of control means that more work is required to get an initial prototype of your app up and running. To help you with this, we provide example [prompts](https://ai-utils.dev/prompt/), [recipes](https://ai-utils.dev/recipe/), and [demo apps](https://github.com/lgrammel/ai-utils.js/tree/main/examples).
+Having a large amount of control means that more work is required to get an initial prototype of your app up and running. We provide example [recipes & prompts](https://ai-utils.dev/recipe/) as well as [demo apps](https://github.com/lgrammel/ai-utils.js/tree/main/examples) to help you get started.
 
 ### Taking care of the details
 
@@ -214,8 +214,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 - [Concepts](https://ai-utils.dev/concept)
 - [Integrations](https://ai-utils.dev/integration/model-provider)
-- [Recipes](https://ai-utils.dev/recipe)
-- [Prompt library](https://ai-utils.dev/prompt)
+- [Recipes & Prompts](https://ai-utils.dev/recipe)
 - [API Documentation](https://ai-utils.dev/api/modules)
 
 ## More Examples

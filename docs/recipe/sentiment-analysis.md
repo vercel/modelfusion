@@ -1,10 +1,10 @@
 ---
-sidebar_position: 0
+sidebar_position: 2
 ---
 
 # Sentiment Analysis
 
-## With OpenAI Chat Model and JSON Generation
+### With OpenAI Chat Model and JSON Generation
 
 [Example](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/recipes/sentiment-analysis.ts)
 

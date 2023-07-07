@@ -71,14 +71,6 @@ const config = {
     [
       "@docusaurus/plugin-content-docs",
       {
-        routeBasePath: "prompt",
-        id: "prompt",
-        path: "prompt",
-      },
-    ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
         routeBasePath: "recipe",
         id: "recipe",
         path: "recipe",
@@ -133,16 +125,9 @@ const config = {
           },
           {
             to: "/recipe/",
-            label: "Recipes",
+            label: "Recipes & Prompts",
             activeBaseRegex: `/recipe/`,
             sidebarId: "recipe",
-            position: "left",
-          },
-          {
-            to: "/prompt/",
-            label: "Prompts",
-            activeBaseRegex: `/prompt/`,
-            sidebarId: "prompt",
             position: "left",
           },
           {

@@ -6,8 +6,8 @@ dotenv.config();
 
 (async () => {
   const model = new OpenAIChatModel({
-    model: "gpt-3.5-turbo",
-    temperature: 0,
+    model: "gpt-4",
+    temperature: 0, // remove randomness as much as possible
     maxTokens: 500,
   });
 
