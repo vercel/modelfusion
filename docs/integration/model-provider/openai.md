@@ -20,15 +20,14 @@ The API key can be configured as an environment variable (`OPENAI_API_KEY`) or p
 [API](/api/classes/OpenAITextGenerationModel)
 
 ```ts
-import { OpenAITextGenerationModel } from "ai-utils.js";
+import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
 
-const model = new OpenAITextGenerationModel({
-  model: "text-davinci-003",
-  temperature: 0.7,
-  maxTokens: 500,
-});
-
-const text = await model.generateText(
+const text = await generateText(
+  new OpenAITextGenerationModel({
+    model: "text-davinci-003",
+    temperature: 0.7,
+    maxTokens: 500,
+  }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -40,19 +39,20 @@ const text = await model.generateText(
 The OpenAI chat models include GPT-3.5-turbo and GPT-4.
 
 ```ts
-import { OpenAIChatMessage, OpenAIChatModel } from "ai-utils.js";
+import { OpenAIChatMessage, OpenAIChatModel, generateText } from "ai-utils.js";
 
-const model = new OpenAIChatModel({
-  model: "gpt-3.5-turbo",
-  temperature: 0.7,
-  maxTokens: 500,
-});
-
-const text = await model.generateText([
-  OpenAIChatMessage.system(
-    "Write a short story about a robot learning to love:"
-  ),
-]);
+const text = await generateText(
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    temperature: 0.7,
+    maxTokens: 500,
+  }),
+  [
+    OpenAIChatMessage.system(
+      "Write a short story about a robot learning to love:"
+    ),
+  ]
+);
 ```
 
 ### JSON Generation (Chat Model)
@@ -62,13 +62,14 @@ const text = await model.generateText([
 JSON generation uses the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides a single function specification and instructs the model to provide parameters for calling the function. The result is returned as parsed JSON.
 
 ```ts
-const model = new OpenAIChatModel({
-  model: "gpt-3.5-turbo",
-  temperature: 0.7,
-  maxTokens: 1000,
-});
+import { OpenAIChatMessage, OpenAIChatModel, generateJson } from "ai-utils.js";
 
-const json = await model.generateJson(
+const json = await generateJson(
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    temperature: 0.7,
+    maxTokens: 1000,
+  }),
   [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
     OpenAIChatMessage.user("A robot learning to love"),
@@ -89,16 +90,15 @@ const json = await model.generateJson(
 [API](/api/classes/OpenAITextEmbeddingModel)
 
 ```ts
-import { OpenAITextEmbeddingModel } from "ai-utils.js";
+import { OpenAITextEmbeddingModel, embedTexts } from "ai-utils.js";
 
-const model = new OpenAITextEmbeddingModel({
-  model: "text-embedding-ada-002",
-});
-
-const embeddings = await model.embedTexts([
-  "At first, Nox didn't know what to do with the pup.",
-  "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-]);
+const embeddings = await embedTexts(
+  new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
+  [
+    "At first, Nox didn't know what to do with the pup.",
+    "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+  ]
+);
 ```
 
 ### Tokenization (TikToken)
@@ -124,16 +124,17 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 ```ts
 import fs from "node:fs";
-import { OpenAITranscriptionModel } from "ai-utils.js";
+import { OpenAITranscriptionModel, transcribe } from "ai-utils.js";
 
 const data = await fs.promises.readFile("data/test.mp3");
 
-const model = new OpenAITranscriptionModel({ model: "whisper-1" });
-
-const transcription = await model.transcribe({
-  type: "mp3",
-  data,
-});
+const transcription = await transcribe(
+  new OpenAITranscriptionModel({ model: "whisper-1" }),
+  {
+    type: "mp3",
+    data,
+  }
+);
 ```
 
 ### Image Generation
@@ -143,13 +144,10 @@ OpenAI provides a model called DALL-E that can generate images from text descrip
 [API](/api/classes/OpenAIImageGenerationModel)
 
 ```ts
-import { OpenAIImageGenerationModel } from "ai-utils.js";
+import { OpenAIImageGenerationModel, generateImage } from "ai-utils.js";
 
-const model = new OpenAIImageGenerationModel({
-  size: "512x512",
-});
-
-const imageBase64 = await model.generateImage(
+const imageBase64 = await generateImage(
+  new OpenAIImageGenerationModel({ size: "512x512" }),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```

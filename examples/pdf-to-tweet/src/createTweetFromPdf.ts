@@ -5,6 +5,7 @@ import {
   OpenAITextEmbeddingModel,
   Run,
   VectorDB,
+  generateText,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "ai-utils.js";
 import fs from "node:fs";
@@ -70,7 +71,8 @@ export async function createTweetFromPdf({
     );
 
   // generate a draft tweet:
-  const draftTweet = await model.generateText(
+  const draftTweet = await generateText(
+    model,
     [
       OpenAIChatMessage.user(`## TOPIC\n${topic}`),
       OpenAIChatMessage.system(
@@ -105,7 +107,8 @@ export async function createTweetFromPdf({
   }
 
   // rewrite the tweet:
-  return await model.generateText(
+  return await generateText(
+    model,
     [
       OpenAIChatMessage.system(
         `## TASK\nRewrite the draft tweet on ${topic} using the style from the example tweet.`

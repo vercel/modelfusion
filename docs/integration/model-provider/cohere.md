@@ -20,15 +20,14 @@ The API key can be configured as an environment variable (`COHERE_API_KEY`) or p
 [API](/api/classes/CohereTextGenerationModel)
 
 ```ts
-import { CohereTextGenerationModel } from "ai-utils.js";
+import { CohereTextGenerationModel, generateText } from "ai-utils.js";
 
-const textGenerationModel = new CohereTextGenerationModel({
-  model: "command-nightly",
-  temperature: 0.7,
-  maxTokens: 500,
-});
-
-const text = await textGenerationModel.generateText(
+const text = await generateText(
+  new CohereTextGenerationModel({
+    model: "command-nightly",
+    temperature: 0.7,
+    maxTokens: 500,
+  }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -38,16 +37,15 @@ const text = await textGenerationModel.generateText(
 [API](/api/classes/CohereTextEmbeddingModel)
 
 ```ts
-import { CohereTextEmbeddingModel } from "ai-utils.js";
+import { CohereTextEmbeddingModel, embedTexts } from "ai-utils.js";
 
-const embeddingModel = new CohereTextEmbeddingModel({
-  model: "embed-english-light-v2.0",
-});
-
-const embeddings = await model.embedTexts([
-  "At first, Nox didn't know what to do with the pup.",
-  "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-]);
+const embeddings = await embedTexts(
+  new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
+  [
+    "At first, Nox didn't know what to do with the pup.",
+    "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+  ]
+);
 ```
 
 ### Tokenization

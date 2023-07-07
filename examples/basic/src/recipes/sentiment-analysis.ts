@@ -1,17 +1,20 @@
-import { OpenAIChatMessage, OpenAIChatModel } from "ai-utils.js";
+import {
+  OpenAIChatMessage,
+  OpenAIChatModel,
+  generateJsonAsFunction,
+} from "ai-utils.js";
 import dotenv from "dotenv";
 import { z } from "zod";
 
 dotenv.config();
 
 (async () => {
-  const model = new OpenAIChatModel({
-    model: "gpt-4",
-    temperature: 0, // remove randomness
-    maxTokens: 500, // enough tokens for reasoning and sentiment
-  });
-
-  const analyzeSentiment = model.generateJsonAsFunction(
+  const analyzeSentiment = generateJsonAsFunction(
+    new OpenAIChatModel({
+      model: "gpt-4",
+      temperature: 0, // remove randomness
+      maxTokens: 500, // enough tokens for reasoning and sentiment
+    }),
     async (productReview: string) => [
       OpenAIChatMessage.system(
         "You are a sentiment evaluator. Analyze the sentiment of the following product review:"

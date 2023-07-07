@@ -1,6 +1,6 @@
 import { z } from "zod";
+import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
-import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
@@ -80,23 +80,16 @@ export interface CohereTextGenerationModelSettings
  * );
  */
 export class CohereTextGenerationModel
-  extends AbstractTextGenerationModel<
-    string,
-    CohereTextGenerationResponse,
-    CohereTextGenerationModelSettings
-  >
+  extends AbstractModel<CohereTextGenerationModelSettings>
   implements
     TextGenerationModelWithTokenization<
       string,
+      CohereTextGenerationResponse,
       CohereTextGenerationModelSettings
     >
 {
   constructor(settings: CohereTextGenerationModelSettings) {
-    super({
-      settings,
-      extractText: (response) => response.generations[0].text,
-      generateResponse: (prompt, options) => this.callAPI(prompt, options),
-    });
+    super({ settings });
 
     this.maxTokens =
       COHERE_TEXT_GENERATION_MODELS[this.settings.model].maxTokens;
@@ -158,6 +151,17 @@ export class CohereTextGenerationModel
       throttle: this.settings.throttle,
       call: async () => callCohereTextGenerationAPI(callSettings),
     });
+  }
+
+  generateTextResponse(
+    prompt: string,
+    options?: FunctionOptions<CohereTextGenerationModelSettings>
+  ) {
+    return this.callAPI(prompt, options);
+  }
+
+  extractText(response: CohereTextGenerationResponse): string {
+    return response.generations[0].text;
   }
 
   withSettings(additionalSettings: Partial<CohereTextGenerationModelSettings>) {

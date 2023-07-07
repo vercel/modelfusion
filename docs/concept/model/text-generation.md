@@ -17,9 +17,8 @@ For example, OpenAI text models expect a string prompt, and OpenAI chat models e
 #### With OpenAI text model
 
 ```ts
-const model = new OpenAITextGenerationModel(/* ... */);
-
-const text = await model.generateText(
+const text = await generateText(
+  new OpenAITextGenerationModel(/* ... */),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -27,13 +26,16 @@ const text = await model.generateText(
 #### With OpenAI chat model
 
 ```ts
-const model = new OpenAIChatModel(/* ... */);
-
-const text = await model.generateText([
-  OpenAIChatMessage.system(
-    "Write a short story about a robot learning to love:"
-  ),
-]);
+const text = await generateText(
+  new OpenAIChatModel({
+    /* ... */
+  }),
+  [
+    OpenAIChatMessage.system(
+      "Write a short story about a robot learning to love:"
+    ),
+  ]
+);
 ```
 
 ### generateTextAsFunction
@@ -45,9 +47,8 @@ The input signature of the prompt templates becomes the call signature of the ge
 #### With OpenAI text model and simple function signature
 
 ```ts
-const model = new OpenAITextGenerationModel(/* ... */);
-
-const generateStoryAbout = model.generateTextAsFunction(
+const generateStoryAbout = generateTextAsFunction(
+  new OpenAITextGenerationModel(/* ... */),
   async (character: string) =>
     `Write a short story about ${character} learning to love:\n\n`
 );
@@ -58,9 +59,8 @@ const story = await generateStoryAbout("a robot");
 #### With OpenAI chat model and complex function signature
 
 ```ts
-const model = new OpenAIChatModel(/* ... */);
-
-const generateStoryAbout = model.generateTextAsFunction(
+const generateStoryAbout = generateTextAsFunction(
+  new OpenAIChatModel(/* ... */),
   async ({ character, topic }: { character: string; topic: string }) => [
     OpenAIChatMessage.system(
       `Write a short story about ${character} ${topic}:`

@@ -21,18 +21,19 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 [API](/api/classes/Automatic1111ImageGenerationModel)
 
 ```ts
-import { Automatic1111ImageGenerationModel } from "ai-utils.js";
+import { Automatic1111ImageGenerationModel, generateImage } from "ai-utils.js";
 
-const model = new Automatic1111ImageGenerationModel({
-  model: "aZovyaRPGArtistTools_v3.safetensors [25ba966c5d]",
-  steps: 30,
-  sampler: "DPM++ 2M Karras",
-});
-
-const imageBase64 = await model.generateImage({
-  prompt:
-    "(the wicked witch of the west) (style of early 19th century painting)",
-  negativePrompt:
-    "poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb", // ...
-});
+const imageBase64 = await generateImage(
+  new Automatic1111ImageGenerationModel({
+    model: "aZovyaRPGArtistTools_v3.safetensors [25ba966c5d]",
+    steps: 30,
+    sampler: "DPM++ 2M Karras",
+  }),
+  {
+    prompt:
+      "(the wicked witch of the west) (style of early 19th century painting)",
+    negativePrompt:
+      "poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb", // ...
+  }
+);
 ```

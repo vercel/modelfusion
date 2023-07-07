@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
@@ -13,17 +12,14 @@ export type JsonGenerationSchema<T> = {
 
 export interface JsonGenerationModel<
   PROMPT,
+  RESPONSE,
   SETTINGS extends JsonGenerationModelSettings
 > extends Model<SETTINGS> {
-  generateJson<T>(
+  generateJsonResponse<T>(
     prompt: PROMPT,
     schema: JsonGenerationSchema<T>,
     options?: FunctionOptions<SETTINGS>
-  ): PromiseLike<T>;
+  ): PromiseLike<RESPONSE>;
 
-  generateJsonAsFunction<INPUT, T>(
-    promptTemplate: PromptTemplate<INPUT, PROMPT>,
-    schema: JsonGenerationSchema<T>,
-    options?: Omit<FunctionOptions<SETTINGS>, "run">
-  ): (input: INPUT, options?: FunctionOptions<SETTINGS>) => PromiseLike<T>;
+  extractJson<T>(response: RESPONSE, schema: JsonGenerationSchema<T>): T;
 }

@@ -11,24 +11,25 @@ This approach generates a text output and the input needs to fit into the chat p
 [Example](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/recipes/information-extraction-openai-chat.ts)
 
 ```ts
-const model = new OpenAIChatModel({
-  model: "gpt-4",
-  temperature: 0, // remove randomness as much as possible
-  maxTokens: 500,
-});
-
-async ({ text, topic }: { text: string; topic: string }) => [
-  OpenAIChatMessage.system(
-    [
-      `## ROLE`,
-      `You are an expert at extracting information.`,
-      `You need to extract and keep all the information on the topic from the text below.`,
-      `Only include information that is directly relevant for the topic.`,
-    ].join("\n")
-  ),
-  OpenAIChatMessage.user(`## TOPIC\n${topic}`),
-  OpenAIChatMessage.user(`## TEXT\n${text}`),
-];
+const extractText = generateTextAsFunction(
+  new OpenAIChatModel({
+    model: "gpt-4",
+    temperature: 0, // remove randomness as much as possible
+    maxTokens: 500,
+  }),
+  async ({ text, topic }: { text: string; topic: string }) => [
+    OpenAIChatMessage.system(
+      [
+        `## ROLE`,
+        `You are an expert at extracting information.`,
+        `You need to extract and keep all the information on the topic from the text below.`,
+        `Only include information that is directly relevant for the topic.`,
+      ].join("\n")
+    ),
+    OpenAIChatMessage.user(`## TOPIC\n${topic}`),
+    OpenAIChatMessage.user(`## TEXT\n${text}`),
+  ]
+);
 
 const extractedInformation = await extractText({
   text: sanFranciscoWikipediaContent, // longer text to extract information from

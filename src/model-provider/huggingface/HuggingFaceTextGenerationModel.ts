@@ -1,7 +1,10 @@
 import z from "zod";
+import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
-import { AbstractTextGenerationModel } from "../../model/text-generation/AbstractTextGenerationModel.js";
-import { TextGenerationModelSettings } from "../../model/text-generation/TextGenerationModel.js";
+import {
+  TextGenerationModel,
+  TextGenerationModelSettings,
+} from "../../model/text-generation/TextGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -52,17 +55,17 @@ export interface HuggingFaceTextGenerationModelSettings
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  */
-export class HuggingFaceTextGenerationModel extends AbstractTextGenerationModel<
-  string,
-  HuggingFaceTextGenerationResponse,
-  HuggingFaceTextGenerationModelSettings
-> {
+export class HuggingFaceTextGenerationModel
+  extends AbstractModel<HuggingFaceTextGenerationModelSettings>
+  implements
+    TextGenerationModel<
+      string,
+      HuggingFaceTextGenerationResponse,
+      HuggingFaceTextGenerationModelSettings
+    >
+{
   constructor(settings: HuggingFaceTextGenerationModelSettings) {
-    super({
-      settings,
-      extractText: (response) => response[0].generated_text,
-      generateResponse: (prompt, options) => this.callAPI(prompt, options),
-    });
+    super({ settings });
   }
 
   readonly provider = "huggingface";
@@ -110,6 +113,17 @@ export class HuggingFaceTextGenerationModel extends AbstractTextGenerationModel<
       throttle: this.settings.throttle,
       call: async () => callHuggingFaceTextGenerationAPI(callSettings),
     });
+  }
+
+  generateTextResponse(
+    prompt: string,
+    options?: FunctionOptions<HuggingFaceTextGenerationModelSettings>
+  ) {
+    return this.callAPI(prompt, options);
+  }
+
+  extractText(response: HuggingFaceTextGenerationResponse): string {
+    return response[0].generated_text;
   }
 
   withSettings(

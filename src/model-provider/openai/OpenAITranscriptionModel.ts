@@ -1,7 +1,10 @@
 import z from "zod";
+import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
-import { AbstractTranscriptionModel } from "../../model/transcription/AbstractTranscriptionModel.js";
-import { TranscriptionModelSettings } from "../../model/transcription/TranscriptionModel.js";
+import {
+  TranscriptionModel,
+  TranscriptionModelSettings,
+} from "../../model/transcription/TranscriptionModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -68,35 +71,51 @@ export type OpenAITranscriptionInput = {
  *
  * @example
  * const data = await fs.promises.readFile("data/test.mp3");
- * const model = new OpenAITranscriptionModel({ model: "whisper-1" });
  *
- * const transcription = await model.transcribe({
- *   type: "mp3",
- *   data,
- * });
+ * const transcription = await transcribe(
+ *   new OpenAITranscriptionModel({ model: "whisper-1" }),
+ *   {
+ *     type: "mp3",
+ *     data,
+ *   }
+ * );
  */
-export class OpenAITranscriptionModel extends AbstractTranscriptionModel<
-  OpenAITranscriptionInput,
-  OpenAITranscriptionVerboseJsonResponse,
-  OpenAITranscriptionModelSettings
-> {
+export class OpenAITranscriptionModel
+  extends AbstractModel<OpenAITranscriptionModelSettings>
+  implements
+    TranscriptionModel<
+      OpenAITranscriptionInput,
+      OpenAITranscriptionVerboseJsonResponse,
+      OpenAITranscriptionModelSettings
+    >
+{
   constructor(settings: OpenAITranscriptionModelSettings) {
-    super({
-      settings,
-      extractTranscription: (response) => response.text,
-      generateResponse: (prompt, options) =>
-        this.callAPI(prompt, {
-          responseFormat: OpenAITranscriptionResponseFormat.verboseJson,
-          functionId: options?.functionId,
-          settings: options?.settings,
-          run: options?.run,
-        }),
-    });
+    super({ settings });
   }
 
   readonly provider = "openai" as const;
   get modelName() {
     return this.settings.model;
+  }
+
+  generateTranscriptionResponse(
+    data: OpenAITranscriptionInput,
+    options?: FunctionOptions<
+      Partial<OpenAITranscriptionModelSettings & OpenAIModelSettings>
+    >
+  ): PromiseLike<OpenAITranscriptionVerboseJsonResponse> {
+    return this.callAPI(data, {
+      responseFormat: OpenAITranscriptionResponseFormat.verboseJson,
+      functionId: options?.functionId,
+      settings: options?.settings,
+      run: options?.run,
+    });
+  }
+
+  extractTranscriptionText(
+    response: OpenAITranscriptionVerboseJsonResponse
+  ): string {
+    return response.text;
   }
 
   private get apiKey() {
@@ -257,7 +276,7 @@ const openAITranscriptionVerboseJsonSchema = z.object({
       avg_logprob: z.number(),
       compression_ratio: z.number(),
       no_speech_prob: z.number(),
-      transient: z.boolean(),
+      transient: z.boolean().optional(),
     })
   ),
   text: z.string(),

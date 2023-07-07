@@ -1,4 +1,8 @@
-import { OpenAITextGenerationModel } from "ai-utils.js";
+import {
+  OpenAITextGenerationModel,
+  generateText,
+  generateTextAsFunction,
+} from "ai-utils.js";
 import chalk from "chalk";
 
 export async function runBabyAGI({
@@ -12,7 +16,8 @@ export async function runBabyAGI({
     model: "text-davinci-003",
   });
 
-  const executeTask = model.generateTextAsFunction(
+  const executeTask = generateTextAsFunction(
+    model,
     async ({ objective, task }: { objective: string; task: string }) =>
       [
         `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}`,
@@ -32,7 +37,8 @@ export async function runBabyAGI({
     completedTaskResult: string;
     existingTasks: string[];
   }) {
-    const newTasksText = await model.generateText(
+    const newTasksText = await generateText(
+      model,
       [
         `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.`,
         `The last completed task has the result: ${completedTaskResult}.`,
@@ -56,7 +62,8 @@ export async function runBabyAGI({
     objective: string;
     nextTaskId: number;
   }) {
-    const prioritizedTasksText = await model.generateText(
+    const prioritizedTasksText = await generateText(
+      model,
       [
         `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:`,
         tasks.join(", "),

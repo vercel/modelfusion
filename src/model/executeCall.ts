@@ -25,7 +25,6 @@ export async function executeCall<
   getAbortEvent,
   getFailureEvent,
   getSuccessEvent,
-  errorHandler,
   generateResponse,
   extractOutputValue,
 }: {
@@ -54,7 +53,7 @@ export async function executeCall<
     response: RESPONSE,
     output: OUTPUT
   ) => ModelCallFinishedEvent;
-  errorHandler: ErrorHandler;
+  errorHandler?: ErrorHandler; // TODO remove
   generateResponse: (
     options: FunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
@@ -72,7 +71,7 @@ export async function executeCall<
 
   const eventSource = new ModelCallEventSource({
     observers: [...(settings.observers ?? []), ...(run?.observers ?? [])],
-    errorHandler,
+    errorHandler: run?.errorHandler,
   });
 
   const startTime = performance.now();
@@ -80,7 +79,7 @@ export async function executeCall<
     (performance.timeOrigin + startTime) / 1000
   );
 
-  const callId = createId();
+  const callId = `call-${createId()}`;
 
   const startMetadata = {
     runId: run?.runId,

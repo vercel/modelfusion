@@ -11,18 +11,17 @@ Calls to generative models such as OpenAI's API can get expensive quickly. To ke
 ### Example
 
 ```ts
-const model = new OpenAITextGenerationModel({
-  model: "text-davinci-003",
-  temperature: 0.7,
-  maxTokens: 500,
-});
-
 // define a run with cost calculators:
 const run = new DefaultRun({
   costCalculators: [new OpenAICostCalculator()],
 });
 
-const text = await model.generateText(
+const text = await generateText(
+  new OpenAITextGenerationModel({
+    model: "text-davinci-003",
+    temperature: 0.7,
+    maxTokens: 500,
+  }),
   "Write a short story about a robot learning to love:\n\n",
   { run } // pass in the run into the model calls
 );

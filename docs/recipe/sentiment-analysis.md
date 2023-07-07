@@ -9,13 +9,12 @@ sidebar_position: 2
 [Example](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/recipes/sentiment-analysis.ts)
 
 ```ts
-const model = new OpenAIChatModel({
-  model: "gpt-4",
-  temperature: 0, // remove randomness as much as possible
-  maxTokens: 500, // enough tokens for reasoning and sentiment
-});
-
-const analyzeSentiment = model.generateJsonAsFunction(
+const analyzeSentiment = generateJsonAsFunction(
+  new OpenAIChatModel({
+    model: "gpt-4",
+    temperature: 0, // remove randomness
+    maxTokens: 500, // enough tokens for reasoning and sentiment
+  }),
   async (productReview: string) => [
     OpenAIChatMessage.system(
       "You are a sentiment evaluator. Analyze the sentiment of the following product review:"

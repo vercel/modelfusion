@@ -14,10 +14,10 @@ export class ModelCallEventSource {
     errorHandler,
   }: {
     observers: ModelCallObserver[];
-    errorHandler: ErrorHandler;
+    errorHandler?: ErrorHandler;
   }) {
     this.observers = observers;
-    this.errorHandler = errorHandler;
+    this.errorHandler = errorHandler ?? ((error) => console.error(error));
   }
 
   notifyModelCallStarted(event: ModelCallStartedEvent) {
