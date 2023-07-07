@@ -248,6 +248,13 @@ export class OpenAIChatModel
     });
   }
 
+  /**
+   * JSON generation uses the OpenAI GPT function calling API.
+   * It provides a single function specification and instructs the model to provide parameters for calling the function.
+   * The result is returned as parsed JSON.
+   *
+   * @psee https://platform.openai.com/docs/guides/gpt/function-calling
+   */
   generateJson<T>(
     prompt: OpenAIChatMessage[],
     schema: {

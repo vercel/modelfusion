@@ -55,6 +55,35 @@ const text = await model.generateText([
 ]);
 ```
 
+### JSON Generation (Chat Model)
+
+[API](/api/classes/OpenAIChatModel)
+
+JSON generation uses the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides a single function specification and instructs the model to provide parameters for calling the function. The result is returned as parsed JSON.
+
+```ts
+const model = new OpenAIChatModel({
+  model: "gpt-3.5-turbo",
+  temperature: 0.7,
+  maxTokens: 1000,
+});
+
+const json = await model.generateJson(
+  [
+    OpenAIChatMessage.system("You are a story writer. Write a story about:"),
+    OpenAIChatMessage.user("A robot learning to love"),
+  ],
+  {
+    name: "story",
+    description: "Write the story",
+    parameters: z.object({
+      title: z.string().describe("The title of the story"),
+      content: z.string().describe("The content of the story"),
+    }),
+  }
+);
+```
+
 ### Text Embedding
 
 [API](/api/classes/OpenAITextEmbeddingModel)

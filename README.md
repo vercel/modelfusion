@@ -126,7 +126,7 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 ## Introduction
 
-`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/model/text-generation), [tokenization](https://ai-utils.dev/concept/model/text-tokenization), [embeddings](https://ai-utils.dev/concept/model/text-embedding), [transcription](https://ai-utils.dev/concept/model/transcription), and [image generation](https://ai-utils.dev/concept/model/image-generation). The [vector DB abstraction](https://ai-utils.dev/concept/vector-db) allows you to store and query text embeddings with similarity search.
+`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/model/text-generation), [json generation](https://ai-utils.dev/concept/model/json-generation), [tokenization](https://ai-utils.dev/concept/model/text-tokenization), [embeddings](https://ai-utils.dev/concept/model/text-embedding), [transcription](https://ai-utils.dev/concept/model/transcription), and [image generation](https://ai-utils.dev/concept/model/image-generation). The [vector DB abstraction](https://ai-utils.dev/concept/vector-db) allows you to store and query text embeddings with similarity search.
 
 ### TypeScript-first
 
@@ -152,6 +152,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 - Models
   - [Text generation](https://ai-utils.dev/concept/model/text-generation)
+  - [JSON generation](https://ai-utils.dev/concept/model/json-generation)
   - [Text embedding](https://ai-utils.dev/concept/model/text-embedding)
   - [Text tokenization](https://ai-utils.dev/concept/model/text-tokenization)
   - [Transcription](https://ai-utils.dev/concept/model/transcription)
@@ -173,7 +174,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 ### Model Providers
 
-- [OpenAI](https://ai-utils.dev/integration/model-provider/openai) (text generation, text embedding, tokenization, image generation, audio transcription, cost calculation)
+- [OpenAI](https://ai-utils.dev/integration/model-provider/openai) (text generation, json generation, text embedding, tokenization, image generation, audio transcription, cost calculation)
 - [Cohere](https://ai-utils.dev/integration/model-provider/cohere) (text generation, text embedding, tokenization)
 - [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface) (text generation)
 - [Stability AI](https://ai-utils.dev/integration/model-provider/stability) (image generation)
