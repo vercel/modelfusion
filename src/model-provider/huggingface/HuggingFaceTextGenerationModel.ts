@@ -12,7 +12,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
-import { failedHuggingFaceCallResponseHandler } from "./failedHuggingFaceCallResponseHandler.js";
+import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
 
 export interface HuggingFaceTextGenerationModelSettings
   extends TextGenerationModelSettings {
