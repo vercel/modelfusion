@@ -21,7 +21,23 @@ export interface LlamaCppTextGenerationModelSettings
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
 
+  temperature?: number;
+  topK?: number;
+  topP?: number;
   nPredict?: number;
+  nKeep?: number;
+  stop?: string[];
+  tfsZ?: number;
+  typicalP?: number;
+  repeatPenalty?: number;
+  repeatLastN?: number;
+  penalizeNl?: boolean;
+  mirostat?: number;
+  mirostatTau?: number;
+  mirostatEta?: number;
+  seed?: number;
+  ignoreEos?: boolean;
+  logitBias?: Array<[number, number | false]>;
 }
 
 export class LlamaCppTextGenerationModel
@@ -139,18 +155,66 @@ async function callLlamaCppTextGenerationAPI({
   baseUrl = "http://127.0.0.1:8080",
   abortSignal,
   prompt,
+  temperature,
+  topK,
+  topP,
   nPredict,
+  nKeep,
+  stop,
+  tfsZ,
+  typicalP,
+  repeatPenalty,
+  repeatLastN,
+  penalizeNl,
+  mirostat,
+  mirostatTau,
+  mirostatEta,
+  seed,
+  ignoreEos,
+  logitBias,
 }: {
   baseUrl?: string;
   abortSignal?: AbortSignal;
   prompt: string;
+  temperature?: number;
+  topK?: number;
+  topP?: number;
   nPredict?: number;
+  nKeep?: number;
+  stop?: string[];
+  tfsZ?: number;
+  typicalP?: number;
+  repeatPenalty?: number;
+  repeatLastN?: number;
+  penalizeNl?: boolean;
+  mirostat?: number;
+  mirostatTau?: number;
+  mirostatEta?: number;
+  seed?: number;
+  ignoreEos?: boolean;
+  logitBias?: Array<[number, number | false]>;
 }): Promise<LlamaCppTextGenerationResponse> {
   return postJsonToApi({
     url: `${baseUrl}/completion`,
     body: {
       prompt,
+      temperature,
+      top_k: topK,
+      top_p: topP,
       n_predict: nPredict,
+      n_keep: nKeep,
+      stop,
+      tfs_z: tfsZ,
+      typical_p: typicalP,
+      repeat_penalty: repeatPenalty,
+      repeat_last_n: repeatLastN,
+      penalize_nl: penalizeNl,
+      mirostat,
+      mirostat_tau: mirostatTau,
+      mirostat_eta: mirostatEta,
+      seed,
+      ignore_eos: ignoreEos,
+      logit_bias: logitBias,
     },
     failedResponseHandler: failedLlamaCppCallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(

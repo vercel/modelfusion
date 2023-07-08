@@ -26,7 +26,7 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 import { LlamaCppTextGenerationModel, generateText } from "ai-utils.js";
 
 const text = await generateText(
-  new LlamaCppTextGenerationModel({ nPredict: 512 }),
+  new LlamaCppTextGenerationModel({ nPredict: 256 }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
