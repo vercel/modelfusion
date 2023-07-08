@@ -173,13 +173,13 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 ### Model Providers
 
-| Model Provider                                                                 | text | json | embedding | tokenize | image | transcription |
-| ------------------------------------------------------------------------------ | ---- | ---- | --------- | -------- | ----- | ------------- |
-| [OpenAI](https://ai-utils.dev/integration/model-provider/openai)               | ✅   | ✅   | ✅        | ✅       | ✅    | ✅            |
-| [Cohere](https://ai-utils.dev/integration/model-provider/cohere)               | ✅   |      | ✅        | ✅       |       |               |
-| [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface)    | ✅   |      |           |          |       |               |
-| [Stability AI](https://ai-utils.dev/integration/model-provider/stability)      |      |      |           |          | ✅    |               |
-| [Automatic1111](https://ai-utils.dev/integration/model-provider/automatic1111) |      |      |           |          | ✅    |               |
+| Model Provider                                                                 | text | json | embedding | tokenization | image | transcription | cost calculation |
+| ------------------------------------------------------------------------------ | ---- | ---- | --------- | ------------ | ----- | ------------- | ---------------- |
+| [OpenAI](https://ai-utils.dev/integration/model-provider/openai)               | ✅   | ✅   | ✅        | ✅           | ✅    | ✅            | ✅               |
+| [Cohere](https://ai-utils.dev/integration/model-provider/cohere)               | ✅   |      | ✅        | ✅           |       |               |
+| [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface)    | ✅   |      |           |              |       |               |
+| [Stability AI](https://ai-utils.dev/integration/model-provider/stability)      |      |      |           |              | ✅    |               |
+| [Automatic1111](https://ai-utils.dev/integration/model-provider/automatic1111) |      |      |           |              | ✅    |               |
 
 ### Vector DBs
 
