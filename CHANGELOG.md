@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.23 - 2023-07-08
+
+### Added
+
+- Llama.cpp text generation support.
+
 ## 0.0.22 - 2023-07-08
 
 ### Changed
