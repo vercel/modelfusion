@@ -8,7 +8,10 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 
 ## Available Providers
 
-- [OpenAI](/integration/model-provider/openai)
-- [Cohere](/integration/model-provider/cohere)
-- [Hugging Face](/integration/model-provider/huggingface)
-- [Stability AI](/integration/model-provider/stability)
+| Model Provider                                             | text | json | embedding | tokenize | image | transcription |
+| ---------------------------------------------------------- | ---- | ---- | --------- | -------- | ----- | ------------- |
+| [OpenAI](/integration/model-provider/openai)               | ✅   | ✅   | ✅        | ✅       | ✅    | ✅            |
+| [Cohere](/integration/model-provider/cohere)               | ✅   |      | ✅        | ✅       |       |               |
+| [Hugging Face](/integration/model-provider/huggingface)    | ✅   |      |           |          |       |               |
+| [Stability AI](/integration/model-provider/stability)      |      |      |           |          | ✅    |               |
+| [Automatic1111](/integration/model-provider/automatic1111) |      |      |           |          | ✅    |               |
