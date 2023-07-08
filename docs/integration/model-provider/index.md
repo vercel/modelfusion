@@ -8,10 +8,10 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 
 ## Available Providers
 
-| Model Provider                                             | text | json | embedding | tokenization | image | transcription | cost calculation |
-| ---------------------------------------------------------- | ---- | ---- | --------- | ------------ | ----- | ------------- | ---------------- |
-| [OpenAI](/integration/model-provider/openai)               | ✅   | ✅   | ✅        | ✅           | ✅    | ✅            | ✅               |
-| [Cohere](/integration/model-provider/cohere)               | ✅   |      | ✅        | ✅           |       |               |
-| [Hugging Face](/integration/model-provider/huggingface)    | ✅   |      |           |              |       |               |
-| [Stability AI](/integration/model-provider/stability)      |      |      |           |              | ✅    |               |
-| [Automatic1111](/integration/model-provider/automatic1111) |      |      |           |              | ✅    |               |
+| Model Provider                                                                 | type           | text generation | text streaming | json generation | embedding | tokenization | image generation | transcription | cost calculation |
+| ------------------------------------------------------------------------------ | -------------- | --------------- | -------------- | --------------- | --------- | ------------ | ---------------- | ------------- | ---------------- |
+| [OpenAI](https://ai-utils.dev/integration/model-provider/openai)               | cloud          | ✅              | partial        | ✅              | ✅        | ✅           | ✅               | ✅            | ✅               |
+| [Cohere](https://ai-utils.dev/integration/model-provider/cohere)               | cloud          | ✅              |                |                 | ✅        | ✅           |                  |               |
+| [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface)    | cloud          | ✅              |                |                 |           |              |                  |
+| [Stability AI](https://ai-utils.dev/integration/model-provider/stability)      | cloud          |                 |                |                 |           |              | ✅               |               |
+| [Automatic1111](https://ai-utils.dev/integration/model-provider/automatic1111) | server (local) |                 |                |                 |           |              | ✅               |               |
