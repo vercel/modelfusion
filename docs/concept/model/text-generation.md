@@ -79,3 +79,4 @@ const story = await generateStoryAbout({
 - [OpenAI](/integration/model-provider/openai)
 - [Cohere](/integration/model-provider/cohere)
 - [Hugging Face](/integration/model-provider/huggingface)
+- [Llama.cpp](/integration/model-provider/llamacpp)
