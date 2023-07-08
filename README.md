@@ -186,7 +186,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 - [Memory](https://ai-utils.dev/integration/vector-db/memory)
 - [Pinecone](https://ai-utils.dev/integration/vector-db/pinecone)
 
-## Documentation (at [ai-utils.dev](https://ai-utils.dev))
+## Documentation
 
 - [Concepts](https://ai-utils.dev/concept)
 - [Integrations](https://ai-utils.dev/integration/model-provider)
