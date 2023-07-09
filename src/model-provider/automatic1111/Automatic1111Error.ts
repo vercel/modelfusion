@@ -3,7 +3,7 @@ import SecureJSON from "secure-json-parse";
 import { ResponseHandler } from "../../util/api/postToApi.js";
 import { ApiCallError } from "../../util/api/ApiCallError.js";
 
-export const Automatic1111ErrorDataSchema = z.object({
+export const automatic1111ErrorDataSchema = z.object({
   error: z.string(),
   detail: z.string(),
   body: z.string(),
@@ -11,7 +11,7 @@ export const Automatic1111ErrorDataSchema = z.object({
 });
 
 export type Automatic1111ErrorData = z.infer<
-  typeof Automatic1111ErrorDataSchema
+  typeof automatic1111ErrorDataSchema
 >;
 
 export class Automatic1111Error extends ApiCallError {
@@ -41,7 +41,7 @@ export const failedAutomatic1111CallResponseHandler: ResponseHandler<
 > = async ({ response, url, requestBodyValues }) => {
   const responseBody = await response.text();
 
-  const parsedError = Automatic1111ErrorDataSchema.parse(
+  const parsedError = automatic1111ErrorDataSchema.parse(
     SecureJSON.parse(responseBody)
   );
 

@@ -1,2 +1,2 @@
-export * from "./LlamaCppError.js";
+export { LlamaCppError, LlamaCppErrorData } from "./LlamaCppError.js";
 export * from "./LlamaCppTextGenerationModel.js";
