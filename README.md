@@ -29,6 +29,24 @@ const text = await generateText(
 );
 ```
 
+### Stream Text
+
+> ⚠️ Streaming is currently under development. The API is subject to change.
+
+```ts
+const tokenStream = await streamText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
+  [
+    OpenAIChatMessage.system("You are a story writer. Write a story about:"),
+    OpenAIChatMessage.user("A robot learning to love"),
+  ]
+);
+
+for await (const token of tokenStream) {
+  process.stdout.write(token);
+}
+```
+
 ### Generate JSON
 
 ```ts
@@ -151,6 +169,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 - [Functions](https://ai-utils.dev/concept/function/)
   - [Generate text](https://ai-utils.dev/concept/function/generate-text)
+  - [Stream text](https://ai-utils.dev/concept/function/stream-text)
   - [Generate JSON](https://ai-utils.dev/concept/function/generate-json)
   - [Embed Text](https://ai-utils.dev/concept/function/embed-text)
   - [Tokenize Text](https://ai-utils.dev/concept/function/tokenize)
@@ -176,7 +195,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 | ---------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
 | Hosting                                                                | cloud                                                            | cloud                                                            | cloud                                                                       | cloud                                                                     | server (local)                                                                 | server (local)                                                        |
 | [Generate text](https://ai-utils.dev/concept/function/generate-text)   | ✅                                                               | ✅                                                               | ✅                                                                          |                                                                           |                                                                                | ✅                                                                    |
-| Stream text                                                            | chat models                                                      |                                                                  |                                                                             |                                                                           |                                                                                | ✅                                                                    |
+| [Stream text](https://ai-utils.dev/concept/function/stream-text)       | chat models                                                      |                                                                  |                                                                             |                                                                           |                                                                                | ✅                                                                    |
 | [Generate JSON](https://ai-utils.dev/concept/function/generate-json)   | ✅                                                               |                                                                  |                                                                             |                                                                           |                                                                                |
 | [Embed text](https://ai-utils.dev/concept/function/embed-text)         | ✅                                                               | ✅                                                               |                                                                             |                                                                           |                                                                                |
 | [Tokenize Text](https://ai-utils.dev/concept/function/tokenize)        | ✅                                                               | ✅                                                               |                                                                             |                                                                           |                                                                                |
