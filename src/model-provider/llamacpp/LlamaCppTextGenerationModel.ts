@@ -1,3 +1,5 @@
+import { createParser } from "eventsource-parser";
+import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
@@ -5,13 +7,16 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model/text-generation/TextGenerationModel.js";
+import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
+  ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { convertReadableStreamToAsyncIterable } from "../../util/convertReadableStreamToAsyncIterable.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 
 export interface LlamaCppTextGenerationModelSettings
@@ -58,16 +63,18 @@ export class LlamaCppTextGenerationModel
     return null;
   }
 
-  async callAPI(
+  async callAPI<RESULT>(
     prompt: string,
-    options?: FunctionOptions<LlamaCppTextGenerationModelSettings>
-  ): Promise<LlamaCppTextGenerationResponse> {
-    const run = options?.run;
-    const settings = options?.settings;
+    options: {
+      responseFormat: LlamaCppResponseFormatType<RESULT>;
+    } & FunctionOptions<LlamaCppTextGenerationModelSettings>
+  ): Promise<RESULT> {
+    const { run, settings, responseFormat } = options;
 
     const callSettings = Object.assign(this.settings, settings, {
       abortSignal: run?.abortSignal,
       prompt,
+      responseFormat,
     });
 
     return callWithRetryAndThrottle({
@@ -81,11 +88,24 @@ export class LlamaCppTextGenerationModel
     prompt: string,
     options?: FunctionOptions<LlamaCppTextGenerationModelSettings>
   ) {
-    return this.callAPI(prompt, options);
+    return this.callAPI(prompt, {
+      ...options,
+      responseFormat: LlamaCppResponseFormat.json,
+    });
   }
 
   extractText(response: LlamaCppTextGenerationResponse): string {
     return response.content;
+  }
+
+  generateTextStreamResponse(
+    prompt: string,
+    options?: FunctionOptions<LlamaCppTextGenerationModelSettings>
+  ) {
+    return this.callAPI(prompt, {
+      ...options,
+      responseFormat: LlamaCppResponseFormat.textDeltaIterable,
+    });
   }
 
   withSettings(
@@ -99,6 +119,7 @@ export class LlamaCppTextGenerationModel
 
 const llamaCppTextGenerationResponseSchema = z.object({
   content: z.string(),
+  stop: z.literal(true),
   generation_settings: z.object({
     frequency_penalty: z.number(),
     ignore_eos: z.boolean(),
@@ -126,7 +147,6 @@ const llamaCppTextGenerationResponseSchema = z.object({
   }),
   model: z.string(),
   prompt: z.string(),
-  stop: z.boolean(),
   stopped_eos: z.boolean(),
   stopped_limit: z.boolean(),
   stopped_word: z.boolean(),
@@ -151,9 +171,18 @@ export type LlamaCppTextGenerationResponse = z.infer<
   typeof llamaCppTextGenerationResponseSchema
 >;
 
-async function callLlamaCppTextGenerationAPI({
+const llamaCppTextStreamingResponseSchema = z.discriminatedUnion("stop", [
+  z.object({
+    content: z.string(),
+    stop: z.literal(false),
+  }),
+  llamaCppTextGenerationResponseSchema,
+]);
+
+async function callLlamaCppTextGenerationAPI<RESPONSE>({
   baseUrl = "http://127.0.0.1:8080",
   abortSignal,
+  responseFormat,
   prompt,
   temperature,
   topK,
@@ -175,6 +204,7 @@ async function callLlamaCppTextGenerationAPI({
 }: {
   baseUrl?: string;
   abortSignal?: AbortSignal;
+  responseFormat: LlamaCppResponseFormatType<RESPONSE>;
   prompt: string;
   temperature?: number;
   topK?: number;
@@ -193,10 +223,11 @@ async function callLlamaCppTextGenerationAPI({
   seed?: number;
   ignoreEos?: boolean;
   logitBias?: Array<[number, number | false]>;
-}): Promise<LlamaCppTextGenerationResponse> {
+}): Promise<RESPONSE> {
   return postJsonToApi({
     url: `${baseUrl}/completion`,
     body: {
+      stream: responseFormat.stream,
       prompt,
       temperature,
       top_k: topK,
@@ -217,9 +248,124 @@ async function callLlamaCppTextGenerationAPI({
       logit_bias: logitBias,
     },
     failedResponseHandler: failedLlamaCppCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      llamaCppTextGenerationResponseSchema
-    ),
+    successfulResponseHandler: responseFormat.handler,
     abortSignal,
   });
 }
+
+export type LlamaCppDeltaEvent =
+  | {
+      type: "delta";
+      content: string;
+      isComplete: boolean;
+      delta: string;
+    }
+  | {
+      type: "error";
+      error: unknown;
+    }
+  | undefined;
+
+async function createLlamaCppFullDeltaIterableQueue(
+  stream: ReadableStream<Uint8Array>
+): Promise<AsyncIterable<LlamaCppDeltaEvent>> {
+  const queue = new AsyncQueue<LlamaCppDeltaEvent>();
+
+  let content = "";
+
+  const parser = createParser((event) => {
+    if (event.type !== "event") {
+      return;
+    }
+
+    const data = event.data;
+
+    try {
+      const json = SecureJSON.parse(data);
+      const parseResult = llamaCppTextStreamingResponseSchema.safeParse(json);
+
+      if (!parseResult.success) {
+        queue.push({
+          type: "error",
+          error: parseResult.error,
+        });
+        queue.close();
+        return;
+      }
+
+      const event = parseResult.data;
+
+      content += event.content;
+
+      queue.push({
+        type: "delta",
+        content,
+        isComplete: event.stop,
+        delta: event.content,
+      });
+    } catch (error) {
+      queue.push({ type: "error", error });
+      queue.close();
+      return;
+    }
+  });
+
+  // process the stream asynchonously:
+  (async () => {
+    const decoder = new TextDecoder();
+    const iterable = convertReadableStreamToAsyncIterable(stream.getReader());
+    for await (const value of iterable) {
+      parser.feed(decoder.decode(value));
+    }
+  })();
+
+  return queue;
+}
+
+async function* extractTextDelta(
+  fullDeltaIterable: AsyncIterable<LlamaCppDeltaEvent>
+): AsyncIterable<string> {
+  for await (const event of fullDeltaIterable) {
+    if (event?.type === "error") {
+      throw event.error;
+    }
+
+    if (event?.type === "delta") {
+      const delta = event.delta;
+
+      if (delta != null && delta.length > 0) {
+        yield delta;
+      }
+    }
+  }
+}
+
+export type LlamaCppResponseFormatType<T> = {
+  stream: boolean;
+  handler: ResponseHandler<T>;
+};
+
+export async function createLlamaCppTextDeltaIterable(
+  stream: ReadableStream<Uint8Array>
+): Promise<AsyncIterable<string>> {
+  return extractTextDelta(await createLlamaCppFullDeltaIterableQueue(stream));
+}
+
+export const LlamaCppResponseFormat = {
+  /**
+   * Returns the response as a JSON object.
+   */
+  json: {
+    stream: false,
+    handler: createJsonResponseHandler(llamaCppTextGenerationResponseSchema),
+  } satisfies LlamaCppResponseFormatType<LlamaCppTextGenerationResponse>,
+
+  /**
+   * Returns an async iterable over the text deltas (only the tex different of the first choice).
+   */
+  textDeltaIterable: {
+    stream: true,
+    handler: async ({ response }: { response: Response }) =>
+      createLlamaCppTextDeltaIterable(response.body!),
+  } satisfies LlamaCppResponseFormatType<AsyncIterable<string>>,
+};

@@ -27,6 +27,7 @@ import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import {
+  OpenAIChatFullDelta,
   createOpenAIChatFullDeltaIterable,
   createOpenAIChatTextDeltaIterable,
 } from "./OpenAIChatStreamIterable.js";
@@ -218,9 +219,7 @@ export class OpenAIChatModel
       Partial<OpenAIChatCallSettings & OpenAIModelSettings & { user?: string }>
     >
   ): Promise<RESULT> {
-    const run = options?.run;
-    const settings = options?.settings;
-    const responseFormat = options?.responseFormat;
+    const { run, settings, responseFormat } = options;
 
     const callSettings = Object.assign(
       {
@@ -243,32 +242,28 @@ export class OpenAIChatModel
     });
   }
 
-  generateTextStreamResponse(
-    prompt: OpenAIChatMessage[],
-    options?: FunctionOptions<OpenAIChatSettings>
-  ) {
-    return this.callAPI(prompt, {
-      responseFormat: OpenAIChatResponseFormat.textDeltaIterable,
-      functionId: options?.functionId,
-      settings: options?.settings,
-      run: options?.run,
-    });
-  }
-
   generateTextResponse(
     prompt: OpenAIChatMessage[],
     options?: FunctionOptions<OpenAIChatSettings>
   ) {
     return this.callAPI(prompt, {
+      ...options,
       responseFormat: OpenAIChatResponseFormat.json,
-      functionId: options?.functionId,
-      settings: options?.settings,
-      run: options?.run,
     });
   }
 
   extractText(response: OpenAIChatResponse): string {
     return response.choices[0]!.message.content!;
+  }
+
+  generateTextStreamResponse(
+    prompt: OpenAIChatMessage[],
+    options?: FunctionOptions<OpenAIChatSettings>
+  ) {
+    return this.callAPI(prompt, {
+      ...options,
+      responseFormat: OpenAIChatResponseFormat.textDeltaIterable,
+    });
   }
 
   /**
@@ -415,7 +410,7 @@ export const OpenAIChatResponseFormat = {
   json: {
     stream: false,
     handler: createJsonResponseHandler(openAIChatResponseSchema),
-  },
+  } satisfies OpenAIChatResponseFormatType<OpenAIChatResponse>,
 
   /**
    * Returns the response as a ReadableStream. This is useful for forwarding,
@@ -424,7 +419,7 @@ export const OpenAIChatResponseFormat = {
   readableStream: {
     stream: true,
     handler: createStreamResponseHandler(),
-  },
+  } satisfies OpenAIChatResponseFormatType<ReadableStream>,
 
   /**
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
@@ -434,7 +429,7 @@ export const OpenAIChatResponseFormat = {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
       createOpenAIChatFullDeltaIterable(response.body!),
-  },
+  } satisfies OpenAIChatResponseFormatType<AsyncIterable<OpenAIChatFullDelta>>,
 
   /**
    * Returns an async iterable over the text deltas (only the tex different of the first choice).
@@ -443,5 +438,5 @@ export const OpenAIChatResponseFormat = {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
       createOpenAIChatTextDeltaIterable(response.body!),
-  },
+  } satisfies OpenAIChatResponseFormatType<AsyncIterable<string>>,
 };
