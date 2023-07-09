@@ -5,7 +5,7 @@ dotenv.config();
 
 (async () => {
   const tokenStream = await streamText(
-    new LlamaCppTextGenerationModel({ nPredict: 256, temperature: 0.7 }),
+    new LlamaCppTextGenerationModel({ nPredict: 1024, temperature: 0.7 }),
     "Write a short story about a robot learning to love:\n\n"
   );
 
