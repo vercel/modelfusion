@@ -16,9 +16,8 @@ dotenv.config();
 
   const deltas = await model.callAPI(
     [
-      OpenAIChatMessage.system(
-        "Write a short story about a robot learning to love:"
-      ),
+      OpenAIChatMessage.system("You are a story writer. Write a story about:"),
+      OpenAIChatMessage.user("A robot learning to love"),
     ],
     { responseFormat: OpenAIChatResponseFormat.textDeltaIterable }
   );

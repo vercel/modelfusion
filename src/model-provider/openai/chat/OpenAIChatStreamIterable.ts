@@ -11,7 +11,7 @@ const chatResponseStreamEventSchema = z.object({
         role: z.enum(["assistant", "user"]).optional(),
         content: z.string().optional(),
       }),
-      finish_reason: z.enum(["stop"]).nullable(),
+      finish_reason: z.enum(["stop", "length"]).nullable(),
       index: z.number(),
     })
   ),
