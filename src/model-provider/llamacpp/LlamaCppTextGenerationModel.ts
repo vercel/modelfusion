@@ -7,7 +7,6 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model/text-generation/TextGenerationModel.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -16,7 +15,9 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
-import { convertReadableStreamToAsyncIterable } from "../../util/convertReadableStreamToAsyncIterable.js";
+import { AsyncQueue } from "../../util/stream/AsyncQueue.js";
+import { convertReadableStreamToAsyncIterable } from "../../util/stream/convertReadableStreamToAsyncIterable.js";
+import { extractTextDelta } from "../../util/stream/extractTextDelta.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 
 export interface LlamaCppTextGenerationModelSettings
@@ -322,24 +323,6 @@ async function createLlamaCppFullDeltaIterableQueue(
   return queue;
 }
 
-async function* extractTextDelta(
-  fullDeltaIterable: AsyncIterable<LlamaCppDeltaEvent>
-): AsyncIterable<string> {
-  for await (const event of fullDeltaIterable) {
-    if (event?.type === "error") {
-      throw event.error;
-    }
-
-    if (event?.type === "delta") {
-      const delta = event.delta;
-
-      if (delta != null && delta.length > 0) {
-        yield delta;
-      }
-    }
-  }
-}
-
 export type LlamaCppResponseFormatType<T> = {
   stream: boolean;
   handler: ResponseHandler<T>;
@@ -348,7 +331,10 @@ export type LlamaCppResponseFormatType<T> = {
 export async function createLlamaCppTextDeltaIterable(
   stream: ReadableStream<Uint8Array>
 ): Promise<AsyncIterable<string>> {
-  return extractTextDelta(await createLlamaCppFullDeltaIterableQueue(stream));
+  return extractTextDelta(
+    await createLlamaCppFullDeltaIterableQueue(stream),
+    (event) => event?.delta
+  );
 }
 
 export const LlamaCppResponseFormat = {
