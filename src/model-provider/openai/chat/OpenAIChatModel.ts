@@ -10,6 +10,10 @@ import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../../model/text-generation/TextGenerationModel.js";
+import {
+  TextStreamingModelSettings,
+  TextStreamingModel,
+} from "../../../model/text-generation/TextStreamingModel.js";
 import { Tokenizer } from "../../../model/tokenization/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
@@ -129,6 +133,7 @@ export interface OpenAIChatCallSettings {
 
 export interface OpenAIChatSettings
   extends TextGenerationModelSettings,
+    TextStreamingModelSettings,
     OpenAIModelSettings,
     OpenAIChatCallSettings {
   isUserIdForwardingEnabled?: boolean;
@@ -160,6 +165,7 @@ export class OpenAIChatModel
       OpenAIChatResponse,
       OpenAIChatSettings
     >,
+    TextStreamingModel<OpenAIChatMessage[], OpenAIChatSettings>,
     JsonGenerationModel<
       OpenAIChatMessage[],
       OpenAIChatResponse,
@@ -234,6 +240,18 @@ export class OpenAIChatModel
       retry: callSettings.retry,
       throttle: callSettings.throttle,
       call: async () => callOpenAIChatCompletionAPI(callSettings),
+    });
+  }
+
+  generateTextStreamResponse(
+    prompt: OpenAIChatMessage[],
+    options?: FunctionOptions<OpenAIChatSettings>
+  ) {
+    return this.callAPI(prompt, {
+      responseFormat: OpenAIChatResponseFormat.textDeltaIterable,
+      functionId: options?.functionId,
+      settings: options?.settings,
+      run: options?.run,
     });
   }
 
