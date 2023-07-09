@@ -7,17 +7,16 @@ title: Stability AI
 
 ## Setup
 
-You can get an API key from [Stability AI](https://platform.stability.ai/docs/getting-started/authentication).
+1. You can get an API key from [Stability AI](https://platform.stability.ai/docs/getting-started/authentication).
+1. The API key can be configured as an environment variable (`STABILITY_API_KEY`) or passed in as an option into the model constructor.
 
 ## Usage
 
 [Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/stability)
 
-The API key can be configured as an environment variable (`STABILITY_API_KEY`) or passed in as an option.
+### Generate Image
 
-### Image Generation
-
-[API](/api/classes/StabilityImageGenerationModel)
+[StabilityImageGenerationModel API](/api/classes/StabilityImageGenerationModel)
 
 ```ts
 import { StabilityImageGenerationModel, generateImage } from "ai-utils.js";

@@ -18,9 +18,9 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 
 [Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/llamacpp)
 
-### Text Generation
+### Generate Text
 
-[API](/api/classes/LlamaCppTextGenerationModel)
+[LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
 
 ```ts
 import { LlamaCppTextGenerationModel, generateText } from "ai-utils.js";

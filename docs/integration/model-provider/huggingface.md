@@ -7,17 +7,16 @@ title: Hugging Face
 
 ## Setup
 
-You can get an API key from [Hugging Face](https://huggingface.co/).
+1. You can get an API key from [Hugging Face](https://huggingface.co/).
+1. The API key can be configured as an environment variable (`HUGGINGFACE_API_KEY`) or passed in as an option into the model constructor.
 
 ## Usage
 
 [Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/huggingface)
 
-The API key can be configured as an environment variable (`HUGGINGFACE_API_KEY`) or passed in as an option.
+### Generate Text
 
-### Text Generation
-
-[API](/api/classes/HuggingFaceTextGenerationModel)
+[HuggingFaceTextGenerationModel API](/api/classes/HuggingFaceTextGenerationModel)
 
 ```ts
 import { HuggingFaceTextGenerationModel, generateText } from "ai-utils.js";

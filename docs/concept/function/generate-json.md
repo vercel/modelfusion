@@ -2,13 +2,15 @@
 sidebar_position: 5
 ---
 
-# JSON Generation
+# Generate JSON
+
+Generates JSON using a prompt and a structure.
 
 ## Usage
 
 ### generateJson
 
-[JsonGenerationModel API](/api/interfaces/JsonGenerationModel)
+[generateJson API](/api/modules#generatejson)
 
 Generates JSON using a prompt and a structure.
 The prompt format depends on the model.
@@ -36,6 +38,8 @@ const story = await generateJson(
 ```
 
 ### generateJsonAsFunction
+
+[generateJsonAsFunction API](/api/modules#generatejsonasfunction)
 
 Uses a prompt template to create a function that generates JSON.
 The prompt template is a function that takes an input and returns a prompt that matches the model's prompt format.

@@ -125,7 +125,7 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 ## Introduction
 
-`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/model/text-generation), [json generation](https://ai-utils.dev/concept/model/json-generation), [tokenization](https://ai-utils.dev/concept/model/text-tokenization), [embeddings](https://ai-utils.dev/concept/model/text-embedding), [transcription](https://ai-utils.dev/concept/model/transcription), and [image generation](https://ai-utils.dev/concept/model/image-generation). The [vector DB abstraction](https://ai-utils.dev/concept/vector-db) allows you to store and query text embeddings with similarity search.
+`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/function/generate-text), [json generation](https://ai-utils.dev/concept/function/generate-json), [tokenization](https://ai-utils.dev/concept/function/tokenize), [embeddings](https://ai-utils.dev/concept/function/embed-text), [transcription](https://ai-utils.dev/concept/function/transcribe), and [image generation](https://ai-utils.dev/concept/function/generate-image). The [vector DB abstraction](https://ai-utils.dev/concept/vector-db) allows you to store and query text embeddings with similarity search.
 
 ### TypeScript-first
 
@@ -149,21 +149,20 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 ## Features
 
-- Models
-  - [Text generation](https://ai-utils.dev/concept/model/text-generation)
-  - [JSON generation](https://ai-utils.dev/concept/model/json-generation)
-  - [Text embedding](https://ai-utils.dev/concept/model/text-embedding)
-  - [Text tokenization](https://ai-utils.dev/concept/model/text-tokenization)
-  - [Transcription](https://ai-utils.dev/concept/model/transcription)
-  - [Image generation](https://ai-utils.dev/concept/model/image-generation)
-- Text summarization
-- Text splitting
+- [Functions](https://ai-utils.dev/concept/function/)
+  - [Generate text](https://ai-utils.dev/concept/function/generate-text)
+  - [Generate JSON](https://ai-utils.dev/concept/function/generate-json)
+  - [Embed Text](https://ai-utils.dev/concept/function/embed-text)
+  - [Tokenize Text](https://ai-utils.dev/concept/function/tokenize)
+  - [Transcribe](https://ai-utils.dev/concept/function/transcribe)
+  - [Generate images](https://ai-utils.dev/concept/function/generate-image)
+- Summarize text
+- Split text
 - [Vector DBs](https://ai-utils.dev/concept/vector-db)
 - [Run abstraction](https://ai-utils.dev/concept/run/)
   - [Abort signals](https://ai-utils.dev/concept/run/abort)
   - [Cost calculation](https://ai-utils.dev/concept/run/cost-calculation)
   - Call recording
-  - Progress reporting
 - Utilities
   - [Retry strategies](https://ai-utils.dev/concept/util/retry)
   - [Throttling strategies](https://ai-utils.dev/concept/util/throttle)
@@ -173,17 +172,17 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 ### Model Providers
 
-|                                                                         | [OpenAI](https://ai-utils.dev/integration/model-provider/openai) | [Cohere](https://ai-utils.dev/integration/model-provider/cohere) | [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface) | [Stability AI](https://ai-utils.dev/integration/model-provider/stability) | [Automatic1111](https://ai-utils.dev/integration/model-provider/automatic1111) | [Llama.cpp](https://ai-utils.dev/integration/model-provider/llamacpp) |
-| ----------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| hosting                                                                 | cloud                                                            | cloud                                                            | cloud                                                                       | cloud                                                                     | server (local)                                                                 | server (local)                                                        |
-| [text generation](https://ai-utils.dev/concept/model/text-generation)   | ✅                                                               | ✅                                                               | ✅                                                                          |                                                                           |                                                                                | ✅                                                                    |
-| text streaming                                                          | chat models                                                      |                                                                  |                                                                             |                                                                           |                                                                                | ✅                                                                    |
-| [json generation](https://ai-utils.dev/concept/model/json-generation)   | ✅                                                               |                                                                  |                                                                             |                                                                           |                                                                                |
-| [text embedding](https://ai-utils.dev/concept/model/text-embedding)     | ✅                                                               | ✅                                                               |                                                                             |                                                                           |                                                                                |
-| [tokenization](https://ai-utils.dev/concept/model/text-tokenization)    | ✅                                                               | ✅                                                               |                                                                             |                                                                           |                                                                                |
-| [image generation](https://ai-utils.dev/concept/model/image-generation) | ✅                                                               |                                                                  |                                                                             | ✅                                                                        | ✅                                                                             |
-| [transcription](https://ai-utils.dev/concept/model/transcription)       | ✅                                                               |                                                                  |                                                                             |                                                                           |                                                                                |
-| [cost calculation](https://ai-utils.dev/concept/run/cost-calculation)   | ✅                                                               |                                                                  |                                                                             |                                                                           |                                                                                |
+|                                                                        | [OpenAI](https://ai-utils.dev/integration/model-provider/openai) | [Cohere](https://ai-utils.dev/integration/model-provider/cohere) | [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface) | [Stability AI](https://ai-utils.dev/integration/model-provider/stability) | [Automatic1111](https://ai-utils.dev/integration/model-provider/automatic1111) | [Llama.cpp](https://ai-utils.dev/integration/model-provider/llamacpp) |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| Hosting                                                                | cloud                                                            | cloud                                                            | cloud                                                                       | cloud                                                                     | server (local)                                                                 | server (local)                                                        |
+| [Generate text](https://ai-utils.dev/concept/function/generate-text)   | ✅                                                               | ✅                                                               | ✅                                                                          |                                                                           |                                                                                | ✅                                                                    |
+| Stream text                                                            | chat models                                                      |                                                                  |                                                                             |                                                                           |                                                                                | ✅                                                                    |
+| [Generate JSON](https://ai-utils.dev/concept/function/generate-json)   | ✅                                                               |                                                                  |                                                                             |                                                                           |                                                                                |
+| [Embed text](https://ai-utils.dev/concept/function/embed-text)         | ✅                                                               | ✅                                                               |                                                                             |                                                                           |                                                                                |
+| [Tokenize Text](https://ai-utils.dev/concept/function/tokenize)        | ✅                                                               | ✅                                                               |                                                                             |                                                                           |                                                                                |
+| [Generate Image](https://ai-utils.dev/concept/function/generate-image) | ✅                                                               |                                                                  |                                                                             | ✅                                                                        | ✅                                                                             |
+| [Transcribe](https://ai-utils.dev/concept/function/transcribe)         | ✅                                                               |                                                                  |                                                                             |                                                                           |                                                                                |
+| [Cost calculation](https://ai-utils.dev/concept/run/cost-calculation)  | ✅                                                               |                                                                  |                                                                             |                                                                           |                                                                                |
 
 ### Vector DBs
 

@@ -2,13 +2,13 @@
 sidebar_position: 15
 ---
 
-# Text Embedding
+# Embed Text
 
 ## Usage
 
-[TextEmbeddingModel API](/api/interfaces/TextEmbeddingModel)
-
 ### embedText
+
+[embedText API](/api/modules#embedtext)
 
 Generate an embedding for a single text.
 
@@ -22,6 +22,8 @@ const embedding = await embedText(
 ```
 
 ### embedTexts
+
+[embedTexts API](/api/modules#embedtexts)
 
 Generate embeddings for multiple texts.
 

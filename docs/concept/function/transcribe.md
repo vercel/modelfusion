@@ -2,13 +2,13 @@
 sidebar_position: 30
 ---
 
-# Transcription
+# Transcribe
 
 ## Usage
 
-[TranscriptionModel API](/api/interfaces/TranscriptionModel)
-
 ### transcribe
+
+[transcribe API](/api/modules#transcribe)
 
 Transcribe audio data into text.
 

@@ -11,7 +11,7 @@ Throttling strategies determine how many parallel API calls are allowed.
 By default, API calls are not throttled.
 You can configure different throttling strategies on models, either in the constructor or as function call parameters.
 
-Throttling can be particularly useful for [text embedding models](/concept/model/text-embedding), where each `embedText` call can result in multiple API calls.
+Throttling can be particularly useful for [text embedding](/concept/function/embed-text), where each `embedText` call can result in multiple API calls.
 
 Different models can share the same throttling strategy. This will result in a shared maximum number of API calls between them.
 

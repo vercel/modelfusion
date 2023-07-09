@@ -2,13 +2,15 @@
 sidebar_position: 3
 ---
 
-# Text Generation
+# Generate Text
+
+Generates text using a prompt.
 
 ## Usage
 
-[TextGenerationModel API](/api/interfaces/TextGenerationModel)
-
 ### generateText
+
+[generateText API](/api/modules#generatetext)
 
 Generates a text using a prompt.
 The prompt format depends on the model.
@@ -39,6 +41,8 @@ const text = await generateText(
 ```
 
 ### generateTextAsFunction
+
+[generateTextAsFunction API](/api/modules#generatetextasfunction)
 
 Uses a prompt template to create a function that generates text.
 The prompt template is a function that takes an input and returns a prompt that matches the model's prompt format.

@@ -2,7 +2,7 @@
 sidebar_position: 18
 ---
 
-# Text Tokenization
+# Tokenize Text
 
 ## Usage
 

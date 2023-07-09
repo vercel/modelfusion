@@ -2,13 +2,13 @@
 sidebar_position: 40
 ---
 
-# Image Generation
+# Generate Image
 
 ## Usage
 
-[ImageGenerationModel API](/api/interfaces/ImageGenerationModel)
-
 ### generateImage
+
+[generateImage API](/api/modules#generateimage)
 
 Generates a base64-encoded image using a prompt.
 The prompt format depends on the model.
@@ -36,6 +36,8 @@ const imageBase64 = await generateImage(
 ```
 
 ### generateImageAsFunction
+
+[generateImageAsFunction API](/api/modules#generateimageasfunction)
 
 Uses a prompt template to create a function that generates an image.
 The prompt template is a function that takes an input and returns a prompt that matches the model's prompt format.

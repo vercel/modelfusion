@@ -7,17 +7,18 @@ title: OpenAI
 
 ## Setup
 
-You can sign up for a developer account at [OpenAI](https://platform.openai.com/overview). You can then [create an API key](https://platform.openai.com/account/api-keys) for accessing the OpenAI API.
+1. You can sign up for a developer account at [OpenAI](https://platform.openai.com/overview). You can then [create an API key](https://platform.openai.com/account/api-keys) for accessing the OpenAI API.
+1. The API key can be configured as an environment variable (`OPENAI_API_KEY`) or passed in as an option into the model constructor.
 
 ## Usage
 
 [Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/openai)
 
-The API key can be configured as an environment variable (`OPENAI_API_KEY`) or passed in as an option.
+### Generate Text
 
-### Text Generation (Text Model)
+#### Text Model
 
-[API](/api/classes/OpenAITextGenerationModel)
+[OpenAITextGenerationModel API](/api/classes/OpenAITextGenerationModel)
 
 ```ts
 import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
@@ -32,11 +33,11 @@ const text = await generateText(
 );
 ```
 
-### Text Generation (Chat Model)
-
-[API](/api/classes/OpenAIChatModel)
+#### Chat Model
 
 The OpenAI chat models include GPT-3.5-turbo and GPT-4.
+
+[OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
 ```ts
 import { OpenAIChatMessage, OpenAIChatModel, generateText } from "ai-utils.js";
@@ -55,11 +56,13 @@ const text = await generateText(
 );
 ```
 
-### JSON Generation (Chat Model)
+### Generate JSON
 
-[API](/api/classes/OpenAIChatModel)
+#### Chat Model
 
 JSON generation uses the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides a single function specification and instructs the model to provide parameters for calling the function. The result is returned as parsed JSON.
+
+[OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
 ```ts
 import { OpenAIChatMessage, OpenAIChatModel, generateJson } from "ai-utils.js";
@@ -87,7 +90,7 @@ const json = await generateJson(
 
 ### Text Embedding
 
-[API](/api/classes/OpenAITextEmbeddingModel)
+[OpenAITextEmbeddingModel API](/api/classes/OpenAITextEmbeddingModel)
 
 ```ts
 import { OpenAITextEmbeddingModel, embedTexts } from "ai-utils.js";
@@ -101,9 +104,9 @@ const embeddings = await embedTexts(
 );
 ```
 
-### Tokenization (TikToken)
+### Tokenize Text
 
-[API](/api/classes/TikTokenTokenizer)
+[TikTokenTokenizer API](/api/classes/TikTokenTokenizer)
 
 ```ts
 import { TikTokenTokenizer } from "ai-utils.js";
@@ -118,9 +121,9 @@ const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
 const reconstructedText = await tokenizer.detokenize(tokens);
 ```
 
-### Transcription
+### Transcribe
 
-[API](/api/classes/OpenAITranscriptionModel)
+[OpenAITranscriptionModel API](/api/classes/OpenAITranscriptionModel)
 
 ```ts
 import fs from "node:fs";
@@ -137,11 +140,11 @@ const transcription = await transcribe(
 );
 ```
 
-### Image Generation
+### Generate Image
 
 OpenAI provides a model called DALL-E that can generate images from text descriptions.
 
-[API](/api/classes/OpenAIImageGenerationModel)
+[OpenAIImageGenerationModel API](/api/classes/OpenAIImageGenerationModel)
 
 ```ts
 import { OpenAIImageGenerationModel, generateImage } from "ai-utils.js";

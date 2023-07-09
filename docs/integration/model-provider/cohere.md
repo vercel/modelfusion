@@ -7,17 +7,16 @@ title: Cohere
 
 ## Setup
 
-You can get an API key from [Cohere](https://cohere.com/).
+1. You can get an API key from [Cohere](https://cohere.com/).
+1. The API key can be configured as an environment variable (`COHERE_API_KEY`) or passed in as an option into the model constructor.
 
 ## Usage
 
 [Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/cohere)
 
-The API key can be configured as an environment variable (`COHERE_API_KEY`) or passed in as an option.
+### Generate Text
 
-### Text Generation
-
-[API](/api/classes/CohereTextGenerationModel)
+[CohereTextGenerationModel API](/api/classes/CohereTextGenerationModel)
 
 ```ts
 import { CohereTextGenerationModel, generateText } from "ai-utils.js";
@@ -32,9 +31,9 @@ const text = await generateText(
 );
 ```
 
-### Text Embedding
+### Embed Text
 
-[API](/api/classes/CohereTextEmbeddingModel)
+[CohereTextEmbeddingModel API](/api/classes/CohereTextEmbeddingModel)
 
 ```ts
 import { CohereTextEmbeddingModel, embedTexts } from "ai-utils.js";
@@ -48,9 +47,9 @@ const embeddings = await embedTexts(
 );
 ```
 
-### Tokenization
+### Tokenize Text
 
-[API](/api/classes/CohereTokenizer)
+[CohereTokenizer API](/api/classes/CohereTokenizer)
 
 ```ts
 import { CohereTokenizer } from "ai-utils.js";
