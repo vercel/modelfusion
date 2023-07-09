@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.24 - 2023-07-09
+
+### Added
+
+- Generalized text streaming (async string iterable, useful for command line streaming).
+- Streaming support for Llama.cpp text generation.
+
 ## 0.0.23 - 2023-07-08
 
 ### Added
