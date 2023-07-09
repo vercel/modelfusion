@@ -2,7 +2,7 @@
 sidebar_position: 30
 ---
 
-# Transcribe
+# Transcribe Audio
 
 ## Usage
 

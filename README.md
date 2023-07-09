@@ -20,7 +20,7 @@ npm install ai-utils.js
 
 You can provide API keys for the different [providers](https://ai-utils.dev/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or pass them into the model constructors as options.
 
-### Text Generation
+### Generate Text
 
 ```ts
 const text = await generateText(
@@ -29,7 +29,7 @@ const text = await generateText(
 );
 ```
 
-### JSON generation
+### Generate JSON
 
 ```ts
 const json = await generateJson(
@@ -49,7 +49,7 @@ const json = await generateJson(
 );
 ```
 
-### Transcription
+### Transcribe Audio
 
 ```ts
 const transcription = await transcribe(
@@ -61,7 +61,7 @@ const transcription = await transcribe(
 );
 ```
 
-### Image Generation
+### Generate Image
 
 ```ts
 const imageBase64 = await generateImage(
@@ -70,7 +70,7 @@ const imageBase64 = await generateImage(
 );
 ```
 
-### Text Embedding
+### Embed Text
 
 ```ts
 const embeddings = await embedTexts(
@@ -154,7 +154,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
   - [Generate JSON](https://ai-utils.dev/concept/function/generate-json)
   - [Embed Text](https://ai-utils.dev/concept/function/embed-text)
   - [Tokenize Text](https://ai-utils.dev/concept/function/tokenize)
-  - [Transcribe](https://ai-utils.dev/concept/function/transcribe)
+  - [Transcribe Audio](https://ai-utils.dev/concept/function/transcribe)
   - [Generate images](https://ai-utils.dev/concept/function/generate-image)
 - Summarize text
 - Split text
@@ -181,7 +181,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 | [Embed text](https://ai-utils.dev/concept/function/embed-text)         | ✅                                                               | ✅                                                               |                                                                             |                                                                           |                                                                                |
 | [Tokenize Text](https://ai-utils.dev/concept/function/tokenize)        | ✅                                                               | ✅                                                               |                                                                             |                                                                           |                                                                                |
 | [Generate Image](https://ai-utils.dev/concept/function/generate-image) | ✅                                                               |                                                                  |                                                                             | ✅                                                                        | ✅                                                                             |
-| [Transcribe](https://ai-utils.dev/concept/function/transcribe)         | ✅                                                               |                                                                  |                                                                             |                                                                           |                                                                                |
+| [Transcribe Audio](https://ai-utils.dev/concept/function/transcribe)   | ✅                                                               |                                                                  |                                                                             |                                                                           |                                                                                |
 | [Cost calculation](https://ai-utils.dev/concept/run/cost-calculation)  | ✅                                                               |                                                                  |                                                                             |                                                                           |                                                                                |
 
 ### Vector DBs
