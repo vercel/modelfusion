@@ -58,6 +58,26 @@ const text = await generateText(
 
 ### Stream Text
 
+#### Text Model
+
+[OpenAITextGenerationModel API](/api/classes/OpenAITextGenerationModel)
+
+```ts
+import { OpenAITextGenerationModel, streamText } from "ai-utils.js";
+
+const tokenStream = await streamText(
+  new OpenAITextGenerationModel({
+    model: "text-davinci-003",
+    maxTokens: 1000,
+  }),
+  "You are a story writer. Write a story about a robot learning to love"
+);
+
+for await (const token of tokenStream) {
+  process.stdout.write(token);
+}
+```
+
 #### Chat Model
 
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)

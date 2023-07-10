@@ -30,3 +30,20 @@ const text = await generateText(
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
+
+### Stream Text
+
+[LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
+
+```ts
+import { LlamaCppTextGenerationModel, streamText } from "ai-utils.js";
+
+const tokenStream = await streamText(
+  new LlamaCppTextGenerationModel({ nPredict: 1024, temperature: 0.7 }),
+  "Write a short story about a robot learning to love:\n\n"
+);
+
+for await (const token of tokenStream) {
+  process.stdout.write(token);
+}
+```
