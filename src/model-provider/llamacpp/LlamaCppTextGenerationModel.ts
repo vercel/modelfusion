@@ -6,10 +6,13 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model/text-generation/TextGenerationModel.js";
+import { AsyncQueue } from "../../model/text-streaming/AsyncQueue.js";
 import {
   TextStreamingModel,
   TextStreamingModelSettings,
 } from "../../model/text-streaming/TextStreamingModel.js";
+import { extractTextDelta } from "../../model/text-streaming/extractTextDelta.js";
+import { parseEventSourceReadableStream } from "../../model/text-streaming/parseEventSourceReadableStream.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -19,9 +22,6 @@ import {
   createStreamResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
-import { AsyncQueue } from "../../util/stream/AsyncQueue.js";
-import { extractTextDelta } from "../../util/stream/extractTextDelta.js";
-import { parseEventSourceReadableStream } from "../../util/stream/parseEventSourceReadableStream.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 
 export interface LlamaCppTextGenerationModelSettings
