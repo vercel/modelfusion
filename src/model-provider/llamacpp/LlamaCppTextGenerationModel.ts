@@ -1,4 +1,3 @@
-import { createParser } from "eventsource-parser";
 import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model/AbstractModel.js";
@@ -16,8 +15,8 @@ import {
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { AsyncQueue } from "../../util/stream/AsyncQueue.js";
-import { convertReadableStreamToAsyncIterable } from "../../util/stream/convertReadableStreamToAsyncIterable.js";
 import { extractTextDelta } from "../../util/stream/extractTextDelta.js";
+import { parseEventSourceReadableStream } from "../../util/stream/parseEventSourceReadableStream.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 
 export interface LlamaCppTextGenerationModelSettings
@@ -274,51 +273,46 @@ async function createLlamaCppFullDeltaIterableQueue(
 
   let content = "";
 
-  const parser = createParser((event) => {
-    if (event.type !== "event") {
-      return;
-    }
-
-    const data = event.data;
-
-    try {
-      const json = SecureJSON.parse(data);
-      const parseResult = llamaCppTextStreamingResponseSchema.safeParse(json);
-
-      if (!parseResult.success) {
-        queue.push({
-          type: "error",
-          error: parseResult.error,
-        });
-        queue.close();
+  // process the stream asynchonously (no 'await' on purpose):
+  parseEventSourceReadableStream({
+    stream,
+    callback: (event) => {
+      if (event.type !== "event") {
         return;
       }
 
-      const event = parseResult.data;
+      const data = event.data;
 
-      content += event.content;
+      try {
+        const json = SecureJSON.parse(data);
+        const parseResult = llamaCppTextStreamingResponseSchema.safeParse(json);
 
-      queue.push({
-        type: "delta",
-        content,
-        isComplete: event.stop,
-        delta: event.content,
-      });
-    } catch (error) {
-      queue.push({ type: "error", error });
-      queue.close();
-      return;
-    }
+        if (!parseResult.success) {
+          queue.push({
+            type: "error",
+            error: parseResult.error,
+          });
+          queue.close();
+          return;
+        }
+
+        const event = parseResult.data;
+
+        content += event.content;
+
+        queue.push({
+          type: "delta",
+          content,
+          isComplete: event.stop,
+          delta: event.content,
+        });
+      } catch (error) {
+        queue.push({ type: "error", error });
+        queue.close();
+        return;
+      }
+    },
   });
-
-  // process the stream asynchonously:
-  (async () => {
-    const decoder = new TextDecoder();
-    const iterable = convertReadableStreamToAsyncIterable(stream.getReader());
-    for await (const value of iterable) {
-      parser.feed(decoder.decode(value));
-    }
-  })();
 
   return queue;
 }

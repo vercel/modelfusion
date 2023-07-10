@@ -1,9 +1,8 @@
-import { createParser } from "eventsource-parser";
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AsyncQueue } from "../../../util/stream/AsyncQueue.js";
-import { convertReadableStreamToAsyncIterable } from "../../../util/stream/convertReadableStreamToAsyncIterable.js";
 import { extractTextDelta } from "../../../util/stream/extractTextDelta.js";
+import { parseEventSourceReadableStream } from "../../../util/stream/parseEventSourceReadableStream.js";
 
 const chatResponseStreamEventSchema = z.object({
   choices: z.array(
@@ -47,89 +46,83 @@ async function createOpenAIChatFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
 ): Promise<AsyncIterable<OpenAIChatFullDeltaEvent>> {
   const queue = new AsyncQueue<OpenAIChatFullDeltaEvent>();
-
   const streamDelta: OpenAIChatFullDelta = [];
 
-  const parser = createParser((event) => {
-    if (event.type !== "event") {
-      return;
-    }
+  // process the stream asynchonously (no 'await' on purpose):
+  parseEventSourceReadableStream({
+    stream,
+    callback: (event) => {
+      if (event.type !== "event") {
+        return;
+      }
 
-    const data = event.data;
+      const data = event.data;
 
-    if (data === "[DONE]") {
-      queue.close();
-      return;
-    }
-
-    try {
-      const json = SecureJSON.parse(data);
-      const parseResult = chatResponseStreamEventSchema.safeParse(json);
-
-      if (!parseResult.success) {
-        queue.push({
-          type: "error",
-          error: parseResult.error,
-        });
+      if (data === "[DONE]") {
         queue.close();
         return;
       }
 
-      const event = parseResult.data;
+      try {
+        const json = SecureJSON.parse(data);
+        const parseResult = chatResponseStreamEventSchema.safeParse(json);
 
-      for (let i = 0; i < event.choices.length; i++) {
-        const eventChoice = event.choices[i];
-        const delta = eventChoice.delta;
-
-        if (streamDelta[i] == null) {
-          streamDelta[i] = {
-            role: undefined,
-            content: "",
-            isComplete: false,
-            delta,
-          };
+        if (!parseResult.success) {
+          queue.push({
+            type: "error",
+            error: parseResult.error,
+          });
+          queue.close();
+          return;
         }
 
-        const choice = streamDelta[i];
+        const event = parseResult.data;
 
-        choice.delta = delta;
+        for (let i = 0; i < event.choices.length; i++) {
+          const eventChoice = event.choices[i];
+          const delta = eventChoice.delta;
 
-        if (eventChoice.finish_reason != null) {
-          choice.isComplete = true;
+          if (streamDelta[i] == null) {
+            streamDelta[i] = {
+              role: undefined,
+              content: "",
+              isComplete: false,
+              delta,
+            };
+          }
+
+          const choice = streamDelta[i];
+
+          choice.delta = delta;
+
+          if (eventChoice.finish_reason != null) {
+            choice.isComplete = true;
+          }
+
+          if (delta.content != undefined) {
+            choice.content += delta.content;
+          }
+
+          if (delta.role != undefined) {
+            choice.role = delta.role;
+          }
         }
 
-        if (delta.content != undefined) {
-          choice.content += delta.content;
-        }
+        // Since we're mutating the choices array in an async scenario,
+        // we need to make a deep copy:
+        const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
 
-        if (delta.role != undefined) {
-          choice.role = delta.role;
-        }
+        queue.push({
+          type: "delta",
+          fullDelta: streamDeltaDeepCopy,
+        });
+      } catch (error) {
+        queue.push({ type: "error", error });
+        queue.close();
+        return;
       }
-
-      // Since we're mutating the choices array in an async scenario,
-      // we need to make a deep copy:
-      const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
-
-      queue.push({
-        type: "delta",
-        fullDelta: streamDeltaDeepCopy,
-      });
-    } catch (error) {
-      queue.push({ type: "error", error });
-      queue.close();
-      return;
-    }
+    },
   });
-
-  // process the stream asynchonously:
-  (async () => {
-    const decoder = new TextDecoder();
-    const iterable = convertReadableStreamToAsyncIterable(stream.getReader());
-    for await (const value of iterable) {
-      parser.feed(decoder.decode(value));
-    }
-  })();
 
   return queue;
 }
