@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.25 - 2023-07-10
+
+### Added
+
+- Streaming support for OpenAI text completion models.
+- OpenAI function streaming support (in low-level API).
+
 ## 0.0.24 - 2023-07-09
 
 ### Added
