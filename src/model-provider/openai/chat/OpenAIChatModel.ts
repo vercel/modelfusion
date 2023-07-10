@@ -10,6 +10,7 @@ import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../../model/text-generation/TextGenerationModel.js";
+import { DeltaEvent } from "../../../model/text-streaming/DeltaEvent.js";
 import {
   TextStreamingModel,
   TextStreamingModelSettings,
@@ -27,9 +28,9 @@ import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import {
-  OpenAIChatFullDelta,
+  OpenAIChatDelta,
   createOpenAIChatFullDeltaIterable,
-  createOpenAIChatTextDeltaIterable,
+  createOpenAIChatFullDeltaIterableQueue,
 } from "./OpenAIChatStreamIterable.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 
@@ -166,7 +167,11 @@ export class OpenAIChatModel
       OpenAIChatResponse,
       OpenAIChatSettings
     >,
-    TextStreamingModel<OpenAIChatMessage[], OpenAIChatSettings>,
+    TextStreamingModel<
+      OpenAIChatMessage[],
+      OpenAIChatDelta,
+      OpenAIChatSettings
+    >,
     JsonGenerationModel<
       OpenAIChatMessage[],
       OpenAIChatResponse,
@@ -256,14 +261,18 @@ export class OpenAIChatModel
     return response.choices[0]!.message.content!;
   }
 
-  generateTextStreamResponse(
+  generateDeltaStreamResponse(
     prompt: OpenAIChatMessage[],
     options?: FunctionOptions<OpenAIChatSettings>
   ) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: OpenAIChatResponseFormat.textDeltaIterable,
+      responseFormat: OpenAIChatResponseFormat.deltaIterable,
     });
+  }
+
+  extractTextDelta(fullDelta: OpenAIChatDelta): string | undefined {
+    return fullDelta[0]?.delta.content ?? undefined;
   }
 
   /**
@@ -429,14 +438,16 @@ export const OpenAIChatResponseFormat = {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
       createOpenAIChatFullDeltaIterable(response.body!),
-  } satisfies OpenAIChatResponseFormatType<AsyncIterable<OpenAIChatFullDelta>>,
+  } satisfies OpenAIChatResponseFormatType<AsyncIterable<OpenAIChatDelta>>,
 
   /**
    * Returns an async iterable over the text deltas (only the tex different of the first choice).
    */
-  textDeltaIterable: {
+  deltaIterable: {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
-      createOpenAIChatTextDeltaIterable(response.body!),
-  } satisfies OpenAIChatResponseFormatType<AsyncIterable<string>>,
+      createOpenAIChatFullDeltaIterableQueue(response.body!),
+  } satisfies OpenAIChatResponseFormatType<
+    AsyncIterable<DeltaEvent<OpenAIChatDelta>>
+  >,
 };

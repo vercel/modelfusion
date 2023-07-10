@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AsyncQueue } from "../../../model/text-streaming/AsyncQueue.js";
-import { extractTextDelta } from "../../../model/text-streaming/extractTextDelta.js";
+import { DeltaEvent } from "../../../model/text-streaming/DeltaEvent.js";
 import { parseEventSourceReadableStream } from "../../../model/text-streaming/parseEventSourceReadableStream.js";
 
 const chatResponseStreamEventSchema = z.object({
@@ -27,7 +27,7 @@ const chatResponseStreamEventSchema = z.object({
   object: z.string(),
 });
 
-export type OpenAIChatFullDelta = Array<{
+export type OpenAIChatDelta = Array<{
   role: "assistant" | "user" | undefined;
   content: string;
   function_call?: {
@@ -45,22 +45,11 @@ export type OpenAIChatFullDelta = Array<{
   };
 }>;
 
-type OpenAIChatFullDeltaEvent =
-  | {
-      type: "delta";
-      fullDelta: OpenAIChatFullDelta;
-    }
-  | {
-      type: "error";
-      error: unknown;
-    }
-  | undefined;
-
-async function createOpenAIChatFullDeltaIterableQueue(
+export async function createOpenAIChatFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<OpenAIChatFullDeltaEvent>> {
-  const queue = new AsyncQueue<OpenAIChatFullDeltaEvent>();
-  const streamDelta: OpenAIChatFullDelta = [];
+): Promise<AsyncIterable<DeltaEvent<OpenAIChatDelta>>> {
+  const queue = new AsyncQueue<DeltaEvent<OpenAIChatDelta>>();
+  const streamDelta: OpenAIChatDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
   parseEventSourceReadableStream({
@@ -158,18 +147,9 @@ async function createOpenAIChatFullDeltaIterableQueue(
   return queue;
 }
 
-export async function createOpenAIChatTextDeltaIterable(
-  stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<string>> {
-  return extractTextDelta(
-    await createOpenAIChatFullDeltaIterableQueue(stream),
-    (event) => event.fullDelta[0]?.delta.content ?? undefined
-  );
-}
-
 async function* extractFullDelta(
-  fullDeltaIterable: AsyncIterable<OpenAIChatFullDeltaEvent>
-): AsyncIterable<OpenAIChatFullDelta> {
+  fullDeltaIterable: AsyncIterable<DeltaEvent<OpenAIChatDelta>>
+): AsyncIterable<OpenAIChatDelta> {
   for await (const event of fullDeltaIterable) {
     if (event?.type === "error") {
       throw event.error;
@@ -183,6 +163,6 @@ async function* extractFullDelta(
 
 export async function createOpenAIChatFullDeltaIterable(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<OpenAIChatFullDelta>> {
+): Promise<AsyncIterable<OpenAIChatDelta>> {
   return extractFullDelta(await createOpenAIChatFullDeltaIterableQueue(stream));
 }

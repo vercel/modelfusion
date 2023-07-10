@@ -1,16 +1,8 @@
-export type DeltaEvent =
-  | {
-      type: "delta";
-    }
-  | {
-      type: "error";
-      error: unknown;
-    }
-  | undefined;
+import { DeltaEvent } from "./DeltaEvent.js";
 
-export async function* extractTextDelta<EVENT extends DeltaEvent>(
-  deltaIterable: AsyncIterable<EVENT>,
-  extractDelta: (event: EVENT & { type: "delta" }) => string | undefined
+export async function* extractTextDelta<FULL_DELTA>(
+  deltaIterable: AsyncIterable<DeltaEvent<FULL_DELTA>>,
+  extractDelta: (fullDelta: FULL_DELTA) => string | undefined
 ): AsyncIterable<string> {
   for await (const event of deltaIterable) {
     if (event?.type === "error") {
@@ -18,7 +10,7 @@ export async function* extractTextDelta<EVENT extends DeltaEvent>(
     }
 
     if (event?.type === "delta") {
-      const delta = extractDelta(event as EVENT & { type: "delta" });
+      const delta = extractDelta(event.fullDelta);
 
       if (delta != null && delta.length > 0) {
         yield delta;

@@ -7,11 +7,11 @@ import {
   TextGenerationModelSettings,
 } from "../../model/text-generation/TextGenerationModel.js";
 import { AsyncQueue } from "../../model/text-streaming/AsyncQueue.js";
+import { DeltaEvent } from "../../model/text-streaming/DeltaEvent.js";
 import {
   TextStreamingModel,
   TextStreamingModelSettings,
 } from "../../model/text-streaming/TextStreamingModel.js";
-import { extractTextDelta } from "../../model/text-streaming/extractTextDelta.js";
 import { parseEventSourceReadableStream } from "../../model/text-streaming/parseEventSourceReadableStream.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
@@ -59,7 +59,11 @@ export class LlamaCppTextGenerationModel
       LlamaCppTextGenerationResponse,
       LlamaCppTextGenerationModelSettings
     >,
-    TextStreamingModel<string, LlamaCppTextGenerationModelSettings>
+    TextStreamingModel<
+      string,
+      LlamaCppDelta,
+      LlamaCppTextGenerationModelSettings
+    >
 {
   constructor(settings: LlamaCppTextGenerationModelSettings) {
     super({ settings });
@@ -105,14 +109,18 @@ export class LlamaCppTextGenerationModel
     return response.content;
   }
 
-  generateTextStreamResponse(
+  generateDeltaStreamResponse(
     prompt: string,
     options?: FunctionOptions<LlamaCppTextGenerationModelSettings>
   ) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: LlamaCppResponseFormat.textDeltaIterable,
+      responseFormat: LlamaCppResponseFormat.deltaIterable,
     });
+  }
+
+  extractTextDelta(fullDelta: LlamaCppDelta): string | undefined {
+    return fullDelta.delta;
   }
 
   withSettings(
@@ -260,23 +268,16 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
   });
 }
 
-export type LlamaCppDeltaEvent =
-  | {
-      type: "delta";
-      content: string;
-      isComplete: boolean;
-      delta: string;
-    }
-  | {
-      type: "error";
-      error: unknown;
-    }
-  | undefined;
+export type LlamaCppDelta = {
+  content: string;
+  isComplete: boolean;
+  delta: string;
+};
 
 async function createLlamaCppFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<LlamaCppDeltaEvent>> {
-  const queue = new AsyncQueue<LlamaCppDeltaEvent>();
+): Promise<AsyncIterable<DeltaEvent<LlamaCppDelta>>> {
+  const queue = new AsyncQueue<DeltaEvent<LlamaCppDelta>>();
 
   let content = "";
 
@@ -309,9 +310,11 @@ async function createLlamaCppFullDeltaIterableQueue(
 
         queue.push({
           type: "delta",
-          content,
-          isComplete: event.stop,
-          delta: event.content,
+          fullDelta: {
+            content,
+            isComplete: event.stop,
+            delta: event.content,
+          },
         });
       } catch (error) {
         queue.push({ type: "error", error });
@@ -328,15 +331,6 @@ export type LlamaCppResponseFormatType<T> = {
   stream: boolean;
   handler: ResponseHandler<T>;
 };
-
-export async function createLlamaCppTextDeltaIterable(
-  stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<string>> {
-  return extractTextDelta(
-    await createLlamaCppFullDeltaIterableQueue(stream),
-    (event) => event?.delta
-  );
-}
 
 export const LlamaCppResponseFormat = {
   /**
@@ -360,18 +354,11 @@ export const LlamaCppResponseFormat = {
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
    * of the response stream.
    */
-  fullDeltaEventIterable: {
+  deltaIterable: {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
       createLlamaCppFullDeltaIterableQueue(response.body!),
-  } satisfies LlamaCppResponseFormatType<AsyncIterable<LlamaCppDeltaEvent>>,
-
-  /**
-   * Returns an async iterable over the text deltas (only the tex different of the first choice).
-   */
-  textDeltaIterable: {
-    stream: true,
-    handler: async ({ response }: { response: Response }) =>
-      createLlamaCppTextDeltaIterable(response.body!),
-  } satisfies LlamaCppResponseFormatType<AsyncIterable<string>>,
+  } satisfies LlamaCppResponseFormatType<
+    AsyncIterable<DeltaEvent<LlamaCppDelta>>
+  >,
 };

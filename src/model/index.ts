@@ -16,6 +16,7 @@ export * from "./text-embedding/embedText.js";
 export * from "./text-generation/TextGenerationEvent.js";
 export * from "./text-generation/TextGenerationModel.js";
 export * from "./text-generation/generateText.js";
+export * from "./text-streaming/DeltaEvent.js";
 export * from "./text-streaming/TextStreamingModel.js";
 export * from "./text-streaming/streamText.js";
 export * from "./tokenization/TokenizationSupport.js";

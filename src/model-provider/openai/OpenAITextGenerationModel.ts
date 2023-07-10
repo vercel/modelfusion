@@ -7,11 +7,11 @@ import {
   TextGenerationModelWithTokenization,
 } from "../../model/text-generation/TextGenerationModel.js";
 import { AsyncQueue } from "../../model/text-streaming/AsyncQueue.js";
+import { DeltaEvent } from "../../model/text-streaming/DeltaEvent.js";
 import {
   TextStreamingModel,
   TextStreamingModelSettings,
 } from "../../model/text-streaming/TextStreamingModel.js";
-import { extractTextDelta } from "../../model/text-streaming/extractTextDelta.js";
 import { parseEventSourceReadableStream } from "../../model/text-streaming/parseEventSourceReadableStream.js";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
@@ -144,7 +144,11 @@ export class OpenAITextGenerationModel
       OpenAITextGenerationResponse,
       OpenAITextGenerationModelSettings
     >,
-    TextStreamingModel<string, OpenAITextGenerationModelSettings>
+    TextStreamingModel<
+      string,
+      OpenAITextFullDelta,
+      OpenAITextGenerationModelSettings
+    >
 {
   constructor(settings: OpenAITextGenerationModelSettings) {
     super({ settings });
@@ -225,14 +229,18 @@ export class OpenAITextGenerationModel
     return response.choices[0]!.text;
   }
 
-  generateTextStreamResponse(
+  generateDeltaStreamResponse(
     prompt: string,
     options?: FunctionOptions<OpenAITextGenerationModelSettings>
   ) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: OpenAITextResponseFormat.textDeltaIterable,
+      responseFormat: OpenAITextResponseFormat.deltaIterable,
     });
+  }
+
+  extractTextDelta(fullDelta: OpenAITextFullDelta): string | undefined {
+    return fullDelta[0].delta;
   }
 
   withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {
@@ -378,22 +386,13 @@ export const OpenAITextResponseFormat = {
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
    * of the response stream.
    */
-  fullDeltaEventIterable: {
+  deltaIterable: {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
       createOpenAITextFullDeltaIterableQueue(response.body!),
   } satisfies OpenAITextResponseFormatType<
-    AsyncIterable<OpenAITextFullDeltaEvent>
+    AsyncIterable<DeltaEvent<OpenAITextFullDelta>>
   >,
-
-  /**
-   * Returns an async iterable over the text deltas (only the tex different of the first choice).
-   */
-  textDeltaIterable: {
-    stream: true,
-    handler: async ({ response }: { response: Response }) =>
-      createOpenAITextTextDeltaIterable(response.body!),
-  } satisfies OpenAITextResponseFormatType<AsyncIterable<string>>,
 };
 
 const textResponseStreamEventSchema = z.object({
@@ -416,21 +415,10 @@ export type OpenAITextFullDelta = Array<{
   delta: string;
 }>;
 
-type OpenAITextFullDeltaEvent =
-  | {
-      type: "delta";
-      fullDelta: OpenAITextFullDelta;
-    }
-  | {
-      type: "error";
-      error: unknown;
-    }
-  | undefined;
-
 async function createOpenAITextFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<OpenAITextFullDeltaEvent>> {
-  const queue = new AsyncQueue<OpenAITextFullDeltaEvent>();
+): Promise<AsyncIterable<DeltaEvent<OpenAITextFullDelta>>> {
+  const queue = new AsyncQueue<DeltaEvent<OpenAITextFullDelta>>();
   const streamDelta: OpenAITextFullDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
@@ -503,13 +491,4 @@ async function createOpenAITextFullDeltaIterableQueue(
   });
 
   return queue;
-}
-
-export async function createOpenAITextTextDeltaIterable(
-  stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<string>> {
-  return extractTextDelta(
-    await createOpenAITextFullDeltaIterableQueue(stream),
-    (event) => event.fullDelta[0]?.delta ?? undefined
-  );
 }

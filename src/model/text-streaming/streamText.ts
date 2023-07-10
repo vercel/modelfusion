@@ -6,12 +6,14 @@ import {
   TextStreamingModel,
   TextStreamingModelSettings,
 } from "./TextStreamingModel.js";
+import { extractTextDelta } from "./extractTextDelta.js";
 
 export async function streamText<
   PROMPT,
+  FULL_DELTA,
   SETTINGS extends TextStreamingModelSettings
 >(
-  model: TextStreamingModel<PROMPT, SETTINGS>,
+  model: TextStreamingModel<PROMPT, FULL_DELTA, SETTINGS>,
   prompt: PROMPT,
   // format: TextStreamFormat<STREAM>,
   options?: FunctionOptions<SETTINGS>
@@ -50,12 +52,15 @@ export async function streamText<
 
   // eventSource.notifyModelCallStarted(getStartEvent(startMetadata, settings));
 
-  const result = await runSafe(() =>
-    model.generateTextStreamResponse(prompt, {
-      functionId: options?.functionId,
-      settings, // options.setting is null here because of the initial guard
-      run,
-    })
+  const result = await runSafe(async () =>
+    extractTextDelta(
+      await model.generateDeltaStreamResponse(prompt, {
+        functionId: options?.functionId,
+        settings, // options.setting is null here because of the initial guard
+        run,
+      }),
+      (fullDelta) => model.extractTextDelta(fullDelta)
+    )
   );
 
   // const generationDurationInMs = Math.ceil(performance.now() - startTime);
@@ -92,9 +97,10 @@ export async function streamText<
 export function streamTextAsFunction<
   INPUT,
   PROMPT,
+  FULL_DELTA,
   SETTINGS extends TextStreamingModelSettings
 >(
-  model: TextStreamingModel<PROMPT, SETTINGS>,
+  model: TextStreamingModel<PROMPT, FULL_DELTA, SETTINGS>,
   promptTemplate: PromptTemplate<INPUT, PROMPT>,
   generateOptions?: Omit<FunctionOptions<SETTINGS>, "run">
 ) {
