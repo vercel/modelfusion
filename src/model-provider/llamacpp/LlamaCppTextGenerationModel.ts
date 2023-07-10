@@ -16,6 +16,7 @@ import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottl
 import {
   ResponseHandler,
   createJsonResponseHandler,
+  createStreamResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { AsyncQueue } from "../../util/stream/AsyncQueue.js";
@@ -345,6 +346,25 @@ export const LlamaCppResponseFormat = {
     stream: false,
     handler: createJsonResponseHandler(llamaCppTextGenerationResponseSchema),
   } satisfies LlamaCppResponseFormatType<LlamaCppTextGenerationResponse>,
+
+  /**
+   * Returns the response as a ReadableStream. This is useful for forwarding,
+   * e.g. from a serverless function to the client.
+   */
+  readableStream: {
+    stream: true,
+    handler: createStreamResponseHandler(),
+  } satisfies LlamaCppResponseFormatType<ReadableStream>,
+
+  /**
+   * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
+   * of the response stream.
+   */
+  fullDeltaEventIterable: {
+    stream: true,
+    handler: async ({ response }: { response: Response }) =>
+      createLlamaCppFullDeltaIterableQueue(response.body!),
+  } satisfies LlamaCppResponseFormatType<AsyncIterable<LlamaCppDeltaEvent>>,
 
   /**
    * Returns an async iterable over the text deltas (only the tex different of the first choice).

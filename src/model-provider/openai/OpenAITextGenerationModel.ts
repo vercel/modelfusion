@@ -17,6 +17,7 @@ import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottl
 import {
   ResponseHandler,
   createJsonResponseHandler,
+  createStreamResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { AsyncQueue } from "../../util/stream/AsyncQueue.js";
@@ -363,6 +364,27 @@ export const OpenAITextResponseFormat = {
     stream: false,
     handler: createJsonResponseHandler(openAITextGenerationResponseSchema),
   } satisfies OpenAITextResponseFormatType<OpenAITextGenerationResponse>,
+
+  /**
+   * Returns the response as a ReadableStream. This is useful for forwarding,
+   * e.g. from a serverless function to the client.
+   */
+  readableStream: {
+    stream: true,
+    handler: createStreamResponseHandler(),
+  } satisfies OpenAITextResponseFormatType<ReadableStream>,
+
+  /**
+   * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
+   * of the response stream.
+   */
+  fullDeltaEventIterable: {
+    stream: true,
+    handler: async ({ response }: { response: Response }) =>
+      createOpenAITextFullDeltaIterableQueue(response.body!),
+  } satisfies OpenAITextResponseFormatType<
+    AsyncIterable<OpenAITextFullDeltaEvent>
+  >,
 
   /**
    * Returns an async iterable over the text deltas (only the tex different of the first choice).
