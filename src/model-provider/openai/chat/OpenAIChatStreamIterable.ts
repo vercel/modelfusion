@@ -9,7 +9,13 @@ const chatResponseStreamEventSchema = z.object({
     z.object({
       delta: z.object({
         role: z.enum(["assistant", "user"]).optional(),
-        content: z.string().optional(),
+        content: z.string().nullable().optional(),
+        function_call: z
+          .object({
+            name: z.string().optional(),
+            arguments: z.string().optional(),
+          })
+          .optional(),
       }),
       finish_reason: z.enum(["stop", "length"]).nullable(),
       index: z.number(),
@@ -24,10 +30,18 @@ const chatResponseStreamEventSchema = z.object({
 export type OpenAIChatFullDelta = Array<{
   role: "assistant" | "user" | undefined;
   content: string;
+  function_call?: {
+    name: string;
+    arguments: string;
+  };
   isComplete: boolean;
   delta: {
     role?: "assistant" | "user";
-    content?: string;
+    content?: string | null;
+    function_call?: {
+      name?: string;
+      arguments?: string;
+    };
   };
 }>;
 
@@ -103,6 +117,23 @@ async function createOpenAIChatFullDeltaIterableQueue(
             choice.content += delta.content;
           }
 
+          if (delta.function_call != undefined) {
+            if (choice.function_call == undefined) {
+              choice.function_call = {
+                name: "",
+                arguments: "",
+              };
+            }
+
+            if (delta.function_call.name != undefined) {
+              choice.function_call!.name += delta.function_call.name;
+            }
+
+            if (delta.function_call.arguments != undefined) {
+              choice.function_call!.arguments += delta.function_call.arguments;
+            }
+          }
+
           if (delta.role != undefined) {
             choice.role = delta.role;
           }
@@ -132,7 +163,7 @@ export async function createOpenAIChatTextDeltaIterable(
 ): Promise<AsyncIterable<string>> {
   return extractTextDelta(
     await createOpenAIChatFullDeltaIterableQueue(stream),
-    (event) => event.fullDelta[0]?.delta.content
+    (event) => event.fullDelta[0]?.delta.content ?? undefined
   );
 }
 
