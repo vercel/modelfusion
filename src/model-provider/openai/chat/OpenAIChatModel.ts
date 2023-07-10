@@ -11,9 +11,9 @@ import {
   TextGenerationModelWithTokenization,
 } from "../../../model/text-generation/TextGenerationModel.js";
 import {
-  TextStreamingModelSettings,
   TextStreamingModel,
-} from "../../../model/text-generation/TextStreamingModel.js";
+  TextStreamingModelSettings,
+} from "../../../model/text-streaming/TextStreamingModel.js";
 import { Tokenizer } from "../../../model/tokenization/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {

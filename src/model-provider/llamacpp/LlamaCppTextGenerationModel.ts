@@ -6,6 +6,10 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model/text-generation/TextGenerationModel.js";
+import {
+  TextStreamingModel,
+  TextStreamingModelSettings,
+} from "../../model/text-streaming/TextStreamingModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -20,7 +24,8 @@ import { parseEventSourceReadableStream } from "../../util/stream/parseEventSour
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 
 export interface LlamaCppTextGenerationModelSettings
-  extends TextGenerationModelSettings {
+  extends TextGenerationModelSettings,
+    TextStreamingModelSettings {
   baseUrl?: string;
 
   retry?: RetryFunction;
@@ -52,7 +57,8 @@ export class LlamaCppTextGenerationModel
       string,
       LlamaCppTextGenerationResponse,
       LlamaCppTextGenerationModelSettings
-    >
+    >,
+    TextStreamingModel<string, LlamaCppTextGenerationModelSettings>
 {
   constructor(settings: LlamaCppTextGenerationModelSettings) {
     super({ settings });

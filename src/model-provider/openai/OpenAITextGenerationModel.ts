@@ -9,7 +9,7 @@ import {
 import {
   TextStreamingModel,
   TextStreamingModelSettings,
-} from "../../model/text-generation/TextStreamingModel.js";
+} from "../../model/text-streaming/TextStreamingModel.js";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
