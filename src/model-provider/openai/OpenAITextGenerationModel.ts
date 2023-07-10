@@ -1,3 +1,4 @@
+import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
@@ -5,14 +6,22 @@ import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../model/text-generation/TextGenerationModel.js";
+import {
+  TextStreamingModel,
+  TextStreamingModelSettings,
+} from "../../model/text-generation/TextStreamingModel.js";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
+  ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { AsyncQueue } from "../../util/stream/AsyncQueue.js";
+import { extractTextDelta } from "../../util/stream/extractTextDelta.js";
+import { parseEventSourceReadableStream } from "../../util/stream/parseEventSourceReadableStream.js";
 import { OpenAIImageGenerationCallSettings } from "./OpenAIImageGenerationModel.js";
 import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
@@ -84,7 +93,8 @@ export const calculateOpenAITextGenerationCostInMillicents = ({
   OPENAI_TEXT_GENERATION_MODELS[model].tokenCostInMillicents;
 
 export interface OpenAITextGenerationModelSettings
-  extends TextGenerationModelSettings {
+  extends TextGenerationModelSettings,
+    TextStreamingModelSettings {
   model: OpenAITextGenerationModelType;
 
   baseUrl?: string;
@@ -132,7 +142,8 @@ export class OpenAITextGenerationModel
       string,
       OpenAITextGenerationResponse,
       OpenAITextGenerationModelSettings
-    >
+    >,
+    TextStreamingModel<string, OpenAITextGenerationModelSettings>
 {
   constructor(settings: OpenAITextGenerationModelSettings) {
     super({ settings });
@@ -165,17 +176,18 @@ export class OpenAITextGenerationModel
     return this.tokenizer.countTokens(input);
   }
 
-  async callAPI(
+  async callAPI<RESULT>(
     prompt: string,
-    options?: FunctionOptions<
+    options: {
+      responseFormat: OpenAITextResponseFormatType<RESULT>;
+    } & FunctionOptions<
       Partial<
         OpenAIImageGenerationCallSettings &
           OpenAIModelSettings & { user?: string }
       >
     >
-  ): Promise<OpenAITextGenerationResponse> {
-    const run = options?.run;
-    const settings = options?.settings;
+  ): Promise<RESULT> {
+    const { run, settings, responseFormat } = options;
 
     const callSettings = Object.assign(
       {
@@ -187,6 +199,7 @@ export class OpenAITextGenerationModel
       {
         abortSignal: run?.abortSignal,
         prompt,
+        responseFormat,
       }
     );
 
@@ -201,11 +214,24 @@ export class OpenAITextGenerationModel
     prompt: string,
     options?: FunctionOptions<OpenAITextGenerationModelSettings>
   ) {
-    return this.callAPI(prompt, options);
+    return this.callAPI(prompt, {
+      ...options,
+      responseFormat: OpenAITextResponseFormat.json,
+    });
   }
 
   extractText(response: OpenAITextGenerationResponse): string {
     return response.choices[0]!.text;
+  }
+
+  generateTextStreamResponse(
+    prompt: string,
+    options?: FunctionOptions<OpenAITextGenerationModelSettings>
+  ) {
+    return this.callAPI(prompt, {
+      ...options,
+      responseFormat: OpenAITextResponseFormat.textDeltaIterable,
+    });
   }
 
   withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {
@@ -239,10 +265,6 @@ const openAITextGenerationResponseSchema = z.object({
   }),
 });
 
-export type OpenAITextGenerationResponse = z.infer<
-  typeof openAITextGenerationResponseSchema
->;
-
 /**
  * Call the OpenAI Text Completion API to generate a text completion for the given prompt.
  *
@@ -259,9 +281,10 @@ export type OpenAITextGenerationResponse = z.infer<
  *
  * console.log(response.choices[0].text);
  */
-async function callOpenAITextGenerationAPI({
+async function callOpenAITextGenerationAPI<RESPONSE>({
   baseUrl = "https://api.openai.com/v1",
   abortSignal,
+  responseFormat,
   apiKey,
   model,
   prompt,
@@ -280,6 +303,7 @@ async function callOpenAITextGenerationAPI({
 }: {
   baseUrl?: string;
   abortSignal?: AbortSignal;
+  responseFormat: OpenAITextResponseFormatType<RESPONSE>;
   apiKey: string;
   model: OpenAITextGenerationModelType;
   prompt: string;
@@ -295,11 +319,12 @@ async function callOpenAITextGenerationAPI({
   frequencyPenalty?: number;
   bestOf?: number;
   user?: string;
-}): Promise<OpenAITextGenerationResponse> {
+}): Promise<RESPONSE> {
   return postJsonToApi({
     url: `${baseUrl}/completions`,
     apiKey,
     body: {
+      stream: responseFormat.stream,
       model,
       prompt,
       suffix,
@@ -316,9 +341,153 @@ async function callOpenAITextGenerationAPI({
       user,
     },
     failedResponseHandler: failedOpenAICallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      openAITextGenerationResponseSchema
-    ),
+    successfulResponseHandler: responseFormat.handler,
     abortSignal,
   });
+}
+
+export type OpenAITextGenerationResponse = z.infer<
+  typeof openAITextGenerationResponseSchema
+>;
+
+export type OpenAITextResponseFormatType<T> = {
+  stream: boolean;
+  handler: ResponseHandler<T>;
+};
+
+export const OpenAITextResponseFormat = {
+  /**
+   * Returns the response as a JSON object.
+   */
+  json: {
+    stream: false,
+    handler: createJsonResponseHandler(openAITextGenerationResponseSchema),
+  } satisfies OpenAITextResponseFormatType<OpenAITextGenerationResponse>,
+
+  /**
+   * Returns an async iterable over the text deltas (only the tex different of the first choice).
+   */
+  textDeltaIterable: {
+    stream: true,
+    handler: async ({ response }: { response: Response }) =>
+      createOpenAITextTextDeltaIterable(response.body!),
+  } satisfies OpenAITextResponseFormatType<AsyncIterable<string>>,
+};
+
+const textResponseStreamEventSchema = z.object({
+  choices: z.array(
+    z.object({
+      text: z.string(),
+      finish_reason: z.enum(["stop", "length"]).nullable(),
+      index: z.number(),
+    })
+  ),
+  created: z.number(),
+  id: z.string(),
+  model: z.string(),
+  object: z.string(),
+});
+
+export type OpenAITextFullDelta = Array<{
+  content: string;
+  isComplete: boolean;
+  delta: string;
+}>;
+
+type OpenAITextFullDeltaEvent =
+  | {
+      type: "delta";
+      fullDelta: OpenAITextFullDelta;
+    }
+  | {
+      type: "error";
+      error: unknown;
+    }
+  | undefined;
+
+async function createOpenAITextFullDeltaIterableQueue(
+  stream: ReadableStream<Uint8Array>
+): Promise<AsyncIterable<OpenAITextFullDeltaEvent>> {
+  const queue = new AsyncQueue<OpenAITextFullDeltaEvent>();
+  const streamDelta: OpenAITextFullDelta = [];
+
+  // process the stream asynchonously (no 'await' on purpose):
+  parseEventSourceReadableStream({
+    stream,
+    callback: (event) => {
+      if (event.type !== "event") {
+        return;
+      }
+
+      const data = event.data;
+
+      if (data === "[DONE]") {
+        queue.close();
+        return;
+      }
+
+      try {
+        const json = SecureJSON.parse(data);
+        const parseResult = textResponseStreamEventSchema.safeParse(json);
+
+        if (!parseResult.success) {
+          queue.push({
+            type: "error",
+            error: parseResult.error,
+          });
+          queue.close();
+          return;
+        }
+
+        const event = parseResult.data;
+
+        for (let i = 0; i < event.choices.length; i++) {
+          const eventChoice = event.choices[i];
+          const delta = eventChoice.text;
+
+          if (streamDelta[i] == null) {
+            streamDelta[i] = {
+              content: "",
+              isComplete: false,
+              delta: "",
+            };
+          }
+
+          const choice = streamDelta[i];
+
+          choice.delta = delta;
+
+          if (eventChoice.finish_reason != null) {
+            choice.isComplete = true;
+          }
+
+          choice.content += delta;
+        }
+
+        // Since we're mutating the choices array in an async scenario,
+        // we need to make a deep copy:
+        const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
+
+        queue.push({
+          type: "delta",
+          fullDelta: streamDeltaDeepCopy,
+        });
+      } catch (error) {
+        queue.push({ type: "error", error });
+        queue.close();
+        return;
+      }
+    },
+  });
+
+  return queue;
+}
+
+export async function createOpenAITextTextDeltaIterable(
+  stream: ReadableStream<Uint8Array>
+): Promise<AsyncIterable<string>> {
+  return extractTextDelta(
+    await createOpenAITextFullDeltaIterableQueue(stream),
+    (event) => event.fullDelta[0]?.delta ?? undefined
+  );
 }
