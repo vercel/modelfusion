@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.27 - 2023-07-11
+
+### Added
+
+- TextDeltaEventSource for Client/Server streaming support.
+
+### Fixed
+
+- End-of-stream bug in Llama.cpp text streaming.
+
 ## 0.0.26 - 2023-07-11
 
 ### Added
