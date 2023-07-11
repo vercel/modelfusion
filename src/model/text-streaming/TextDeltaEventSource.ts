@@ -56,8 +56,13 @@ export function convertTextDeltaEventSourceToIterable(
         );
 
         queue.push(data.textDelta);
+
+        if (data.isFinished) {
+          queue.close();
+        }
       } catch (error) {
         options?.errorHandler(error);
+        queue.close();
       }
     },
   });

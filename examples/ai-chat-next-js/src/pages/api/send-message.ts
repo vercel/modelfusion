@@ -1,4 +1,5 @@
 import {
+  CohereTextGenerationModel,
   LlamaCppTextGenerationModel,
   OpenAIChatMessage,
   OpenAIChatModel,
@@ -66,8 +67,12 @@ async function createTextStream(
   controller: AbortController
 ) {
   return streamText(
-    // You can user other models such as CohereTextGenerationModel here:
     new LlamaCppTextGenerationModel({}),
+    // You can also use other models such as CohereTextGenerationModel instead:
+    // new CohereTextGenerationModel({
+    //   model: "command-nightly",
+    //   maxTokens: 1000,
+    // }),
     [
       "You are an AI chat bot. " +
         "Follow the user's instructions carefully. Respond using markdown.",
