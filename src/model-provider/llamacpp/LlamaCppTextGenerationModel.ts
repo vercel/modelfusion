@@ -61,7 +61,7 @@ export class LlamaCppTextGenerationModel
     >,
     TextStreamingModel<
       string,
-      LlamaCppDelta,
+      LlamaCppTextGenerationDelta,
       LlamaCppTextGenerationModelSettings
     >
 {
@@ -74,12 +74,12 @@ export class LlamaCppTextGenerationModel
     return null;
   }
 
-  async callAPI<RESULT>(
+  async callAPI<RESPONSE>(
     prompt: string,
     options: {
-      responseFormat: LlamaCppResponseFormatType<RESULT>;
+      responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
     } & FunctionOptions<LlamaCppTextGenerationModelSettings>
-  ): Promise<RESULT> {
+  ): Promise<RESPONSE> {
     const { run, settings, responseFormat } = options;
 
     const callSettings = Object.assign(this.settings, settings, {
@@ -101,7 +101,7 @@ export class LlamaCppTextGenerationModel
   ) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: LlamaCppResponseFormat.json,
+      responseFormat: LlamaCppTextGenerationResponseFormat.json,
     });
   }
 
@@ -115,11 +115,11 @@ export class LlamaCppTextGenerationModel
   ) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: LlamaCppResponseFormat.deltaIterable,
+      responseFormat: LlamaCppTextGenerationResponseFormat.deltaIterable,
     });
   }
 
-  extractTextDelta(fullDelta: LlamaCppDelta): string | undefined {
+  extractTextDelta(fullDelta: LlamaCppTextGenerationDelta): string | undefined {
     return fullDelta.delta;
   }
 
@@ -219,7 +219,7 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
 }: {
   baseUrl?: string;
   abortSignal?: AbortSignal;
-  responseFormat: LlamaCppResponseFormatType<RESPONSE>;
+  responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
   prompt: string;
   temperature?: number;
   topK?: number;
@@ -268,7 +268,7 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
   });
 }
 
-export type LlamaCppDelta = {
+export type LlamaCppTextGenerationDelta = {
   content: string;
   isComplete: boolean;
   delta: string;
@@ -276,8 +276,8 @@ export type LlamaCppDelta = {
 
 async function createLlamaCppFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<DeltaEvent<LlamaCppDelta>>> {
-  const queue = new AsyncQueue<DeltaEvent<LlamaCppDelta>>();
+): Promise<AsyncIterable<DeltaEvent<LlamaCppTextGenerationDelta>>> {
+  const queue = new AsyncQueue<DeltaEvent<LlamaCppTextGenerationDelta>>();
 
   let content = "";
 
@@ -327,19 +327,19 @@ async function createLlamaCppFullDeltaIterableQueue(
   return queue;
 }
 
-export type LlamaCppResponseFormatType<T> = {
+export type LlamaCppTextGenerationResponseFormatType<T> = {
   stream: boolean;
   handler: ResponseHandler<T>;
 };
 
-export const LlamaCppResponseFormat = {
+export const LlamaCppTextGenerationResponseFormat = {
   /**
    * Returns the response as a JSON object.
    */
   json: {
     stream: false,
     handler: createJsonResponseHandler(llamaCppTextGenerationResponseSchema),
-  } satisfies LlamaCppResponseFormatType<LlamaCppTextGenerationResponse>,
+  } satisfies LlamaCppTextGenerationResponseFormatType<LlamaCppTextGenerationResponse>,
 
   /**
    * Returns the response as a ReadableStream. This is useful for forwarding,
@@ -348,7 +348,7 @@ export const LlamaCppResponseFormat = {
   readableStream: {
     stream: true,
     handler: createStreamResponseHandler(),
-  } satisfies LlamaCppResponseFormatType<ReadableStream>,
+  } satisfies LlamaCppTextGenerationResponseFormatType<ReadableStream>,
 
   /**
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
@@ -358,7 +358,7 @@ export const LlamaCppResponseFormat = {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
       createLlamaCppFullDeltaIterableQueue(response.body!),
-  } satisfies LlamaCppResponseFormatType<
-    AsyncIterable<DeltaEvent<LlamaCppDelta>>
+  } satisfies LlamaCppTextGenerationResponseFormatType<
+    AsyncIterable<DeltaEvent<LlamaCppTextGenerationDelta>>
   >,
 };
