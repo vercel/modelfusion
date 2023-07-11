@@ -31,6 +31,27 @@ const text = await generateText(
 );
 ```
 
+### Stream Text
+
+[CohereTextGenerationModel API](/api/classes/CohereTextGenerationModel)
+
+```ts
+import { CohereTextGenerationModel, streamText } from "ai-utils.js";
+
+const tokenStream = await streamText(
+  new CohereTextGenerationModel({
+    model: "command-nightly",
+    temperature: 0.7,
+    maxTokens: 500,
+  }),
+  "Write a short story about a robot learning to love:\n\n"
+);
+
+for await (const token of tokenStream) {
+  process.stdout.write(token);
+}
+```
+
 ### Embed Text
 
 [CohereTextEmbeddingModel API](/api/classes/CohereTextEmbeddingModel)

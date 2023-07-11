@@ -56,4 +56,5 @@ for await (const token of tokenStream) {
 ## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)
+- [Cohere](/integration/model-provider/cohere)
 - [Llama.cpp](/integration/model-provider/llamacpp)
