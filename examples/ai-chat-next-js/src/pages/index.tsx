@@ -36,18 +36,14 @@ export default function Home() {
 
       const deltas = await createOpenAIChatFullDeltaIterable(response.body!);
 
+      let accumulatedContent = "";
       for await (const fullDelta of deltas) {
-        const delta = fullDelta[0];
+        accumulatedContent += fullDelta[0].delta.content ?? "";
 
-        setMessages((currentMessages) => {
-          return [
-            ...currentMessages.slice(0, currentMessages.length - 1),
-            {
-              role: delta.role ?? "assistant",
-              content: delta.content,
-            },
-          ];
-        });
+        setMessages((currentMessages) => [
+          ...currentMessages.slice(0, currentMessages.length - 1),
+          { role: "assistant", content: accumulatedContent },
+        ]);
       }
     } finally {
       setIsSending(false);
