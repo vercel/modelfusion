@@ -15,11 +15,6 @@ const requestSchema = z.array(
   })
 );
 
-const model = new OpenAIChatModel({
-  model: "gpt-3.5-turbo",
-  maxTokens: 1000,
-});
-
 const sendMessage = async (request: Request): Promise<Response> => {
   if (request.method !== "POST") {
     return new Response(
@@ -41,24 +36,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
     );
   }
 
-  const messagesToSend: OpenAIChatMessage[] =
-    await composeRecentMessagesOpenAIChatPrompt({
-      model: model.modelName,
-      systemMessage: OpenAIChatMessage.system(
-        "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown."
-      ),
-      messages: parsedData.data,
-      maxTokens: model.settings.maxTokens ?? 100,
-    });
-
-  // forward the abort signal
-  const controller = new AbortController();
-  request.signal.addEventListener("abort", () => controller.abort());
-
-  const stream = await model.callAPI(messagesToSend, {
-    responseFormat: OpenAIChatResponseFormat.readableStream,
-    run: { abortSignal: controller.signal },
-  });
+  const stream = await createOpenAIChatStream(parsedData.data, request);
 
   return new Response(stream, {
     headers: {
@@ -71,3 +49,32 @@ const sendMessage = async (request: Request): Promise<Response> => {
 };
 
 export default sendMessage;
+
+async function createOpenAIChatStream(
+  data: { role: "user" | "assistant"; content: string }[],
+  request: Request
+) {
+  const model = new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    maxTokens: 1000,
+  });
+
+  const messagesToSend: OpenAIChatMessage[] =
+    await composeRecentMessagesOpenAIChatPrompt({
+      model: model.modelName,
+      systemMessage: OpenAIChatMessage.system(
+        "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown."
+      ),
+      messages: data,
+      maxTokens: model.settings.maxTokens ?? 100,
+    });
+
+  // forward the abort signal
+  const controller = new AbortController();
+  request.signal.addEventListener("abort", () => controller.abort());
+
+  return await model.callAPI(messagesToSend, {
+    responseFormat: OpenAIChatResponseFormat.readableStream,
+    run: { abortSignal: controller.signal },
+  });
+}
