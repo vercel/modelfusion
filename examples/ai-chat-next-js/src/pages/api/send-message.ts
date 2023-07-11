@@ -62,7 +62,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
 export default sendMessage;
 
 async function createTextStream(
-  messages: { role: "user" | "assistant"; content: string }[],
+  messages: Message[],
   controller: AbortController
 ) {
   return streamText(
