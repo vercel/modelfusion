@@ -18,4 +18,4 @@ You can provide API keys for the different [providers](/integration/model-provid
 
 ## Requirements
 
-- [Node.js](https://nodejs.org/en/download/) version 18 or above (for 'fetch' support)
+- [Node.js](https://nodejs.org/en/download/) version 18 or above. `ai-utils.js` uses the Node.js fetch API and parts of the Web Streams API, which were not enabled by default before Node 18.
