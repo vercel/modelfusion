@@ -316,6 +316,10 @@ async function createLlamaCppFullDeltaIterableQueue(
             delta: event.content,
           },
         });
+
+        if (event.stop) {
+          queue.close();
+        }
       } catch (error) {
         queue.push({ type: "error", error });
         queue.close();
