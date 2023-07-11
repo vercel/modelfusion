@@ -1,3 +1,4 @@
+import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AbstractModel } from "../../model/AbstractModel.js";
 import { FunctionOptions } from "../../model/FunctionOptions.js";
@@ -5,12 +6,20 @@ import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../model/text-generation/TextGenerationModel.js";
+import { AsyncQueue } from "../../model/text-streaming/AsyncQueue.js";
+import { DeltaEvent } from "../../model/text-streaming/DeltaEvent.js";
+import {
+  TextStreamingModel,
+  TextStreamingModelSettings,
+} from "../../model/text-streaming/TextStreamingModel.js";
 import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
+  ResponseHandler,
   createJsonResponseHandler,
+  createStreamResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
@@ -35,7 +44,8 @@ export type CohereTextGenerationModelType =
   keyof typeof COHERE_TEXT_GENERATION_MODELS;
 
 export interface CohereTextGenerationModelSettings
-  extends TextGenerationModelSettings {
+  extends TextGenerationModelSettings,
+    TextStreamingModelSettings {
   model: CohereTextGenerationModelType;
 
   baseUrl?: string;
@@ -86,6 +96,11 @@ export class CohereTextGenerationModel
       string,
       CohereTextGenerationResponse,
       CohereTextGenerationModelSettings
+    >,
+    TextStreamingModel<
+      string,
+      CohereTextGenerationDelta,
+      CohereTextGenerationModelSettings
     >
 {
   constructor(settings: CohereTextGenerationModelSettings) {
@@ -127,12 +142,13 @@ export class CohereTextGenerationModel
     return this.tokenizer.countTokens(input);
   }
 
-  async callAPI(
+  async callAPI<RESPONSE>(
     prompt: string,
-    options?: FunctionOptions<CohereTextGenerationModelSettings>
-  ): Promise<CohereTextGenerationResponse> {
-    const run = options?.run;
-    const settings = options?.settings;
+    options: {
+      responseFormat: CohereTextGenerationResponseFormatType<RESPONSE>;
+    } & FunctionOptions<CohereTextGenerationModelSettings>
+  ): Promise<RESPONSE> {
+    const { run, settings, responseFormat } = options;
 
     const callSettings = Object.assign(
       {
@@ -143,6 +159,7 @@ export class CohereTextGenerationModel
       {
         abortSignal: run?.abortSignal,
         prompt,
+        responseFormat,
       }
     );
 
@@ -157,11 +174,28 @@ export class CohereTextGenerationModel
     prompt: string,
     options?: FunctionOptions<CohereTextGenerationModelSettings>
   ) {
-    return this.callAPI(prompt, options);
+    return this.callAPI(prompt, {
+      ...options,
+      responseFormat: CohereTextGenerationResponseFormat.json,
+    });
   }
 
   extractText(response: CohereTextGenerationResponse): string {
     return response.generations[0].text;
+  }
+
+  generateDeltaStreamResponse(
+    prompt: string,
+    options?: FunctionOptions<CohereTextGenerationModelSettings>
+  ) {
+    return this.callAPI(prompt, {
+      ...options,
+      responseFormat: CohereTextGenerationResponseFormat.deltaIterable,
+    });
+  }
+
+  extractTextDelta(fullDelta: CohereTextGenerationDelta): string | undefined {
+    return fullDelta.delta;
   }
 
   withSettings(additionalSettings: Partial<CohereTextGenerationModelSettings>) {
@@ -181,14 +215,17 @@ const cohereTextGenerationResponseSchema = z.object({
     z.object({
       id: z.string(),
       text: z.string(),
+      finish_reason: z.string().optional(),
     })
   ),
   prompt: z.string(),
-  meta: z.object({
-    api_version: z.object({
-      version: z.string(),
-    }),
-  }),
+  meta: z
+    .object({
+      api_version: z.object({
+        version: z.string(),
+      }),
+    })
+    .optional(),
 });
 
 export type CohereTextGenerationResponse = z.infer<
@@ -211,9 +248,10 @@ export type CohereTextGenerationResponse = z.infer<
  *
  * console.log(response.generations[0].text);
  */
-async function callCohereTextGenerationAPI({
+async function callCohereTextGenerationAPI<RESPONSE>({
   baseUrl = "https://api.cohere.ai/v1",
   abortSignal,
+  responseFormat,
   apiKey,
   model,
   prompt,
@@ -232,6 +270,7 @@ async function callCohereTextGenerationAPI({
 }: {
   baseUrl?: string;
   abortSignal?: AbortSignal;
+  responseFormat: CohereTextGenerationResponseFormatType<RESPONSE>;
   apiKey: string;
   model: CohereTextGenerationModelType;
   prompt: string;
@@ -247,11 +286,12 @@ async function callCohereTextGenerationAPI({
   returnLikelihoods?: "GENERATION" | "ALL" | "NONE";
   logitBias?: Record<string, number>;
   truncate?: "NONE" | "START" | "END";
-}): Promise<CohereTextGenerationResponse> {
+}): Promise<RESPONSE> {
   return postJsonToApi({
     url: `${baseUrl}/generate`,
     apiKey,
     body: {
+      stream: responseFormat.stream,
       model,
       prompt,
       num_generations: numGenerations,
@@ -268,9 +308,128 @@ async function callCohereTextGenerationAPI({
       truncate,
     },
     failedResponseHandler: failedCohereCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      cohereTextGenerationResponseSchema
-    ),
+    successfulResponseHandler: responseFormat.handler,
     abortSignal,
   });
 }
+
+export type CohereTextGenerationDelta = {
+  content: string;
+  isComplete: boolean;
+  delta: string;
+};
+
+const cohereTextStreamingResponseSchema = z.discriminatedUnion("is_finished", [
+  z.object({
+    text: z.string(),
+    is_finished: z.literal(false),
+  }),
+  z.object({
+    is_finished: z.literal(true),
+    finish_reason: z.string(),
+    response: cohereTextGenerationResponseSchema,
+  }),
+]);
+
+async function createCohereTextGenerationFullDeltaIterableQueue(
+  stream: ReadableStream<Uint8Array>
+): Promise<AsyncIterable<DeltaEvent<CohereTextGenerationDelta>>> {
+  const queue = new AsyncQueue<DeltaEvent<CohereTextGenerationDelta>>();
+
+  let accumulatedText = "";
+
+  function processLine(line: string) {
+    const event = cohereTextStreamingResponseSchema.parse(
+      SecureJSON.parse(line)
+    );
+
+    if (event.is_finished === true) {
+      queue.push({
+        type: "delta",
+        fullDelta: {
+          content: accumulatedText,
+          isComplete: true,
+          delta: "",
+        },
+      });
+    } else {
+      accumulatedText += event.text;
+
+      queue.push({
+        type: "delta",
+        fullDelta: {
+          content: accumulatedText,
+          isComplete: false,
+          delta: event.text,
+        },
+      });
+    }
+  }
+
+  // process the stream asynchonously (no 'await' on purpose):
+  (async () => {
+    let unprocessedText = "";
+    const reader = new ReadableStreamDefaultReader(stream);
+    const utf8Decoder = new TextDecoder("utf-8");
+    while (true) {
+      const { value: chunk, done } = await reader.read();
+
+      if (done) {
+        break;
+      }
+
+      unprocessedText += utf8Decoder.decode(chunk, { stream: true });
+
+      const processableLines = unprocessedText.split(/\r\n|\n|\r/g);
+
+      unprocessedText = processableLines.pop() || "";
+
+      processableLines.forEach(processLine);
+    }
+
+    // processing remaining text:
+    if (unprocessedText) {
+      processLine(unprocessedText);
+    }
+
+    queue.close();
+  })();
+
+  return queue;
+}
+
+export type CohereTextGenerationResponseFormatType<T> = {
+  stream: boolean;
+  handler: ResponseHandler<T>;
+};
+
+export const CohereTextGenerationResponseFormat = {
+  /**
+   * Returns the response as a JSON object.
+   */
+  json: {
+    stream: false,
+    handler: createJsonResponseHandler(cohereTextGenerationResponseSchema),
+  } satisfies CohereTextGenerationResponseFormatType<CohereTextGenerationResponse>,
+
+  /**
+   * Returns the response as a ReadableStream. This is useful for forwarding,
+   * e.g. from a serverless function to the client.
+   */
+  readableStream: {
+    stream: true,
+    handler: createStreamResponseHandler(),
+  } satisfies CohereTextGenerationResponseFormatType<ReadableStream>,
+
+  /**
+   * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
+   * of the response stream.
+   */
+  deltaIterable: {
+    stream: true,
+    handler: async ({ response }: { response: Response }) =>
+      createCohereTextGenerationFullDeltaIterableQueue(response.body!),
+  } satisfies CohereTextGenerationResponseFormatType<
+    AsyncIterable<DeltaEvent<CohereTextGenerationDelta>>
+  >,
+};
