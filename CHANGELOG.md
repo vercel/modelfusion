@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.26 - 2023-07-11
+
+### Added
+
+- Streaming support for Cohere text generation models.
+
 ## 0.0.25 - 2023-07-10
 
 ### Added
