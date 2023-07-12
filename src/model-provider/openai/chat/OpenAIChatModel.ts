@@ -20,7 +20,6 @@ import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThro
 import {
   ResponseHandler,
   createJsonResponseHandler,
-  createStreamResponseHandler,
   postJsonToApi,
 } from "../../../util/api/postToApi.js";
 import { OpenAIModelSettings } from "../OpenAIModelSettings.js";
@@ -420,15 +419,6 @@ export const OpenAIChatResponseFormat = {
     stream: false,
     handler: createJsonResponseHandler(openAIChatResponseSchema),
   } satisfies OpenAIChatResponseFormatType<OpenAIChatResponse>,
-
-  /**
-   * Returns the response as a ReadableStream. This is useful for forwarding,
-   * e.g. from a serverless function to the client.
-   */
-  readableStream: {
-    stream: true,
-    handler: createStreamResponseHandler(),
-  } satisfies OpenAIChatResponseFormatType<ReadableStream>,
 
   /**
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)

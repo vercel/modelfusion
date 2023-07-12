@@ -19,7 +19,6 @@ import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottl
 import {
   ResponseHandler,
   createJsonResponseHandler,
-  createStreamResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
@@ -411,15 +410,6 @@ export const CohereTextGenerationResponseFormat = {
     stream: false,
     handler: createJsonResponseHandler(cohereTextGenerationResponseSchema),
   } satisfies CohereTextGenerationResponseFormatType<CohereTextGenerationResponse>,
-
-  /**
-   * Returns the response as a ReadableStream. This is useful for forwarding,
-   * e.g. from a serverless function to the client.
-   */
-  readableStream: {
-    stream: true,
-    handler: createStreamResponseHandler(),
-  } satisfies CohereTextGenerationResponseFormatType<ReadableStream>,
 
   /**
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)

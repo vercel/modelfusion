@@ -20,7 +20,6 @@ import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottl
 import {
   ResponseHandler,
   createJsonResponseHandler,
-  createStreamResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { OpenAIImageGenerationCallSettings } from "./OpenAIImageGenerationModel.js";
@@ -372,15 +371,6 @@ export const OpenAITextResponseFormat = {
     stream: false,
     handler: createJsonResponseHandler(openAITextGenerationResponseSchema),
   } satisfies OpenAITextResponseFormatType<OpenAITextGenerationResponse>,
-
-  /**
-   * Returns the response as a ReadableStream. This is useful for forwarding,
-   * e.g. from a serverless function to the client.
-   */
-  readableStream: {
-    stream: true,
-    handler: createStreamResponseHandler(),
-  } satisfies OpenAITextResponseFormatType<ReadableStream>,
 
   /**
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)

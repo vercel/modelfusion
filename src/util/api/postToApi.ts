@@ -25,11 +25,6 @@ export const createJsonResponseHandler =
     return parsedResult.data;
   };
 
-export const createStreamResponseHandler =
-  (): ResponseHandler<ReadableStream<Uint8Array>> =>
-  async ({ response }) =>
-    response.body!;
-
 export const createTextResponseHandler =
   (): ResponseHandler<string> =>
   async ({ response }) =>
