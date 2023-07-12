@@ -20,6 +20,10 @@ import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
 } from "./transcription/TranscriptionEvent.js";
+import {
+  TextStreamingFinishedEvent,
+  TextStreamingStartedEvent,
+} from "./text-streaming/TextStreamingEvent.js";
 
 export type ModelCallEvent = ModelCallStartedEvent | ModelCallFinishedEvent;
 
@@ -33,6 +37,7 @@ export type ModelCallStartedEvent =
   | JsonGenerationStartedEvent
   | TextEmbeddingStartedEvent
   | TextGenerationStartedEvent
+  | TextStreamingStartedEvent
   | TranscriptionStartedEvent;
 
 export type ModelCallFinishedEventMetadata = ModelCallStartedEventMetadata & {
@@ -44,4 +49,5 @@ export type ModelCallFinishedEvent =
   | JsonGenerationFinishedEvent
   | TextEmbeddingFinishedEvent
   | TextGenerationFinishedEvent
+  | TextStreamingFinishedEvent
   | TranscriptionFinishedEvent;
