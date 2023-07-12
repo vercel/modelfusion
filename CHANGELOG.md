@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.28 - 2023-07-12
+
+### Added
+
+- Events for streamText.
+
 ## 0.0.27 - 2023-07-11
 
 ### Added
