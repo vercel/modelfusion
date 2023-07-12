@@ -19,7 +19,6 @@ export * from "./text-generation/generateText.js";
 export * from "./text-streaming/DeltaEvent.js";
 export * from "./text-streaming/TextDeltaEventSource.js";
 export * from "./text-streaming/TextStreamingModel.js";
-export * from "./text-streaming/parseEventSourceReadableStream.js";
 export * from "./text-streaming/streamText.js";
 export * from "./tokenization/TokenizationSupport.js";
 export * from "./tokenization/Tokenizer.js";
