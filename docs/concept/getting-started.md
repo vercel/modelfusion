@@ -4,8 +4,6 @@ sidebar_position: 1
 
 # Getting Started
 
-**⚠️ `ai-utils.js` is currently in its initial experimental phase. Until version 0.1 there may be breaking changes in each release.**
-
 ## Installation
 
 ```bash
