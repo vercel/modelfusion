@@ -19,10 +19,14 @@ dotenv.config();
       OpenAIChatMessage.system("You are a story writer. Write a story about:"),
       OpenAIChatMessage.user("A robot learning to love"),
     ],
-    { responseFormat: OpenAIChatResponseFormat.fullDeltaIterable }
+    { responseFormat: OpenAIChatResponseFormat.deltaIterable }
   );
 
   for await (const delta of deltas) {
-    process.stdout.write(delta[0].delta.content ?? "");
+    if (delta?.type === "error") {
+      throw delta.error;
+    }
+
+    process.stdout.write(delta?.fullDelta[0].delta.content ?? "");
   }
 })();

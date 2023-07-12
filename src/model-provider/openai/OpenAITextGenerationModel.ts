@@ -145,7 +145,7 @@ export class OpenAITextGenerationModel
     >,
     TextStreamingModel<
       string,
-      OpenAITextFullDelta,
+      OpenAITextGenerationDelta,
       OpenAITextGenerationModelSettings
     >
 {
@@ -238,7 +238,7 @@ export class OpenAITextGenerationModel
     });
   }
 
-  extractTextDelta(fullDelta: OpenAITextFullDelta): string | undefined {
+  extractTextDelta(fullDelta: OpenAITextGenerationDelta): string | undefined {
     return fullDelta[0].delta;
   }
 
@@ -381,7 +381,7 @@ export const OpenAITextResponseFormat = {
     handler: async ({ response }: { response: Response }) =>
       createOpenAITextFullDeltaIterableQueue(response.body!),
   } satisfies OpenAITextResponseFormatType<
-    AsyncIterable<DeltaEvent<OpenAITextFullDelta>>
+    AsyncIterable<DeltaEvent<OpenAITextGenerationDelta>>
   >,
 };
 
@@ -399,7 +399,7 @@ const textResponseStreamEventSchema = z.object({
   object: z.string(),
 });
 
-export type OpenAITextFullDelta = Array<{
+export type OpenAITextGenerationDelta = Array<{
   content: string;
   isComplete: boolean;
   delta: string;
@@ -407,9 +407,9 @@ export type OpenAITextFullDelta = Array<{
 
 async function createOpenAITextFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<DeltaEvent<OpenAITextFullDelta>>> {
-  const queue = new AsyncQueue<DeltaEvent<OpenAITextFullDelta>>();
-  const streamDelta: OpenAITextFullDelta = [];
+): Promise<AsyncIterable<DeltaEvent<OpenAITextGenerationDelta>>> {
+  const queue = new AsyncQueue<DeltaEvent<OpenAITextGenerationDelta>>();
+  const streamDelta: OpenAITextGenerationDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
   parseEventSourceReadableStream({

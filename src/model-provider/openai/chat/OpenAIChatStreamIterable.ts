@@ -146,23 +146,3 @@ export async function createOpenAIChatFullDeltaIterableQueue(
 
   return queue;
 }
-
-async function* extractFullDelta(
-  fullDeltaIterable: AsyncIterable<DeltaEvent<OpenAIChatDelta>>
-): AsyncIterable<OpenAIChatDelta> {
-  for await (const event of fullDeltaIterable) {
-    if (event?.type === "error") {
-      throw event.error;
-    }
-
-    if (event?.type === "delta") {
-      yield event.fullDelta;
-    }
-  }
-}
-
-export async function createOpenAIChatFullDeltaIterable(
-  stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<OpenAIChatDelta>> {
-  return extractFullDelta(await createOpenAIChatFullDeltaIterableQueue(stream));
-}

@@ -20,7 +20,7 @@ dotenv.config();
       OpenAIChatMessage.user("A robot learning to love"),
     ],
     {
-      responseFormat: OpenAIChatResponseFormat.fullDeltaIterable,
+      responseFormat: OpenAIChatResponseFormat.deltaIterable,
       settings: {
         functionCall: {
           name: "exampleFunction",
@@ -46,6 +46,10 @@ dotenv.config();
   );
 
   for await (const delta of deltas) {
-    console.log(JSON.stringify(delta[0].function_call ?? {}));
+    if (delta?.type === "error") {
+      throw delta.error;
+    }
+
+    console.log(JSON.stringify(delta?.fullDelta[0].function_call ?? {}));
   }
 })();

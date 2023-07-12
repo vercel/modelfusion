@@ -8,6 +8,6 @@ export * from "./OpenAITranscriptionModel.js";
 export * from "./TikTokenTokenizer.js";
 export * from "./chat/OpenAIChatMessage.js";
 export * from "./chat/OpenAIChatModel.js";
-export * from "./chat/OpenAIChatStreamIterable.js";
+export { OpenAIChatDelta } from "./chat/OpenAIChatStreamIterable.js";
 export * from "./chat/composeRecentMessagesOpenAIChatPrompt.js";
 export * from "./chat/countOpenAIChatMessageTokens.js";

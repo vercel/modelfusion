@@ -28,7 +28,6 @@ import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHand
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import {
   OpenAIChatDelta,
-  createOpenAIChatFullDeltaIterable,
   createOpenAIChatFullDeltaIterableQueue,
 } from "./OpenAIChatStreamIterable.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
@@ -419,16 +418,6 @@ export const OpenAIChatResponseFormat = {
     stream: false,
     handler: createJsonResponseHandler(openAIChatResponseSchema),
   } satisfies OpenAIChatResponseFormatType<OpenAIChatResponse>,
-
-  /**
-   * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
-   * of the response stream.
-   */
-  fullDeltaIterable: {
-    stream: true,
-    handler: async ({ response }: { response: Response }) =>
-      createOpenAIChatFullDeltaIterable(response.body!),
-  } satisfies OpenAIChatResponseFormatType<AsyncIterable<OpenAIChatDelta>>,
 
   /**
    * Returns an async iterable over the text deltas (only the tex different of the first choice).
