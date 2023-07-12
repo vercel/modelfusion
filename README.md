@@ -31,8 +31,6 @@ const text = await generateText(
 
 ### Stream Text
 
-> ⚠️ Streaming is currently under development. The API is subject to change.
-
 ```ts
 const tokenStream = await streamText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),

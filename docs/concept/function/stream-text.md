@@ -6,10 +6,6 @@ sidebar_position: 4
 
 Streams text that is generated using by a [TextStreamingModel](/api/interfaces/TextStreamingModel) using a prompt.
 
-> ⚠️ Streaming is currently under development. The API is subject to change.
->
-> More advanced use cases (e.g. streaming through an edge or server component) are only supported via OpenAI chat model `.callAPI` (see [AI chat with Next.js example](https://github.com/lgrammel/ai-utils.js/tree/main/examples/ai-chat-next-js)).
-
 ## Usage
 
 ### streamText
