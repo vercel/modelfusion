@@ -1,5 +1,5 @@
 export * from "./OpenAICostCalculator.js";
-export * from "./OpenAIError.js";
+export { OpenAIError, OpenAIErrorData } from "./OpenAIError.js";
 export * from "./OpenAIImageGenerationModel.js";
 export * from "./OpenAIModelSettings.js";
 export * from "./OpenAITextEmbeddingModel.js";

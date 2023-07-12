@@ -1,2 +1,2 @@
-export * from "./StabilityError.js";
+export { StabilityError, StabilityErrorData } from "./StabilityError.js";
 export * from "./StabilityImageGenerationModel.js";

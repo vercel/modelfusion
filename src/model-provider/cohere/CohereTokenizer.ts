@@ -8,8 +8,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTextGenerationModelType } from "./CohereTextGenerationModel.js";
-import { failedCohereCallResponseHandler } from "./failedCohereCallResponseHandler.js";
 import { CohereTextEmbeddingModelType } from "./index.js";
 
 export type CohereTokenizerModelType =

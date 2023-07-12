@@ -1,5 +1,7 @@
+import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { ApiCallError } from "../../util/api/ApiCallError.js";
+import { ResponseHandler } from "../../util/api/postToApi.js";
 
 export const stabilityErrorDataSchema = z.object({
   message: z.string(),
@@ -28,3 +30,19 @@ export class StabilityError extends ApiCallError {
     this.data = data;
   }
 }
+
+export const failedStabilityCallResponseHandler: ResponseHandler<
+  ApiCallError
+> = async ({ response, url, requestBodyValues }) => {
+  const responseBody = await response.text();
+  const parsedError = stabilityErrorDataSchema.parse(
+    SecureJSON.parse(responseBody)
+  );
+
+  return new StabilityError({
+    url,
+    requestBodyValues,
+    statusCode: response.status,
+    data: parsedError,
+  });
+};

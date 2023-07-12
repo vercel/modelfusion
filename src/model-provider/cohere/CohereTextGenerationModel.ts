@@ -21,8 +21,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
-import { failedCohereCallResponseHandler } from "./failedCohereCallResponseHandler.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {

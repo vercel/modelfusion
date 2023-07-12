@@ -14,8 +14,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
-import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-ada-002": {

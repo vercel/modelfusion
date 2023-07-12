@@ -12,7 +12,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
-import { failedStabilityCallResponseHandler } from "./failedStabilityCallResponseHandler.js";
+import { failedStabilityCallResponseHandler } from "./StabilityError.js";
 
 /**
  * Create an image generation model that calls the Stability AI image generation API.

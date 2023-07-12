@@ -14,8 +14,8 @@ import {
   createTextResponseHandler,
   postToApi,
 } from "../../util/api/postToApi.js";
+import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
-import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
 /**
  * @see https://openai.com/pricing

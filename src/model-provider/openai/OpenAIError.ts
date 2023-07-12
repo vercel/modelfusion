@@ -1,5 +1,7 @@
+import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { ApiCallError } from "../../util/api/ApiCallError.js";
+import { ResponseHandler } from "../../util/api/postToApi.js";
 
 export const openAIErrorDataSchema = z.object({
   error: z.object({
@@ -43,3 +45,19 @@ export class OpenAIError extends ApiCallError {
     this.data = data;
   }
 }
+
+export const failedOpenAICallResponseHandler: ResponseHandler<
+  ApiCallError
+> = async ({ response, url, requestBodyValues }) => {
+  const responseBody = await response.text();
+  const parsedError = openAIErrorDataSchema.parse(
+    SecureJSON.parse(responseBody)
+  );
+
+  return new OpenAIError({
+    url,
+    requestBodyValues,
+    statusCode: response.status,
+    data: parsedError,
+  });
+};

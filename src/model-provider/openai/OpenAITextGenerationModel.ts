@@ -22,10 +22,10 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { OpenAIImageGenerationCallSettings } from "./OpenAIImageGenerationModel.js";
 import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
-import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
 /**
  * @see https://platform.openai.com/docs/models/

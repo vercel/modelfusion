@@ -22,9 +22,9 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../util/api/postToApi.js";
+import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { OpenAIModelSettings } from "../OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
-import { failedOpenAICallResponseHandler } from "../failedOpenAICallResponseHandler.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import {
   OpenAIChatDelta,

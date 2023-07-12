@@ -11,8 +11,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
-import { failedOpenAICallResponseHandler } from "./failedOpenAICallResponseHandler.js";
 
 export interface OpenAIImageGenerationCallSettings {
   n?: number;
