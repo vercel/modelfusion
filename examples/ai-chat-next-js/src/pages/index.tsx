@@ -2,7 +2,7 @@ import { ChatInputArea } from "@/component/ChatInputArea";
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
-import { convertTextDeltaEventSourceToIterable } from "ai-utils.js";
+import { parseTextDeltaEventSource } from "ai-utils.js";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
@@ -34,7 +34,7 @@ export default function Home() {
         signal: abortController.current.signal,
       });
 
-      const textDeltas = convertTextDeltaEventSourceToIterable(response.body!);
+      const textDeltas = parseTextDeltaEventSource(response.body!);
       let accumulatedContent = "";
       for await (const textDelta of textDeltas) {
         accumulatedContent += textDelta ?? "";

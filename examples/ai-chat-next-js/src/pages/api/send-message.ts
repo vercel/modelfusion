@@ -4,7 +4,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   composeRecentMessagesOpenAIChatPrompt,
-  createTextDeltaEventSourceReadableStream,
+  createTextDeltaEventSource,
   streamText,
 } from "ai-utils.js";
 import { z } from "zod";
@@ -50,7 +50,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
   const stream = await createTextStream(messages, controller);
   // const stream = await createOpenAIChatStream(messages, controller);
 
-  return new Response(createTextDeltaEventSourceReadableStream(stream), {
+  return new Response(createTextDeltaEventSource(stream), {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
@@ -76,9 +76,7 @@ async function createTextStream(
     [
       "You are an AI chat bot. " +
         "Follow the user's instructions carefully. Respond using markdown.",
-      ...messages.map((message) => {
-        return `${message.role}: ${message.content}\n\n`;
-      }),
+      ...messages.map((message) => `${message.role}: ${message.content}\n\n`),
       "\n\nassistant: ",
     ].join("\n"),
     { run: { abortSignal: controller.signal } }

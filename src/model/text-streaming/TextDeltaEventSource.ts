@@ -20,9 +20,7 @@ function enqueueData(
   controller.enqueue(textEncoder.encode(`data: ${JSON.stringify(data)}\n\n`));
 }
 
-export function createTextDeltaEventSourceReadableStream(
-  textDeltas: AsyncIterable<string>
-) {
+export function createTextDeltaEventSource(textDeltas: AsyncIterable<string>) {
   return new ReadableStream({
     async start(controller) {
       for await (const textDelta of textDeltas) {
@@ -34,7 +32,7 @@ export function createTextDeltaEventSourceReadableStream(
   });
 }
 
-export function convertTextDeltaEventSourceToIterable(
+export function parseTextDeltaEventSource(
   stream: ReadableStream<Uint8Array>,
   options?: {
     errorHandler: ErrorHandler;
