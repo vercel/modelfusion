@@ -72,3 +72,4 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 - [OpenAI](/integration/model-provider/openai) (full tokenizer)
 - [Cohere](/integration/model-provider/cohere) (full tokenizer)
+- [Llama.cpp](/integration/model-provider/llamacpp) (basic tokenizer)

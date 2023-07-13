@@ -47,3 +47,21 @@ for await (const token of tokenStream) {
   process.stdout.write(token);
 }
 ```
+
+### Tokenize Text
+
+[LlamaCppTokenizer API](/api/classes/LlamaCppTokenizer)
+
+```ts
+import { LlamaCppTokenizer, countTokens } from "ai-utils.js";
+
+const tokenizer = new LlamaCppTokenizer();
+
+const text = "At first, Nox didn't know what to do with the pup.";
+
+const tokenCount = await countTokens(tokenizer, text);
+const tokens = await tokenizer.tokenize(text);
+
+console.log("countTokens", tokenCount);
+console.log("tokenize", tokens);
+```
