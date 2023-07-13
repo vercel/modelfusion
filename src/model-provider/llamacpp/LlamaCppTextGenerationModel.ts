@@ -13,6 +13,7 @@ import {
   TextStreamingModelSettings,
 } from "../../model/text-streaming/TextStreamingModel.js";
 import { parseEventSourceReadableStream } from "../../model/text-streaming/parseEventSourceReadableStream.js";
+import { BasicTokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -22,6 +23,7 @@ import {
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
+import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
 export interface LlamaCppTextGenerationModelSettings
   extends TextGenerationModelSettings,
@@ -30,6 +32,11 @@ export interface LlamaCppTextGenerationModelSettings
 
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
+
+  tokenizerSettings?: {
+    retry?: RetryFunction;
+    throttle?: ThrottleFunction;
+  };
 
   temperature?: number;
   topK?: number;
@@ -62,15 +69,28 @@ export class LlamaCppTextGenerationModel
       string,
       LlamaCppTextGenerationDelta,
       LlamaCppTextGenerationModelSettings
-    >
+    >,
+    BasicTokenizer
 {
   constructor(settings: LlamaCppTextGenerationModelSettings) {
     super({ settings });
+
+    this.tokenizer = new LlamaCppTokenizer({
+      baseUrl: this.settings.baseUrl,
+      retry: this.settings.tokenizerSettings?.retry,
+      throttle: this.settings.tokenizerSettings?.throttle,
+    });
   }
 
   readonly provider = "llamacpp";
   get modelName() {
     return null;
+  }
+
+  private readonly tokenizer: LlamaCppTokenizer;
+
+  async tokenize(text: string) {
+    return this.tokenizer.tokenize(text);
   }
 
   async callAPI<RESPONSE>(
