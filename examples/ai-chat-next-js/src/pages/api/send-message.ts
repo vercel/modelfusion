@@ -67,11 +67,14 @@ async function createTextStream(
   controller: AbortController
 ) {
   return streamText(
-    new LlamaCppTextGenerationModel({}),
+    new LlamaCppTextGenerationModel({
+      stop: ["\n\nuser: "],
+    }),
     // You can also use other models such as CohereTextGenerationModel instead:
     // new CohereTextGenerationModel({
     //   model: "command-nightly",
     //   maxTokens: 1000,
+    //   stopSequences: ["\n\nuser: "],
     // }),
     [
       "You are an AI chat bot. " +

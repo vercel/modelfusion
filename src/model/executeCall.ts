@@ -1,4 +1,5 @@
 import { nanoid as createId } from "nanoid";
+import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
 import { FunctionOptions } from "./FunctionOptions.js";
@@ -72,21 +73,16 @@ export async function executeCall<
     errorHandler: run?.errorHandler,
   });
 
-  const startTime = performance.now();
-  const startEpochSeconds = Math.floor(
-    (performance.timeOrigin + startTime) / 1000
-  );
-
-  const callId = `call-${createId()}`;
+  const durationMeasurement = startDurationMeasurement();
 
   const startMetadata = {
+    callId: `call-${createId()}`,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
     functionId: options?.functionId,
-    callId,
     model: model.modelInformation,
-    startEpochSeconds,
+    startEpochSeconds: durationMeasurement.startEpochSeconds,
   };
 
   eventSource.notifyModelCallStarted(getStartEvent(startMetadata, settings));
@@ -99,11 +95,9 @@ export async function executeCall<
     })
   );
 
-  const generationDurationInMs = Math.ceil(performance.now() - startTime);
-
   const finishMetadata = {
     ...startMetadata,
-    durationInMs: generationDurationInMs,
+    durationInMs: durationMeasurement.durationInMs,
   };
 
   if (!result.ok) {

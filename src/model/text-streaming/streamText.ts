@@ -1,5 +1,6 @@
 import { nanoid as createId } from "nanoid";
 import { PromptTemplate } from "../../run/PromptTemplate.js";
+import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { FunctionOptions } from "../FunctionOptions.js";
@@ -34,21 +35,16 @@ export async function streamText<
     errorHandler: run?.errorHandler,
   });
 
-  const startTime = performance.now();
-  const startEpochSeconds = Math.floor(
-    (performance.timeOrigin + startTime) / 1000
-  );
-
-  const callId = `call-${createId()}`;
+  const durationMeasurement = startDurationMeasurement();
 
   const startMetadata = {
+    callId: `call-${createId()}`,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
     functionId: options?.functionId,
-    callId,
     model: model.modelInformation,
-    startEpochSeconds,
+    startEpochSeconds: durationMeasurement.startEpochSeconds,
   };
 
   eventSource.notifyModelCallStarted({
@@ -67,11 +63,9 @@ export async function streamText<
       }),
       extractDelta: (fullDelta) => model.extractTextDelta(fullDelta),
       onDone: (fullText, lastFullDelta) => {
-        const generationDurationInMs = Math.ceil(performance.now() - startTime);
-
         const finishMetadata = {
           ...startMetadata,
-          durationInMs: generationDurationInMs,
+          durationInMs: durationMeasurement.durationInMs,
         };
 
         eventSource.notifyModelCallFinished({
@@ -85,11 +79,9 @@ export async function streamText<
         });
       },
       onError: (error) => {
-        const generationDurationInMs = Math.ceil(performance.now() - startTime);
-
         const finishMetadata = {
           ...startMetadata,
-          durationInMs: generationDurationInMs,
+          durationInMs: durationMeasurement.durationInMs,
         };
 
         eventSource.notifyModelCallFinished(
@@ -115,11 +107,9 @@ export async function streamText<
   );
 
   if (!result.ok) {
-    const generationDurationInMs = Math.ceil(performance.now() - startTime);
-
     const finishMetadata = {
       ...startMetadata,
-      durationInMs: generationDurationInMs,
+      durationInMs: durationMeasurement.durationInMs,
     };
 
     if (result.isAborted) {
