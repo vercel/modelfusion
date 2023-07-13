@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.30 - 2023-07-13
+
+### Fixed
+
+- Bugs related to performance.now not being avaiable.
+
 ## 0.0.29 - 2023-07-13
 
 ### Added
