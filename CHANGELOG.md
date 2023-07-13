@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Bugs related to performance.now not being avaiable.
+- Bugs related to performance.now not being available.
 
 ## 0.0.29 - 2023-07-13
 
