@@ -1,7 +1,8 @@
-import { generateTextAsFunction } from "../../model/text-generation/generateText.js";
 import { TextGenerationModelWithTokenization } from "../../model/text-generation/TextGenerationModel.js";
+import { generateTextAsFunction } from "../../model/text-generation/generateText.js";
+import { FullTokenizer } from "../../model/tokenization/Tokenizer.js";
 import { Run } from "../../run/Run.js";
-import { splitRecursivelyAtTokenForModelAsSplitFunction } from "../split/splitRecursively.js";
+import { splitRecursivelyAtTokenAsSplitFunction } from "../../text/split/splitRecursively.js";
 import { SummarizationFunction } from "./SummarizationFunction.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";
 
@@ -21,7 +22,8 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     join,
   }: {
     text: string;
-    model: TextGenerationModelWithTokenization<PROMPT, any, any>;
+    model: TextGenerationModelWithTokenization<PROMPT, any, any> &
+      FullTokenizer;
     prompt: (input: { text: string }) => Promise<PROMPT>;
     reservedCompletionTokens: number;
     join?: (texts: Array<string>) => string;
@@ -39,8 +41,8 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
 
   return summarizeRecursively(
     {
-      split: splitRecursivelyAtTokenForModelAsSplitFunction({
-        model,
+      split: splitRecursivelyAtTokenAsSplitFunction({
+        tokenizer: model,
         maxChunkSize:
           model.maxTokens - reservedCompletionTokens - emptyPromptTokens,
       }),
@@ -65,7 +67,8 @@ export const summarizeRecursivelyWithTextGenerationAndTokenSplittingAsFunction =
       join,
       functionId,
     }: {
-      model: TextGenerationModelWithTokenization<PROMPT, any, any>;
+      model: TextGenerationModelWithTokenization<PROMPT, any, any> &
+        FullTokenizer;
       prompt: (input: { text: string }) => Promise<PROMPT>;
       reservedCompletionTokens: number;
       join?: (texts: Array<string>) => string;

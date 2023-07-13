@@ -5,8 +5,7 @@ import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
 } from "../../model/text-embedding/TextEmbeddingModel.js";
-import { TokenizationSupport } from "../../model/tokenization/TokenizationSupport.js";
-import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
+import { countTokens } from "../../model/tokenization/countTokens.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -83,8 +82,7 @@ export class OpenAITextEmbeddingModel
     TextEmbeddingModel<
       OpenAITextEmbeddingResponse,
       OpenAITextEmbeddingModelSettings
-    >,
-    TokenizationSupport
+    >
 {
   constructor(settings: OpenAITextEmbeddingModelSettings) {
     super({ settings });
@@ -104,7 +102,7 @@ export class OpenAITextEmbeddingModel
   readonly maxTextsPerCall = 1;
   readonly embeddingDimensions: number;
 
-  readonly tokenizer: Tokenizer;
+  readonly tokenizer: TikTokenTokenizer;
   readonly maxTokens: number;
 
   private get apiKey() {
@@ -120,7 +118,7 @@ export class OpenAITextEmbeddingModel
   }
 
   async countTokens(input: string) {
-    return this.tokenizer.countTokens(input);
+    return countTokens(this.tokenizer, input);
   }
 
   async callAPI(

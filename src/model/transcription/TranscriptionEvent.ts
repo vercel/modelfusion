@@ -1,7 +1,7 @@
 import {
   ModelCallFinishedEventMetadata,
   ModelCallStartedEventMetadata,
-} from "model/ModelCallEvent.js";
+} from "../ModelCallEvent.js";
 
 export type TranscriptionStartedEvent = {
   type: "transcription-started";

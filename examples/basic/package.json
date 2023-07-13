@@ -11,5 +11,8 @@
   "devDependencies": {
     "@types/node": "20.2.3",
     "ts-node": "10.9.1"
+  },
+  "scripts": {
+    "build": "tsc --outDir build/"
   }
 }

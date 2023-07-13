@@ -12,7 +12,8 @@ import {
   TextStreamingModel,
   TextStreamingModelSettings,
 } from "../../model/text-streaming/TextStreamingModel.js";
-import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
+import { FullTokenizer } from "../../model/tokenization/Tokenizer.js";
+import { countTokens } from "../../model/tokenization/countTokens.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -96,6 +97,7 @@ export class CohereTextGenerationModel
       CohereTextGenerationResponse,
       CohereTextGenerationModelSettings
     >,
+    FullTokenizer,
     TextStreamingModel<
       string,
       CohereTextGenerationDelta,
@@ -123,7 +125,20 @@ export class CohereTextGenerationModel
   }
 
   readonly maxTokens: number;
-  readonly tokenizer: Tokenizer;
+
+  private readonly tokenizer: CohereTokenizer;
+
+  async tokenize(text: string) {
+    return this.tokenizer.tokenize(text);
+  }
+
+  async tokenizeWithTexts(text: string) {
+    return this.tokenizer.tokenizeWithTexts(text);
+  }
+
+  async detokenize(tokens: number[]) {
+    return this.tokenizer.detokenize(tokens);
+  }
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.COHERE_API_KEY;
@@ -138,7 +153,7 @@ export class CohereTextGenerationModel
   }
 
   async countPromptTokens(input: string) {
-    return this.tokenizer.countTokens(input);
+    return countTokens(this.tokenizer, input);
   }
 
   async callAPI<RESPONSE>(

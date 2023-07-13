@@ -1,7 +1,7 @@
 import {
   ModelCallFinishedEventMetadata,
   ModelCallStartedEventMetadata,
-} from "model/ModelCallEvent.js";
+} from "../ModelCallEvent.js";
 
 export type TextGenerationStartedEvent = {
   type: "text-generation-started";

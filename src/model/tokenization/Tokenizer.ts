@@ -1,14 +1,11 @@
-export interface Tokenizer {
-  /**
-   * Count the number of tokens in the given text.
-   */
-  countTokens: (text: string) => PromiseLike<number>;
-
+export interface BasicTokenizer {
   /**
    * Get the tokens that represent the given text.
    */
   tokenize: (text: string) => PromiseLike<Array<number>>;
+}
 
+export interface FullTokenizer extends BasicTokenizer {
   /**
    * Get the tokens that represent the given text and the text for each token.
    */

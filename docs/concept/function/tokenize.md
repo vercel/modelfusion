@@ -27,7 +27,8 @@ Count the number of tokens in the given text.
 #### Example
 
 ```ts
-const tokenCount = await tokenizer.countTokens(
+const tokenCount = await countTokens(
+  tokenizer,
   "At first, Nox didn't know what to do with the pup."
 );
 ```

@@ -73,13 +73,13 @@ const embeddings = await embedTexts(
 [CohereTokenizer API](/api/classes/CohereTokenizer)
 
 ```ts
-import { CohereTokenizer } from "ai-utils.js";
+import { CohereTokenizer, countTokens } from "ai-utils.js";
 
 const tokenizer = new CohereTokenizer({ model: "command-nightly" });
 
 const text = "At first, Nox didn't know what to do with the pup.";
 
-const tokenCount = await tokenizer.countTokens(text);
+const tokenCount = await countTokens(tokenizer, text);
 const tokens = await tokenizer.tokenize(text);
 const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
 const reconstructedText = await tokenizer.detokenize(tokens);

@@ -1,6 +1,6 @@
+import { BasicTokenizer } from "../../model/tokenization/Tokenizer.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
-import { TokenizationSupport } from "../tokenization/TokenizationSupport.js";
 
 export interface TextGenerationModelSettings extends ModelSettings {
   trimOutput?: boolean;
@@ -24,7 +24,8 @@ export interface TextGenerationModelWithTokenization<
   RESPONSE,
   SETTINGS extends TextGenerationModelSettings
 > extends TextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-    TokenizationSupport {
+    BasicTokenizer {
+  readonly maxTokens: number;
   countPromptTokens(prompt: PROMPT): PromiseLike<number>;
   withMaxTokens(
     maxTokens: number

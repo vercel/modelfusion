@@ -1,5 +1,5 @@
 import z from "zod";
-import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
+import { FullTokenizer } from "../../model/tokenization/Tokenizer.js";
 import { Run } from "../../run/Run.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
@@ -37,12 +37,12 @@ export interface CohereTokenizerSettings {
  *
  * const text = "At first, Nox didn't know what to do with the pup.";
  *
- * const tokenCount = await tokenizer.countTokens(text);
+ * const tokenCount = await countTokens(tokenizer, text);
  * const tokens = await tokenizer.tokenize(text);
  * const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
  * const reconstructedText = await tokenizer.detokenize(tokens);
  */
-export class CohereTokenizer implements Tokenizer {
+export class CohereTokenizer implements FullTokenizer {
   readonly settings: CohereTokenizerSettings;
 
   constructor(settings: CohereTokenizerSettings) {
@@ -93,10 +93,6 @@ export class CohereTokenizer implements Tokenizer {
           ...this.settings,
         }),
     });
-  }
-
-  async countTokens(text: string) {
-    return (await this.tokenize(text)).length;
   }
 
   async tokenize(text: string) {

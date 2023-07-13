@@ -5,7 +5,7 @@ import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
 } from "../../model/text-embedding/TextEmbeddingModel.js";
-import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
+import { FullTokenizer } from "../../model/tokenization/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -72,7 +72,8 @@ export class CohereTextEmbeddingModel
     TextEmbeddingModel<
       CohereTextEmbeddingResponse,
       CohereTextEmbeddingModelSettings
-    >
+    >,
+    FullTokenizer
 {
   constructor(settings: CohereTextEmbeddingModelSettings) {
     super({ settings });
@@ -100,7 +101,19 @@ export class CohereTextEmbeddingModel
   readonly embeddingDimensions: number;
 
   readonly maxTokens: number;
-  readonly tokenizer: Tokenizer;
+  private readonly tokenizer: CohereTokenizer;
+
+  async tokenize(text: string) {
+    return this.tokenizer.tokenize(text);
+  }
+
+  async tokenizeWithTexts(text: string) {
+    return this.tokenizer.tokenizeWithTexts(text);
+  }
+
+  async detokenize(tokens: number[]) {
+    return this.tokenizer.detokenize(tokens);
+  }
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.COHERE_API_KEY;
@@ -112,10 +125,6 @@ export class CohereTextEmbeddingModel
     }
 
     return apiKey;
-  }
-
-  async countTokens(input: string) {
-    return this.tokenizer.countTokens(input);
   }
 
   async callAPI(

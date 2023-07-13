@@ -13,7 +13,8 @@ import {
   TextStreamingModelSettings,
 } from "../../model/text-streaming/TextStreamingModel.js";
 import { parseEventSourceReadableStream } from "../../model/text-streaming/parseEventSourceReadableStream.js";
-import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
+import { FullTokenizer } from "../../model/tokenization/Tokenizer.js";
+import { countTokens } from "../../model/tokenization/countTokens.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -143,6 +144,7 @@ export class OpenAITextGenerationModel
       OpenAITextGenerationResponse,
       OpenAITextGenerationModelSettings
     >,
+    FullTokenizer,
     TextStreamingModel<
       string,
       OpenAITextGenerationDelta,
@@ -161,8 +163,20 @@ export class OpenAITextGenerationModel
     return this.settings.model;
   }
 
-  readonly tokenizer: Tokenizer;
   readonly maxTokens: number;
+  private readonly tokenizer: TikTokenTokenizer;
+
+  async tokenize(text: string) {
+    return this.tokenizer.tokenize(text);
+  }
+
+  async tokenizeWithTexts(text: string) {
+    return this.tokenizer.tokenizeWithTexts(text);
+  }
+
+  async detokenize(tokens: number[]) {
+    return this.tokenizer.detokenize(tokens);
+  }
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
@@ -177,7 +191,7 @@ export class OpenAITextGenerationModel
   }
 
   async countPromptTokens(input: string) {
-    return this.tokenizer.countTokens(input);
+    return countTokens(this.tokenizer, input);
   }
 
   async callAPI<RESULT>(

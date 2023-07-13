@@ -1,4 +1,4 @@
-import { CohereTokenizer } from "ai-utils.js";
+import { CohereTokenizer, countTokens } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -8,7 +8,7 @@ dotenv.config();
 
   const text = "At first, Nox didn't know what to do with the pup.";
 
-  const tokenCount = await tokenizer.countTokens(text);
+  const tokenCount = await countTokens(tokenizer, text);
   const tokens = await tokenizer.tokenize(text);
   const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
   const reconstructedText = await tokenizer.detokenize(tokens);

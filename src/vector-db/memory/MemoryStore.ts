@@ -1,7 +1,7 @@
-import { VectorStore } from "index.js";
 import z from "zod";
 import { Vector } from "../../run/Vector.js";
 import { cosineSimilarity } from "../../util/cosineSimilarity.js";
+import { VectorStore } from "../VectorStore.js";
 
 type Entry<DATA> = {
   id: string;

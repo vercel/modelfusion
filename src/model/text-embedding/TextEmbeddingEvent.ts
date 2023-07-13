@@ -1,8 +1,8 @@
+import { Vector } from "../../run/Vector.js";
 import {
   ModelCallFinishedEventMetadata,
   ModelCallStartedEventMetadata,
-} from "model/ModelCallEvent.js";
-import { Vector } from "../../run/Vector.js";
+} from "../ModelCallEvent.js";
 
 export type TextEmbeddingStartedEvent = {
   type: "text-embedding-started";

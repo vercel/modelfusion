@@ -1,5 +1,5 @@
 import { Tiktoken, TiktokenEncoding, getEncoding } from "js-tiktoken";
-import { Tokenizer } from "../../model/tokenization/Tokenizer.js";
+import { FullTokenizer } from "../../model/tokenization/Tokenizer.js";
 import { never } from "../../util/never.js";
 import {
   OpenAIChatModelType,
@@ -17,12 +17,12 @@ import {
  *
  * const text = "At first, Nox didn't know what to do with the pup.";
  *
- * const tokenCount = await tokenizer.countTokens(text);
+ * const tokenCount = await countTokens(tokenizer, text);
  * const tokens = await tokenizer.tokenize(text);
  * const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
  * const reconstructedText = await tokenizer.detokenize(tokens);
  */
-export class TikTokenTokenizer implements Tokenizer {
+export class TikTokenTokenizer implements FullTokenizer {
   /**
    * Get a TikToken tokenizer for a specific model or encoding.
    */
@@ -44,10 +44,6 @@ export class TikTokenTokenizer implements Tokenizer {
   }
 
   private readonly tiktoken: Tiktoken;
-
-  async countTokens(text: string) {
-    return this.tiktoken.encode(text).length;
-  }
 
   async tokenize(text: string) {
     return this.tiktoken.encode(text);
