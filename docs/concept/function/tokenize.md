@@ -4,21 +4,9 @@ sidebar_position: 18
 
 # Tokenize Text
 
+`ai-utils.js` provides functions and interfaces for text tokenization. The interfaces (`BasicTokenizer` and `FullTokenizer`) are implemented by tokenizer classes (such as `TikTokenTokenizer`) and by model classes (e.g. text generation models).
+
 ## Usage
-
-[Tokenizer API](/api/interfaces/Tokenizer)
-
-### new Tokenizer
-
-Creates a new tokenizer.
-The constructor depends on the tokenizer.
-Most tokenizer need the model name or the encoding.
-
-#### Example: TikToken tokenizer (OpenAI)
-
-```ts
-const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });
-```
 
 ### countTokens
 
@@ -33,7 +21,13 @@ const tokenCount = await countTokens(
 );
 ```
 
-### tokenize
+### BasicTokenizer interface
+
+[Basic Tokenizer API](/api/interfaces/BasicTokenizer)
+
+The basic tokenizer provides only a `tokenize` function.
+
+#### tokenize
 
 Get the tokens that represent the given text.
 
@@ -45,7 +39,13 @@ const tokens = await tokenizer.tokenize(
 );
 ```
 
-### tokenizeWithTexts
+### FullTokenizer interface
+
+[Full Tokenizer API](/api/interfaces/FullTokenizer)
+
+The full tokenizer extends the basic tokenizer interface with a `tokenizeWithTexts` function and a `detokenize` function.
+
+#### tokenizeWithTexts
 
 Get the tokens that represent the given text and the text for each token.
 
@@ -57,7 +57,7 @@ const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(
 );
 ```
 
-### detokenize
+#### detokenize
 
 Get the text that represents the given tokens.
 
@@ -70,5 +70,5 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 ## Available Providers
 
-- [OpenAI](/integration/model-provider/openai)
-- [Cohere](/integration/model-provider/cohere)
+- [OpenAI](/integration/model-provider/openai) (full tokenizer)
+- [Cohere](/integration/model-provider/cohere) (full tokenizer)
