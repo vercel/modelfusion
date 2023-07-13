@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.29 - 2023-07-13
+
+### Added
+
+- Llama.cpp tokenization support.
+
+### Changed
+
+- Split Tokenizer API into BasicTokenizer and FullTokenizer.
+- Introduce countTokens function (replacing Tokenizer.countTokens).
+
 ## 0.0.28 - 2023-07-12
 
 ### Added
