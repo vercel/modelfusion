@@ -1,5 +1,5 @@
 import { FunctionOptions } from "model/FunctionOptions.js";
-import { TextChunk } from "./TextChunk.js";
+import { TextChunk } from "../TextChunk.js";
 import {
   TextChunkRetriever,
   TextChunkRetrieverSettings,

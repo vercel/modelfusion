@@ -1,11 +1,11 @@
-import { FunctionOptions } from "index.js";
 import { nanoid as createId } from "nanoid";
 import { TextEmbeddingModel } from "../model/embed-text/TextEmbeddingModel.js";
 import { embedText, embedTexts } from "../model/embed-text/embedText.js";
-import { TextChunk } from "../model/retrieve-text-chunks/TextChunk.js";
-import { TextChunkRetrieverSettings } from "../model/retrieve-text-chunks/TextChunkRetriever.js";
 import { Run } from "../run/Run.js";
+import { TextChunk } from "../text-chunk/TextChunk.js";
+import { TextChunkRetrieverSettings } from "../text-chunk/retrieve-text-chunks/TextChunkRetriever.js";
 import { VectorIndex } from "./VectorIndex.js";
+import { FunctionOptions } from "../model/FunctionOptions.js";
 
 export class VectorIndexTextChunkStore<CHUNK extends TextChunk, INDEX> {
   private readonly _index: VectorIndex<CHUNK, INDEX>;

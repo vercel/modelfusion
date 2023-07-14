@@ -1,11 +1,11 @@
-import { FunctionOptions } from "index.js";
+import { FunctionOptions } from "../model/FunctionOptions.js";
 import { TextEmbeddingModel } from "../model/embed-text/TextEmbeddingModel.js";
 import { embedText } from "../model/embed-text/embedText.js";
-import { TextChunk } from "../model/retrieve-text-chunks/TextChunk.js";
+import { TextChunk } from "../text-chunk/TextChunk.js";
 import {
   TextChunkRetriever,
   TextChunkRetrieverSettings,
-} from "../model/retrieve-text-chunks/TextChunkRetriever.js";
+} from "../text-chunk/retrieve-text-chunks/TextChunkRetriever.js";
 import { VectorIndex } from "./VectorIndex.js";
 
 export interface VectorIndexTextChunkRetrieverSettings {
@@ -51,8 +51,8 @@ export class VectorIndexTextChunkRetriever<CHUNK extends TextChunk, INDEX>
         functionId: options?.functionId,
         run: options?.run,
       }),
-      maxResults: 1,
-      similarityThreshold: undefined,
+      maxResults: this.settings.maxResults ?? 1,
+      similarityThreshold: this.settings.similarityThreshold,
     });
 
     return queryResult.map((item) => item.data);
