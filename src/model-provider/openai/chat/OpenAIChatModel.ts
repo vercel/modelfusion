@@ -15,7 +15,7 @@ import {
   TextStreamingModel,
   TextStreamingModelSettings,
 } from "../../../model/text-streaming/TextStreamingModel.js";
-import { FullTokenizer } from "../../../model/tokenization/Tokenizer.js";
+import { FullTokenizer } from "../../../model/tokenize-text/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,

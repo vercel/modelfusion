@@ -5,7 +5,7 @@ import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
 } from "../../model/text-embedding/TextEmbeddingModel.js";
-import { FullTokenizer } from "../../model/tokenization/Tokenizer.js";
+import { FullTokenizer } from "../../model/tokenize-text/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";

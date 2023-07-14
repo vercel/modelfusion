@@ -1,4 +1,4 @@
-import { BasicTokenizer } from "../../model/tokenization/Tokenizer.js";
+import { BasicTokenizer } from "../../model/tokenize-text/Tokenizer.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 

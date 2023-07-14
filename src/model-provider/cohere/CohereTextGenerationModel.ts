@@ -12,8 +12,8 @@ import {
   TextStreamingModel,
   TextStreamingModelSettings,
 } from "../../model/text-streaming/TextStreamingModel.js";
-import { FullTokenizer } from "../../model/tokenization/Tokenizer.js";
-import { countTokens } from "../../model/tokenization/countTokens.js";
+import { FullTokenizer } from "../../model/tokenize-text/Tokenizer.js";
+import { countTokens } from "../../model/tokenize-text/countTokens.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";

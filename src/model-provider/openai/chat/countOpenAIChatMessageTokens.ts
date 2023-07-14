@@ -1,4 +1,4 @@
-import { countTokens } from "../../../model/tokenization/countTokens.js";
+import { countTokens } from "../../../model/tokenize-text/countTokens.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatModelType } from "./OpenAIChatModel.js";
