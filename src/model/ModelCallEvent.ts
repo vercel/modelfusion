@@ -9,13 +9,13 @@ import {
   ImageGenerationStartedEvent,
 } from "./generate-image/ImageGenerationEvent.js";
 import {
+  JsonGenerationFinishedEvent,
+  JsonGenerationStartedEvent,
+} from "./generate-json/JsonGenerationEvent.js";
+import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
 } from "./generate-text/TextGenerationEvent.js";
-import {
-  JsonGenerationFinishedEvent,
-  JsonGenerationStartedEvent,
-} from "./json-generation/JsonGenerationEvent.js";
 import {
   TextStreamingFinishedEvent,
   TextStreamingStartedEvent,

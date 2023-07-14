@@ -5,7 +5,7 @@ import { FunctionOptions } from "../../../model/FunctionOptions.js";
 import {
   JsonGenerationModel,
   JsonGenerationSchema,
-} from "../../../model/json-generation/JsonGenerationModel.js";
+} from "../../../model/generate-json/JsonGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
