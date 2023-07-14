@@ -4,7 +4,7 @@ import { FunctionOptions } from "../../model/FunctionOptions.js";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
-} from "../../model/transcription/TranscriptionModel.js";
+} from "../../model/transcribe-audio/TranscriptionModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";

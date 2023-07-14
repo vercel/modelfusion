@@ -19,7 +19,7 @@ import {
 import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
-} from "./transcription/TranscriptionEvent.js";
+} from "./transcribe-audio/TranscriptionEvent.js";
 import {
   TextStreamingFinishedEvent,
   TextStreamingStartedEvent,
