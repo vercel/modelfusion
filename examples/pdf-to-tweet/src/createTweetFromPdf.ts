@@ -4,8 +4,9 @@ import {
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
   Run,
-  VectorDB,
+  VectorIndexSimilarTextChunkRetriever,
   generateText,
+  retrieveTextChunks,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "ai-utils.js";
 import fs from "node:fs";
@@ -16,31 +17,14 @@ export async function createTweetFromPdf({
   topic,
   pdfPath,
   exampleTweetIndexPath,
-  openAiApiKey,
   run,
 }: {
   topic: string;
   pdfPath: string;
   exampleTweetIndexPath: string;
-  openAiApiKey: string;
   run: Run;
 }) {
-  const model = new OpenAIChatModel({
-    apiKey: openAiApiKey,
-    model: "gpt-4",
-  });
-
-  const exampleTweetStore = new VectorDB({
-    index: await MemoryVectorIndex.deserialize({
-      serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
-      schema: z.object({ tweet: z.string() }),
-    }),
-    embeddingModel: new OpenAITextEmbeddingModel({
-      apiKey: openAiApiKey,
-      model: "text-embedding-ada-002",
-    }),
-    queryFunctionId: "embed-draft-tweet",
-  });
+  const model = new OpenAIChatModel({ model: "gpt-4" });
 
   const textFromPdf = await loadPdfAsText(pdfPath);
 
@@ -93,13 +77,20 @@ export async function createTweetFromPdf({
   );
 
   // search for similar tweets:
-  const similarTweets = await exampleTweetStore.queryByText(
-    {
-      queryText: draftTweet,
+  const similarTweets = await retrieveTextChunks(
+    new VectorIndexSimilarTextChunkRetriever({
+      vectorIndex: await MemoryVectorIndex.deserialize({
+        serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
+        schema: z.object({ content: z.string() }),
+      }),
+      embeddingModel: new OpenAITextEmbeddingModel({
+        model: "text-embedding-ada-002",
+      }),
       maxResults: 1,
       similarityThreshold: 0.5,
-    },
-    { run }
+    }),
+    draftTweet,
+    { functionId: "embed-draft-tweet", run }
   );
 
   if (similarTweets.length === 0) {
@@ -114,9 +105,7 @@ export async function createTweetFromPdf({
         `## TASK\nRewrite the draft tweet on ${topic} using the style from the example tweet.`
       ),
       OpenAIChatMessage.user(`## DRAFT TWEET\n${draftTweet}`),
-      OpenAIChatMessage.user(
-        `## STYLE EXAMPLE\n${similarTweets[0].data.tweet}`
-      ),
+      OpenAIChatMessage.user(`## STYLE EXAMPLE\n${similarTweets[0].content}`),
     ],
     {
       functionId: "rewrite-tweet",

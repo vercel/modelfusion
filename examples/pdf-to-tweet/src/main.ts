@@ -16,12 +16,6 @@ program
 
 const { file, topic, examples } = program.opts();
 
-const openAiApiKey = process.env.OPENAI_API_KEY;
-
-if (!openAiApiKey) {
-  throw new Error("OPENAI_API_KEY is not set");
-}
-
 const run = new DefaultRun({
   costCalculators: [new OpenAICostCalculator()],
   observers: [
@@ -57,7 +51,6 @@ createTweetFromPdf({
   topic,
   pdfPath: file,
   exampleTweetIndexPath: examples,
-  openAiApiKey,
   run,
 })
   .then(async (result) => {

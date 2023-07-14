@@ -1,8 +1,9 @@
 import {
   MemoryVectorIndex,
   OpenAITextEmbeddingModel,
-  VectorDB,
+  TextChunk,
   throttleMaxConcurrency,
+  upsertTextChunks,
 } from "ai-utils.js";
 import { Command } from "commander";
 import dotenv from "dotenv";
@@ -20,32 +21,23 @@ program
 
 const { inputFile, outputFile } = program.opts();
 
-const openAiApiKey = process.env.OPENAI_API_KEY;
-
-if (!openAiApiKey) {
-  throw new Error("OPENAI_API_KEY is not set");
-}
-
 (async () => {
   const inputText = fs.readFileSync(inputFile, "utf-8");
 
   const exampleTweets = inputText.split("\n-----\n");
 
-  const vectorDB = new VectorDB({
-    index: new MemoryVectorIndex(),
+  const vectorIndex = new MemoryVectorIndex<TextChunk>();
+
+  await upsertTextChunks({
+    vectorIndex,
     embeddingModel: new OpenAITextEmbeddingModel({
-      apiKey: openAiApiKey,
       model: "text-embedding-ada-002",
       throttle: throttleMaxConcurrency({
         maxConcurrentCalls: 5,
       }),
     }),
+    chunks: exampleTweets.map((tweet) => ({ content: tweet })),
   });
 
-  await vectorDB.upsertMany({
-    keyTexts: exampleTweets,
-    data: exampleTweets.map((tweet) => ({ tweet })),
-  });
-
-  fs.writeFileSync(outputFile, vectorDB.index.serialize());
+  fs.writeFileSync(outputFile, vectorIndex.serialize());
 })();

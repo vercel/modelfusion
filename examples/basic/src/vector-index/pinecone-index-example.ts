@@ -58,7 +58,7 @@ if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
     chunks: texts.map((text) => ({ content: text })),
   });
 
-  const results = retrieveTextChunks(
+  const results = await retrieveTextChunks(
     new VectorIndexSimilarTextChunkRetriever({
       vectorIndex,
       embeddingModel,

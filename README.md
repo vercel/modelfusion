@@ -134,7 +134,7 @@ await upsertTextChunks({
 });
 
 // retrieve text chunks from the vector index - usually done at query time:
-const results = retrieveTextChunks(
+const results = await retrieveTextChunks(
   new VectorIndexSimilarTextChunkRetriever({
     vectorIndex,
     embeddingModel,

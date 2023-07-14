@@ -35,7 +35,7 @@ dotenv.config();
     chunks: texts.map((text) => ({ content: text })),
   });
 
-  const results = retrieveTextChunks(
+  const results = await retrieveTextChunks(
     new VectorIndexSimilarTextChunkRetriever({
       vectorIndex,
       embeddingModel,
