@@ -98,7 +98,21 @@ const embeddings = await embedTexts(
 );
 ```
 
-### Upserting and Retrieving Text Chunks using Embeddings
+### Tokenize Text
+
+```ts
+const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });
+
+const text = "At first, Nox didn't know what to do with the pup.";
+
+const tokenCount = await countTokens(tokenizer, text);
+
+const tokens = await tokenizer.tokenize(text);
+const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
+const reconstructedText = await tokenizer.detokenize(tokens);
+```
+
+### Upserting and Retrieving Text Chunks from Vector Indices
 
 ```ts
 const texts = [
@@ -112,12 +126,14 @@ const embeddingModel = new OpenAITextEmbeddingModel({
   model: "text-embedding-ada-002",
 });
 
+// update an index - usually done as part of an ingestion process:
 await upsertTextChunks({
   vectorIndex,
   embeddingModel,
   chunks: texts.map((text) => ({ content: text })),
 });
 
+// retrieve text chunks from the vector index - usually done at query time:
 const results = retrieveTextChunks(
   new VectorIndexSimilarTextChunkRetriever({
     vectorIndex,
@@ -127,20 +143,6 @@ const results = retrieveTextChunks(
   }),
   "rainbow and water droplets"
 );
-```
-
-### Tokenization
-
-```ts
-const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });
-
-const text = "At first, Nox didn't know what to do with the pup.";
-
-const tokenCount = await countTokens(tokenizer, text);
-
-const tokens = await tokenizer.tokenize(text);
-const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
-const reconstructedText = await tokenizer.detokenize(tokens);
 ```
 
 ## Introduction
