@@ -2,9 +2,9 @@ import {
   MemoryVectorIndex,
   OpenAITextEmbeddingModel,
   TextChunk,
-  VectorIndexTextChunkRetriever,
+  VectorIndexSimilarTextChunkRetriever,
   VectorIndexTextChunkStore,
-  retrieveSimilarTextChunks,
+  retrieveTextChunks,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 
@@ -27,9 +27,8 @@ dotenv.config();
   // the ingestion is usually run separate from the querying:
   const serializedIndex = await ingest(rainbowTexts);
 
-  // retrieve chunks:
-  const results = retrieveSimilarTextChunks(
-    new VectorIndexTextChunkRetriever({
+  const results = retrieveTextChunks(
+    new VectorIndexSimilarTextChunkRetriever({
       vectorIndex: await MemoryVectorIndex.deserialize<TextChunk>({
         serializedData: serializedIndex,
       }),

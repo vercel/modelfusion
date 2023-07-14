@@ -13,8 +13,11 @@ export interface VectorIndexTextChunkRetrieverSettings {
   similarityThreshold?: number;
 }
 
-export class VectorIndexTextChunkRetriever<CHUNK extends TextChunk, INDEX>
-  implements TextChunkRetriever<CHUNK, VectorIndexTextChunkRetrieverSettings>
+export class VectorIndexSimilarTextChunkRetriever<
+  CHUNK extends TextChunk,
+  INDEX
+> implements
+    TextChunkRetriever<CHUNK, string, VectorIndexTextChunkRetrieverSettings>
 {
   private readonly vectorIndex: VectorIndex<CHUNK, INDEX>;
   private readonly embeddingModel: TextEmbeddingModel<any, any>;
@@ -37,19 +40,19 @@ export class VectorIndexTextChunkRetriever<CHUNK extends TextChunk, INDEX>
     };
   }
 
-  async retrieveSimilarTextChunks(
-    queryText: string,
+  async retrieveTextChunks(
+    query: string,
     options?: FunctionOptions<TextChunkRetrieverSettings>
   ): Promise<CHUNK[]> {
     if (options?.settings != null) {
-      return this.withSettings(options.settings).retrieveSimilarTextChunks(
-        queryText,
-        { functionId: options.functionId, run: options.run }
-      );
+      return this.withSettings(options.settings).retrieveTextChunks(query, {
+        functionId: options.functionId,
+        run: options.run,
+      });
     }
 
     const queryResult = await this.vectorIndex.queryByVector({
-      queryVector: await embedText(this.embeddingModel, queryText, {
+      queryVector: await embedText(this.embeddingModel, query, {
         functionId: options?.functionId,
         run: options?.run,
       }),
@@ -63,7 +66,7 @@ export class VectorIndexTextChunkRetriever<CHUNK extends TextChunk, INDEX>
   withSettings(
     additionalSettings: Partial<VectorIndexTextChunkRetrieverSettings>
   ): this {
-    return new VectorIndexTextChunkRetriever(
+    return new VectorIndexSimilarTextChunkRetriever(
       Object.assign({}, this.settings, additionalSettings, {
         vectorIndex: this.vectorIndex,
         embeddingModel: this.embeddingModel,

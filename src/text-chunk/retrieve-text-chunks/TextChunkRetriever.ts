@@ -5,10 +5,11 @@ export interface TextChunkRetrieverSettings {}
 
 export interface TextChunkRetriever<
   CHUNK extends TextChunk,
+  QUERY,
   SETTINGS extends TextChunkRetrieverSettings
 > {
-  retrieveSimilarTextChunks(
-    queryText: string,
+  retrieveTextChunks(
+    query: QUERY,
     options?: FunctionOptions<TextChunkRetrieverSettings>
   ): Promise<CHUNK[]>;
 

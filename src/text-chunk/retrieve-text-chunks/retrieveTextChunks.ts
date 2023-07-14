@@ -5,27 +5,29 @@ import {
   TextChunkRetrieverSettings,
 } from "./TextChunkRetriever.js";
 
-export async function retrieveSimilarTextChunks<
+export async function retrieveTextChunks<
   CHUNK extends TextChunk,
+  QUERY,
   SETTINGS extends TextChunkRetrieverSettings
 >(
-  retriever: TextChunkRetriever<CHUNK, SETTINGS>,
-  queryText: string,
+  retriever: TextChunkRetriever<CHUNK, QUERY, SETTINGS>,
+  query: QUERY,
   options?: FunctionOptions<SETTINGS>
 ): Promise<CHUNK[]> {
   // TODO add error handling, events, duration tracking, etc.
-  return retriever.retrieveSimilarTextChunks(queryText, options);
+  return retriever.retrieveTextChunks(query, options);
 }
 
-export function retrieveSimilarTextChunksAsFunction<
+export function retrieveTextChunksAsFunction<
   CHUNK extends TextChunk,
+  QUERY,
   SETTINGS extends TextChunkRetrieverSettings
 >(
-  retriever: TextChunkRetriever<CHUNK, SETTINGS>,
+  retriever: TextChunkRetriever<CHUNK, QUERY, SETTINGS>,
   generateOptions?: FunctionOptions<SETTINGS>
 ) {
-  return async (queryText: string, options?: FunctionOptions<SETTINGS>) => {
-    return retrieveSimilarTextChunks(retriever, queryText, {
+  return async (query: QUERY, options?: FunctionOptions<SETTINGS>) => {
+    return retrieveTextChunks(retriever, query, {
       functionId: options?.functionId ?? generateOptions?.functionId,
       settings: Object.assign({}, generateOptions?.settings, options?.settings),
       run: options?.run,

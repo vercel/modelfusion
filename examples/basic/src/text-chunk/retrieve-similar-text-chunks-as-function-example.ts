@@ -2,9 +2,9 @@ import {
   MemoryVectorIndex,
   OpenAITextEmbeddingModel,
   TextChunk,
-  VectorIndexTextChunkRetriever,
+  VectorIndexSimilarTextChunkRetriever,
   VectorIndexTextChunkStore,
-  retrieveSimilarTextChunksAsFunction,
+  retrieveTextChunksAsFunction,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 
@@ -28,8 +28,8 @@ dotenv.config();
   const serializedIndex = await ingest(rainbowTexts);
 
   // you can create a function that you can use in other parts of your code:
-  const retrieveRainbowTextChunks = retrieveSimilarTextChunksAsFunction(
-    new VectorIndexTextChunkRetriever({
+  const retrieveRainbowTextChunks = retrieveTextChunksAsFunction(
+    new VectorIndexSimilarTextChunkRetriever({
       vectorIndex: await MemoryVectorIndex.deserialize<TextChunk>({
         serializedData: serializedIndex,
       }),
