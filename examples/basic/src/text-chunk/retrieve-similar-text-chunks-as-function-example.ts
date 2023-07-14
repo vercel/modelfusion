@@ -7,7 +7,6 @@ import {
   retrieveSimilarTextChunksAsFunction,
 } from "ai-utils.js";
 import dotenv from "dotenv";
-import { z } from "zod";
 
 dotenv.config();
 
@@ -32,9 +31,8 @@ dotenv.config();
   const retrieveRainbowTextChunks = retrieveSimilarTextChunksAsFunction(
     new VectorIndexTextChunkRetriever(
       {
-        index: await MemoryVectorIndex.deserialize({
+        index: await MemoryVectorIndex.deserialize<TextChunk>({
           serializedData: serializedIndex,
-          schema: z.object({ content: z.string() }),
         }),
         embeddingModel: new OpenAITextEmbeddingModel({
           model: "text-embedding-ada-002",

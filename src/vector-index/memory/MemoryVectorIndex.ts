@@ -22,30 +22,33 @@ export class MemoryVectorIndex<DATA>
     schema,
   }: {
     serializedData: string;
-    schema: z.ZodSchema<DATA>;
+    schema?: z.ZodSchema<DATA>;
   }) {
-    const json = JSON.parse(serializedData);
-    const parsedJson = z
-      .array(
-        z.object({
-          id: z.string(),
-          vector: z.array(z.number()),
-          data: schema,
-        })
-      )
-      .parse(json);
+    let json = JSON.parse(serializedData);
 
-    const VectorIndex = new MemoryVectorIndex<DATA>();
+    if (schema != null) {
+      json = z
+        .array(
+          z.object({
+            id: z.string(),
+            vector: z.array(z.number()),
+            data: schema,
+          })
+        )
+        .parse(json);
+    }
 
-    VectorIndex.upsertMany(
-      parsedJson as Array<{
+    const vectorIndex = new MemoryVectorIndex<DATA>();
+
+    vectorIndex.upsertMany(
+      json as Array<{
         id: string;
         vector: Vector;
         data: DATA;
       }>
     );
 
-    return VectorIndex;
+    return vectorIndex;
   }
 
   private readonly entries: Map<string, Entry<DATA>> = new Map();
