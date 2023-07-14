@@ -1,6 +1,6 @@
 import { Vector } from "../run/Vector.js";
 
-export interface VectorStore<DATA, STORE> {
+export interface VectorIndex<DATA, INDEX> {
   upsertMany(
     data: Array<{
       id: string;
@@ -15,5 +15,5 @@ export interface VectorStore<DATA, STORE> {
     similarityThreshold?: number;
   }): Promise<Array<{ id: string; data: DATA; similarity?: number }>>;
 
-  asStore(): STORE;
+  asIndex(): INDEX;
 }

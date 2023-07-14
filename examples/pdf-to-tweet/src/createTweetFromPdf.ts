@@ -1,5 +1,5 @@
 import {
-  MemoryStore,
+  MemoryVectorIndex,
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
@@ -31,7 +31,7 @@ export async function createTweetFromPdf({
   });
 
   const exampleTweetStore = new VectorDB({
-    store: await MemoryStore.deserialize({
+    index: await MemoryVectorIndex.deserialize({
       serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
       schema: z.object({ tweet: z.string() }),
     }),

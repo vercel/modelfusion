@@ -1,10 +1,10 @@
 import { VectorOperationsApi } from "@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch/index.js";
 import { z } from "zod";
 import { Vector } from "../../run/Vector.js";
-import { VectorStore } from "../VectorStore.js";
+import { VectorIndex } from "../VectorIndex.js";
 
-export class PineconeStore<DATA extends object | undefined>
-  implements VectorStore<DATA, PineconeStore<DATA>>
+export class PineconeVectorIndex<DATA extends object | undefined>
+  implements VectorIndex<DATA, PineconeVectorIndex<DATA>>
 {
   readonly index: VectorOperationsApi;
   readonly namespace?: string;
@@ -79,7 +79,7 @@ export class PineconeStore<DATA extends object | undefined>
       }));
   }
 
-  asStore(): PineconeStore<DATA> {
+  asIndex(): PineconeVectorIndex<DATA> {
     return this;
   }
 }

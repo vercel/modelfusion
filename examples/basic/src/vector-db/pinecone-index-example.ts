@@ -1,5 +1,9 @@
 import { PineconeClient } from "@pinecone-database/pinecone";
-import { CohereTextEmbeddingModel, PineconeStore, VectorDB } from "ai-utils.js";
+import {
+  CohereTextEmbeddingModel,
+  PineconeVectorIndex,
+  VectorDB,
+} from "ai-utils.js";
 import dotenv from "dotenv";
 import { z } from "zod";
 
@@ -37,7 +41,10 @@ if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
   ];
 
   const vectorDB = new VectorDB({
-    store: new PineconeStore({ index, schema: z.object({ text: z.string() }) }),
+    index: new PineconeVectorIndex({
+      index,
+      schema: z.object({ text: z.string() }),
+    }),
     embeddingModel: new CohereTextEmbeddingModel({
       model: "embed-english-light-v2.0",
     }),

@@ -5,21 +5,21 @@ title: Memory
 
 # Memory Vector DB
 
-The memory vector store is a simple implementation of the [VectorStore](/api/interfaces/VectorStore) interface that stores all vectors in memory. It is helpful for development and prototyping or when you only have a small number of entries and want to avoid setting up a database, e.g., for conversational memory that does not need to be persisted.
+The memory vector index is a simple implementation of the [VectorIndex](/api/interfaces/VectorIndex) interface that stores all vectors in memory. It is helpful for development and prototyping or when you only have a small number of entries and want to avoid setting up a database, e.g., for conversational memory that does not need to be persisted.
 
 ## Usage
 
-[API](/api/classes/MemoryStore)
+[API](/api/classes/MemoryVectorIndex)
 |
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-db/MemoryStoreExample.ts)
+[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-db/MemoryVectorIndexExample.ts)
 
 ### Create a Vector DB
 
 ```ts
-import { MemoryStore, VectorDB } from "ai-utils.js";
+import { MemoryVectorIndex, VectorDB } from "ai-utils.js";
 
 const vectorDB = new VectorDB({
-  store: new MemoryStore(),
+  index: new MemoryVectorIndex(),
   embeddingModel: // ...
 });
 ```
@@ -27,7 +27,7 @@ const vectorDB = new VectorDB({
 ### Serialization
 
 ```ts
-const serializedData = vectorDB.store.serialize();
+const serializedData = vectorDB.index.serialize();
 ```
 
 ### Deserialization
@@ -35,7 +35,7 @@ const serializedData = vectorDB.store.serialize();
 Deserialization needs a Zod schema for type validation:
 
 ```ts
-const deserializedStore = await MemoryStore.deserialize({
+const deserializedIndex = await MemoryVectorIndex.deserialize({
   serializedData,
   schema: z.object({ text: z.string() }),
 });

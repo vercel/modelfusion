@@ -3,7 +3,7 @@ import { TextEmbeddingModel } from "../model/text-embedding/TextEmbeddingModel.j
 import { embedText, embedTexts } from "../model/text-embedding/embedText.js";
 import { Run } from "../run/Run.js";
 import { Vector } from "../run/Vector.js";
-import { VectorStore } from "./VectorStore.js";
+import { VectorIndex } from "./VectorIndex.js";
 
 export type VectorDBQueryResult<DATA> = Array<{
   id: string;
@@ -11,33 +11,33 @@ export type VectorDBQueryResult<DATA> = Array<{
   similarity?: number;
 }>;
 
-export class VectorDB<DATA, STORE> {
-  private readonly _store: VectorStore<DATA, STORE>;
+export class VectorDB<DATA, INDEX> {
+  private readonly _index: VectorIndex<DATA, INDEX>;
 
   private readonly generateId: () => string;
 
   private readonly embeddingModel: TextEmbeddingModel<any, any>;
   private readonly queryFunctionId?: string;
-  private readonly storeFunctionId?: string;
+  private readonly upsertFunctionId?: string;
 
   constructor({
-    store,
+    index,
     generateId = createId,
     embeddingModel,
     queryFunctionId,
-    storeFunctionId,
+    upsertFunctionId,
   }: {
-    store: VectorStore<DATA, STORE>;
+    index: VectorIndex<DATA, INDEX>;
     generateId?: () => string;
     embeddingModel: TextEmbeddingModel<any, any>;
     queryFunctionId?: string;
-    storeFunctionId?: string;
+    upsertFunctionId?: string;
   }) {
-    this._store = store;
+    this._index = index;
     this.generateId = generateId;
     this.embeddingModel = embeddingModel;
     this.queryFunctionId = queryFunctionId;
-    this.storeFunctionId = storeFunctionId;
+    this.upsertFunctionId = upsertFunctionId;
   }
 
   async upsert(
@@ -81,11 +81,11 @@ export class VectorDB<DATA, STORE> {
     }
 
     const vectors = await embedTexts(this.embeddingModel, keyTexts, {
-      functionId: this.storeFunctionId,
+      functionId: this.upsertFunctionId,
       run: options?.run,
     });
 
-    this._store.upsertMany(
+    this._index.upsertMany(
       vectors.map((vector, i) => ({
         id: ids?.[i] ?? this.generateId(),
         vector,
@@ -125,14 +125,14 @@ export class VectorDB<DATA, STORE> {
     maxResults?: number;
     similarityThreshold?: number;
   }): Promise<VectorDBQueryResult<DATA>> {
-    return this._store.queryByVector({
+    return this._index.queryByVector({
       queryVector,
       maxResults,
       similarityThreshold,
     });
   }
 
-  get store(): STORE {
-    return this._store.asStore();
+  get index(): INDEX {
+    return this._index.asIndex();
   }
 }

@@ -1,4 +1,8 @@
-import { MemoryStore, OpenAITextEmbeddingModel, VectorDB } from "ai-utils.js";
+import {
+  MemoryVectorIndex,
+  OpenAITextEmbeddingModel,
+  VectorDB,
+} from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -18,7 +22,7 @@ dotenv.config();
   ];
 
   const vectorDB = new VectorDB({
-    store: new MemoryStore(),
+    index: new MemoryVectorIndex(),
     embeddingModel: new OpenAITextEmbeddingModel({
       model: "text-embedding-ada-002",
     }),

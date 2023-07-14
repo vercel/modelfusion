@@ -1,5 +1,5 @@
 import {
-  MemoryStore,
+  MemoryVectorIndex,
   OpenAITextEmbeddingModel,
   VectorDB,
   throttleMaxConcurrency,
@@ -32,7 +32,7 @@ if (!openAiApiKey) {
   const exampleTweets = inputText.split("\n-----\n");
 
   const vectorDB = new VectorDB({
-    store: new MemoryStore(),
+    index: new MemoryVectorIndex(),
     embeddingModel: new OpenAITextEmbeddingModel({
       apiKey: openAiApiKey,
       model: "text-embedding-ada-002",
@@ -47,5 +47,5 @@ if (!openAiApiKey) {
     data: exampleTweets.map((tweet) => ({ tweet })),
   });
 
-  fs.writeFileSync(outputFile, vectorDB.store.serialize());
+  fs.writeFileSync(outputFile, vectorDB.index.serialize());
 })();

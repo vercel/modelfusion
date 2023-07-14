@@ -1,4 +1,4 @@
 export * from "./VectorDB.js";
-export * from "./VectorStore.js";
-export * from "./pinecone/PineconeStore.js";
-export * from "./memory/MemoryStore.js";
+export * from "./VectorIndex.js";
+export * from "./memory/MemoryVectorIndex.js";
+export * from "./pinecone/PineconeVectorIndex.js";

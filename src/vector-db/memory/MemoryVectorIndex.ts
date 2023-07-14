@@ -1,7 +1,7 @@
 import z from "zod";
 import { Vector } from "../../run/Vector.js";
 import { cosineSimilarity } from "../../util/cosineSimilarity.js";
-import { VectorStore } from "../VectorStore.js";
+import { VectorIndex } from "../VectorIndex.js";
 
 type Entry<DATA> = {
   id: string;
@@ -10,11 +10,13 @@ type Entry<DATA> = {
 };
 
 /**
- * A very simple vector store that stores all entries in memory. Useful when you only have
+ * A very simple vector index that stores all entries in memory. Useful when you only have
  * a small number of entries and don't want to set up a real database, e.g. for conversational memory
  * that does not need to be persisted.
  */
-export class MemoryStore<DATA> implements VectorStore<DATA, MemoryStore<DATA>> {
+export class MemoryVectorIndex<DATA>
+  implements VectorIndex<DATA, MemoryVectorIndex<DATA>>
+{
   static async deserialize<DATA>({
     serializedData,
     schema,
@@ -33,9 +35,9 @@ export class MemoryStore<DATA> implements VectorStore<DATA, MemoryStore<DATA>> {
       )
       .parse(json);
 
-    const vectorStore = new MemoryStore<DATA>();
+    const VectorIndex = new MemoryVectorIndex<DATA>();
 
-    vectorStore.upsertMany(
+    VectorIndex.upsertMany(
       parsedJson as Array<{
         id: string;
         vector: Vector;
@@ -43,7 +45,7 @@ export class MemoryStore<DATA> implements VectorStore<DATA, MemoryStore<DATA>> {
       }>
     );
 
-    return vectorStore;
+    return VectorIndex;
   }
 
   private readonly entries: Map<string, Entry<DATA>> = new Map();
@@ -91,7 +93,7 @@ export class MemoryStore<DATA> implements VectorStore<DATA, MemoryStore<DATA>> {
     return JSON.stringify([...this.entries.values()]);
   }
 
-  asStore(): MemoryStore<DATA> {
+  asIndex(): MemoryVectorIndex<DATA> {
     return this;
   }
 }

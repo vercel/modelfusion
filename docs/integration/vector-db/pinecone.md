@@ -19,15 +19,15 @@ npm install @pinecone-database/pinecone
 
 ## Usage
 
-[API](/api/classes/PineconeStore)
+[API](/api/classes/PineconeVectorIndex)
 |
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-db/PineconeStoreExample.ts)
+[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-db/PineconeVectorIndexExample.ts)
 
 ### Create a Vector DB
 
 ```ts
 import { PineconeClient } from "@pinecone-database/pinecone";
-import { PineconeStore, VectorDB } from "ai-utils.js";
+import { PineconeVectorIndex, VectorDB } from "ai-utils.js";
 
 // Initialize the Pinecone index:
 const client = new PineconeClient();
@@ -39,7 +39,7 @@ const index = client.Index(PINECONE_INDEX_NAME);
 
 // assuming zod schema for data and an embedding model are defined:
 const vectorDB = new VectorDB({
-  store: new PineconeStore({ index, schema: zodSchema }),
+  index: new PineconeVectorIndex({ index, schema: zodSchema }),
   embeddingModel: // ...
 });
 ```
