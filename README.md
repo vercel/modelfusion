@@ -106,7 +106,7 @@ const texts = [
 ];
 
 const vectorDB = new VectorDB({
-  store: new MemoryVectorIndex(),
+  index: new MemoryVectorIndex(),
   embeddingModel: new OpenAITextEmbeddingModel({
     model: "text-embedding-ada-002",
   }),
