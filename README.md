@@ -98,7 +98,7 @@ const embeddings = await embedTexts(
 );
 ```
 
-### Vector DB
+### Upserting and Retrieving Text Chunks using Embeddings
 
 ```ts
 const texts = [
@@ -107,23 +107,26 @@ const texts = [
   // ...
 ];
 
-const vectorDB = new VectorDB({
-  index: new MemoryVectorIndex(),
-  embeddingModel: new OpenAITextEmbeddingModel({
-    model: "text-embedding-ada-002",
+const vectorIndex = new MemoryVectorIndex<TextChunk>();
+const embeddingModel = new OpenAITextEmbeddingModel({
+  model: "text-embedding-ada-002",
+});
+
+await upsertTextChunks({
+  vectorIndex,
+  embeddingModel,
+  chunks: texts.map((text) => ({ content: text })),
+});
+
+const results = retrieveTextChunks(
+  new VectorIndexSimilarTextChunkRetriever({
+    vectorIndex,
+    embeddingModel,
+    maxResults: 3,
+    similarityThreshold: 0.8,
   }),
-});
-
-await vectorDB.upsertMany({
-  keyTexts: texts,
-  data: texts.map((text) => ({ text })),
-});
-
-const results = await vectorDB.queryByText({
-  queryText: "rainbow and water droplets",
-  maxResults: 3,
-  similarityThreshold: 0.8,
-});
+  "rainbow and water droplets"
+);
 ```
 
 ### Tokenization
