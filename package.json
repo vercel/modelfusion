@@ -1,7 +1,7 @@
 {
   "name": "ai-utils.js",
   "description": "A TypeScript-first library for building AI apps, chatbots, and agents.",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [

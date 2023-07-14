@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.31 - 2023-07-14
+
+### Changed
+
+- Reworked interaction with vectors stores. Removed VectorDB, renamed VectorStore to VectorIndex, and introduced upsertTextChunks and retrieveTextChunks functions.
+
 ## 0.0.30 - 2023-07-13
 
 ### Fixed
