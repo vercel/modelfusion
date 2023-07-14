@@ -1,18 +1,13 @@
+import { FunctionOptions } from "index.js";
 import { nanoid as createId } from "nanoid";
 import { TextEmbeddingModel } from "../model/embed-text/TextEmbeddingModel.js";
 import { embedText, embedTexts } from "../model/embed-text/embedText.js";
 import { TextChunk } from "../model/retrieve-text-chunks/TextChunk.js";
-import {
-  TextChunkStore,
-  TextChunkStoreSettings,
-} from "../model/retrieve-text-chunks/TextChunkStore.js";
+import { TextChunkRetrieverSettings } from "../model/retrieve-text-chunks/TextChunkRetriever.js";
 import { Run } from "../run/Run.js";
 import { VectorIndex } from "./VectorIndex.js";
-import { FunctionOptions } from "index.js";
 
-export class VectorIndexTextChunkStore<CHUNK extends TextChunk, INDEX>
-  implements TextChunkStore<CHUNK>
-{
+export class VectorIndexTextChunkStore<CHUNK extends TextChunk, INDEX> {
   private readonly _index: VectorIndex<CHUNK, INDEX>;
 
   private readonly generateId: () => string;
@@ -91,7 +86,7 @@ export class VectorIndexTextChunkStore<CHUNK extends TextChunk, INDEX>
 
   async retrieveSimilarTextChunks(
     queryText: string,
-    options?: FunctionOptions<TextChunkStoreSettings> | undefined
+    options?: FunctionOptions<TextChunkRetrieverSettings> | undefined
   ): Promise<CHUNK[]> {
     const queryResult = await this._index.queryByVector({
       queryVector: await embedText(this.embeddingModel, queryText, {

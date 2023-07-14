@@ -2,15 +2,17 @@ import {
   MemoryVectorIndex,
   OpenAITextEmbeddingModel,
   TextChunk,
+  VectorIndexTextChunkRetriever,
   VectorIndexTextChunkStore,
-  retrieveSimilarTextChunks,
+  retrieveSimilarTextChunksAsFunction,
 } from "ai-utils.js";
 import dotenv from "dotenv";
+import { z } from "zod";
 
 dotenv.config();
 
 (async () => {
-  const texts = [
+  const rainbowTexts = [
     "A rainbow is an optical phenomenon that can occur under certain meteorological conditions.",
     "It is caused by refraction, internal reflection and dispersion of light in water droplets resulting in a continuous spectrum of light appearing in the sky.",
     "The rainbow takes the form of a multicoloured circular arc.",
@@ -23,6 +25,32 @@ dotenv.config();
     "This is caused by the light being reflected twice on the inside of the droplet before leaving it.`",
   ];
 
+  // the ingestion is usually run separate from the querying:
+  const serializedIndex = await ingest(rainbowTexts);
+
+  // you can create a function that you can use in other parts of your code:
+  const retrieveRainbowTextChunks = retrieveSimilarTextChunksAsFunction(
+    new VectorIndexTextChunkRetriever(
+      {
+        index: await MemoryVectorIndex.deserialize({
+          serializedData: serializedIndex,
+          schema: z.object({ content: z.string() }),
+        }),
+        embeddingModel: new OpenAITextEmbeddingModel({
+          model: "text-embedding-ada-002",
+        }),
+      },
+      { maxResults: 5, similarityThreshold: 0.7 }
+    )
+  );
+
+  // retrieving the similar text chunks is now as easy as calling the function:
+  const results = await retrieveRainbowTextChunks("rainbow and water droplets");
+
+  console.log(results);
+})();
+
+async function ingest(texts: string[]) {
   const store = new VectorIndexTextChunkStore({
     index: new MemoryVectorIndex<TextChunk>(),
     embeddingModel: new OpenAITextEmbeddingModel({
@@ -34,10 +62,5 @@ dotenv.config();
     chunks: texts.map((text) => ({ content: text })),
   });
 
-  const results = await retrieveSimilarTextChunks(
-    store,
-    "rainbow and water droplets"
-  );
-
-  console.log(results);
-})();
+  return store.index.serialize();
+}

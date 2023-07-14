@@ -17,7 +17,7 @@ export * from "./generate-text/TextGenerationEvent.js";
 export * from "./generate-text/TextGenerationModel.js";
 export * from "./generate-text/generateText.js";
 export * from "./retrieve-text-chunks/TextChunk.js";
-export * from "./retrieve-text-chunks/TextChunkStore.js";
+export * from "./retrieve-text-chunks/TextChunkRetriever.js";
 export * from "./retrieve-text-chunks/retrieveSimilarTextChunks.js";
 export * from "./stream-text/DeltaEvent.js";
 export * from "./stream-text/TextDeltaEventSource.js";
