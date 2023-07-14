@@ -44,20 +44,18 @@ export class VectorIndexTextChunkStore<CHUNK extends TextChunk, INDEX>
   async upsertChunk(
     {
       id = this.generateId(),
-      keyText,
-      data,
+      chunk,
     }: {
       id?: string;
       keyText: string;
-      data: CHUNK;
+      chunk: CHUNK;
     },
     options?: { run?: Run }
   ): Promise<void> {
     this.upsertManyChunks(
       {
         ids: [id],
-        keyTexts: [keyText],
-        data: [data],
+        chunks: [chunk],
       },
       options
     );
@@ -66,31 +64,27 @@ export class VectorIndexTextChunkStore<CHUNK extends TextChunk, INDEX>
   async upsertManyChunks(
     {
       ids,
-      keyTexts,
-      data,
+      chunks,
     }: {
       ids?: Array<string | undefined>;
-      keyTexts: Array<string>;
-      data: CHUNK[];
+      chunks: CHUNK[];
     },
     options?: { run?: Run }
   ) {
-    if (keyTexts.length !== data.length) {
-      throw new Error(
-        "The number of key texts and data must be the same when storing many entries."
-      );
-    }
-
-    const vectors = await embedTexts(this.embeddingModel, keyTexts, {
-      functionId: this.upsertFunctionId,
-      run: options?.run,
-    });
+    const vectors = await embedTexts(
+      this.embeddingModel,
+      chunks.map((chunk) => chunk.content),
+      {
+        functionId: this.upsertFunctionId,
+        run: options?.run,
+      }
+    );
 
     this._index.upsertMany(
       vectors.map((vector, i) => ({
         id: ids?.[i] ?? this.generateId(),
         vector,
-        data: data[i],
+        data: chunks[i],
       }))
     );
   }

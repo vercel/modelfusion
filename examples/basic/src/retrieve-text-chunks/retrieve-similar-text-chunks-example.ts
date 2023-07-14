@@ -31,8 +31,7 @@ dotenv.config();
   });
 
   await store.upsertManyChunks({
-    keyTexts: texts,
-    data: texts.map((text) => ({ content: text })),
+    chunks: texts.map((text) => ({ content: text })),
   });
 
   const results = await retrieveSimilarTextChunks(
