@@ -1,7 +1,4 @@
 import { LlamaCppTokenizer, countTokens } from "ai-utils.js";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 (async () => {
   const tokenizer = new LlamaCppTokenizer();

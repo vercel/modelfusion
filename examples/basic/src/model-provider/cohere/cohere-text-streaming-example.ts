@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 (async () => {
-  const tokenStream = await streamText(
+  const textStream = await streamText(
     new CohereTextGenerationModel({
       model: "command-nightly",
       temperature: 0.7,
@@ -13,7 +13,7 @@ dotenv.config();
     "Write a short story about a robot learning to love:\n\n"
   );
 
-  for await (const token of tokenStream) {
-    process.stdout.write(token);
+  for await (const textFragment of textStream) {
+    process.stdout.write(textFragment);
   }
 })();

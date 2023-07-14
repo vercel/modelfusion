@@ -15,7 +15,7 @@ Streams text that is generated using by a [TextStreamingModel](/api/interfaces/T
 #### With OpenAI chat model
 
 ```ts
-const tokenStream = await streamText(
+const textStream = await streamText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
   [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
@@ -23,8 +23,8 @@ const tokenStream = await streamText(
   ]
 );
 
-for await (const token of tokenStream) {
-  process.stdout.write(token);
+for await (const textFragment of textStream) {
+  process.stdout.write(textFragment);
 }
 ```
 
@@ -43,9 +43,9 @@ const generateStory = streamTextAsFunction(
   ]
 );
 
-const tokenStream = await generateStory("A robot learning to love");
-for await (const token of tokenStream) {
-  process.stdout.write(token);
+const textStream = await generateStory("A robot learning to love");
+for await (const textFragment of textStream) {
+  process.stdout.write(textFragment);
 }
 ```
 

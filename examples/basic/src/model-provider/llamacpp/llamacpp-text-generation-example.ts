@@ -1,7 +1,4 @@
 import { LlamaCppTextGenerationModel, generateText } from "ai-utils.js";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 (async () => {
   const text = await generateText(

@@ -65,7 +65,7 @@ const text = await generateText(
 ```ts
 import { OpenAITextGenerationModel, streamText } from "ai-utils.js";
 
-const tokenStream = await streamText(
+const textStream = await streamText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
     maxTokens: 1000,
@@ -73,8 +73,8 @@ const tokenStream = await streamText(
   "You are a story writer. Write a story about a robot learning to love"
 );
 
-for await (const token of tokenStream) {
-  process.stdout.write(token);
+for await (const textFragment of textStream) {
+  process.stdout.write(textFragment);
 }
 ```
 
@@ -85,7 +85,7 @@ for await (const token of tokenStream) {
 ```ts
 import { OpenAIChatMessage, OpenAIChatModel, streamText } from "ai-utils.js";
 
-const tokenStream = await streamText(
+const textStream = await streamText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
   [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
@@ -93,8 +93,8 @@ const tokenStream = await streamText(
   ]
 );
 
-for await (const token of tokenStream) {
-  process.stdout.write(token);
+for await (const textFragment of textStream) {
+  process.stdout.write(textFragment);
 }
 ```
 

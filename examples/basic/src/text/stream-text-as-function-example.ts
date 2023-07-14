@@ -16,8 +16,8 @@ dotenv.config();
     ]
   );
 
-  const tokenStream = await generateStory("A robot learning to love");
-  for await (const token of tokenStream) {
-    process.stdout.write(token);
+  const textStream = await generateStory("A robot learning to love");
+  for await (const textFragment of textStream) {
+    process.stdout.write(textFragment);
   }
 })();

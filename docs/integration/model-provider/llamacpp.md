@@ -38,13 +38,13 @@ const text = await generateText(
 ```ts
 import { LlamaCppTextGenerationModel, streamText } from "ai-utils.js";
 
-const tokenStream = await streamText(
+const textStream = await streamText(
   new LlamaCppTextGenerationModel({ nPredict: 1024, temperature: 0.7 }),
   "Write a short story about a robot learning to love:\n\n"
 );
 
-for await (const token of tokenStream) {
-  process.stdout.write(token);
+for await (const textFragment of textStream) {
+  process.stdout.write(textFragment);
 }
 ```
 
