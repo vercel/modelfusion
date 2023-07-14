@@ -2,7 +2,9 @@ import { PineconeClient } from "@pinecone-database/pinecone";
 import {
   CohereTextEmbeddingModel,
   PineconeVectorIndex,
-  VectorDB,
+  VectorIndexSimilarTextChunkRetriever,
+  retrieveTextChunks,
+  upsertTextChunks,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 import { z } from "zod";
@@ -40,27 +42,30 @@ if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
     "This is caused by the light being reflected twice on the inside of the droplet before leaving it.`",
   ];
 
-  const vectorDB = new VectorDB({
-    index: new PineconeVectorIndex({
-      index,
-      schema: z.object({ text: z.string() }),
-    }),
-    embeddingModel: new CohereTextEmbeddingModel({
-      model: "embed-english-light-v2.0",
-    }),
+  const vectorIndex = new PineconeVectorIndex({
+    index,
+    schema: z.object({ content: z.string() }),
+  });
+  const embeddingModel = new CohereTextEmbeddingModel({
+    model: "embed-english-light-v2.0",
   });
 
   // Note: if this script is run several times, the same texts will be inserted and there will be duplicates.
   // Note: Pinecone might need some time to index the data.
-  await vectorDB.upsertMany({
-    keyTexts: texts,
-    data: texts.map((text) => ({ text })),
+  await upsertTextChunks({
+    vectorIndex,
+    embeddingModel,
+    chunks: texts.map((text) => ({ content: text })),
   });
 
-  const results = await vectorDB.queryByText({
-    queryText: "rainbow and water droplets",
-    maxResults: 3,
-  });
+  const results = retrieveTextChunks(
+    new VectorIndexSimilarTextChunkRetriever({
+      vectorIndex,
+      embeddingModel,
+      maxResults: 3,
+    }),
+    "rainbow and water droplets"
+  );
 
   console.log(results);
 })();

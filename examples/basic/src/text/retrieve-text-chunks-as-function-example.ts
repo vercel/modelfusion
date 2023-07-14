@@ -3,15 +3,15 @@ import {
   OpenAITextEmbeddingModel,
   TextChunk,
   VectorIndexSimilarTextChunkRetriever,
-  VectorIndexTextChunkStore,
   retrieveTextChunksAsFunction,
+  upsertTextChunks,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 (async () => {
-  const rainbowTexts = [
+  const texts = [
     "A rainbow is an optical phenomenon that can occur under certain meteorological conditions.",
     "It is caused by refraction, internal reflection and dispersion of light in water droplets resulting in a continuous spectrum of light appearing in the sky.",
     "The rainbow takes the form of a multicoloured circular arc.",
@@ -24,18 +24,22 @@ dotenv.config();
     "This is caused by the light being reflected twice on the inside of the droplet before leaving it.`",
   ];
 
-  // the ingestion is usually run separate from the querying:
-  const serializedIndex = await ingest(rainbowTexts);
+  const vectorIndex = new MemoryVectorIndex<TextChunk>();
+  const embeddingModel = new OpenAITextEmbeddingModel({
+    model: "text-embedding-ada-002",
+  });
+
+  await upsertTextChunks({
+    vectorIndex,
+    embeddingModel,
+    chunks: texts.map((text) => ({ content: text })),
+  });
 
   // you can create a function that you can use in other parts of your code:
   const retrieveRainbowTextChunks = retrieveTextChunksAsFunction(
     new VectorIndexSimilarTextChunkRetriever({
-      vectorIndex: await MemoryVectorIndex.deserialize<TextChunk>({
-        serializedData: serializedIndex,
-      }),
-      embeddingModel: new OpenAITextEmbeddingModel({
-        model: "text-embedding-ada-002",
-      }),
+      vectorIndex,
+      embeddingModel,
       maxResults: 5,
       similarityThreshold: 0.7,
     })
@@ -46,18 +50,3 @@ dotenv.config();
 
   console.log(results);
 })();
-
-async function ingest(texts: string[]) {
-  const store = new VectorIndexTextChunkStore({
-    index: new MemoryVectorIndex<TextChunk>(),
-    embeddingModel: new OpenAITextEmbeddingModel({
-      model: "text-embedding-ada-002",
-    }),
-  });
-
-  await store.upsertManyChunks({
-    chunks: texts.map((text) => ({ content: text })),
-  });
-
-  return store.index.serialize();
-}
