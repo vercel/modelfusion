@@ -9,7 +9,7 @@ export interface VectorStore<DATA, STORE> {
     }>
   ): Promise<void>;
 
-  query(options: {
+  queryByVector(options: {
     queryVector: Vector;
     maxResults: number;
     similarityThreshold?: number;

@@ -43,7 +43,7 @@ export class PineconeStore<DATA extends object | undefined>
     });
   }
 
-  async query({
+  async queryByVector({
     queryVector,
     similarityThreshold,
     maxResults,

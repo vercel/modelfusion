@@ -125,7 +125,7 @@ export class VectorDB<DATA, STORE> {
     maxResults?: number;
     similarityThreshold?: number;
   }): Promise<VectorDBQueryResult<DATA>> {
-    return this._store.query({
+    return this._store.queryByVector({
       queryVector,
       maxResults,
       similarityThreshold,

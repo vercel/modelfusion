@@ -60,7 +60,7 @@ export class MemoryStore<DATA> implements VectorStore<DATA, MemoryStore<DATA>> {
     }
   }
 
-  async query({
+  async queryByVector({
     queryVector,
     similarityThreshold,
     maxResults,
