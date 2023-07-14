@@ -4,7 +4,7 @@ import { FunctionOptions } from "../../model/FunctionOptions.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
-} from "../../model/image-generation/ImageGenerationModel.js";
+} from "../../model/generate-image/ImageGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,

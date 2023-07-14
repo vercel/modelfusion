@@ -5,13 +5,13 @@ import {
   TextEmbeddingStartedEvent,
 } from "./embed-text/TextEmbeddingEvent.js";
 import {
+  ImageGenerationFinishedEvent,
+  ImageGenerationStartedEvent,
+} from "./generate-image/ImageGenerationEvent.js";
+import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
 } from "./generate-text/TextGenerationEvent.js";
-import {
-  ImageGenerationFinishedEvent,
-  ImageGenerationStartedEvent,
-} from "./image-generation/ImageGenerationEvent.js";
 import {
   JsonGenerationFinishedEvent,
   JsonGenerationStartedEvent,
