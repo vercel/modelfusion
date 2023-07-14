@@ -10,11 +10,11 @@ import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../../model/text-generation/TextGenerationModel.js";
-import { DeltaEvent } from "../../../model/text-streaming/DeltaEvent.js";
+import { DeltaEvent } from "../../../model/stream-text/DeltaEvent.js";
 import {
   TextStreamingModel,
   TextStreamingModelSettings,
-} from "../../../model/text-streaming/TextStreamingModel.js";
+} from "../../../model/stream-text/TextStreamingModel.js";
 import { FullTokenizer } from "../../../model/tokenize-text/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {

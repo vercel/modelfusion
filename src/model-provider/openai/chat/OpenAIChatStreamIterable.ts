@@ -1,8 +1,8 @@
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
-import { AsyncQueue } from "../../../model/text-streaming/AsyncQueue.js";
-import { DeltaEvent } from "../../../model/text-streaming/DeltaEvent.js";
-import { parseEventSourceReadableStream } from "../../../model/text-streaming/parseEventSourceReadableStream.js";
+import { AsyncQueue } from "../../../model/stream-text/AsyncQueue.js";
+import { DeltaEvent } from "../../../model/stream-text/DeltaEvent.js";
+import { parseEventSourceReadableStream } from "../../../model/stream-text/parseEventSourceReadableStream.js";
 
 const chatResponseStreamEventSchema = z.object({
   choices: z.array(

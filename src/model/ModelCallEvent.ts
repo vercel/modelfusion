@@ -5,13 +5,17 @@ import {
   ImageGenerationStartedEvent,
 } from "./image-generation/ImageGenerationEvent.js";
 import {
-  TextEmbeddingFinishedEvent,
-  TextEmbeddingStartedEvent,
-} from "./text-embedding/TextEmbeddingEvent.js";
-import {
   JsonGenerationFinishedEvent,
   JsonGenerationStartedEvent,
 } from "./json-generation/JsonGenerationEvent.js";
+import {
+  TextStreamingFinishedEvent,
+  TextStreamingStartedEvent,
+} from "./stream-text/TextStreamingEvent.js";
+import {
+  TextEmbeddingFinishedEvent,
+  TextEmbeddingStartedEvent,
+} from "./text-embedding/TextEmbeddingEvent.js";
 import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
@@ -20,10 +24,6 @@ import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
 } from "./transcribe-audio/TranscriptionEvent.js";
-import {
-  TextStreamingFinishedEvent,
-  TextStreamingStartedEvent,
-} from "./text-streaming/TextStreamingEvent.js";
 
 export type ModelCallEvent = ModelCallStartedEvent | ModelCallFinishedEvent;
 

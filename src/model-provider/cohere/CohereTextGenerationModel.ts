@@ -6,12 +6,12 @@ import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
 } from "../../model/text-generation/TextGenerationModel.js";
-import { AsyncQueue } from "../../model/text-streaming/AsyncQueue.js";
-import { DeltaEvent } from "../../model/text-streaming/DeltaEvent.js";
+import { AsyncQueue } from "../../model/stream-text/AsyncQueue.js";
+import { DeltaEvent } from "../../model/stream-text/DeltaEvent.js";
 import {
   TextStreamingModel,
   TextStreamingModelSettings,
-} from "../../model/text-streaming/TextStreamingModel.js";
+} from "../../model/stream-text/TextStreamingModel.js";
 import { FullTokenizer } from "../../model/tokenize-text/Tokenizer.js";
 import { countTokens } from "../../model/tokenize-text/countTokens.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
