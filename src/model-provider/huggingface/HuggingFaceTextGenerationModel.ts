@@ -4,7 +4,7 @@ import { FunctionOptions } from "../../model/FunctionOptions.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "../../model/text-generation/TextGenerationModel.js";
+} from "../../model/generate-text/TextGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";

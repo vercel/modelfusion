@@ -9,7 +9,7 @@ import {
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
-} from "../../../model/text-generation/TextGenerationModel.js";
+} from "../../../model/generate-text/TextGenerationModel.js";
 import { DeltaEvent } from "../../../model/stream-text/DeltaEvent.js";
 import {
   TextStreamingModel,
