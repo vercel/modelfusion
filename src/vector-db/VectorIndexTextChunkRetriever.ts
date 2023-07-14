@@ -60,7 +60,7 @@ export class VectorIndexTextChunkRetriever<CHUNK extends TextChunk, INDEX>
 
   withSettings(
     additionalSettings: Partial<VectorIndexTextChunkRetrieverSettings>
-  ) {
+  ): this {
     return new VectorIndexTextChunkRetriever(
       { index: this.index, embeddingModel: this.embeddingModel },
       Object.assign({}, this.settings, additionalSettings)
