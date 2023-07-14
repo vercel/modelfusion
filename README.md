@@ -147,7 +147,11 @@ const results = retrieveTextChunks(
 
 ## Introduction
 
-`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/function/generate-text), [json generation](https://ai-utils.dev/concept/function/generate-json), [tokenization](https://ai-utils.dev/concept/function/tokenize-text), [embeddings](https://ai-utils.dev/concept/function/embed-text), [transcription](https://ai-utils.dev/concept/function/transcribe-audio), and [image generation](https://ai-utils.dev/concept/function/generate-image). The [vector DB abstraction](https://ai-utils.dev/concept/vector-db) allows you to store and query text embeddings with similarity search.
+`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents.
+
+It provides functions for working with models, e.g. to [generate text](https://ai-utils.dev/concept/function/generate-text), [tokenize text](https://ai-utils.dev/concept/function/tokenize-text), [embed text](https://ai-utils.dev/concept/function/embed-text), [transcribe audio](https://ai-utils.dev/concept/function/transcribe-audio), and [generate images](https://ai-utils.dev/concept/function/generate-image).
+
+`ai-utils.js` also contains functions for working with [text chunks and vector indices](https://ai-utils.dev/concept/text-chunks), e.g. upserting text chunks into a vector index and querying the index for similar text chunks.
 
 ### TypeScript-first
 
@@ -227,7 +231,7 @@ Examples for the individual functions and objects.
 
 ### [PDF to Tweet](https://github.com/lgrammel/ai-utils.js/tree/main/examples/pdf-to-tweet)
 
-> _console app_, _PDF parsing_, _recursive information extraction_, _in memory vector db_, _style example retrieval_, _OpenAI GPT-4_, _cost calculation_
+> _console app_, _PDF parsing_, _recursive information extraction_, _in memory vector index, \_style example retrieval_, _OpenAI GPT-4_, _cost calculation_
 
 Extracts information about a topic from a PDF and writes a tweet in your own style about it.
 

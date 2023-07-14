@@ -4,7 +4,11 @@ sidebar_position: 0
 
 # Introduction
 
-`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides APIs for [text generation](https://ai-utils.dev/concept/function/generate-text), [tokenization](https://ai-utils.dev/concept/function/tokenize-text), [embeddings](https://ai-utils.dev/concept/function/embed-text), [transcription](https://ai-utils.dev/concept/function/transcribe-audio), and [image generation](https://ai-utils.dev/concept/function/generate-image). The [vector DB abstraction](https://ai-utils.dev/concept/vector-db) allows you to store and query text embeddings with similarity search.
+`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents.
+
+It provides functions for working with models, e.g. to [generate text](/concept/function/generate-text), [tokenize text](/concept/function/tokenize-text), [embed text](/concept/function/embed-text), [transcribe audio](/concept/function/transcribe-audio), and [generate images](/concept/function/generate-image).
+
+`ai-utils.js` also contains functions for working with [text chunks and vector indices](/concept/text-chunks), e.g. upserting text chunks into a vector index and querying the index for similar text chunks.
 
 ## TypeScript-first
 
@@ -16,7 +20,7 @@ Building applications with AI is a complex task, and your requirements mean you 
 
 ## Example recipes, prompts, and demo apps
 
-Having a large amount of control means that more work is required to get an initial prototype of your app up and running. We provide example [recipes & prompts](https://ai-utils.dev/recipe/) as well as [demo apps](https://github.com/lgrammel/ai-utils.js/tree/main/examples) to help you get started.
+Having a large amount of control means that more work is required to get an initial prototype of your app up and running. We provide example [recipes & prompts](/recipe/) as well as [demo apps](https://github.com/lgrammel/ai-utils.js/tree/main/examples) to help you get started.
 
 ## Taking care of the details
 
