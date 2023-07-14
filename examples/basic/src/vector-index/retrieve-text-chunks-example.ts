@@ -25,20 +25,21 @@ dotenv.config();
   ];
 
   const vectorIndex = new MemoryVectorIndex<TextChunk>();
-  const embeddingModel = new OpenAITextEmbeddingModel({
-    model: "text-embedding-ada-002",
-  });
 
   await upsertTextChunks({
     vectorIndex,
-    embeddingModel,
+    embeddingModel: new OpenAITextEmbeddingModel({
+      model: "text-embedding-ada-002",
+    }),
     chunks: texts.map((text) => ({ content: text })),
   });
 
   const results = retrieveTextChunks(
     new VectorIndexSimilarTextChunkRetriever({
       vectorIndex,
-      embeddingModel,
+      embeddingModel: new OpenAITextEmbeddingModel({
+        model: "text-embedding-ada-002",
+      }),
       maxResults: 3,
       similarityThreshold: 0.8,
     }),

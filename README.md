@@ -181,7 +181,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
   - [Generate images](https://ai-utils.dev/concept/function/generate-image)
 - Summarize text
 - Split text
-- [Vector DBs](https://ai-utils.dev/concept/vector-db)
+- [Text Chunks](https://ai-utils.dev/concept/text-chunks)
 - [Run abstraction](https://ai-utils.dev/concept/run/)
   - [Abort signals](https://ai-utils.dev/concept/run/abort)
   - [Cost calculation](https://ai-utils.dev/concept/run/cost-calculation)
@@ -207,10 +207,10 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 | [Transcribe audio](https://ai-utils.dev/concept/function/transcribe-audio) | ✅                                                               |                                                                  |                                                                             |                                                                       |                                                                           |                                                                                |
 | [Cost calculation](https://ai-utils.dev/concept/run/cost-calculation)      | ✅                                                               |                                                                  |                                                                             |                                                                       |                                                                           |                                                                                |
 
-### Vector DBs
+### Vector Indices
 
-- [Memory](https://ai-utils.dev/integration/vector-db/memory)
-- [Pinecone](https://ai-utils.dev/integration/vector-db/pinecone)
+- [Memory](https://ai-utils.dev/integration/vector-index/memory)
+- [Pinecone](https://ai-utils.dev/integration/vector-index/pinecone)
 
 ## Documentation
 
