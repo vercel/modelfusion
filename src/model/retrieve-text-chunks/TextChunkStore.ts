@@ -3,9 +3,9 @@ import { TextChunk } from "./TextChunk.js";
 
 export interface TextChunkStoreSettings {}
 
-export interface TextChunkStore<METADATA> {
-  searchTextChunks(
-    query: string,
+export interface TextChunkStore<CHUNK extends TextChunk> {
+  retrieveSimilarTextChunks(
+    queryText: string,
     options?: FunctionOptions<TextChunkStoreSettings>
-  ): Promise<TextChunk<METADATA>[]>;
+  ): Promise<CHUNK[]>;
 }
