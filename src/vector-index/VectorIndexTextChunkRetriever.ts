@@ -16,23 +16,25 @@ export interface VectorIndexTextChunkRetrieverSettings {
 export class VectorIndexTextChunkRetriever<CHUNK extends TextChunk, INDEX>
   implements TextChunkRetriever<CHUNK, VectorIndexTextChunkRetrieverSettings>
 {
-  private readonly index: VectorIndex<CHUNK, INDEX>;
+  private readonly vectorIndex: VectorIndex<CHUNK, INDEX>;
   private readonly embeddingModel: TextEmbeddingModel<any, any>;
   private readonly settings: VectorIndexTextChunkRetrieverSettings;
 
-  constructor(
-    {
-      index,
-      embeddingModel,
-    }: {
-      index: VectorIndex<CHUNK, INDEX>;
-      embeddingModel: TextEmbeddingModel<any, any>;
-    },
-    settings: VectorIndexTextChunkRetrieverSettings = {}
-  ) {
-    this.index = index;
+  constructor({
+    vectorIndex,
+    embeddingModel,
+    maxResults,
+    similarityThreshold,
+  }: {
+    vectorIndex: VectorIndex<CHUNK, INDEX>;
+    embeddingModel: TextEmbeddingModel<any, any>;
+  } & VectorIndexTextChunkRetrieverSettings) {
+    this.vectorIndex = vectorIndex;
     this.embeddingModel = embeddingModel;
-    this.settings = settings;
+    this.settings = {
+      maxResults,
+      similarityThreshold,
+    };
   }
 
   async retrieveSimilarTextChunks(
@@ -46,7 +48,7 @@ export class VectorIndexTextChunkRetriever<CHUNK extends TextChunk, INDEX>
       );
     }
 
-    const queryResult = await this.index.queryByVector({
+    const queryResult = await this.vectorIndex.queryByVector({
       queryVector: await embedText(this.embeddingModel, queryText, {
         functionId: options?.functionId,
         run: options?.run,
@@ -62,8 +64,10 @@ export class VectorIndexTextChunkRetriever<CHUNK extends TextChunk, INDEX>
     additionalSettings: Partial<VectorIndexTextChunkRetrieverSettings>
   ): this {
     return new VectorIndexTextChunkRetriever(
-      { index: this.index, embeddingModel: this.embeddingModel },
-      Object.assign({}, this.settings, additionalSettings)
+      Object.assign({}, this.settings, additionalSettings, {
+        vectorIndex: this.vectorIndex,
+        embeddingModel: this.embeddingModel,
+      })
     ) as this;
   }
 }

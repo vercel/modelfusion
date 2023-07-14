@@ -29,17 +29,16 @@ dotenv.config();
 
   // you can create a function that you can use in other parts of your code:
   const retrieveRainbowTextChunks = retrieveSimilarTextChunksAsFunction(
-    new VectorIndexTextChunkRetriever(
-      {
-        index: await MemoryVectorIndex.deserialize<TextChunk>({
-          serializedData: serializedIndex,
-        }),
-        embeddingModel: new OpenAITextEmbeddingModel({
-          model: "text-embedding-ada-002",
-        }),
-      },
-      { maxResults: 5, similarityThreshold: 0.7 }
-    )
+    new VectorIndexTextChunkRetriever({
+      vectorIndex: await MemoryVectorIndex.deserialize<TextChunk>({
+        serializedData: serializedIndex,
+      }),
+      embeddingModel: new OpenAITextEmbeddingModel({
+        model: "text-embedding-ada-002",
+      }),
+      maxResults: 5,
+      similarityThreshold: 0.7,
+    })
   );
 
   // retrieving the similar text chunks is now as easy as calling the function:
