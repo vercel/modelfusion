@@ -1,6 +1,10 @@
 import { IdMetadata } from "../run/IdMetadata.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
+  TextEmbeddingFinishedEvent,
+  TextEmbeddingStartedEvent,
+} from "./embed-text/TextEmbeddingEvent.js";
+import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
 } from "./generate-text/TextGenerationEvent.js";
@@ -16,10 +20,6 @@ import {
   TextStreamingFinishedEvent,
   TextStreamingStartedEvent,
 } from "./stream-text/TextStreamingEvent.js";
-import {
-  TextEmbeddingFinishedEvent,
-  TextEmbeddingStartedEvent,
-} from "./text-embedding/TextEmbeddingEvent.js";
 import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,

@@ -4,7 +4,7 @@ import { FunctionOptions } from "../../model/FunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
-} from "../../model/text-embedding/TextEmbeddingModel.js";
+} from "../../model/embed-text/TextEmbeddingModel.js";
 import { FullTokenizer } from "../../model/tokenize-text/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";

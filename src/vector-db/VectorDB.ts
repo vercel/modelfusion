@@ -1,6 +1,6 @@
 import { nanoid as createId } from "nanoid";
-import { TextEmbeddingModel } from "../model/text-embedding/TextEmbeddingModel.js";
-import { embedText, embedTexts } from "../model/text-embedding/embedText.js";
+import { TextEmbeddingModel } from "../model/embed-text/TextEmbeddingModel.js";
+import { embedText, embedTexts } from "../model/embed-text/embedText.js";
 import { Run } from "../run/Run.js";
 import { Vector } from "../run/Vector.js";
 import { VectorIndex } from "./VectorIndex.js";
