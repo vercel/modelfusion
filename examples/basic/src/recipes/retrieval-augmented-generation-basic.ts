@@ -36,7 +36,7 @@ const question = `What is a rainbow?`;
     question
   );
 
-  // Generate an answer from the retrieved information:
+  // Generate an answer using the retrieved information:
   const answer = await generateText(
     new OpenAIChatModel({
       model: "gpt-4",
