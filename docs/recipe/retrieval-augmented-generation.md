@@ -6,8 +6,8 @@ sidebar_position: 1
 
 [Research Paper](https://arxiv.org/abs/2005.11401)
 
-Retrieval augmented generation is a technique where you retrieve relevant information, e.g. from a vector index, and then add it into the prompt of a language model.
-With additional instructions, it can help reducing the hallucination of language models and keep their answers focussed on the provided information.
+Retrieval augmented generation is a technique where you retrieve relevant information, e.g., from a vector index, and then add it to the prompt of a language model.
+Additional instructions can help reduce the hallucination of language models and keep their answers focussed on the provided information.
 
 Retrieval augmented generation consists of two steps:
 
