@@ -12,7 +12,7 @@ This is helpful to quickly develop initial product versions and prototypes.
 
 [Example](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/recipes/sentiment-analysis.ts)
 
-Create a sentiment analysis function:
+#### Define a sentiment analysis function:
 
 ```ts
 const analyzeSentiment = generateJsonAsFunction(
@@ -43,7 +43,7 @@ const analyzeSentiment = generateJsonAsFunction(
 );
 ```
 
-You can use destructuring to get the sentiment:
+#### Use destructuring to get the sentiment:
 
 ```ts
 // negative sentiment example:
@@ -58,7 +58,7 @@ console.log(sentiment);
 // negative
 ```
 
-You can also get the full reasoning and the sentiment:
+#### Get the full reasoning and the sentiment:
 
 ```ts
 const result1 = await analyzeSentiment(
