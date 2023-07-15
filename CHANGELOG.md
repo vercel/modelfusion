@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.32 - 2023-07-15
+
+### Changed
+
+- Changed the prompt format of the generateJson function.
+
 ## 0.0.31 - 2023-07-14
 
 ### Changed
