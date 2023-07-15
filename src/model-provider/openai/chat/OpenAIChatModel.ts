@@ -1,10 +1,11 @@
+import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { AbstractModel } from "../../../model/AbstractModel.js";
 import { FunctionOptions } from "../../../model/FunctionOptions.js";
 import {
   JsonGenerationModel,
-  JsonGenerationSchema,
+  JsonGenerationPrompt,
 } from "../../../model/generate-json/JsonGenerationModel.js";
 import {
   TextGenerationModelSettings,
@@ -139,6 +140,37 @@ export interface OpenAIChatSettings
   isUserIdForwardingEnabled?: boolean;
 }
 
+export class OpenAIChatSingleFunctionPrompt<T>
+  implements JsonGenerationPrompt<OpenAIChatResponse, T>
+{
+  readonly messages: OpenAIChatMessage[];
+  readonly fn: {
+    readonly name: string;
+    readonly description?: string;
+    readonly parameters: z.Schema<T>;
+  };
+
+  constructor({
+    messages,
+    fn,
+  }: {
+    messages: OpenAIChatMessage[];
+    fn: {
+      name: string;
+      description?: string;
+      parameters: z.Schema<T>;
+    };
+  }) {
+    this.messages = messages;
+    this.fn = fn;
+  }
+
+  extractJson(response: OpenAIChatResponse): T {
+    const jsonText = response.choices[0]!.message.function_call!.arguments;
+    return this.fn.parameters.parse(SecureJSON.parse(jsonText));
+  }
+}
+
 /**
  * Create a text generation model that calls the OpenAI chat completion API.
  *
@@ -172,7 +204,7 @@ export class OpenAIChatModel
       OpenAIChatSettings
     >,
     JsonGenerationModel<
-      OpenAIChatMessage[],
+      OpenAIChatSingleFunctionPrompt<unknown>,
       OpenAIChatResponse,
       OpenAIChatSettings
     >
@@ -294,37 +326,28 @@ export class OpenAIChatModel
    * @see https://platform.openai.com/docs/guides/gpt/function-calling
    */
   generateJsonResponse<T>(
-    prompt: OpenAIChatMessage[],
-    schema: JsonGenerationSchema<T>,
+    prompt: OpenAIChatSingleFunctionPrompt<T>,
     options?: FunctionOptions<OpenAIChatSettings> | undefined
   ): PromiseLike<OpenAIChatResponse> {
     const settingsWithFunctionCall = Object.assign({}, options, {
       functionCall: {
-        name: schema.name,
+        name: prompt.fn.name,
       },
       functions: [
         {
-          name: schema.name,
-          description: schema.description,
-          parameters: zodToJsonSchema(schema.parameters),
+          name: prompt.fn.name,
+          description: prompt.fn.description,
+          parameters: zodToJsonSchema(prompt.fn.parameters),
         },
       ],
     });
 
-    return this.callAPI(prompt, {
+    return this.callAPI(prompt.messages, {
       responseFormat: OpenAIChatResponseFormat.json,
       functionId: options?.functionId,
       settings: settingsWithFunctionCall,
       run: options?.run,
     });
-  }
-
-  extractJson<T>(
-    response: OpenAIChatResponse,
-    schema: JsonGenerationSchema<T>
-  ): T {
-    const jsonText = response.choices[0]!.message.function_call!.arguments;
-    return schema.parameters.parse(JSON.parse(jsonText));
   }
 
   withSettings(additionalSettings: Partial<OpenAIChatSettings>) {

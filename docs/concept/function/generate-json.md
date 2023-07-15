@@ -12,28 +12,29 @@ Generates JSON using a prompt and a structure.
 
 [generateJson API](/api/modules#generatejson)
 
-Generates JSON using a prompt and a structure.
+Generates JSON using a prompt.
 The prompt format depends on the model.
-The structure is a JSON object that describes the desired output.
-The parameters must be a Zod object schema.
+It contains the information required to parse the generated JSON.
 
 #### With OpenAI chat model
 
 ```ts
 const story = await generateJson(
   new OpenAIChatModel(/* ... */),
-  [
-    OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-    OpenAIChatMessage.user("A robot learning to love"),
-  ],
-  {
-    name: "story",
-    description: "Write the story",
-    parameters: z.object({
-      title: z.string().describe("The title of the story"),
-      content: z.string().describe("The content of the story"),
-    }),
-  }
+  new OpenAIChatSingleFunctionPrompt({
+    messages: [
+      OpenAIChatMessage.system("You are a story writer. Write a story about:"),
+      OpenAIChatMessage.user("A robot learning to love"),
+    ],
+    fn: {
+      name: "story",
+      description: "Write the story",
+      parameters: z.object({
+        title: z.string().describe("The title of the story"),
+        content: z.string().describe("The content of the story"),
+      }),
+    },
+  })
 );
 ```
 
@@ -50,18 +51,23 @@ The input signature of the prompt templates becomes the call signature of the ge
 ```ts
 const generateStoryAbout = generateJsonAsFunction(
   new OpenAITextGenerationModel(/* ... */),
-  async (theme: string) => [
-    OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-    OpenAIChatMessage.user(theme),
-  ],
-  {
-    name: "story",
-    description: "Write the story",
-    parameters: z.object({
-      title: z.string().describe("The title of the story"),
-      content: z.string().describe("The content of the story"),
-    }),
-  }
+  async (theme: string) =>
+    new OpenAIChatSingleFunctionPrompt({
+      messages: [
+        OpenAIChatMessage.system(
+          "You are a story writer. Write a story about:"
+        ),
+        OpenAIChatMessage.user(theme),
+      ],
+      fn: {
+        name: "story",
+        description: "Write the story",
+        parameters: z.object({
+          title: z.string().describe("The title of the story"),
+          content: z.string().describe("The content of the story"),
+        }),
+      },
+    })
 );
 
 const story = await generateStoryAbout("A robot learning to love");

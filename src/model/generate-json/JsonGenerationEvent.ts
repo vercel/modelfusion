@@ -2,14 +2,12 @@ import {
   ModelCallFinishedEventMetadata,
   ModelCallStartedEventMetadata,
 } from "../ModelCallEvent.js";
-import { JsonGenerationSchema } from "./JsonGenerationModel.js";
 
 export type JsonGenerationStartedEvent = {
   type: "json-generation-started";
   metadata: ModelCallStartedEventMetadata;
   settings: unknown;
   prompt: unknown;
-  schema: JsonGenerationSchema<unknown>;
 };
 
 export type JsonGenerationFinishedEvent = {
@@ -17,7 +15,6 @@ export type JsonGenerationFinishedEvent = {
   metadata: ModelCallFinishedEventMetadata;
   settings: unknown;
   prompt: unknown;
-  schema: JsonGenerationSchema<unknown>;
 } & (
   | {
       status: "success";

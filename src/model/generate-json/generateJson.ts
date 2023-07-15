@@ -4,7 +4,7 @@ import { executeCall } from "../executeCall.js";
 import {
   JsonGenerationModel,
   JsonGenerationModelSettings,
-  JsonGenerationSchema,
+  JsonGenerationPrompt,
 } from "./JsonGenerationModel.js";
 
 export function generateJson<
@@ -14,23 +14,20 @@ export function generateJson<
   SETTINGS extends JsonGenerationModelSettings
 >(
   model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  prompt: PROMPT,
-  schema: JsonGenerationSchema<T>,
+  prompt: PROMPT & JsonGenerationPrompt<RESPONSE, T>,
   options?: FunctionOptions<SETTINGS>
 ): Promise<T> {
   return executeCall({
     model,
     options,
-    callModel: (model, options) => generateJson(model, prompt, schema, options),
-    generateResponse: (options) =>
-      model.generateJsonResponse(prompt, schema, options),
-    extractOutputValue: (response) => model.extractJson(response, schema),
+    callModel: (model, options) => generateJson(model, prompt, options),
+    generateResponse: (options) => model.generateJsonResponse(prompt, options),
+    extractOutputValue: (response): T => prompt.extractJson(response),
     getStartEvent: (metadata, settings) => ({
       type: "json-generation-started",
       metadata,
       settings,
       prompt,
-      schema,
     }),
     getAbortEvent: (metadata, settings) => ({
       type: "json-generation-finished",
@@ -38,7 +35,6 @@ export function generateJson<
       metadata,
       settings,
       prompt,
-      schema,
     }),
     getFailureEvent: (metadata, settings, error) => ({
       type: "json-generation-finished",
@@ -46,7 +42,6 @@ export function generateJson<
       metadata,
       settings,
       prompt,
-      schema,
       error,
     }),
     getSuccessEvent: (metadata, settings, response, output) => ({
@@ -55,7 +50,6 @@ export function generateJson<
       metadata,
       settings,
       prompt,
-      schema,
       response,
       generatedJson: output,
     }),
@@ -70,13 +64,15 @@ export function generateJsonAsFunction<
   SETTINGS extends JsonGenerationModelSettings
 >(
   model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  promptTemplate: PromptTemplate<INPUT, PROMPT>,
-  schema: JsonGenerationSchema<T>,
+  promptTemplate: PromptTemplate<
+    INPUT,
+    PROMPT & JsonGenerationPrompt<RESPONSE, T>
+  >,
   generateOptions?: Omit<FunctionOptions<SETTINGS>, "run">
 ) {
   return async (input: INPUT, options?: FunctionOptions<SETTINGS>) => {
     const expandedPrompt = await promptTemplate(input);
-    return generateJson(model, expandedPrompt, schema, {
+    return generateJson(model, expandedPrompt, {
       functionId: options?.functionId ?? generateOptions?.functionId,
       settings: Object.assign({}, generateOptions?.settings, options?.settings),
       run: options?.run,

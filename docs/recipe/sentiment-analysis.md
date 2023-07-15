@@ -21,25 +21,28 @@ const analyzeSentiment = generateJsonAsFunction(
     temperature: 0, // remove randomness
     maxTokens: 500, // enough tokens for reasoning and sentiment
   }),
-  async (productReview: string) => [
-    OpenAIChatMessage.system(
-      "You are a sentiment evaluator. " +
-        "Analyze the sentiment of the following product review:"
-    ),
-    OpenAIChatMessage.user(productReview),
-  ],
-  {
-    name: "sentiment",
-    description: "Write the sentiment analysis",
-    parameters: z.object({
-      // Reason first to improve results:
-      reasoning: z.string().describe("Reasoning to explain the sentiment."),
-      // Report sentiment after reasoning:
-      sentiment: z
-        .enum(["positive", "neutral", "negative"])
-        .describe("Sentiment."),
-    }),
-  }
+  async (productReview: string) =>
+    new OpenAIChatSingleFunctionPrompt({
+      messages: [
+        OpenAIChatMessage.system(
+          "You are a sentiment evaluator. " +
+            "Analyze the sentiment of the following product review:"
+        ),
+        OpenAIChatMessage.user(productReview),
+      ],
+      fn: {
+        name: "sentiment",
+        description: "Write the sentiment analysis",
+        parameters: z.object({
+          // Reason first to improve results:
+          reasoning: z.string().describe("Reasoning to explain the sentiment."),
+          // Report sentiment after reasoning:
+          sentiment: z
+            .enum(["positive", "neutral", "negative"])
+            .describe("Sentiment."),
+        }),
+      },
+    })
 );
 ```
 
