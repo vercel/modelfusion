@@ -93,7 +93,7 @@ const config = {
         // docusaurus options:
         out: ".",
         sidebar: {
-          categoryLabel: "API",
+          categoryLabel: "API Reference",
           collapsed: false,
           fullNames: true,
         },
@@ -136,7 +136,7 @@ const config = {
           },
           {
             to: "/api/modules/",
-            label: "API",
+            label: "API Reference",
             activeBaseRegex: `/api/`,
             position: "left",
           },
@@ -162,7 +162,7 @@ const config = {
                 to: "/integration/model-provider/",
               },
               {
-                label: "API",
+                label: "API Reference",
                 to: "/api/modules/",
               },
             ],
