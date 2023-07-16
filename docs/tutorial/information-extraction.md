@@ -8,7 +8,7 @@ sidebar_position: 6
 
 This approach generates a text output and the input needs to fit into the chat prompt.
 
-[Example](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/recipes/information-extraction-openai-chat.ts)
+[Example](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/tutorials/information-extraction-openai-chat.ts)
 
 ```ts
 const extractText = generateTextAsFunction(

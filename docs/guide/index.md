@@ -20,7 +20,7 @@ Building applications with AI is a complex task, and your requirements mean you 
 
 ## Example recipes, prompts, and demo apps
 
-Having a large amount of control means that more work is required to get an initial prototype of your app up and running. We provide example [recipes & prompts](/recipe/) as well as [demo apps](https://github.com/lgrammel/ai-utils.js/tree/main/examples) to help you get started.
+Having a large amount of control means that more work is required to get an initial prototype of your app up and running. We provide example [recipes & prompts](/tutorial/) as well as [demo apps](https://github.com/lgrammel/ai-utils.js/tree/main/examples) to help you get started.
 
 ## Taking care of the details
 

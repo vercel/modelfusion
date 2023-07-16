@@ -71,9 +71,9 @@ const config = {
     [
       "@docusaurus/plugin-content-docs",
       {
-        routeBasePath: "recipe",
-        id: "recipe",
-        path: "recipe",
+        routeBasePath: "tutorial",
+        id: "tutorial",
+        path: "tutorial",
       },
     ],
     [
@@ -124,10 +124,10 @@ const config = {
             position: "left",
           },
           {
-            to: "/recipe/",
-            label: "Recipes & Prompts",
-            activeBaseRegex: `/recipe/`,
-            sidebarId: "recipe",
+            to: "/tutorial/",
+            label: "Examples & Tutorials",
+            activeBaseRegex: `/tutorial/`,
+            sidebarId: "tutorial",
             position: "left",
           },
           {
@@ -172,7 +172,7 @@ const config = {
             items: [
               {
                 label: "Recipes & Prompts",
-                to: "/recipe/",
+                to: "/tutorial/",
               },
               {
                 href: "https://github.com/lgrammel/ai-utils.js/tree/main/examples",

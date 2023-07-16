@@ -10,7 +10,7 @@ This is helpful to quickly develop initial product versions and prototypes.
 
 ### Using generateJsonAsFunction and OpenAI Chat Model
 
-[Example](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/recipes/sentiment-analysis.ts)
+[Example](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/tutorials/sentiment-analysis.ts)
 
 #### Define a sentiment analysis function:
 
