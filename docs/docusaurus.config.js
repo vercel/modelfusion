@@ -117,13 +117,6 @@ const config = {
             position: "left",
           },
           {
-            to: "/integration/model-provider/",
-            label: "Integrations",
-            activeBaseRegex: `/integration/model-provider/`,
-            sidebarId: "integration",
-            position: "left",
-          },
-          {
             to: "/tutorial/",
             label: "Examples & Tutorials",
             activeBaseRegex: `/tutorial/`,
@@ -131,8 +124,11 @@ const config = {
             position: "left",
           },
           {
-            href: "https://github.com/lgrammel/ai-utils.js/tree/main/examples",
-            label: "Examples",
+            to: "/integration/model-provider/",
+            label: "Integrations",
+            activeBaseRegex: `/integration/model-provider/`,
+            sidebarId: "integration",
+            position: "left",
           },
           {
             to: "/api/modules/",
