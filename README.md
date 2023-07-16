@@ -151,9 +151,9 @@ const results = await retrieveTextChunks(
 
 `ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents.
 
-It provides functions for working with models, e.g. to [generate text](https://ai-utils.dev/concept/function/generate-text), [tokenize text](https://ai-utils.dev/concept/function/tokenize-text), [embed text](https://ai-utils.dev/concept/function/embed-text), [transcribe audio](https://ai-utils.dev/concept/function/transcribe-audio), and [generate images](https://ai-utils.dev/concept/function/generate-image).
+It provides functions for working with models, e.g. to [generate text](https://ai-utils.dev/guide/function/generate-text), [tokenize text](https://ai-utils.dev/guide/function/tokenize-text), [embed text](https://ai-utils.dev/guide/function/embed-text), [transcribe audio](https://ai-utils.dev/guide/function/transcribe-audio), and [generate images](https://ai-utils.dev/guide/function/generate-image).
 
-`ai-utils.js` also contains functions for working with [text chunks and vector indices](https://ai-utils.dev/concept/text-chunks), e.g. upserting text chunks into a vector index and querying the index for similar text chunks.
+`ai-utils.js` also contains functions for working with [text chunks and vector indices](https://ai-utils.dev/guide/text-chunks), e.g. upserting text chunks into a vector index and querying the index for similar text chunks.
 
 ### TypeScript-first
 
@@ -177,41 +177,41 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 ## Features
 
-- [Functions](https://ai-utils.dev/concept/function/)
-  - [Generate text](https://ai-utils.dev/concept/function/generate-text)
-  - [Stream text](https://ai-utils.dev/concept/function/stream-text)
-  - [Generate JSON](https://ai-utils.dev/concept/function/generate-json)
-  - [Embed Text](https://ai-utils.dev/concept/function/embed-text)
-  - [Tokenize Text](https://ai-utils.dev/concept/function/tokenize-text)
-  - [Transcribe Audio](https://ai-utils.dev/concept/function/transcribe-audio)
-  - [Generate images](https://ai-utils.dev/concept/function/generate-image)
+- [Functions](https://ai-utils.dev/guide/function/)
+  - [Generate text](https://ai-utils.dev/guide/function/generate-text)
+  - [Stream text](https://ai-utils.dev/guide/function/stream-text)
+  - [Generate JSON](https://ai-utils.dev/guide/function/generate-json)
+  - [Embed Text](https://ai-utils.dev/guide/function/embed-text)
+  - [Tokenize Text](https://ai-utils.dev/guide/function/tokenize-text)
+  - [Transcribe Audio](https://ai-utils.dev/guide/function/transcribe-audio)
+  - [Generate images](https://ai-utils.dev/guide/function/generate-image)
 - Summarize text
 - Split text
-- [Text Chunks](https://ai-utils.dev/concept/text-chunks)
-- [Run abstraction](https://ai-utils.dev/concept/run/)
-  - [Abort signals](https://ai-utils.dev/concept/run/abort)
-  - [Cost calculation](https://ai-utils.dev/concept/run/cost-calculation)
+- [Text Chunks](https://ai-utils.dev/guide/text-chunks)
+- [Run abstraction](https://ai-utils.dev/guide/run/)
+  - [Abort signals](https://ai-utils.dev/guide/run/abort)
+  - [Cost calculation](https://ai-utils.dev/guide/run/cost-calculation)
   - Call recording
 - Utilities
-  - [Retry strategies](https://ai-utils.dev/concept/util/retry)
-  - [Throttling strategies](https://ai-utils.dev/concept/util/throttle)
+  - [Retry strategies](https://ai-utils.dev/guide/util/retry)
+  - [Throttling strategies](https://ai-utils.dev/guide/util/throttle)
   - Error handling
 
 ## Integrations
 
 ### Model Providers
 
-|                                                                            | [OpenAI](https://ai-utils.dev/integration/model-provider/openai) | [Cohere](https://ai-utils.dev/integration/model-provider/cohere) | [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface) | [Llama.cpp](https://ai-utils.dev/integration/model-provider/llamacpp) | [Stability AI](https://ai-utils.dev/integration/model-provider/stability) | [Automatic1111](https://ai-utils.dev/integration/model-provider/automatic1111) |
-| -------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Hosting                                                                    | cloud                                                            | cloud                                                            | cloud                                                                       | server (local)                                                        | cloud                                                                     | server (local)                                                                 |
-| [Generate text](https://ai-utils.dev/concept/function/generate-text)       | ✅                                                               | ✅                                                               | ✅                                                                          | ✅                                                                    |                                                                           |                                                                                |
-| [Stream text](https://ai-utils.dev/concept/function/stream-text)           | ✅                                                               | ✅                                                               |                                                                             | ✅                                                                    |                                                                           |                                                                                |
-| [Generate JSON](https://ai-utils.dev/concept/function/generate-json)       | ✅                                                               |                                                                  |                                                                             |                                                                       |                                                                           |                                                                                |
-| [Embed text](https://ai-utils.dev/concept/function/embed-text)             | ✅                                                               | ✅                                                               |                                                                             |                                                                       |                                                                           |                                                                                |
-| [Tokenize text](https://ai-utils.dev/concept/function/tokenize-text)       | full                                                             | full                                                             |                                                                             | basic                                                                 |                                                                           |                                                                                |
-| [Generate image](https://ai-utils.dev/concept/function/generate-image)     | ✅                                                               |                                                                  |                                                                             |                                                                       | ✅                                                                        | ✅                                                                             |
-| [Transcribe audio](https://ai-utils.dev/concept/function/transcribe-audio) | ✅                                                               |                                                                  |                                                                             |                                                                       |                                                                           |                                                                                |
-| [Cost calculation](https://ai-utils.dev/concept/run/cost-calculation)      | ✅                                                               |                                                                  |                                                                             |                                                                       |                                                                           |                                                                                |
+|                                                                          | [OpenAI](https://ai-utils.dev/integration/model-provider/openai) | [Cohere](https://ai-utils.dev/integration/model-provider/cohere) | [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface) | [Llama.cpp](https://ai-utils.dev/integration/model-provider/llamacpp) | [Stability AI](https://ai-utils.dev/integration/model-provider/stability) | [Automatic1111](https://ai-utils.dev/integration/model-provider/automatic1111) |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Hosting                                                                  | cloud                                                            | cloud                                                            | cloud                                                                       | server (local)                                                        | cloud                                                                     | server (local)                                                                 |
+| [Generate text](https://ai-utils.dev/guide/function/generate-text)       | ✅                                                               | ✅                                                               | ✅                                                                          | ✅                                                                    |                                                                           |                                                                                |
+| [Stream text](https://ai-utils.dev/guide/function/stream-text)           | ✅                                                               | ✅                                                               |                                                                             | ✅                                                                    |                                                                           |                                                                                |
+| [Generate JSON](https://ai-utils.dev/guide/function/generate-json)       | ✅                                                               |                                                                  |                                                                             |                                                                       |                                                                           |                                                                                |
+| [Embed text](https://ai-utils.dev/guide/function/embed-text)             | ✅                                                               | ✅                                                               |                                                                             |                                                                       |                                                                           |                                                                                |
+| [Tokenize text](https://ai-utils.dev/guide/function/tokenize-text)       | full                                                             | full                                                             |                                                                             | basic                                                                 |                                                                           |                                                                                |
+| [Generate image](https://ai-utils.dev/guide/function/generate-image)     | ✅                                                               |                                                                  |                                                                             |                                                                       | ✅                                                                        | ✅                                                                             |
+| [Transcribe audio](https://ai-utils.dev/guide/function/transcribe-audio) | ✅                                                               |                                                                  |                                                                             |                                                                       |                                                                           |                                                                                |
+| [Cost calculation](https://ai-utils.dev/guide/run/cost-calculation)      | ✅                                                               |                                                                  |                                                                             |                                                                       |                                                                           |                                                                                |
 
 ### Vector Indices
 
@@ -220,7 +220,7 @@ Recognizing that AI applications involve more than just text, `ai-utils.js` supp
 
 ## Documentation
 
-- [Concepts](https://ai-utils.dev/concept)
+- [Guide](https://ai-utils.dev/guide)
 - [Integrations](https://ai-utils.dev/integration/model-provider)
 - [Recipes & Prompts](https://ai-utils.dev/recipe)
 - [API Documentation](https://ai-utils.dev/api/modules)

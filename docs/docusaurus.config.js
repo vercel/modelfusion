@@ -53,9 +53,9 @@ const config = {
     [
       "@docusaurus/plugin-content-docs",
       {
-        routeBasePath: "concept",
-        id: "concept",
-        path: "concept",
+        routeBasePath: "guide",
+        id: "guide",
+        path: "guide",
         sidebarCollapsible: false,
       },
     ],
@@ -110,10 +110,10 @@ const config = {
         title: "ai-utils.js",
         items: [
           {
-            to: "/concept/",
-            label: "Concepts",
-            activeBaseRegex: `/concept/`,
-            sidebarId: "concept",
+            to: "/guide/",
+            label: "Guide",
+            activeBaseRegex: `/guide/`,
+            sidebarId: "guide",
             position: "left",
           },
           {
@@ -154,8 +154,8 @@ const config = {
             title: "Documentation",
             items: [
               {
-                label: "Concepts",
-                to: "/concept/",
+                label: "Guide",
+                to: "/guide/",
               },
               {
                 label: "Integrations",

@@ -6,9 +6,9 @@ sidebar_position: 0
 
 `ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents.
 
-It provides functions for working with models, e.g. to [generate text](/concept/function/generate-text), [tokenize text](/concept/function/tokenize-text), [embed text](/concept/function/embed-text), [transcribe audio](/concept/function/transcribe-audio), and [generate images](/concept/function/generate-image).
+It provides functions for working with models, e.g. to [generate text](/guide/function/generate-text), [tokenize text](/guide/function/tokenize-text), [embed text](/guide/function/embed-text), [transcribe audio](/guide/function/transcribe-audio), and [generate images](/guide/function/generate-image).
 
-`ai-utils.js` also contains functions for working with [text chunks and vector indices](/concept/text-chunks), e.g. upserting text chunks into a vector index and querying the index for similar text chunks.
+`ai-utils.js` also contains functions for working with [text chunks and vector indices](/guide/text-chunks), e.g. upserting text chunks into a vector index and querying the index for similar text chunks.
 
 ## TypeScript-first
 
