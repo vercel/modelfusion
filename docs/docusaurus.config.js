@@ -74,6 +74,7 @@ const config = {
         routeBasePath: "tutorial",
         id: "tutorial",
         path: "tutorial",
+        sidebarCollapsible: false,
       },
     ],
     [
