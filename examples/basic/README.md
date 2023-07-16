@@ -1,6 +1,6 @@
 # Basic Examples
 
-Small examples of the functions in ai-utils.js
+Basic examples of how to the the functions in ai-utils.js
 
 ## Usage
 
