@@ -4,11 +4,71 @@ sidebar_position: 6
 
 # Information Extraction
 
-### OpenAI Chat Prompt (without functions)
+## generateJson with OpenAI chat model
+
+With generateJson and an OpenAI chat model, you can use the OpenAI function API to extract structured information from text.
+
+Depending on the context, it can be important to provide an escape hatch when the text is not about the expected topic. In the following example, the model is informed that the text might not be about a city and what to do in this case.
+
+### Example
+
+[Source Code](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/tutorials/information-extraction-openai-chat-functions.ts)
+
+```ts
+const extractNameAndPopulation = generateJsonAsFunction(
+  new OpenAIChatModel({
+    model: "gpt-4",
+    temperature: 0, // remove randomness as much as possible
+    maxTokens: 200, // only a few tokens needed for the response
+  }),
+  async ({ text }: { text: string }) =>
+    new OpenAIChatSingleFunctionPrompt({
+      messages: [
+        OpenAIChatMessage.system(
+          [
+            "Extract the name and the population of the city.",
+            // escape hatch to limit extractions to city information:
+            "The text might not be about a city.",
+            "If it is not, set isCity to false.",
+          ].join("\n")
+        ),
+        OpenAIChatMessage.user(text),
+      ],
+      fn: {
+        name: "storeCity",
+        description: "Save information about the city",
+        // structure supports escape hatch:
+        parameters: z.object({
+          city: z
+            .object({
+              name: z.string().describe("name of the city"),
+              population: z.number().describe("population of the city"),
+            })
+            .nullable()
+            .describe("information about the city"),
+        }),
+      },
+    })
+);
+
+const extractedInformation1 = await extractNameAndPopulation({
+  text: sanFranciscoWikipedia.slice(0, 2000),
+});
+// { city: { name: 'San Francisco', population: 808437 } }
+
+const extractedInformation2 = await extractNameAndPopulation({
+  text: "Carl was a friendly robot.",
+});
+// { city: null }
+```
+
+## generateText with OpenAI chat model
 
 This approach generates a text output and the input needs to fit into the chat prompt.
 
-[Example](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/tutorials/information-extraction-openai-chat.ts)
+### Example
+
+[Source Code](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/tutorials/information-extraction-openai-chat.ts)
 
 ```ts
 const extractText = generateTextAsFunction(
