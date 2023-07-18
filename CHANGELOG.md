@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.33 - 2023-07-18
+
+### Added
+
+- OpenAIChatAutoFunctionPrompt to call the OpenAI functions API with multiple functions in 'auto' mode.
+
 ## 0.0.32 - 2023-07-15
 
 ### Changed
