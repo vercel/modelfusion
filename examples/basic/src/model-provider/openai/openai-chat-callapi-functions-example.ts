@@ -60,7 +60,6 @@ dotenv.config();
     // Step 3, call the function
     // Note: the JSON response from the model may not be valid JSON
     const { location, unit } = JSON.parse(message.function_call.arguments);
-
     const functionResponse = getCurrentWeather(location, unit);
 
     // Step 4, send model the info on the function call and function response

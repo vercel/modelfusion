@@ -169,6 +169,84 @@ export class OpenAIChatSingleFunctionPrompt<T>
     const jsonText = response.choices[0]!.message.function_call!.arguments;
     return this.fn.parameters.parse(SecureJSON.parse(jsonText));
   }
+
+  get functionCall() {
+    return { name: this.fn.name };
+  }
+
+  get functions() {
+    return [
+      {
+        name: this.fn.name,
+        description: this.fn.description,
+        parameters: zodToJsonSchema(this.fn.parameters),
+      },
+    ];
+  }
+}
+
+export class OpenAIChatAutoFunctionPrompt<T, NAME_1 extends string>
+  implements
+    JsonGenerationPrompt<
+      OpenAIChatResponse,
+      { fnName: null; value: string } | { fnName: NAME_1; value: T }
+    >
+{
+  readonly messages: OpenAIChatMessage[];
+  readonly fn: {
+    readonly name: NAME_1;
+    readonly description?: string;
+    readonly parameters: z.Schema<T>;
+  };
+
+  constructor({
+    messages,
+    fn,
+  }: {
+    messages: OpenAIChatMessage[];
+    fn: {
+      name: NAME_1;
+      description?: string;
+      parameters: z.Schema<T>;
+    };
+  }) {
+    this.messages = messages;
+    this.fn = fn;
+  }
+
+  extractJson(response: OpenAIChatResponse) {
+    const message = response.choices[0]!.message;
+    const functionCall = message.function_call;
+
+    if (functionCall == null) {
+      return {
+        fnName: null,
+        value: message.content!,
+      };
+    }
+
+    const jsonText = functionCall!.arguments;
+    const value = this.fn.parameters.parse(SecureJSON.parse(jsonText));
+
+    return {
+      fnName: this.fn.name,
+      value,
+    };
+  }
+
+  get functionCall() {
+    return "auto" as const;
+  }
+
+  get functions() {
+    return [
+      {
+        name: this.fn.name,
+        description: this.fn.description,
+        parameters: zodToJsonSchema(this.fn.parameters),
+      },
+    ];
+  }
 }
 
 /**
@@ -204,7 +282,8 @@ export class OpenAIChatModel
       OpenAIChatSettings
     >,
     JsonGenerationModel<
-      OpenAIChatSingleFunctionPrompt<unknown>,
+      | OpenAIChatSingleFunctionPrompt<any>
+      | OpenAIChatAutoFunctionPrompt<any, any>,
       OpenAIChatResponse,
       OpenAIChatSettings
     >
@@ -326,20 +405,14 @@ export class OpenAIChatModel
    * @see https://platform.openai.com/docs/guides/gpt/function-calling
    */
   generateJsonResponse<T>(
-    prompt: OpenAIChatSingleFunctionPrompt<T>,
+    prompt:
+      | OpenAIChatSingleFunctionPrompt<T>
+      | OpenAIChatAutoFunctionPrompt<T, any>,
     options?: FunctionOptions<OpenAIChatSettings> | undefined
   ): PromiseLike<OpenAIChatResponse> {
     const settingsWithFunctionCall = Object.assign({}, options, {
-      functionCall: {
-        name: prompt.fn.name,
-      },
-      functions: [
-        {
-          name: prompt.fn.name,
-          description: prompt.fn.description,
-          parameters: zodToJsonSchema(prompt.fn.parameters),
-        },
-      ],
+      functionCall: prompt.functionCall,
+      functions: prompt.functions,
     });
 
     return this.callAPI(prompt.messages, {
