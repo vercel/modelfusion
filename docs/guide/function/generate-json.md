@@ -16,7 +16,9 @@ Generates JSON using a prompt.
 The prompt format depends on the model.
 It contains the information required to parse the generated JSON.
 
-#### With OpenAI chat model
+#### OpenAI chat model (single function prompt)
+
+The OpenAI single function prompt forces the OpenAI chat model to call the specified function.
 
 ```ts
 const story = await generateJson(
@@ -36,6 +38,55 @@ const story = await generateJson(
     },
   })
 );
+```
+
+#### OpenAI chat model (auto function prompt)
+
+The OpenAI auto function prompt lets the OpenAI chat model choose between different functions.
+It can also just generate a text response.
+
+```ts
+const json = await generateJson(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
+  new OpenAIChatAutoFunctionPrompt({
+    messages: [OpenAIChatMessage.user(query)],
+    fns: {
+      getCurrentWeather: {
+        description: "Get the current weather in a given location",
+        parameters: z.object({
+          location: z
+            .string()
+            .describe("The city and state, e.g. San Francisco, CA"),
+          unit: z.enum(["celsius", "fahrenheit"]).optional(),
+        }),
+      },
+      getContactInformation: {
+        description: "Get the contact information for a given person",
+        parameters: z.object({
+          name: z.string().describe("The name of the person"),
+        }),
+      },
+    },
+  })
+);
+
+switch (json.fnName) {
+  case "getCurrentWeather": {
+    const { location, unit } = json.value;
+    console.log("getCurrentWeather", location, unit);
+    break;
+  }
+
+  case "getContactInformation": {
+    const { name } = json.value;
+    console.log("getContactInformation", name);
+    break;
+  }
+
+  case null: {
+    console.log("No function call. Generated text: ", json.value);
+  }
+}
 ```
 
 ### generateJsonAsFunction
