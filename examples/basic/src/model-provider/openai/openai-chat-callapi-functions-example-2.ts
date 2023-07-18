@@ -31,15 +31,16 @@ dotenv.config();
     model,
     new OpenAIChatAutoFunctionPrompt({
       messages: [OpenAIChatMessage.user("What's the weather like in Boston?")],
-      fn: {
-        name: "getCurrentWeather",
-        description: "Get the current weather in a given location",
-        parameters: z.object({
-          location: z
-            .string()
-            .describe("The city and state, e.g. San Francisco, CA"),
-          unit: z.enum(["celsius", "fahrenheit"]).optional(),
-        }),
+      fns: {
+        getCurrentWeather: {
+          description: "Get the current weather in a given location",
+          parameters: z.object({
+            location: z
+              .string()
+              .describe("The city and state, e.g. San Francisco, CA"),
+            unit: z.enum(["celsius", "fahrenheit"]).optional(),
+          }),
+        },
       },
     })
   );
