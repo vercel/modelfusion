@@ -20,7 +20,7 @@ npm install ai-utils.js
 
 You can provide API keys for the different [integrations](https://ai-utils.dev/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or pass them into the model constructors as options.
 
-### Generate Text
+### [Generate Text](https://ai-utils.dev/guide/function/generate-text)
 
 ```ts
 const text = await generateText(
@@ -29,7 +29,7 @@ const text = await generateText(
 );
 ```
 
-### Stream Text
+### [Stream Text](https://ai-utils.dev/guide/function/stream-text)
 
 ```ts
 const textStream = await streamText(
@@ -45,7 +45,7 @@ for await (const textFragment of textStream) {
 }
 ```
 
-### Generate JSON
+### [Generate JSON](https://ai-utils.dev/guide/function/generate-json)
 
 ```ts
 const json = await generateJson(
@@ -67,7 +67,7 @@ const json = await generateJson(
 );
 ```
 
-### Transcribe Audio
+### [Transcribe Audio](https://ai-utils.dev/guide/function/transcribe-audio)
 
 ```ts
 const transcription = await transcribe(
@@ -79,7 +79,7 @@ const transcription = await transcribe(
 );
 ```
 
-### Generate Image
+### [Generate Image](https://ai-utils.dev/guide/function/generate-image)
 
 ```ts
 const imageBase64 = await generateImage(
@@ -88,7 +88,7 @@ const imageBase64 = await generateImage(
 );
 ```
 
-### Embed Text
+### [Embed Text](https://ai-utils.dev/guide/function/embed-text)
 
 ```ts
 const embeddings = await embedTexts(
@@ -100,7 +100,7 @@ const embeddings = await embedTexts(
 );
 ```
 
-### Tokenize Text
+### [Tokenize Text](https://ai-utils.dev/guide/function/tokenize-text)
 
 ```ts
 const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });
@@ -114,7 +114,7 @@ const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
 const reconstructedText = await tokenizer.detokenize(tokens);
 ```
 
-### Upserting and Retrieving Text Chunks from Vector Indices
+### [Upserting and Retrieving Text Chunks from Vector Indices](https://ai-utils.dev/guide/text-chunks)
 
 ```ts
 const texts = [
