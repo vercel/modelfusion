@@ -29,7 +29,7 @@ const extractNameAndPopulation = generateJsonAsFunction(
             "Extract the name and the population of the city.",
             // escape hatch to limit extractions to city information:
             "The text might not be about a city.",
-            "If it is not, set isCity to false.",
+            "If it is not, set city to null.",
           ].join("\n")
         ),
         OpenAIChatMessage.user(text),
