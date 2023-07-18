@@ -2,7 +2,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAIChatSingleFunctionPrompt,
-  generateJsonAsFunction,
+  generateJson,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 import fs from "node:fs";
@@ -11,13 +11,13 @@ import { z } from "zod";
 dotenv.config();
 
 (async () => {
-  const extractNameAndPopulation = generateJsonAsFunction(
-    new OpenAIChatModel({
-      model: "gpt-4",
-      temperature: 0, // remove randomness as much as possible
-      maxTokens: 200, // only a few tokens needed for the response
-    }),
-    async ({ text }: { text: string }) =>
+  const extractNameAndPopulation = async (text: string) =>
+    generateJson(
+      new OpenAIChatModel({
+        model: "gpt-4",
+        temperature: 0, // remove randomness as much as possible
+        maxTokens: 200, // only a few tokens needed for the response
+      }),
       new OpenAIChatSingleFunctionPrompt({
         messages: [
           OpenAIChatMessage.system(
@@ -45,21 +45,21 @@ dotenv.config();
           }),
         },
       })
-  );
+    );
 
   const sanFranciscoWikipedia = JSON.parse(
     fs.readFileSync("data/san-francisco-wikipedia.json", "utf8")
   ).content;
 
-  const extractedInformation1 = await extractNameAndPopulation({
-    text: sanFranciscoWikipedia.slice(0, 2000),
-  });
+  const extractedInformation1 = await extractNameAndPopulation(
+    sanFranciscoWikipedia.slice(0, 2000)
+  );
 
   console.log(extractedInformation1);
 
-  const extractedInformation2 = await extractNameAndPopulation({
-    text: "Carl was a friendly robot.",
-  });
+  const extractedInformation2 = await extractNameAndPopulation(
+    "Carl was a friendly robot."
+  );
 
   console.log(extractedInformation2);
 })();

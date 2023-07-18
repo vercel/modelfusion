@@ -15,13 +15,13 @@ Depending on the context, it can be important to provide an escape hatch when th
 [Source Code](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/tutorials/information-extraction-openai-chat-functions.ts)
 
 ```ts
-const extractNameAndPopulation = generateJsonAsFunction(
-  new OpenAIChatModel({
-    model: "gpt-4",
-    temperature: 0, // remove randomness as much as possible
-    maxTokens: 200, // only a few tokens needed for the response
-  }),
-  async ({ text }: { text: string }) =>
+const extractNameAndPopulation = async (text: string) =>
+  generateJson(
+    new OpenAIChatModel({
+      model: "gpt-4",
+      temperature: 0, // remove randomness as much as possible
+      maxTokens: 200, // only a few tokens needed for the response
+    }),
     new OpenAIChatSingleFunctionPrompt({
       messages: [
         OpenAIChatMessage.system(
@@ -49,16 +49,16 @@ const extractNameAndPopulation = generateJsonAsFunction(
         }),
       },
     })
-);
+  );
 
-const extractedInformation1 = await extractNameAndPopulation({
-  text: sanFranciscoWikipedia.slice(0, 2000),
-});
+const extractedInformation1 = await extractNameAndPopulation(
+  sanFranciscoWikipedia.slice(0, 2000)
+);
 // { city: { name: 'San Francisco', population: 808437 } }
 
-const extractedInformation2 = await extractNameAndPopulation({
-  text: "Carl was a friendly robot.",
-});
+const extractedInformation2 = await extractNameAndPopulation(
+  "Carl was a friendly robot."
+);
 // { city: null }
 ```
 
@@ -71,25 +71,26 @@ This approach generates a text output and the input needs to fit into the chat p
 [Source Code](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/tutorials/information-extraction-openai-chat.ts)
 
 ```ts
-const extractText = generateTextAsFunction(
-  new OpenAIChatModel({
-    model: "gpt-4",
-    temperature: 0, // remove randomness as much as possible
-    maxTokens: 500,
-  }),
-  async ({ text, topic }: { text: string; topic: string }) => [
-    OpenAIChatMessage.system(
-      [
-        `## ROLE`,
-        `You are an expert at extracting information.`,
-        `You need to extract and keep all the information on the topic from the text below.`,
-        `Only include information that is directly relevant for the topic.`,
-      ].join("\n")
-    ),
-    OpenAIChatMessage.user(`## TOPIC\n${topic}`),
-    OpenAIChatMessage.user(`## TEXT\n${text}`),
-  ]
-);
+const extractText = async ({ text, topic }: { text: string; topic: string }) =>
+  generateText(
+    new OpenAIChatModel({
+      model: "gpt-4",
+      temperature: 0, // remove randomness as much as possible
+      maxTokens: 500,
+    }),
+    [
+      OpenAIChatMessage.system(
+        [
+          `## ROLE`,
+          `You are an expert at extracting information.`,
+          `You need to extract and keep all the information on the topic from the text below.`,
+          `Only include information that is directly relevant for the topic.`,
+        ].join("\n")
+      ),
+      OpenAIChatMessage.user(`## TOPIC\n${topic}`),
+      OpenAIChatMessage.user(`## TEXT\n${text}`),
+    ]
+  );
 
 const extractedInformation = await extractText({
   text: sanFranciscoWikipediaContent, // longer text to extract information from

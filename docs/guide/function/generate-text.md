@@ -40,44 +40,6 @@ const text = await generateText(
 );
 ```
 
-### generateTextAsFunction
-
-[generateTextAsFunction API](/api/modules#generatetextasfunction)
-
-Uses a prompt template to create a function that generates text.
-The prompt template is a function that takes an input and returns a prompt that matches the model's prompt format.
-The input signature of the prompt templates becomes the call signature of the generated function.
-
-#### With OpenAI text model and simple function signature
-
-```ts
-const generateStoryAbout = generateTextAsFunction(
-  new OpenAITextGenerationModel(/* ... */),
-  async (character: string) =>
-    `Write a short story about ${character} learning to love:\n\n`
-);
-
-const story = await generateStoryAbout("a robot");
-```
-
-#### With OpenAI chat model and complex function signature
-
-```ts
-const generateStoryAbout = generateTextAsFunction(
-  new OpenAIChatModel(/* ... */),
-  async ({ character, topic }: { character: string; topic: string }) => [
-    OpenAIChatMessage.system(
-      `Write a short story about ${character} ${topic}:`
-    ),
-  ]
-);
-
-const story = await generateStoryAbout({
-  character: "a robot",
-  topic: "enjoying a bicycle ride",
-});
-```
-
 ## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)

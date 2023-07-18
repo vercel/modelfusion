@@ -1,5 +1,4 @@
 import { nanoid as createId } from "nanoid";
-import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
@@ -135,24 +134,4 @@ export async function streamText<
   }
 
   return result.output;
-}
-
-export function streamTextAsFunction<
-  INPUT,
-  PROMPT,
-  FULL_DELTA,
-  SETTINGS extends TextStreamingModelSettings
->(
-  model: TextStreamingModel<PROMPT, FULL_DELTA, SETTINGS>,
-  promptTemplate: PromptTemplate<INPUT, PROMPT>,
-  generateOptions?: Omit<FunctionOptions<SETTINGS>, "run">
-) {
-  return async (input: INPUT, options?: FunctionOptions<SETTINGS>) => {
-    const expandedPrompt = await promptTemplate(input);
-    return streamText(model, expandedPrompt, {
-      functionId: options?.functionId ?? generateOptions?.functionId,
-      settings: Object.assign({}, generateOptions?.settings, options?.settings),
-      run: options?.run,
-    });
-  };
 }

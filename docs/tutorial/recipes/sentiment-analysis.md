@@ -8,20 +8,20 @@ Sentiment analysis is a natural language processing technique used to determine 
 It is often implemented using models that are specifically trained for this task, but can also be done with language models.
 This is helpful to quickly develop initial product versions and prototypes.
 
-### Using generateJsonAsFunction and OpenAI Chat Model
+### Using generateJson and OpenAI Chat Model
 
 [Example](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/tutorials/sentiment-analysis.ts)
 
 #### Define a sentiment analysis function:
 
 ```ts
-const analyzeSentiment = generateJsonAsFunction(
-  new OpenAIChatModel({
-    model: "gpt-4",
-    temperature: 0, // remove randomness
-    maxTokens: 500, // enough tokens for reasoning and sentiment
-  }),
-  async (productReview: string) =>
+const analyzeSentiment = async (productReview: string) =>
+  generateJson(
+    new OpenAIChatModel({
+      model: "gpt-4",
+      temperature: 0, // remove randomness
+      maxTokens: 500, // enough tokens for reasoning and sentiment
+    }),
     new OpenAIChatSingleFunctionPrompt({
       messages: [
         OpenAIChatMessage.system(
@@ -43,7 +43,7 @@ const analyzeSentiment = generateJsonAsFunction(
         }),
       },
     })
-);
+  );
 ```
 
 #### Use destructuring to get the sentiment:

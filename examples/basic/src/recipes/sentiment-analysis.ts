@@ -2,7 +2,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAIChatSingleFunctionPrompt,
-  generateJsonAsFunction,
+  generateJson,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 import { z } from "zod";
@@ -10,13 +10,13 @@ import { z } from "zod";
 dotenv.config();
 
 (async () => {
-  const analyzeSentiment = generateJsonAsFunction(
-    new OpenAIChatModel({
-      model: "gpt-4",
-      temperature: 0, // remove randomness
-      maxTokens: 500, // enough tokens for reasoning and sentiment
-    }),
-    async (productReview: string) =>
+  const analyzeSentiment = async (productReview: string) =>
+    generateJson(
+      new OpenAIChatModel({
+        model: "gpt-4",
+        temperature: 0, // remove randomness
+        maxTokens: 500, // enough tokens for reasoning and sentiment
+      }),
       new OpenAIChatSingleFunctionPrompt({
         messages: [
           OpenAIChatMessage.system(
@@ -40,7 +40,7 @@ dotenv.config();
           }),
         },
       })
-  );
+    );
 
   const result1 = await analyzeSentiment(
     "After I opened the package, I was met by a very unpleasant smell " +

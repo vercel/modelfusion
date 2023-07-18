@@ -1,22 +1,20 @@
 import {
   OpenAIChatMessage,
   OpenAIChatModel,
-  summarizeRecursivelyWithTextGenerationAndTokenSplittingAsFunction,
+  summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 import fs from "node:fs";
 
 dotenv.config();
 
-const summarize =
-  summarizeRecursivelyWithTextGenerationAndTokenSplittingAsFunction({
+const summarize = ({ text }: { text: string }) =>
+  summarizeRecursivelyWithTextGenerationAndTokenSplitting({
     model: new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-    prompt: async ({ text }) => {
-      return [
-        OpenAIChatMessage.system("Summarize the following text:"),
-        OpenAIChatMessage.user(text),
-      ];
-    },
+    prompt: (input) => [
+      OpenAIChatMessage.system("Summarize the following text:"),
+      OpenAIChatMessage.user(text),
+    ],
     reservedCompletionTokens: 1000,
   });
 

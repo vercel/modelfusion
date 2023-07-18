@@ -1,4 +1,3 @@
-import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { executeCall } from "../executeCall.js";
 import {
@@ -54,28 +53,4 @@ export function generateJson<
       generatedJson: output,
     }),
   });
-}
-
-export function generateJsonAsFunction<
-  INPUT,
-  T,
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends JsonGenerationModelSettings
->(
-  model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  promptTemplate: PromptTemplate<
-    INPUT,
-    PROMPT & JsonGenerationPrompt<RESPONSE, T>
-  >,
-  generateOptions?: Omit<FunctionOptions<SETTINGS>, "run">
-) {
-  return async (input: INPUT, options?: FunctionOptions<SETTINGS>) => {
-    const expandedPrompt = await promptTemplate(input);
-    return generateJson(model, expandedPrompt, {
-      functionId: options?.functionId ?? generateOptions?.functionId,
-      settings: Object.assign({}, generateOptions?.settings, options?.settings),
-      run: options?.run,
-    });
-  };
 }

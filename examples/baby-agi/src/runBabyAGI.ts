@@ -1,8 +1,4 @@
-import {
-  OpenAITextGenerationModel,
-  generateText,
-  generateTextAsFunction,
-} from "ai-utils.js";
+import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
 import chalk from "chalk";
 
 export async function runBabyAGI({
@@ -16,15 +12,22 @@ export async function runBabyAGI({
     model: "text-davinci-003",
   });
 
-  const executeTask = generateTextAsFunction(
-    model,
-    async ({ objective, task }: { objective: string; task: string }) =>
+  async function executeTask({
+    objective,
+    task,
+  }: {
+    objective: string;
+    task: string;
+  }) {
+    return generateText(
+      model,
       [
         `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}`,
         `Response:`,
       ].join("\n"),
-    { settings: { temperature: 0.7, maxTokens: 2000 } }
-  );
+      { settings: { temperature: 0.7, maxTokens: 2000 } }
+    );
+  }
 
   async function generateNewTasks({
     objective,

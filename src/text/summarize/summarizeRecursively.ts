@@ -38,24 +38,3 @@ export async function summarizeRecursively(
     options
   );
 }
-
-export const summarizeRecursivelyAsFunction =
-  ({
-    split,
-    map,
-    join,
-  }: {
-    split: SplitFunction;
-    map: SummarizationFunction;
-    join?: (texts: Array<string>) => string;
-  }): SummarizationFunction =>
-  async ({ text }, options?: { run?: Run }) =>
-    summarizeRecursively(
-      {
-        summarize: map,
-        split,
-        join,
-        text,
-      },
-      options
-    );

@@ -1,9 +1,8 @@
-import { PromptTemplate } from "../../run/PromptTemplate.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { executeCall } from "../executeCall.js";
 import {
-  TextGenerationModelSettings,
   TextGenerationModel,
+  TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
 
 /**
@@ -69,39 +68,4 @@ export async function generateText<
       generatedText: output,
     }),
   });
-}
-
-/**
- * Uses a prompt template to create a function that generates text.
- * The prompt template is a function that takes an input and returns a prompt that matches the model's prompt format.
- * The input signature of the prompt templates becomes the call signature of the generated function.
- *
- * @example
- * const model = new OpenAITextGenerationModel(...);
- *
- * const generateStoryAbout = model.generateTextAsFunction(
- *   async (character: string) =>
- *     `Write a short story about ${character} learning to love:\n\n`
- * );
- *
- * const story = await generateStoryAbout("a robot");
- */
-export function generateTextAsFunction<
-  INPUT,
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends TextGenerationModelSettings
->(
-  model: TextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  promptTemplate: PromptTemplate<INPUT, PROMPT>,
-  generateOptions?: Omit<FunctionOptions<SETTINGS>, "run">
-) {
-  return async (input: INPUT, options?: FunctionOptions<SETTINGS>) => {
-    const expandedPrompt = await promptTemplate(input);
-    return generateText(model, expandedPrompt, {
-      functionId: options?.functionId ?? generateOptions?.functionId,
-      settings: Object.assign({}, generateOptions?.settings, options?.settings),
-      run: options?.run,
-    });
-  };
 }

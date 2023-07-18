@@ -1,9 +1,8 @@
 import { TextGenerationModelWithTokenization } from "../../model/generate-text/TextGenerationModel.js";
-import { generateTextAsFunction } from "../../model/generate-text/generateText.js";
+import { generateText } from "../../model/generate-text/generateText.js";
 import { FullTokenizer } from "../../model/tokenize-text/Tokenizer.js";
 import { Run } from "../../run/Run.js";
 import { splitRecursivelyAtTokenAsSplitFunction } from "../../text/split/splitRecursively.js";
-import { SummarizationFunction } from "./SummarizationFunction.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";
 
 /**
@@ -46,51 +45,17 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
         maxChunkSize:
           model.maxTokens - reservedCompletionTokens - emptyPromptTokens,
       }),
-      summarize: generateTextAsFunction(
-        model.withMaxTokens(reservedCompletionTokens),
-        prompt,
-        { functionId }
-      ),
+      summarize: async (input: { text: string }) =>
+        generateText(
+          model.withMaxTokens(reservedCompletionTokens),
+          await prompt(input),
+          {
+            functionId,
+          }
+        ),
       join,
       text,
     },
     options
   );
 }
-
-export const summarizeRecursivelyWithTextGenerationAndTokenSplittingAsFunction =
-
-    <PROMPT>({
-      model,
-      prompt,
-      reservedCompletionTokens,
-      join,
-      functionId,
-    }: {
-      model: TextGenerationModelWithTokenization<PROMPT, any, any> &
-        FullTokenizer;
-      prompt: (input: { text: string }) => Promise<PROMPT>;
-      reservedCompletionTokens: number;
-      join?: (texts: Array<string>) => string;
-      functionId?: string;
-    }): SummarizationFunction =>
-    async (
-      input: { text: string },
-      options?: {
-        functionId?: string;
-        run?: Run;
-      }
-    ) =>
-      summarizeRecursivelyWithTextGenerationAndTokenSplitting(
-        {
-          text: input.text,
-          model,
-          prompt,
-          reservedCompletionTokens,
-          join,
-        },
-        {
-          functionId: options?.functionId ?? functionId,
-          run: options?.run,
-        }
-      );
