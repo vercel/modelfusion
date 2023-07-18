@@ -3,34 +3,21 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   generateJson,
-  generateText,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 import { z } from "zod";
 
 dotenv.config();
 
-// example from https://platform.openai.com/docs/guides/gpt/function-calling
 (async () => {
-  function getCurrentWeather(location: string, unit: string = "fahrenheit") {
-    return {
-      location,
-      temperature: "72",
-      unit,
-      forecast: ["sunny", "windy"],
-    };
-  }
+  const query = "What's the weather like in Boston?";
+  // const query = "Where does Kevin work?";
+  // const query = "Tell me something random.";
 
-  const model = new OpenAIChatModel({
-    model: "gpt-3.5-turbo-0613",
-    temperature: 0,
-  });
-
-  // Step 1, send model the user query and what functions it has access to
-  const response = await generateJson(
-    model,
+  const json = await generateJson(
+    new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
     new OpenAIChatAutoFunctionPrompt({
-      messages: [OpenAIChatMessage.user("What's the weather like in Boston?")],
+      messages: [OpenAIChatMessage.user(query)],
       fns: {
         getCurrentWeather: {
           description: "Get the current weather in a given location",
@@ -41,25 +28,31 @@ dotenv.config();
             unit: z.enum(["celsius", "fahrenheit"]).optional(),
           }),
         },
+        getContactInformation: {
+          description: "Get the contact information for a given person",
+          parameters: z.object({
+            name: z.string().describe("The name of the person"),
+          }),
+        },
       },
     })
   );
 
-  // Step 2, check if the model wants to call a function
-  if (response.fnName === "getCurrentWeather") {
-    // Step 3, call the function
-    const { location, unit } = response.value;
-    const functionResponse = getCurrentWeather(location, unit);
+  switch (json.fnName) {
+    case "getCurrentWeather": {
+      const { location, unit } = json.value;
+      console.log("getCurrentWeather", location, unit);
+      break;
+    }
 
-    // Step 4, send model the info on the function call and function response
-    const secondResponse = await generateText(model, [
-      OpenAIChatMessage.user("What's the weather like in Boston?"),
-      OpenAIChatMessage.functionCall(
-        response.fnName,
-        JSON.stringify(functionResponse)
-      ),
-    ]);
+    case "getContactInformation": {
+      const { name } = json.value;
+      console.log("getContactInformation", name);
+      break;
+    }
 
-    console.log(secondResponse);
+    case null: {
+      console.log("No function call. Generated text: ", json.value);
+    }
   }
 })();
