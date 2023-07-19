@@ -28,7 +28,7 @@ dotenv.config();
     }),
   });
 
-  const json = await callTool(
+  const weatherForecast = await callTool(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     currentWeatherTool,
     OpenAIChatFunctionPrompt.forTool({
@@ -36,5 +36,5 @@ dotenv.config();
     })
   );
 
-  console.log(JSON.stringify(json, null, 2));
+  console.log(JSON.stringify(weatherForecast, null, 2));
 })();
