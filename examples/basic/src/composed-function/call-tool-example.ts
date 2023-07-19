@@ -23,7 +23,7 @@ dotenv.config();
     run: async ({ a, b }) => a * b,
   });
 
-  const weatherForecast = await callTool(
+  const result = await callTool(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     multiplyTool,
     OpenAIChatFunctionPrompt.forTool([
@@ -31,5 +31,5 @@ dotenv.config();
     ])
   );
 
-  console.log(JSON.stringify(weatherForecast, null, 2));
+  console.log(JSON.stringify(result, null, 2));
 })();
