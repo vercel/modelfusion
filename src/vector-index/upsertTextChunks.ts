@@ -1,7 +1,7 @@
 import { nanoid as createId } from "nanoid";
-import { FunctionOptions } from "../model/FunctionOptions.js";
-import { TextEmbeddingModel } from "../model/embed-text/TextEmbeddingModel.js";
-import { embedTexts } from "../model/embed-text/embedText.js";
+import { FunctionOptions } from "../model-function/FunctionOptions.js";
+import { TextEmbeddingModel } from "../model-function/embed-text/TextEmbeddingModel.js";
+import { embedTexts } from "../model-function/embed-text/embedText.js";
 import { TextChunk } from "../text-chunk/TextChunk.js";
 import { VectorIndex } from "./VectorIndex.js";
 

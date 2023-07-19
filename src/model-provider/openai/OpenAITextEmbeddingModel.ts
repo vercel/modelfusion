@@ -1,11 +1,11 @@
 import z from "zod";
-import { AbstractModel } from "../../model/AbstractModel.js";
-import { FunctionOptions } from "../../model/FunctionOptions.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { FunctionOptions } from "../../model-function/FunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
-} from "../../model/embed-text/TextEmbeddingModel.js";
-import { countTokens } from "../../model/tokenize-text/countTokens.js";
+} from "../../model-function/embed-text/TextEmbeddingModel.js";
+import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";

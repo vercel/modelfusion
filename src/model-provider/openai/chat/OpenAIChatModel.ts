@@ -1,17 +1,17 @@
 import z from "zod";
-import { AbstractModel } from "../../../model/AbstractModel.js";
-import { FunctionOptions } from "../../../model/FunctionOptions.js";
-import { JsonGenerationModel } from "../../../model/generate-json/JsonGenerationModel.js";
+import { AbstractModel } from "../../../model-function/AbstractModel.js";
+import { FunctionOptions } from "../../../model-function/FunctionOptions.js";
+import { JsonGenerationModel } from "../../../model-function/generate-json/JsonGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
-} from "../../../model/generate-text/TextGenerationModel.js";
-import { DeltaEvent } from "../../../model/stream-text/DeltaEvent.js";
+} from "../../../model-function/generate-text/TextGenerationModel.js";
+import { DeltaEvent } from "../../../model-function/stream-text/DeltaEvent.js";
 import {
   TextStreamingModel,
   TextStreamingModelSettings,
-} from "../../../model/stream-text/TextStreamingModel.js";
-import { FullTokenizer } from "../../../model/tokenize-text/Tokenizer.js";
+} from "../../../model-function/stream-text/TextStreamingModel.js";
+import { FullTokenizer } from "../../../model-function/tokenize-text/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,

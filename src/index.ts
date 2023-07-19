@@ -1,6 +1,6 @@
 export * from "./cost/index.js";
 export * from "./model-provider/index.js";
-export * from "./model/index.js";
+export * from "./model-function/index.js";
 export * from "./run/index.js";
 export * from "./text-chunk/index.js";
 export * from "./text/index.js";

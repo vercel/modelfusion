@@ -1,5 +1,5 @@
 import { Tiktoken, TiktokenEncoding, getEncoding } from "js-tiktoken";
-import { FullTokenizer } from "../../model/tokenize-text/Tokenizer.js";
+import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { never } from "../../util/never.js";
 import {
   OpenAIChatModelType,

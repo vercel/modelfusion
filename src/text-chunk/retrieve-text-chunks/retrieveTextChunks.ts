@@ -1,4 +1,4 @@
-import { FunctionOptions } from "model/FunctionOptions.js";
+import { FunctionOptions } from "../../model-function/FunctionOptions.js";
 import { TextChunk } from "../TextChunk.js";
 import {
   TextChunkRetriever,

@@ -1,5 +1,5 @@
 import { ErrorHandler } from "../util/ErrorHandler.js";
-import { ModelCallObserver } from "../model/ModelCallObserver.js";
+import { ModelCallObserver } from "../model-function/ModelCallObserver.js";
 
 export interface Run {
   /**

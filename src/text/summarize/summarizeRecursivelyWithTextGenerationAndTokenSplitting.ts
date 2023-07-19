@@ -1,6 +1,6 @@
-import { TextGenerationModelWithTokenization } from "../../model/generate-text/TextGenerationModel.js";
-import { generateText } from "../../model/generate-text/generateText.js";
-import { FullTokenizer } from "../../model/tokenize-text/Tokenizer.js";
+import { TextGenerationModelWithTokenization } from "../../model-function/generate-text/TextGenerationModel.js";
+import { generateText } from "../../model-function/generate-text/generateText.js";
+import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { Run } from "../../run/Run.js";
 import { splitRecursivelyAtTokenAsSplitFunction } from "../../text/split/splitRecursively.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";

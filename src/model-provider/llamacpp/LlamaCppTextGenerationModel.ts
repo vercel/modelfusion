@@ -1,19 +1,19 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
-import { AbstractModel } from "../../model/AbstractModel.js";
-import { FunctionOptions } from "../../model/FunctionOptions.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { FunctionOptions } from "../../model-function/FunctionOptions.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "../../model/generate-text/TextGenerationModel.js";
-import { AsyncQueue } from "../../model/stream-text/AsyncQueue.js";
-import { DeltaEvent } from "../../model/stream-text/DeltaEvent.js";
+} from "../../model-function/generate-text/TextGenerationModel.js";
+import { AsyncQueue } from "../../model-function/stream-text/AsyncQueue.js";
+import { DeltaEvent } from "../../model-function/stream-text/DeltaEvent.js";
 import {
   TextStreamingModel,
   TextStreamingModelSettings,
-} from "../../model/stream-text/TextStreamingModel.js";
-import { parseEventSourceReadableStream } from "../../model/stream-text/parseEventSourceReadableStream.js";
-import { BasicTokenizer } from "../../model/tokenize-text/Tokenizer.js";
+} from "../../model-function/stream-text/TextStreamingModel.js";
+import { parseEventSourceReadableStream } from "../../model-function/stream-text/parseEventSourceReadableStream.js";
+import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";

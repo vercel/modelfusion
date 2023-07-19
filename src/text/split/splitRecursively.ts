@@ -1,4 +1,4 @@
-import { FullTokenizer } from "../../model/tokenize-text/Tokenizer.js";
+import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { SplitFunction } from "./SplitFunction.js";
 
 // when segments is a string, it splits by character, otherwise according to the provided segments

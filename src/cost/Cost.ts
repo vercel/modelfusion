@@ -1,4 +1,4 @@
-import { SuccessfulModelCall } from "../model/SuccessfulModelCall.js";
+import { SuccessfulModelCall } from "../model-function/SuccessfulModelCall.js";
 
 export class Cost {
   readonly costInMillicents: number;

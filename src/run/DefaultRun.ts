@@ -2,12 +2,12 @@ import { nanoid as createId } from "nanoid";
 import {
   SuccessfulModelCall,
   extractSuccessfulModelCalls,
-} from "../model/SuccessfulModelCall.js";
+} from "../model-function/SuccessfulModelCall.js";
 import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
-} from "../model/ModelCallEvent.js";
-import { ModelCallObserver } from "../model/ModelCallObserver.js";
+} from "../model-function/ModelCallEvent.js";
+import { ModelCallObserver } from "../model-function/ModelCallObserver.js";
 import { Run } from "./Run.js";
 import { CostCalculator } from "../cost/CostCalculator.js";
 import { calculateCost } from "../cost/calculateCost.js";
