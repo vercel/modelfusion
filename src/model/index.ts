@@ -4,6 +4,7 @@ export * from "./ModelCallEvent.js";
 export * from "./ModelCallObserver.js";
 export * from "./ModelInformation.js";
 export * from "./SuccessfulModelCall.js";
+export * from "./call-tool/callTool.js";
 export * from "./embed-text/TextEmbeddingEvent.js";
 export * from "./embed-text/TextEmbeddingModel.js";
 export * from "./embed-text/embedText.js";
