@@ -1,11 +1,11 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { z } from "zod";
+import { FunctionOptions } from "../../model-function/FunctionOptions.js";
 import {
   JsonGenerationModel,
   JsonGenerationModelSettings,
   JsonGenerationPrompt,
-} from "../generate-json/JsonGenerationModel.js";
-import { generateJson } from "../generate-json/generateJson.js";
-import { z } from "zod";
+} from "../../model-function/generate-json/JsonGenerationModel.js";
+import { generateJson } from "../../model-function/generate-json/generateJson.js";
 
 export async function callTool<
   PROMPT,
@@ -15,7 +15,6 @@ export async function callTool<
   OUTPUT
 >(
   model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  // TODO restructure
   tool: Tool<INPUT, OUTPUT>,
   prompt: (
     tool: Tool<INPUT, OUTPUT>

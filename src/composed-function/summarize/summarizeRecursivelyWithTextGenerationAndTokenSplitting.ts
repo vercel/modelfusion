@@ -2,7 +2,7 @@ import { TextGenerationModelWithTokenization } from "../../model-function/genera
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { Run } from "../../run/Run.js";
-import { splitRecursivelyAtTokenAsSplitFunction } from "../../text/split/splitRecursively.js";
+import { splitRecursivelyAtTokenAsSplitFunction } from "../../text-chunk/split/splitRecursively.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";
 
 /**

@@ -1,5 +1,5 @@
 import { Run } from "../../run/Run.js";
-import { SplitFunction } from "../split/SplitFunction.js";
+import { SplitFunction } from "../../text-chunk/split/SplitFunction.js";
 import { SummarizationFunction } from "./SummarizationFunction.js";
 
 export async function summarizeRecursively(
