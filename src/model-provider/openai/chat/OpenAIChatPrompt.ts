@@ -1,9 +1,24 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
+import { Tool } from "../../../composed-function/call-tool/callTool.js";
 import { JsonGenerationPrompt } from "../../../model-function/generate-json/JsonGenerationModel.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";
+
+export const OpenAIChatFunctionPrompt = {
+  forTool<INPUT, OUTPUT>({ messages }: { messages: OpenAIChatMessage[] }) {
+    return (tool: Tool<INPUT, OUTPUT>) =>
+      new OpenAIChatSingleFunctionPrompt({
+        messages,
+        fn: {
+          name: tool.name,
+          description: tool.description,
+          parameters: tool.inputSchema,
+        },
+      });
+  },
+};
 
 export class OpenAIChatSingleFunctionPrompt<T>
   implements JsonGenerationPrompt<OpenAIChatResponse, T>

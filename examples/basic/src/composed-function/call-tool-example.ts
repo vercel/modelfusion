@@ -1,7 +1,7 @@
 import {
+  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  OpenAIChatSingleFunctionPrompt,
   callTool,
 } from "ai-utils.js";
 import dotenv from "dotenv";
@@ -28,17 +28,9 @@ dotenv.config();
         forecast: ["sunny", "windy"],
       }),
     },
-    (tool) =>
-      new OpenAIChatSingleFunctionPrompt({
-        messages: [
-          OpenAIChatMessage.user("What's the weather like in Boston?"),
-        ],
-        fn: {
-          name: tool.name,
-          description: tool.description,
-          parameters: tool.inputSchema,
-        },
-      })
+    OpenAIChatFunctionPrompt.forTool({
+      messages: [OpenAIChatMessage.user("What's the weather like in Boston?")],
+    })
   );
 
   console.log(JSON.stringify(json, null, 2));
