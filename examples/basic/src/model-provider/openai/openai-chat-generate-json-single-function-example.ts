@@ -1,7 +1,7 @@
 import {
+  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  OpenAIChatSingleFunctionPrompt,
   generateJson,
 } from "ai-utils.js";
 import dotenv from "dotenv";
@@ -12,7 +12,7 @@ dotenv.config();
 (async () => {
   const json = await generateJson(
     new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
-    new OpenAIChatSingleFunctionPrompt({
+    OpenAIChatFunctionPrompt.forSingleFunction({
       messages: [
         OpenAIChatMessage.system(
           "You are a story writer. Write a story about:"

@@ -26,7 +26,7 @@ dotenv.config();
   const result = await callTool(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     multiplyTool,
-    OpenAIChatFunctionPrompt.forTool([
+    OpenAIChatFunctionPrompt.forSingleTool([
       OpenAIChatMessage.user("What's fourteen to the power of two?"),
     ])
   );

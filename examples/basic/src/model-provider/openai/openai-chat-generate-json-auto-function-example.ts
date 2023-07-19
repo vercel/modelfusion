@@ -1,5 +1,5 @@
 import {
-  OpenAIChatAutoFunctionPrompt,
+  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
   generateJson,
@@ -16,7 +16,7 @@ dotenv.config();
 
   const json = await generateJson(
     new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
-    new OpenAIChatAutoFunctionPrompt({
+    OpenAIChatFunctionPrompt.forFunctionChoice({
       messages: [OpenAIChatMessage.user(query)],
       fns: {
         getCurrentWeather: {

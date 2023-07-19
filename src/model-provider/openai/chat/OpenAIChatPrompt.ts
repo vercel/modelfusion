@@ -7,7 +7,7 @@ import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";
 
 export const OpenAIChatFunctionPrompt = {
-  forTool<INPUT, OUTPUT>(messages: OpenAIChatMessage[]) {
+  forSingleTool<INPUT, OUTPUT>(messages: OpenAIChatMessage[]) {
     return (tool: Tool<INPUT, OUTPUT>) =>
       new OpenAIChatSingleFunctionPrompt({
         messages,
@@ -17,6 +17,23 @@ export const OpenAIChatFunctionPrompt = {
           parameters: tool.inputSchema,
         },
       });
+  },
+
+  forSingleFunction<T>(options: {
+    messages: OpenAIChatMessage[];
+    fn: {
+      name: string;
+      description?: string;
+      parameters: z.Schema<T>;
+    };
+  }) {
+    return new OpenAIChatSingleFunctionPrompt<T>(options);
+  },
+
+  forFunctionChoice<
+    T extends Record<string, OpenAIFunctionDescription<any>>
+  >(options: { messages: OpenAIChatMessage[]; fns: T }) {
+    return new OpenAIChatAutoFunctionPrompt<T>(options);
   },
 };
 
