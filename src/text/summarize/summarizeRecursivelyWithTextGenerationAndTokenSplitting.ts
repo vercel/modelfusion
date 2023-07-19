@@ -32,8 +32,6 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     run?: Run;
   }
 ) {
-  const functionId = options?.functionId;
-
   const emptyPromptTokens = await model.countPromptTokens(
     await prompt({ text: "" })
   );
@@ -49,9 +47,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
         generateText(
           model.withMaxTokens(reservedCompletionTokens),
           await prompt(input),
-          {
-            functionId,
-          }
+          options
         ),
       join,
       text,
