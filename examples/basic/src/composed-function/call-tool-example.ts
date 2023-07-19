@@ -14,12 +14,17 @@ dotenv.config();
   const currentWeatherTool = new Tool({
     name: "getCurrentWeather",
     description: "Get the current weather in a given location",
+
     inputSchema: z.object({
       location: z
         .string()
         .describe("The city and state, e.g. San Francisco, CA"),
-      unit: z.enum(["celsius", "fahrenheit"]).optional(),
+      unit: z
+        .enum(["celsius", "fahrenheit"])
+        .optional()
+        .describe("The temperature unit"),
     }),
+
     run: async ({ location, unit = "fahrenheit" }) => ({
       location,
       temperature: "72",
@@ -31,9 +36,9 @@ dotenv.config();
   const weatherForecast = await callTool(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     currentWeatherTool,
-    OpenAIChatFunctionPrompt.forTool({
-      messages: [OpenAIChatMessage.user("What's the weather like in Boston?")],
-    })
+    OpenAIChatFunctionPrompt.forTool([
+      OpenAIChatMessage.user("What's the weather like in Boston?"),
+    ])
   );
 
   console.log(JSON.stringify(weatherForecast, null, 2));

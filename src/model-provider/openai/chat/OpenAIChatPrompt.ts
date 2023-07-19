@@ -7,7 +7,7 @@ import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";
 
 export const OpenAIChatFunctionPrompt = {
-  forTool<INPUT, OUTPUT>({ messages }: { messages: OpenAIChatMessage[] }) {
+  forTool<INPUT, OUTPUT>(messages: OpenAIChatMessage[]) {
     return (tool: Tool<INPUT, OUTPUT>) =>
       new OpenAIChatSingleFunctionPrompt({
         messages,
