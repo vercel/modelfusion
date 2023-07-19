@@ -11,33 +11,23 @@ import { z } from "zod";
 dotenv.config();
 
 (async () => {
-  const currentWeatherTool = new Tool({
-    name: "getCurrentWeather",
-    description: "Get the current weather in a given location",
+  const multiplyTool = new Tool({
+    name: "multiply",
+    description: "Multiply two numbers",
 
     inputSchema: z.object({
-      location: z
-        .string()
-        .describe("The city and state, e.g. San Francisco, CA"),
-      unit: z
-        .enum(["celsius", "fahrenheit"])
-        .optional()
-        .describe("The temperature unit"),
+      a: z.number().describe("The first number."),
+      b: z.number().describe("The second number."),
     }),
 
-    run: async ({ location, unit = "fahrenheit" }) => ({
-      location,
-      temperature: "72",
-      unit,
-      forecast: ["sunny", "windy"],
-    }),
+    run: async ({ a, b }) => a * b,
   });
 
   const weatherForecast = await callTool(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-    currentWeatherTool,
+    multiplyTool,
     OpenAIChatFunctionPrompt.forTool([
-      OpenAIChatMessage.user("What's the weather like in Boston?"),
+      OpenAIChatMessage.user("What's fourteen to the power of two?"),
     ])
   );
 
