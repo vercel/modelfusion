@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { FunctionOptions } from "../../model-function/FunctionOptions.js";
 import {
   JsonGenerationModel,
@@ -6,6 +5,7 @@ import {
   JsonGenerationPrompt,
 } from "../../model-function/generate-json/JsonGenerationModel.js";
 import { generateJson } from "../../model-function/generate-json/generateJson.js";
+import { Tool } from "./Tool.js";
 
 export async function callTool<
   PROMPT,
@@ -22,11 +22,4 @@ export async function callTool<
   options?: FunctionOptions<SETTINGS>
 ): Promise<OUTPUT> {
   return tool.run(await generateJson(model, prompt(tool), options));
-}
-
-export interface Tool<INPUT, OUTPUT> {
-  name: string;
-  description: string;
-  inputSchema: z.ZodSchema<INPUT>;
-  run(input: INPUT): Promise<OUTPUT>;
 }
