@@ -30,7 +30,7 @@ type ToolTransform<T> = {
 
 type KeyValuePair<T> = { [K in keyof T]: { fnName: K; value: T[K] } }[keyof T];
 
-export async function callTools<
+export async function callToolOrGenerateText<
   PROMPT,
   RESPONSE,
   SETTINGS extends JsonGenerationModelSettings,

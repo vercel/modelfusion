@@ -3,8 +3,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   Tool,
-  callTool,
-  callTools,
+  callToolOrGenerateText,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 import { z } from "zod";
@@ -24,7 +23,7 @@ dotenv.config();
     run: async ({ a, b }) => a * b,
   });
 
-  const result = await callTools(
+  const result = await callToolOrGenerateText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     {
       multiply: multiplyTool,
