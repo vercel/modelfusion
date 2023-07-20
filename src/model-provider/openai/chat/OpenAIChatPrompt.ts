@@ -19,6 +19,26 @@ export const OpenAIChatFunctionPrompt = {
       });
   },
 
+  forToolChoice<TOOLS extends Record<string, Tool<any, any>>>(
+    messages: OpenAIChatMessage[]
+  ) {
+    return (tools: TOOLS) => {
+      const fns: Record<string, OpenAIFunctionDescription<any>> = {};
+
+      for (const [name, tool] of Object.entries(tools)) {
+        fns[name] = {
+          description: tool.description,
+          parameters: tool.inputSchema,
+        };
+      }
+
+      return new OpenAIChatAutoFunctionPrompt({
+        messages,
+        fns,
+      });
+    };
+  },
+
   forSingleFunction<T>(options: {
     messages: OpenAIChatMessage[];
     fn: {
