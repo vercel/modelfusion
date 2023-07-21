@@ -21,7 +21,7 @@ export async function callTool<
   tool: Tool<INPUT, OUTPUT>,
   prompt: (
     tool: Tool<INPUT, OUTPUT>
-  ) => PROMPT & JsonGenerationPrompt<RESPONSE, INPUT>,
+  ) => PROMPT & JsonGenerationPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
 ): Promise<OUTPUT> {
   const input = await generateJsonForSchema(
