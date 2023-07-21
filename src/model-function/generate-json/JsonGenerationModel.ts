@@ -12,8 +12,8 @@ export interface JsonGenerationModel<
   RESPONSE,
   SETTINGS extends JsonGenerationModelSettings
 > extends Model<SETTINGS> {
-  generateJsonResponse<T>(
-    prompt: PROMPT & JsonGenerationPrompt<RESPONSE, T>,
+  generateJsonForSchemaResponse<STRUCTURE>(
+    prompt: PROMPT & JsonGenerationPrompt<RESPONSE, STRUCTURE>,
     options?: FunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE>;
 }

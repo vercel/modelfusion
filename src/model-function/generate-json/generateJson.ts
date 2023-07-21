@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { executeCall } from "../executeCall.js";
 import {
@@ -20,8 +21,70 @@ export function generateJson<
     model,
     options,
     callModel: (model, options) => generateJson(model, prompt, options),
-    generateResponse: (options) => model.generateJsonResponse(prompt, options),
+    generateResponse: (options) =>
+      model.generateJsonForSchemaResponse(prompt, options),
     extractOutputValue: (response): T => prompt.extractJson(response),
+    getStartEvent: (metadata, settings) => ({
+      type: "json-generation-started",
+      metadata,
+      settings,
+      prompt,
+    }),
+    getAbortEvent: (metadata, settings) => ({
+      type: "json-generation-finished",
+      status: "abort",
+      metadata,
+      settings,
+      prompt,
+    }),
+    getFailureEvent: (metadata, settings, error) => ({
+      type: "json-generation-finished",
+      status: "failure",
+      metadata,
+      settings,
+      prompt,
+      error,
+    }),
+    getSuccessEvent: (metadata, settings, response, output) => ({
+      type: "json-generation-finished",
+      status: "success",
+      metadata,
+      settings,
+      prompt,
+      response,
+      generatedJson: output,
+    }),
+  });
+}
+
+export type Schema<STRUCTURE> = {
+  name: string;
+  description?: string;
+  structure: z.Schema<STRUCTURE>;
+};
+
+export function generateJsonForSchema<
+  PROMPT,
+  RESPONSE,
+  SETTINGS extends JsonGenerationModelSettings,
+  STRUCTURE
+>(
+  model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  schema: Schema<STRUCTURE>,
+  prompt: (
+    schema: Schema<STRUCTURE>
+  ) => PROMPT & JsonGenerationPrompt<RESPONSE, STRUCTURE>,
+  options?: FunctionOptions<SETTINGS>
+): Promise<STRUCTURE> {
+  return executeCall({
+    model,
+    options,
+    callModel: (model, options) =>
+      generateJsonForSchema(model, schema, prompt, options),
+    generateResponse: (options) =>
+      model.generateJsonForSchemaResponse(prompt(schema), options),
+    extractOutputValue: (response): STRUCTURE =>
+      prompt(schema).extractJson(response),
     getStartEvent: (metadata, settings) => ({
       type: "json-generation-started",
       metadata,

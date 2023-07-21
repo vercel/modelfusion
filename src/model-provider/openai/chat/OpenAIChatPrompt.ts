@@ -55,6 +55,22 @@ export const OpenAIChatFunctionPrompt = {
   >(options: { messages: OpenAIChatMessage[]; fns: T }) {
     return new OpenAIChatAutoFunctionPrompt<T>(options);
   },
+
+  forSingleSchema<STRUCTURE>(messages: OpenAIChatMessage[]) {
+    return (schema: {
+      name: string;
+      description?: string;
+      structure: z.Schema<STRUCTURE>;
+    }) =>
+      new OpenAIChatSingleFunctionPrompt({
+        messages,
+        fn: {
+          name: schema.name,
+          description: schema.description,
+          parameters: schema.structure,
+        },
+      });
+  },
 };
 
 export class OpenAIChatSingleFunctionPrompt<T>
