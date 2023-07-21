@@ -7,56 +7,6 @@ import {
   JsonGenerationPrompt,
 } from "./JsonGenerationModel.js";
 
-export function generateJson<
-  T,
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends JsonGenerationModelSettings
->(
-  model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  prompt: PROMPT & JsonGenerationPrompt<RESPONSE, T>,
-  options?: FunctionOptions<SETTINGS>
-): Promise<T> {
-  return executeCall({
-    model,
-    options,
-    callModel: (model, options) => generateJson(model, prompt, options),
-    generateResponse: (options) =>
-      model.generateJsonForSchemaResponse(prompt, options),
-    extractOutputValue: (response): T => prompt.extractJson(response),
-    getStartEvent: (metadata, settings) => ({
-      type: "json-generation-started",
-      metadata,
-      settings,
-      prompt,
-    }),
-    getAbortEvent: (metadata, settings) => ({
-      type: "json-generation-finished",
-      status: "abort",
-      metadata,
-      settings,
-      prompt,
-    }),
-    getFailureEvent: (metadata, settings, error) => ({
-      type: "json-generation-finished",
-      status: "failure",
-      metadata,
-      settings,
-      prompt,
-      error,
-    }),
-    getSuccessEvent: (metadata, settings, response, output) => ({
-      type: "json-generation-finished",
-      status: "success",
-      metadata,
-      settings,
-      prompt,
-      response,
-      generatedJson: output,
-    }),
-  });
-}
-
 export type SchemaDefinition<NAME extends string, STRUCTURE> = {
   name: NAME;
   description?: string;
@@ -84,11 +34,19 @@ export function generateJsonForSchema<
     callModel: (model, options) =>
       generateJsonForSchema(model, schemaDefinition, prompt, options),
     generateResponse: (options) =>
-      model.generateJsonForSchemaResponse(expandedPrompt, options),
+      model.generateJsonResponse(expandedPrompt, options),
     extractOutputValue: (response): STRUCTURE => {
-      // TODO introduce special error
-      const unsafeJson = expandedPrompt.extractJson(response);
-      return schemaDefinition.schema.parse(unsafeJson);
+      const { fnName, json } = expandedPrompt.extractJson(response);
+
+      if (fnName != schemaDefinition.name) {
+        // TODO special error
+        throw new Error(
+          `Expected function name "${schemaDefinition.name}", got "${fnName}"`
+        );
+      }
+
+      // TODO introduce special error for parse failures
+      return schemaDefinition.schema.parse(json);
     },
     getStartEvent: (metadata, settings) => ({
       type: "json-generation-started",
@@ -168,14 +126,28 @@ export function generateJsonOrTextForSchemas<
     callModel: (model, options) =>
       generateJsonOrTextForSchemas(model, schemaDefinitions, prompt, options),
     generateResponse: (options) =>
-      model.generateJsonForSchemaResponse(expandedPrompt, options),
+      model.generateJsonResponse(expandedPrompt, options),
     extractOutputValue: (response) => {
-      // TODO introduce special error
-      // const unsafeJson = expandedPrompt.extractJson(response);
-      // return schemaDefinition.schema.parse(unsafeJson);
+      const { fnName, json } = expandedPrompt.extractJson(response);
+
+      // text generation:
+      if (fnName == null) {
+        // TODO validate that the value is a string
+
+        return { fnName, value: json as string };
+      }
+
+      const definition = schemaDefinitions.find((d) => d.name === fnName);
+
+      if (definition == undefined) {
+        // TODO special error
+        throw new Error(`Unknown function name: ${fnName}`);
+      }
+
       return {
-        fnName: null,
-        value: "",
+        fnName,
+        // TODO introduce special error for parse failures
+        value: definition.schema.parse(json),
       };
     },
     getStartEvent: (metadata, settings) => ({

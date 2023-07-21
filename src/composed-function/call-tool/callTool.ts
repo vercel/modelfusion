@@ -5,7 +5,7 @@ import {
   JsonGenerationPrompt,
 } from "../../model-function/generate-json/JsonGenerationModel.js";
 import {
-  generateJson,
+  generateJsonOrTextForSchemas,
   generateJsonForSchema,
 } from "../../model-function/generate-json/generateJson.js";
 import { Tool } from "./Tool.js";
@@ -42,28 +42,29 @@ type ToolTransform<T> = {
   [K in keyof T]: T[K] extends Tool<infer U, any> ? U : never;
 };
 
-type KeyValuePair<T> = { [K in keyof T]: { fnName: K; value: T[K] } }[keyof T];
-
 export async function callToolOrGenerateText<
   PROMPT,
   RESPONSE,
   SETTINGS extends JsonGenerationModelSettings,
-  TOOLS extends Record<string, Tool<any, any>>
+  TOOLS extends Array<Tool<any, any>>
 >(
   model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   tools: TOOLS,
-  prompt: (
-    tools: TOOLS
-  ) => PROMPT &
-    JsonGenerationPrompt<
-      RESPONSE,
-      { fnName: null; value: string } | KeyValuePair<ToolTransform<any>>
-    >,
+  prompt: (tools: TOOLS) => PROMPT & JsonGenerationPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
 ) {
   const expandedPrompt = prompt(tools);
 
-  const modelResponse = await generateJson(model, expandedPrompt, options);
+  const modelResponse = await generateJsonOrTextForSchemas(
+    model,
+    tools.map((tool) => ({
+      name: tool.name,
+      description: tool.description,
+      schema: tool.inputSchema,
+    })),
+    () => expandedPrompt,
+    options
+  );
 
   if (modelResponse.fnName == null) {
     return {
@@ -72,11 +73,17 @@ export async function callToolOrGenerateText<
     };
   }
 
-  const key = modelResponse.fnName as keyof TOOLS;
-  const result = await tools[key].run(modelResponse.value);
+  const fnName = modelResponse.fnName as keyof TOOLS;
+  const tool = tools.find((tool) => tool.name === fnName);
+
+  if (tool == null) {
+    throw new Error(`Tool not found: ${fnName.toString()}`);
+  }
+
+  const result = await tool.run(modelResponse.value);
 
   return {
-    tool: key,
+    tool: fnName,
     result: result as ToolTransform<TOOLS>[keyof TOOLS],
   };
 }

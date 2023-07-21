@@ -20,17 +20,18 @@ export const OpenAIChatFunctionPrompt = {
       });
   },
 
-  forToolChoice<TOOLS extends Record<string, Tool<any, any>>>(
+  forToolChoice<TOOLS extends Array<Tool<any, any>>>(
     messages: OpenAIChatMessage[]
   ) {
     return (tools: TOOLS) => {
-      const fns: Record<string, OpenAIFunctionDescription<any>> = {};
+      const fns: Array<OpenAIFunctionDescription<any>> = [];
 
-      for (const [name, tool] of Object.entries(tools)) {
-        fns[name] = {
+      for (const tool of tools) {
+        fns.push({
+          name: tool.name,
           description: tool.description,
           parameters: tool.inputSchema,
-        };
+        });
       }
 
       return new OpenAIChatAutoFunctionPrompt({
@@ -40,25 +41,8 @@ export const OpenAIChatFunctionPrompt = {
     };
   },
 
-  forSingleFunction<T>(options: {
-    messages: OpenAIChatMessage[];
-    fn: {
-      name: string;
-      description?: string;
-      parameters: z.Schema<T>;
-    };
-  }) {
-    return new OpenAIChatSingleFunctionPrompt<T>(options);
-  },
-
-  forFunctionChoice<
-    T extends Record<string, OpenAIFunctionDescription<any>>
-  >(options: { messages: OpenAIChatMessage[]; fns: T }) {
-    return new OpenAIChatAutoFunctionPrompt<T>(options);
-  },
-
-  forSingleSchema<STRUCTURE>(messages: OpenAIChatMessage[]) {
-    return (schemaDefinition: SchemaDefinition<STRUCTURE>) =>
+  forSchema<STRUCTURE>(messages: OpenAIChatMessage[]) {
+    return (schemaDefinition: SchemaDefinition<any, STRUCTURE>) =>
       new OpenAIChatSingleFunctionPrompt({
         messages,
         fn: {
@@ -68,10 +52,24 @@ export const OpenAIChatFunctionPrompt = {
         },
       });
   },
+
+  forTextOrSchemas<SCHEMAS extends Array<SchemaDefinition<any, any>>>(
+    messages: OpenAIChatMessage[]
+  ) {
+    return (schemaDefinitions: SCHEMAS) =>
+      new OpenAIChatAutoFunctionPrompt({
+        messages,
+        fns: schemaDefinitions.map((schemaDefinition) => ({
+          name: schemaDefinition.name,
+          description: schemaDefinition.description,
+          parameters: schemaDefinition.schema,
+        })),
+      });
+  },
 };
 
 export class OpenAIChatSingleFunctionPrompt<T>
-  implements JsonGenerationPrompt<OpenAIChatResponse, T>
+  implements JsonGenerationPrompt<OpenAIChatResponse>
 {
   readonly messages: OpenAIChatMessage[];
   readonly fn: {
@@ -95,9 +93,14 @@ export class OpenAIChatSingleFunctionPrompt<T>
     this.fn = fn;
   }
 
-  extractJson(response: OpenAIChatResponse): T {
+  extractJson(response: OpenAIChatResponse) {
     const jsonText = response.choices[0]!.message.function_call!.arguments;
-    return this.fn.parameters.parse(SecureJSON.parse(jsonText));
+    const json = SecureJSON.parse(jsonText);
+
+    return {
+      fnName: this.fn.name,
+      json,
+    };
   }
 
   get functionCall() {
@@ -116,65 +119,43 @@ export class OpenAIChatSingleFunctionPrompt<T>
 }
 
 type OpenAIFunctionDescription<T> = {
+  name: string;
   description?: string;
   parameters: z.Schema<T>;
 };
 
-type OpenAIFunctionsTransform<T> = {
-  [K in keyof T]: T[K] extends OpenAIFunctionDescription<infer U> ? U : never;
-};
-
-type KeyValuePair<T> = { [K in keyof T]: { fnName: K; value: T[K] } }[keyof T];
-
 export class OpenAIChatAutoFunctionPrompt<
-  T extends Record<string, OpenAIFunctionDescription<any>>
-> implements
-    JsonGenerationPrompt<
-      OpenAIChatResponse,
-      | { fnName: null; value: string }
-      | KeyValuePair<OpenAIFunctionsTransform<T>>
-    >
+  FUNCTIONS extends Array<OpenAIFunctionDescription<any>>
+> implements JsonGenerationPrompt<OpenAIChatResponse>
 {
   readonly messages: OpenAIChatMessage[];
 
-  readonly fns: T;
+  readonly fns: FUNCTIONS;
 
-  constructor({ messages, fns }: { messages: OpenAIChatMessage[]; fns: T }) {
+  constructor({
+    messages,
+    fns,
+  }: {
+    messages: OpenAIChatMessage[];
+    fns: FUNCTIONS;
+  }) {
     this.messages = messages;
     this.fns = fns;
   }
 
-  extractJson(
-    response: OpenAIChatResponse
-  ):
-    | { fnName: null; value: string }
-    | KeyValuePair<OpenAIFunctionsTransform<T>> {
+  extractJson(response: OpenAIChatResponse) {
     const message = response.choices[0]!.message;
     const functionCall = message.function_call;
 
-    if (functionCall == null) {
-      return {
-        fnName: null,
-        value: message.content!,
-      };
-    }
-
-    const json = SecureJSON.parse(functionCall!.arguments);
-
-    const fn = this.fns[functionCall.name];
-
-    if (fn == null) {
-      throw new Error(
-        `Unexpected function call name: ${
-          functionCall.name
-        }. Expected one of ${Object.keys(this.fns).join(", ")}.`
-      );
-    }
-
-    return {
-      fnName: functionCall.name,
-      value: fn.parameters.parse(json),
-    };
+    return functionCall == null
+      ? {
+          fnName: null,
+          json: message.content,
+        }
+      : {
+          fnName: functionCall.name,
+          json: SecureJSON.parse(functionCall.arguments),
+        };
   }
 
   get functionCall() {
@@ -182,8 +163,8 @@ export class OpenAIChatAutoFunctionPrompt<
   }
 
   get functions() {
-    return Object.entries(this.fns).map(([name, fn]) => ({
-      name,
+    return this.fns.map((fn) => ({
+      name: fn.name,
       description: fn.description,
       parameters: zodToJsonSchema(fn.parameters),
     }));

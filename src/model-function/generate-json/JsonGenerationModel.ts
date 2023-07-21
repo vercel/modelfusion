@@ -4,7 +4,10 @@ import { Model, ModelSettings } from "../Model.js";
 export interface JsonGenerationModelSettings extends ModelSettings {}
 
 export interface JsonGenerationPrompt<RESPONSE> {
-  extractJson(response: RESPONSE): unknown;
+  extractJson(response: RESPONSE): {
+    fnName: string | null;
+    json: unknown;
+  };
 }
 
 export interface JsonGenerationModel<
@@ -12,7 +15,7 @@ export interface JsonGenerationModel<
   RESPONSE,
   SETTINGS extends JsonGenerationModelSettings
 > extends Model<SETTINGS> {
-  generateJsonForSchemaResponse(
+  generateJsonResponse(
     prompt: PROMPT & JsonGenerationPrompt<RESPONSE>,
     options?: FunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE>;

@@ -293,7 +293,7 @@ export class OpenAIChatModel
    *
    * @see https://platform.openai.com/docs/guides/gpt/function-calling
    */
-  generateJsonForSchemaResponse(
+  generateJsonResponse(
     prompt:
       | OpenAIChatSingleFunctionPrompt<any>
       | OpenAIChatAutoFunctionPrompt<any>,
