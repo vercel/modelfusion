@@ -5,6 +5,7 @@ import { Tool } from "composed-function/call-tool/Tool.js";
 import { JsonGenerationPrompt } from "../../../model-function/generate-json/JsonGenerationModel.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";
+import { SchemaDefinition } from "index.js";
 
 export const OpenAIChatFunctionPrompt = {
   forSingleTool<INPUT, OUTPUT>(messages: OpenAIChatMessage[]) {
@@ -57,17 +58,13 @@ export const OpenAIChatFunctionPrompt = {
   },
 
   forSingleSchema<STRUCTURE>(messages: OpenAIChatMessage[]) {
-    return (schema: {
-      name: string;
-      description?: string;
-      structure: z.Schema<STRUCTURE>;
-    }) =>
+    return (schemaDefinition: SchemaDefinition<STRUCTURE>) =>
       new OpenAIChatSingleFunctionPrompt({
         messages,
         fn: {
-          name: schema.name,
-          description: schema.description,
-          parameters: schema.structure,
+          name: schemaDefinition.name,
+          description: schemaDefinition.description,
+          parameters: schemaDefinition.schema,
         },
       });
   },

@@ -57,10 +57,10 @@ export function generateJson<
   });
 }
 
-export type Schema<STRUCTURE> = {
+export type SchemaDefinition<STRUCTURE> = {
   name: string;
   description?: string;
-  structure: z.Schema<STRUCTURE>;
+  schema: z.Schema<STRUCTURE>;
 };
 
 export function generateJsonForSchema<
@@ -70,9 +70,9 @@ export function generateJsonForSchema<
   STRUCTURE
 >(
   model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  schema: Schema<STRUCTURE>,
+  schemaDefinition: SchemaDefinition<STRUCTURE>,
   prompt: (
-    schema: Schema<STRUCTURE>
+    schema: SchemaDefinition<STRUCTURE>
   ) => PROMPT & JsonGenerationPrompt<RESPONSE, STRUCTURE>,
   options?: FunctionOptions<SETTINGS>
 ): Promise<STRUCTURE> {
@@ -80,11 +80,11 @@ export function generateJsonForSchema<
     model,
     options,
     callModel: (model, options) =>
-      generateJsonForSchema(model, schema, prompt, options),
+      generateJsonForSchema(model, schemaDefinition, prompt, options),
     generateResponse: (options) =>
-      model.generateJsonForSchemaResponse(prompt(schema), options),
+      model.generateJsonForSchemaResponse(prompt(schemaDefinition), options),
     extractOutputValue: (response): STRUCTURE =>
-      prompt(schema).extractJson(response),
+      prompt(schemaDefinition).extractJson(response),
     getStartEvent: (metadata, settings) => ({
       type: "json-generation-started",
       metadata,
