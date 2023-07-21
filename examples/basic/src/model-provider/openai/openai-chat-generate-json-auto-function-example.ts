@@ -2,7 +2,7 @@ import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  generateJson,
+  generateJsonOrTextForSchemas,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 import { z } from "zod";
@@ -14,45 +14,45 @@ dotenv.config();
   // const query = "Where does Kevin work?";
   // const query = "Tell me something random.";
 
-  const json = await generateJson(
+  const response = await generateJsonOrTextForSchemas(
     new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
-    OpenAIChatFunctionPrompt.forFunctionChoice({
-      messages: [OpenAIChatMessage.user(query)],
-      fns: {
-        getCurrentWeather: {
-          description: "Get the current weather in a given location",
-          parameters: z.object({
-            location: z
-              .string()
-              .describe("The city and state, e.g. San Francisco, CA"),
-            unit: z.enum(["celsius", "fahrenheit"]).optional(),
-          }),
-        },
-        getContactInformation: {
-          description: "Get the contact information for a given person",
-          parameters: z.object({
-            name: z.string().describe("The name of the person"),
-          }),
-        },
+    [
+      {
+        name: "getCurrentWeather" as const,
+        description: "Get the current weather in a given location",
+        schema: z.object({
+          location: z
+            .string()
+            .describe("The city and state, e.g. San Francisco, CA"),
+          unit: z.enum(["celsius", "fahrenheit"]).optional(),
+        }),
       },
-    })
+      {
+        name: "getContactInformation" as const,
+        description: "Get the contact information for a given person",
+        schema: z.object({
+          name: z.string().describe("The name of the person"),
+        }),
+      },
+    ],
+    OpenAIChatFunctionPrompt.forTextOrSchemas([OpenAIChatMessage.user(query)])
   );
 
-  switch (json.fnName) {
+  switch (response.fnName) {
     case "getCurrentWeather": {
-      const { location, unit } = json.value;
+      const { location, unit } = response.value;
       console.log("getCurrentWeather", location, unit);
       break;
     }
 
     case "getContactInformation": {
-      const { name } = json.value;
+      const { name } = response.value;
       console.log("getContactInformation", name);
       break;
     }
 
     case null: {
-      console.log("No function call. Generated text: ", json.value);
+      console.log("No function call. Generated text: ", response.value);
     }
   }
 })();
