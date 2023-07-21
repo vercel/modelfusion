@@ -20,7 +20,7 @@ export async function callTool<
   tool: TOOL,
   prompt: (tool: TOOL) => PROMPT & JsonGenerationPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
-): Promise<Awaited<ReturnType<TOOL["run"]>>> {
+): Promise<Awaited<ReturnType<TOOL["execute"]>>> {
   const input = await generateJsonForSchema(
     model,
     {
@@ -32,7 +32,7 @@ export async function callTool<
     options
   );
 
-  return tool.run(input);
+  return tool.execute(input);
 }
 
 // [ { name: "n", ... } | { ... } ]
@@ -94,7 +94,7 @@ export async function callToolOrGenerateText<
     throw new Error(`Tool not found: ${fnName.toString()}`);
   }
 
-  const result = await tool.run(modelResponse.value);
+  const result = await tool.execute(modelResponse.value);
 
   return {
     tool: fnName,

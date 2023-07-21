@@ -20,7 +20,7 @@ dotenv.config();
       b: z.number().describe("The second number."),
     }),
 
-    run: async ({ a, b }) => a * b,
+    execute: async ({ a, b }) => a * b,
   });
 
   const result = await callTool(
