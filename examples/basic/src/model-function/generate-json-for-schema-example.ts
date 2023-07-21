@@ -19,7 +19,7 @@ dotenv.config();
     {
       name: "sentiment",
       description: "Write the sentiment analysis",
-      structure: z.object({
+      schema: z.object({
         sentiment: z
           .enum(["positive", "neutral", "negative"])
           .describe("Sentiment."),

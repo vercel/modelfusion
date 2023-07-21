@@ -4,7 +4,10 @@ import {
   JsonGenerationModelSettings,
   JsonGenerationPrompt,
 } from "../../model-function/generate-json/JsonGenerationModel.js";
-import { generateJson } from "../../model-function/generate-json/generateJson.js";
+import {
+  generateJson,
+  generateJsonForSchema,
+} from "../../model-function/generate-json/generateJson.js";
 import { Tool } from "./Tool.js";
 
 export async function callTool<
@@ -21,7 +24,18 @@ export async function callTool<
   ) => PROMPT & JsonGenerationPrompt<RESPONSE, INPUT>,
   options?: FunctionOptions<SETTINGS>
 ): Promise<OUTPUT> {
-  return tool.run(await generateJson(model, prompt(tool), options));
+  const input = await generateJsonForSchema(
+    model,
+    {
+      name: tool.name,
+      description: tool.description,
+      schema: tool.inputSchema,
+    },
+    () => prompt(tool),
+    options
+  );
+
+  return tool.run(input);
 }
 
 type ToolTransform<T> = {
