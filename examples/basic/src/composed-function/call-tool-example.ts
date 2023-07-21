@@ -12,7 +12,7 @@ dotenv.config();
 
 (async () => {
   const multiplyTool = new Tool({
-    name: "multiply",
+    name: "multiply" as const,
     description: "Multiply two numbers",
 
     inputSchema: z.object({

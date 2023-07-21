@@ -25,9 +25,7 @@ dotenv.config();
 
   const result = await callToolOrGenerateText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-    {
-      multiply: multiplyTool,
-    },
+    [multiplyTool],
     OpenAIChatFunctionPrompt.forToolChoice([
       OpenAIChatMessage.user("What's fourteen to the power of two?"),
       // OpenAIChatMessage.user("Tell me about Berlin"),

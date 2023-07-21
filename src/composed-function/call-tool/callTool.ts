@@ -5,8 +5,8 @@ import {
   JsonGenerationPrompt,
 } from "../../model-function/generate-json/JsonGenerationModel.js";
 import {
-  generateJsonOrTextForSchemas,
   generateJsonForSchema,
+  generateJsonOrTextForSchemas,
 } from "../../model-function/generate-json/generateJson.js";
 import { Tool } from "./Tool.js";
 
@@ -14,16 +14,13 @@ export async function callTool<
   PROMPT,
   RESPONSE,
   SETTINGS extends JsonGenerationModelSettings,
-  INPUT,
-  OUTPUT
+  TOOL extends Tool<any, any, any>
 >(
   model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  tool: Tool<INPUT, OUTPUT>,
-  prompt: (
-    tool: Tool<INPUT, OUTPUT>
-  ) => PROMPT & JsonGenerationPrompt<RESPONSE>,
+  tool: TOOL,
+  prompt: (tool: TOOL) => PROMPT & JsonGenerationPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
-): Promise<OUTPUT> {
+): Promise<Awaited<ReturnType<TOOL["run"]>>> {
   const input = await generateJsonForSchema(
     model,
     {
@@ -38,21 +35,38 @@ export async function callTool<
   return tool.run(input);
 }
 
-type ToolTransform<T> = {
-  [K in keyof T]: T[K] extends Tool<infer U, any> ? U : never;
+// [ { name: "n", ... } | { ... } ]
+type ToolArray<T extends Tool<any, any, any>[]> = T;
+
+// { n: { name: "n", ... }, ... }
+type ToToolMap<T extends ToolArray<Tool<any, any, any>[]>> = {
+  [K in T[number]["name"]]: Extract<T[number], Tool<K, any, any>>;
 };
+
+// { n: OUTPUT, ... }
+type ToTypedOutputMap<T> = {
+  [K in keyof T]: T[K] extends Tool<any, any, infer U> ? U : never;
+};
+
+// { tool: "n", result: OUTPUT } | ...
+type ToToolNameResultPair<T> = {
+  [KEY in keyof T]: { tool: KEY; result: T[KEY] };
+}[keyof T];
+
+type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
+  ToToolNameResultPair<ToTypedOutputMap<ToToolMap<TOOLS>>>;
 
 export async function callToolOrGenerateText<
   PROMPT,
   RESPONSE,
   SETTINGS extends JsonGenerationModelSettings,
-  TOOLS extends Array<Tool<any, any>>
+  TOOLS extends Array<Tool<any, any, any>>
 >(
   model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   tools: TOOLS,
   prompt: (tools: TOOLS) => PROMPT & JsonGenerationPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
-) {
+): Promise<{ tool: null; result: string } | ToOutputValue<TOOLS>> {
   const expandedPrompt = prompt(tools);
 
   const modelResponse = await generateJsonOrTextForSchemas(
@@ -84,6 +98,6 @@ export async function callToolOrGenerateText<
 
   return {
     tool: fnName,
-    result: result as ToolTransform<TOOLS>[keyof TOOLS],
+    result,
   };
 }

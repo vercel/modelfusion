@@ -9,7 +9,7 @@ import { SchemaDefinition } from "index.js";
 
 export const OpenAIChatFunctionPrompt = {
   forSingleTool<INPUT, OUTPUT>(messages: OpenAIChatMessage[]) {
-    return (tool: Tool<INPUT, OUTPUT>) =>
+    return (tool: Tool<any, INPUT, OUTPUT>) =>
       new OpenAIChatSingleFunctionPrompt({
         messages,
         fn: {
@@ -20,7 +20,7 @@ export const OpenAIChatFunctionPrompt = {
       });
   },
 
-  forToolChoice<TOOLS extends Array<Tool<any, any>>>(
+  forToolChoice<TOOLS extends Array<Tool<any, any, any>>>(
     messages: OpenAIChatMessage[]
   ) {
     return (tools: TOOLS) => {
