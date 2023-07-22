@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SchemaDefinition } from "../../model-function/generate-json/generateJson.js";
 
 export class Tool<NAME extends string, INPUT, OUTPUT> {
   readonly name: NAME;
@@ -16,5 +17,13 @@ export class Tool<NAME extends string, INPUT, OUTPUT> {
     this.description = options.description;
     this.inputSchema = options.inputSchema;
     this.execute = options.execute;
+  }
+
+  get inputSchemaDefinition(): SchemaDefinition<NAME, INPUT> {
+    return {
+      name: this.name,
+      description: this.description,
+      schema: this.inputSchema,
+    };
   }
 }

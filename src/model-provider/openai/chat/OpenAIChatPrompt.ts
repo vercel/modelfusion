@@ -68,26 +68,24 @@ export const OpenAIChatFunctionPrompt = {
   },
 };
 
+export type OpenAIFunctionDescription<T> = {
+  name: string;
+  description?: string;
+  parameters: z.Schema<T>;
+};
+
 export class OpenAIChatSingleFunctionPrompt<T>
   implements JsonGenerationPrompt<OpenAIChatResponse>
 {
   readonly messages: OpenAIChatMessage[];
-  readonly fn: {
-    readonly name: string;
-    readonly description?: string;
-    readonly parameters: z.Schema<T>;
-  };
+  readonly fn: OpenAIFunctionDescription<T>;
 
   constructor({
     messages,
     fn,
   }: {
     messages: OpenAIChatMessage[];
-    fn: {
-      name: string;
-      description?: string;
-      parameters: z.Schema<T>;
-    };
+    fn: OpenAIFunctionDescription<T>;
   }) {
     this.messages = messages;
     this.fn = fn;
@@ -117,12 +115,6 @@ export class OpenAIChatSingleFunctionPrompt<T>
     ];
   }
 }
-
-type OpenAIFunctionDescription<T> = {
-  name: string;
-  description?: string;
-  parameters: z.Schema<T>;
-};
 
 export class OpenAIChatAutoFunctionPrompt<
   FUNCTIONS extends Array<OpenAIFunctionDescription<any>>
