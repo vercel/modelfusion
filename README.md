@@ -260,6 +260,7 @@ const results = await retrieveTextChunks(
   - [Generate images](https://ai-utils.dev/guide/function/generate-image)
 - Summarize text
 - Split text
+- [Tools](https://ai-utils.dev/guide/tools)
 - [Text Chunks](https://ai-utils.dev/guide/text-chunks)
 - [Run abstraction](https://ai-utils.dev/guide/run/)
   - [Abort signals](https://ai-utils.dev/guide/run/abort)
