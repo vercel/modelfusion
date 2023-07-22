@@ -123,6 +123,50 @@ const { schema, value } = await generateJsonOrText(
 );
 ```
 
+### [Tools](https://ai-utils.dev/guide/tools)
+
+#### Create Tool
+
+```ts
+const multiplyTool = new Tool({
+  name: "multiply" as const, // mark 'as const' for type inference
+  description: "Multiply two numbers",
+
+  // Zod schema for the input parameters.
+  // The description becomes a part of the prompt.
+  inputSchema: z.object({
+    a: z.number().describe("The first number."),
+    b: z.number().describe("The second number."),
+  }),
+
+  execute: async ({ a, b }) => a * b,
+});
+```
+
+#### callTool
+
+```ts
+const result = await callTool(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  multiplyTool,
+  OpenAIChatFunctionPrompt.forToolCurried([
+    OpenAIChatMessage.user("What's fourteen to the power of two?"),
+  ])
+);
+```
+
+#### callToolOrGenerateText
+
+```ts
+const { tool, result } = await callToolOrGenerateText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  [multiplyTool, addTool],
+  OpenAIChatFunctionPrompt.forToolsCurried([
+    OpenAIChatMessage.user("What's fourteen to the power of two?"),
+  ])
+);
+```
+
 ### [Transcribe Audio](https://ai-utils.dev/guide/function/transcribe-audio)
 
 ```ts
