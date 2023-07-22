@@ -6,11 +6,11 @@ export interface GenerateJsonOrTextModelSettings extends ModelSettings {}
 export interface GenerateJsonOrTextPrompt<RESPONSE> {
   extractJson(response: RESPONSE):
     | {
-        fnName: null;
+        schema: null;
         value: string;
       }
     | {
-        fnName: string;
+        schema: string;
         value: unknown;
       };
 }

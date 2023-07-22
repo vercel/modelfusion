@@ -22,14 +22,14 @@ type ToTypedMap<T> = {
   [K in keyof T]: T[K] extends SchemaDefinition<any, infer U> ? U : never;
 };
 
-// { fnName: "n", value: STRUCTURE } | ...
-type ToFnNameValuePair<T> = {
-  [KEY in keyof T]: { fnName: KEY; value: T[KEY] };
+// { schema: "n", value: STRUCTURE } | ...
+type ToSchemaNameValuePair<T> = {
+  [KEY in keyof T]: { schema: KEY; value: T[KEY] };
 }[keyof T];
 
 type ToOutputValue<
   STRUCTURES extends SchemaDefinitionArray<SchemaDefinition<any, any>[]>
-> = ToFnNameValuePair<ToTypedMap<ToSchemaDefinitionsMap<STRUCTURES>>>;
+> = ToSchemaNameValuePair<ToTypedMap<ToSchemaDefinitionsMap<STRUCTURES>>>;
 
 export function generateJsonOrText<
   STRUCTURES extends SchemaDefinition<any, any>[],
@@ -43,7 +43,7 @@ export function generateJsonOrText<
     schemaDefinitions: STRUCTURES
   ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
-): Promise<{ fnName: null; value: string } | ToOutputValue<STRUCTURES>> {
+): Promise<{ schema: null; value: string } | ToOutputValue<STRUCTURES>> {
   const expandedPrompt = prompt(schemaDefinitions);
 
   return executeCall({
@@ -54,22 +54,22 @@ export function generateJsonOrText<
     generateResponse: (options) =>
       model.generateJsonResponse(expandedPrompt, options),
     extractOutputValue: (response) => {
-      const { fnName, value } = expandedPrompt.extractJson(response);
+      const { schema, value } = expandedPrompt.extractJson(response);
 
       // text generation:
-      if (fnName == null) {
-        return { fnName, value };
+      if (schema == null) {
+        return { schema, value };
       }
 
-      const definition = schemaDefinitions.find((d) => d.name === fnName);
+      const definition = schemaDefinitions.find((d) => d.name === schema);
 
       if (definition == undefined) {
         // TODO special error
-        throw new Error(`Unknown function name: ${fnName}`);
+        throw new Error(`Unknown schema name: ${schema}`);
       }
 
       return {
-        fnName,
+        schema,
         // TODO introduce special error for parse failures
         value: definition.schema.parse(value),
       };

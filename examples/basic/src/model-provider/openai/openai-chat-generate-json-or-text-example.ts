@@ -38,7 +38,7 @@ dotenv.config();
     OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
   );
 
-  switch (response.fnName) {
+  switch (response.schema) {
     case "getCurrentWeather": {
       const { location, unit } = response.value;
       console.log("getCurrentWeather", location, unit);

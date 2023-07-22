@@ -82,24 +82,25 @@ export async function callToolOrGenerateText<
     options
   );
 
-  if (modelResponse.fnName == null) {
+  if (modelResponse.schema == null) {
     return {
       tool: null,
       result: modelResponse.value,
     };
   }
 
-  const fnName = modelResponse.fnName as keyof TOOLS;
-  const tool = tools.find((tool) => tool.name === fnName);
+  const schema = modelResponse.schema as keyof TOOLS;
+  const tool = tools.find((tool) => tool.name === schema);
 
   if (tool == null) {
-    throw new Error(`Tool not found: ${fnName.toString()}`);
+    // TODO special error
+    throw new Error(`Tool not found: ${schema.toString()}`);
   }
 
   const result = await tool.execute(modelResponse.value);
 
   return {
-    tool: fnName,
+    tool: schema,
     result,
   };
 }

@@ -38,7 +38,7 @@ dotenv.config();
     ])
   );
 
-  switch (result.fnName) {
+  switch (result.schema) {
     case null: {
       console.log(`TEXT: ${result.value}`);
       break;
