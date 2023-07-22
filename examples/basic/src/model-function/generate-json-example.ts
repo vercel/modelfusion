@@ -17,7 +17,7 @@ dotenv.config();
       maxTokens: 50,
     }),
     {
-      name: "sentiment",
+      name: "sentiment" as const,
       description: "Write the sentiment analysis",
       schema: z.object({
         sentiment: z

@@ -4,16 +4,15 @@ sidebar_position: 5
 
 # Generate JSON
 
-Generates JSON using a prompt and a structure.
+Generates JSON that matches a schema.
+This is, for example, useful for [information extraction](/tutorial/recipes/information-extraction)
+and classification tasks (e.g. [sentiment analysis](/tutorial/recipes/sentiment-analysis)).
 
 ## Usage
 
 ### generateJson
 
 [generateJson API](/api/modules#generatejson)
-
-Generates JSON for a single schema using a prompt.
-The prompt format depends on the model.
 
 #### OpenAI chat model
 
@@ -25,7 +24,7 @@ const { sentiment } = await generateJson(
     maxTokens: 50,
   }),
   {
-    name: "sentiment",
+    name: "sentiment" as const,
     description: "Write the sentiment analysis",
     schema: z.object({
       sentiment: z
@@ -44,62 +43,6 @@ const { sentiment } = await generateJson(
     ),
   ])
 );
-```
-
-### generateJsonOrText
-
-[generateJsonOrText API](/api/modules#generatejsonortext)
-
-Generates JSON or text for multiple schemas using a prompt.
-The prompt format depends on the model.
-
-#### OpenAI chat model
-
-```ts
-const { schema, value } = await generateJsonOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  [
-    {
-      name: "multiply" as const,
-      description: "Multiply two numbers",
-      schema: z.object({
-        a: z.number().describe("The first number."),
-        b: z.number().describe("The second number."),
-      }),
-    },
-    {
-      name: "sum" as const,
-      description: "Sum two numbers",
-      schema: z.object({
-        a: z.number().describe("The first number."),
-        b: z.number().describe("The second number."),
-      }),
-    },
-  ],
-  OpenAIChatFunctionPrompt.forSchemasCurried([
-    OpenAIChatMessage.system(
-      "You are a calculator. Evaluate the following expression:"
-    ),
-    OpenAIChatMessage.user("Multiply twelve with 10."),
-  ])
-);
-
-switch (schema) {
-  case null: {
-    console.log(`TEXT: ${value}`);
-    break;
-  }
-
-  case "multiply": {
-    console.log(`MULTIPLY: ${value.a * value.b}`);
-    break;
-  }
-
-  case "sum": {
-    console.log(`SUM: ${value.a + value.b}`);
-    break;
-  }
-}
 ```
 
 ## Available Providers

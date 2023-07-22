@@ -18,7 +18,7 @@ dotenv.config();
         maxTokens: 500, // enough tokens for reasoning and sentiment
       }),
       {
-        name: "sentiment",
+        name: "sentiment" as const,
         description: "Write the sentiment analysis",
         schema: z.object({
           // Reason first to improve results:

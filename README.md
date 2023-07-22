@@ -57,6 +57,8 @@ for await (const textFragment of textStream) {
 
 ### [Generate JSON](https://ai-utils.dev/guide/function/generate-json)
 
+Generates JSON that matches a schema.
+
 ```ts
 const json = await generateJson(
   new OpenAIChatModel({
@@ -65,7 +67,7 @@ const json = await generateJson(
     maxTokens: 50,
   }),
   {
-    name: "sentiment",
+    name: "sentiment" as const,
     description: "Write the sentiment analysis",
     schema: z.object({
       sentiment: z
@@ -82,6 +84,41 @@ const json = await generateJson(
       "After I opened the package, I was met by a very unpleasant smell " +
         "that did not disappear even after washing. Never again!"
     ),
+  ])
+);
+```
+
+### [Generate JSON or Text](https://ai-utils.dev/guide/function/generate-json-or-text)
+
+Generates JSON (or text as a fallback) using a prompt and multiple schemas.
+It either matches one of the schemas or is text reponse.
+
+```ts
+const { schema, value } = await generateJsonOrText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  [
+    {
+      name: "multiply" as const, // mark 'as const' for type inference
+      description: "Multiply two numbers",
+      schema: z.object({
+        a: z.number().describe("The first number."),
+        b: z.number().describe("The second number."),
+      }),
+    },
+    {
+      name: "sum" as const,
+      description: "Sum two numbers",
+      schema: z.object({
+        a: z.number().describe("The first number."),
+        b: z.number().describe("The second number."),
+      }),
+    },
+  ],
+  OpenAIChatFunctionPrompt.forSchemasCurried([
+    OpenAIChatMessage.system(
+      "You are a calculator. Evaluate the following expression:"
+    ),
+    OpenAIChatMessage.user("Multiply twelve with 10."),
   ])
 );
 ```
@@ -172,6 +209,7 @@ const results = await retrieveTextChunks(
   - [Generate text](https://ai-utils.dev/guide/function/generate-text)
   - [Stream text](https://ai-utils.dev/guide/function/stream-text)
   - [Generate JSON](https://ai-utils.dev/guide/function/generate-json)
+  - [Generate JSON or text](https://ai-utils.dev/guide/function/generate-json-or-text)
   - [Embed Text](https://ai-utils.dev/guide/function/embed-text)
   - [Tokenize Text](https://ai-utils.dev/guide/function/tokenize-text)
   - [Transcribe Audio](https://ai-utils.dev/guide/function/transcribe-audio)

@@ -18,7 +18,7 @@ dotenv.config();
     new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
     [
       {
-        name: "getCurrentWeather" as const,
+        name: "getCurrentWeather" as const, // mark 'as const' for type inference
         description: "Get the current weather in a given location",
         schema: z.object({
           location: z
