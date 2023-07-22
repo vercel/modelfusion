@@ -12,7 +12,7 @@ sidebar_position: 0
 
 ## Disclaimer
 
-`ai-utils.js` is currently in its initial development phase. **Until version 0.1 there may be breaking changes in each release.**
+`ai-utils.js` is currently in its initial development phase. **Until version 0.1 there may be frequent breaking changes.**
 
 ## Installation
 
