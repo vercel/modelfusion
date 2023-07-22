@@ -20,7 +20,7 @@ dotenv.config();
         content: z.string().describe("The content of the story"),
       }),
     },
-    OpenAIChatFunctionPrompt.forSchema([
+    OpenAIChatFunctionPrompt.forSchemaCurried([
       OpenAIChatMessage.system("You are a story writer. Write a story about:"),
       OpenAIChatMessage.user("A robot learning to love"),
     ])

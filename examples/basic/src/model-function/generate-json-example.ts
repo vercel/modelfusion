@@ -25,7 +25,7 @@ dotenv.config();
           .describe("Sentiment."),
       }),
     },
-    OpenAIChatFunctionPrompt.forSchema([
+    OpenAIChatFunctionPrompt.forSchemaCurried([
       OpenAIChatMessage.system(
         "You are a sentiment evaluator. " +
           "Analyze the sentiment of the following product review:"

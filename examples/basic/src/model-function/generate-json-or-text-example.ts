@@ -30,7 +30,7 @@ dotenv.config();
         }),
       },
     ],
-    OpenAIChatFunctionPrompt.forTextOrSchemas([
+    OpenAIChatFunctionPrompt.forSchemasCurried([
       OpenAIChatMessage.system(
         "You are a calculator. Evaluate the following expression:"
       ),

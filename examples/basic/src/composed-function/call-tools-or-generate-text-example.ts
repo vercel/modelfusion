@@ -38,13 +38,24 @@ dotenv.config();
   const result = await callToolOrGenerateText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     [multiplyTool, addTool],
-    // TODO enable easily working with passed-in tools.
-    OpenAIChatFunctionPrompt.forToolChoice([
-      OpenAIChatMessage.system("You have 2 tools available (add, multiply)."),
-      OpenAIChatMessage.user("What's fourteen to the power of two?"),
-      // OpenAIChatMessage.user("What's twelwe plus 1234?"),
-      // OpenAIChatMessage.user("Tell me about Berlin"),
-    ])
+    // Instead of using a curried function, you can also work with the tools
+    // directly:
+    (tools) =>
+      OpenAIChatFunctionPrompt.forTools({
+        tools,
+        messages: [
+          OpenAIChatMessage.system(
+            // Here the available tools are used to create a more precise
+            // prompt that reduces errors:
+            `You have ${tools.length} tools available (${tools
+              .map((tool) => tool.name)
+              .join(", ")}).`
+          ),
+          OpenAIChatMessage.user("What's fourteen to the power of two?"),
+          // OpenAIChatMessage.user("What's twelwe plus 1234?"),
+          // OpenAIChatMessage.user("Tell me about Berlin"),
+        ],
+      })
   );
 
   console.log(JSON.stringify(result, null, 2));

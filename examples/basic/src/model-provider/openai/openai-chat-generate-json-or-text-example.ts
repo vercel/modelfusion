@@ -35,7 +35,7 @@ dotenv.config();
         }),
       },
     ],
-    OpenAIChatFunctionPrompt.forTextOrSchemas([OpenAIChatMessage.user(query)])
+    OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
   );
 
   switch (response.fnName) {
