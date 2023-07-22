@@ -35,11 +35,10 @@ dotenv.config();
     execute: async ({ a, b }) => a + b,
   });
 
-  const result = await callToolOrGenerateText(
+  const { tool, result } = await callToolOrGenerateText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     [multiplyTool, addTool],
-    // Instead of using a curried function, you can also work with the tools
-    // directly:
+    // Instead of using a curried function, you can also work with the tools directly:
     (tools) =>
       OpenAIChatFunctionPrompt.forTools({
         tools,
@@ -58,5 +57,6 @@ dotenv.config();
       })
   );
 
+  console.log(tool != null ? `TOOL: ${tool}` : "TEXT");
   console.log(JSON.stringify(result, null, 2));
 })();
