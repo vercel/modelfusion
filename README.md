@@ -6,9 +6,19 @@
 [![NPM Version](https://img.shields.io/npm/v/ai-utils.js?color=33cd56&logo=npm)](https://www.npmjs.com/package/ai-utils.js)
 [![MIT License](https://img.shields.io/github/license/lgrammel/ai-utils.js)](https://opensource.org/licenses/MIT)
 
-[Quick Install](#quick-install) | [Usage](#usage-examples) | [Introduction](#introduction) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#more-examples) | [ai-utils.dev](https://ai-utils.dev)
+[Introduction](#introduction) | [Quick Install](#quick-install) | [Usage](#usage-examples) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#more-examples) | [ai-utils.dev](https://ai-utils.dev)
 
-> **⚠️ `ai-utils.js` is currently in its initial experimental phase. Until version 0.1 there may be breaking changes in each release.**
+## Disclaimer
+
+`ai-utils.js` is currently in its initial development phase. **Until version 0.1 there may be breaking changes in each release.**
+
+## Introduction
+
+`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides abstractions for working with AI models, vector indices, and tools. It was design with the following goals in mind:
+
+- **Provide type inference and validation**: `ai-utils.js` uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types whereever possible and to validate AI responses.
+- **Flexibility**: AI application development can be complex and unique to each project. With `ai-utils.js`, you have complete control over the prompts, the model settings, and the control flow of your application.
+- **Integrate support features**: Essential features like logging, retries, throttling, and error handling are integrated and easily configurable.
 
 ## Quick Install
 
@@ -147,37 +157,9 @@ const results = await retrieveTextChunks(
 );
 ```
 
-## Introduction
-
-`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents.
-
-It provides functions for working with models, e.g. to [generate text](https://ai-utils.dev/guide/function/generate-text), [tokenize text](https://ai-utils.dev/guide/function/tokenize-text), [embed text](https://ai-utils.dev/guide/function/embed-text), [transcribe audio](https://ai-utils.dev/guide/function/transcribe-audio), and [generate images](https://ai-utils.dev/guide/function/generate-image).
-
-`ai-utils.js` also contains functions for working with [text chunks and vector indices](https://ai-utils.dev/guide/text-chunks), e.g. upserting text chunks into a vector index and querying the index for similar text chunks.
-
-### TypeScript-first
-
-`ai-utils.js` is built with TypeScript at its core, designed to take full advantage of type inference, static typing, and the robust tooling TypeScript offers. We use a mix of object-oriented and functional programming, focusing on composition and immutability. [Zod](https://github.com/colinhacks/zod) is used for type validation when interacting with external systems, e.g. when retrieving data from vectors DBs or calling services.
-
-### Stay in control
-
-Building applications with AI is a complex task, and your requirements mean you must make unique choices. With `ai-utils.js`, you stay in complete control over the prompts, the model settings, and the control flow of your application.
-
-### Example recipes, prompts, and demo apps
-
-Having a large amount of control means that more work is required to get an initial prototype of your app up and running. We provide example [recipes & prompts](https://ai-utils.dev/tutorial/) as well as [demo apps](https://github.com/lgrammel/ai-utils.js/tree/main/examples) to help you get started.
-
-### Taking care of the details
-
-`ai-utils.js` is designed for production, not just for prototyping. Essential features like logging, retries, throttling, and error handling are integrated and easily configurable.
-
-### Multi-modal support
-
-Recognizing that AI applications involve more than just text, `ai-utils.js` supports a variety of content types including voice and images, along with text and embeddings. This broadens its applicability and potential for creating richer, more engaging AI applications.
-
 ## Features
 
-- [Functions](https://ai-utils.dev/guide/function/)
+- [Model Functions](https://ai-utils.dev/guide/function/)
   - [Generate text](https://ai-utils.dev/guide/function/generate-text)
   - [Stream text](https://ai-utils.dev/guide/function/stream-text)
   - [Generate JSON](https://ai-utils.dev/guide/function/generate-json)

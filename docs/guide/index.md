@@ -2,30 +2,28 @@
 sidebar_position: 0
 ---
 
-# Introduction
+# Getting Started
 
-`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents.
+`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides abstractions for working with AI models, vector indices, and tools. It was design with the following goals in mind:
 
-It provides functions for working with models, e.g. to [generate text](/guide/function/generate-text), [tokenize text](/guide/function/tokenize-text), [embed text](/guide/function/embed-text), [transcribe audio](/guide/function/transcribe-audio), and [generate images](/guide/function/generate-image).
+- **Provide type inference and validation**: `ai-utils.js` uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types whereever possible and to validate AI responses.
+- **Flexibility**: AI application development can be complex and unique to each project. With `ai-utils.js`, you have complete control over the prompts, the model settings, and the control flow of your application.
+- **Integrate support features**: Essential features like logging, retries, throttling, and error handling are integrated and easily configurable.
 
-`ai-utils.js` also contains functions for working with [text chunks and vector indices](/guide/text-chunks), e.g. upserting text chunks into a vector index and querying the index for similar text chunks.
+## Disclaimer
 
-## TypeScript-first
+`ai-utils.js` is currently in its initial development phase. **Until version 0.1 there may be breaking changes in each release.**
 
-`ai-utils.js` is built with TypeScript at its core, designed to take full advantage of type inference, static typing, and the robust tooling TypeScript offers. We use a mix of object-oriented and functional programming, focusing on composition and immutability. [Zod](https://github.com/colinhacks/zod) is used for type validation when interacting with external systems, e.g. when retrieving data from vectors DBs or calling services.
+## Installation
 
-## Stay in control
+```bash
+npm install ai-utils.js
+```
 
-Building applications with AI is a complex task, and your requirements mean you must make unique choices. With `ai-utils.js`, you stay in complete control over the prompts, the model settings, and the control flow of your application.
+## API Keys
 
-## Example recipes, prompts, and demo apps
+You can provide API keys for the different [providers](/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or by passing them in as options to the model constructors.
 
-Having a large amount of control means that more work is required to get an initial prototype of your app up and running. We provide example [recipes & prompts](/tutorial/) as well as [demo apps](https://github.com/lgrammel/ai-utils.js/tree/main/examples) to help you get started.
+## Requirements
 
-## Taking care of the details
-
-`ai-utils.js` is designed for production, not just for prototyping. Essential features like logging, retries, throttling, and error handling are integrated and easily configurable.
-
-## Multi-modal support
-
-Recognizing that AI applications involve more than just text, `ai-utils.js` supports a variety of content types including voice and images, along with text and embeddings. This broadens its applicability and potential for creating richer, more engaging AI applications.
+- [Node.js](https://nodejs.org/en/download/) version 18 or above. `ai-utils.js` uses the Node.js fetch API and parts of the Web Streams API, which were not enabled by default before Node 18.
