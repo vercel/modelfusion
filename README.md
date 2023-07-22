@@ -59,21 +59,30 @@ for await (const textFragment of textStream) {
 
 ```ts
 const json = await generateJson(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
-  new OpenAIChatSingleFunctionPrompt({
-    messages: [
-      OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-      OpenAIChatMessage.user("A robot learning to love"),
-    ],
-    fn: {
-      name: "story",
-      description: "Write the story",
-      parameters: z.object({
-        title: z.string().describe("The title of the story"),
-        content: z.string().describe("The content of the story"),
-      }),
-    },
-  })
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    temperature: 0,
+    maxTokens: 50,
+  }),
+  {
+    name: "sentiment",
+    description: "Write the sentiment analysis",
+    schema: z.object({
+      sentiment: z
+        .enum(["positive", "neutral", "negative"])
+        .describe("Sentiment."),
+    }),
+  },
+  OpenAIChatFunctionPrompt.forSchemaCurried([
+    OpenAIChatMessage.system(
+      "You are a sentiment evaluator. " +
+        "Analyze the sentiment of the following product review:"
+    ),
+    OpenAIChatMessage.user(
+      "After I opened the package, I was met by a very unpleasant smell " +
+        "that did not disappear even after washing. Never again!"
+    ),
+  ])
 );
 ```
 

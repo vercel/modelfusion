@@ -13,7 +13,7 @@ dotenv.config();
   const json = await generateJson(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
-      temperature: 0.7,
+      temperature: 0,
       maxTokens: 50,
     }),
     {
