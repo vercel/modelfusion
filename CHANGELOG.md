@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.0.35 - 2023-07-22
+
+### Added
+
+- `generateJsonOrText`
+- Tools: `Tool` class, `callTool`, `callToolOrGenerateText`
+
+### Changed
+
+- Restructured "generateJson" arguments.
+
 ## v0.0.34 - 2023-07-18
 
 ### Removed
