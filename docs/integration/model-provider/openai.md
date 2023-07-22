@@ -189,7 +189,11 @@ const { schema, value } = await generateJsonOrText(
     OpenAIChatMessage.user("Multiply twelve with 10."),
   ])
 );
+```
 
+The output is typed:
+
+```ts
 switch (schema) {
   case null: {
     console.log(`TEXT: ${value}`);
