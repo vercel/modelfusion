@@ -22,33 +22,31 @@ const extractNameAndPopulation = async (text: string) =>
       temperature: 0, // remove randomness as much as possible
       maxTokens: 200, // only a few tokens needed for the response
     }),
-    new OpenAIChatSingleFunctionPrompt({
-      messages: [
-        OpenAIChatMessage.system(
-          [
-            "Extract the name and the population of the city.",
-            // escape hatch to limit extractions to city information:
-            "The text might not be about a city.",
-            "If it is not, set city to null.",
-          ].join("\n")
-        ),
-        OpenAIChatMessage.user(text),
-      ],
-      fn: {
-        name: "storeCity",
-        description: "Save information about the city",
-        // structure supports escape hatch:
-        parameters: z.object({
-          city: z
-            .object({
-              name: z.string().describe("name of the city"),
-              population: z.number().describe("population of the city"),
-            })
-            .nullable()
-            .describe("information about the city"),
-        }),
-      },
-    })
+    {
+      name: "storeCity",
+      description: "Save information about the city",
+      // structure supports escape hatch:
+      schema: z.object({
+        city: z
+          .object({
+            name: z.string().describe("name of the city"),
+            population: z.number().describe("population of the city"),
+          })
+          .nullable()
+          .describe("information about the city"),
+      }),
+    },
+    OpenAIChatFunctionPrompt.forSchemaCurried([
+      OpenAIChatMessage.system(
+        [
+          "Extract the name and the population of the city.",
+          // escape hatch to limit extractions to city information:
+          "The text might not be about a city.",
+          "If it is not, set city to null.",
+        ].join("\n")
+      ),
+      OpenAIChatMessage.user(text),
+    ])
   );
 
 const extractedInformation1 = await extractNameAndPopulation(

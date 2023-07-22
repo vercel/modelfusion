@@ -1,7 +1,7 @@
 import {
+  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  OpenAIChatSingleFunctionPrompt,
   generateJson,
 } from "ai-utils.js";
 import dotenv from "dotenv";
@@ -17,29 +17,25 @@ dotenv.config();
         temperature: 0, // remove randomness
         maxTokens: 500, // enough tokens for reasoning and sentiment
       }),
-      new OpenAIChatSingleFunctionPrompt({
-        messages: [
-          OpenAIChatMessage.system(
-            "You are a sentiment evaluator. " +
-              "Analyze the sentiment of the following product review:"
-          ),
-          OpenAIChatMessage.user(productReview),
-        ],
-        fn: {
-          name: "sentiment",
-          description: "Write the sentiment analysis",
-          parameters: z.object({
-            // Reason first to improve results:
-            reasoning: z
-              .string()
-              .describe("Reasoning to explain the sentiment."),
-            // Report sentiment after reasoning:
-            sentiment: z
-              .enum(["positive", "neutral", "negative"])
-              .describe("Sentiment."),
-          }),
-        },
-      })
+      {
+        name: "sentiment",
+        description: "Write the sentiment analysis",
+        schema: z.object({
+          // Reason first to improve results:
+          reasoning: z.string().describe("Reasoning to explain the sentiment."),
+          // Report sentiment after reasoning:
+          sentiment: z
+            .enum(["positive", "neutral", "negative"])
+            .describe("Sentiment."),
+        }),
+      },
+      OpenAIChatFunctionPrompt.forSchemaCurried([
+        OpenAIChatMessage.system(
+          "You are a sentiment evaluator. " +
+            "Analyze the sentiment of the following product review:"
+        ),
+        OpenAIChatMessage.user(productReview),
+      ])
     );
 
   const result1 = await analyzeSentiment(
