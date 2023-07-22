@@ -54,13 +54,11 @@ export function generateJsonOrText<
     generateResponse: (options) =>
       model.generateJsonResponse(expandedPrompt, options),
     extractOutputValue: (response) => {
-      const { fnName, json } = expandedPrompt.extractJson(response);
+      const { fnName, value } = expandedPrompt.extractJson(response);
 
       // text generation:
       if (fnName == null) {
-        // TODO validate that the value is a string
-
-        return { fnName, value: json as string };
+        return { fnName, value };
       }
 
       const definition = schemaDefinitions.find((d) => d.name === fnName);
@@ -73,7 +71,7 @@ export function generateJsonOrText<
       return {
         fnName,
         // TODO introduce special error for parse failures
-        value: definition.schema.parse(json),
+        value: definition.schema.parse(value),
       };
     },
     getStartEvent: (metadata, settings) => ({

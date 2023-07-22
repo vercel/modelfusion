@@ -4,10 +4,15 @@ import { Model, ModelSettings } from "../Model.js";
 export interface GenerateJsonOrTextModelSettings extends ModelSettings {}
 
 export interface GenerateJsonOrTextPrompt<RESPONSE> {
-  extractJson(response: RESPONSE): {
-    fnName: string | null;
-    json: unknown;
-  };
+  extractJson(response: RESPONSE):
+    | {
+        fnName: null;
+        value: string;
+      }
+    | {
+        fnName: string;
+        value: unknown;
+      };
 }
 
 export interface GenerateJsonOrTextModel<

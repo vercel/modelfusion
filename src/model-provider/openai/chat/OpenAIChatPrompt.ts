@@ -177,11 +177,11 @@ export class OpenAIChatAutoFunctionPrompt<
     return functionCall == null
       ? {
           fnName: null,
-          json: message.content,
+          value: message.content ?? "",
         }
       : {
           fnName: functionCall.name,
-          json: SecureJSON.parse(functionCall.arguments),
+          value: SecureJSON.parse(functionCall.arguments),
         };
   }
 
