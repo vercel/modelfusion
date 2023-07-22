@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SchemaDefinition } from "../../model-function/generate-json/generateJson.js";
+import { SchemaDefinition } from "../../model-function/generate-json/SchemaDefinition.js";
 
 export class Tool<NAME extends string, INPUT, OUTPUT> {
   readonly name: NAME;

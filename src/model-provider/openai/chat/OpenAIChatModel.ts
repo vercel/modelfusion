@@ -1,7 +1,7 @@
 import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../../model-function/FunctionOptions.js";
-import { JsonGenerationModel } from "../../../model-function/generate-json/JsonGenerationModel.js";
+import { GenerateJsonOrTextModel } from "../../../model-function/generate-json/GenerateJsonOrTextModel.js";
 import {
   TextGenerationModelSettings,
   TextGenerationModelWithTokenization,
@@ -171,7 +171,7 @@ export class OpenAIChatModel
       OpenAIChatDelta,
       OpenAIChatSettings
     >,
-    JsonGenerationModel<
+    GenerateJsonOrTextModel<
       OpenAIChatSingleFunctionPrompt<any> | OpenAIChatAutoFunctionPrompt<any>,
       OpenAIChatResponse,
       OpenAIChatSettings

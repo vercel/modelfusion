@@ -1,22 +1,22 @@
 import { FunctionOptions } from "../FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
-export interface JsonGenerationModelSettings extends ModelSettings {}
+export interface GenerateJsonOrTextModelSettings extends ModelSettings {}
 
-export interface JsonGenerationPrompt<RESPONSE> {
+export interface GenerateJsonOrTextPrompt<RESPONSE> {
   extractJson(response: RESPONSE): {
     fnName: string | null;
     json: unknown;
   };
 }
 
-export interface JsonGenerationModel<
+export interface GenerateJsonOrTextModel<
   PROMPT,
   RESPONSE,
-  SETTINGS extends JsonGenerationModelSettings
+  SETTINGS extends GenerateJsonOrTextModelSettings
 > extends Model<SETTINGS> {
   generateJsonResponse(
-    prompt: PROMPT & JsonGenerationPrompt<RESPONSE>,
+    prompt: PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
     options?: FunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE>;
 }

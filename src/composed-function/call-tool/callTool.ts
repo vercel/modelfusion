@@ -1,27 +1,29 @@
 import { FunctionOptions } from "../../model-function/FunctionOptions.js";
 import {
-  JsonGenerationModel,
-  JsonGenerationModelSettings,
-  JsonGenerationPrompt,
-} from "../../model-function/generate-json/JsonGenerationModel.js";
+  GenerateJsonModel,
+  GenerateJsonModelSettings,
+} from "../../model-function/generate-json/GenerateJsonModel.js";
 import {
-  generateJsonForSchema,
-  generateJsonOrTextForSchemas,
-} from "../../model-function/generate-json/generateJson.js";
+  GenerateJsonOrTextModel,
+  GenerateJsonOrTextModelSettings,
+  GenerateJsonOrTextPrompt,
+} from "../../model-function/generate-json/GenerateJsonOrTextModel.js";
+import { generateJson } from "../../model-function/generate-json/generateJson.js";
+import { generateJsonOrText } from "../../model-function/generate-json/generateJsonOrText.js";
 import { Tool } from "./Tool.js";
 
 export async function callTool<
   PROMPT,
   RESPONSE,
-  SETTINGS extends JsonGenerationModelSettings,
+  SETTINGS extends GenerateJsonModelSettings,
   TOOL extends Tool<any, any, any>
 >(
-  model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   tool: TOOL,
-  prompt: (tool: TOOL) => PROMPT & JsonGenerationPrompt<RESPONSE>,
+  prompt: (tool: TOOL) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
 ): Promise<Awaited<ReturnType<TOOL["execute"]>>> {
-  const input = await generateJsonForSchema(
+  const input = await generateJson(
     model,
     {
       name: tool.name,
@@ -59,17 +61,17 @@ type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
 export async function callToolOrGenerateText<
   PROMPT,
   RESPONSE,
-  SETTINGS extends JsonGenerationModelSettings,
+  SETTINGS extends GenerateJsonOrTextModelSettings,
   TOOLS extends Array<Tool<any, any, any>>
 >(
-  model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
   tools: TOOLS,
-  prompt: (tools: TOOLS) => PROMPT & JsonGenerationPrompt<RESPONSE>,
+  prompt: (tools: TOOLS) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
 ): Promise<{ tool: null; result: string } | ToOutputValue<TOOLS>> {
   const expandedPrompt = prompt(tools);
 
-  const modelResponse = await generateJsonOrTextForSchemas(
+  const modelResponse = await generateJsonOrText(
     model,
     tools.map((tool) => ({
       name: tool.name,

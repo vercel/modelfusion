@@ -2,7 +2,7 @@ import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  generateJsonOrTextForSchemas,
+  generateJsonOrText,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 import { z } from "zod";
@@ -14,7 +14,7 @@ dotenv.config();
   // const query = "Where does Kevin work?";
   // const query = "Tell me something random.";
 
-  const response = await generateJsonOrTextForSchemas(
+  const response = await generateJsonOrText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
     [
       {

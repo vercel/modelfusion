@@ -2,7 +2,7 @@ import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  generateJsonForSchema,
+  generateJson,
 } from "ai-utils.js";
 import dotenv from "dotenv";
 import { z } from "zod";
@@ -10,7 +10,7 @@ import { z } from "zod";
 dotenv.config();
 
 (async () => {
-  const story = await generateJsonForSchema(
+  const story = await generateJson(
     new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
     {
       name: "story",
