@@ -6,6 +6,7 @@ import {
   GenerateJsonPrompt,
 } from "./GenerateJsonModel.js";
 import { SchemaDefinition } from "./SchemaDefinition.js";
+import { SchemaValidationError } from "./SchemaValidationError.js";
 
 export function generateJson<
   STRUCTURE,
@@ -32,8 +33,17 @@ export function generateJson<
     extractOutputValue: (response): STRUCTURE => {
       const json = expandedPrompt.extractJson(response);
 
-      // TODO introduce special error for parse failures
-      return schemaDefinition.schema.parse(json);
+      const parseResult = schemaDefinition.schema.safeParse(json);
+
+      if (!parseResult.success) {
+        throw new SchemaValidationError({
+          schemaName: schemaDefinition.name,
+          value: json,
+          errors: parseResult.error,
+        });
+      }
+
+      return parseResult.data;
     },
     getStartEvent: (metadata, settings) => ({
       type: "json-generation-started",

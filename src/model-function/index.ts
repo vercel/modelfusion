@@ -15,6 +15,7 @@ export * from "./generate-json/GenerateJsonOrTextModel.js";
 export * from "./generate-json/JsonGenerationEvent.js";
 export * from "./generate-json/NoSuchSchemaError.js";
 export * from "./generate-json/SchemaDefinition.js";
+export * from "./generate-json/SchemaValidationError.js";
 export * from "./generate-json/generateJson.js";
 export * from "./generate-json/generateJsonOrText.js";
 export * from "./generate-text/TextGenerationEvent.js";

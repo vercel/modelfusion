@@ -7,6 +7,7 @@ import {
 } from "./GenerateJsonOrTextModel.js";
 import { NoSuchSchemaError } from "./NoSuchSchemaError.js";
 import { SchemaDefinition } from "./SchemaDefinition.js";
+import { SchemaValidationError } from "./SchemaValidationError.js";
 
 // [ { name: "n", schema: z.object<STRUCTURE> } | { ... } ]
 type SchemaDefinitionArray<T extends SchemaDefinition<any, any>[]> = T;
@@ -68,11 +69,17 @@ export function generateJsonOrText<
         throw new NoSuchSchemaError(schema);
       }
 
-      return {
-        schema,
-        // TODO introduce special error for parse failures
-        value: definition.schema.parse(value),
-      };
+      const parseResult = definition.schema.safeParse(value);
+
+      if (!parseResult.success) {
+        throw new SchemaValidationError({
+          schemaName: schema,
+          value,
+          errors: parseResult.error,
+        });
+      }
+
+      return { schema, value: parseResult.data };
     },
     getStartEvent: (metadata, settings) => ({
       type: "json-generation-started",
