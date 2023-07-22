@@ -114,6 +114,7 @@ import {
   OpenAIChatModel,
   generateJson,
 } from "ai-utils.js";
+import { z } from "zod";
 
 const { sentiment } = await generateJson(
   new OpenAIChatModel({
@@ -141,6 +142,70 @@ const { sentiment } = await generateJson(
     ),
   ])
 );
+```
+
+### Generate JSON or Text
+
+#### Chat Model
+
+JSON generation uses the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides multiple function specifications and instructs the model to provide parameters for calling one of the functions, or to just return text (`auto`). The result is returned as parsed JSON.
+
+[OpenAIChatModel API](/api/classes/OpenAIChatModel) |
+[OpenAIChatFunctionPrompt API](/api/modules/#openaichatfunctionprompt)
+
+```ts
+import {
+  OpenAIChatFunctionPrompt,
+  OpenAIChatMessage,
+  OpenAIChatModel,
+  generateJsonOrText,
+} from "ai-utils.js";
+import { z } from "zod";
+
+const { schema, value } = await generateJsonOrText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  [
+    {
+      name: "multiply" as const, // mark 'as const' for type inference
+      description: "Multiply two numbers",
+      schema: z.object({
+        a: z.number().describe("The first number."),
+        b: z.number().describe("The second number."),
+      }),
+    },
+    {
+      name: "sum" as const,
+      description: "Sum two numbers",
+      schema: z.object({
+        a: z.number().describe("The first number."),
+        b: z.number().describe("The second number."),
+      }),
+    },
+  ],
+  OpenAIChatFunctionPrompt.forSchemasCurried([
+    OpenAIChatMessage.system(
+      "You are a calculator. Evaluate the following expression:"
+    ),
+    OpenAIChatMessage.user("Multiply twelve with 10."),
+  ])
+);
+
+switch (schema) {
+  case null: {
+    console.log(`TEXT: ${value}`);
+    break;
+  }
+
+  case "multiply": {
+    console.log(`MULTIPLY: ${value.a * value.b}`);
+    break;
+  }
+
+  case "sum": {
+    console.log(`SUM: ${value.a + value.b}`);
+    break;
+  }
+}
 ```
 
 ### Text Embedding
