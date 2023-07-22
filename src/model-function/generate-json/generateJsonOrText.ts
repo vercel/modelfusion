@@ -5,6 +5,7 @@ import {
   GenerateJsonOrTextModel,
   GenerateJsonOrTextModelSettings,
 } from "./GenerateJsonOrTextModel.js";
+import { NoSuchSchemaError } from "./NoSuchSchemaError.js";
 import { SchemaDefinition } from "./SchemaDefinition.js";
 
 // [ { name: "n", schema: z.object<STRUCTURE> } | { ... } ]
@@ -64,8 +65,7 @@ export function generateJsonOrText<
       const definition = schemaDefinitions.find((d) => d.name === schema);
 
       if (definition == undefined) {
-        // TODO special error
-        throw new Error(`Unknown schema name: ${schema}`);
+        throw new NoSuchSchemaError(schema);
       }
 
       return {

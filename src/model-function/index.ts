@@ -13,6 +13,7 @@ export * from "./generate-image/generateImage.js";
 export * from "./generate-json/GenerateJsonModel.js";
 export * from "./generate-json/GenerateJsonOrTextModel.js";
 export * from "./generate-json/JsonGenerationEvent.js";
+export * from "./generate-json/NoSuchSchemaError.js";
 export * from "./generate-json/SchemaDefinition.js";
 export * from "./generate-json/generateJson.js";
 export * from "./generate-json/generateJsonOrText.js";
