@@ -104,8 +104,8 @@ for await (const textFragment of textStream) {
 
 JSON generation uses the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides a single function specification and instructs the model to provide parameters for calling the function. The result is returned as parsed JSON.
 
-[OpenAIChatModel API](/api/classes/OpenAIChatModel)
-[OpenAIChatFunctionPrompt API](/api/classes/OpenAIChatFunctionPrompt)
+[OpenAIChatModel API](/api/classes/OpenAIChatModel) |
+[OpenAIChatFunctionPrompt API](/api/modules/#openaichatfunctionprompt)
 
 ```ts
 import {
