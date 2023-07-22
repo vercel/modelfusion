@@ -119,7 +119,7 @@ export interface OpenAIChatCallSettings {
   functions?: Array<{
     name: string;
     description?: string;
-    parameters: any; // TODO JSON schema format validation?
+    parameters: unknown;
   }>;
   functionCall?: "none" | "auto" | { name: string };
   temperature?: number;
