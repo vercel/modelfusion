@@ -12,7 +12,7 @@ dotenv.config();
 
 (async () => {
   const multiplyTool = new Tool({
-    name: "multiply" as const,
+    name: "multiply" as const, // important: mark as const for type inference
     description: "Multiply two numbers",
 
     inputSchema: z.object({
