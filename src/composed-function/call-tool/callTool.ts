@@ -10,6 +10,7 @@ import {
 } from "../../model-function/generate-json/GenerateJsonOrTextModel.js";
 import { generateJson } from "../../model-function/generate-json/generateJson.js";
 import { generateJsonOrText } from "../../model-function/generate-json/generateJsonOrText.js";
+import { NoSuchToolError } from "./NoSuchToolError.js";
 import { Tool } from "./Tool.js";
 
 export async function callTool<
@@ -93,8 +94,7 @@ export async function callToolOrGenerateText<
   const tool = tools.find((tool) => tool.name === schema);
 
   if (tool == null) {
-    // TODO special error
-    throw new Error(`Tool not found: ${schema.toString()}`);
+    throw new NoSuchToolError(schema.toString());
   }
 
   const result = await tool.execute(modelResponse.value);
