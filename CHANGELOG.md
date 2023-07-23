@@ -1,11 +1,17 @@
 # Changelog
 
+## v0.0.36 - 2023-07-23
+
+### Changed
+
+- Renamed `callTool` to `useTool` and `callToolOrGenerateText` to `useToolOrGenerateText`.
+
 ## v0.0.35 - 2023-07-22
 
 ### Added
 
 - `generateJsonOrText`
-- Tools: `Tool` class, `useTool`, `useToolOrGenerateText`
+- Tools: `Tool` class, `callTool`, `callToolOrGenerateText`
 
 ### Changed
 
