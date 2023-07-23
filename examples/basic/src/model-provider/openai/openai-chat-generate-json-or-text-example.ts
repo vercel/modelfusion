@@ -14,7 +14,7 @@ dotenv.config();
   // const query = "Where does Kevin work?";
   // const query = "Tell me something random.";
 
-  const response = await generateJsonOrText(
+  const { schema, value, text } = await generateJsonOrText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
     [
       {
@@ -38,21 +38,21 @@ dotenv.config();
     OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
   );
 
-  switch (response.schema) {
+  switch (schema) {
     case "getCurrentWeather": {
-      const { location, unit } = response.value;
+      const { location, unit } = value;
       console.log("getCurrentWeather", location, unit);
       break;
     }
 
     case "getContactInformation": {
-      const { name } = response.value;
+      const { name } = value;
       console.log("getContactInformation", name);
       break;
     }
 
     case null: {
-      console.log("No function call. Generated text: ", response.text);
+      console.log("No function call. Generated text: ", text);
     }
   }
 })();

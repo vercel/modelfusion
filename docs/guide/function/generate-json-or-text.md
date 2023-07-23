@@ -17,52 +17,53 @@ This is useful for building chatbots with plugins and agents.
 #### OpenAI chat model
 
 ```ts
-const { schema, value } = await generateJsonOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+const { schema, value, text } = await generateJsonOrText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
   [
     {
-      name: "multiply" as const, // mark 'as const' for type inference
-      description: "Multiply two numbers",
+      name: "getCurrentWeather" as const, // mark 'as const' for type inference
+      description: "Get the current weather in a given location",
       schema: z.object({
-        a: z.number().describe("The first number."),
-        b: z.number().describe("The second number."),
+        location: z
+          .string()
+          .describe("The city and state, e.g. San Francisco, CA"),
+        unit: z.enum(["celsius", "fahrenheit"]).optional(),
       }),
     },
     {
-      name: "sum" as const,
-      description: "Sum two numbers",
+      name: "getContactInformation" as const,
+      description: "Get the contact information for a given person",
       schema: z.object({
-        a: z.number().describe("The first number."),
-        b: z.number().describe("The second number."),
+        name: z.string().describe("The name of the person"),
       }),
     },
   ],
-  OpenAIChatFunctionPrompt.forSchemasCurried([
-    OpenAIChatMessage.system(
-      "You are a calculator. Evaluate the following expression:"
-    ),
-    OpenAIChatMessage.user("Multiply twelve with 10."),
-  ])
+  OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
 );
 ```
 
-The output is typed:
+The result contains:
+
+- `schema`: The name of the schema that was matched or `null` if text was generated.
+- `value`: The value of the schema that was matched or `null` if text was generated.
+- `text`: The generated text. Optional when a schema was matched.
 
 ```ts
 switch (schema) {
+  case "getCurrentWeather": {
+    const { location, unit } = value;
+    console.log("getCurrentWeather", location, unit);
+    break;
+  }
+
+  case "getContactInformation": {
+    const { name } = value;
+    console.log("getContactInformation", name);
+    break;
+  }
+
   case null: {
-    console.log(`TEXT: ${value}`);
-    break;
-  }
-
-  case "multiply": {
-    console.log(`MULTIPLY: ${value.a * value.b}`);
-    break;
-  }
-
-  case "sum": {
-    console.log(`SUM: ${value.a + value.b}`);
-    break;
+    console.log("No function call. Generated text: ", text);
   }
 }
 ```

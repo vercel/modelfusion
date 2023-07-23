@@ -1,8 +1,10 @@
 # Middle school math
 
+> _console app_, _agent_, _tools_, _GPT-4_
+
 Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.
 
-Note: GPT-4 can solve these problems without a calculator.
+Note: GPT-4 can solve these problems without a calculator. This example is just to show how to use tools in an agent.
 
 ## Usage
 

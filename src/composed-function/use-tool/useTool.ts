@@ -14,6 +14,13 @@ import { generateJsonOrText } from "../../model-function/generate-json/generateJ
 import { NoSuchToolError } from "./NoSuchToolError.js";
 import { Tool } from "./Tool.js";
 
+/**
+ * `useTool` uses `generateJson` to generate parameters for a tool and then executes the tool with the parameters.
+ *
+ * @returns The result contains the name of the tool (`tool` property),
+ * the parameters (`parameters` property, typed),
+ * and the result of the tool execution (`result` property, typed).
+ */
 export async function useTool<
   PROMPT,
   RESPONSE,

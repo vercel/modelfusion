@@ -11,33 +11,35 @@ import { z } from "zod";
 dotenv.config();
 
 (async () => {
-  const multiplyTool = new Tool({
-    name: "multiply" as const, // mark 'as const' for type inference
-    description: "Multiply two numbers",
+  const calculator = new Tool({
+    name: "calculator" as const, // mark 'as const' for type inference
+    description: "Execute a calculation",
 
     inputSchema: z.object({
       a: z.number().describe("The first number."),
       b: z.number().describe("The second number."),
+      operator: z.enum(["+", "-", "*", "/"]).describe("The operator."),
     }),
 
-    execute: async ({ a, b }) => a * b,
+    execute: async ({ a, b, operator }) => {
+      switch (operator) {
+        case "+":
+          return a + b;
+        case "-":
+          return a - b;
+        case "*":
+          return a * b;
+        case "/":
+          return a / b;
+        default:
+          throw new Error(`Unknown operator: ${operator}`);
+      }
+    },
   });
 
-  const addTool = new Tool({
-    name: "add" as const,
-    description: "Add two numbers",
-
-    inputSchema: z.object({
-      a: z.number().describe("The first number."),
-      b: z.number().describe("The second number."),
-    }),
-
-    execute: async ({ a, b }) => a + b,
-  });
-
-  const { tool, result } = await useToolOrGenerateText(
+  const { tool, parameters, result, text } = await useToolOrGenerateText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-    [multiplyTool, addTool],
+    [calculator /* ... */],
     // Instead of using a curried function,
     // you can also work with the tools directly:
     (tools) =>
@@ -51,7 +53,7 @@ dotenv.config();
               .map((tool) => tool.name)
               .join(", ")}).`
           ),
-          OpenAIChatMessage.user("What's fourteen to the power of two?"),
+          OpenAIChatMessage.user("What's fourteen times twelve?"),
           // OpenAIChatMessage.user("What's twelwe plus 1234?"),
           // OpenAIChatMessage.user("Tell me about Berlin"),
         ],
@@ -59,5 +61,7 @@ dotenv.config();
   );
 
   console.log(tool != null ? `TOOL: ${tool}` : "TEXT");
-  console.log(JSON.stringify(result, null, 2));
+  console.log(`PARAMETERS: ${JSON.stringify(parameters)}`);
+  console.log(`TEXT: ${text}`);
+  console.log(`RESULT: ${JSON.stringify(result)}`);
 })();

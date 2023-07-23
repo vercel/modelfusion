@@ -98,32 +98,28 @@ Generates JSON (or text as a fallback) using a prompt and multiple schemas.
 It either matches one of the schemas or is text reponse.
 
 ```ts
-const { schema, value } = await generateJsonOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+const { schema, value, text } = await generateJsonOrText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
   [
     {
-      name: "multiply" as const, // mark 'as const' for type inference
-      description: "Multiply two numbers",
+      name: "getCurrentWeather" as const, // mark 'as const' for type inference
+      description: "Get the current weather in a given location",
       schema: z.object({
-        a: z.number().describe("The first number."),
-        b: z.number().describe("The second number."),
+        location: z
+          .string()
+          .describe("The city and state, e.g. San Francisco, CA"),
+        unit: z.enum(["celsius", "fahrenheit"]).optional(),
       }),
     },
     {
-      name: "sum" as const,
-      description: "Sum two numbers",
+      name: "getContactInformation" as const,
+      description: "Get the contact information for a given person",
       schema: z.object({
-        a: z.number().describe("The first number."),
-        b: z.number().describe("The second number."),
+        name: z.string().describe("The name of the person"),
       }),
     },
   ],
-  OpenAIChatFunctionPrompt.forSchemasCurried([
-    OpenAIChatMessage.system(
-      "You are a calculator. Evaluate the following expression:"
-    ),
-    OpenAIChatMessage.user("Multiply twelve with 10."),
-  ])
+  OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
 );
 ```
 
@@ -136,18 +132,30 @@ Tools are functions that can be executed by an AI model. They are useful for bui
 A tool is a function with a name, a description, and a schema for the input parameters.
 
 ```ts
-const multiplyTool = new Tool({
-  name: "multiply" as const, // mark 'as const' for type inference
-  description: "Multiply two numbers",
+const calculator = new Tool({
+  name: "calculator" as const, // mark 'as const' for type inference
+  description: "Execute a calculation",
 
-  // Zod schema for the input parameters.
-  // The description becomes a part of the prompt.
   inputSchema: z.object({
     a: z.number().describe("The first number."),
     b: z.number().describe("The second number."),
+    operator: z.enum(["+", "-", "*", "/"]).describe("The operator."),
   }),
 
-  execute: async ({ a, b }) => a * b,
+  execute: async ({ a, b, operator }) => {
+    switch (operator) {
+      case "+":
+        return a + b;
+      case "-":
+        return a - b;
+      case "*":
+        return a * b;
+      case "/":
+        return a / b;
+      default:
+        throw new Error(`Unknown operator: ${operator}`);
+    }
+  },
 });
 ```
 
@@ -156,11 +164,11 @@ const multiplyTool = new Tool({
 The model determines the parameters for the tool from the prompt and then executes it.
 
 ```ts
-const result = await useTool(
+const { tool, parameters, result } = await useTool(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  multiplyTool,
+  calculator,
   OpenAIChatFunctionPrompt.forToolCurried([
-    OpenAIChatMessage.user("What's fourteen to the power of two?"),
+    OpenAIChatMessage.user("What's fourteen times twelve?"),
   ])
 );
 ```
@@ -171,11 +179,11 @@ The model determines which tool to use and its parameters from the prompt and th
 Text is generated as a fallback.
 
 ```ts
-const { tool, result } = await useToolOrGenerateText(
+const { tool, parameters, result, text } = await useToolOrGenerateText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  [multiplyTool, addTool],
+  [calculator /* ... */],
   OpenAIChatFunctionPrompt.forToolsCurried([
-    OpenAIChatMessage.user("What's fourteen to the power of two?"),
+    OpenAIChatMessage.user("What's fourteen times twelve?"),
   ])
 );
 ```
@@ -359,6 +367,6 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 
 ### [Middle school math](https://github.com/lgrammel/ai-utils.js/tree/main/examples/middle-school-math)
 
-> _console app_, _agent_, _GPT-4_
+> _console app_, _agent_, _tools_, _GPT-4_
 
 Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.

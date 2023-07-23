@@ -47,11 +47,11 @@ const question = questions[Math.floor(Math.random() * questions.length)];
     inputSchema: z.object({
       a: z.number().describe("The first number."),
       b: z.number().describe("The second number."),
-      operand: z.enum(["+", "-", "*", "/"]).describe("The operand."),
+      operator: z.enum(["+", "-", "*", "/"]).describe("The operator."),
     }),
 
-    execute: async ({ a, b, operand }) => {
-      switch (operand) {
+    execute: async ({ a, b, operator }) => {
+      switch (operator) {
         case "+":
           return a + b;
         case "-":
@@ -61,7 +61,7 @@ const question = questions[Math.floor(Math.random() * questions.length)];
         case "/":
           return a / b;
         default:
-          throw new Error(`Unknown operand: ${operand}`);
+          throw new Error(`Unknown operator: ${operator}`);
       }
     },
   });
@@ -115,7 +115,7 @@ const question = questions[Math.floor(Math.random() * questions.length)];
         }
 
         console.log(
-          `CALCULATION: ${parameters.a} ${parameters.operand} ${parameters.b} = ${result}\n`
+          `CALCULATION: ${parameters.a} ${parameters.operator} ${parameters.b} = ${result}\n`
         );
         messages.push(
           OpenAIChatMessage.functionCall(text, {

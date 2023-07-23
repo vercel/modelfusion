@@ -36,6 +36,6 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 
 ### [Middle school math](https://github.com/lgrammel/ai-utils.js/tree/main/examples/middle-school-math)
 
-> _console app_, _agent_, _GPT-4_
+> _console app_, _agent_, _tools_, _GPT-4_
 
 Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.
