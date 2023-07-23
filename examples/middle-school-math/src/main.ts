@@ -80,7 +80,7 @@ const question = questions[Math.floor(Math.random() * questions.length)];
 
   const messages = [
     OpenAIChatMessage.system(
-      "You are solving mathemathical problems. " +
+      "You are solving math problems. " +
         "Reason step by step. " +
         "Use the calculator when necessary. " +
         "The calculator can only do simple additions, subtractions, multiplications, and divisions. " +
