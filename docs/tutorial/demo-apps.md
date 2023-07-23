@@ -33,3 +33,9 @@ Record audio with push-to-talk and transcribe it using Whisper, implemented as a
 > _console app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
 
 TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.
+
+### [Middle school math](https://github.com/lgrammel/ai-utils.js/tree/main/examples/middle-school-math)
+
+> _console app_, _agent_, _GPT-4_
+
+Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.
