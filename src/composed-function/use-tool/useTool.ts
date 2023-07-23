@@ -13,7 +13,7 @@ import { generateJsonOrText } from "../../model-function/generate-json/generateJ
 import { NoSuchToolError } from "./NoSuchToolError.js";
 import { Tool } from "./Tool.js";
 
-export async function callTool<
+export async function useTool<
   PROMPT,
   RESPONSE,
   SETTINGS extends GenerateJsonModelSettings,
@@ -59,7 +59,7 @@ type ToToolNameResultPair<T> = {
 type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
   ToToolNameResultPair<ToTypedOutputMap<ToToolMap<TOOLS>>>;
 
-export async function callToolOrGenerateText<
+export async function useToolOrGenerateText<
   PROMPT,
   RESPONSE,
   SETTINGS extends GenerateJsonOrTextModelSettings,

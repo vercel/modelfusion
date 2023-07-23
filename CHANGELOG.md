@@ -5,7 +5,7 @@
 ### Added
 
 - `generateJsonOrText`
-- Tools: `Tool` class, `callTool`, `callToolOrGenerateText`
+- Tools: `Tool` class, `useTool`, `useToolOrGenerateText`
 
 ### Changed
 

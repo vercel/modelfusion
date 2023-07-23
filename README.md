@@ -143,10 +143,10 @@ const multiplyTool = new Tool({
 });
 ```
 
-#### callTool
+#### useTool
 
 ```ts
-const result = await callTool(
+const result = await useTool(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   multiplyTool,
   OpenAIChatFunctionPrompt.forToolCurried([
@@ -155,10 +155,10 @@ const result = await callTool(
 );
 ```
 
-#### callToolOrGenerateText
+#### useToolOrGenerateText
 
 ```ts
-const { tool, result } = await callToolOrGenerateText(
+const { tool, result } = await useToolOrGenerateText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   [multiplyTool, addTool],
   OpenAIChatFunctionPrompt.forToolsCurried([

@@ -34,15 +34,15 @@ const multiplyTool = new Tool({
 
 ## Using Tools
 
-### callTool
+### useTool
 
-[callTool API](/api/modules/#calltool)
+[useTool API](/api/modules/#useTool)
 
-`callTool` uses [generateJson](/guide/function/generate-json) to generate parameters for a tool and executes it.
+`useTool` uses [generateJson](/guide/function/generate-json) to generate parameters for a tool and executes it.
 The result is typed based on the tool's output type.
 
 ```ts
-const result = await callTool(
+const result = await useTool(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   multiplyTool,
   OpenAIChatFunctionPrompt.forToolCurried([
@@ -51,17 +51,17 @@ const result = await callTool(
 );
 ```
 
-### callToolOrGenerateText
+### useToolOrGenerateText
 
-[callToolOrGenerateText API](/api/modules/#calltoolorgeneratetext)
+[useToolOrGenerateText API](/api/modules/#useToolorgeneratetext)
 
-`callToolOrGenerateText` uses [generateJsonOrText](/guide/function/generate-json-or-text)
+`useToolOrGenerateText` uses [generateJsonOrText](/guide/function/generate-json-or-text)
 to select a tool, generate parameters for it and execute it.
 It can be configured with several tools.
 As a fallback, it generates text.
 
 ```ts
-const { tool, result } = await callToolOrGenerateText(
+const { tool, result } = await useToolOrGenerateText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   [multiplyTool, addTool],
   OpenAIChatFunctionPrompt.forToolsCurried([
@@ -73,7 +73,7 @@ const { tool, result } = await callToolOrGenerateText(
 If you need more control of the prompt, e.g. to reduce errors, you can access the tools in the prompt generation:
 
 ```ts
-const { tool, result } = await callToolOrGenerateText(
+const { tool, result } = await useToolOrGenerateText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   [multiplyTool, addTool],
   // Instead of using a curried function,
