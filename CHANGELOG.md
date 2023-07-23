@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.0.37 - 2023-09-23
+
+### Changed
+
+- `generateJsonOrText`, `useToolOrGenerateText`, `useTool` return additional information in the response (e.g. the parameters and additional text).
+
 ## v0.0.36 - 2023-07-23
 
 ### Changed
