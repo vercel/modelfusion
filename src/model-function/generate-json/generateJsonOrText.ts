@@ -1,51 +1,50 @@
 import { FunctionOptions } from "../FunctionOptions.js";
 import { executeCall } from "../executeCall.js";
 import {
-  GenerateJsonOrTextPrompt,
   GenerateJsonOrTextModel,
   GenerateJsonOrTextModelSettings,
+  GenerateJsonOrTextPrompt,
 } from "./GenerateJsonOrTextModel.js";
 import { NoSuchSchemaError } from "./NoSuchSchemaError.js";
 import { SchemaDefinition } from "./SchemaDefinition.js";
 import { SchemaValidationError } from "./SchemaValidationError.js";
 
-// [ { name: "n", schema: z.object<STRUCTURE> } | { ... } ]
+// [ { name: "n", schema: z.object<SCHEMA> } | { ... } ]
 type SchemaDefinitionArray<T extends SchemaDefinition<any, any>[]> = T;
 
-// { n: { name: "n", schema: z.object<STRUCTURE> }, ... }
+// { n: { name: "n", schema: z.object<SCHEMA> }, ... }
 type ToSchemaDefinitionsMap<
   T extends SchemaDefinitionArray<SchemaDefinition<any, any>[]>
 > = {
   [K in T[number]["name"]]: Extract<T[number], SchemaDefinition<K, any>>;
 };
 
-// { n: STRUCTURE, ... }
-type ToTypedMap<T> = {
-  [K in keyof T]: T[K] extends SchemaDefinition<any, infer U> ? U : never;
-};
-
-// { schema: "n", value: STRUCTURE } | ...
-type ToSchemaNameValuePair<T> = {
-  [KEY in keyof T]: { schema: KEY; value: T[KEY] };
+// { schema: "n", value: SCHEMA } | ...
+type ToSchemaUnion<T> = {
+  [KEY in keyof T]: T[KEY] extends SchemaDefinition<any, infer SCHEMA>
+    ? { schema: KEY; value: SCHEMA; text: string | null }
+    : never;
 }[keyof T];
 
 type ToOutputValue<
-  STRUCTURES extends SchemaDefinitionArray<SchemaDefinition<any, any>[]>
-> = ToSchemaNameValuePair<ToTypedMap<ToSchemaDefinitionsMap<STRUCTURES>>>;
+  SCHEMAS extends SchemaDefinitionArray<SchemaDefinition<any, any>[]>
+> = ToSchemaUnion<ToSchemaDefinitionsMap<SCHEMAS>>;
 
 export function generateJsonOrText<
-  STRUCTURES extends SchemaDefinition<any, any>[],
+  SCHEMAS extends SchemaDefinition<any, any>[],
   PROMPT,
   RESPONSE,
   SETTINGS extends GenerateJsonOrTextModelSettings
 >(
   model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
-  schemaDefinitions: STRUCTURES,
+  schemaDefinitions: SCHEMAS,
   prompt: (
-    schemaDefinitions: STRUCTURES
+    schemaDefinitions: SCHEMAS
   ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
-): Promise<{ schema: null; value: string } | ToOutputValue<STRUCTURES>> {
+): Promise<
+  { schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>
+> {
   const expandedPrompt = prompt(schemaDefinitions);
 
   return executeCall({
@@ -55,12 +54,15 @@ export function generateJsonOrText<
       generateJsonOrText(model, schemaDefinitions, prompt, options),
     generateResponse: (options) =>
       model.generateJsonResponse(expandedPrompt, options),
-    extractOutputValue: (response) => {
-      const { schema, value } = expandedPrompt.extractJson(response);
+    extractOutputValue: (
+      response
+    ): { schema: null; value: null; text: string } | ToOutputValue<SCHEMAS> => {
+      const { schema, value, text } =
+        expandedPrompt.extractJsonAndText(response);
 
       // text generation:
       if (schema == null) {
-        return { schema, value };
+        return { schema, value, text };
       }
 
       const definition = schemaDefinitions.find((d) => d.name === schema);
@@ -79,7 +81,11 @@ export function generateJsonOrText<
         });
       }
 
-      return { schema, value: parseResult.data };
+      return {
+        schema: schema as ToOutputValue<SCHEMAS>["schema"],
+        value: parseResult.data,
+        text: text as any, // text is string | null, which is part of the response for schema values
+      };
     },
     getStartEvent: (metadata, settings) => ({
       type: "json-generation-started",

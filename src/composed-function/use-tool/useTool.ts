@@ -2,6 +2,7 @@ import { FunctionOptions } from "../../model-function/FunctionOptions.js";
 import {
   GenerateJsonModel,
   GenerateJsonModelSettings,
+  GenerateJsonPrompt,
 } from "../../model-function/generate-json/GenerateJsonModel.js";
 import {
   GenerateJsonOrTextModel,
@@ -21,7 +22,7 @@ export async function useTool<
 >(
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   tool: TOOL,
-  prompt: (tool: TOOL) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
+  prompt: (tool: TOOL) => PROMPT & GenerateJsonPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
 ): Promise<Awaited<ReturnType<TOOL["execute"]>>> {
   const input = await generateJson(
@@ -47,14 +48,14 @@ type ToToolMap<T extends ToolArray<Tool<any, any, any>[]>> = {
 };
 
 // { tool: "n", result: ... } | { ... }
-type ToTypedOutputMap<T> = {
-  [KEY in keyof T]: T[KEY] extends Tool<any, infer V, infer U>
-    ? { tool: KEY; parameters: V; result: U }
+type ToToolUnion<T> = {
+  [KEY in keyof T]: T[KEY] extends Tool<any, infer INPUT, infer OUTPUT>
+    ? { tool: KEY; parameters: INPUT; result: OUTPUT; text: string | null }
     : never;
 }[keyof T];
 
 type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
-  ToTypedOutputMap<ToToolMap<TOOLS>>;
+  ToToolUnion<ToToolMap<TOOLS>>;
 
 export async function useToolOrGenerateText<
   PROMPT,
@@ -67,7 +68,8 @@ export async function useToolOrGenerateText<
   prompt: (tools: TOOLS) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
 ): Promise<
-  { tool: null; parameters: null; result: string } | ToOutputValue<TOOLS>
+  | { tool: null; parameters: null; result: null; text: string }
+  | ToOutputValue<TOOLS>
 > {
   const expandedPrompt = prompt(tools);
 
@@ -82,12 +84,14 @@ export async function useToolOrGenerateText<
     options
   );
 
-  const schema = modelResponse.schema;
+  const { schema, text } = modelResponse;
+
   if (schema == null) {
     return {
       tool: null,
       parameters: null,
-      result: modelResponse.value,
+      result: null,
+      text,
     };
   }
 
@@ -105,5 +109,6 @@ export async function useToolOrGenerateText<
     tool: schema as keyof ToToolMap<TOOLS>,
     result,
     parameters: toolParameters,
+    text: text as any, // string | null is the expected value here
   };
 }

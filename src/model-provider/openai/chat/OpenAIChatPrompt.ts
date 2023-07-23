@@ -170,18 +170,21 @@ export class OpenAIChatAutoFunctionPrompt<
     this.fns = fns;
   }
 
-  extractJson(response: OpenAIChatResponse) {
+  extractJsonAndText(response: OpenAIChatResponse) {
     const message = response.choices[0]!.message;
+    const content = message.content;
     const functionCall = message.function_call;
 
     return functionCall == null
       ? {
           schema: null,
-          value: message.content ?? "",
+          value: null,
+          text: content ?? "",
         }
       : {
           schema: functionCall.name,
           value: SecureJSON.parse(functionCall.arguments),
+          text: content,
         };
   }
 

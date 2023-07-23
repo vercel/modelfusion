@@ -52,7 +52,7 @@ dotenv.config();
     }
 
     case null: {
-      console.log("No function call. Generated text: ", response.value);
+      console.log("No function call. Generated text: ", response.text);
     }
   }
 })();

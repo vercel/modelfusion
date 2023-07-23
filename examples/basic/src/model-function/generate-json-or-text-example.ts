@@ -10,7 +10,7 @@ import { z } from "zod";
 dotenv.config();
 
 (async () => {
-  const { schema, value } = await generateJsonOrText(
+  const { schema, value, text } = await generateJsonOrText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     [
       {
@@ -40,7 +40,7 @@ dotenv.config();
 
   switch (schema) {
     case null: {
-      console.log(`TEXT: ${value}`);
+      console.log(`TEXT: ${text}`);
       break;
     }
 

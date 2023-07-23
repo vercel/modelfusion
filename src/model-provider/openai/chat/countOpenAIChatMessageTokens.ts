@@ -24,7 +24,7 @@ export async function countOpenAIChatMessageTokens({
 }) {
   return (
     OPENAI_CHAT_MESSAGE_BASE_TOKEN_COUNT +
-    (await countTokens(new TikTokenTokenizer({ model }), message.content))
+    (await countTokens(new TikTokenTokenizer({ model }), message.content ?? ""))
   );
 }
 
