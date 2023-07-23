@@ -1,10 +1,16 @@
 export type OpenAIChatMessage = {
   content: string;
-  function_call?: any;
 } & (
   | {
       role: "user" | "assistant" | "system";
       name?: string;
+    }
+  | {
+      role: "assistant";
+      function_call: {
+        name: string;
+        arguments: string;
+      };
     }
   | {
       role: "function";
@@ -25,7 +31,14 @@ export const OpenAIChatMessage = {
     return { role: "assistant", content };
   },
 
-  functionCall(name: string, content: string): OpenAIChatMessage {
+  functionCall(functionCall: {
+    name: string;
+    arguments: string;
+  }): OpenAIChatMessage {
+    return { role: "assistant", content: "", function_call: functionCall };
+  },
+
+  functionResult(name: string, content: string): OpenAIChatMessage {
     return { role: "function", name, content };
   },
 };

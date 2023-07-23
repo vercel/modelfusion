@@ -66,7 +66,8 @@ dotenv.config();
     const secondResponse = await model.callAPI(
       [
         OpenAIChatMessage.user("What's the weather like in Boston?"),
-        OpenAIChatMessage.functionCall(
+        OpenAIChatMessage.functionCall(message.function_call),
+        OpenAIChatMessage.functionResult(
           functionName,
           JSON.stringify(functionResponse)
         ),
