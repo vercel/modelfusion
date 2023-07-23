@@ -46,18 +46,15 @@ type ToToolMap<T extends ToolArray<Tool<any, any, any>[]>> = {
   [K in T[number]["name"]]: Extract<T[number], Tool<K, any, any>>;
 };
 
-// { n: OUTPUT, ... }
+// { tool: "n", result: ... } | { ... }
 type ToTypedOutputMap<T> = {
-  [K in keyof T]: T[K] extends Tool<any, any, infer U> ? U : never;
-};
-
-// { tool: "n", result: OUTPUT } | ...
-type ToToolNameResultPair<T> = {
-  [KEY in keyof T]: { tool: KEY; result: T[KEY] };
+  [KEY in keyof T]: T[KEY] extends Tool<any, infer V, infer U>
+    ? { tool: KEY; parameters: V; result: U }
+    : never;
 }[keyof T];
 
 type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
-  ToToolNameResultPair<ToTypedOutputMap<ToToolMap<TOOLS>>>;
+  ToTypedOutputMap<ToToolMap<TOOLS>>;
 
 export async function useToolOrGenerateText<
   PROMPT,
@@ -69,7 +66,9 @@ export async function useToolOrGenerateText<
   tools: TOOLS,
   prompt: (tools: TOOLS) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
-): Promise<{ tool: null; result: string } | ToOutputValue<TOOLS>> {
+): Promise<
+  { tool: null; parameters: null; result: string } | ToOutputValue<TOOLS>
+> {
   const expandedPrompt = prompt(tools);
 
   const modelResponse = await generateJsonOrText(
@@ -83,24 +82,28 @@ export async function useToolOrGenerateText<
     options
   );
 
-  if (modelResponse.schema == null) {
+  const schema = modelResponse.schema;
+  if (schema == null) {
     return {
       tool: null,
+      parameters: null,
       result: modelResponse.value,
     };
   }
 
-  const schema = modelResponse.schema as keyof TOOLS;
   const tool = tools.find((tool) => tool.name === schema);
 
   if (tool == null) {
     throw new NoSuchToolError(schema.toString());
   }
 
-  const result = await tool.execute(modelResponse.value);
+  const toolParameters = modelResponse.value;
+
+  const result = await tool.execute(toolParameters);
 
   return {
-    tool: schema,
+    tool: schema as keyof ToToolMap<TOOLS>,
     result,
+    parameters: toolParameters,
   };
 }
