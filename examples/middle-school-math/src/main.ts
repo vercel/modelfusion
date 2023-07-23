@@ -37,7 +37,7 @@ const questions = [
   "A taxi driver earns $9461 per 1-hour work. If he works 12 hours a day and in 1 hour he uses 12-liters petrol with price $134 for 1-liter. How much money does he earn in one day?",
 ];
 
-const question = questions[Math.floor(Math.random() * questions.length)];
+const problem = questions[Math.floor(Math.random() * questions.length)];
 
 (async () => {
   const calculator = new Tool({
@@ -86,10 +86,10 @@ const question = questions[Math.floor(Math.random() * questions.length)];
         "The calculator can only do simple additions, subtractions, multiplications, and divisions. " +
         "When you have the final answer, use the answer function to write it down."
     ),
-    OpenAIChatMessage.user(question),
+    OpenAIChatMessage.user(problem),
   ];
 
-  console.log(`PROBLEM: ${question}\n`);
+  console.log(`PROBLEM: ${problem}\n`);
 
   while (true) {
     const { tool, parameters, result, text } = await useToolOrGenerateText(
