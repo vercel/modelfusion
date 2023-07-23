@@ -24,7 +24,11 @@ export async function useTool<
   tool: TOOL,
   prompt: (tool: TOOL) => PROMPT & GenerateJsonPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
-): Promise<Awaited<ReturnType<TOOL["execute"]>>> {
+): Promise<{
+  tool: TOOL["name"];
+  parameters: TOOL["inputSchema"];
+  result: Awaited<ReturnType<TOOL["execute"]>>;
+}> {
   const input = await generateJson(
     model,
     {
@@ -36,7 +40,11 @@ export async function useTool<
     options
   );
 
-  return tool.execute(input);
+  return {
+    tool: tool.name,
+    parameters: input,
+    result: await tool.execute(input),
+  };
 }
 
 // [ { name: "n", ... } | { ... } ]

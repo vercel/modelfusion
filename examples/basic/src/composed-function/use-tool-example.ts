@@ -23,7 +23,7 @@ dotenv.config();
     execute: async ({ a, b }) => a * b,
   });
 
-  const result = await useTool(
+  const { tool, parameters, result } = await useTool(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     multiplyTool,
     OpenAIChatFunctionPrompt.forToolCurried([
@@ -31,5 +31,7 @@ dotenv.config();
     ])
   );
 
-  console.log(JSON.stringify(result, null, 2));
+  console.log(`Tool: ${tool}`);
+  console.log(`Parameters: ${JSON.stringify(parameters)}`);
+  console.log(`Result: ${result}`);
 })();
