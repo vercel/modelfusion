@@ -22,8 +22,14 @@
 
 ## Quick Install
 
-```bash
+```sh
 npm install ai-utils.js
+```
+
+You need to install `zod` and a matching version of `zod-to-json-schema` (peer dependencies):
+
+```sh
+npm install zod zod-to-json-schema
 ```
 
 ## Usage Examples
