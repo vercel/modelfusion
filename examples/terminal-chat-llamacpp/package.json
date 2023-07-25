@@ -1,0 +1,16 @@
+{
+  "name": "@lgrammel/ai-utils.js-terminal-chat-llamacpp-example",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "ai-utils.js": "*"
+  },
+  "devDependencies": {
+    "@types/node": "20.2.3",
+    "ts-node": "10.9.1"
+  },
+  "scripts": {
+    "build": "tsc --outDir build/"
+  }
+}
