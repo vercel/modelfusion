@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.0.38 - 2023-09-24
+
+### Changed
+
+- `zod` and `zod-to-json-schema` are peer dependencies and no longer included in the package.
+
 ## v0.0.37 - 2023-09-23
 
 ### Changed
