@@ -11,7 +11,9 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 1. Install [llama.cpp](https://github.com/ggerganov/llama.cpp) following the instructions in the `llama.cpp` repository.
 1. Download the models that you want to use and try it out with llama.cpp.
    - [Search for GGML models on Hugging Face](https://huggingface.co/models?sort=trending&search=ggml)
-1. Start the llama.cpp server with the model that you want to serve, e.g. using `./server -m models/llama-2-7b-chat.ggmlv3.q4_K_M.bin -c 2048` (Mac)
+1. Start the llama.cpp server with the model that you want to serve:
+   - e.g., `./server -m models/llama-2-7b-chat.ggmlv3.q4_K_M.bin -c 2048` (Mac)
+   - For generating embeddings, you need to start the server with the `--embedding` flag.
    - [llama.cpp server docs](https://github.com/ggerganov/llama.cpp/tree/master/examples/server)
 
 ## Usage
@@ -46,6 +48,19 @@ const textStream = await streamText(
 for await (const textFragment of textStream) {
   process.stdout.write(textFragment);
 }
+```
+
+### Text Embedding
+
+[LlamaCppTextEmbeddingModel API](/api/classes/LlamaCppTextEmbeddingModel)
+
+```ts
+import { LlamaCppTextEmbeddingModel, embedTexts } from "ai-utils.js";
+
+const embeddings = await embedTexts(new LlamaCppTextEmbeddingModel(), [
+  "At first, Nox didn't know what to do with the pup.",
+  "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+]);
 ```
 
 ### Tokenize Text

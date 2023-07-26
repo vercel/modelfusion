@@ -11,12 +11,12 @@ export interface TextEmbeddingModel<
   /**
    * The limit of tokens for a single text.
    */
-  readonly maxTokens: number;
+  readonly maxTokens: number | undefined;
 
   /**
    * The size of the embedding vector.
    */
-  readonly embeddingDimensions: number;
+  readonly embeddingDimensions: number | undefined;
 
   readonly maxTextsPerCall: number;
 
