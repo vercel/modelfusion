@@ -385,6 +385,8 @@ async function createCohereTextGenerationFullDeltaIterableQueue(
     let unprocessedText = "";
     const reader = new ReadableStreamDefaultReader(stream);
     const utf8Decoder = new TextDecoder("utf-8");
+
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const { value: chunk, done } = await reader.read();
 

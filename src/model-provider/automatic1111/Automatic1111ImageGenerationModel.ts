@@ -122,7 +122,7 @@ async function callAutomatic1111ImageGenerationAPI({
   abortSignal?: AbortSignal;
   height?: number;
   width?: number;
-  prompt: String;
+  prompt: string;
   negativePrompt?: string;
   sampler?: string;
   steps?: number;
