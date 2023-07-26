@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.0.39 - 2023-09-26
+
+### Added
+
+- llama.cpp embedding support.
+
 ## v0.0.38 - 2023-09-24
 
 ### Changed
