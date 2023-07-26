@@ -25,6 +25,7 @@ import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import {
   OpenAIChatAutoFunctionPrompt,
   OpenAIChatSingleFunctionPrompt,
+  OpenAIFunctionDescription,
 } from "./OpenAIChatPrompt.js";
 import {
   OpenAIChatDelta,
@@ -172,7 +173,8 @@ export class OpenAIChatModel
       OpenAIChatSettings
     >,
     GenerateJsonOrTextModel<
-      OpenAIChatSingleFunctionPrompt<any> | OpenAIChatAutoFunctionPrompt<any>,
+      | OpenAIChatSingleFunctionPrompt<unknown>
+      | OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
       OpenAIChatResponse,
       OpenAIChatSettings
     >
@@ -295,8 +297,8 @@ export class OpenAIChatModel
    */
   generateJsonResponse(
     prompt:
-      | OpenAIChatSingleFunctionPrompt<any>
-      | OpenAIChatAutoFunctionPrompt<any>,
+      | OpenAIChatSingleFunctionPrompt<unknown>
+      | OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
     options?: FunctionOptions<OpenAIChatSettings> | undefined
   ): PromiseLike<OpenAIChatResponse> {
     const settingsWithFunctionCall = Object.assign({}, options, {

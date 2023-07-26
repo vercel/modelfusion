@@ -9,12 +9,16 @@ import { NoSuchSchemaError } from "./NoSuchSchemaError.js";
 import { SchemaDefinition } from "./SchemaDefinition.js";
 import { SchemaValidationError } from "./SchemaValidationError.js";
 
+// In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
+// retrieved through lookups such as TOOL["name"], such that any does not affect any client.
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // [ { name: "n", schema: z.object<SCHEMA> } | { ... } ]
 type SchemaDefinitionArray<T extends SchemaDefinition<any, any>[]> = T;
 
 // { n: { name: "n", schema: z.object<SCHEMA> }, ... }
 type ToSchemaDefinitionsMap<
-  T extends SchemaDefinitionArray<SchemaDefinition<any, any>[]>
+  T extends SchemaDefinitionArray<SchemaDefinition<any, any>[]>,
 > = {
   [K in T[number]["name"]]: Extract<T[number], SchemaDefinition<K, any>>;
 };
@@ -27,14 +31,14 @@ type ToSchemaUnion<T> = {
 }[keyof T];
 
 type ToOutputValue<
-  SCHEMAS extends SchemaDefinitionArray<SchemaDefinition<any, any>[]>
+  SCHEMAS extends SchemaDefinitionArray<SchemaDefinition<any, any>[]>,
 > = ToSchemaUnion<ToSchemaDefinitionsMap<SCHEMAS>>;
 
 export function generateJsonOrText<
   SCHEMAS extends SchemaDefinition<any, any>[],
   PROMPT,
   RESPONSE,
-  SETTINGS extends GenerateJsonOrTextModelSettings
+  SETTINGS extends GenerateJsonOrTextModelSettings,
 >(
   model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
   schemaDefinitions: SCHEMAS,

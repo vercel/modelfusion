@@ -1,5 +1,8 @@
 import { nanoid as createId } from "nanoid";
-import { TextEmbeddingModel } from "../model-function/embed-text/TextEmbeddingModel.js";
+import {
+  TextEmbeddingModel,
+  TextEmbeddingModelSettings,
+} from "../model-function/embed-text/TextEmbeddingModel.js";
 import {
   embedText,
   embedTexts,
@@ -10,12 +13,16 @@ import { TextChunkRetrieverSettings } from "../text-chunk/retrieve-text-chunks/T
 import { VectorIndex } from "./VectorIndex.js";
 import { FunctionOptions } from "../model-function/FunctionOptions.js";
 
-export class VectorIndexTextChunkStore<CHUNK extends TextChunk, INDEX> {
+export class VectorIndexTextChunkStore<
+  CHUNK extends TextChunk,
+  INDEX,
+  MODEL extends TextEmbeddingModel<unknown, TextEmbeddingModelSettings>,
+> {
   private readonly _index: VectorIndex<CHUNK, INDEX>;
 
   private readonly generateId: () => string;
 
-  private readonly embeddingModel: TextEmbeddingModel<any, any>;
+  private readonly embeddingModel: MODEL;
   private readonly queryFunctionId?: string;
   private readonly upsertFunctionId?: string;
 
@@ -28,7 +35,7 @@ export class VectorIndexTextChunkStore<CHUNK extends TextChunk, INDEX> {
   }: {
     index: VectorIndex<CHUNK, INDEX>;
     generateId?: () => string;
-    embeddingModel: TextEmbeddingModel<any, any>;
+    embeddingModel: MODEL;
     queryFunctionId?: string;
     upsertFunctionId?: string;
   }) {

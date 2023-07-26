@@ -19,8 +19,8 @@ export async function upsertTextChunks<
     chunks,
     ids,
   }: {
-    vectorIndex: VectorIndex<CHUNK, any>;
-    embeddingModel: TextEmbeddingModel<any, SETTINGS>;
+    vectorIndex: VectorIndex<CHUNK, unknown>;
+    embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
     generateId?: () => string;
     chunks: CHUNK[];
     ids?: Array<string | undefined>;

@@ -3,7 +3,7 @@ import { ThrottleFunction } from "./ThrottleFunction.js";
 class MaxConcurrencyThrottler {
   private maxConcurrentCalls: number;
   private activeCallCount: number;
-  private callQueue: Array<() => Promise<any>>;
+  private callQueue: Array<() => Promise<unknown>>;
 
   constructor({ maxConcurrentCalls }: { maxConcurrentCalls: number }) {
     this.maxConcurrentCalls = maxConcurrentCalls;

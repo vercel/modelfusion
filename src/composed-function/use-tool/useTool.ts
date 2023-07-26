@@ -14,6 +14,10 @@ import { generateJsonOrText } from "../../model-function/generate-json/generateJ
 import { NoSuchToolError } from "./NoSuchToolError.js";
 import { Tool } from "./Tool.js";
 
+// In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
+// retrieved through lookups such as TOOL["name"], such that any does not affect any client.
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * `useTool` uses `generateJson` to generate parameters for a tool and then executes the tool with the parameters.
  *
@@ -25,7 +29,7 @@ export async function useTool<
   PROMPT,
   RESPONSE,
   SETTINGS extends GenerateJsonModelSettings,
-  TOOL extends Tool<any, any, any>
+  TOOL extends Tool<any, any, any>,
 >(
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   tool: TOOL,
@@ -76,7 +80,7 @@ export async function useToolOrGenerateText<
   PROMPT,
   RESPONSE,
   SETTINGS extends GenerateJsonOrTextModelSettings,
-  TOOLS extends Array<Tool<any, any, any>>
+  TOOLS extends Array<Tool<any, any, any>>,
 >(
   model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
   tools: TOOLS,

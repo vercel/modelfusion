@@ -8,6 +8,10 @@ import { SchemaDefinition } from "../../../model-function/generate-json/SchemaDe
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";
 
+// In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
+// retrieved through lookups such as TOOL["name"], such that any does not affect any client.
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export type OpenAIFunctionDescription<T> = {
   name: string;
   description?: string;
@@ -65,7 +69,7 @@ export const OpenAIChatFunctionPrompt = {
   },
 
   forOpenAIFunctionDescriptions<
-    FUNCTIONS extends Array<OpenAIFunctionDescription<any>>
+    FUNCTIONS extends Array<OpenAIFunctionDescription<any>>,
   >(options: { messages: OpenAIChatMessage[]; fns: FUNCTIONS }) {
     return new OpenAIChatAutoFunctionPrompt(options);
   },
@@ -152,7 +156,7 @@ export class OpenAIChatSingleFunctionPrompt<T>
 }
 
 export class OpenAIChatAutoFunctionPrompt<
-  FUNCTIONS extends Array<OpenAIFunctionDescription<any>>
+  FUNCTIONS extends Array<OpenAIFunctionDescription<any>>,
 > implements GenerateJsonOrTextPrompt<OpenAIChatResponse>
 {
   readonly messages: OpenAIChatMessage[];

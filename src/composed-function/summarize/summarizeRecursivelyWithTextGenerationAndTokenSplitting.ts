@@ -1,4 +1,7 @@
-import { TextGenerationModelWithTokenization } from "../../model-function/generate-text/TextGenerationModel.js";
+import {
+  TextGenerationModelSettings,
+  TextGenerationModelWithTokenization,
+} from "../../model-function/generate-text/TextGenerationModel.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { Run } from "../../run/Run.js";
@@ -11,7 +14,7 @@ import { summarizeRecursively } from "./summarizeRecursively.js";
  * while leaving enough space for the model to generate text.
  */
 export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
-  PROMPT
+  PROMPT,
 >(
   {
     text,
@@ -21,7 +24,11 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     join,
   }: {
     text: string;
-    model: TextGenerationModelWithTokenization<PROMPT, any, any> &
+    model: TextGenerationModelWithTokenization<
+      PROMPT,
+      unknown,
+      TextGenerationModelSettings
+    > &
       FullTokenizer;
     prompt: (input: { text: string }) => Promise<PROMPT>;
     reservedCompletionTokens: number;

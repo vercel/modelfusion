@@ -12,12 +12,13 @@ export function generateJson<
   STRUCTURE,
   PROMPT,
   RESPONSE,
-  SETTINGS extends GenerateJsonModelSettings
+  NAME extends string,
+  SETTINGS extends GenerateJsonModelSettings,
 >(
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
-  schemaDefinition: SchemaDefinition<any, STRUCTURE>,
+  schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
   prompt: (
-    schemaDefinition: SchemaDefinition<any, STRUCTURE>
+    schemaDefinition: SchemaDefinition<NAME, STRUCTURE>
   ) => PROMPT & GenerateJsonPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
 ): Promise<STRUCTURE> {

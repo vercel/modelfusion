@@ -1,5 +1,8 @@
 import { FunctionOptions } from "../model-function/FunctionOptions.js";
-import { TextEmbeddingModel } from "../model-function/embed-text/TextEmbeddingModel.js";
+import {
+  TextEmbeddingModel,
+  TextEmbeddingModelSettings,
+} from "../model-function/embed-text/TextEmbeddingModel.js";
 import { embedText } from "../model-function/embed-text/embedText.js";
 import { TextChunk } from "../text-chunk/TextChunk.js";
 import {
@@ -15,12 +18,13 @@ export interface VectorIndexTextChunkRetrieverSettings {
 
 export class VectorIndexSimilarTextChunkRetriever<
   CHUNK extends TextChunk,
-  INDEX
+  INDEX,
+  SETTINGS extends TextEmbeddingModelSettings,
 > implements
     TextChunkRetriever<CHUNK, string, VectorIndexTextChunkRetrieverSettings>
 {
   private readonly vectorIndex: VectorIndex<CHUNK, INDEX>;
-  private readonly embeddingModel: TextEmbeddingModel<any, any>;
+  private readonly embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
   private readonly settings: VectorIndexTextChunkRetrieverSettings;
 
   constructor({
@@ -30,7 +34,7 @@ export class VectorIndexSimilarTextChunkRetriever<
     similarityThreshold,
   }: {
     vectorIndex: VectorIndex<CHUNK, INDEX>;
-    embeddingModel: TextEmbeddingModel<any, any>;
+    embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
   } & VectorIndexTextChunkRetrieverSettings) {
     this.vectorIndex = vectorIndex;
     this.embeddingModel = embeddingModel;

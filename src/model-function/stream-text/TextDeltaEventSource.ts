@@ -14,7 +14,7 @@ const textDeltaEventDataSchema = z.object({
 type TextDeltaEventData = z.infer<typeof textDeltaEventDataSchema>;
 
 function enqueueData(
-  controller: ReadableStreamDefaultController<any>,
+  controller: ReadableStreamDefaultController<unknown>,
   data: TextDeltaEventData
 ) {
   controller.enqueue(textEncoder.encode(`data: ${JSON.stringify(data)}\n\n`));
