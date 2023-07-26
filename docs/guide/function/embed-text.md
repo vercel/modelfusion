@@ -44,4 +44,5 @@ const embeddings = await embedTexts(
 ## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)
+- [Llama.cpp](/integration/model-provider/llamacpp)
 - [Cohere](/integration/model-provider/cohere)
