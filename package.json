@@ -42,12 +42,14 @@
     }
   },
   "scripts": {
+    "prepare": "husky install",
+    "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist",
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
     "dist:copy-files": "copyfiles package.json README.md LICENSE dist",
-    "dist": "npm run clean && npm run build && npm run dist:copy-files"
+    "dist": "npm run clean && npm run lint && npm run build && npm run dist:copy-files"
   },
   "dependencies": {
     "eventsource-parser": "1.0.0",
@@ -59,7 +61,14 @@
     "@pinecone-database/pinecone": "^0.1.6",
     "@tsconfig/recommended": "1.0.2",
     "@types/node": "18.11.9",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
     "copyfiles": "2.4.1",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "8.8.0",
+    "husky": "^8.0.3",
+    "lint-staged": "13.2.3",
+    "prettier": "3.0.0",
     "rimraf": "5.0.1",
     "typescript": "5.1.6",
     "zod": "3.21.4",
