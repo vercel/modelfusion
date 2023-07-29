@@ -136,6 +136,10 @@ export class HuggingFaceTextGenerationModel
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
+
+  withMaxTokens(maxTokens: number): this {
+    return this.withSettings({ maxNewTokens: maxTokens });
+  }
 }
 
 const huggingFaceTextGenerationResponseSchema = z.array(

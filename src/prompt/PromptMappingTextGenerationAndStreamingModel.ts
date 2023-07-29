@@ -83,4 +83,11 @@ export class PromptMappingTextGenerationAndStreamingModel<
       promptMapping: this.promptMapping,
     }) as this;
   }
+
+  withMaxTokens(maxTokens: number): this {
+    return new PromptMappingTextGenerationAndStreamingModel({
+      model: this.model.withMaxTokens(maxTokens),
+      promptMapping: this.promptMapping,
+    }) as this;
+  }
 }

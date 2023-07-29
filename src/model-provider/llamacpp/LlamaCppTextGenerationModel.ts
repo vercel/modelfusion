@@ -153,6 +153,10 @@ export class LlamaCppTextGenerationModel
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
+
+  withMaxTokens(maxTokens: number): this {
+    return this.withSettings({ nPredict: maxTokens });
+  }
 }
 
 const llamaCppTextGenerationResponseSchema = z.object({
