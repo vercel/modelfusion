@@ -1,6 +1,5 @@
 import { LlamaCppTextGenerationModel } from "../model-provider/llamacpp/LlamaCppTextGenerationModel.js";
-import { PromptMappedTextGenerationModel } from "./PromptMappedTextGenerationModel.js";
-import { PromptMappedTextStreamingModel } from "./PromptMappedTextStreamingModel.js";
+import { PromptMappedTextGenerationAndStreamingModel } from "./PromptMappedTextGenerationAndStreamingModel.js";
 import { Instruction, PromptMapper } from "./PromptMapper.js";
 
 export const llamaInstructionMapper: PromptMapper<Instruction, string> = {
@@ -15,16 +14,7 @@ export const llamaInstructionMapper: PromptMapper<Instruction, string> = {
 
 export const Llama2Prompt = {
   forInstruction(model: LlamaCppTextGenerationModel) {
-    return new PromptMappedTextGenerationModel({
-      model: model.withSettings({
-        stop: llamaInstructionMapper.stopTokens,
-      }),
-      promptMapper: llamaInstructionMapper,
-    });
-  },
-
-  forInstructionAsStream(model: LlamaCppTextGenerationModel) {
-    return new PromptMappedTextStreamingModel({
+    return new PromptMappedTextGenerationAndStreamingModel({
       model: model.withSettings({
         stop: llamaInstructionMapper.stopTokens,
       }),

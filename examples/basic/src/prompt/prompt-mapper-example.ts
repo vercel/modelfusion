@@ -17,7 +17,7 @@ import {
   // console.log(text);
 
   const textStream = await streamText(
-    Llama2Prompt.forInstructionAsStream(new LlamaCppTextGenerationModel({})),
+    Llama2Prompt.forInstruction(new LlamaCppTextGenerationModel({})),
     {
       system:
         "You are an AI assistant. Follow the user's instructions carefully",
