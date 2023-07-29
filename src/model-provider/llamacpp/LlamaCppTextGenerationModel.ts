@@ -153,7 +153,7 @@ export class LlamaCppTextGenerationModel
       LlamaCppTextGenerationModelSettings,
       this
     >({
-      model: this.withSettings({ stop: promptMapping.stopTokens }),
+      model: this.withStopTokens(promptMapping.stopTokens),
       promptMapping,
     });
   }
@@ -166,8 +166,12 @@ export class LlamaCppTextGenerationModel
     ) as this;
   }
 
-  withMaxTokens(maxTokens: number): this {
+  withMaxTokens(maxTokens: number) {
     return this.withSettings({ nPredict: maxTokens });
+  }
+
+  withStopTokens(stopTokens: string[]) {
+    return this.withSettings({ stop: stopTokens });
   }
 }
 

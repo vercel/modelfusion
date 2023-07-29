@@ -146,6 +146,11 @@ export class HuggingFaceTextGenerationModel
   withMaxTokens(maxTokens: number): this {
     return this.withSettings({ maxNewTokens: maxTokens });
   }
+
+  withStopTokens(): this {
+    // stop tokens are not supported by the HuggingFace API
+    return this;
+  }
 }
 
 const huggingFaceTextGenerationResponseSchema = z.array(

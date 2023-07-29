@@ -301,6 +301,10 @@ export class OpenAIChatModel
   withMaxTokens(maxTokens: number) {
     return this.withSettings({ maxTokens });
   }
+
+  withStopTokens(stopTokens: string[]): this {
+    return this.withSettings({ stop: stopTokens });
+  }
 }
 
 const openAIChatResponseSchema = z.object({

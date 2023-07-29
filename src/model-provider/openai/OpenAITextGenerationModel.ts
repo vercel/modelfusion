@@ -259,6 +259,10 @@ export class OpenAITextGenerationModel
   withMaxTokens(maxTokens: number) {
     return this.withSettings({ maxTokens });
   }
+
+  withStopTokens(stopTokens: string[]) {
+    return this.withSettings({ stop: stopTokens });
+  }
 }
 
 const openAITextGenerationResponseSchema = z.object({

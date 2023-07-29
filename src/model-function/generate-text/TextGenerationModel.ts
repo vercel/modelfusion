@@ -53,4 +53,10 @@ export interface TextGenerationModel<
    * Does nothing if the model does not support this setting.
    */
   withMaxTokens(maxTokens: number): this;
+
+  /**
+   * Sets the stop tokens to use. Stop tokens are not included in the generated text.
+   * Does nothing if the model does not support this setting.
+   */
+  withStopTokens(stopTokens: string[]): this;
 }

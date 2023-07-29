@@ -130,4 +130,11 @@ export class PromptMappingTextGenerationModel<
       promptMapping: this.promptMapping,
     }) as this;
   }
+
+  withStopTokens(stopTokens: string[]): this {
+    return new PromptMappingTextGenerationModel({
+      model: this.model.withStopTokens(stopTokens),
+      promptMapping: this.promptMapping,
+    }) as this;
+  }
 }

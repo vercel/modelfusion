@@ -197,6 +197,12 @@ export class CohereTextGenerationModel
   withMaxTokens(maxTokens: number) {
     return this.withSettings({ maxTokens });
   }
+
+  withStopTokens(stopTokens: string[]) {
+    // use endSequences instead of stopSequences
+    // to exclude stop tokens from the generated text
+    return this.withSettings({ endSequences: stopTokens });
+  }
 }
 
 const cohereTextGenerationResponseSchema = z.object({
