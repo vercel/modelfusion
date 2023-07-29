@@ -6,15 +6,11 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { AsyncQueue } from "../../model-function/stream-text/AsyncQueue.js";
-import { DeltaEvent } from "../../model-function/stream-text/DeltaEvent.js";
-import {
-  TextStreamingModel,
-  TextStreamingModelSettings,
-} from "../../model-function/stream-text/TextStreamingModel.js";
-import { parseEventSourceReadableStream } from "../../model-function/stream-text/parseEventSourceReadableStream.js";
+import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
+import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
+import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
 import { PromptMapping } from "../../prompt/PromptMapping.js";
-import { PromptMappingTextGenerationAndStreamingModel } from "../../prompt/PromptMappingTextGenerationAndStreamingModel.js";
+import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -27,8 +23,7 @@ import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
 export interface LlamaCppTextGenerationModelSettings
-  extends TextGenerationModelSettings,
-    TextStreamingModelSettings {
+  extends TextGenerationModelSettings {
   baseUrl?: string;
 
   retry?: RetryFunction;
@@ -70,10 +65,6 @@ export class LlamaCppTextGenerationModel
     TextGenerationModel<
       string,
       LlamaCppTextGenerationResponse,
-      LlamaCppTextGenerationModelSettings
-    >,
-    TextStreamingModel<
-      string,
       LlamaCppTextGenerationDelta,
       LlamaCppTextGenerationModelSettings
     >
@@ -154,7 +145,14 @@ export class LlamaCppTextGenerationModel
   }
 
   mapPrompt<INPUT_PROMPT>(promptMapping: PromptMapping<INPUT_PROMPT, string>) {
-    return new PromptMappingTextGenerationAndStreamingModel({
+    return new PromptMappingTextGenerationModel<
+      INPUT_PROMPT,
+      string,
+      LlamaCppTextGenerationResponse,
+      LlamaCppTextGenerationDelta,
+      LlamaCppTextGenerationModelSettings,
+      this
+    >({
       model: this.withSettings({ stop: promptMapping.stopTokens }),
       promptMapping,
     });

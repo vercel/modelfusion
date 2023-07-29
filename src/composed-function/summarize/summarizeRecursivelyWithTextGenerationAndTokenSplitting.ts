@@ -24,7 +24,14 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     join,
   }: {
     text: string;
-    model: TextGenerationModel<PROMPT, unknown, TextGenerationModelSettings> & {
+    model: TextGenerationModel<
+      PROMPT,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      any,
+      TextGenerationModelSettings
+    > & {
       contextWindowSize: number;
       tokenizer: FullTokenizer;
       countPromptTokens: (prompt: PROMPT) => PromiseLike<number>;

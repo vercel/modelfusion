@@ -1,4 +1,5 @@
 import { FunctionOptions } from "../model-function/FunctionOptions.js";
+import { DeltaEvent } from "../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -9,9 +10,15 @@ export class PromptMappingTextGenerationModel<
   PROMPT,
   MODEL_PROMPT,
   RESPONSE,
+  FULL_DELTA,
   SETTINGS extends TextGenerationModelSettings,
-  MODEL extends TextGenerationModel<MODEL_PROMPT, RESPONSE, SETTINGS>,
-> implements TextGenerationModel<PROMPT, RESPONSE, SETTINGS>
+  MODEL extends TextGenerationModel<
+    MODEL_PROMPT,
+    RESPONSE,
+    FULL_DELTA,
+    SETTINGS
+  >,
+> implements TextGenerationModel<PROMPT, RESPONSE, FULL_DELTA, SETTINGS>
 {
   private readonly model: MODEL;
   private readonly promptMapping: PromptMapping<PROMPT, MODEL_PROMPT>;
@@ -46,16 +53,16 @@ export class PromptMappingTextGenerationModel<
   get countPromptTokens(): MODEL["countPromptTokens"] extends undefined
     ? undefined
     : (prompt: PROMPT) => PromiseLike<number> {
-    const basic = this.model.countPromptTokens;
+    const originalCountPromptTokens = this.model.countPromptTokens;
 
-    if (basic === undefined) {
+    if (originalCountPromptTokens === undefined) {
       return undefined as MODEL["countPromptTokens"] extends undefined
         ? undefined
         : (prompt: PROMPT) => PromiseLike<number>;
     }
 
     return ((prompt: PROMPT) =>
-      basic(
+      originalCountPromptTokens(
         this.promptMapping.map(prompt)
       )) as MODEL["countPromptTokens"] extends undefined
       ? undefined
@@ -72,6 +79,42 @@ export class PromptMappingTextGenerationModel<
 
   extractText(response: RESPONSE): string {
     return this.model.extractText(response);
+  }
+
+  get generateDeltaStreamResponse(): MODEL["generateDeltaStreamResponse"] extends undefined
+    ? undefined
+    : (
+        prompt: PROMPT,
+        options: FunctionOptions<SETTINGS>
+      ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>> {
+    const originalGenerateDeltaStreamResponse =
+      this.model.generateDeltaStreamResponse;
+
+    if (originalGenerateDeltaStreamResponse === undefined) {
+      return undefined as MODEL["generateDeltaStreamResponse"] extends undefined
+        ? undefined
+        : (
+            prompt: PROMPT,
+            options: FunctionOptions<SETTINGS>
+          ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
+    }
+
+    return ((prompt: PROMPT, options: FunctionOptions<SETTINGS>) => {
+      const mappedPrompt = this.promptMapping.map(prompt);
+      return originalGenerateDeltaStreamResponse.bind(this.model)(
+        mappedPrompt,
+        options
+      );
+    }) as MODEL["generateDeltaStreamResponse"] extends undefined
+      ? undefined
+      : (
+          prompt: PROMPT,
+          options: FunctionOptions<SETTINGS>
+        ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
+  }
+
+  get extractTextDelta(): MODEL["extractTextDelta"] {
+    return this.model.extractTextDelta;
   }
 
   withSettings(additionalSettings: Partial<SETTINGS>): this {

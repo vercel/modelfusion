@@ -2,16 +2,12 @@ import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
+import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { AsyncQueue } from "../../model-function/stream-text/AsyncQueue.js";
-import { DeltaEvent } from "../../model-function/stream-text/DeltaEvent.js";
-import {
-  TextStreamingModel,
-  TextStreamingModelSettings,
-} from "../../model-function/stream-text/TextStreamingModel.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
@@ -43,8 +39,7 @@ export type CohereTextGenerationModelType =
   keyof typeof COHERE_TEXT_GENERATION_MODELS;
 
 export interface CohereTextGenerationModelSettings
-  extends TextGenerationModelSettings,
-    TextStreamingModelSettings {
+  extends TextGenerationModelSettings {
   model: CohereTextGenerationModelType;
 
   baseUrl?: string;
@@ -94,10 +89,6 @@ export class CohereTextGenerationModel
     TextGenerationModel<
       string,
       CohereTextGenerationResponse,
-      CohereTextGenerationModelSettings
-    >,
-    TextStreamingModel<
-      string,
       CohereTextGenerationDelta,
       CohereTextGenerationModelSettings
     >

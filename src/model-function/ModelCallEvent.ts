@@ -19,7 +19,7 @@ import {
 import {
   TextStreamingFinishedEvent,
   TextStreamingStartedEvent,
-} from "./stream-text/TextStreamingEvent.js";
+} from "./generate-text/TextStreamingEvent.js";
 import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,

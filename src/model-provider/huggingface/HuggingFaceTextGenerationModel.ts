@@ -61,6 +61,7 @@ export class HuggingFaceTextGenerationModel
     TextGenerationModel<
       string,
       HuggingFaceTextGenerationResponse,
+      undefined,
       HuggingFaceTextGenerationModelSettings
     >
 {
@@ -130,6 +131,9 @@ export class HuggingFaceTextGenerationModel
   extractText(response: HuggingFaceTextGenerationResponse): string {
     return response[0].generated_text;
   }
+
+  generateDeltaStreamResponse = undefined;
+  extractTextDelta = undefined;
 
   withSettings(
     additionalSettings: Partial<HuggingFaceTextGenerationModelSettings>

@@ -20,9 +20,10 @@ import {
 export async function generateText<
   PROMPT,
   RESPONSE,
-  SETTINGS extends TextGenerationModelSettings
+  SETTINGS extends TextGenerationModelSettings,
 >(
-  model: TextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
   prompt: PROMPT,
   options?: FunctionOptions<SETTINGS>
 ): Promise<string> {

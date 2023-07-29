@@ -4,18 +4,25 @@ import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { ModelCallEventSource } from "../ModelCallEventSource.js";
+import { DeltaEvent } from "./DeltaEvent.js";
 import {
-  TextStreamingModel,
-  TextStreamingModelSettings,
-} from "./TextStreamingModel.js";
+  TextGenerationModel,
+  TextGenerationModelSettings,
+} from "./TextGenerationModel.js";
 import { extractTextDeltas } from "./extractTextDeltas.js";
 
 export async function streamText<
   PROMPT,
   FULL_DELTA,
-  SETTINGS extends TextStreamingModelSettings
+  SETTINGS extends TextGenerationModelSettings,
 >(
-  model: TextStreamingModel<PROMPT, FULL_DELTA, SETTINGS>,
+  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
+    generateDeltaStreamResponse: (
+      prompt: PROMPT,
+      options: FunctionOptions<SETTINGS>
+    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
+    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
+  },
   prompt: PROMPT,
   options?: FunctionOptions<SETTINGS>
 ): Promise<AsyncIterable<string>> {

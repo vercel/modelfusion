@@ -2,17 +2,13 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
+import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { AsyncQueue } from "../../model-function/stream-text/AsyncQueue.js";
-import { DeltaEvent } from "../../model-function/stream-text/DeltaEvent.js";
-import {
-  TextStreamingModel,
-  TextStreamingModelSettings,
-} from "../../model-function/stream-text/TextStreamingModel.js";
-import { parseEventSourceReadableStream } from "../../model-function/stream-text/parseEventSourceReadableStream.js";
+import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
@@ -26,6 +22,8 @@ import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { OpenAIImageGenerationCallSettings } from "./OpenAIImageGenerationModel.js";
 import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
+import { PromptMapping } from "../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
 
 /**
  * @see https://platform.openai.com/docs/models/
@@ -93,8 +91,7 @@ export const calculateOpenAITextGenerationCostInMillicents = ({
   OPENAI_TEXT_GENERATION_MODELS[model].tokenCostInMillicents;
 
 export interface OpenAITextGenerationModelSettings
-  extends TextGenerationModelSettings,
-    TextStreamingModelSettings {
+  extends TextGenerationModelSettings {
   model: OpenAITextGenerationModelType;
 
   baseUrl?: string;
@@ -141,10 +138,6 @@ export class OpenAITextGenerationModel
     TextGenerationModel<
       string,
       OpenAITextGenerationResponse,
-      OpenAITextGenerationModelSettings
-    >,
-    TextStreamingModel<
-      string,
       OpenAITextGenerationDelta,
       OpenAITextGenerationModelSettings
     >
@@ -241,6 +234,20 @@ export class OpenAITextGenerationModel
 
   extractTextDelta(fullDelta: OpenAITextGenerationDelta): string | undefined {
     return fullDelta[0].delta;
+  }
+
+  mapPrompt<INPUT_PROMPT>(promptMapping: PromptMapping<INPUT_PROMPT, string>) {
+    return new PromptMappingTextGenerationModel<
+      INPUT_PROMPT,
+      string,
+      OpenAITextGenerationResponse,
+      OpenAITextGenerationDelta,
+      OpenAITextGenerationModelSettings,
+      this
+    >({
+      model: this.withSettings({ stop: promptMapping.stopTokens }),
+      promptMapping,
+    });
   }
 
   withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {

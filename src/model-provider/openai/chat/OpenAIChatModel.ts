@@ -2,15 +2,11 @@ import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../../model-function/FunctionOptions.js";
 import { GenerateJsonOrTextModel } from "../../../model-function/generate-json/GenerateJsonOrTextModel.js";
+import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../../model-function/generate-text/TextGenerationModel.js";
-import { DeltaEvent } from "../../../model-function/stream-text/DeltaEvent.js";
-import {
-  TextStreamingModel,
-  TextStreamingModelSettings,
-} from "../../../model-function/stream-text/TextStreamingModel.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -133,7 +129,6 @@ export interface OpenAIChatCallSettings {
 
 export interface OpenAIChatSettings
   extends TextGenerationModelSettings,
-    TextStreamingModelSettings,
     OpenAIModelSettings,
     OpenAIChatCallSettings {
   isUserIdForwardingEnabled?: boolean;
@@ -163,10 +158,6 @@ export class OpenAIChatModel
     TextGenerationModel<
       OpenAIChatMessage[],
       OpenAIChatResponse,
-      OpenAIChatSettings
-    >,
-    TextStreamingModel<
-      OpenAIChatMessage[],
       OpenAIChatDelta,
       OpenAIChatSettings
     >,
