@@ -1,5 +1,5 @@
 import {
-  Llama2PromptForInstruction,
+  Llama2InstructionPromptMapping,
   LlamaCppTextGenerationModel,
   streamText,
 } from "ai-utils.js";
@@ -16,10 +16,11 @@ import {
   // console.log(text);
 
   const textStream = await streamText(
-    new LlamaCppTextGenerationModel({}).mapPrompt(Llama2PromptForInstruction),
+    new LlamaCppTextGenerationModel({}).mapPrompt(
+      Llama2InstructionPromptMapping
+    ),
     {
-      system:
-        "You are an AI assistant. Follow the user's instructions carefully",
+      system: "You are an AI assistant.",
       instruction: "Write a story about Berlin.",
     }
   );
