@@ -14,6 +14,8 @@ import {
 } from "../../model-function/stream-text/TextStreamingModel.js";
 import { parseEventSourceReadableStream } from "../../model-function/stream-text/parseEventSourceReadableStream.js";
 import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
+import { PromptMappingTextGenerationAndStreamingModel } from "../../prompt/PromptMappingTextGenerationAndStreamingModel.js";
+import { PromptMapping } from "../../prompt/PromptMapping.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -140,6 +142,13 @@ export class LlamaCppTextGenerationModel
 
   extractTextDelta(fullDelta: LlamaCppTextGenerationDelta): string | undefined {
     return fullDelta.delta;
+  }
+
+  mapPrompt<INPUT_PROMPT>(promptMapping: PromptMapping<INPUT_PROMPT, string>) {
+    return new PromptMappingTextGenerationAndStreamingModel({
+      model: this.withSettings({ stop: promptMapping.stopTokens }),
+      promptMapping,
+    });
   }
 
   withSettings(

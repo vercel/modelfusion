@@ -1,6 +1,6 @@
 import { OpenAIChatMessage } from "../model-provider/openai/chat/OpenAIChatMessage.js";
 
-export interface PromptMapper<S, T> {
+export interface PromptMapping<S, T> {
   map(source: S): T;
   stopTokens: string[];
 }
@@ -10,7 +10,7 @@ export type Instruction = {
   instruction: string;
 };
 
-export const OpenAIChatPromptMapper: PromptMapper<
+export const OpenAIChatPromptMapping: PromptMapping<
   Instruction,
   Array<OpenAIChatMessage>
 > = {

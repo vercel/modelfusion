@@ -3,9 +3,9 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../model-function/generate-text/TextGenerationModel.js";
-import { PromptMapper } from "./PromptMapper.js";
+import { PromptMapping } from "./PromptMapping.js";
 
-export class PromptMappedTextGenerationModel<
+export class PromptMappingTextGenerationModel<
   PROMPT,
   MODEL_PROMPT,
   RESPONSE,
@@ -13,17 +13,17 @@ export class PromptMappedTextGenerationModel<
 > implements TextGenerationModel<PROMPT, RESPONSE, SETTINGS>
 {
   private readonly model: TextGenerationModel<MODEL_PROMPT, RESPONSE, SETTINGS>;
-  private readonly promptMapper: PromptMapper<PROMPT, MODEL_PROMPT>;
+  private readonly promptMapping: PromptMapping<PROMPT, MODEL_PROMPT>;
 
   constructor({
     model,
-    promptMapper,
+    promptMapping,
   }: {
     model: TextGenerationModel<MODEL_PROMPT, RESPONSE, SETTINGS>;
-    promptMapper: PromptMapper<PROMPT, MODEL_PROMPT>;
+    promptMapping: PromptMapping<PROMPT, MODEL_PROMPT>;
   }) {
     this.model = model;
-    this.promptMapper = promptMapper;
+    this.promptMapping = promptMapping;
   }
 
   get modelInformation() {
@@ -38,7 +38,7 @@ export class PromptMappedTextGenerationModel<
     prompt: PROMPT,
     options?: FunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE> {
-    const mappedPrompt = this.promptMapper.map(prompt);
+    const mappedPrompt = this.promptMapping.map(prompt);
     return this.model.generateTextResponse(mappedPrompt, options);
   }
 
@@ -47,9 +47,9 @@ export class PromptMappedTextGenerationModel<
   }
 
   withSettings(additionalSettings: Partial<SETTINGS>): this {
-    return new PromptMappedTextGenerationModel({
+    return new PromptMappingTextGenerationModel({
       model: this.model.withSettings(additionalSettings),
-      promptMapper: this.promptMapper,
+      promptMapping: this.promptMapping,
     }) as this;
   }
 }
