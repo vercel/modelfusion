@@ -39,6 +39,12 @@ export interface LlamaCppTextGenerationModelSettings
     throttle?: ThrottleFunction;
   };
 
+  /**
+   * Specify the context window size of the model that you have loaded in your
+   * Llama.cpp server.
+   */
+  contextWindowSize?: number;
+
   temperature?: number;
   topK?: number;
   topP?: number;
@@ -87,7 +93,10 @@ export class LlamaCppTextGenerationModel
     return null;
   }
 
-  readonly contextWindowSize = undefined;
+  get contextWindowSize() {
+    return this.settings.contextWindowSize;
+  }
+
   readonly tokenizer: LlamaCppTokenizer;
 
   async callAPI<RESPONSE>(
