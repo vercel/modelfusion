@@ -1,6 +1,6 @@
 import {
   TextGenerationModelSettings,
-  TextGenerationModelWithTokenization,
+  TextGenerationModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
@@ -24,13 +24,10 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     join,
   }: {
     text: string;
-    model: TextGenerationModelWithTokenization<
-      PROMPT,
-      unknown,
-      TextGenerationModelSettings
-    > & {
+    model: TextGenerationModel<PROMPT, unknown, TextGenerationModelSettings> & {
       contextWindowSize: number;
       tokenizer: FullTokenizer;
+      countPromptTokens: (prompt: PROMPT) => PromiseLike<number>;
     };
     prompt: (input: { text: string }) => Promise<PROMPT>;
     reservedCompletionTokens: number;

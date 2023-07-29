@@ -18,6 +18,10 @@ export interface TextGenerationModel<
   readonly contextWindowSize: number | undefined;
   readonly tokenizer: BasicTokenizer | FullTokenizer | undefined;
 
+  readonly countPromptTokens:
+    | ((prompt: PROMPT) => PromiseLike<number>)
+    | undefined;
+
   generateTextResponse(
     prompt: PROMPT,
     options?: FunctionOptions<SETTINGS>
@@ -30,13 +34,4 @@ export interface TextGenerationModel<
    * Does nothing if the model does not support this setting.
    */
   withMaxTokens(maxTokens: number): this;
-}
-
-// TODO separate interface instead of extending (to enable combination with streaming)
-export interface TextGenerationModelWithTokenization<
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends TextGenerationModelSettings,
-> extends TextGenerationModel<PROMPT, RESPONSE, SETTINGS> {
-  countPromptTokens(prompt: PROMPT): PromiseLike<number>;
 }

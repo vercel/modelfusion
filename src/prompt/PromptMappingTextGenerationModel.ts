@@ -43,6 +43,25 @@ export class PromptMappingTextGenerationModel<
     return this.model.contextWindowSize;
   }
 
+  get countPromptTokens(): MODEL["countPromptTokens"] extends undefined
+    ? undefined
+    : (prompt: PROMPT) => PromiseLike<number> {
+    const basic = this.model.countPromptTokens;
+
+    if (basic === undefined) {
+      return undefined as MODEL["countPromptTokens"] extends undefined
+        ? undefined
+        : (prompt: PROMPT) => PromiseLike<number>;
+    }
+
+    return ((prompt: PROMPT) =>
+      basic(
+        this.promptMapping.map(prompt)
+      )) as MODEL["countPromptTokens"] extends undefined
+      ? undefined
+      : (prompt: PROMPT) => PromiseLike<number>;
+  }
+
   generateTextResponse(
     prompt: PROMPT,
     options?: FunctionOptions<SETTINGS>

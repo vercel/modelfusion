@@ -19,8 +19,6 @@ import {
     Llama2InstructionPromptMapping
   );
 
-  const t = model.tokenizer;
-
   const textStream = await streamText(model, {
     system: "You are an AI assistant.",
     instruction: "Write a story about Berlin.",

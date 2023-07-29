@@ -118,6 +118,8 @@ export class HuggingFaceTextGenerationModel
     });
   }
 
+  readonly countPromptTokens = undefined;
+
   generateTextResponse(
     prompt: string,
     options?: FunctionOptions<HuggingFaceTextGenerationModelSettings>

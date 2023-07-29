@@ -3,8 +3,8 @@ import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../../model-function/FunctionOptions.js";
 import { GenerateJsonOrTextModel } from "../../../model-function/generate-json/GenerateJsonOrTextModel.js";
 import {
+  TextGenerationModel,
   TextGenerationModelSettings,
-  TextGenerationModelWithTokenization,
 } from "../../../model-function/generate-text/TextGenerationModel.js";
 import { DeltaEvent } from "../../../model-function/stream-text/DeltaEvent.js";
 import {
@@ -160,7 +160,7 @@ export interface OpenAIChatSettings
 export class OpenAIChatModel
   extends AbstractModel<OpenAIChatSettings>
   implements
-    TextGenerationModelWithTokenization<
+    TextGenerationModel<
       OpenAIChatMessage[],
       OpenAIChatResponse,
       OpenAIChatSettings

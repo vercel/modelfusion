@@ -111,6 +111,11 @@ export class LlamaCppTextGenerationModel
     });
   }
 
+  async countPromptTokens(prompt: string): Promise<number> {
+    const tokens = await this.tokenizer.tokenize(prompt);
+    return tokens.length;
+  }
+
   generateTextResponse(
     prompt: string,
     options?: FunctionOptions<LlamaCppTextGenerationModelSettings>

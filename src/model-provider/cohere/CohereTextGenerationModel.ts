@@ -3,8 +3,8 @@ import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../model-function/FunctionOptions.js";
 import {
+  TextGenerationModel,
   TextGenerationModelSettings,
-  TextGenerationModelWithTokenization,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { AsyncQueue } from "../../model-function/stream-text/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/stream-text/DeltaEvent.js";
@@ -91,7 +91,7 @@ export interface CohereTextGenerationModelSettings
 export class CohereTextGenerationModel
   extends AbstractModel<CohereTextGenerationModelSettings>
   implements
-    TextGenerationModelWithTokenization<
+    TextGenerationModel<
       string,
       CohereTextGenerationResponse,
       CohereTextGenerationModelSettings
