@@ -28,8 +28,10 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
       PROMPT,
       unknown,
       TextGenerationModelSettings
-    > &
-      FullTokenizer;
+    > & {
+      maxTokens: number;
+      tokenizer: FullTokenizer;
+    };
     prompt: (input: { text: string }) => Promise<PROMPT>;
     reservedCompletionTokens: number;
     join?: (texts: Array<string>) => string;
@@ -46,7 +48,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
   return summarizeRecursively(
     {
       split: splitRecursivelyAtTokenAsSplitFunction({
-        tokenizer: model,
+        tokenizer: model.tokenizer,
         maxChunkSize:
           model.maxTokens - reservedCompletionTokens - emptyPromptTokens,
       }),

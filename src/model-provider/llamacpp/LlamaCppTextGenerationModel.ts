@@ -13,9 +13,8 @@ import {
   TextStreamingModelSettings,
 } from "../../model-function/stream-text/TextStreamingModel.js";
 import { parseEventSourceReadableStream } from "../../model-function/stream-text/parseEventSourceReadableStream.js";
-import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { PromptMappingTextGenerationAndStreamingModel } from "../../prompt/PromptMappingTextGenerationAndStreamingModel.js";
 import { PromptMapping } from "../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationAndStreamingModel } from "../../prompt/PromptMappingTextGenerationAndStreamingModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -71,8 +70,7 @@ export class LlamaCppTextGenerationModel
       string,
       LlamaCppTextGenerationDelta,
       LlamaCppTextGenerationModelSettings
-    >,
-    BasicTokenizer
+    >
 {
   constructor(settings: LlamaCppTextGenerationModelSettings) {
     super({ settings });
@@ -89,11 +87,8 @@ export class LlamaCppTextGenerationModel
     return null;
   }
 
+  readonly maxTokens = undefined;
   readonly tokenizer: LlamaCppTokenizer;
-
-  async tokenize(text: string) {
-    return this.tokenizer.tokenize(text);
-  }
 
   async callAPI<RESPONSE>(
     prompt: string,

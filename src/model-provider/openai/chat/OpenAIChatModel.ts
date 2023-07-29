@@ -11,7 +11,6 @@ import {
   TextStreamingModel,
   TextStreamingModelSettings,
 } from "../../../model-function/stream-text/TextStreamingModel.js";
-import { FullTokenizer } from "../../../model-function/tokenize-text/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -166,7 +165,6 @@ export class OpenAIChatModel
       OpenAIChatResponse,
       OpenAIChatSettings
     >,
-    FullTokenizer,
     TextStreamingModel<
       OpenAIChatMessage[],
       OpenAIChatDelta,
@@ -193,18 +191,6 @@ export class OpenAIChatModel
 
   readonly maxTokens: number;
   readonly tokenizer: TikTokenTokenizer;
-
-  async tokenize(text: string) {
-    return this.tokenizer.tokenize(text);
-  }
-
-  async tokenizeWithTexts(text: string) {
-    return this.tokenizer.tokenizeWithTexts(text);
-  }
-
-  async detokenize(tokens: number[]) {
-    return this.tokenizer.detokenize(tokens);
-  }
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;

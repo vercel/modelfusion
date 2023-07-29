@@ -13,7 +13,6 @@ import {
   TextStreamingModelSettings,
 } from "../../model-function/stream-text/TextStreamingModel.js";
 import { parseEventSourceReadableStream } from "../../model-function/stream-text/parseEventSourceReadableStream.js";
-import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
@@ -144,7 +143,6 @@ export class OpenAITextGenerationModel
       OpenAITextGenerationResponse,
       OpenAITextGenerationModelSettings
     >,
-    FullTokenizer,
     TextStreamingModel<
       string,
       OpenAITextGenerationDelta,
@@ -165,18 +163,6 @@ export class OpenAITextGenerationModel
 
   readonly maxTokens: number;
   readonly tokenizer: TikTokenTokenizer;
-
-  async tokenize(text: string) {
-    return this.tokenizer.tokenize(text);
-  }
-
-  async tokenizeWithTexts(text: string) {
-    return this.tokenizer.tokenizeWithTexts(text);
-  }
-
-  async detokenize(tokens: number[]) {
-    return this.tokenizer.detokenize(tokens);
-  }
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;

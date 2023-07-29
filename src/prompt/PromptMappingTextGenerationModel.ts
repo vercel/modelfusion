@@ -39,6 +39,10 @@ export class PromptMappingTextGenerationModel<
     return this.model.tokenizer;
   }
 
+  get maxTokens(): MODEL["maxTokens"] {
+    return this.model.maxTokens;
+  }
+
   generateTextResponse(
     prompt: PROMPT,
     options?: FunctionOptions<SETTINGS>

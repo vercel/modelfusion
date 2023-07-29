@@ -21,7 +21,8 @@ export interface TextGenerationModel<
 
   extractText(response: RESPONSE): string;
 
-  readonly tokenizer: undefined | BasicTokenizer | FullTokenizer;
+  readonly tokenizer: BasicTokenizer | FullTokenizer | undefined;
+  readonly maxTokens: number | undefined;
 }
 
 // TODO separate interface instead of extending (to enable combination with streaming)
@@ -29,9 +30,7 @@ export interface TextGenerationModelWithTokenization<
   PROMPT,
   RESPONSE,
   SETTINGS extends TextGenerationModelSettings,
-> extends TextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-    BasicTokenizer {
-  readonly maxTokens: number;
+> extends TextGenerationModel<PROMPT, RESPONSE, SETTINGS> {
   countPromptTokens(prompt: PROMPT): PromiseLike<number>;
   withMaxTokens(
     maxTokens: number
