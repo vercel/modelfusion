@@ -1,5 +1,6 @@
+import { TextPromptModel } from "index.js";
 import { FunctionOptions } from "../FunctionOptions.js";
-import { Model, ModelSettings } from "../Model.js";
+import { ModelSettings } from "../Model.js";
 import { DeltaEvent } from "./DeltaEvent.js";
 
 export interface TextStreamingModelSettings extends ModelSettings {}
@@ -7,8 +8,8 @@ export interface TextStreamingModelSettings extends ModelSettings {}
 export interface TextStreamingModel<
   PROMPT,
   FULL_DELTA,
-  SETTINGS extends TextStreamingModelSettings
-> extends Model<SETTINGS> {
+  SETTINGS extends TextStreamingModelSettings,
+> extends TextPromptModel<PROMPT, SETTINGS> {
   generateDeltaStreamResponse(
     prompt: PROMPT,
     options: FunctionOptions<SETTINGS>

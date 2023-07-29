@@ -20,6 +20,7 @@ export * from "./generate-json/generateJson.js";
 export * from "./generate-json/generateJsonOrText.js";
 export * from "./generate-text/TextGenerationEvent.js";
 export * from "./generate-text/TextGenerationModel.js";
+export * from "./TextPromptModel.js";
 export * from "./generate-text/generateText.js";
 export * from "./stream-text/DeltaEvent.js";
 export * from "./stream-text/TextDeltaEventSource.js";
