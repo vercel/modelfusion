@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "index.js";
+import { OpenAIChatMessage } from "../model-provider/openai/chat/OpenAIChatMessage.js";
 
 export interface PromptMapper<S, T> {
   map(source: S): T;
@@ -8,16 +8,6 @@ export interface PromptMapper<S, T> {
 export type Instruction = {
   system: string; // TODO optional
   instruction: string;
-};
-
-export const llamaInstructionMapper: PromptMapper<Instruction, string> = {
-  map: (instruction) =>
-    "<s>[INST] <<SYS>>" +
-    instruction.system +
-    "<</SYS>> " +
-    instruction.instruction +
-    " [/INST]\n",
-  stopTokens: ["</s>"],
 };
 
 export const OpenAIChatPromptMapper: PromptMapper<

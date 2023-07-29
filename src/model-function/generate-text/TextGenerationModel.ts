@@ -9,7 +9,7 @@ export interface TextGenerationModelSettings extends ModelSettings {
 export interface TextGenerationModel<
   PROMPT,
   RESPONSE,
-  SETTINGS extends TextGenerationModelSettings
+  SETTINGS extends TextGenerationModelSettings,
 > extends Model<SETTINGS> {
   generateTextResponse(
     prompt: PROMPT,
@@ -19,10 +19,11 @@ export interface TextGenerationModel<
   extractText(response: RESPONSE): string;
 }
 
+// TODO separate interface instead of extending (to enable combination with streaming)
 export interface TextGenerationModelWithTokenization<
   PROMPT,
   RESPONSE,
-  SETTINGS extends TextGenerationModelSettings
+  SETTINGS extends TextGenerationModelSettings,
 > extends TextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
     BasicTokenizer {
   readonly maxTokens: number;

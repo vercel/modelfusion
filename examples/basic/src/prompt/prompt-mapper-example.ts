@@ -1,23 +1,23 @@
 import {
+  Llama2Prompt,
   LlamaCppTextGenerationModel,
-  llamaInstructionMapper,
-  streamText,
+  generateText,
 } from "ai-utils.js";
 
 (async () => {
-  const textStream = await streamText(
-    new LlamaCppTextGenerationModel({
-      stop: llamaInstructionMapper.stopTokens,
-    }),
-    llamaInstructionMapper.map({
+  const text = await generateText(
+    Llama2Prompt.forInstruction(new LlamaCppTextGenerationModel({})),
+    {
       system:
         "You are an AI assistant. Follow the user's instructions carefully",
       instruction: "Write a story about Berlin.",
-    })
+    }
   );
 
+  console.log(text);
+
   // const textStream = await streamText(
-  //   LlamaPromptMapper.asInstructionModel(new LlamaCppTextGenerationModel()),
+  //   Llama2Prompt.forInstruction(new LlamaCppTextGenerationModel()),
   //   {
   //     system:
   //       "You are an AI assistant. Follow the user's instructions carefully",
@@ -25,7 +25,7 @@ import {
   //   }
   // );
 
-  for await (const textFragment of textStream) {
-    process.stdout.write(textFragment);
-  }
+  // for await (const textFragment of textStream) {
+  //   process.stdout.write(textFragment);
+  // }
 })();
