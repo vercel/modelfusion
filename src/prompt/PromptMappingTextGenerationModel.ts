@@ -39,8 +39,8 @@ export class PromptMappingTextGenerationModel<
     return this.model.tokenizer;
   }
 
-  get maxTokens(): MODEL["maxTokens"] {
-    return this.model.maxTokens;
+  get contextWindowSize(): MODEL["contextWindowSize"] {
+    return this.model.contextWindowSize;
   }
 
   generateTextResponse(

@@ -29,7 +29,7 @@ export async function composeRecentMessagesOpenAIChatPrompt({
     model,
   });
 
-  const tokenLimit = OPENAI_CHAT_MODELS[model].maxTokens - maxTokens;
+  const tokenLimit = OPENAI_CHAT_MODELS[model].contextWindowSize - maxTokens;
 
   const messagesToSend: OpenAIChatMessage[] = [];
   for (let i = messages.length - 1; i >= 0; i--) {

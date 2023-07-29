@@ -40,57 +40,57 @@ import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
  */
 export const OPENAI_CHAT_MODELS = {
   "gpt-4": {
-    maxTokens: 8192,
+    contextWindowSize: 8192,
     promptTokenCostInMillicents: 3,
     completionTokenCostInMillicents: 6,
   },
   "gpt-4-0314": {
-    maxTokens: 8192,
+    contextWindowSize: 8192,
     promptTokenCostInMillicents: 3,
     completionTokenCostInMillicents: 6,
   },
   "gpt-4-0613": {
-    maxTokens: 8192,
+    contextWindowSize: 8192,
     promptTokenCostInMillicents: 3,
     completionTokenCostInMillicents: 6,
   },
   "gpt-4-32k": {
-    maxTokens: 32768,
+    contextWindowSize: 32768,
     promptTokenCostInMillicents: 6,
     completionTokenCostInMillicents: 12,
   },
   "gpt-4-32k-0314": {
-    maxTokens: 32768,
+    contextWindowSize: 32768,
     promptTokenCostInMillicents: 6,
     completionTokenCostInMillicents: 12,
   },
   "gpt-4-32k-0613": {
-    maxTokens: 32768,
+    contextWindowSize: 32768,
     promptTokenCostInMillicents: 6,
     completionTokenCostInMillicents: 12,
   },
   "gpt-3.5-turbo": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     promptTokenCostInMillicents: 0.15,
     completionTokenCostInMillicents: 0.2,
   },
   "gpt-3.5-turbo-0301": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     promptTokenCostInMillicents: 0.15,
     completionTokenCostInMillicents: 0.2,
   },
   "gpt-3.5-turbo-0613": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     promptTokenCostInMillicents: 0.15,
     completionTokenCostInMillicents: 0.2,
   },
   "gpt-3.5-turbo-16k": {
-    maxTokens: 16384,
+    contextWindowSize: 16384,
     promptTokenCostInMillicents: 0.3,
     completionTokenCostInMillicents: 0.4,
   },
   "gpt-3.5-turbo-16k-0613": {
-    maxTokens: 16384,
+    contextWindowSize: 16384,
     promptTokenCostInMillicents: 0.3,
     completionTokenCostInMillicents: 0.4,
   },
@@ -181,7 +181,8 @@ export class OpenAIChatModel
     super({ settings });
 
     this.tokenizer = new TikTokenTokenizer({ model: this.settings.model });
-    this.maxTokens = OPENAI_CHAT_MODELS[this.settings.model].maxTokens;
+    this.contextWindowSize =
+      OPENAI_CHAT_MODELS[this.settings.model].contextWindowSize;
   }
 
   readonly provider = "openai" as const;
@@ -189,7 +190,7 @@ export class OpenAIChatModel
     return this.settings.model;
   }
 
-  readonly maxTokens: number;
+  readonly contextWindowSize: number;
   readonly tokenizer: TikTokenTokenizer;
 
   private get apiKey() {

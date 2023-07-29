@@ -33,43 +33,43 @@ import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
  */
 export const OPENAI_TEXT_GENERATION_MODELS = {
   "text-davinci-003": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     tokenCostInMillicents: 2,
   },
   "text-davinci-002": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     tokenCostInMillicents: 2,
   },
   "code-davinci-002": {
-    maxTokens: 8000,
+    contextWindowSize: 8000,
     tokenCostInMillicents: 2,
   },
   davinci: {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 2,
   },
   "text-curie-001": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.2,
   },
   curie: {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.2,
   },
   "text-babbage-001": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.05,
   },
   babbage: {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.05,
   },
   "text-ada-001": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.04,
   },
   ada: {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.04,
   },
 };
@@ -153,7 +153,8 @@ export class OpenAITextGenerationModel
     super({ settings });
 
     this.tokenizer = new TikTokenTokenizer({ model: settings.model });
-    this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[settings.model].maxTokens;
+    this.contextWindowSize =
+      OPENAI_TEXT_GENERATION_MODELS[settings.model].contextWindowSize;
   }
 
   readonly provider = "openai" as const;
@@ -161,7 +162,7 @@ export class OpenAITextGenerationModel
     return this.settings.model;
   }
 
-  readonly maxTokens: number;
+  readonly contextWindowSize: number;
   readonly tokenizer: TikTokenTokenizer;
 
   private get apiKey() {

@@ -73,7 +73,7 @@ export class HuggingFaceTextGenerationModel
     return this.settings.model;
   }
 
-  readonly maxTokens = undefined;
+  readonly contextWindowSize = undefined;
   readonly tokenizer = undefined;
 
   private get apiKey() {

@@ -87,7 +87,7 @@ export class LlamaCppTextGenerationModel
     return null;
   }
 
-  readonly maxTokens = undefined;
+  readonly contextWindowSize = undefined;
   readonly tokenizer: LlamaCppTokenizer;
 
   async callAPI<RESPONSE>(

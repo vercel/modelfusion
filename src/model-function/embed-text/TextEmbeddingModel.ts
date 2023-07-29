@@ -6,12 +6,12 @@ export interface TextEmbeddingModelSettings extends ModelSettings {}
 
 export interface TextEmbeddingModel<
   RESPONSE,
-  SETTINGS extends TextEmbeddingModelSettings
+  SETTINGS extends TextEmbeddingModelSettings,
 > extends Model<SETTINGS> {
   /**
    * The limit of tokens for a single text.
    */
-  readonly maxTokens: number | undefined;
+  readonly contextWindowSize: number | undefined;
 
   /**
    * The size of the embedding vector.

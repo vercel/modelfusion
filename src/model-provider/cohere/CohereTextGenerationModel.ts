@@ -26,16 +26,16 @@ import { CohereTokenizer } from "./CohereTokenizer.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
   },
   "command-nightly": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
   },
   "command-light": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
   },
   "command-light-nightly": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
   },
 };
 
@@ -105,8 +105,8 @@ export class CohereTextGenerationModel
   constructor(settings: CohereTextGenerationModelSettings) {
     super({ settings });
 
-    this.maxTokens =
-      COHERE_TEXT_GENERATION_MODELS[this.settings.model].maxTokens;
+    this.contextWindowSize =
+      COHERE_TEXT_GENERATION_MODELS[this.settings.model].contextWindowSize;
 
     this.tokenizer = new CohereTokenizer({
       baseUrl: this.settings.baseUrl,
@@ -122,7 +122,7 @@ export class CohereTextGenerationModel
     return this.settings.model;
   }
 
-  readonly maxTokens: number;
+  readonly contextWindowSize: number;
   readonly tokenizer: CohereTokenizer;
 
   private get apiKey() {

@@ -22,7 +22,7 @@ export interface TextGenerationModel<
   extractText(response: RESPONSE): string;
 
   readonly tokenizer: BasicTokenizer | FullTokenizer | undefined;
-  readonly maxTokens: number | undefined;
+  readonly contextWindowSize: number | undefined;
 }
 
 // TODO separate interface instead of extending (to enable combination with streaming)
