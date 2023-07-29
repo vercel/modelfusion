@@ -1,6 +1,6 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { ModelSettings } from "../Model.js";
-import { TextPromptModel } from "../TextPromptModel.js";
+import { Model, ModelSettings } from "../Model.js";
+import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
 import { DeltaEvent } from "./DeltaEvent.js";
 
 export interface TextGenerationModelSettings extends ModelSettings {
@@ -12,7 +12,18 @@ export interface TextGenerationModel<
   RESPONSE,
   FULL_DELTA,
   SETTINGS extends TextGenerationModelSettings,
-> extends TextPromptModel<PROMPT, SETTINGS> {
+> extends Model<SETTINGS> {
+  readonly contextWindowSize: number | undefined;
+
+  readonly tokenizer: BasicTokenizer | FullTokenizer | undefined;
+
+  /**
+   * Optional. Implement if you have a tokenizer and want to count the number of tokens in a prompt.
+   */
+  readonly countPromptTokens:
+    | ((prompt: PROMPT) => PromiseLike<number>)
+    | undefined;
+
   generateTextResponse(
     prompt: PROMPT,
     options?: FunctionOptions<SETTINGS>
@@ -20,6 +31,9 @@ export interface TextGenerationModel<
 
   extractText(response: RESPONSE): string;
 
+  /**
+   * Optional. Implement for streaming support.
+   */
   readonly generateDeltaStreamResponse:
     | ((
         prompt: PROMPT,
@@ -27,7 +41,16 @@ export interface TextGenerationModel<
       ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>)
     | undefined;
 
+  /**
+   * Optional. Implement for streaming support.
+   */
   readonly extractTextDelta:
     | ((fullDelta: FULL_DELTA) => string | undefined)
     | undefined;
+
+  /**
+   * Sets the maximum number of tokens to generate.
+   * Does nothing if the model does not support this setting.
+   */
+  withMaxTokens(maxTokens: number): this;
 }

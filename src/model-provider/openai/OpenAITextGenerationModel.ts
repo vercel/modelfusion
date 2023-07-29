@@ -10,6 +10,8 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
+import { PromptMapping } from "../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -22,8 +24,6 @@ import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { OpenAIImageGenerationCallSettings } from "./OpenAIImageGenerationModel.js";
 import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
-import { PromptMapping } from "../../prompt/PromptMapping.js";
-import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
 
 /**
  * @see https://platform.openai.com/docs/models/

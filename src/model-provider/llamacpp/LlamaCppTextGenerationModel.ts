@@ -2,12 +2,12 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
+import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
-import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
 import { PromptMapping } from "../../prompt/PromptMapping.js";
 import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
