@@ -16,25 +16,21 @@ export class PromptMappingTextGenerationAndStreamingModel<
     RESPONSE,
     FULL_DELTA,
     SETTINGS extends TextStreamingModelSettings & TextGenerationModelSettings,
+    MODEL extends TextGenerationModel<MODEL_PROMPT, RESPONSE, SETTINGS> &
+      TextStreamingModel<MODEL_PROMPT, FULL_DELTA, SETTINGS>,
   >
   implements
     TextStreamingModel<PROMPT, FULL_DELTA, SETTINGS>,
     TextGenerationModel<PROMPT, RESPONSE, SETTINGS>
 {
-  private readonly model: TextGenerationModel<
-    MODEL_PROMPT,
-    RESPONSE,
-    SETTINGS
-  > &
-    TextStreamingModel<MODEL_PROMPT, FULL_DELTA, SETTINGS>;
+  private readonly model: MODEL;
   private readonly promptMapping: PromptMapping<PROMPT, MODEL_PROMPT>;
 
   constructor({
     model,
     promptMapping,
   }: {
-    model: TextGenerationModel<MODEL_PROMPT, RESPONSE, SETTINGS> &
-      TextStreamingModel<MODEL_PROMPT, FULL_DELTA, SETTINGS>;
+    model: MODEL;
     promptMapping: PromptMapping<PROMPT, MODEL_PROMPT>;
   }) {
     this.model = model;
@@ -47,6 +43,10 @@ export class PromptMappingTextGenerationAndStreamingModel<
 
   get settings() {
     return this.model.settings;
+  }
+
+  get tokenizer(): MODEL["tokenizer"] {
+    return this.model.tokenizer;
   }
 
   generateTextResponse(

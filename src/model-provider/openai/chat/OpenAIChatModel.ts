@@ -192,7 +192,7 @@ export class OpenAIChatModel
   }
 
   readonly maxTokens: number;
-  private readonly tokenizer: TikTokenTokenizer;
+  readonly tokenizer: TikTokenTokenizer;
 
   async tokenize(text: string) {
     return this.tokenizer.tokenize(text);

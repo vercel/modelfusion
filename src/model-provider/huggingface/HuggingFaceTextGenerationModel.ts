@@ -73,6 +73,8 @@ export class HuggingFaceTextGenerationModel
     return this.settings.model;
   }
 
+  readonly tokenizer: undefined;
+
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.HUGGINGFACE_API_KEY;
 

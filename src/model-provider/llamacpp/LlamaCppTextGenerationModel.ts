@@ -89,7 +89,7 @@ export class LlamaCppTextGenerationModel
     return null;
   }
 
-  private readonly tokenizer: LlamaCppTokenizer;
+  readonly tokenizer: LlamaCppTokenizer;
 
   async tokenize(text: string) {
     return this.tokenizer.tokenize(text);

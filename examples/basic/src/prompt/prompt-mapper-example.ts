@@ -15,15 +15,16 @@ import {
   // );
   // console.log(text);
 
-  const textStream = await streamText(
-    new LlamaCppTextGenerationModel({}).mapPrompt(
-      Llama2InstructionPromptMapping
-    ),
-    {
-      system: "You are an AI assistant.",
-      instruction: "Write a story about Berlin.",
-    }
+  const model = new LlamaCppTextGenerationModel({}).mapPrompt(
+    Llama2InstructionPromptMapping
   );
+
+  const t = model.tokenizer;
+
+  const textStream = await streamText(model, {
+    system: "You are an AI assistant.",
+    instruction: "Write a story about Berlin.",
+  });
 
   for await (const textFragment of textStream) {
     process.stdout.write(textFragment);

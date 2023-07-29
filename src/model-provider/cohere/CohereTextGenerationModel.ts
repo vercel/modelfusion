@@ -125,8 +125,7 @@ export class CohereTextGenerationModel
   }
 
   readonly maxTokens: number;
-
-  private readonly tokenizer: CohereTokenizer;
+  readonly tokenizer: CohereTokenizer;
 
   async tokenize(text: string) {
     return this.tokenizer.tokenize(text);

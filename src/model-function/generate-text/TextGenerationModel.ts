@@ -1,4 +1,7 @@
-import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
+import {
+  BasicTokenizer,
+  FullTokenizer,
+} from "../../model-function/tokenize-text/Tokenizer.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
@@ -17,6 +20,8 @@ export interface TextGenerationModel<
   ): PromiseLike<RESPONSE>;
 
   extractText(response: RESPONSE): string;
+
+  readonly tokenizer: undefined | BasicTokenizer | FullTokenizer;
 }
 
 // TODO separate interface instead of extending (to enable combination with streaming)

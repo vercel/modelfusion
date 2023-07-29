@@ -10,16 +10,17 @@ export class PromptMappingTextGenerationModel<
   MODEL_PROMPT,
   RESPONSE,
   SETTINGS extends TextGenerationModelSettings,
+  MODEL extends TextGenerationModel<MODEL_PROMPT, RESPONSE, SETTINGS>,
 > implements TextGenerationModel<PROMPT, RESPONSE, SETTINGS>
 {
-  private readonly model: TextGenerationModel<MODEL_PROMPT, RESPONSE, SETTINGS>;
+  private readonly model: MODEL;
   private readonly promptMapping: PromptMapping<PROMPT, MODEL_PROMPT>;
 
   constructor({
     model,
     promptMapping,
   }: {
-    model: TextGenerationModel<MODEL_PROMPT, RESPONSE, SETTINGS>;
+    model: MODEL;
     promptMapping: PromptMapping<PROMPT, MODEL_PROMPT>;
   }) {
     this.model = model;
@@ -32,6 +33,10 @@ export class PromptMappingTextGenerationModel<
 
   get settings() {
     return this.model.settings;
+  }
+
+  get tokenizer(): MODEL["tokenizer"] {
+    return this.model.tokenizer;
   }
 
   generateTextResponse(
