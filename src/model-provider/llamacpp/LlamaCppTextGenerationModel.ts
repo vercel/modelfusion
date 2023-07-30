@@ -69,7 +69,7 @@ export class LlamaCppTextGenerationModel
       LlamaCppTextGenerationModelSettings
     >
 {
-  constructor(settings: LlamaCppTextGenerationModelSettings) {
+  constructor(settings: LlamaCppTextGenerationModelSettings = {}) {
     super({ settings });
 
     this.tokenizer = new LlamaCppTokenizer({
@@ -144,15 +144,17 @@ export class LlamaCppTextGenerationModel
     return fullDelta.delta;
   }
 
-  mapPrompt<INPUT_PROMPT>(promptMapping: PromptMapping<INPUT_PROMPT, string>) {
-    return new PromptMappingTextGenerationModel<
-      INPUT_PROMPT,
-      string,
-      LlamaCppTextGenerationResponse,
-      LlamaCppTextGenerationDelta,
-      LlamaCppTextGenerationModelSettings,
-      this
-    >({
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, string>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    string,
+    LlamaCppTextGenerationResponse,
+    LlamaCppTextGenerationDelta,
+    LlamaCppTextGenerationModelSettings,
+    this
+  > {
+    return new PromptMappingTextGenerationModel({
       model: this.withStopTokens(promptMapping.stopTokens),
       promptMapping,
     });

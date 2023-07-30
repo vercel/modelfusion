@@ -9,6 +9,8 @@ import {
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
+import { PromptMapping } from "../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -186,6 +188,22 @@ export class CohereTextGenerationModel
 
   extractTextDelta(fullDelta: CohereTextGenerationDelta): string | undefined {
     return fullDelta.delta;
+  }
+
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, string>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    string,
+    CohereTextGenerationResponse,
+    CohereTextGenerationDelta,
+    CohereTextGenerationModelSettings,
+    this
+  > {
+    return new PromptMappingTextGenerationModel({
+      model: this.withStopTokens(promptMapping.stopTokens),
+      promptMapping,
+    });
   }
 
   withSettings(additionalSettings: Partial<CohereTextGenerationModelSettings>) {

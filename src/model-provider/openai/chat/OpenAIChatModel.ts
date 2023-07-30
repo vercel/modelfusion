@@ -7,6 +7,8 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../../model-function/generate-text/TextGenerationModel.js";
+import { PromptMapping } from "../../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationModel } from "../../../prompt/PromptMappingTextGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -289,6 +291,22 @@ export class OpenAIChatModel
       functionId: options?.functionId,
       settings: settingsWithFunctionCall,
       run: options?.run,
+    });
+  }
+
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, OpenAIChatMessage[]>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    OpenAIChatMessage[],
+    OpenAIChatResponse,
+    OpenAIChatDelta,
+    OpenAIChatSettings,
+    this
+  > {
+    return new PromptMappingTextGenerationModel({
+      model: this.withStopTokens(promptMapping.stopTokens),
+      promptMapping,
     });
   }
 

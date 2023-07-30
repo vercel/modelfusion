@@ -236,16 +236,18 @@ export class OpenAITextGenerationModel
     return fullDelta[0].delta;
   }
 
-  mapPrompt<INPUT_PROMPT>(promptMapping: PromptMapping<INPUT_PROMPT, string>) {
-    return new PromptMappingTextGenerationModel<
-      INPUT_PROMPT,
-      string,
-      OpenAITextGenerationResponse,
-      OpenAITextGenerationDelta,
-      OpenAITextGenerationModelSettings,
-      this
-    >({
-      model: this.withSettings({ stop: promptMapping.stopTokens }),
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, string>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    string,
+    OpenAITextGenerationResponse,
+    OpenAITextGenerationDelta,
+    OpenAITextGenerationModelSettings,
+    this
+  > {
+    return new PromptMappingTextGenerationModel({
+      model: this.withStopTokens(promptMapping.stopTokens),
       promptMapping,
     });
   }

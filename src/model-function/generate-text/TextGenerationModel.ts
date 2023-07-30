@@ -1,3 +1,5 @@
+import { PromptMapping } from "../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
@@ -47,6 +49,17 @@ export interface TextGenerationModel<
   readonly extractTextDelta:
     | ((fullDelta: FULL_DELTA) => string | undefined)
     | undefined;
+
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, PROMPT>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    PROMPT,
+    RESPONSE,
+    FULL_DELTA,
+    SETTINGS,
+    this
+  >;
 
   /**
    * Sets the maximum number of tokens to generate.

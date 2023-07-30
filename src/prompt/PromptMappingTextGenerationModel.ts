@@ -117,6 +117,29 @@ export class PromptMappingTextGenerationModel<
     return this.model.extractTextDelta;
   }
 
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, PROMPT>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    PROMPT,
+    RESPONSE,
+    FULL_DELTA,
+    SETTINGS,
+    this
+  > {
+    return new PromptMappingTextGenerationModel<
+      INPUT_PROMPT,
+      PROMPT,
+      RESPONSE,
+      FULL_DELTA,
+      SETTINGS,
+      this
+    >({
+      model: this.withStopTokens(promptMapping.stopTokens),
+      promptMapping,
+    });
+  }
+
   withSettings(additionalSettings: Partial<SETTINGS>): this {
     return new PromptMappingTextGenerationModel({
       model: this.model.withSettings(additionalSettings),

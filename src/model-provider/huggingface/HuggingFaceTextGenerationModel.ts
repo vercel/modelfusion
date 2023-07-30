@@ -13,6 +13,8 @@ import {
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
+import { PromptMapping } from "../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
 
 export interface HuggingFaceTextGenerationModelSettings
   extends TextGenerationModelSettings {
@@ -134,6 +136,22 @@ export class HuggingFaceTextGenerationModel
 
   generateDeltaStreamResponse = undefined;
   extractTextDelta = undefined;
+
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, string>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    string,
+    HuggingFaceTextGenerationResponse,
+    undefined,
+    HuggingFaceTextGenerationModelSettings,
+    this
+  > {
+    return new PromptMappingTextGenerationModel({
+      model: this, // stop tokens are not supported by this model
+      promptMapping,
+    });
+  }
 
   withSettings(
     additionalSettings: Partial<HuggingFaceTextGenerationModelSettings>
