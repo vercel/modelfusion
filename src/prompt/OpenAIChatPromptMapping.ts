@@ -38,7 +38,11 @@ export const ChatToOpenAIChatPromptMapping: () => PromptMapping<
       const message = chat[i];
 
       // system message:
-      if (i === 0 && "system" in message) {
+      if (
+        i === 0 &&
+        "system" in message &&
+        typeof message.system === "string"
+      ) {
         messages.push({
           role: "system",
           content: message.system,
@@ -47,25 +51,21 @@ export const ChatToOpenAIChatPromptMapping: () => PromptMapping<
         continue;
       }
 
-      // message pair:
-      if ("user" in message && "ai" in message) {
+      // user message
+      if ("user" in message) {
         messages.push({
           role: "user",
           content: message.user,
-        });
-        messages.push({
-          role: "assistant",
-          content: message.ai,
         });
 
         continue;
       }
 
-      // final user message:
-      if (i === chat.length - 1 && "user" in message) {
+      // ai message:
+      if ("ai" in message) {
         messages.push({
-          role: "user",
-          content: message.user,
+          role: "assistant",
+          content: message.ai,
         });
 
         continue;
