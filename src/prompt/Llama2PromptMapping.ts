@@ -12,7 +12,7 @@ const END_SYS = "\n<</SYS>>\n\n";
  *
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
  */
-export const Llama2InstructionPromptMapping: () => PromptMapping<
+export const InstructionToLlama2PromptMapping: () => PromptMapping<
   InstructionPrompt,
   string
 > = () => ({

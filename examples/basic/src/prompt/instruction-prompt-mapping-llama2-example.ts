@@ -1,5 +1,5 @@
 import {
-  Llama2InstructionPromptMapping,
+  InstructionToLlama2PromptMapping,
   LlamaCppTextGenerationModel,
   streamText,
 } from "ai-utils.js";
@@ -7,7 +7,7 @@ import {
 (async () => {
   const textStream = await streamText(
     new LlamaCppTextGenerationModel().mapPrompt(
-      Llama2InstructionPromptMapping()
+      InstructionToLlama2PromptMapping()
     ),
     {
       system: "You are a celebrated poet.",

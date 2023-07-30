@@ -1,6 +1,6 @@
 import {
   CohereTextGenerationModel,
-  TextInstructionPromptMapping,
+  InstructionToTextPromptMapping,
   streamText,
 } from "ai-utils.js";
 import dotenv from "dotenv";
@@ -12,7 +12,7 @@ dotenv.config();
     new CohereTextGenerationModel({
       model: "command",
       maxTokens: 500,
-    }).mapPrompt(TextInstructionPromptMapping()),
+    }).mapPrompt(InstructionToTextPromptMapping()),
     {
       system: "You are a celebrated poet.",
       instruction: "Write a short story about a robot learning to love.",

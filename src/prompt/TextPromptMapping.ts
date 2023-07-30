@@ -1,7 +1,7 @@
 import { PromptMapping } from "./PromptMapping.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
 
-export const TextInstructionPromptMapping: () => PromptMapping<
+export const InstructionToTextPromptMapping: () => PromptMapping<
   InstructionPrompt,
   string
 > = () => ({
