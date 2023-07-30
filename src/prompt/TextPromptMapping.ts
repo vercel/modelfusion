@@ -13,6 +13,12 @@ export const InstructionToTextPromptMapping: () => PromptMapping<
       : instruction.instruction,
 });
 
+/**
+ * A mapping from a chat prompt to a text prompt.
+ *
+ * @param user The label of the user in the chat.
+ * @param ai The name of the AI in the chat.
+ */
 export const ChatToTextPromptMapping: ({
   user,
   ai,

@@ -1,11 +1,11 @@
 /**
  * A chat prompt is a sequence of messages.
  * It can optionally start with a system message.
- * The first message should be a user message.
- * Then it should be alternating between a user message and an ai message.
+ * After the optional system message, the first message of the chat must be a user message.
+ * Then it must be alternating between a user message and an ai message.
  * It always ends with a user message.
  *
- * The type checking is done at runtime.\
+ * The type checking is done at runtime, because there a no good ways to do it statically.
  *
  * @example
  * ```ts
@@ -21,8 +21,6 @@
 // Partial solutions such as https://stackoverflow.com/a/69800688
 // fail when the inner messages are dynamically created
 // (which is typical for chat systems).
-//
-// Therefore the check that the messages are alternating is done at runtime.
 export type ChatPrompt =
   | [...({ user: string } | { ai: string })[]]
   | [{ system: string }, ...({ user: string } | { ai: string })[]];
