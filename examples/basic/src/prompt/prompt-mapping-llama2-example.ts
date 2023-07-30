@@ -8,8 +8,8 @@ import {
   const textStream = await streamText(
     new LlamaCppTextGenerationModel().mapPrompt(Llama2InstructionPromptMapping),
     {
-      system: "You are an AI assistant.",
-      instruction: "Write a story about Berlin.",
+      system: "You are a celebrated poet.",
+      instruction: "Write a short story about a robot learning to love.",
     }
   );
 

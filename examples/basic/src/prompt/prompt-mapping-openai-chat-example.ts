@@ -13,8 +13,8 @@ dotenv.config();
       model: "gpt-3.5-turbo",
     }).mapPrompt(OpenAIChatInstructionPromptMapping),
     {
-      system: "You are an AI assistant.",
-      instruction: "Write a story about Berlin.",
+      system: "You are a celebrated poet.",
+      instruction: "Write a short story about a robot learning to love.",
     }
   );
 
