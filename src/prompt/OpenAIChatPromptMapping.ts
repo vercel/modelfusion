@@ -2,10 +2,10 @@ import { OpenAIChatMessage } from "../model-provider/openai/chat/OpenAIChatMessa
 import { InstructionPrompt } from "./InstructionPrompt.js";
 import { PromptMapping } from "./PromptMapping.js";
 
-export const OpenAIChatInstructionPromptMapping: PromptMapping<
+export const OpenAIChatInstructionPromptMapping: () => PromptMapping<
   InstructionPrompt,
   Array<OpenAIChatMessage>
-> = {
+> = () => ({
   map: (instruction) => {
     const messages: Array<OpenAIChatMessage> = [];
 
@@ -24,4 +24,4 @@ export const OpenAIChatInstructionPromptMapping: PromptMapping<
     return messages;
   },
   stopTokens: [],
-};
+});

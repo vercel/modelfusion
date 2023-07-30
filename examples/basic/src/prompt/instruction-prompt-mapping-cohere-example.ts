@@ -12,7 +12,7 @@ dotenv.config();
     new CohereTextGenerationModel({
       model: "command",
       maxTokens: 500,
-    }).mapPrompt(TextInstructionPromptMapping),
+    }).mapPrompt(TextInstructionPromptMapping()),
     {
       system: "You are a celebrated poet.",
       instruction: "Write a short story about a robot learning to love.",

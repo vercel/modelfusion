@@ -12,10 +12,10 @@ const END_SYS = "\n<</SYS>>\n\n";
  *
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
  */
-export const Llama2InstructionPromptMapping: PromptMapping<
+export const Llama2InstructionPromptMapping: () => PromptMapping<
   InstructionPrompt,
   string
-> = {
+> = () => ({
   stopTokens: ["</s>"],
   map: (instruction) =>
     `<s>${BEGIN_INST}${
@@ -23,4 +23,4 @@ export const Llama2InstructionPromptMapping: PromptMapping<
         ? ` ${BEGIN_SYS}${instruction.system}${END_SYS}`
         : ""
     } ${instruction.instruction} ${END_INST}\n`,
-};
+});
