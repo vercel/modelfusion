@@ -2,6 +2,7 @@ export * from "./composed-function/index.js";
 export * from "./cost/index.js";
 export * from "./model-function/index.js";
 export * from "./model-provider/index.js";
+export * from "./prompt/index.js";
 export * from "./run/index.js";
 export * from "./text-chunk/index.js";
 export * from "./util/index.js";

@@ -1,6 +1,6 @@
 import {
   TextGenerationModelSettings,
-  TextGenerationModelWithTokenization,
+  TextGenerationModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
@@ -24,12 +24,18 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     join,
   }: {
     text: string;
-    model: TextGenerationModelWithTokenization<
+    model: TextGenerationModel<
       PROMPT,
-      unknown,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      any,
       TextGenerationModelSettings
-    > &
-      FullTokenizer;
+    > & {
+      contextWindowSize: number;
+      tokenizer: FullTokenizer;
+      countPromptTokens: (prompt: PROMPT) => PromiseLike<number>;
+    };
     prompt: (input: { text: string }) => Promise<PROMPT>;
     reservedCompletionTokens: number;
     join?: (texts: Array<string>) => string;
@@ -46,9 +52,11 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
   return summarizeRecursively(
     {
       split: splitRecursivelyAtTokenAsSplitFunction({
-        tokenizer: model,
+        tokenizer: model.tokenizer,
         maxChunkSize:
-          model.maxTokens - reservedCompletionTokens - emptyPromptTokens,
+          model.contextWindowSize -
+          reservedCompletionTokens -
+          emptyPromptTokens,
       }),
       summarize: async (input: { text: string }) =>
         generateText(

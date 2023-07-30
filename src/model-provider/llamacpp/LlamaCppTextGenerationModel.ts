@@ -2,18 +2,15 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
+import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { AsyncQueue } from "../../model-function/stream-text/AsyncQueue.js";
-import { DeltaEvent } from "../../model-function/stream-text/DeltaEvent.js";
-import {
-  TextStreamingModel,
-  TextStreamingModelSettings,
-} from "../../model-function/stream-text/TextStreamingModel.js";
-import { parseEventSourceReadableStream } from "../../model-function/stream-text/parseEventSourceReadableStream.js";
-import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
+import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
+import { PromptMapping } from "../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -25,9 +22,9 @@ import {
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
-export interface LlamaCppTextGenerationModelSettings
-  extends TextGenerationModelSettings,
-    TextStreamingModelSettings {
+export interface LlamaCppTextGenerationModelSettings<
+  CONTEXT_WINDOW_SIZE extends number | undefined,
+> extends TextGenerationModelSettings {
   baseUrl?: string;
 
   retry?: RetryFunction;
@@ -37,6 +34,12 @@ export interface LlamaCppTextGenerationModelSettings
     retry?: RetryFunction;
     throttle?: ThrottleFunction;
   };
+
+  /**
+   * Specify the context window size of the model that you have loaded in your
+   * Llama.cpp server.
+   */
+  contextWindowSize?: CONTEXT_WINDOW_SIZE;
 
   temperature?: number;
   topK?: number;
@@ -57,22 +60,23 @@ export interface LlamaCppTextGenerationModelSettings
   logitBias?: Array<[number, number | false]>;
 }
 
-export class LlamaCppTextGenerationModel
-  extends AbstractModel<LlamaCppTextGenerationModelSettings>
+export class LlamaCppTextGenerationModel<
+    CONTEXT_WINDOW_SIZE extends number | undefined,
+  >
+  extends AbstractModel<
+    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+  >
   implements
     TextGenerationModel<
       string,
       LlamaCppTextGenerationResponse,
-      LlamaCppTextGenerationModelSettings
-    >,
-    TextStreamingModel<
-      string,
       LlamaCppTextGenerationDelta,
-      LlamaCppTextGenerationModelSettings
-    >,
-    BasicTokenizer
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    >
 {
-  constructor(settings: LlamaCppTextGenerationModelSettings) {
+  constructor(
+    settings: LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE> = {}
+  ) {
     super({ settings });
 
     this.tokenizer = new LlamaCppTokenizer({
@@ -87,17 +91,19 @@ export class LlamaCppTextGenerationModel
     return null;
   }
 
-  private readonly tokenizer: LlamaCppTokenizer;
-
-  async tokenize(text: string) {
-    return this.tokenizer.tokenize(text);
+  get contextWindowSize(): CONTEXT_WINDOW_SIZE {
+    return this.settings.contextWindowSize as CONTEXT_WINDOW_SIZE;
   }
+
+  readonly tokenizer: LlamaCppTokenizer;
 
   async callAPI<RESPONSE>(
     prompt: string,
     options: {
       responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
-    } & FunctionOptions<LlamaCppTextGenerationModelSettings>
+    } & FunctionOptions<
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    >
   ): Promise<RESPONSE> {
     const { run, settings, responseFormat } = options;
 
@@ -114,9 +120,16 @@ export class LlamaCppTextGenerationModel
     });
   }
 
+  async countPromptTokens(prompt: string): Promise<number> {
+    const tokens = await this.tokenizer.tokenize(prompt);
+    return tokens.length;
+  }
+
   generateTextResponse(
     prompt: string,
-    options?: FunctionOptions<LlamaCppTextGenerationModelSettings>
+    options?: FunctionOptions<
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    >
   ) {
     return this.callAPI(prompt, {
       ...options,
@@ -130,7 +143,9 @@ export class LlamaCppTextGenerationModel
 
   generateDeltaStreamResponse(
     prompt: string,
-    options?: FunctionOptions<LlamaCppTextGenerationModelSettings>
+    options?: FunctionOptions<
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    >
   ) {
     return this.callAPI(prompt, {
       ...options,
@@ -142,12 +157,38 @@ export class LlamaCppTextGenerationModel
     return fullDelta.delta;
   }
 
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, string>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    string,
+    LlamaCppTextGenerationResponse,
+    LlamaCppTextGenerationDelta,
+    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+    this
+  > {
+    return new PromptMappingTextGenerationModel({
+      model: this.withStopTokens(promptMapping.stopTokens),
+      promptMapping,
+    });
+  }
+
   withSettings(
-    additionalSettings: Partial<LlamaCppTextGenerationModelSettings>
+    additionalSettings: Partial<
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    >
   ) {
     return new LlamaCppTextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
+  }
+
+  withMaxTokens(maxTokens: number) {
+    return this.withSettings({ nPredict: maxTokens });
+  }
+
+  withStopTokens(stopTokens: string[]) {
+    return this.withSettings({ stop: stopTokens });
   }
 }
 

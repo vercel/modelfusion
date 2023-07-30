@@ -2,16 +2,13 @@ import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../../model-function/FunctionOptions.js";
 import { GenerateJsonOrTextModel } from "../../../model-function/generate-json/GenerateJsonOrTextModel.js";
+import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
 import {
+  TextGenerationModel,
   TextGenerationModelSettings,
-  TextGenerationModelWithTokenization,
 } from "../../../model-function/generate-text/TextGenerationModel.js";
-import { DeltaEvent } from "../../../model-function/stream-text/DeltaEvent.js";
-import {
-  TextStreamingModel,
-  TextStreamingModelSettings,
-} from "../../../model-function/stream-text/TextStreamingModel.js";
-import { FullTokenizer } from "../../../model-function/tokenize-text/Tokenizer.js";
+import { PromptMapping } from "../../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationModel } from "../../../prompt/PromptMappingTextGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -41,57 +38,57 @@ import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
  */
 export const OPENAI_CHAT_MODELS = {
   "gpt-4": {
-    maxTokens: 8192,
+    contextWindowSize: 8192,
     promptTokenCostInMillicents: 3,
     completionTokenCostInMillicents: 6,
   },
   "gpt-4-0314": {
-    maxTokens: 8192,
+    contextWindowSize: 8192,
     promptTokenCostInMillicents: 3,
     completionTokenCostInMillicents: 6,
   },
   "gpt-4-0613": {
-    maxTokens: 8192,
+    contextWindowSize: 8192,
     promptTokenCostInMillicents: 3,
     completionTokenCostInMillicents: 6,
   },
   "gpt-4-32k": {
-    maxTokens: 32768,
+    contextWindowSize: 32768,
     promptTokenCostInMillicents: 6,
     completionTokenCostInMillicents: 12,
   },
   "gpt-4-32k-0314": {
-    maxTokens: 32768,
+    contextWindowSize: 32768,
     promptTokenCostInMillicents: 6,
     completionTokenCostInMillicents: 12,
   },
   "gpt-4-32k-0613": {
-    maxTokens: 32768,
+    contextWindowSize: 32768,
     promptTokenCostInMillicents: 6,
     completionTokenCostInMillicents: 12,
   },
   "gpt-3.5-turbo": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     promptTokenCostInMillicents: 0.15,
     completionTokenCostInMillicents: 0.2,
   },
   "gpt-3.5-turbo-0301": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     promptTokenCostInMillicents: 0.15,
     completionTokenCostInMillicents: 0.2,
   },
   "gpt-3.5-turbo-0613": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     promptTokenCostInMillicents: 0.15,
     completionTokenCostInMillicents: 0.2,
   },
   "gpt-3.5-turbo-16k": {
-    maxTokens: 16384,
+    contextWindowSize: 16384,
     promptTokenCostInMillicents: 0.3,
     completionTokenCostInMillicents: 0.4,
   },
   "gpt-3.5-turbo-16k-0613": {
-    maxTokens: 16384,
+    contextWindowSize: 16384,
     promptTokenCostInMillicents: 0.3,
     completionTokenCostInMillicents: 0.4,
   },
@@ -134,7 +131,6 @@ export interface OpenAIChatCallSettings {
 
 export interface OpenAIChatSettings
   extends TextGenerationModelSettings,
-    TextStreamingModelSettings,
     OpenAIModelSettings,
     OpenAIChatCallSettings {
   isUserIdForwardingEnabled?: boolean;
@@ -161,14 +157,9 @@ export interface OpenAIChatSettings
 export class OpenAIChatModel
   extends AbstractModel<OpenAIChatSettings>
   implements
-    TextGenerationModelWithTokenization<
+    TextGenerationModel<
       OpenAIChatMessage[],
       OpenAIChatResponse,
-      OpenAIChatSettings
-    >,
-    FullTokenizer,
-    TextStreamingModel<
-      OpenAIChatMessage[],
       OpenAIChatDelta,
       OpenAIChatSettings
     >,
@@ -183,7 +174,8 @@ export class OpenAIChatModel
     super({ settings });
 
     this.tokenizer = new TikTokenTokenizer({ model: this.settings.model });
-    this.maxTokens = OPENAI_CHAT_MODELS[this.settings.model].maxTokens;
+    this.contextWindowSize =
+      OPENAI_CHAT_MODELS[this.settings.model].contextWindowSize;
   }
 
   readonly provider = "openai" as const;
@@ -191,20 +183,8 @@ export class OpenAIChatModel
     return this.settings.model;
   }
 
-  readonly maxTokens: number;
-  private readonly tokenizer: TikTokenTokenizer;
-
-  async tokenize(text: string) {
-    return this.tokenizer.tokenize(text);
-  }
-
-  async tokenizeWithTexts(text: string) {
-    return this.tokenizer.tokenizeWithTexts(text);
-  }
-
-  async detokenize(tokens: number[]) {
-    return this.tokenizer.detokenize(tokens);
-  }
+  readonly contextWindowSize: number;
+  readonly tokenizer: TikTokenTokenizer;
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
@@ -314,6 +294,22 @@ export class OpenAIChatModel
     });
   }
 
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, OpenAIChatMessage[]>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    OpenAIChatMessage[],
+    OpenAIChatResponse,
+    OpenAIChatDelta,
+    OpenAIChatSettings,
+    this
+  > {
+    return new PromptMappingTextGenerationModel({
+      model: this.withStopTokens(promptMapping.stopTokens),
+      promptMapping,
+    });
+  }
+
   withSettings(additionalSettings: Partial<OpenAIChatSettings>) {
     return new OpenAIChatModel(
       Object.assign({}, this.settings, additionalSettings)
@@ -322,6 +318,10 @@ export class OpenAIChatModel
 
   withMaxTokens(maxTokens: number) {
     return this.withSettings({ maxTokens });
+  }
+
+  withStopTokens(stopTokens: string[]): this {
+    return this.withSettings({ stop: stopTokens });
   }
 }
 

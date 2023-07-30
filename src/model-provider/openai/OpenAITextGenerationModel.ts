@@ -2,19 +2,16 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
+import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
+  TextGenerationModel,
   TextGenerationModelSettings,
-  TextGenerationModelWithTokenization,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { AsyncQueue } from "../../model-function/stream-text/AsyncQueue.js";
-import { DeltaEvent } from "../../model-function/stream-text/DeltaEvent.js";
-import {
-  TextStreamingModel,
-  TextStreamingModelSettings,
-} from "../../model-function/stream-text/TextStreamingModel.js";
-import { parseEventSourceReadableStream } from "../../model-function/stream-text/parseEventSourceReadableStream.js";
-import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
+import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
+import { PromptMapping } from "../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -34,43 +31,43 @@ import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
  */
 export const OPENAI_TEXT_GENERATION_MODELS = {
   "text-davinci-003": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     tokenCostInMillicents: 2,
   },
   "text-davinci-002": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     tokenCostInMillicents: 2,
   },
   "code-davinci-002": {
-    maxTokens: 8000,
+    contextWindowSize: 8000,
     tokenCostInMillicents: 2,
   },
   davinci: {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 2,
   },
   "text-curie-001": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.2,
   },
   curie: {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.2,
   },
   "text-babbage-001": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.05,
   },
   babbage: {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.05,
   },
   "text-ada-001": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.04,
   },
   ada: {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
     tokenCostInMillicents: 0.04,
   },
 };
@@ -94,8 +91,7 @@ export const calculateOpenAITextGenerationCostInMillicents = ({
   OPENAI_TEXT_GENERATION_MODELS[model].tokenCostInMillicents;
 
 export interface OpenAITextGenerationModelSettings
-  extends TextGenerationModelSettings,
-    TextStreamingModelSettings {
+  extends TextGenerationModelSettings {
   model: OpenAITextGenerationModelType;
 
   baseUrl?: string;
@@ -139,14 +135,9 @@ export interface OpenAITextGenerationModelSettings
 export class OpenAITextGenerationModel
   extends AbstractModel<OpenAITextGenerationModelSettings>
   implements
-    TextGenerationModelWithTokenization<
+    TextGenerationModel<
       string,
       OpenAITextGenerationResponse,
-      OpenAITextGenerationModelSettings
-    >,
-    FullTokenizer,
-    TextStreamingModel<
-      string,
       OpenAITextGenerationDelta,
       OpenAITextGenerationModelSettings
     >
@@ -155,7 +146,8 @@ export class OpenAITextGenerationModel
     super({ settings });
 
     this.tokenizer = new TikTokenTokenizer({ model: settings.model });
-    this.maxTokens = OPENAI_TEXT_GENERATION_MODELS[settings.model].maxTokens;
+    this.contextWindowSize =
+      OPENAI_TEXT_GENERATION_MODELS[settings.model].contextWindowSize;
   }
 
   readonly provider = "openai" as const;
@@ -163,20 +155,8 @@ export class OpenAITextGenerationModel
     return this.settings.model;
   }
 
-  readonly maxTokens: number;
-  private readonly tokenizer: TikTokenTokenizer;
-
-  async tokenize(text: string) {
-    return this.tokenizer.tokenize(text);
-  }
-
-  async tokenizeWithTexts(text: string) {
-    return this.tokenizer.tokenizeWithTexts(text);
-  }
-
-  async detokenize(tokens: number[]) {
-    return this.tokenizer.detokenize(tokens);
-  }
+  readonly contextWindowSize: number;
+  readonly tokenizer: TikTokenTokenizer;
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
@@ -256,6 +236,22 @@ export class OpenAITextGenerationModel
     return fullDelta[0].delta;
   }
 
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, string>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    string,
+    OpenAITextGenerationResponse,
+    OpenAITextGenerationDelta,
+    OpenAITextGenerationModelSettings,
+    this
+  > {
+    return new PromptMappingTextGenerationModel({
+      model: this.withStopTokens(promptMapping.stopTokens),
+      promptMapping,
+    });
+  }
+
   withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {
     return new OpenAITextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
@@ -264,6 +260,10 @@ export class OpenAITextGenerationModel
 
   withMaxTokens(maxTokens: number) {
     return this.withSettings({ maxTokens });
+  }
+
+  withStopTokens(stopTokens: string[]) {
+    return this.withSettings({ stop: stopTokens });
   }
 }
 

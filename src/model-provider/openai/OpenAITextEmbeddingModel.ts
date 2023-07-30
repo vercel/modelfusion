@@ -18,7 +18,7 @@ import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-ada-002": {
-    maxTokens: 8192,
+    contextWindowSize: 8192,
     embeddingDimensions: 1536,
     tokenCostInMillicents: 0.01,
   },
@@ -88,7 +88,8 @@ export class OpenAITextEmbeddingModel
     super({ settings });
 
     this.tokenizer = new TikTokenTokenizer({ model: this.modelName });
-    this.maxTokens = OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].maxTokens;
+    this.contextWindowSize =
+      OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].contextWindowSize;
 
     this.embeddingDimensions =
       OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].embeddingDimensions;
@@ -103,7 +104,7 @@ export class OpenAITextEmbeddingModel
   readonly embeddingDimensions: number;
 
   readonly tokenizer: TikTokenTokenizer;
-  readonly maxTokens: number;
+  readonly contextWindowSize: number;
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;

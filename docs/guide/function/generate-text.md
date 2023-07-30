@@ -2,9 +2,10 @@
 sidebar_position: 3
 ---
 
-# Generate Text
+# Generate and Stream Text
 
-Generates text using a prompt.
+Generates text using a [TextGenerationModel](/api/interfaces/TextGenerationModel) and a prompt.
+You can also stream the text if it is supported by the model.
 
 ## Usage
 
@@ -28,21 +29,33 @@ const text = await generateText(
 #### With OpenAI chat model
 
 ```ts
-const text = await generateText(
-  new OpenAIChatModel({
-    /* ... */
-  }),
-  [
-    OpenAIChatMessage.system(
-      "Write a short story about a robot learning to love:"
-    ),
-  ]
-);
+const text = await generateText(new OpenAIChatModel(/* ... */), [
+  OpenAIChatMessage.system(
+    "Write a short story about a robot learning to love:"
+  ),
+]);
+```
+
+### streamText
+
+[streamText API](/api/modules#streamtext)
+
+#### With OpenAI chat model
+
+```ts
+const textStream = await streamText(new OpenAIChatModel(/* ... */), [
+  OpenAIChatMessage.system("You are a story writer. Write a story about:"),
+  OpenAIChatMessage.user("A robot learning to love"),
+]);
+
+for await (const textFragment of textStream) {
+  process.stdout.write(textFragment);
+}
 ```
 
 ## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)
 - [Cohere](/integration/model-provider/cohere)
-- [Hugging Face](/integration/model-provider/huggingface)
 - [Llama.cpp](/integration/model-provider/llamacpp)
+- [Hugging Face](/integration/model-provider/huggingface) (no streaming)

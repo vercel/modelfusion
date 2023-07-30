@@ -18,7 +18,7 @@ const chat = readline.createInterface({
     // They work with the original Llama models.
     // However, in fine-tuned models they may or may not work.
     //
-    // See https://huggingface.co/blog/llama2#how-to-prompt-llama-2
+    // See https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
     // for more information.
     const responseStream = await streamText(
       new LlamaCppTextGenerationModel({

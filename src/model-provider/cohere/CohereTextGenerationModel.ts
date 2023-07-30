@@ -2,18 +2,15 @@ import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
+import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
+  TextGenerationModel,
   TextGenerationModelSettings,
-  TextGenerationModelWithTokenization,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { AsyncQueue } from "../../model-function/stream-text/AsyncQueue.js";
-import { DeltaEvent } from "../../model-function/stream-text/DeltaEvent.js";
-import {
-  TextStreamingModel,
-  TextStreamingModelSettings,
-} from "../../model-function/stream-text/TextStreamingModel.js";
-import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
+import { PromptMapping } from "../../prompt/PromptMapping.js";
+import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -27,16 +24,16 @@ import { CohereTokenizer } from "./CohereTokenizer.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
   },
   "command-nightly": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
   },
   "command-light": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
   },
   "command-light-nightly": {
-    maxTokens: 2048,
+    contextWindowSize: 2048,
   },
 };
 
@@ -44,8 +41,7 @@ export type CohereTextGenerationModelType =
   keyof typeof COHERE_TEXT_GENERATION_MODELS;
 
 export interface CohereTextGenerationModelSettings
-  extends TextGenerationModelSettings,
-    TextStreamingModelSettings {
+  extends TextGenerationModelSettings {
   model: CohereTextGenerationModelType;
 
   baseUrl?: string;
@@ -92,14 +88,9 @@ export interface CohereTextGenerationModelSettings
 export class CohereTextGenerationModel
   extends AbstractModel<CohereTextGenerationModelSettings>
   implements
-    TextGenerationModelWithTokenization<
+    TextGenerationModel<
       string,
       CohereTextGenerationResponse,
-      CohereTextGenerationModelSettings
-    >,
-    FullTokenizer,
-    TextStreamingModel<
-      string,
       CohereTextGenerationDelta,
       CohereTextGenerationModelSettings
     >
@@ -107,8 +98,8 @@ export class CohereTextGenerationModel
   constructor(settings: CohereTextGenerationModelSettings) {
     super({ settings });
 
-    this.maxTokens =
-      COHERE_TEXT_GENERATION_MODELS[this.settings.model].maxTokens;
+    this.contextWindowSize =
+      COHERE_TEXT_GENERATION_MODELS[this.settings.model].contextWindowSize;
 
     this.tokenizer = new CohereTokenizer({
       baseUrl: this.settings.baseUrl,
@@ -124,21 +115,8 @@ export class CohereTextGenerationModel
     return this.settings.model;
   }
 
-  readonly maxTokens: number;
-
-  private readonly tokenizer: CohereTokenizer;
-
-  async tokenize(text: string) {
-    return this.tokenizer.tokenize(text);
-  }
-
-  async tokenizeWithTexts(text: string) {
-    return this.tokenizer.tokenizeWithTexts(text);
-  }
-
-  async detokenize(tokens: number[]) {
-    return this.tokenizer.detokenize(tokens);
-  }
+  readonly contextWindowSize: number;
+  readonly tokenizer: CohereTokenizer;
 
   private get apiKey() {
     const apiKey = this.settings.apiKey ?? process.env.COHERE_API_KEY;
@@ -212,6 +190,22 @@ export class CohereTextGenerationModel
     return fullDelta.delta;
   }
 
+  mapPrompt<INPUT_PROMPT>(
+    promptMapping: PromptMapping<INPUT_PROMPT, string>
+  ): PromptMappingTextGenerationModel<
+    INPUT_PROMPT,
+    string,
+    CohereTextGenerationResponse,
+    CohereTextGenerationDelta,
+    CohereTextGenerationModelSettings,
+    this
+  > {
+    return new PromptMappingTextGenerationModel({
+      model: this.withStopTokens(promptMapping.stopTokens),
+      promptMapping,
+    });
+  }
+
   withSettings(additionalSettings: Partial<CohereTextGenerationModelSettings>) {
     return new CohereTextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
@@ -220,6 +214,12 @@ export class CohereTextGenerationModel
 
   withMaxTokens(maxTokens: number) {
     return this.withSettings({ maxTokens });
+  }
+
+  withStopTokens(stopTokens: string[]) {
+    // use endSequences instead of stopSequences
+    // to exclude stop tokens from the generated text
+    return this.withSettings({ endSequences: stopTokens });
   }
 }
 

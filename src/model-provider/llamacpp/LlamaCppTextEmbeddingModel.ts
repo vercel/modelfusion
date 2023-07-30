@@ -53,7 +53,7 @@ export class LlamaCppTextEmbeddingModel
 
   readonly maxTextsPerCall = 1;
 
-  readonly maxTokens = undefined;
+  readonly contextWindowSize = undefined;
   readonly embeddingDimensions = undefined;
 
   private readonly tokenizer: LlamaCppTokenizer;

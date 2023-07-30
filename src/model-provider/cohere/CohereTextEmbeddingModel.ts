@@ -18,15 +18,15 @@ import { CohereTokenizer } from "./CohereTokenizer.js";
 
 export const COHERE_TEXT_EMBEDDING_MODELS = {
   "embed-english-light-v2.0": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     embeddingDimensions: 1024,
   },
   "embed-english-v2.0": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     embeddingDimensions: 4096,
   },
   "embed-multilingual-v2.0": {
-    maxTokens: 4096,
+    contextWindowSize: 4096,
     embeddingDimensions: 768,
   },
 };
@@ -78,7 +78,8 @@ export class CohereTextEmbeddingModel
   constructor(settings: CohereTextEmbeddingModelSettings) {
     super({ settings });
 
-    this.maxTokens = COHERE_TEXT_EMBEDDING_MODELS[this.modelName].maxTokens;
+    this.contextWindowSize =
+      COHERE_TEXT_EMBEDDING_MODELS[this.modelName].contextWindowSize;
 
     this.tokenizer = new CohereTokenizer({
       baseUrl: this.settings.baseUrl,
@@ -100,7 +101,7 @@ export class CohereTextEmbeddingModel
   readonly maxTextsPerCall = 96;
   readonly embeddingDimensions: number;
 
-  readonly maxTokens: number;
+  readonly contextWindowSize: number;
   private readonly tokenizer: CohereTokenizer;
 
   async tokenize(text: string) {
