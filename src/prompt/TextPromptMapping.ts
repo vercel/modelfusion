@@ -54,7 +54,7 @@ export const ChatToTextPromptMapping: ({
       throw new Error(`Unsupported message: ${JSON.stringify(message)}`);
     }
 
-    // Add AI message starter
+    // AI message prefix:
     text += `${ai}:\n`;
 
     return text;
