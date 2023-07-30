@@ -1,5 +1,5 @@
 import { OpenAIChatMessage } from "../model-provider/openai/chat/OpenAIChatMessage.js";
-import { ChatPrompt } from "./ChatPrompt.js";
+import { ChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
 import { PromptMapping } from "./PromptMapping.js";
 
@@ -31,11 +31,13 @@ export const ChatToOpenAIChatPromptMapping: () => PromptMapping<
   ChatPrompt,
   Array<OpenAIChatMessage>
 > = () => ({
-  map: (chat) => {
+  map: (chatPrompt) => {
+    validateChatPrompt(chatPrompt);
+
     const messages: Array<OpenAIChatMessage> = [];
 
-    for (let i = 0; i < chat.length; i++) {
-      const message = chat[i];
+    for (let i = 0; i < chatPrompt.length; i++) {
+      const message = chatPrompt[i];
 
       // system message:
       if (
