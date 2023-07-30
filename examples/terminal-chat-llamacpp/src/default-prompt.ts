@@ -1,4 +1,8 @@
-import { LlamaCppTextGenerationModel, streamText } from "ai-utils.js";
+import {
+  ChatToTextPromptMapping,
+  LlamaCppTextGenerationModel,
+  streamText,
+} from "ai-utils.js";
 import * as readline from "node:readline/promises";
 
 const chat = readline.createInterface({
@@ -7,22 +11,24 @@ const chat = readline.createInterface({
 });
 
 (async () => {
-  const messages: Array<{ role: "user" | "assistant"; content: string }> = [];
+  const messages: Array<{ user: string } | { ai: string }> = [];
 
   while (true) {
     const userInput = await chat.question("You: ");
 
-    messages.push({ role: "user", content: userInput });
+    messages.push({ user: userInput });
 
     const responseStream = await streamText(
-      new LlamaCppTextGenerationModel({
-        stop: ["user: "],
-      }),
+      new LlamaCppTextGenerationModel().mapPrompt(
+        ChatToTextPromptMapping({ user: "user", ai: "assistant" })
+      ),
       [
-        "You are an AI assistant. Follow the user's instructions carefully.\n",
-        ...messages.map((message) => `${message.role}: ${message.content}\n`),
-        "assistant: ",
-      ].join("\n")
+        {
+          system:
+            "You are an AI assistant. Follow the user's instructions carefully.",
+        },
+        ...messages,
+      ]
     );
 
     let fullResponse = "";
@@ -32,6 +38,6 @@ const chat = readline.createInterface({
       process.stdout.write(textFragment);
     }
     process.stdout.write("\n\n");
-    messages.push({ role: "assistant", content: fullResponse });
+    messages.push({ ai: fullResponse });
   }
 })();
