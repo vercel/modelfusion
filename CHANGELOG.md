@@ -1,18 +1,31 @@
 # Changelog
 
-## v0.0.39 - 2023-09-26
+## v0.0.40 - 2023-07-30
+
+### Added
+
+- Prompt mapping support for text generation and streaming.
+- Added instruction prompt concept and mapping.
+- Option to specify context window size for Llama.cpp text generation models.
+
+### Changed
+
+- Renamed 'maxTokens' to 'contextWindowSize' where applicable.
+- Restructured how tokenizers are exposed by text generation models.
+
+## v0.0.39 - 2023-07-26
 
 ### Added
 
 - llama.cpp embedding support.
 
-## v0.0.38 - 2023-09-24
+## v0.0.38 - 2023-07-24
 
 ### Changed
 
 - `zod` and `zod-to-json-schema` are peer dependencies and no longer included in the package.
 
-## v0.0.37 - 2023-09-23
+## v0.0.37 - 2023-07-23
 
 ### Changed
 
