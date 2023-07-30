@@ -7,15 +7,15 @@ sidebar_position: 3
 Generates text using a [TextGenerationModel](/api/interfaces/TextGenerationModel) and a prompt.
 You can also stream the text if it is supported by the model.
 
+The prompt format depends on the model.
+For example, OpenAI text models expect a string prompt, and OpenAI chat models expect an array of chat messages.
+You can use [prompt mappings](/guide/function/generate-text/prompt-mapping) to change the prompt format of a model.
+
 ## Usage
 
 ### generateText
 
 [generateText API](/api/modules#generatetext)
-
-Generates a text using a prompt.
-The prompt format depends on the model.
-For example, OpenAI text models expect a string prompt, and OpenAI chat models expect an array of chat messages.
 
 #### With OpenAI text model
 

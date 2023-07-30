@@ -9,7 +9,7 @@ This enables the use of abstracted prompts such as [instruction](/api/modules#in
 
 You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `mapPrompt()` method.
 
-## Instruction Prompt
+## Instruction Prompts
 
 [Instruction prompts](/api/modules#instructionprompt) are a higher level prompt format that contains an instruction and an optional system message.
 
