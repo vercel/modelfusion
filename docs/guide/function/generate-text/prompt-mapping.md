@@ -11,7 +11,7 @@ You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGeneration
 
 ## Instruction Prompts
 
-[Instruction prompts](/api/modules#instructionprompt) are a higher level prompt format that contains an instruction and an optional system message.
+[Instruction prompts](/api/modules#instructionprompt) are a higher-level prompt format that contains an instruction and an optional system message.
 
 ### Example
 
@@ -85,3 +85,28 @@ The following built-in mappings are available for chat prompts:
   Use this mapping for [OpenAI chat models](/api/classes/OpenAIChatModel).
 - [ChatToLlama2PromptMapping](/api/modules#chattollama2promptmapping)
   Use this mapping for Llama 2 models that expect a [special prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
+
+## Custom Prompts
+
+You can also create your own custom prompt formats and prompt mappings.
+
+For this, you need to:
+
+1. create an interface/type for your prompt format, and
+2. create prompt mappings that map your prompt format to the prompt formats of the models that you want to use.
+
+The interface for [prompt mapping](/api/interfaces/PromptMapping) consists of a map function
+and a list of stop tokens.
+
+```ts
+interface PromptMapping<SOURCE_PROMPT, TARGET_PROMPT> {
+  map(sourcePrompt: SOURCE_PROMPT): TARGET_PROMPT;
+  stopTokens: string[];
+}
+```
+
+When you have a prompt mapping that matches the prompt format of a model, you can apply it as follows:
+
+```ts
+const modelWithMyCustomPromptFormat = model.mapPrompt(myPromptMapping);
+```
