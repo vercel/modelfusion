@@ -40,19 +40,22 @@ export const ChatToTextPromptMapping: ({
 
       // user message
       if ("user" in message) {
-        text += `${user}: ${message.user}\n\n`;
+        text += `${user}:\n${message.user}\n\n`;
         continue;
       }
 
       // ai message:
       if ("ai" in message) {
-        text += `${ai}: ${message.ai}\n\n`;
+        text += `${ai}:\n${message.ai}\n\n`;
         continue;
       }
 
       // unsupported message:
       throw new Error(`Unsupported message: ${JSON.stringify(message)}`);
     }
+
+    // Add AI message starter
+    text += `${ai}:\n`;
 
     return text;
   },
