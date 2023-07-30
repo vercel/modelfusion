@@ -5,7 +5,17 @@
  * Then it should be alternating between a user message and an ai message.
  * It always ends with a user message.
  *
- * The type checking is done at runtime.
+ * The type checking is done at runtime.\
+ *
+ * @example
+ * ```ts
+ * [
+ *   { system: "You are a celebrated poet." },
+ *   { user: "Write a short story about a robot learning to love." },
+ *   { ai: "Once upon a time, there was a robot who learned to love." },
+ *   { user: "That's a great start!" },
+ *  ]
+ * ```
  */
 // Statically type checking this is impossible to achieve with TypeScript.
 // Partial solutions such as https://stackoverflow.com/a/69800688
