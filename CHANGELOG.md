@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.0.41 - 2023-07-30
+
+### Added
+
+- ChatPrompt concept (with chat prompt mappings for text, OpenAI chat, and Llama2 prompts)
+
+### Changed
+
+- Renamed prompt mappings and changed into functions.
+
 ## v0.0.40 - 2023-07-30
 
 ### Added
