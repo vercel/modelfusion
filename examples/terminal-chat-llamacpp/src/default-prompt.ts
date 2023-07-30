@@ -1,6 +1,4 @@
 import {
-  ChatPromptAiMessage,
-  ChatPromptUserMessage,
   ChatToTextPromptMapping,
   LlamaCppTextGenerationModel,
   streamText,
@@ -13,7 +11,7 @@ const chat = readline.createInterface({
 });
 
 (async () => {
-  const messages: Array<ChatPromptUserMessage | ChatPromptAiMessage> = [];
+  const messages: Array<{ user: string } | { ai: string }> = [];
 
   while (true) {
     const userInput = await chat.question("You: ");

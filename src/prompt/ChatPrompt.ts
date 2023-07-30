@@ -1,7 +1,3 @@
-export type ChatPromptSystemMessage = { system: string };
-export type ChatPromptUserMessage = { user: string };
-export type ChatPromptAiMessage = { ai: string };
-
 /**
  * A chat prompt is a sequence of messages.
  * It can optionally start with a system message.
@@ -18,11 +14,8 @@ export type ChatPromptAiMessage = { ai: string };
 //
 // Therefore the check that the messages are alternating is done at runtime.
 export type ChatPrompt =
-  | [...(ChatPromptUserMessage | ChatPromptAiMessage)[]]
-  | [
-      ChatPromptSystemMessage,
-      ...(ChatPromptUserMessage | ChatPromptAiMessage)[],
-    ];
+  | [...({ user: string } | { ai: string })[]]
+  | [{ system: string }, ...({ user: string } | { ai: string })[]];
 
 export class ChatPromptValidationError extends Error {
   constructor(message: string) {
