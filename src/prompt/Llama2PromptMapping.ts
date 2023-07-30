@@ -1,6 +1,11 @@
 import { PromptMapping } from "./PromptMapping.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
 
+/**
+ * Maps an instruction prompt to the Llama2 prompt format.
+ *
+ * @see https://huggingface.co/blog/llama2#how-to-prompt-llama-2
+ */
 export const Llama2InstructionPromptMapping: PromptMapping<
   InstructionPrompt,
   string
