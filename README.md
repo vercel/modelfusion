@@ -38,7 +38,9 @@ You can provide API keys for the different [integrations](https://ai-utils.dev/i
 
 ### [Generate Text](https://ai-utils.dev/guide/function/generate-text)
 
-Generate text using a language model and a prompt. You can stream the text if it is supported by the model.
+Generate text using a language model and a prompt.
+You can stream the text if it is supported by the model.
+You can use [prompt mappings](https://ai-utils.dev/guide/function/generate-text/prompt-mapping) to change the prompt format of a model.
 
 #### generateText
 
@@ -49,14 +51,29 @@ const text = await generateText(
 );
 ```
 
+#### generateText with instruction prompt (prompt mapping)
+
+```ts
+const text = await generateText(
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    maxTokens: 1000,
+  }).mapPrompt(InstructionToOpenAIChatPromptMapping()),
+  {
+    system: "You are a story write.",
+    instruction: "Write a short story about a robot learning to love.",
+  }
+);
+```
+
 #### streamText
 
 ```ts
 const textStream = await streamText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
   [
-    OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-    OpenAIChatMessage.user("A robot learning to love"),
+    OpenAIChatMessage.system("You are a story writer."),
+    OpenAIChatMessage.user("Write a story about a robot learning to love"),
   ]
 );
 
