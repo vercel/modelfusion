@@ -22,8 +22,9 @@ import {
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
-export interface LlamaCppTextGenerationModelSettings
-  extends TextGenerationModelSettings {
+export interface LlamaCppTextGenerationModelSettings<
+  CONTEXT_WINDOW_SIZE extends number | undefined,
+> extends TextGenerationModelSettings {
   baseUrl?: string;
 
   retry?: RetryFunction;
@@ -38,7 +39,7 @@ export interface LlamaCppTextGenerationModelSettings
    * Specify the context window size of the model that you have loaded in your
    * Llama.cpp server.
    */
-  contextWindowSize?: number;
+  contextWindowSize?: CONTEXT_WINDOW_SIZE;
 
   temperature?: number;
   topK?: number;
@@ -59,17 +60,23 @@ export interface LlamaCppTextGenerationModelSettings
   logitBias?: Array<[number, number | false]>;
 }
 
-export class LlamaCppTextGenerationModel
-  extends AbstractModel<LlamaCppTextGenerationModelSettings>
+export class LlamaCppTextGenerationModel<
+    CONTEXT_WINDOW_SIZE extends number | undefined,
+  >
+  extends AbstractModel<
+    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+  >
   implements
     TextGenerationModel<
       string,
       LlamaCppTextGenerationResponse,
       LlamaCppTextGenerationDelta,
-      LlamaCppTextGenerationModelSettings
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
     >
 {
-  constructor(settings: LlamaCppTextGenerationModelSettings = {}) {
+  constructor(
+    settings: LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE> = {}
+  ) {
     super({ settings });
 
     this.tokenizer = new LlamaCppTokenizer({
@@ -84,8 +91,8 @@ export class LlamaCppTextGenerationModel
     return null;
   }
 
-  get contextWindowSize() {
-    return this.settings.contextWindowSize;
+  get contextWindowSize(): CONTEXT_WINDOW_SIZE {
+    return this.settings.contextWindowSize as CONTEXT_WINDOW_SIZE;
   }
 
   readonly tokenizer: LlamaCppTokenizer;
@@ -94,7 +101,9 @@ export class LlamaCppTextGenerationModel
     prompt: string,
     options: {
       responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
-    } & FunctionOptions<LlamaCppTextGenerationModelSettings>
+    } & FunctionOptions<
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    >
   ): Promise<RESPONSE> {
     const { run, settings, responseFormat } = options;
 
@@ -118,7 +127,9 @@ export class LlamaCppTextGenerationModel
 
   generateTextResponse(
     prompt: string,
-    options?: FunctionOptions<LlamaCppTextGenerationModelSettings>
+    options?: FunctionOptions<
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    >
   ) {
     return this.callAPI(prompt, {
       ...options,
@@ -132,7 +143,9 @@ export class LlamaCppTextGenerationModel
 
   generateDeltaStreamResponse(
     prompt: string,
-    options?: FunctionOptions<LlamaCppTextGenerationModelSettings>
+    options?: FunctionOptions<
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    >
   ) {
     return this.callAPI(prompt, {
       ...options,
@@ -151,7 +164,7 @@ export class LlamaCppTextGenerationModel
     string,
     LlamaCppTextGenerationResponse,
     LlamaCppTextGenerationDelta,
-    LlamaCppTextGenerationModelSettings,
+    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
     return new PromptMappingTextGenerationModel({
@@ -161,7 +174,9 @@ export class LlamaCppTextGenerationModel
   }
 
   withSettings(
-    additionalSettings: Partial<LlamaCppTextGenerationModelSettings>
+    additionalSettings: Partial<
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    >
   ) {
     return new LlamaCppTextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
