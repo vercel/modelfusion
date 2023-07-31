@@ -147,9 +147,9 @@ export class PromptMappingTextGenerationModel<
     }) as this;
   }
 
-  withMaxTokens(maxTokens: number): this {
+  withMaxCompletionTokens(maxCompletionTokens: number): this {
     return new PromptMappingTextGenerationModel({
-      model: this.model.withMaxTokens(maxTokens),
+      model: this.model.withMaxCompletionTokens(maxCompletionTokens),
       promptMapping: this.promptMapping,
     }) as this;
   }

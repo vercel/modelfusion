@@ -316,8 +316,8 @@ export class OpenAIChatModel
     ) as this;
   }
 
-  withMaxTokens(maxTokens: number) {
-    return this.withSettings({ maxTokens });
+  withMaxCompletionTokens(maxCompletionTokens: number) {
+    return this.withSettings({ maxTokens: maxCompletionTokens });
   }
 
   withStopTokens(stopTokens: string[]): this {
