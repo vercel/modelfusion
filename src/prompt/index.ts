@@ -1,4 +1,4 @@
-export * from "./ChatPrompt.js";
+export * from "./chat/ChatPrompt.js";
 export * from "./InstructionPrompt.js";
 export * from "./Llama2PromptMapping.js";
 export * from "./OpenAIChatPromptMapping.js";

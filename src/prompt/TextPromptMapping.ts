@@ -1,6 +1,6 @@
 import { PromptMapping } from "./PromptMapping.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
-import { ChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { ChatPrompt, validateChatPrompt } from "./chat/ChatPrompt.js";
 
 export const InstructionToTextPromptMapping: () => PromptMapping<
   InstructionPrompt,
