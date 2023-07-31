@@ -1,7 +1,9 @@
 import {
+  ChatPrompt,
   ChatToTextPromptMapping,
   LlamaCppTextGenerationModel,
   streamText,
+  trimChatPrompt,
 } from "ai-utils.js";
 import * as readline from "node:readline/promises";
 
@@ -11,24 +13,27 @@ const chat = readline.createInterface({
 });
 
 (async () => {
-  const messages: Array<{ user: string } | { ai: string }> = [];
+  const messages: Array<
+    { system: string } | { user: string } | { ai: string }
+  > = [
+    {
+      system:
+        "You are an AI assistant. Follow the user's instructions carefully.",
+    },
+  ];
 
   while (true) {
     const userInput = await chat.question("You: ");
 
     messages.push({ user: userInput });
 
+    const model = new LlamaCppTextGenerationModel().mapPrompt(
+      ChatToTextPromptMapping({ user: "user", ai: "assistant" })
+    );
+
     const responseStream = await streamText(
-      new LlamaCppTextGenerationModel().mapPrompt(
-        ChatToTextPromptMapping({ user: "user", ai: "assistant" })
-      ),
-      [
-        {
-          system:
-            "You are an AI assistant. Follow the user's instructions carefully.",
-        },
-        ...messages,
-      ]
+      model,
+      await trimChatPrompt({ prompt: messages as ChatPrompt, model })
     );
 
     let fullResponse = "";
