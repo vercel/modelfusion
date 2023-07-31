@@ -183,6 +183,10 @@ export class LlamaCppTextGenerationModel<
     ) as this;
   }
 
+  get maxCompletionTokens() {
+    return this.settings.nPredict;
+  }
+
   withMaxCompletionTokens(maxCompletionTokens: number) {
     return this.withSettings({ nPredict: maxCompletionTokens });
   }
