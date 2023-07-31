@@ -161,8 +161,12 @@ export class HuggingFaceTextGenerationModel
     ) as this;
   }
 
-  withMaxTokens(maxTokens: number): this {
-    return this.withSettings({ maxNewTokens: maxTokens });
+  get maxCompletionTokens() {
+    return this.settings.maxNewTokens;
+  }
+
+  withMaxCompletionTokens(maxCompletionTokens: number): this {
+    return this.withSettings({ maxNewTokens: maxCompletionTokens });
   }
 
   withStopTokens(): this {

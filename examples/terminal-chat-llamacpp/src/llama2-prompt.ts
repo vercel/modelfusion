@@ -2,8 +2,11 @@ import {
   ChatToLlama2PromptMapping,
   LlamaCppTextGenerationModel,
   streamText,
+  trimChatPrompt,
 } from "ai-utils.js";
 import * as readline from "node:readline/promises";
+
+const systemPrompt = `You are a helpful, respectful and honest assistant.`;
 
 const chat = readline.createInterface({
   input: process.stdin,
@@ -18,15 +21,17 @@ const chat = readline.createInterface({
 
     messages.push({ user: userInput });
 
+    const model = new LlamaCppTextGenerationModel({
+      contextWindowSize: 4096, // Llama 2 context window size
+      nPredict: 512,
+    }).mapPrompt(ChatToLlama2PromptMapping());
+
     const responseStream = await streamText(
-      new LlamaCppTextGenerationModel().mapPrompt(ChatToLlama2PromptMapping()),
-      [
-        {
-          system:
-            "You are an AI assistant. Follow the user's instructions carefully.",
-        },
-        ...messages,
-      ]
+      model,
+      await trimChatPrompt({
+        prompt: [{ system: systemPrompt }, ...messages],
+        model,
+      })
     );
 
     let fullResponse = "";

@@ -60,7 +60,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
       }),
       summarize: async (input: { text: string }) =>
         generateText(
-          model.withMaxTokens(reservedCompletionTokens),
+          model.withMaxCompletionTokens(reservedCompletionTokens),
           await prompt(input),
           options
         ),

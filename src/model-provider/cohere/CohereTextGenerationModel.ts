@@ -212,8 +212,12 @@ export class CohereTextGenerationModel
     ) as this;
   }
 
-  withMaxTokens(maxTokens: number) {
-    return this.withSettings({ maxTokens });
+  get maxCompletionTokens() {
+    return this.settings.maxTokens;
+  }
+
+  withMaxCompletionTokens(maxCompletionTokens: number) {
+    return this.withSettings({ maxTokens: maxCompletionTokens });
   }
 
   withStopTokens(stopTokens: string[]) {

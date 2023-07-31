@@ -1,5 +1,6 @@
 import { OpenAIChatMessage } from "../model-provider/openai/chat/OpenAIChatMessage.js";
-import { ChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { ChatPrompt } from "./chat/ChatPrompt.js";
+import { validateChatPrompt } from "./chat/validateChatPrompt.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
 import { PromptMapping } from "./PromptMapping.js";
 

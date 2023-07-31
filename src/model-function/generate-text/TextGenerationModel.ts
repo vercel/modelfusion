@@ -62,10 +62,15 @@ export interface TextGenerationModel<
   >;
 
   /**
+   * Maximum number of tokens to generate.
+   */
+  readonly maxCompletionTokens: number | undefined;
+
+  /**
    * Sets the maximum number of tokens to generate.
    * Does nothing if the model does not support this setting.
    */
-  withMaxTokens(maxTokens: number): this;
+  withMaxCompletionTokens(maxCompletionTokens: number): this;
 
   /**
    * Sets the stop tokens to use. Stop tokens are not included in the generated text.

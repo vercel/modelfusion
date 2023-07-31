@@ -1,11 +1,13 @@
 import {
+  ChatToLlama2PromptMapping,
+  ChatToOpenAIChatPromptMapping,
+  ChatToTextPromptMapping,
   CohereTextGenerationModel,
   LlamaCppTextGenerationModel,
-  OpenAIChatMessage,
   OpenAIChatModel,
-  composeRecentMessagesOpenAIChatPrompt,
   createTextDeltaEventSource,
   streamText,
+  trimChatPrompt,
 } from "ai-utils.js";
 import { z } from "zod";
 
@@ -19,6 +21,26 @@ const messageSchame = z.object({
 type Message = z.infer<typeof messageSchame>;
 
 const requestSchema = z.array(messageSchame);
+
+const gpt35turboModel = new OpenAIChatModel({
+  model: "gpt-3.5-turbo",
+  maxTokens: 512,
+}).mapPrompt(ChatToOpenAIChatPromptMapping());
+
+const llama2Model = new LlamaCppTextGenerationModel({
+  contextWindowSize: 4096, // Llama 2 context window size
+  nPredict: 512,
+}).mapPrompt(ChatToLlama2PromptMapping());
+
+const otherLlamaCppModel = new LlamaCppTextGenerationModel({
+  contextWindowSize: 2048, // set to your models context window size
+  nPredict: 512,
+}).mapPrompt(ChatToTextPromptMapping({ user: "user", ai: "assistant" }));
+
+const cohereModel = new CohereTextGenerationModel({
+  model: "command",
+  maxTokens: 512,
+}).mapPrompt(ChatToTextPromptMapping({ user: "user", ai: "assistant" }));
 
 const sendMessage = async (request: Request): Promise<Response> => {
   if (request.method !== "POST") {
@@ -47,8 +69,30 @@ const sendMessage = async (request: Request): Promise<Response> => {
 
   const messages = parsedData.data;
 
-  const stream = await createTextStream(messages, controller);
-  // const stream = await createOpenAIChatStream(messages, controller);
+  const model = llama2Model; // change this to your preferred model
+
+  const stream = await streamText(
+    model,
+    // limit the size of the prompt to leave room for the answer:
+    await trimChatPrompt({
+      model,
+      prompt: [
+        {
+          system:
+            "You are an AI chat bot. " +
+            "Follow the user's instructions carefully. Respond using markdown.",
+        },
+        ...messages.map((message) =>
+          message.role === "user"
+            ? { user: message.content }
+            : { ai: message.content }
+        ),
+      ],
+    }),
+
+    // forward the abort signal:
+    { run: { abortSignal: controller.signal } }
+  );
 
   return new Response(createTextDeltaEventSource(stream), {
     headers: {
@@ -61,51 +105,3 @@ const sendMessage = async (request: Request): Promise<Response> => {
 };
 
 export default sendMessage;
-
-async function createTextStream(
-  messages: Message[],
-  controller: AbortController
-) {
-  return streamText(
-    new LlamaCppTextGenerationModel({
-      stop: ["\n\nuser: "],
-    }),
-    // You can also use other models such as CohereTextGenerationModel instead:
-    // new CohereTextGenerationModel({
-    //   model: "command-nightly",
-    //   maxTokens: 1000,
-    //   stopSequences: ["\n\nuser: "],
-    // }),
-    [
-      "You are an AI chat bot. " +
-        "Follow the user's instructions carefully. Respond using markdown.",
-      ...messages.map((message) => `${message.role}: ${message.content}\n\n`),
-      "\n\nassistant: ",
-    ].join("\n"),
-    { run: { abortSignal: controller.signal } }
-  );
-}
-
-async function createOpenAIChatStream(
-  messages: Message[],
-  controller: AbortController
-) {
-  const model = new OpenAIChatModel({
-    model: "gpt-3.5-turbo",
-    maxTokens: 1000,
-  });
-
-  return streamText(
-    model,
-    await composeRecentMessagesOpenAIChatPrompt({
-      model: model.modelName,
-      systemMessage: OpenAIChatMessage.system(
-        "You are an AI chat bot. " +
-          "Follow the user's instructions carefully. Respond using markdown."
-      ),
-      messages,
-      maxTokens: model.settings.maxTokens ?? 100,
-    }),
-    { run: { abortSignal: controller.signal } }
-  );
-}

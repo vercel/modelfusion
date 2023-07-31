@@ -12,7 +12,7 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 1. Download the models that you want to use and try it out with llama.cpp.
    - [Search for GGML models on Hugging Face](https://huggingface.co/models?sort=trending&search=ggml)
 1. Start the llama.cpp server with the model that you want to serve:
-   - e.g., `./server -m models/llama-2-7b-chat.ggmlv3.q4_K_M.bin -c 2048` (Mac)
+   - e.g., `./server -m models/llama-2-7b-chat.ggmlv3.q4_K_M.bin -c 4096` (Mac)
    - For generating embeddings, you need to start the server with the `--embedding` flag.
    - [llama.cpp server docs](https://github.com/ggerganov/llama.cpp/tree/master/examples/server)
 

@@ -53,7 +53,9 @@ export class PromptMappingTextGenerationModel<
   get countPromptTokens(): MODEL["countPromptTokens"] extends undefined
     ? undefined
     : (prompt: PROMPT) => PromiseLike<number> {
-    const originalCountPromptTokens = this.model.countPromptTokens;
+    const originalCountPromptTokens = this.model.countPromptTokens?.bind(
+      this.model
+    );
 
     if (originalCountPromptTokens === undefined) {
       return undefined as MODEL["countPromptTokens"] extends undefined
@@ -88,7 +90,7 @@ export class PromptMappingTextGenerationModel<
         options: FunctionOptions<SETTINGS>
       ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>> {
     const originalGenerateDeltaStreamResponse =
-      this.model.generateDeltaStreamResponse;
+      this.model.generateDeltaStreamResponse?.bind(this.model);
 
     if (originalGenerateDeltaStreamResponse === undefined) {
       return undefined as MODEL["generateDeltaStreamResponse"] extends undefined
@@ -101,10 +103,7 @@ export class PromptMappingTextGenerationModel<
 
     return ((prompt: PROMPT, options: FunctionOptions<SETTINGS>) => {
       const mappedPrompt = this.promptMapping.map(prompt);
-      return originalGenerateDeltaStreamResponse.bind(this.model)(
-        mappedPrompt,
-        options
-      );
+      return originalGenerateDeltaStreamResponse(mappedPrompt, options);
     }) as MODEL["generateDeltaStreamResponse"] extends undefined
       ? undefined
       : (
@@ -147,9 +146,13 @@ export class PromptMappingTextGenerationModel<
     }) as this;
   }
 
-  withMaxTokens(maxTokens: number): this {
+  get maxCompletionTokens(): MODEL["maxCompletionTokens"] {
+    return this.model.maxCompletionTokens;
+  }
+
+  withMaxCompletionTokens(maxCompletionTokens: number): this {
     return new PromptMappingTextGenerationModel({
-      model: this.model.withMaxTokens(maxTokens),
+      model: this.model.withMaxCompletionTokens(maxCompletionTokens),
       promptMapping: this.promptMapping,
     }) as this;
   }
