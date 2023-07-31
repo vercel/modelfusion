@@ -13,5 +13,4 @@ export {
   OpenAIFunctionDescription,
 } from "./chat/OpenAIChatPrompt.js";
 export { OpenAIChatDelta } from "./chat/OpenAIChatStreamIterable.js";
-export * from "./chat/composeRecentMessagesOpenAIChatPrompt.js";
 export * from "./chat/countOpenAIChatMessageTokens.js";

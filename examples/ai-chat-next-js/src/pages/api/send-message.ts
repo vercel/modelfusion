@@ -3,7 +3,6 @@ import {
   LlamaCppTextGenerationModel,
   OpenAIChatMessage,
   OpenAIChatModel,
-  composeRecentMessagesOpenAIChatPrompt,
   createTextDeltaEventSource,
   streamText,
 } from "ai-utils.js";
@@ -97,15 +96,13 @@ async function createOpenAIChatStream(
 
   return streamText(
     model,
-    await composeRecentMessagesOpenAIChatPrompt({
-      model: model.modelName,
-      systemMessage: OpenAIChatMessage.system(
+    [
+      OpenAIChatMessage.system(
         "You are an AI chat bot. " +
           "Follow the user's instructions carefully. Respond using markdown."
       ),
-      messages,
-      maxTokens: model.settings.maxTokens ?? 100,
-    }),
+      ...messages,
+    ],
     { run: { abortSignal: controller.signal } }
   );
 }
