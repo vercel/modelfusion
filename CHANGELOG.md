@@ -1,10 +1,25 @@
 # Changelog
 
+## v0.0.42 - 2023-07-31
+
+### Added
+
+- `trimChatPrompt()` function to fit chat prompts into the context window and leave enough space for the completion.
+- `maxCompletionTokens` property on TextGenerationModels.
+
+### Changed
+
+- Renamed `withMaxTokens` to `withMaxCompletionTokens` on TextGenerationModels.
+
+### Removed
+
+- `composeRecentMessagesOpenAIChatPrompt` function (use `trimChatPrompt` instead).
+
 ## v0.0.41 - 2023-07-30
 
 ### Added
 
-- ChatPrompt concept (with chat prompt mappings for text, OpenAI chat, and Llama2 prompts)
+- ChatPrompt concept (with chat prompt mappings for text, OpenAI chat, and Llama 2 prompts).
 
 ### Changed
 
