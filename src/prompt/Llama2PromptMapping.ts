@@ -7,7 +7,7 @@ import { validateChatPrompt } from "./chat/validateChatPrompt.js";
 const BEGIN_SEGMENT = "<s>";
 const END_SEGMENT = "</s>\n";
 const BEGIN_INSTRUCTION = "[INST]";
-const END_INSTRUCTION = "[/INST]";
+const END_INSTRUCTION = "[/INST]\n";
 const BEGIN_SYSTEM = "<<SYS>>\n";
 const END_SYSTEM = "\n<</SYS>>\n\n";
 
