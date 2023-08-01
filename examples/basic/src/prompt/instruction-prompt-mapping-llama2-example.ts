@@ -6,9 +6,10 @@ import {
 
 (async () => {
   const { textStream } = await streamText(
-    new LlamaCppTextGenerationModel().mapPrompt(
-      InstructionToLlama2PromptMapping()
-    ),
+    new LlamaCppTextGenerationModel({
+      contextWindowSize: 4096, // Llama 2 context window size
+      nPredict: 512,
+    }).mapPrompt(InstructionToLlama2PromptMapping()),
     {
       system: "You are a celebrated poet.",
       instruction: "Write a short story about a robot learning to love.",

@@ -51,21 +51,6 @@ const { text } = await generateText(
 );
 ```
 
-#### generateText with instruction prompt (prompt mapping)
-
-```ts
-const { text } = await generateText(
-  new OpenAIChatModel({
-    model: "gpt-3.5-turbo",
-    maxTokens: 1000,
-  }).mapPrompt(InstructionToOpenAIChatPromptMapping()),
-  {
-    system: "You are a story write.",
-    instruction: "Write a short story about a robot learning to love.",
-  }
-);
-```
-
 #### streamText
 
 ```ts
@@ -80,6 +65,50 @@ const { textStream } = await streamText(
 for await (const textFragment of textStream) {
   process.stdout.write(textFragment);
 }
+```
+
+#### Prompt Mapping
+
+[Prompt mapping](https://ai-utils.dev/guide/function/generate-text/prompt-mapping) lets you use higher level prompt structures (such as instruction or chat prompts) for different models.
+
+```ts
+const { text } = await generateText(
+  new LlamaCppTextGenerationModel({
+    contextWindowSize: 4096, // Llama 2 context window size
+    nPredict: 1000,
+  }).mapPrompt(InstructionToLlama2PromptMapping()),
+  {
+    system: "You are a story writer.",
+    instruction: "Write a short story about a robot learning to love.",
+  }
+);
+```
+
+```ts
+const { textStream } = await streamText(
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+  }).mapPrompt(ChatToOpenAIChatPromptMapping()),
+  [
+    { system: "You are a celebrated poet." },
+    { user: "Write a short story about a robot learning to love." },
+    { ai: "Once upon a time, there was a robot who learned to love." },
+    { user: "That's a great start!" },
+  ]
+);
+```
+
+#### Metadata and original responses
+
+Most `ai-utils.js` model functions return rich results that include the original response and metadata.
+
+```ts
+const { text, response, metadata } = await generateText(
+  new OpenAITextGenerationModel({
+    model: "text-davinci-003",
+  }),
+  "Write a short story about a robot learning to love:\n\n"
+);
 ```
 
 ### [Generate JSON](https://ai-utils.dev/guide/function/generate-json)
