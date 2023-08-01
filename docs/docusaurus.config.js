@@ -10,7 +10,7 @@ const config = {
   tagline:
     "Build AI applications, chatbots, and agents with JavaScript and TypeScript.",
   // favicon: "img/favicon.ico",
-  url: "https://ai-utils.js",
+  url: "https://ai-utils.dev",
   baseUrl: "/",
 
   onBrokenLinks: "throw",
