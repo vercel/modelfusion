@@ -8,7 +8,7 @@ A terminal chat with a Llama.cpp server backend.
 
 1. Start the llama.cpp server with the model that you want to serve, e.g. using `./server -m models/llama-2-7b-chat.ggmlv3.q4_K_M.bin -c 2048` (Mac)
 
-See the [ModelFusion docs for llama.cpp](https://ai-utils.dev/integration/model-provider/llamacpp) for details.
+See the [ModelFusion docs for llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp) for details.
 
 2. Run the following commands:
 

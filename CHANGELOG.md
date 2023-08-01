@@ -313,7 +313,7 @@
 1. Text embedding functions
 1. Chat streams can be returned as ReadableStream or AsyncIterable
 1. Basic examples under `examples/basic`
-1. Initial documentation available at [ai-utils.dev](https://ai-utils.dev)
+1. Initial documentation available at [modelfusion.dev](https://modelfusion.dev)
 
 ## vv0.0.3 - 2023-05-28
 

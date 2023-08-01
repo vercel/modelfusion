@@ -6,7 +6,7 @@
 [![NPM Version](https://img.shields.io/npm/v/modelfusion?color=33cd56&logo=npm)](https://www.npmjs.com/package/modelfusion)
 [![MIT License](https://img.shields.io/github/license/lgrammel/modelfusion)](https://opensource.org/licenses/MIT)
 
-[Introduction](#introduction) | [Quick Install](#quick-install) | [Usage](#usage-examples) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#more-examples) | [ai-utils.dev](https://ai-utils.dev)
+[Introduction](#introduction) | [Quick Install](#quick-install) | [Usage](#usage-examples) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#more-examples) | [modelfusion.dev](https://modelfusion.dev)
 
 ## Disclaimer
 
@@ -34,13 +34,13 @@ npm install zod zod-to-json-schema
 
 ## Usage Examples
 
-You can provide API keys for the different [integrations](https://ai-utils.dev/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or pass them into the model constructors as options.
+You can provide API keys for the different [integrations](https://modelfusion.dev/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or pass them into the model constructors as options.
 
-### [Generate Text](https://ai-utils.dev/guide/function/generate-text)
+### [Generate Text](https://modelfusion.dev/guide/function/generate-text)
 
 Generate text using a language model and a prompt.
 You can stream the text if it is supported by the model.
-You can use [prompt mappings](https://ai-utils.dev/guide/function/generate-text/prompt-mapping) to change the prompt format of a model.
+You can use [prompt mappings](https://modelfusion.dev/guide/function/generate-text/prompt-mapping) to change the prompt format of a model.
 
 #### generateText
 
@@ -69,7 +69,7 @@ for await (const textFragment of textStream) {
 
 #### Prompt Mapping
 
-[Prompt mapping](https://ai-utils.dev/guide/function/generate-text/prompt-mapping) lets you use higher level prompt structures (such as instruction or chat prompts) for different models.
+[Prompt mapping](https://modelfusion.dev/guide/function/generate-text/prompt-mapping) lets you use higher level prompt structures (such as instruction or chat prompts) for different models.
 
 ```ts
 const { text } = await generateText(
@@ -111,7 +111,7 @@ const { text, response, metadata } = await generateText(
 );
 ```
 
-### [Generate JSON](https://ai-utils.dev/guide/function/generate-json)
+### [Generate JSON](https://modelfusion.dev/guide/function/generate-json)
 
 Generate JSON value that matches a schema.
 
@@ -144,7 +144,7 @@ const { value } = await generateJson(
 );
 ```
 
-### [Generate JSON or Text](https://ai-utils.dev/guide/function/generate-json-or-text)
+### [Generate JSON or Text](https://modelfusion.dev/guide/function/generate-json-or-text)
 
 Generate JSON (or text as a fallback) using a prompt and multiple schemas.
 It either matches one of the schemas or is text reponse.
@@ -175,7 +175,7 @@ const { schema, value, text } = await generateJsonOrText(
 );
 ```
 
-### [Tools](https://ai-utils.dev/guide/tools)
+### [Tools](https://modelfusion.dev/guide/tools)
 
 Tools are functions that can be executed by an AI model. They are useful for building chatbots and agents.
 
@@ -240,7 +240,7 @@ const { tool, parameters, result, text } = await useToolOrGenerateText(
 );
 ```
 
-### [Transcribe Audio](https://ai-utils.dev/guide/function/transcribe-audio)
+### [Transcribe Audio](https://modelfusion.dev/guide/function/transcribe-audio)
 
 Turn audio (voice) into text.
 
@@ -254,7 +254,7 @@ const { transcription } = await transcribe(
 );
 ```
 
-### [Generate Image](https://ai-utils.dev/guide/function/generate-image)
+### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 
 Generate a base64-encoded image from a prompt.
 
@@ -265,7 +265,7 @@ const { image } = await generateImage(
 );
 ```
 
-### [Embed Text](https://ai-utils.dev/guide/function/embed-text)
+### [Embed Text](https://modelfusion.dev/guide/function/embed-text)
 
 Create embeddings for text. Embeddings are vectors that represent the meaning of the text.
 
@@ -279,7 +279,7 @@ const { embeddings } = await embedTexts(
 );
 ```
 
-### [Tokenize Text](https://ai-utils.dev/guide/function/tokenize-text)
+### [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
 
 Split text into tokens and reconstruct the text from tokens.
 
@@ -295,7 +295,7 @@ const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
 const reconstructedText = await tokenizer.detokenize(tokens);
 ```
 
-### [Upserting and Retrieving Text Chunks from Vector Indices](https://ai-utils.dev/guide/text-chunks)
+### [Upserting and Retrieving Text Chunks from Vector Indices](https://modelfusion.dev/guide/text-chunks)
 
 ```ts
 const texts = [
@@ -330,55 +330,55 @@ const { chunks } = await retrieveTextChunks(
 
 ## Features
 
-- [Model Functions](https://ai-utils.dev/guide/function/)
-  - [Generate and stream text](https://ai-utils.dev/guide/function/generate-text)
-  - [Generate JSON](https://ai-utils.dev/guide/function/generate-json)
-  - [Generate JSON or text](https://ai-utils.dev/guide/function/generate-json-or-text)
-  - [Embed Text](https://ai-utils.dev/guide/function/embed-text)
-  - [Tokenize Text](https://ai-utils.dev/guide/function/tokenize-text)
-  - [Transcribe Audio](https://ai-utils.dev/guide/function/transcribe-audio)
-  - [Generate images](https://ai-utils.dev/guide/function/generate-image)
+- [Model Functions](https://modelfusion.dev/guide/function/)
+  - [Generate and stream text](https://modelfusion.dev/guide/function/generate-text)
+  - [Generate JSON](https://modelfusion.dev/guide/function/generate-json)
+  - [Generate JSON or text](https://modelfusion.dev/guide/function/generate-json-or-text)
+  - [Embed Text](https://modelfusion.dev/guide/function/embed-text)
+  - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
+  - [Transcribe Audio](https://modelfusion.dev/guide/function/transcribe-audio)
+  - [Generate images](https://modelfusion.dev/guide/function/generate-image)
 - Summarize text
 - Split text
-- [Tools](https://ai-utils.dev/guide/tools)
-- [Text Chunks](https://ai-utils.dev/guide/text-chunks)
-- [Run abstraction](https://ai-utils.dev/guide/run/)
-  - [Abort signals](https://ai-utils.dev/guide/run/abort)
-  - [Cost calculation](https://ai-utils.dev/guide/run/cost-calculation)
+- [Tools](https://modelfusion.dev/guide/tools)
+- [Text Chunks](https://modelfusion.dev/guide/text-chunks)
+- [Run abstraction](https://modelfusion.dev/guide/run/)
+  - [Abort signals](https://modelfusion.dev/guide/run/abort)
+  - [Cost calculation](https://modelfusion.dev/guide/run/cost-calculation)
   - Call recording
 - Utilities
-  - [Retry strategies](https://ai-utils.dev/guide/util/retry)
-  - [Throttling strategies](https://ai-utils.dev/guide/util/throttle)
+  - [Retry strategies](https://modelfusion.dev/guide/util/retry)
+  - [Throttling strategies](https://modelfusion.dev/guide/util/throttle)
   - Error handling
 
 ## Integrations
 
 ### Model Providers
 
-|                                                                                    | [OpenAI](https://ai-utils.dev/integration/model-provider/openai) | [Cohere](https://ai-utils.dev/integration/model-provider/cohere) | [Llama.cpp](https://ai-utils.dev/integration/model-provider/llamacpp) | [Hugging Face](https://ai-utils.dev/integration/model-provider/huggingface) | [Stability AI](https://ai-utils.dev/integration/model-provider/stability) | [Automatic1111](https://ai-utils.dev/integration/model-provider/automatic1111) |
-| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Hosting                                                                            | cloud                                                            | cloud                                                            | server (local)                                                        | cloud                                                                       | cloud                                                                     | server (local)                                                                 |
-| [Generate text](https://ai-utils.dev/guide/function/generate-text)                 | ✅                                                               | ✅                                                               | ✅                                                                    | ✅                                                                          |                                                                           |                                                                                |
-| [Stream text](https://ai-utils.dev/guide/function/generate-text)                   | ✅                                                               | ✅                                                               | ✅                                                                    |                                                                             |                                                                           |                                                                                |
-| [Generate JSON](https://ai-utils.dev/guide/function/generate-json)                 | chat models                                                      |                                                                  |                                                                       |                                                                             |                                                                           |                                                                                |
-| [Generate JSON or Text](https://ai-utils.dev/guide/function/generate-json-or-text) | chat models                                                      |                                                                  |                                                                       |                                                                             |                                                                           |                                                                                |
-| [Embed text](https://ai-utils.dev/guide/function/embed-text)                       | ✅                                                               | ✅                                                               | ✅                                                                    |                                                                             |                                                                           |                                                                                |
-| [Tokenize text](https://ai-utils.dev/guide/function/tokenize-text)                 | full                                                             | full                                                             | basic                                                                 |                                                                             |                                                                           |                                                                                |
-| [Generate image](https://ai-utils.dev/guide/function/generate-image)               | ✅                                                               |                                                                  |                                                                       |                                                                             | ✅                                                                        | ✅                                                                             |
-| [Transcribe audio](https://ai-utils.dev/guide/function/transcribe-audio)           | ✅                                                               |                                                                  |                                                                       |                                                                             |                                                                           |                                                                                |
-| [Cost calculation](https://ai-utils.dev/guide/run/cost-calculation)                | ✅                                                               |                                                                  |                                                                       |                                                                             |                                                                           |                                                                                |
+|                                                                                       | [OpenAI](https://modelfusion.dev/integration/model-provider/openai) | [Cohere](https://modelfusion.dev/integration/model-provider/cohere) | [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp) | [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface) | [Stability AI](https://modelfusion.dev/integration/model-provider/stability) | [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111) |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Hosting                                                                               | cloud                                                               | cloud                                                               | server (local)                                                           | cloud                                                                          | cloud                                                                        | server (local)                                                                    |
+| [Generate text](https://modelfusion.dev/guide/function/generate-text)                 | ✅                                                                  | ✅                                                                  | ✅                                                                       | ✅                                                                             |                                                                              |                                                                                   |
+| [Stream text](https://modelfusion.dev/guide/function/generate-text)                   | ✅                                                                  | ✅                                                                  | ✅                                                                       |                                                                                |                                                                              |                                                                                   |
+| [Generate JSON](https://modelfusion.dev/guide/function/generate-json)                 | chat models                                                         |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
+| [Generate JSON or Text](https://modelfusion.dev/guide/function/generate-json-or-text) | chat models                                                         |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
+| [Embed text](https://modelfusion.dev/guide/function/embed-text)                       | ✅                                                                  | ✅                                                                  | ✅                                                                       |                                                                                |                                                                              |                                                                                   |
+| [Tokenize text](https://modelfusion.dev/guide/function/tokenize-text)                 | full                                                                | full                                                                | basic                                                                    |                                                                                |                                                                              |                                                                                   |
+| [Generate image](https://modelfusion.dev/guide/function/generate-image)               | ✅                                                                  |                                                                     |                                                                          |                                                                                | ✅                                                                           | ✅                                                                                |
+| [Transcribe audio](https://modelfusion.dev/guide/function/transcribe-audio)           | ✅                                                                  |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
+| [Cost calculation](https://modelfusion.dev/guide/run/cost-calculation)                | ✅                                                                  |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
 
 ### Vector Indices
 
-- [Memory](https://ai-utils.dev/integration/vector-index/memory)
-- [Pinecone](https://ai-utils.dev/integration/vector-index/pinecone)
+- [Memory](https://modelfusion.dev/integration/vector-index/memory)
+- [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
 
 ## Documentation
 
-- [Guide](https://ai-utils.dev/guide)
-- [Examples & Tutorials](https://ai-utils.dev/tutorial)
-- [Integrations](https://ai-utils.dev/integration/model-provider)
-- [API Reference](https://ai-utils.dev/api/modules)
+- [Guide](https://modelfusion.dev/guide)
+- [Examples & Tutorials](https://modelfusion.dev/tutorial)
+- [Integrations](https://modelfusion.dev/integration/model-provider)
+- [API Reference](https://modelfusion.dev/api/modules)
 
 ## More Examples
 
