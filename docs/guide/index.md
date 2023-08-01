@@ -4,15 +4,15 @@ sidebar_position: 0
 
 # Getting Started
 
-ModelFusion is a TypeScript-first library for building AI apps, chatbots, and agents. It provides abstractions for working with AI models, vector indices, and tools. It was design with the following goals in mind:
+ModelFusion is a library for building AI apps, chatbots, and agents. It provides abstractions for working with AI models, vector indices, and tools. It was designed with the following goals in mind:
 
 - **Provide type inference and validation**: ModelFusion uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types whereever possible and to validate AI responses.
-- **Flexibility**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts, the model settings, and the control flow of your application.
+- **Flexibility and control**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts, the model settings, and the control flow of your application. You can also access the full responses from the models and metadata easily to build what you need.
 - **Integrate support features**: Essential features like logging, retries, throttling, and error handling are integrated and easily configurable.
 
 ## Disclaimer
 
-ModelFusion is currently in its initial development phase. **Until version 0.1 there may be frequent breaking changes.**
+ModelFusion is currently in its initial development phase. **Until version 1.0 there may be frequent breaking changes.**
 
 ## Installation
 
