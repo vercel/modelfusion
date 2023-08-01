@@ -5,17 +5,11 @@ import fs from "node:fs";
 dotenv.config();
 
 (async () => {
-  const extractText = async ({
-    text,
-    topic,
-  }: {
-    text: string;
-    topic: string;
-  }) =>
-    generateText(
+  function extractText({ text, topic }: { text: string; topic: string }) {
+    return generateText(
       new OpenAIChatModel({
         model: "gpt-4",
-        temperature: 0, // remove randomness as much as possible
+        temperature: 0,
         maxTokens: 500,
       }),
       [
@@ -31,12 +25,13 @@ dotenv.config();
         OpenAIChatMessage.user(`## TEXT\n${text}`),
       ]
     );
+  }
 
   const sanFranciscoWikipedia = JSON.parse(
     fs.readFileSync("data/san-francisco-wikipedia.json", "utf8")
   ).content;
 
-  const extractedInformation = await extractText({
+  const { text: extractedInformation } = await extractText({
     text: sanFranciscoWikipedia.slice(0, 2000),
     topic: "number of residents",
   });

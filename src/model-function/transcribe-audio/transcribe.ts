@@ -1,8 +1,8 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { executeCall } from "../executeCall.js";
+import { CallMetadata, executeCall } from "../executeCall.js";
 import {
-  TranscriptionModelSettings,
   TranscriptionModel,
+  TranscriptionModelSettings,
 } from "./TranscriptionModel.js";
 
 /**
@@ -11,7 +11,7 @@ import {
  * @example
  * const data = await fs.promises.readFile("data/test.mp3");
  *
- * const transcription = await transcribe(
+ * const { transcription } = await transcribe(
  *   new OpenAITranscriptionModel({ model: "whisper-1" }),
  *   {
  *     type: "mp3",
@@ -19,19 +19,22 @@ import {
  *   }
  * );
  */
-export function transcribe<
+export async function transcribe<
   DATA,
   RESPONSE,
-  SETTINGS extends TranscriptionModelSettings
+  SETTINGS extends TranscriptionModelSettings,
 >(
   model: TranscriptionModel<DATA, RESPONSE, SETTINGS>,
   data: DATA,
   options?: FunctionOptions<SETTINGS>
-): Promise<string> {
-  return executeCall({
+): Promise<{
+  transcription: string;
+  response: RESPONSE;
+  metadata: CallMetadata<TranscriptionModel<DATA, RESPONSE, SETTINGS>>;
+}> {
+  const result = await executeCall({
     model,
     options,
-    callModel: (model, options) => transcribe(model, data, options),
     generateResponse: (options) =>
       model.generateTranscriptionResponse(data, options),
     extractOutputValue: model.extractTranscriptionText,
@@ -66,4 +69,10 @@ export function transcribe<
       transcription: output,
     }),
   });
+
+  return {
+    transcription: result.output,
+    response: result.response,
+    metadata: result.metadata,
+  };
 }

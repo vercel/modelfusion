@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { executeCall } from "../executeCall.js";
+import { CallMetadata, executeCall } from "../executeCall.js";
 import {
   GenerateJsonModel,
   GenerateJsonModelSettings,
@@ -8,7 +8,7 @@ import {
 import { SchemaDefinition } from "./SchemaDefinition.js";
 import { SchemaValidationError } from "./SchemaValidationError.js";
 
-export function generateJson<
+export async function generateJson<
   STRUCTURE,
   PROMPT,
   RESPONSE,
@@ -21,14 +21,16 @@ export function generateJson<
     schemaDefinition: SchemaDefinition<NAME, STRUCTURE>
   ) => PROMPT & GenerateJsonPrompt<RESPONSE>,
   options?: FunctionOptions<SETTINGS>
-): Promise<STRUCTURE> {
+): Promise<{
+  value: STRUCTURE;
+  response: RESPONSE;
+  metadata: CallMetadata<GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>>;
+}> {
   const expandedPrompt = prompt(schemaDefinition);
 
-  return executeCall({
+  const result = await executeCall({
     model,
     options,
-    callModel: (model, options) =>
-      generateJson(model, schemaDefinition, prompt, options),
     generateResponse: (options) =>
       model.generateJsonResponse(expandedPrompt, options),
     extractOutputValue: (response): STRUCTURE => {
@@ -77,4 +79,10 @@ export function generateJson<
       generatedJson: output,
     }),
   });
+
+  return {
+    value: result.output,
+    response: result.response,
+    metadata: result.metadata,
+  };
 }

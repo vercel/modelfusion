@@ -10,6 +10,7 @@ import {
   TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
 import { extractTextDeltas } from "./extractTextDeltas.js";
+import { CallMetadata } from "model-function/executeCall.js";
 
 export async function streamText<
   PROMPT,
@@ -25,12 +26,19 @@ export async function streamText<
   },
   prompt: PROMPT,
   options?: FunctionOptions<SETTINGS>
-): Promise<AsyncIterable<string>> {
+): Promise<{
+  textStream: AsyncIterable<string>;
+  metadata: Omit<
+    CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
+    "durationInMs"
+  >;
+}> {
   if (options?.settings != null) {
-    return streamText(model.withSettings(options.settings), prompt, {
+    model = model.withSettings(options.settings);
+    options = {
       functionId: options.functionId,
       run: options.run,
-    });
+    };
   }
 
   const run = options?.run;
@@ -140,5 +148,8 @@ export async function streamText<
     throw result.error;
   }
 
-  return result.output;
+  return {
+    textStream: result.output,
+    metadata: startMetadata,
+  };
 }

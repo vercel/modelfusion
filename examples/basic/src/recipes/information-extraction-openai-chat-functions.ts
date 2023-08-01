@@ -49,13 +49,13 @@ dotenv.config();
     fs.readFileSync("data/san-francisco-wikipedia.json", "utf8")
   ).content;
 
-  const extractedInformation1 = await extractNameAndPopulation(
+  const { value: extractedInformation1 } = await extractNameAndPopulation(
     sanFranciscoWikipedia.slice(0, 2000)
   );
 
   console.log(extractedInformation1);
 
-  const extractedInformation2 = await extractNameAndPopulation(
+  const { value: extractedInformation2 } = await extractNameAndPopulation(
     "Carl was a friendly robot."
   );
 

@@ -71,7 +71,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
 
   const model = llama2Model; // change this to your preferred model
 
-  const stream = await streamText(
+  const { textStream } = await streamText(
     model,
     // limit the size of the prompt to leave room for the answer:
     await trimChatPrompt({
@@ -94,7 +94,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
     { run: { abortSignal: controller.signal } }
   );
 
-  return new Response(createTextDeltaEventSource(stream), {
+  return new Response(createTextDeltaEventSource(textStream), {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",

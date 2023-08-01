@@ -21,7 +21,7 @@ title: Cohere
 ```ts
 import { CohereTextGenerationModel, generateText } from "ai-utils.js";
 
-const text = await generateText(
+const { text } = await generateText(
   new CohereTextGenerationModel({
     model: "command-nightly",
     temperature: 0.7,
@@ -38,7 +38,7 @@ const text = await generateText(
 ```ts
 import { CohereTextGenerationModel, streamText } from "ai-utils.js";
 
-const textStream = await streamText(
+const { textStream } = await streamText(
   new CohereTextGenerationModel({
     model: "command-nightly",
     temperature: 0.7,
@@ -59,7 +59,7 @@ for await (const textFragment of textStream) {
 ```ts
 import { CohereTextEmbeddingModel, embedTexts } from "ai-utils.js";
 
-const embeddings = await embedTexts(
+const { embeddings } = await embedTexts(
   new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
   [
     "At first, Nox didn't know what to do with the pup.",

@@ -9,7 +9,7 @@ title: Model Functions
 You can call these functions with a model, a prompt, and additional options.
 
 ```ts
-const text = await generateText(
+const { text } = await generateText(
   // model:
   new OpenAITextGenerationModel({ model: "text-davinci-003" }),
   // prompt (type depends on model):

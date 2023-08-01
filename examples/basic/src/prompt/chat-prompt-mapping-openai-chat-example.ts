@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 (async () => {
-  const textStream = await streamText(
+  const { textStream } = await streamText(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
     }).mapPrompt(ChatToOpenAIChatPromptMapping()),

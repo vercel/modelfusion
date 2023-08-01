@@ -17,7 +17,7 @@ Transcribe audio data into text.
 ```ts
 const data = await fs.promises.readFile("data/test.mp3");
 
-const transcription = await transcribe(
+const { transcription } = await transcribe(
   new OpenAITranscriptionModel({ model: "whisper-1" }),
   {
     type: "mp3",

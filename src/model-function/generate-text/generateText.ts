@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { executeCall } from "../executeCall.js";
+import { CallMetadata, executeCall } from "../executeCall.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -13,7 +13,7 @@ import {
  * @example
  * const model = new OpenAITextGenerationModel(...);
  *
- * const text = await model.generateText(
+ * const { text } = await model.generateText(
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  */
@@ -26,11 +26,16 @@ export async function generateText<
   model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
   prompt: PROMPT,
   options?: FunctionOptions<SETTINGS>
-): Promise<string> {
-  return executeCall({
+): Promise<{
+  text: string;
+  response: RESPONSE;
+  metadata: CallMetadata<
+    TextGenerationModel<PROMPT, RESPONSE, unknown, SETTINGS>
+  >;
+}> {
+  const result = await executeCall({
     model,
     options,
-    callModel: (model, options) => generateText(model, prompt, options),
     generateResponse: (options) => model.generateTextResponse(prompt, options),
     extractOutputValue: (result) => {
       const shouldTrimOutput = model.settings.trimOutput ?? true;
@@ -69,4 +74,10 @@ export async function generateText<
       generatedText: output,
     }),
   });
+
+  return {
+    text: result.output,
+    response: result.response,
+    metadata: result.metadata,
+  };
 }

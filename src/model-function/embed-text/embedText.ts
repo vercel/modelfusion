@@ -1,6 +1,6 @@
 import { Vector } from "../../run/Vector.js";
 import { FunctionOptions } from "../FunctionOptions.js";
-import { executeCall } from "../executeCall.js";
+import { CallMetadata, executeCall } from "../executeCall.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
@@ -10,7 +10,7 @@ import {
  * Generate embeddings for multiple texts.
  *
  * @example
- * const embeddings = await embedTexts(
+ * const { embeddings } = await embedTexts(
  *   new OpenAITextEmbeddingModel(...),
  *   [
  *     "At first, Nox didn't know what to do with the pup.",
@@ -20,16 +20,18 @@ import {
  */
 export async function embedTexts<
   RESPONSE,
-  SETTINGS extends TextEmbeddingModelSettings
+  SETTINGS extends TextEmbeddingModelSettings,
 >(
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   texts: string[],
   options?: FunctionOptions<SETTINGS>
-): Promise<Vector[]> {
-  return executeCall({
+): Promise<{
+  embeddings: Array<Vector>;
+  metadata: CallMetadata<TextEmbeddingModel<RESPONSE, SETTINGS>>;
+}> {
+  const result = await executeCall({
     model,
     options,
-    callModel: (model, options) => embedTexts(model, texts, options),
     generateResponse: (options) => {
       // split the texts into groups that are small enough to be sent in one call:
       const maxTextsPerCall = model.maxTextsPerCall;
@@ -82,25 +84,37 @@ export async function embedTexts<
       generatedEmbeddings: output,
     }),
   });
+
+  return {
+    embeddings: result.output,
+    metadata: result.metadata,
+  };
 }
 
 /**
  * Generate an embedding for a single text.
  *
  * @example
- * const embedding = await embedText(
+ * const { embedding } = await embedText(
  *   new OpenAITextEmbeddingModel(...),
  *   "At first, Nox didn't know what to do with the pup."
  * );
  */
 export async function embedText<
   RESPONSE,
-  SETTINGS extends TextEmbeddingModelSettings
+  SETTINGS extends TextEmbeddingModelSettings,
 >(
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   text: string,
   options?: FunctionOptions<SETTINGS>
-): Promise<Vector> {
-  const embeddings = await embedTexts(model, [text], options);
-  return embeddings[0];
+): Promise<{
+  embedding: Vector;
+  metadata: CallMetadata<TextEmbeddingModel<RESPONSE, SETTINGS>>;
+}> {
+  const result = await embedTexts(model, [text], options);
+
+  return {
+    embedding: result.embeddings[0],
+    metadata: result.metadata,
+  };
 }

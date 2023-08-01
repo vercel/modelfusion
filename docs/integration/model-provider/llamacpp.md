@@ -27,7 +27,7 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 ```ts
 import { LlamaCppTextGenerationModel, generateText } from "ai-utils.js";
 
-const text = await generateText(
+const { text } = await generateText(
   new LlamaCppTextGenerationModel({ nPredict: 256 }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -40,7 +40,7 @@ const text = await generateText(
 ```ts
 import { LlamaCppTextGenerationModel, streamText } from "ai-utils.js";
 
-const textStream = await streamText(
+const { textStream } = await streamText(
   new LlamaCppTextGenerationModel({ nPredict: 1024, temperature: 0.7 }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -57,7 +57,7 @@ for await (const textFragment of textStream) {
 ```ts
 import { LlamaCppTextEmbeddingModel, embedTexts } from "ai-utils.js";
 
-const embeddings = await embedTexts(new LlamaCppTextEmbeddingModel(), [
+const { embeddings } = await embedTexts(new LlamaCppTextEmbeddingModel(), [
   "At first, Nox didn't know what to do with the pup.",
   "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
 ]);

@@ -12,15 +12,25 @@ import {
 } from "./ModelCallEvent.js";
 import { ModelCallEventSource } from "./ModelCallEventSource.js";
 
+export type CallMetadata<MODEL extends Model<unknown>> = {
+  callId: string;
+  runId?: string;
+  sessionId?: string;
+  userId?: string;
+  functionId?: string;
+  model: MODEL["modelInformation"];
+  startEpochSeconds: number;
+  durationInMs: number;
+};
+
 export async function executeCall<
   SETTINGS extends ModelSettings,
   MODEL extends Model<SETTINGS>,
   OUTPUT,
-  RESPONSE
+  RESPONSE,
 >({
   model,
   options,
-  callModel,
   getStartEvent,
   getAbortEvent,
   getFailureEvent,
@@ -30,10 +40,6 @@ export async function executeCall<
 }: {
   model: MODEL;
   options?: FunctionOptions<SETTINGS>;
-  callModel: (
-    model: MODEL,
-    options: FunctionOptions<SETTINGS>
-  ) => PromiseLike<OUTPUT>;
   getStartEvent: (
     metadata: ModelCallStartedEventMetadata,
     settings: SETTINGS
@@ -57,12 +63,17 @@ export async function executeCall<
     options: FunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
   extractOutputValue: (response: RESPONSE) => OUTPUT;
-}): Promise<OUTPUT> {
+}): Promise<{
+  output: OUTPUT;
+  response: RESPONSE;
+  metadata: CallMetadata<MODEL>;
+}> {
   if (options?.settings != null) {
-    return callModel(model.withSettings(options.settings), {
+    model = model.withSettings(options.settings);
+    options = {
       functionId: options.functionId,
       run: options.run,
-    });
+    };
   }
 
   const run = options?.run;
@@ -121,5 +132,9 @@ export async function executeCall<
     getSuccessEvent(finishMetadata, settings, response, output)
   );
 
-  return output;
+  return {
+    output,
+    response,
+    metadata: finishMetadata,
+  };
 }

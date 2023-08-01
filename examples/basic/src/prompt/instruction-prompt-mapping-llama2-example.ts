@@ -5,7 +5,7 @@ import {
 } from "ai-utils.js";
 
 (async () => {
-  const textStream = await streamText(
+  const { textStream } = await streamText(
     new LlamaCppTextGenerationModel().mapPrompt(
       InstructionToLlama2PromptMapping()
     ),

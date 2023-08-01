@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { executeCall } from "../executeCall.js";
+import { CallMetadata, executeCall } from "../executeCall.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
@@ -8,10 +8,11 @@ import {
 /**
  * Generates a base64-encoded image using a prompt.
  * The prompt format depends on the model.
- * For example, OpenAI image models expect a string prompt, and Stability AI models expect an array of text prompts with optional weights.
+ * For example, OpenAI image models expect a string prompt,
+ * and Stability AI models expect an array of text prompts with optional weights.
  *
  * @example
- * const imageBase64 = await generateImage(
+ * const { image } = await generateImage(
  *   new StabilityImageGenerationModel(...),
  *   [
  *     { text: "the wicked witch of the west" },
@@ -19,19 +20,22 @@ import {
  *   ]
  * );
  */
-export function generateImage<
+export async function generateImage<
   PROMPT,
   RESPONSE,
-  SETTINGS extends ImageGenerationModelSettings
+  SETTINGS extends ImageGenerationModelSettings,
 >(
   model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   prompt: PROMPT,
   options?: FunctionOptions<SETTINGS>
-): Promise<string> {
-  return executeCall({
+): Promise<{
+  image: string;
+  response: RESPONSE;
+  metadata: CallMetadata<ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>>;
+}> {
+  const result = await executeCall({
     model,
     options,
-    callModel: (model, options) => generateImage(model, prompt, options),
     generateResponse: (options) => model.generateImageResponse(prompt, options),
     extractOutputValue: model.extractBase64Image,
     getStartEvent: (metadata, settings) => ({
@@ -65,4 +69,10 @@ export function generateImage<
       generatedImage: output,
     }),
   });
+
+  return {
+    image: result.output,
+    response: result.response,
+    metadata: result.metadata,
+  };
 }

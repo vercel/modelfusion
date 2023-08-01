@@ -58,12 +58,14 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
           reservedCompletionTokens -
           emptyPromptTokens,
       }),
-      summarize: async (input: { text: string }) =>
-        generateText(
+      summarize: async (input: { text: string }) => {
+        const { text } = await generateText(
           model.withMaxCompletionTokens(reservedCompletionTokens),
           await prompt(input),
           options
-        ),
+        );
+        return text;
+      },
       join,
       text,
     },

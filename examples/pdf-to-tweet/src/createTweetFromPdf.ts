@@ -55,7 +55,7 @@ export async function createTweetFromPdf({
     );
 
   // generate a draft tweet:
-  const draftTweet = await generateText(
+  const { text: draftTweet } = await generateText(
     model,
     [
       OpenAIChatMessage.user(`## TOPIC\n${topic}`),
@@ -77,7 +77,7 @@ export async function createTweetFromPdf({
   );
 
   // search for similar tweets:
-  const similarTweets = await retrieveTextChunks(
+  const { chunks: similarTweets } = await retrieveTextChunks(
     new VectorIndexSimilarTextChunkRetriever({
       vectorIndex: await MemoryVectorIndex.deserialize({
         serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),

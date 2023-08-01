@@ -46,14 +46,15 @@ export interface HuggingFaceTextGenerationModelSettings
  * @see https://huggingface.co/docs/api-inference/detailed_parameters#text-generation-task
  *
  * @example
- * const textGenerationModel = new HuggingFaceTextGenerationModel({
+ * const model = new HuggingFaceTextGenerationModel({
  *   model: "tiiuae/falcon-7b",
  *   temperature: 0.7,
  *   maxTokens: 500,
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
- * const text = await model.generateText(
+ * const { text } = await generateText(
+ *   model,
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  */

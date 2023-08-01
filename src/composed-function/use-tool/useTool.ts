@@ -40,7 +40,13 @@ export async function useTool<
   parameters: TOOL["inputSchema"];
   result: Awaited<ReturnType<TOOL["execute"]>>;
 }> {
-  const input = await generateJson(
+  const { value } = await generateJson<
+    TOOL["inputSchema"],
+    PROMPT,
+    RESPONSE,
+    TOOL["name"],
+    SETTINGS
+  >(
     model,
     {
       name: tool.name,
@@ -53,8 +59,8 @@ export async function useTool<
 
   return {
     tool: tool.name,
-    parameters: input,
-    result: await tool.execute(input),
+    parameters: value,
+    result: await tool.execute(value),
   };
 }
 
