@@ -1,4 +1,4 @@
-# ai-utils.js
+# ModelFusion
 
 > ### Build AI applications, chatbots, and agents with JavaScript and TypeScript.
 
@@ -10,7 +10,7 @@
 
 ## Disclaimer
 
-`ai-utils.js` is currently in its initial development phase. **Until version 0.1 there may be frequent breaking changes.**
+`ai-utils.js` is currently in its initial development phase. **Until version 1.0 there may be frequent breaking changes.**
 
 ## Introduction
 
