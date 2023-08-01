@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.0.43 - 2023-08-01
+
+### Changed
+
+- **Breaking Change**: model functions return rich objects that include the result, the model response and metadata. This enables you to access the original model response easily when you need it and also use the metadata outside of runs.
+
 ## v0.0.42 - 2023-07-31
 
 ### Added

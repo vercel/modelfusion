@@ -1,6 +1,6 @@
 # ai-utils.js
 
-> ### A TypeScript-first library for building AI apps, chatbots, and agents.
+> ### Build AI applications, chatbots, and agents with JavaScript and TypeScript.
 
 [![Created by Lars Grammel](https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg)](https://twitter.com/lgrammel)
 [![NPM Version](https://img.shields.io/npm/v/ai-utils.js?color=33cd56&logo=npm)](https://www.npmjs.com/package/ai-utils.js)
@@ -14,10 +14,10 @@
 
 ## Introduction
 
-`ai-utils.js` is a TypeScript-first library for building AI apps, chatbots, and agents. It provides abstractions for working with AI models, vector indices, and tools. It was designed with the following goals in mind:
+`ai-utils.js` is a library for building AI apps, chatbots, and agents. It provides abstractions for working with AI models, vector indices, and tools. It was designed with the following goals in mind:
 
 - **Provide type inference and validation**: `ai-utils.js` uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types whereever possible and to validate AI responses.
-- **Flexibility**: AI application development can be complex and unique to each project. With `ai-utils.js`, you have complete control over the prompts, the model settings, and the control flow of your application.
+- **Flexibility and control**: AI application development can be complex and unique to each project. With `ai-utils.js`, you have complete control over the prompts, the model settings, and the control flow of your application. You can also access the full responses from the models and metadata easily to build what you need.
 - **Integrate support features**: Essential features like logging, retries, throttling, and error handling are integrated and easily configurable.
 
 ## Quick Install
