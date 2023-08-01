@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.0 - 2023-08-01
+
+### Changed
+
+- **Breaking Change**: Renamed to `modelfusion` (from `ai-utils.js`).
+
 ## v0.0.43 - 2023-08-01
 
 ### Changed
