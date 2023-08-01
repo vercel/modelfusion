@@ -26,7 +26,7 @@ const chat = readline.createInterface({
       nPredict: 512,
     }).mapPrompt(ChatToLlama2PromptMapping());
 
-    const responseStream = await streamText(
+    const { textStream } = await streamText(
       model,
       await trimChatPrompt({
         prompt: [{ system: systemPrompt }, ...messages],
@@ -36,7 +36,7 @@ const chat = readline.createInterface({
 
     let fullResponse = "";
     process.stdout.write("\nAI : ");
-    for await (const textFragment of responseStream) {
+    for await (const textFragment of textStream) {
       fullResponse += textFragment;
       process.stdout.write(textFragment);
     }

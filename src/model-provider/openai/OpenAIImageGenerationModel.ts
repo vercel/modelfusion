@@ -48,7 +48,7 @@ export interface OpenAIImageGenerationSettings
  * @see https://platform.openai.com/docs/api-reference/images/create
  *
  * @example
- * const image = await generateImage(
+ * const { image } = await generateImage(
  *   new OpenAIImageGenerationModel({ size: "512x512" }),
  *   "the wicked witch of the west in the style of early 19th century painting"
  * );

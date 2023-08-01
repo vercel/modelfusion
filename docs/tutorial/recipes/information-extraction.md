@@ -49,12 +49,12 @@ const extractNameAndPopulation = async (text: string) =>
     ])
   );
 
-const extractedInformation1 = await extractNameAndPopulation(
+const { value: extractedInformation1 } = await extractNameAndPopulation(
   sanFranciscoWikipedia.slice(0, 2000)
 );
 // { city: { name: 'San Francisco', population: 808437 } }
 
-const extractedInformation2 = await extractNameAndPopulation(
+const { value: extractedInformation2 } = await extractNameAndPopulation(
   "Carl was a friendly robot."
 );
 // { city: null }
@@ -69,11 +69,11 @@ This approach generates a text output and the input needs to fit into the chat p
 [Source Code](https://github.com/lgrammel/ai-utils.js/blob/main/examples/basic/src/tutorials/information-extraction-openai-chat.ts)
 
 ```ts
-const extractText = async ({ text, topic }: { text: string; topic: string }) =>
-  generateText(
+function extractText({ text, topic }: { text: string; topic: string }) {
+  return generateText(
     new OpenAIChatModel({
       model: "gpt-4",
-      temperature: 0, // remove randomness as much as possible
+      temperature: 0,
       maxTokens: 500,
     }),
     [
@@ -89,9 +89,10 @@ const extractText = async ({ text, topic }: { text: string; topic: string }) =>
       OpenAIChatMessage.user(`## TEXT\n${text}`),
     ]
   );
+}
 
-const extractedInformation = await extractText({
-  text: sanFranciscoWikipediaContent, // longer text to extract information from
+const { text: extractedInformation } = await extractText({
+  text: sanFranciscoWikipedia.slice(0, 2000),
   topic: "number of residents",
 });
 // San Francisco, officially the City and County of San Francisco, is the fourth most populous

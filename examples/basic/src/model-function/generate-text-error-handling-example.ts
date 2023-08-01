@@ -2,7 +2,7 @@ import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
 
 (async () => {
   try {
-    const text = await generateText(
+    const { text } = await generateText(
       new OpenAITextGenerationModel({
         apiKey: "invalid-api-key",
         model: "text-davinci-003",

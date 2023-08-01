@@ -53,7 +53,7 @@ It uses a vector index and an embedding model to retrieve text chunks that are s
 #### Example
 
 ```ts
-const textChunks = await retrieveTextChunks(
+const { chunks } = await retrieveTextChunks(
   new VectorIndexSimilarTextChunkRetriever({
     vectorIndex,
     embeddingModel: new OpenAITextEmbeddingModel({

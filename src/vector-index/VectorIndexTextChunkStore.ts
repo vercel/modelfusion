@@ -76,7 +76,7 @@ export class VectorIndexTextChunkStore<
     },
     options?: { run?: Run }
   ) {
-    const vectors = await embedTexts(
+    const { embeddings } = await embedTexts(
       this.embeddingModel,
       chunks.map((chunk) => chunk.content),
       {
@@ -86,9 +86,9 @@ export class VectorIndexTextChunkStore<
     );
 
     this._index.upsertMany(
-      vectors.map((vector, i) => ({
+      embeddings.map((embedding, i) => ({
         id: ids?.[i] ?? this.generateId(),
-        vector,
+        vector: embedding,
         data: chunks[i],
       }))
     );
@@ -98,11 +98,13 @@ export class VectorIndexTextChunkStore<
     queryText: string,
     options?: FunctionOptions<TextChunkRetrieverSettings> | undefined
   ): Promise<CHUNK[]> {
+    const { embedding } = await embedText(this.embeddingModel, queryText, {
+      functionId: this.queryFunctionId,
+      run: options?.run,
+    });
+
     const queryResult = await this._index.queryByVector({
-      queryVector: await embedText(this.embeddingModel, queryText, {
-        functionId: this.queryFunctionId,
-        run: options?.run,
-      }),
+      queryVector: embedding,
       maxResults: 1,
       similarityThreshold: undefined,
     });

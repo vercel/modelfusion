@@ -45,7 +45,7 @@ You can use [prompt mappings](https://ai-utils.dev/guide/function/generate-text/
 #### generateText
 
 ```ts
-const text = await generateText(
+const { text } = await generateText(
   new OpenAITextGenerationModel({ model: "text-davinci-003" }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -54,7 +54,7 @@ const text = await generateText(
 #### generateText with instruction prompt (prompt mapping)
 
 ```ts
-const text = await generateText(
+const { text } = await generateText(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     maxTokens: 1000,
@@ -69,7 +69,7 @@ const text = await generateText(
 #### streamText
 
 ```ts
-const textStream = await streamText(
+const { textStream } = await streamText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
   [
     OpenAIChatMessage.system("You are a story writer."),
@@ -84,10 +84,10 @@ for await (const textFragment of textStream) {
 
 ### [Generate JSON](https://ai-utils.dev/guide/function/generate-json)
 
-Generate JSON that matches a schema.
+Generate JSON value that matches a schema.
 
 ```ts
-const json = await generateJson(
+const { value } = await generateJson(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,
@@ -216,7 +216,7 @@ const { tool, parameters, result, text } = await useToolOrGenerateText(
 Turn audio (voice) into text.
 
 ```ts
-const transcription = await transcribe(
+const { transcription } = await transcribe(
   new OpenAITranscriptionModel({ model: "whisper-1" }),
   {
     type: "mp3",
@@ -227,10 +227,10 @@ const transcription = await transcribe(
 
 ### [Generate Image](https://ai-utils.dev/guide/function/generate-image)
 
-Generate an image from a prompt.
+Generate a base64-encoded image from a prompt.
 
 ```ts
-const imageBase64 = await generateImage(
+const { image } = await generateImage(
   new OpenAIImageGenerationModel({ size: "512x512" }),
   "the wicked witch of the west in the style of early 19th century painting"
 );
@@ -241,7 +241,7 @@ const imageBase64 = await generateImage(
 Create embeddings for text. Embeddings are vectors that represent the meaning of the text.
 
 ```ts
-const embeddings = await embedTexts(
+const { embeddings } = await embedTexts(
   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
   [
     "At first, Nox didn't know what to do with the pup.",
@@ -288,7 +288,7 @@ await upsertTextChunks({
 });
 
 // retrieve text chunks from the vector index - usually done at query time:
-const results = await retrieveTextChunks(
+const { chunks } = await retrieveTextChunks(
   new VectorIndexSimilarTextChunkRetriever({
     vectorIndex,
     embeddingModel,

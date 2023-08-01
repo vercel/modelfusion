@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 (async () => {
-  const text = await generateText(
+  const { text } = await generateText(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
       temperature: 0.7,

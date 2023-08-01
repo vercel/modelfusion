@@ -28,7 +28,7 @@ export async function upsertTextChunks<
   options?: FunctionOptions<SETTINGS>
 ) {
   // many embedding models support bulk embedding, so we first embed all texts:
-  const vectors = await embedTexts(
+  const { embeddings } = await embedTexts(
     embeddingModel,
     chunks.map((chunk) => chunk.content),
     options
@@ -37,7 +37,7 @@ export async function upsertTextChunks<
   await vectorIndex.upsertMany(
     chunks.map((chunk, i) => ({
       id: ids?.[i] ?? generateId(),
-      vector: vectors[i],
+      vector: embeddings[i],
       data: chunk,
     }))
   );

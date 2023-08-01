@@ -8,12 +8,16 @@ import {
 export async function retrieveTextChunks<
   CHUNK extends TextChunk,
   QUERY,
-  SETTINGS extends TextChunkRetrieverSettings
+  SETTINGS extends TextChunkRetrieverSettings,
 >(
   retriever: TextChunkRetriever<CHUNK, QUERY, SETTINGS>,
   query: QUERY,
   options?: FunctionOptions<SETTINGS>
-): Promise<CHUNK[]> {
+): Promise<{
+  chunks: CHUNK[];
+}> {
   // TODO add error handling, events, duration tracking, etc.
-  return retriever.retrieveTextChunks(query, options);
+  return {
+    chunks: await retriever.retrieveTextChunks(query, options),
+  };
 }

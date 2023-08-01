@@ -23,7 +23,7 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 ```ts
 import { Automatic1111ImageGenerationModel, generateImage } from "ai-utils.js";
 
-const imageBase64 = await generateImage(
+const { image } = await generateImage(
   new Automatic1111ImageGenerationModel({
     model: "aZovyaRPGArtistTools_v3.safetensors [25ba966c5d]",
     steps: 30,

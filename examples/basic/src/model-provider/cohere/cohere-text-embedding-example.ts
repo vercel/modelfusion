@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 (async () => {
-  const embeddings = await embedTexts(
+  const { embeddings } = await embedTexts(
     new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
     [
       "At first, Nox didn't know what to do with the pup.",

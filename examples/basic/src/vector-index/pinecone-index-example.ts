@@ -58,7 +58,7 @@ if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
     chunks: texts.map((text) => ({ content: text })),
   });
 
-  const results = await retrieveTextChunks(
+  const { chunks } = await retrieveTextChunks(
     new VectorIndexSimilarTextChunkRetriever({
       vectorIndex,
       embeddingModel,
@@ -67,5 +67,5 @@ if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
     "rainbow and water droplets"
   );
 
-  console.log(results);
+  console.log(chunks);
 })();

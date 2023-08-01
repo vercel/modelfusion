@@ -16,7 +16,7 @@ export default async function handler(
 
   const { text: description } = req.body;
 
-  const imageBase64 = await generateImage(
+  const { image } = await generateImage(
     new StabilityImageGenerationModel({
       model: "stable-diffusion-512-v2-1",
       clipGuidancePreset: "FAST_BLUE",
@@ -33,7 +33,7 @@ export default async function handler(
   );
 
   try {
-    res.status(200).json(imageBase64);
+    res.status(200).json(image);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error?.toString(), error });

@@ -16,7 +16,7 @@ const run = new DefaultRun({
   costCalculators: [new OpenAICostCalculator()],
 });
 
-const text = await generateText(
+const { text } = await generateText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
     temperature: 0.7,

@@ -2,7 +2,7 @@ import { Automatic1111ImageGenerationModel, generateImage } from "ai-utils.js";
 import fs from "node:fs";
 
 (async () => {
-  const image = await generateImage(
+  const { image } = await generateImage(
     new Automatic1111ImageGenerationModel({
       model: "aZovyaRPGArtistTools_v3.safetensors [25ba966c5d]",
       steps: 30,

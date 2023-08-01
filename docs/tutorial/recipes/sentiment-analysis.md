@@ -48,7 +48,9 @@ const analyzeSentiment = async (productReview: string) =>
 
 ```ts
 // negative sentiment example:
-const { sentiment } = await analyzeSentiment(
+const {
+  value: { sentiment },
+} = await analyzeSentiment(
   "After I opened the package, I was met by a very unpleasant smell " +
     "that did not disappear even after washing. The towel also stained " +
     "extremely well and also turned the seal of my washing machine red. " +
@@ -62,7 +64,7 @@ console.log(sentiment);
 #### Get the full reasoning and the sentiment:
 
 ```ts
-const result1 = await analyzeSentiment(
+const { value: result1 } = await analyzeSentiment(
   "After I opened the package, I was met by a very unpleasant smell " +
     "that did not disappear even after washing. The towel also stained " +
     "extremely well and also turned the seal of my washing machine red. " +

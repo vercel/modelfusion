@@ -55,11 +55,13 @@ export class VectorIndexSimilarTextChunkRetriever<
       });
     }
 
+    const { embedding } = await embedText(this.embeddingModel, query, {
+      functionId: options?.functionId,
+      run: options?.run,
+    });
+
     const queryResult = await this.vectorIndex.queryByVector({
-      queryVector: await embedText(this.embeddingModel, query, {
-        functionId: options?.functionId,
-        run: options?.run,
-      }),
+      queryVector: embedding,
       maxResults: this.settings.maxResults ?? 1,
       similarityThreshold: this.settings.similarityThreshold,
     });

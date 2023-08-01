@@ -34,7 +34,7 @@ dotenv.config();
     chunks: texts.map((text) => ({ content: text })),
   });
 
-  const results = await retrieveTextChunks(
+  const { chunks } = await retrieveTextChunks(
     new VectorIndexSimilarTextChunkRetriever({
       vectorIndex,
       embeddingModel: new OpenAITextEmbeddingModel({
@@ -46,5 +46,5 @@ dotenv.config();
     "rainbow and water droplets"
   );
 
-  console.log(results);
+  console.log(chunks);
 })();

@@ -75,13 +75,14 @@ export interface CohereTextGenerationModelSettings
  * @see https://docs.cohere.com/reference/generate
  *
  * @example
- * const textGenerationModel = new CohereTextGenerationModel({
+ * const model = new CohereTextGenerationModel({
  *   model: "command-nightly",
  *   temperature: 0.7,
  *   maxTokens: 500,
  * });
  *
- * const text = await textGenerationModel.generateText(
+ * const { text } = await generateText(
+ *    model,
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  */

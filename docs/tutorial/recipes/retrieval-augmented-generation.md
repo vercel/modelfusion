@@ -21,7 +21,7 @@ Retrieval augmented generation consists of two steps:
 #### Retrieve related information from a vector index:
 
 ```ts
-const textChunks = await retrieveTextChunks(
+const { chunks } = await retrieveTextChunks(
   new VectorIndexSimilarTextChunkRetriever({
     // some vector index that contains the information:
     vectorIndex,
@@ -40,7 +40,7 @@ const textChunks = await retrieveTextChunks(
 #### Generate an answer from the retrieved information:
 
 ```ts
-const answer = await generateText(
+const { text: answer } = await generateText(
   new OpenAIChatModel({
     model: "gpt-4",
     temperature: 0, // remove randomness as much as possible

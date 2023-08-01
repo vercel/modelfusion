@@ -21,7 +21,7 @@ const question = `What is a rainbow?`;
   const vectorIndex = await ingestInformation();
 
   // Retrieve related information from a vector index:
-  const textChunks = await retrieveTextChunks(
+  const { chunks } = await retrieveTextChunks(
     new VectorIndexSimilarTextChunkRetriever({
       // some vector index that contains the information:
       vectorIndex,
@@ -37,7 +37,7 @@ const question = `What is a rainbow?`;
   );
 
   // Generate an answer using the retrieved information:
-  const answer = await generateText(
+  const { text: answer } = await generateText(
     new OpenAIChatModel({
       model: "gpt-4",
       temperature: 0, // remove randomness as much as possible
@@ -55,7 +55,7 @@ const question = `What is a rainbow?`;
         ].join("\n")
       ),
       OpenAIChatMessage.user(`## QUESTION\n${question}`),
-      OpenAIChatMessage.user(`## INFORMATION\n${JSON.stringify(textChunks)}`),
+      OpenAIChatMessage.user(`## INFORMATION\n${JSON.stringify(chunks)}`),
     ]
   );
 
