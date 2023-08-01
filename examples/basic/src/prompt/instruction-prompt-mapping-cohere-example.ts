@@ -2,7 +2,7 @@ import {
   CohereTextGenerationModel,
   InstructionToTextPromptMapping,
   streamText,
-} from "ai-utils.js";
+} from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();

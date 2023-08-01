@@ -1,4 +1,4 @@
-import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
+import { OpenAITextGenerationModel, generateText } from "modelfusion";
 
 (async () => {
   try {

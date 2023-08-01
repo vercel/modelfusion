@@ -1,4 +1,4 @@
-import { CohereTokenizer, countTokens } from "ai-utils.js";
+import { CohereTokenizer, countTokens } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();

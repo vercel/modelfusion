@@ -1,11 +1,11 @@
 {
-  "name": "@lgrammel/ai-utils.js-basic-examples",
+  "name": "@lgrammel/modelfusion-basic-examples",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
     "@pinecone-database/pinecone": "^0.1.6",
-    "ai-utils.js": "*",
+    "modelfusion": "*",
     "dotenv": "16.0.3"
   },
   "devDependencies": {

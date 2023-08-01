@@ -11,12 +11,12 @@ The memory vector index is a simple implementation of the [VectorIndex](/api/int
 
 [API](/api/classes/MemoryVectorIndex)
 |
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-index/)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/vector-index/)
 
 ### Create a Vector Index
 
 ```ts
-import { MemoryVectorIndex } from "ai-utils.js";
+import { MemoryVectorIndex } from "modelfusion";
 
 const vectorIndex = new MemoryVectorIndex<TextChunk>();
 ```

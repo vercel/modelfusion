@@ -4,7 +4,7 @@ import {
   TextChunk,
   throttleMaxConcurrency,
   upsertTextChunks,
-} from "ai-utils.js";
+} from "modelfusion";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import fs from "node:fs";

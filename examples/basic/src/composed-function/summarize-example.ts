@@ -2,7 +2,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
-} from "ai-utils.js";
+} from "modelfusion";
 import dotenv from "dotenv";
 import fs from "node:fs";
 

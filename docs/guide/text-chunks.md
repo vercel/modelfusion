@@ -6,13 +6,13 @@ sidebar_position: 20
 
 ## Usage
 
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-index/)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/vector-index/)
 
 ### VectorIndex
 
 [VectorIndex API](/api/interfaces/VectorIndex)
 
-`ai-utils.js` provides a [VectorIndex](/api/interfaces/VectorIndex) interface that can be implemented by different vector databases. This allows you to use the same code to query different vector databases, e.g. [Pinecone](/integration/vector-index/pinecone) or an [in-memory vector store](/integration/vector-index/memory). It is parameterized with a subtype of `TextChunk`.
+ModelFusion provides a [VectorIndex](/api/interfaces/VectorIndex) interface that can be implemented by different vector databases. This allows you to use the same code to query different vector databases, e.g. [Pinecone](/integration/vector-index/pinecone) or an [in-memory vector store](/integration/vector-index/memory). It is parameterized with a subtype of `TextChunk`.
 
 #### Example
 
@@ -68,7 +68,7 @@ const { chunks } = await retrieveTextChunks(
 
 ## Demo Apps
 
-### [PDF to Tweet](https://github.com/lgrammel/ai-utils.js/tree/main/examples/pdf-to-tweet)
+### [PDF to Tweet](https://github.com/lgrammel/modelfusion/tree/main/examples/pdf-to-tweet)
 
 > _terminal app_, _PDF parsing_, _recursive information extraction_, _in memory vector index, \_style example retrieval_, _OpenAI GPT-4_, _cost calculation_
 

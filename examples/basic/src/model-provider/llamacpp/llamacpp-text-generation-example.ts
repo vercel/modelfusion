@@ -1,4 +1,4 @@
-import { LlamaCppTextGenerationModel, generateText } from "ai-utils.js";
+import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
 
 (async () => {
   const { text } = await generateText(

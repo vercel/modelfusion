@@ -3,7 +3,7 @@ import {
   OpenAICostCalculator,
   OpenAITranscriptionModel,
   transcribe,
-} from "ai-utils.js";
+} from "modelfusion";
 import dotenv from "dotenv";
 import fs from "node:fs";
 

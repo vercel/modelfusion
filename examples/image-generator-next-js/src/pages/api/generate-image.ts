@@ -1,4 +1,4 @@
-import { StabilityImageGenerationModel, generateImage } from "ai-utils.js";
+import { StabilityImageGenerationModel, generateImage } from "modelfusion";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {

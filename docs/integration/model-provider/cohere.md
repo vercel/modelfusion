@@ -12,14 +12,14 @@ title: Cohere
 
 ## Usage
 
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/cohere)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/cohere)
 
 ### Generate Text
 
 [CohereTextGenerationModel API](/api/classes/CohereTextGenerationModel)
 
 ```ts
-import { CohereTextGenerationModel, generateText } from "ai-utils.js";
+import { CohereTextGenerationModel, generateText } from "modelfusion";
 
 const { text } = await generateText(
   new CohereTextGenerationModel({
@@ -36,7 +36,7 @@ const { text } = await generateText(
 [CohereTextGenerationModel API](/api/classes/CohereTextGenerationModel)
 
 ```ts
-import { CohereTextGenerationModel, streamText } from "ai-utils.js";
+import { CohereTextGenerationModel, streamText } from "modelfusion";
 
 const { textStream } = await streamText(
   new CohereTextGenerationModel({
@@ -57,7 +57,7 @@ for await (const textFragment of textStream) {
 [CohereTextEmbeddingModel API](/api/classes/CohereTextEmbeddingModel)
 
 ```ts
-import { CohereTextEmbeddingModel, embedTexts } from "ai-utils.js";
+import { CohereTextEmbeddingModel, embedTexts } from "modelfusion";
 
 const { embeddings } = await embedTexts(
   new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
@@ -73,7 +73,7 @@ const { embeddings } = await embedTexts(
 [CohereTokenizer API](/api/classes/CohereTokenizer)
 
 ```ts
-import { CohereTokenizer, countTokens } from "ai-utils.js";
+import { CohereTokenizer, countTokens } from "modelfusion";
 
 const tokenizer = new CohereTokenizer({ model: "command-nightly" });
 

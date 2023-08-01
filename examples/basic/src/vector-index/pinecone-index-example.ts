@@ -5,7 +5,7 @@ import {
   VectorIndexSimilarTextChunkRetriever,
   retrieveTextChunks,
   upsertTextChunks,
-} from "ai-utils.js";
+} from "modelfusion";
 import dotenv from "dotenv";
 import { z } from "zod";
 

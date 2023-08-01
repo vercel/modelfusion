@@ -3,7 +3,7 @@ import {
   OpenAICostCalculator,
   OpenAITextGenerationModel,
   generateText,
-} from "ai-utils.js";
+} from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();

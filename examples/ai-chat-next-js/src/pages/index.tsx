@@ -2,7 +2,7 @@ import { ChatInputArea } from "@/component/ChatInputArea";
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
-import { parseTextDeltaEventSource } from "ai-utils.js";
+import { parseTextDeltaEventSource } from "modelfusion";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
@@ -70,7 +70,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>ai-utils.js chat example</title>
+        <title>ModelFusion chat example</title>
       </Head>
       <Box
         component="main"

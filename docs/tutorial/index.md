@@ -3,7 +3,7 @@ sidebar_position: 1
 title: Basic Examples
 ---
 
-You can find many basic examples in the [examples/basic/src](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src) folder on GitHub.
+You can find many basic examples in the [examples/basic/src](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src) folder on GitHub.
 
 ## Usage
 

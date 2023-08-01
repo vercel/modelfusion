@@ -14,14 +14,14 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 
 ## Usage
 
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/a1111)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/a1111)
 
 ### Generate Image
 
 [Automatic1111ImageGenerationModel API](/api/classes/Automatic1111ImageGenerationModel)
 
 ```ts
-import { Automatic1111ImageGenerationModel, generateImage } from "ai-utils.js";
+import { Automatic1111ImageGenerationModel, generateImage } from "modelfusion";
 
 const { image } = await generateImage(
   new Automatic1111ImageGenerationModel({

@@ -1,4 +1,4 @@
-import { Automatic1111ImageGenerationModel, generateImage } from "ai-utils.js";
+import { Automatic1111ImageGenerationModel, generateImage } from "modelfusion";
 import fs from "node:fs";
 
 (async () => {

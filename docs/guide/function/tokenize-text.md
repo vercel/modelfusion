@@ -4,7 +4,7 @@ sidebar_position: 18
 
 # Tokenize Text
 
-`ai-utils.js` provides functions and interfaces for text tokenization. The interfaces (`BasicTokenizer` and `FullTokenizer`) are implemented by tokenizer classes (such as `TikTokenTokenizer`) and by model classes (e.g. text generation models).
+ModelFusion provides functions and interfaces for text tokenization. The interfaces (`BasicTokenizer` and `FullTokenizer`) are implemented by tokenizer classes (such as `TikTokenTokenizer`) and by model classes (e.g. text generation models).
 
 ## Usage
 

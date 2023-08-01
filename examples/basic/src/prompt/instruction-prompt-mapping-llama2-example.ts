@@ -2,7 +2,7 @@ import {
   InstructionToLlama2PromptMapping,
   LlamaCppTextGenerationModel,
   streamText,
-} from "ai-utils.js";
+} from "modelfusion";
 
 (async () => {
   const { textStream } = await streamText(

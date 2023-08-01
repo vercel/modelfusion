@@ -1,4 +1,4 @@
-import { OpenAITextGenerationModel } from "ai-utils.js";
+import { OpenAITextGenerationModel } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();

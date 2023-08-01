@@ -12,7 +12,7 @@ title: OpenAI
 
 ## Usage
 
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/openai)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/openai)
 
 ### Generate Text
 
@@ -21,7 +21,7 @@ title: OpenAI
 [OpenAITextGenerationModel API](/api/classes/OpenAITextGenerationModel)
 
 ```ts
-import { OpenAITextGenerationModel, generateText } from "ai-utils.js";
+import { OpenAITextGenerationModel, generateText } from "modelfusion";
 
 const { text } = await generateText(
   new OpenAITextGenerationModel({
@@ -40,7 +40,7 @@ The OpenAI chat models include GPT-3.5-turbo and GPT-4.
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
 ```ts
-import { OpenAIChatMessage, OpenAIChatModel, generateText } from "ai-utils.js";
+import { OpenAIChatMessage, OpenAIChatModel, generateText } from "modelfusion";
 
 const { text } = await generateText(
   new OpenAIChatModel({
@@ -63,7 +63,7 @@ const { text } = await generateText(
 [OpenAITextGenerationModel API](/api/classes/OpenAITextGenerationModel)
 
 ```ts
-import { OpenAITextGenerationModel, streamText } from "ai-utils.js";
+import { OpenAITextGenerationModel, streamText } from "modelfusion";
 
 const { textStream } = await streamText(
   new OpenAITextGenerationModel({
@@ -83,7 +83,7 @@ for await (const textFragment of textStream) {
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
 ```ts
-import { OpenAIChatMessage, OpenAIChatModel, streamText } from "ai-utils.js";
+import { OpenAIChatMessage, OpenAIChatModel, streamText } from "modelfusion";
 
 const { textStream } = await streamText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
@@ -113,7 +113,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   generateJson,
-} from "ai-utils.js";
+} from "modelfusion";
 import { z } from "zod";
 
 const { value: sentiment } = await generateJson(
@@ -210,7 +210,7 @@ switch (schema) {
 [OpenAITextEmbeddingModel API](/api/classes/OpenAITextEmbeddingModel)
 
 ```ts
-import { OpenAITextEmbeddingModel, embedTexts } from "ai-utils.js";
+import { OpenAITextEmbeddingModel, embedTexts } from "modelfusion";
 
 const { embeddings } = await embedTexts(
   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
@@ -226,7 +226,7 @@ const { embeddings } = await embedTexts(
 [TikTokenTokenizer API](/api/classes/TikTokenTokenizer)
 
 ```ts
-import { TikTokenTokenizer, countTokens } from "ai-utils.js";
+import { TikTokenTokenizer, countTokens } from "modelfusion";
 
 const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });
 
@@ -244,7 +244,7 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 ```ts
 import fs from "node:fs";
-import { OpenAITranscriptionModel, transcribe } from "ai-utils.js";
+import { OpenAITranscriptionModel, transcribe } from "modelfusion";
 
 const data = await fs.promises.readFile("data/test.mp3");
 
@@ -264,7 +264,7 @@ OpenAI provides a model called DALL-E that can generate images from text descrip
 [OpenAIImageGenerationModel API](/api/classes/OpenAIImageGenerationModel)
 
 ```ts
-import { OpenAIImageGenerationModel, generateImage } from "ai-utils.js";
+import { OpenAIImageGenerationModel, generateImage } from "modelfusion";
 
 const { image } = await generateImage(
   new OpenAIImageGenerationModel({ size: "512x512" }),

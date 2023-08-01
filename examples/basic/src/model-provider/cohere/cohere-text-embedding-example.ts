@@ -1,4 +1,4 @@
-import { CohereTextEmbeddingModel, embedTexts } from "ai-utils.js";
+import { CohereTextEmbeddingModel, embedTexts } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();

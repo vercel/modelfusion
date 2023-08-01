@@ -1,4 +1,4 @@
-import { LlamaCppTokenizer, countTokens } from "ai-utils.js";
+import { LlamaCppTokenizer, countTokens } from "modelfusion";
 
 (async () => {
   const tokenizer = new LlamaCppTokenizer();

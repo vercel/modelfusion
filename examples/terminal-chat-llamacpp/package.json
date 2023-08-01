@@ -1,10 +1,10 @@
 {
-  "name": "@lgrammel/ai-utils.js-terminal-chat-llamacpp-example",
+  "name": "@lgrammel/modelfusion-terminal-chat-llamacpp-example",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "ai-utils.js": "*"
+    "modelfusion": "*"
   },
   "devDependencies": {
     "@types/node": "20.2.3",

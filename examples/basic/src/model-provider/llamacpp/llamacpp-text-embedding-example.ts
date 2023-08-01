@@ -1,4 +1,4 @@
-import { LlamaCppTextEmbeddingModel, embedTexts } from "ai-utils.js";
+import { LlamaCppTextEmbeddingModel, embedTexts } from "modelfusion";
 
 (async () => {
   const { embeddings } = await embedTexts(new LlamaCppTextEmbeddingModel(), [

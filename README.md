@@ -3,27 +3,27 @@
 > ### Build AI applications, chatbots, and agents with JavaScript and TypeScript.
 
 [![Created by Lars Grammel](https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg)](https://twitter.com/lgrammel)
-[![NPM Version](https://img.shields.io/npm/v/ai-utils.js?color=33cd56&logo=npm)](https://www.npmjs.com/package/ai-utils.js)
-[![MIT License](https://img.shields.io/github/license/lgrammel/ai-utils.js)](https://opensource.org/licenses/MIT)
+[![NPM Version](https://img.shields.io/npm/v/modelfusion?color=33cd56&logo=npm)](https://www.npmjs.com/package/modelfusion)
+[![MIT License](https://img.shields.io/github/license/lgrammel/modelfusion)](https://opensource.org/licenses/MIT)
 
 [Introduction](#introduction) | [Quick Install](#quick-install) | [Usage](#usage-examples) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#more-examples) | [ai-utils.dev](https://ai-utils.dev)
 
 ## Disclaimer
 
-`ai-utils.js` is currently in its initial development phase. **Until version 1.0 there may be frequent breaking changes.**
+ModelFusion is currently in its initial development phase. **Until version 1.0 there may be frequent breaking changes.**
 
 ## Introduction
 
-`ai-utils.js` is a library for building AI apps, chatbots, and agents. It provides abstractions for working with AI models, vector indices, and tools. It was designed with the following goals in mind:
+ModelFusion is a library for building AI apps, chatbots, and agents. It provides abstractions for working with AI models, vector indices, and tools. It was designed with the following goals in mind:
 
-- **Provide type inference and validation**: `ai-utils.js` uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types whereever possible and to validate AI responses.
-- **Flexibility and control**: AI application development can be complex and unique to each project. With `ai-utils.js`, you have complete control over the prompts, the model settings, and the control flow of your application. You can also access the full responses from the models and metadata easily to build what you need.
+- **Provide type inference and validation**: ModelFusion uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types whereever possible and to validate AI responses.
+- **Flexibility and control**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts, the model settings, and the control flow of your application. You can also access the full responses from the models and metadata easily to build what you need.
 - **Integrate support features**: Essential features like logging, retries, throttling, and error handling are integrated and easily configurable.
 
 ## Quick Install
 
 ```sh
-npm install ai-utils.js
+npm install modelfusion
 ```
 
 You need to install `zod` and a matching version of `zod-to-json-schema` (peer dependencies):
@@ -100,7 +100,7 @@ const { textStream } = await streamText(
 
 #### Metadata and original responses
 
-Most `ai-utils.js` model functions return rich results that include the original response and metadata.
+Most ModelFusion model functions return rich results that include the original response and metadata.
 
 ```ts
 const { text, response, metadata } = await generateText(
@@ -382,47 +382,47 @@ const { chunks } = await retrieveTextChunks(
 
 ## More Examples
 
-### [Basic Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic)
+### [Basic Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic)
 
 Examples for the individual functions and objects.
 
-### [PDF to Tweet](https://github.com/lgrammel/ai-utils.js/tree/main/examples/pdf-to-tweet)
+### [PDF to Tweet](https://github.com/lgrammel/modelfusion/tree/main/examples/pdf-to-tweet)
 
 > _terminal app_, _PDF parsing_, _recursive information extraction_, _in memory vector index, \_style example retrieval_, _OpenAI GPT-4_, _cost calculation_
 
 Extracts information about a topic from a PDF and writes a tweet in your own style about it.
 
-### [AI Chat (Next.JS)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/ai-chat-next-js)
+### [AI Chat (Next.JS)](https://github.com/lgrammel/modelfusion/tree/main/examples/ai-chat-next-js)
 
 > _Next.js app_, _OpenAI GPT-3.5-turbo_, _streaming_, _abort handling_
 
 A basic web chat with an AI assistant, implemented as a Next.js app.
 
-### [Image generator (Next.js)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/image-generator-next-js)
+### [Image generator (Next.js)](https://github.com/lgrammel/modelfusion/tree/main/examples/image-generator-next-js)
 
 > _Next.js app_, _Stability AI image generation_
 
 Create an 19th century painting image for your input.
 
-### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/voice-recording-next-js)
+### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/modelfusion/tree/main/examples/voice-recording-next-js)
 
 > _Next.js app_, _OpenAI Whisper_
 
 Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
 
-### [BabyAGI Classic](https://github.com/lgrammel/ai-utils.js/tree/main/examples/baby-agi)
+### [BabyAGI Classic](https://github.com/lgrammel/modelfusion/tree/main/examples/baby-agi)
 
 > _terminal app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
 
 TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.
 
-### [Middle school math](https://github.com/lgrammel/ai-utils.js/tree/main/examples/middle-school-math)
+### [Middle school math](https://github.com/lgrammel/modelfusion/tree/main/examples/middle-school-math)
 
 > _terminal app_, _agent_, _tools_, _GPT-4_
 
 Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.
 
-### [Terminal Chat (llama.cpp)](https://github.com/lgrammel/ai-utils.js/tree/main/examples/terminal-chat-llamacpp)
+### [Terminal Chat (llama.cpp)](https://github.com/lgrammel/modelfusion/tree/main/examples/terminal-chat-llamacpp)
 
 > _Terminal app_, _chat_, _llama.cpp_
 

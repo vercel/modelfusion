@@ -21,13 +21,13 @@ npm install @pinecone-database/pinecone
 
 [API](/api/classes/PineconeVectorIndex)
 |
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/vector-index/)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/vector-index/)
 
 ### Create a Vector Index
 
 ```ts
 import { PineconeClient } from "@pinecone-database/pinecone";
-import { PineconeVectorIndex } from "ai-utils.js";
+import { PineconeVectorIndex } from "modelfusion";
 
 // Initialize the Pinecone index:
 const client = new PineconeClient();

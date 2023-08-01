@@ -1,6 +1,6 @@
 # Basic Examples
 
-Basic examples of how to the the functions in ai-utils.js
+Basic examples of how to the the functions in ModelFusion
 
 ## Usage
 

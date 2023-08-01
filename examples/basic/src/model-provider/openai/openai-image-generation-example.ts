@@ -1,4 +1,4 @@
-import { OpenAIImageGenerationModel, generateImage } from "ai-utils.js";
+import { OpenAIImageGenerationModel, generateImage } from "modelfusion";
 import dotenv from "dotenv";
 import fs from "node:fs";
 

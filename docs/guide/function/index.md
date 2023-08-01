@@ -5,7 +5,7 @@ title: Model Functions
 
 # Model Functions
 
-`ai-utils.js` provides model functions for tasks such as [text generation](/guide/function/generate-text) that are executed using machien learning models (e.g., LLMs).
+ModelFusion provides model functions for tasks such as [text generation](/guide/function/generate-text) that are executed using machien learning models (e.g., LLMs).
 You can call these functions with a model, a prompt, and additional options.
 
 ```ts

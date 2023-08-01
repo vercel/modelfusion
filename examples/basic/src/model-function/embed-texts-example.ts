@@ -1,4 +1,4 @@
-import { OpenAITextEmbeddingModel, embedTexts } from "ai-utils.js";
+import { OpenAITextEmbeddingModel, embedTexts } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();

@@ -9,8 +9,9 @@ const Placeholder = styled.div`
   overflow: hidden;
   padding: 20px;
 
-  background: radial-gradient(circle at bottom, #fff 85%, transparent 0%) top /
-      20px 20px repeat-x,
+  background:
+    radial-gradient(circle at bottom, #fff 85%, transparent 0%) top / 20px 20px
+      repeat-x,
     radial-gradient(circle at top, #fff 85%, transparent 0%) bottom / 20px 20px
       repeat-x,
     radial-gradient(circle at left, #fff 85%, transparent 0%) right / 20px 20px
@@ -67,7 +68,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>ai-utils.js image generator example</title>
+        <title>ModelFusion image generator example</title>
       </Head>
       <div className={"table"}>
         <div className={"paper"}>

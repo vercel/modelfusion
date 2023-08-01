@@ -12,14 +12,14 @@ title: Hugging Face
 
 ## Usage
 
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/huggingface)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/huggingface)
 
 ### Generate Text
 
 [HuggingFaceTextGenerationModel API](/api/classes/HuggingFaceTextGenerationModel)
 
 ```ts
-import { HuggingFaceTextGenerationModel, generateText } from "ai-utils.js";
+import { HuggingFaceTextGenerationModel, generateText } from "modelfusion";
 
 const { text } = await generateText(
   new HuggingFaceTextGenerationModel({

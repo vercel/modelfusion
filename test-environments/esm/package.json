@@ -7,7 +7,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
-    "ai-utils.js": "*",
+    "modelfusion": "*",
     "dotenv": "16.0.3"
   }
 }

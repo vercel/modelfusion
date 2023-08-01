@@ -1,4 +1,4 @@
-import { TikTokenTokenizer, countTokens } from "ai-utils.js";
+import { TikTokenTokenizer, countTokens } from "modelfusion";
 
 (async () => {
   const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });

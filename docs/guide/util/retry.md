@@ -4,7 +4,7 @@ sidebar_position: 10
 
 # Retry Strategies
 
-AI models are often accessed via APIs, and these APIs can fail for a variety of reasons. For example, the API might be temporarily unavailable, or the API provider might have rate limits in place that are exceeded by your application. `ai-utils.js` provides retry strategies that you can configure to handle these situations.
+AI models are often accessed via APIs, and these APIs can fail for a variety of reasons. For example, the API might be temporarily unavailable, or the API provider might have rate limits in place that are exceeded by your application. ModelFusion provides retry strategies that you can configure to handle these situations.
 
 ## Usage
 
@@ -20,7 +20,7 @@ The `retryWithExponentialBackoff` strategy retries a failed API call with an exp
 #### Example: retryWithExponentialBackoff in model constructor
 
 ```ts
-import { retryWithExponentialBackoff } from "ai-utils.js";
+import { retryWithExponentialBackoff } from "modelfusion";
 
 const model = new OpenAITextGenerationModel({
   model: // ...,
@@ -41,7 +41,7 @@ The `retryNever` strategy never retries a failed API call.
 #### Example: retryWithExponentialBackoff in function call
 
 ```ts
-import { retryNever } from "ai-utils.js";
+import { retryNever } from "modelfusion";
 
 const { text } = await generateText(
   model,

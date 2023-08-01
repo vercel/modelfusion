@@ -18,14 +18,14 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 
 ## Usage
 
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/llamacpp)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/llamacpp)
 
 ### Generate Text
 
 [LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
 
 ```ts
-import { LlamaCppTextGenerationModel, generateText } from "ai-utils.js";
+import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
 
 const { text } = await generateText(
   new LlamaCppTextGenerationModel({ nPredict: 256 }),
@@ -38,7 +38,7 @@ const { text } = await generateText(
 [LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
 
 ```ts
-import { LlamaCppTextGenerationModel, streamText } from "ai-utils.js";
+import { LlamaCppTextGenerationModel, streamText } from "modelfusion";
 
 const { textStream } = await streamText(
   new LlamaCppTextGenerationModel({ nPredict: 1024, temperature: 0.7 }),
@@ -55,7 +55,7 @@ for await (const textFragment of textStream) {
 [LlamaCppTextEmbeddingModel API](/api/classes/LlamaCppTextEmbeddingModel)
 
 ```ts
-import { LlamaCppTextEmbeddingModel, embedTexts } from "ai-utils.js";
+import { LlamaCppTextEmbeddingModel, embedTexts } from "modelfusion";
 
 const { embeddings } = await embedTexts(new LlamaCppTextEmbeddingModel(), [
   "At first, Nox didn't know what to do with the pup.",
@@ -68,7 +68,7 @@ const { embeddings } = await embedTexts(new LlamaCppTextEmbeddingModel(), [
 [LlamaCppTokenizer API](/api/classes/LlamaCppTokenizer)
 
 ```ts
-import { LlamaCppTokenizer, countTokens } from "ai-utils.js";
+import { LlamaCppTokenizer, countTokens } from "modelfusion";
 
 const tokenizer = new LlamaCppTokenizer();
 
@@ -89,7 +89,7 @@ However, some functions that automatically optimize the prompt size (e.g., recur
 You can set the context window size on the model by passing it as a parameter to the constructor.
 
 ```ts
-import { LlamaCppTextGenerationModel } from "ai-utils.js";
+import { LlamaCppTextGenerationModel } from "modelfusion";
 
 const model = new LlamaCppTextGenerationModel({
   // Assuming the default Llama2 7B model is loaded, the context window size is 4096 tokens.

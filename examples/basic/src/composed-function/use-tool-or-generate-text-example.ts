@@ -4,7 +4,7 @@ import {
   OpenAIChatModel,
   Tool,
   useToolOrGenerateText,
-} from "ai-utils.js";
+} from "modelfusion";
 import dotenv from "dotenv";
 import { z } from "zod";
 

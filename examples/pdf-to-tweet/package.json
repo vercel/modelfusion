@@ -1,5 +1,5 @@
 {
-  "name": "@lgrammel/ai-utils.js-example-pdf-to-tweet",
+  "name": "@lgrammel/modelfusion-example-pdf-to-tweet",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -7,7 +7,7 @@
   },
   "private": true,
   "dependencies": {
-    "ai-utils.js": "*",
+    "modelfusion": "*",
     "commander": "10.0.1",
     "dotenv": "16.0.3",
     "pdfjs-dist": "3.6.172"

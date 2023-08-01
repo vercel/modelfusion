@@ -1,4 +1,4 @@
-import { DefaultRun, OpenAICostCalculator } from "ai-utils.js";
+import { DefaultRun, OpenAICostCalculator } from "modelfusion";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import { createTweetFromPdf } from "./createTweetFromPdf";

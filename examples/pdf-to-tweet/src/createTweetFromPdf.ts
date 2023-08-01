@@ -8,7 +8,7 @@ import {
   generateText,
   retrieveTextChunks,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
-} from "ai-utils.js";
+} from "modelfusion";
 import fs from "node:fs";
 import z from "zod";
 import { loadPdfAsText } from "./loadPdfAsText";

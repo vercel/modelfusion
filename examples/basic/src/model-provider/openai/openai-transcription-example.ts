@@ -1,4 +1,4 @@
-import { OpenAITranscriptionModel, transcribe } from "ai-utils.js";
+import { OpenAITranscriptionModel, transcribe } from "modelfusion";
 import dotenv from "dotenv";
 import fs from "node:fs";
 

@@ -24,7 +24,7 @@ The `throttleMaxConcurrency` strategy limits the number of parallel API calls.
 #### Example: throttleMaxConcurrency in model constructor
 
 ```ts
-import { throttleMaxConcurrency } from "ai-utils.js";
+import { throttleMaxConcurrency } from "modelfusion";
 
 const model = new OpenAITextEmbeddingModel({
   model: "text-embedding-ada-002",
@@ -41,7 +41,7 @@ The `throttleUnlimitedConcurrency` strategy does not limit parallel API calls.
 #### Example: throttleUnlimitedConcurrency in function call
 
 ```ts
-import { throttleUnlimitedConcurrency } from "ai-utils.js";
+import { throttleUnlimitedConcurrency } from "modelfusion";
 
 const { embeddings } = await embedTexts(
   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),

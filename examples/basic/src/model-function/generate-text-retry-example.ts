@@ -2,7 +2,7 @@ import {
   OpenAITextGenerationModel,
   generateText,
   retryWithExponentialBackoff,
-} from "ai-utils.js";
+} from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();

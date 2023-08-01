@@ -12,14 +12,14 @@ title: Stability AI
 
 ## Usage
 
-[Examples](https://github.com/lgrammel/ai-utils.js/tree/main/examples/basic/src/model-provider/stability)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/stability)
 
 ### Generate Image
 
 [StabilityImageGenerationModel API](/api/classes/StabilityImageGenerationModel)
 
 ```ts
-import { StabilityImageGenerationModel, generateImage } from "ai-utils.js";
+import { StabilityImageGenerationModel, generateImage } from "modelfusion";
 
 const imageBase64 = await generateImage(
   new StabilityImageGenerationModel({

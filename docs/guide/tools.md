@@ -127,7 +127,7 @@ console.log(`RESULT: ${JSON.stringify(result)}`);
 
 ## Demo Apps
 
-### [Middle school math](https://github.com/lgrammel/ai-utils.js/tree/main/examples/middle-school-math)
+### [Middle school math](https://github.com/lgrammel/modelfusion/tree/main/examples/middle-school-math)
 
 > _terminal app_, _agent_, _tools_, _GPT-4_
 

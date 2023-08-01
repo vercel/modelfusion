@@ -3,7 +3,7 @@ import {
   OpenAICostCalculator,
   OpenAIImageGenerationModel,
   generateImage,
-} from "ai-utils.js";
+} from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();

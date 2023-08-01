@@ -2,7 +2,7 @@ import {
   OpenAITextEmbeddingModel,
   embedTexts,
   throttleMaxConcurrency,
-} from "ai-utils.js";
+} from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();

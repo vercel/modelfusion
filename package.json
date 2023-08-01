@@ -20,10 +20,10 @@
   "homepage": "https://ai-utils.dev/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lgrammel/ai-utils.js"
+    "url": "https://github.com/lgrammel/modelfusion"
   },
   "bugs": {
-    "url": "https://github.com/lgrammel/ai-utils.js/issues"
+    "url": "https://github.com/lgrammel/modelfusion/issues"
   },
   "type": "module",
   "sideEffects": false,

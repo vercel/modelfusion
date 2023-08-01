@@ -1,4 +1,4 @@
-import { OpenAIChatMessage, OpenAIChatModel, streamText } from "ai-utils.js";
+import { OpenAIChatMessage, OpenAIChatModel, streamText } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();

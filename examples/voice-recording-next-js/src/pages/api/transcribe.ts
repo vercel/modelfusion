@@ -1,4 +1,4 @@
-import { OpenAITranscriptionModel, transcribe } from "ai-utils.js";
+import { OpenAITranscriptionModel, transcribe } from "modelfusion";
 import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";

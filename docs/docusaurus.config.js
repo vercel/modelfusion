@@ -6,9 +6,9 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "ai-utils.js",
+  title: "ModelFusion",
   tagline:
-    "A TypeScript-first library for building AI apps, chatbots and agents.",
+    "Build AI applications, chatbots, and agents with JavaScript and TypeScript.",
   // favicon: "img/favicon.ico",
   url: "https://ai-utils.js",
   baseUrl: "/",
@@ -84,12 +84,12 @@ const config = {
         entryPoints: ["../src/index.ts"],
         tsconfig: "../tsconfig.json",
         groupOrder: ["Functions", "Variables", "*"],
-        name: "ai-utils.js",
+        name: "modelfusion",
         plugin: ["typedoc-plugin-zod"],
         excludePrivate: true,
         excludeProtected: true,
         sourceLinkTemplate:
-          "https://github.com/lgrammel/ai-utils.js/tree/main/{path}#L{line}",
+          "https://github.com/lgrammel/modelfusion/tree/main/{path}#L{line}",
 
         // docusaurus options:
         out: ".",
@@ -108,7 +108,7 @@ const config = {
       // Replace with your project's social card
       // image: "img/docusaurus-social-card.jpg",
       navbar: {
-        title: "ai-utils.js",
+        title: "ModelFusion",
         items: [
           {
             to: "/guide/",
@@ -138,7 +138,7 @@ const config = {
             position: "left",
           },
           {
-            href: "https://github.com/lgrammel/ai-utils.js",
+            href: "https://github.com/lgrammel/modelfusion",
             label: "GitHub",
             position: "right",
           },
@@ -172,7 +172,7 @@ const config = {
                 to: "/tutorial/",
               },
               {
-                href: "https://github.com/lgrammel/ai-utils.js/tree/main/examples",
+                href: "https://github.com/lgrammel/modelfusion/tree/main/examples",
                 label: "Examples",
               },
             ],
@@ -186,7 +186,7 @@ const config = {
               },
               {
                 label: "GitHub",
-                href: "https://github.com/lgrammel/ai-utils.js",
+                href: "https://github.com/lgrammel/modelfusion",
               },
             ],
           },

@@ -1,10 +1,10 @@
 {
-  "name": "@lgrammel/ai-utils.js-middle-school-math-example",
+  "name": "@lgrammel/modelfusion-middle-school-math-example",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "ai-utils.js": "*",
+    "modelfusion": "*",
     "dotenv": "16.0.3"
   },
   "devDependencies": {

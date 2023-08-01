@@ -1,4 +1,4 @@
-import { OpenAIChatMessage, OpenAIChatModel, generateText } from "ai-utils.js";
+import { OpenAIChatMessage, OpenAIChatModel, generateText } from "modelfusion";
 import dotenv from "dotenv";
 import fs from "node:fs";
 

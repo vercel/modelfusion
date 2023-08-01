@@ -8,7 +8,7 @@ import {
   createTextDeltaEventSource,
   streamText,
   trimChatPrompt,
-} from "ai-utils.js";
+} from "modelfusion";
 import { z } from "zod";
 
 export const config = { runtime: "edge" };

@@ -3,7 +3,7 @@ import {
   LlamaCppTextGenerationModel,
   streamText,
   trimChatPrompt,
-} from "ai-utils.js";
+} from "modelfusion";
 import * as readline from "node:readline/promises";
 
 const systemPrompt = `You are a helpful, respectful and honest assistant.`;
