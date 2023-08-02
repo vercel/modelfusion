@@ -15,11 +15,13 @@ ModelFusion is in its initial development phase. Until version 1.0 there may be 
 
 ## Introduction
 
-ModelFusion is a library for building AI apps, chatbots, and agents. It provides abstractions for working with AI models, vector indices, and tools. It was designed with the following goals in mind:
+ModelFusion is a library for building AI apps, chatbots, and agents. It provides abstractions for AI models, vector indices, and tools.
 
-- **Provide type inference and validation**: ModelFusion uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types whereever possible and to validate AI responses.
-- **Flexibility and control**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts, the model settings, and the control flow of your application. You can also access the full responses from the models and metadata easily to build what you need.
-- **Integrate support features**: Essential features like logging, retries, throttling, and error handling are integrated and easily configurable.
+- **Type inference and validation**: ModelFusion uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types wherever possible and to validate model responses.
+- **Flexibility and control**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts and model settings, and you can access the raw responses from the models quickly to build what you need.
+- **No chains and predefined prompts**: Use the concepts provided by JavaScript (variables, functions, etc.) and explicit prompts to build applications you can easily understand and control. Not black magic.
+- **More than LLMs**: ModelFusion supports other models, e.g., text-to-image and voice-to-text, to help you build rich AI applications that go beyond just text.
+- **Integrated support features**: Essential features like logging, retries, throttling, tracing, and error handling are built-in, helping you focus more on building your application.
 
 ## Quick Install
 
