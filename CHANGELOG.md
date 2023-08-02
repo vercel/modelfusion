@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.1 - 2023-08-02
+
+### Changed
+
+- Docs updated to ModelFusion.
+
 ## v0.1.0 - 2023-08-01
 
 ### Changed
