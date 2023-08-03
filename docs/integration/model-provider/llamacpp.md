@@ -98,3 +98,66 @@ const model = new LlamaCppTextGenerationModel({
   contextWindowSize: 4096,
 });
 ```
+
+## Prompt Mappings
+
+Many models are trained on specific prompts.
+You can use [prompt mappings](/guide/function/generate-text/prompt-mapping) to use higher-level prompt formats such
+as instruction and chat prompts and map them to the correct format for your model.
+The prompt format that the model expected is usually described on the model card on HuggingFace.
+
+### Llama 2 prompt format
+
+Llama 2 uses a prompt format like this (see "[How to prompt Llama 2 chat](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat)"):
+
+#### single instruction prompt format
+
+```
+<s>[INST] <<SYS>>
+${ system prompt }
+<</SYS>>
+
+{ instruction } [/INST]
+```
+
+You can use the [InstructionToLlama2PromptMapping](/api/modules#instructiontollama2promptmapping) to create instruction prompts:
+
+```ts
+const { textStream } = await streamText(
+  new LlamaCppTextGenerationModel({
+    contextWindowSize: 4096, // Llama 2 context window size
+    nPredict: 512,
+  }).mapPrompt(InstructionToLlama2PromptMapping()),
+  {
+    system: "You are a celebrated poet.",
+    instruction: "Write a short story about a robot learning to love.",
+  }
+);
+```
+
+#### chat prompt format
+
+```
+<s>[INST] <<SYS>>
+${ system prompt }
+<</SYS>>
+
+${ user msg 1 } [/INST] ${ model response 1 } </s><s>[INST] ${ user msg 2 } [/INST] ${ model response 2 } </s><s>[INST] ${ user msg 3 } [/INST]
+```
+
+You can use the [ChatToLlama2PromptMapping](/api/modules#chattollama2promptmapping) to create instruction prompts:
+
+```ts
+const { textStream } = await streamText(
+  new LlamaCppTextGenerationModel({
+    contextWindowSize: 4096, // Llama 2 context window size
+    nPredict: 512,
+  }).mapPrompt(ChatToLlama2PromptMapping()),
+  [
+    { system: "You are a celebrated poet." },
+    { user: "Write a short story about a robot learning to love." },
+    { ai: "Once upon a time, there was a robot who learned to love." },
+    { user: "That's a great start!" },
+  ]
+);
+```
