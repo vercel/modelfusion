@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.0 - 2023-08-04
+
+### Added
+
+- Instruction prompts can contain optional `input` property.
+- Alpaca instruction prompt mapping.
+- Vicuna chat prompt mapping.
+
 ## v0.1.1 - 2023-08-02
 
 ### Changed
