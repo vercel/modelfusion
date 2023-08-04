@@ -11,7 +11,7 @@ You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGeneration
 
 ## Instruction Prompts
 
-[Instruction prompts](/api/modules#instructionprompt) are a higher-level prompt format that contains an instruction and an optional system message.
+[Instruction prompts](/api/modules#instructionprompt) are a higher-level prompt format that contains an instruction, an optional input, and an optional system message. For some models, changing the system message can affect the results, so consider how your model works before setting it.
 
 ### Example
 
@@ -27,21 +27,24 @@ You can now generate text using an instruction prompt:
 
 ```ts
 const { text } = await generateText(model, {
-  system: "You are a celebrated poet.",
-  instruction: "Write a short story about a robot.",
+  system: "You are a celebrated poet.", // optional
+  instruction: "Write a short story about:",
+  input: "a robot learning to love", // optional
 });
 ```
 
 ### Prompt Mappings
 
-The following built-in mappings are available for instruction prompts:
+The following prompt mappings are available for instruction prompts:
 
-- [InstructionToTextPromptMapping](/api/modules#instructiontotextpromptmapping)
-  Use this mapping if the model expects a text prompt.
 - [InstructionToOpenAIChatPromptMapping](/api/modules#instructiontoopenaichatpromptmapping)
-  Use this mapping for [OpenAI chat models](/api/classes/OpenAIChatModel).
+  for [OpenAI chat models](/api/classes/OpenAIChatModel).
 - [InstructionToLlama2PromptMapping](/api/modules#instructiontollama2promptmapping)
-  Use this mapping for Llama 2 models that expect a [special prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
+  for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
+- [InstructionToAlpacaPromptMapping](/api/modules#instructiontoopenaichatpromptmapping)
+  for models that use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release).
+- [InstructionToTextPromptMapping](/api/modules#instructiontotextpromptmapping)
+  for other models that expect a generic text prompt.
 
 ## Chat Prompts
 
@@ -77,14 +80,14 @@ const { textStream } = await streamText(model, [
 
 ### Prompt Mappings
 
-The following built-in mappings are available for chat prompts:
+The following prompt mappings are available for chat prompts:
 
-- [ChatToTextPromptMapping](/api/modules#chattotextpromptmapping)
-  Use this mapping if the model expects a text prompt.
 - [ChatToOpenAIChatPromptMapping](/api/modules#chattoopenaichatpromptmapping)
-  Use this mapping for [OpenAI chat models](/api/classes/OpenAIChatModel).
+  for [OpenAI chat models](/api/classes/OpenAIChatModel).
 - [ChatToLlama2PromptMapping](/api/modules#chattollama2promptmapping)
-  Use this mapping for Llama 2 models that expect a [special prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
+  for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
+- [ChatToTextPromptMapping](/api/modules#chattotextpromptmapping)
+  for other models that expect a generic text prompt.
 
 ## Custom Prompts
 

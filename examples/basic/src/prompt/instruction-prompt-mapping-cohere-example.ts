@@ -15,7 +15,8 @@ dotenv.config();
     }).mapPrompt(InstructionToTextPromptMapping()),
     {
       system: "You are a celebrated poet.",
-      instruction: "Write a short story about a robot learning to love.",
+      instruction: "Write a short story about:",
+      input: "a robot learning to love",
     }
   );
 
