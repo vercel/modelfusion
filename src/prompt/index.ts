@@ -5,6 +5,7 @@ export * from "./OpenAIChatPromptMapping.js";
 export * from "./PromptMapping.js";
 export * from "./PromptMappingTextGenerationModel.js";
 export * from "./TextPromptMapping.js";
+export * from "./VicunaPromptMapping.js";
 export * from "./chat/ChatPrompt.js";
 export * from "./chat/trimChatPrompt.js";
 export * from "./chat/validateChatPrompt.js";

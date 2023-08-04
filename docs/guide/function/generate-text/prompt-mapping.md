@@ -41,7 +41,7 @@ The following prompt mappings are available for instruction prompts:
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
 - [InstructionToLlama2PromptMapping](/api/modules#instructiontollama2promptmapping)
   for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
-- [InstructionToAlpacaPromptMapping](/api/modules#instructiontoopenaichatpromptmapping)
+- [InstructionToAlpacaPromptMapping](/api/modules#instructiontoalpacapromptmapping)
   for models that use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release).
 - [InstructionToTextPromptMapping](/api/modules#instructiontotextpromptmapping)
   for other models that expect a generic text prompt.
@@ -86,6 +86,8 @@ The following prompt mappings are available for chat prompts:
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
 - [ChatToLlama2PromptMapping](/api/modules#chattollama2promptmapping)
   for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
+- [ChatToVicunaPromptMapping](/api/modules#chattovicunapromptmapping)
+  for models that use the Vicuna prompt format.
 - [ChatToTextPromptMapping](/api/modules#chattotextpromptmapping)
   for other models that expect a generic text prompt.
 
