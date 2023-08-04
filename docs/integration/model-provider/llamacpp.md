@@ -92,9 +92,8 @@ You can set the context window size on the model by passing it as a parameter to
 import { LlamaCppTextGenerationModel } from "modelfusion";
 
 const model = new LlamaCppTextGenerationModel({
-  // Assuming the default Llama2 7B model is loaded, the context window size is 4096 tokens.
-  // See https://www.philschmid.de/llama-2
-  // Change value to match the context window size of the model you are using.
+  // Assuming Llama2 7B model context window size of 4096 tokens.
+  // Change to the context window size of the model you are using:
   contextWindowSize: 4096,
 });
 ```
