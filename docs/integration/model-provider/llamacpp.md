@@ -24,6 +24,8 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 
 [LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
 
+Consider [mapping the prompt to the prompt format](#prompt-mappings) that your model was trained on.
+
 ```ts
 import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
 
@@ -36,6 +38,8 @@ const { text } = await generateText(
 ### Stream Text
 
 [LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
+
+Consider [mapping the prompt to the prompt format](#prompt-mappings) that your model was trained on.
 
 ```ts
 import { LlamaCppTextGenerationModel, streamText } from "modelfusion";
@@ -107,9 +111,9 @@ The prompt format that the model expected is usually described on the model card
 
 ### Llama 2 prompt format
 
-Llama 2 uses a prompt format like this (see "[How to prompt Llama 2 chat](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat)"):
+Llama 2 uses a special prompt format (see "[How to prompt Llama 2 chat](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat)"):
 
-#### single instruction prompt format
+#### Instruction prompt format
 
 ```
 <s>[INST] <<SYS>>
@@ -124,8 +128,7 @@ You can use the [InstructionToLlama2PromptMapping](/api/modules#instructiontolla
 ```ts
 const { textStream } = await streamText(
   new LlamaCppTextGenerationModel({
-    contextWindowSize: 4096, // Llama 2 context window size
-    nPredict: 512,
+    // ...
   }).mapPrompt(InstructionToLlama2PromptMapping()),
   {
     system: "You are a celebrated poet.",
@@ -134,7 +137,7 @@ const { textStream } = await streamText(
 );
 ```
 
-#### chat prompt format
+#### Chat prompt format
 
 ```
 <s>[INST] <<SYS>>
@@ -149,11 +152,87 @@ You can use the [ChatToLlama2PromptMapping](/api/modules#chattollama2promptmappi
 ```ts
 const { textStream } = await streamText(
   new LlamaCppTextGenerationModel({
-    contextWindowSize: 4096, // Llama 2 context window size
-    nPredict: 512,
+    // ...
   }).mapPrompt(ChatToLlama2PromptMapping()),
   [
     { system: "You are a celebrated poet." },
+    { user: "Write a short story about a robot learning to love." },
+    { ai: "Once upon a time, there was a robot who learned to love." },
+    { user: "That's a great start!" },
+  ]
+);
+```
+
+### Alpaca prompt format
+
+Alpaca and several other models use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release):
+
+#### instruction prompt format
+
+With input:
+
+```
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+
+### Instruction:
+{instruction}
+
+### Input:
+{input}
+
+### Response:
+```
+
+Without input:
+
+```
+Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+{instruction}
+
+### Response:
+```
+
+You can use the [InstructionToAlpacaPromptMapping](/api/modules#instructiontoalpacapromptmapping) to create instruction prompts.
+
+> ℹ️ Setting the system property overrides the Alpaca system prompt and can impact the model responses.
+
+```ts
+const { textStream } = await streamText(
+  new LlamaCppTextGenerationModel({
+    // ...
+  }).mapPrompt(InstructionToAlpacaPromptMapping()),
+  {
+    instruction: "You are a celebrated poet. Write a short story about:",
+    input: "a robot learning to love.",
+  }
+);
+```
+
+### Vicuna prompt format
+
+Vicuna and several other models use the Vicuna prompt format:
+
+#### Chat prompt format
+
+```
+A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
+
+USER: {prompt}
+ASSISTANT:
+```
+
+You can use the [ChatToVicunaPromptMapping](/api/modules#chattovicunapromptmapping) to create chat prompts.
+
+> ℹ️ Setting the system property overrides the Vicuna system prompt and can impact the model responses.
+
+```ts
+const { textStream } = await streamText(
+  new LlamaCppTextGenerationModel({
+    // ...
+  }).mapPrompt(ChatToVicunaPromptMapping()),
+  [
     { user: "Write a short story about a robot learning to love." },
     { ai: "Once upon a time, there was a robot who learned to love." },
     { user: "That's a great start!" },
