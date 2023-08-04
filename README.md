@@ -377,6 +377,18 @@ const { chunks } = await retrieveTextChunks(
 - [Memory](https://modelfusion.dev/integration/vector-index/memory)
 - [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
 
+### Prompt Mappings
+
+Use higher level prompts that are mapped into model specific prompts.
+
+| Model        | Instruction Prompt | Chat Prompt |
+| ------------ | ------------------ | ----------- |
+| OpenAI       | ✅                 | ✅          |
+| Llama 2      | ✅                 | ✅          |
+| Alpaca       | ✅                 | ❌          |
+| Vicuna       | ❌                 | ✅          |
+| Generic Text | ✅                 | ✅          |
+
 ## Documentation
 
 - [Guide](https://modelfusion.dev/guide)
