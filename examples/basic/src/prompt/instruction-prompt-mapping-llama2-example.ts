@@ -5,6 +5,7 @@ import {
 } from "modelfusion";
 
 (async () => {
+  // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML with llama.cpp
   const { textStream } = await streamText(
     new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size
