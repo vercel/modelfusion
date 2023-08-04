@@ -8,10 +8,21 @@ export const InstructionToTextPromptMapping: () => PromptMapping<
   string
 > = () => ({
   stopTokens: [],
-  map: (instruction) =>
-    instruction.system != null
-      ? `${instruction.system}\n\n${instruction.instruction}`
-      : instruction.instruction,
+  map: (instruction) => {
+    let text = "";
+
+    if (instruction.system != null) {
+      text += `${instruction.system}\n\n`;
+    }
+
+    text += instruction.instruction;
+
+    if (instruction.input != null) {
+      text += `\n\n${instruction.input}`;
+    }
+
+    return text;
+  },
 });
 
 /**

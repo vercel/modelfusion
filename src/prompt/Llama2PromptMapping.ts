@@ -26,7 +26,9 @@ export const InstructionToLlama2PromptMapping: () => PromptMapping<
       instruction.system != null
         ? ` ${BEGIN_SYSTEM}${instruction.system}${END_SYSTEM}`
         : ""
-    } ${instruction.instruction} ${END_INSTRUCTION}\n`,
+    } ${instruction.instruction}${
+      instruction.input != null ? `\n\n${instruction.input}` : ""
+    } ${END_INSTRUCTION}\n`,
 });
 
 export const ChatToLlama2PromptMapping: () => PromptMapping<

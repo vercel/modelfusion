@@ -23,6 +23,13 @@ export const InstructionToOpenAIChatPromptMapping: () => PromptMapping<
       content: instruction.instruction,
     });
 
+    if (instruction.input != null) {
+      messages.push({
+        role: "user",
+        content: instruction.input,
+      });
+    }
+
     return messages;
   },
   stopTokens: [],
