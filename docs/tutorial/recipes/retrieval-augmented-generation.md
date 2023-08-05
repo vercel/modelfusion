@@ -14,9 +14,9 @@ Retrieval augmented generation consists of two steps:
 1. Retrieving relevant information
 2. Generating a response using a prompt that contains the retrieved information
 
-### Basic question-answering
+### Example
 
-[Example](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/recipes/retrieval-augmented-generation-basic.ts)
+[Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/recipes/retrieval-augmented-generation-basic.ts)
 
 #### Retrieve related information from a vector index:
 
