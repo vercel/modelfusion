@@ -35,6 +35,19 @@ export const failedCohereCallResponseHandler: ResponseHandler<
   ApiCallError
 > = async ({ response, url, requestBodyValues }) => {
   const responseBody = await response.text();
+
+  // For some errors, the body of Cohere responses is empty:
+  if (responseBody.trim() === "") {
+    return new CohereError({
+      url,
+      requestBodyValues,
+      statusCode: response.status,
+      data: {
+        message: response.statusText,
+      },
+    });
+  }
+
   const parsedError = cohereErrorDataSchema.parse(
     SecureJSON.parse(responseBody)
   );
