@@ -377,6 +377,10 @@ const { chunks } = await retrieveTextChunks(
 - [Memory](https://modelfusion.dev/integration/vector-index/memory)
 - [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
 
+### Observability
+
+- [Helicone](https://modelfusion.dev/integration/observability/helicone)
+
 ### Prompt Formats
 
 Use higher level prompts that are mapped into model specific prompt formats.
