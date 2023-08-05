@@ -94,6 +94,8 @@ export interface OpenAITextGenerationModelSettings
   extends TextGenerationModelSettings {
   model: OpenAITextGenerationModelType;
 
+  headers?: Record<string, string>;
+
   baseUrl?: string;
   apiKey?: string;
 
@@ -310,6 +312,7 @@ const openAITextGenerationResponseSchema = z.object({
  */
 async function callOpenAITextGenerationAPI<RESPONSE>({
   baseUrl = "https://api.openai.com/v1",
+  headers,
   abortSignal,
   responseFormat,
   apiKey,
@@ -329,6 +332,7 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
   user,
 }: {
   baseUrl?: string;
+  headers?: Record<string, string>;
   abortSignal?: AbortSignal;
   responseFormat: OpenAITextResponseFormatType<RESPONSE>;
   apiKey: string;
@@ -350,6 +354,7 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
   return postJsonToApi({
     url: `${baseUrl}/completions`,
     headers: {
+      ...headers,
       Authorization: `Bearer ${apiKey}`,
     },
     body: {
