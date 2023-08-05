@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0 - 2023-08-05
+
+### Added
+
+- Helicone observability integration.
+
 ## v0.2.0 - 2023-08-04
 
 ### Added
