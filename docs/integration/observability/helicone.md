@@ -14,7 +14,7 @@ You can explore the recorded calls on their platform.
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/observability/helicone/)
 
-ModelFusion supports Helicone for [OpenAI models](/integration/model-provider/openai) in the proxy integration setup.
+ModelFusion supports Helicone for [OpenAI text and chat models](/integration/model-provider/openai) in the proxy integration setup.
 You can change the `baseUrl` of the OpenAI model and pass in the Helicone API key to enable Helicone.
 
 ### Example: OpenAI Chat
