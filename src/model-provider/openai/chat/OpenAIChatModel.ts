@@ -388,7 +388,9 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
 }): Promise<RESPONSE> {
   return postJsonToApi({
     url: `${baseUrl}/chat/completions`,
-    apiKey,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       stream: responseFormat.stream,
       model,

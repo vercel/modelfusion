@@ -226,7 +226,9 @@ async function callOpenAITextEmbeddingAPI({
 }): Promise<OpenAITextEmbeddingResponse> {
   return postJsonToApi({
     url: `${baseUrl}/embeddings`,
-    apiKey,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       model,
       input,

@@ -203,7 +203,9 @@ async function callOpenAIImageGenerationAPI<RESPONSE>({
 }): Promise<RESPONSE> {
   return postJsonToApi({
     url: `${baseUrl}/images/generations`,
-    apiKey,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       prompt,
       n,

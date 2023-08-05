@@ -241,7 +241,9 @@ async function callHuggingFaceTextGenerationAPI({
 }): Promise<HuggingFaceTextGenerationResponse> {
   return postJsonToApi({
     url: `${baseUrl}/${model}`,
-    apiKey,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       inputs,
       top_k: topK,

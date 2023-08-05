@@ -349,7 +349,9 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
 }): Promise<RESPONSE> {
   return postJsonToApi({
     url: `${baseUrl}/completions`,
-    apiKey,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       stream: responseFormat.stream,
       model,

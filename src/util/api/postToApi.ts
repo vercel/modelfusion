@@ -32,14 +32,14 @@ export const createTextResponseHandler =
 
 export const postJsonToApi = async <T>({
   url,
-  apiKey,
+  headers,
   body,
   failedResponseHandler,
   successfulResponseHandler,
   abortSignal,
 }: {
   url: string;
-  apiKey?: string;
+  headers?: Record<string, string>;
   body: unknown;
   failedResponseHandler: ResponseHandler<ApiCallError>;
   successfulResponseHandler: ResponseHandler<T>;
@@ -47,8 +47,10 @@ export const postJsonToApi = async <T>({
 }) =>
   postToApi({
     url,
-    apiKey,
-    contentType: "application/json",
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
     body: {
       content: JSON.stringify(body),
       values: body,
@@ -60,16 +62,14 @@ export const postJsonToApi = async <T>({
 
 export const postToApi = async <T>({
   url,
-  apiKey,
-  contentType,
+  headers = {},
   body,
   successfulResponseHandler,
   failedResponseHandler,
   abortSignal,
 }: {
   url: string;
-  apiKey?: string;
-  contentType: string | null; // set to null when using FormData (to have correct boundary)
+  headers?: Record<string, string>;
   body: {
     content: string | FormData;
     values: unknown;
@@ -79,16 +79,6 @@ export const postToApi = async <T>({
   abortSignal?: AbortSignal;
 }) => {
   try {
-    const headers: Record<string, string> = {};
-
-    if (apiKey !== undefined) {
-      headers["Authorization"] = `Bearer ${apiKey}`;
-    }
-
-    if (contentType !== null) {
-      headers["Content-Type"] = contentType;
-    }
-
     const response = await fetch(url, {
       method: "POST",
       headers,

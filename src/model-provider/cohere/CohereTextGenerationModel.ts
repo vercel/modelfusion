@@ -308,7 +308,9 @@ async function callCohereTextGenerationAPI<RESPONSE>({
 }): Promise<RESPONSE> {
   return postJsonToApi({
     url: `${baseUrl}/generate`,
-    apiKey,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       stream: responseFormat.stream,
       model,

@@ -225,7 +225,9 @@ async function callCohereEmbeddingAPI({
 }): Promise<CohereTextEmbeddingResponse> {
   return postJsonToApi({
     url: `${baseUrl}/embed`,
-    apiKey,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       model,
       texts,
