@@ -12,7 +12,7 @@ Depending on the context, it can be important to provide an escape hatch when th
 
 ### Example
 
-[Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorials/information-extraction-openai-chat-functions.ts)
+[Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/recipes/information-extraction-openai-chat-functions.ts)
 
 ```ts
 const extractNameAndPopulation = async (text: string) =>
@@ -66,7 +66,7 @@ This approach generates a text output and the input needs to fit into the chat p
 
 ### Example
 
-[Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorials/information-extraction-openai-chat.ts)
+[Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/recipes/information-extraction-openai-chat.ts)
 
 ```ts
 function extractText({ text, topic }: { text: string; topic: string }) {

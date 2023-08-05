@@ -16,7 +16,7 @@ Retrieval augmented generation consists of two steps:
 
 ### Basic question-answering
 
-[Example](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorials/retrieval-augmented-generation-basic.ts)
+[Example](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/recipes/retrieval-augmented-generation-basic.ts)
 
 #### Retrieve related information from a vector index:
 
