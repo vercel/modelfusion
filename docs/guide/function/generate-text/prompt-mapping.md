@@ -78,6 +78,32 @@ const { textStream } = await streamText(model, [
 ]);
 ```
 
+### Limiting the chat length
+
+After a while, including all messages from a chat in the prompt can become infeasible, because the context window size is limited.
+
+When you use chat prompts, you can limit the included messages with the [trimChatPrompt()](/api/modules#trimchatprompt) function.
+It keeps only the most recent messages in the prompt, while leaving enough space for the completion.
+
+It automatically uses the [context window size](/api/interfaces/TextGenerationModel#contextwindowsize), the [maximum number of completion tokens](/api/interfaces/TextGenerationModel#maxcompletiontokens) and the [tokenizer](/api/interfaces/TextGenerationModel#tokenizer) of the model to determine how many messages to keep. The system message is always included.
+
+#### Example
+
+```ts
+const systemPrompt = `You are a helpful, respectful and honest assistant.`;
+const messages: Array<{ user: string } | { ai: string }> = [
+  // ...
+];
+
+const { textStream } = await streamText(
+  model,
+  await trimChatPrompt({
+    prompt: [{ system: systemPrompt }, ...messages],
+    model,
+  })
+);
+```
+
 ### Prompt Mappings
 
 The following prompt mappings are available for chat prompts:

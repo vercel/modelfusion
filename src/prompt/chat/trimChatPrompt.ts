@@ -9,6 +9,8 @@ import { ChatPrompt } from "./ChatPrompt.js";
  *
  * When the minimal chat prompt (system message + last user message) is already too long, it will only
  * return this minimal chat prompt.
+ *
+ * @see https://modelfusion.dev/guide/function/generate-text/prompt-mapping#limiting-the-chat-length
  */
 export async function trimChatPrompt({
   prompt,
