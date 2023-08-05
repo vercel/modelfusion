@@ -34,7 +34,7 @@ async function _retryWithExponentialBackoff<OUTPUT>(
     const newErrors = [...errors, error];
     const tryNumber = newErrors.length;
 
-    if (tryNumber > maxTries) {
+    if (tryNumber >= maxTries) {
       throw new RetryError({
         message: `Failed after ${tryNumber} tries.`,
         reason: "maxTriesExceeded",
