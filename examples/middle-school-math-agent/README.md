@@ -1,4 +1,4 @@
-# Middle school math
+# Middle school math agent
 
 > _terminal app_, _agent_, _tools_, _GPT-4_
 

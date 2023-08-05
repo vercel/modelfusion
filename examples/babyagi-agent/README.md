@@ -1,4 +1,4 @@
-# BabyAGI Classic
+# BabyAGI Agent
 
 > _terminal app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
 

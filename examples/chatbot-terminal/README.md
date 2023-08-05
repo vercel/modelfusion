@@ -1,4 +1,4 @@
-# Terminal Chat (llama.cpp)
+# Chatbot (Terminal)
 
 > _Terminal app_, _chat_, _llama.cpp_
 
