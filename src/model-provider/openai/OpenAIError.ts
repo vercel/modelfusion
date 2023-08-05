@@ -15,20 +15,20 @@ export const openAIErrorDataSchema = z.object({
 export type OpenAIErrorData = z.infer<typeof openAIErrorDataSchema>;
 
 export class OpenAIError extends ApiCallError {
-  public readonly data: OpenAIErrorData;
+  public readonly data?: OpenAIErrorData;
 
   constructor({
     data,
     statusCode,
     url,
     requestBodyValues,
-    message = data.error.message,
+    message,
   }: {
-    message?: string;
+    message: string;
     statusCode: number;
     url: string;
     requestBodyValues: unknown;
-    data: OpenAIErrorData;
+    data?: OpenAIErrorData;
   }) {
     super({
       message,
@@ -38,7 +38,7 @@ export class OpenAIError extends ApiCallError {
       isRetryable:
         (statusCode === 429 &&
           // insufficient_quota is also reported as a 429, but it's not retryable:
-          data.error.type !== "insufficient_quota") ||
+          data?.error.type !== "insufficient_quota") ||
         statusCode >= 500,
     });
 
@@ -50,14 +50,26 @@ export const failedOpenAICallResponseHandler: ResponseHandler<
   ApiCallError
 > = async ({ response, url, requestBodyValues }) => {
   const responseBody = await response.text();
-  const parsedError = openAIErrorDataSchema.parse(
-    SecureJSON.parse(responseBody)
-  );
 
-  return new OpenAIError({
-    url,
-    requestBodyValues,
-    statusCode: response.status,
-    data: parsedError,
-  });
+  // resilient parsing in case the response is not JSON or does not match the schema:
+  try {
+    const parsedError = openAIErrorDataSchema.parse(
+      SecureJSON.parse(responseBody)
+    );
+
+    return new OpenAIError({
+      url,
+      requestBodyValues,
+      statusCode: response.status,
+      message: parsedError.error.message,
+      data: parsedError,
+    });
+  } catch (parseError) {
+    return new OpenAIError({
+      url,
+      requestBodyValues,
+      statusCode: response.status,
+      message: responseBody.trim() !== "" ? responseBody : response.statusText,
+    });
+  }
 };

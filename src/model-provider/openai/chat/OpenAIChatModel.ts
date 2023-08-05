@@ -114,6 +114,9 @@ export const calculateOpenAIChatCostInMillicents = ({
 
 export interface OpenAIChatCallSettings {
   model: OpenAIChatModelType;
+
+  headers?: Record<string, string>;
+
   functions?: Array<{
     name: string;
     description?: string;
@@ -363,6 +366,7 @@ export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
 
 async function callOpenAIChatCompletionAPI<RESPONSE>({
   baseUrl = "https://api.openai.com/v1",
+  headers,
   abortSignal,
   responseFormat,
   apiKey,
@@ -380,6 +384,7 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
   user,
 }: OpenAIChatCallSettings & {
   baseUrl?: string;
+  headers?: Record<string, string>;
   abortSignal?: AbortSignal;
   responseFormat: OpenAIChatResponseFormatType<RESPONSE>;
   apiKey: string;
@@ -388,7 +393,10 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
 }): Promise<RESPONSE> {
   return postJsonToApi({
     url: `${baseUrl}/chat/completions`,
-    apiKey,
+    headers: {
+      ...headers,
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       stream: responseFormat.stream,
       model,

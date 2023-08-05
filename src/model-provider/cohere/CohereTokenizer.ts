@@ -148,7 +148,9 @@ async function callCohereDetokenizeAPI({
 }): Promise<CohereDetokenizationResponse> {
   return postJsonToApi({
     url: `${baseUrl}/detokenize`,
-    apiKey,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       model,
       tokens,
@@ -195,7 +197,9 @@ async function callCohereTokenizeAPI({
 }): Promise<CohereTokenizationResponse> {
   return postJsonToApi({
     url: `${baseUrl}/tokenize`,
-    apiKey,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       model,
       text,

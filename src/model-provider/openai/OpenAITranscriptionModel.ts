@@ -234,8 +234,9 @@ async function callOpenAITranscriptionAPI<RESPONSE>({
 
   return postToApi({
     url: `${baseUrl}/audio/transcriptions`,
-    apiKey,
-    contentType: null,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       content: formData,
       values: {

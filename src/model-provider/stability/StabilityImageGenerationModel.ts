@@ -244,7 +244,9 @@ async function callStabilityImageGenerationAPI({
 }): Promise<StabilityImageGenerationResponse> {
   return postJsonToApi({
     url: `${baseUrl}/generation/${engineId}/text-to-image`,
-    apiKey,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: {
       height,
       width,
