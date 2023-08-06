@@ -30,7 +30,7 @@ export async function upsertTextChunks<
   // many embedding models support bulk embedding, so we first embed all texts:
   const { embeddings } = await embedTexts(
     embeddingModel,
-    chunks.map((chunk) => chunk.content),
+    chunks.map((chunk) => chunk.text),
     options
   );
 

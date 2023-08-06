@@ -82,7 +82,7 @@ export async function createTweetFromPdf({
     new VectorIndexSimilarTextChunkRetriever({
       vectorIndex: await MemoryVectorIndex.deserialize({
         serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
-        schema: z.object({ content: z.string() }),
+        schema: z.object({ text: z.string() }),
       }),
       embeddingModel: new OpenAITextEmbeddingModel({
         model: "text-embedding-ada-002",
@@ -106,7 +106,7 @@ export async function createTweetFromPdf({
         `## TASK\nRewrite the draft tweet on ${topic} using the style from the example tweet.`
       ),
       OpenAIChatMessage.user(`## DRAFT TWEET\n${draftTweet}`),
-      OpenAIChatMessage.user(`## STYLE EXAMPLE\n${similarTweets[0].content}`),
+      OpenAIChatMessage.user(`## STYLE EXAMPLE\n${similarTweets[0].text}`),
     ],
     {
       functionId: "rewrite-tweet",

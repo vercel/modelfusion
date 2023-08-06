@@ -34,6 +34,6 @@ Deserialization can optionally take a Zod schema for type validation:
 ```ts
 const deserializedIndex = await MemoryVectorIndex.deserialize({
   serializedData,
-  schema: z.object({ content: z.string() }),
+  schema: z.object({ text: z.string() }),
 });
 ```

@@ -59,7 +59,7 @@ const embeddingModel = new OpenAITextEmbeddingModel({
     vectorIndex,
     embeddingModel,
     // TODO ideally the chunks are already TextChunks
-    chunks: chunks.map((chunk) => ({ content: chunk })),
+    chunks: chunks.map((text) => ({ text })),
   });
 
   console.log();

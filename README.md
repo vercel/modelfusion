@@ -317,7 +317,7 @@ const embeddingModel = new OpenAITextEmbeddingModel({
 await upsertTextChunks({
   vectorIndex,
   embeddingModel,
-  chunks: texts.map((text) => ({ content: text })),
+  chunks: texts.map((text) => ({ text })),
 });
 
 // retrieve text chunks from the vector index - usually done at query time:

@@ -32,7 +32,7 @@ dotenv.config();
   await upsertTextChunks({
     vectorIndex,
     embeddingModel,
-    chunks: texts.map((text) => ({ content: text })),
+    chunks: texts.map((text) => ({ text })),
   });
 
   const { chunks } = await retrieveTextChunks(

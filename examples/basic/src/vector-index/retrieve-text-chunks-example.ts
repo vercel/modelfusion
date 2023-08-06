@@ -31,7 +31,7 @@ dotenv.config();
     embeddingModel: new OpenAITextEmbeddingModel({
       model: "text-embedding-ada-002",
     }),
-    chunks: texts.map((text) => ({ content: text })),
+    chunks: texts.map((text) => ({ text })),
   });
 
   const { chunks } = await retrieveTextChunks(

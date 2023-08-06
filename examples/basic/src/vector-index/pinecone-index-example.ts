@@ -44,7 +44,7 @@ if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
 
   const vectorIndex = new PineconeVectorIndex({
     index,
-    schema: z.object({ content: z.string() }),
+    schema: z.object({ text: z.string() }),
   });
   const embeddingModel = new CohereTextEmbeddingModel({
     model: "embed-english-light-v2.0",
@@ -55,7 +55,7 @@ if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
   await upsertTextChunks({
     vectorIndex,
     embeddingModel,
-    chunks: texts.map((text) => ({ content: text })),
+    chunks: texts.map((text) => ({ text })),
   });
 
   const { chunks } = await retrieveTextChunks(

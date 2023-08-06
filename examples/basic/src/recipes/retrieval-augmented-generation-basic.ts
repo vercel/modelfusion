@@ -85,7 +85,7 @@ async function ingestInformation() {
   await upsertTextChunks({
     vectorIndex,
     embeddingModel,
-    chunks: texts.map((text) => ({ content: text })),
+    chunks: texts.map((text) => ({ text })),
   });
 
   return vectorIndex;

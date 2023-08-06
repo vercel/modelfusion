@@ -78,7 +78,7 @@ export class VectorIndexTextChunkStore<
   ) {
     const { embeddings } = await embedTexts(
       this.embeddingModel,
-      chunks.map((chunk) => chunk.content),
+      chunks.map((chunk) => chunk.text),
       {
         functionId: this.upsertFunctionId,
         run: options?.run,

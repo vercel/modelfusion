@@ -35,7 +35,7 @@ await upsertTextChunks({
   embeddingModel: new OpenAITextEmbeddingModel({
     model: "text-embedding-ada-002",
   }),
-  chunks: texts.map((text) => ({ content: text })),
+  chunks: texts.map((text) => ({ text })),
   ids: ... // array optional ids for updating chunks (vs. inserting)
 });
 ```
