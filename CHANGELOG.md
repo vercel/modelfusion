@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.1 - 2023-08-06
+
+### Fixed
+
+- Type inference bug in `trimChatPrompt`.
+
 ## v0.4.0 - 2023-08-06
 
 ### Added
