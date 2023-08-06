@@ -7,6 +7,7 @@ import {
   OpenAITextEmbeddingModel,
   TextChunk,
   VectorIndexSimilarTextChunkRetriever,
+  generateText,
   retrieveTextChunks,
   splitRecursivelyAtCharacter,
   streamText,
@@ -39,7 +40,7 @@ const { file }: { file: string } = program.opts();
 
   // TODO would be nice to have richer chunks
   const chunks = await splitRecursivelyAtCharacter({
-    maxChunkSize: 128 * 4,
+    maxChunkSize: 256 * 4,
     text,
   });
 
@@ -66,19 +67,27 @@ const { file }: { file: string } = program.opts();
   while (true) {
     const question = await chat.question("You: ");
 
-    // TODO use hypothetical document embeddings
+    // hypothetical document embeddings:
+    const { text: hypotheticalAnswer } = await generateText(
+      new OpenAIChatModel({ model: "gpt-3.5-turbo", temperature: 0 }),
+      [
+        OpenAIChatMessage.system(`Answer the user's question.`),
+        OpenAIChatMessage.user(question),
+      ]
+    );
 
-    // search for similar text chunks:
-    const { chunks } = await retrieveTextChunks(
+    // search for text chunks that are similar to the hypothetical answer:
+    const { chunks: information } = await retrieveTextChunks(
       new VectorIndexSimilarTextChunkRetriever({
         vectorIndex,
         embeddingModel,
-        maxResults: 1,
-        similarityThreshold: 0.5,
+        maxResults: 5,
+        similarityThreshold: 0.75,
       }),
-      question
+      hypotheticalAnswer
     );
 
+    // answer the user's question using the information:
     const { textStream } = await streamText(
       new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
       [
@@ -93,7 +102,9 @@ const { file }: { file: string } = program.opts();
           ].join("\n")
         ),
         OpenAIChatMessage.user(`## QUESTION\n${question}`),
-        OpenAIChatMessage.user(`## INFORMATION\n${JSON.stringify(chunks)}`),
+        OpenAIChatMessage.user(
+          `## INFORMATION\n${JSON.stringify(information)}`
+        ),
       ]
     );
 
