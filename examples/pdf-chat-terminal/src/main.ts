@@ -8,7 +8,7 @@ import {
   SimilarTextChunksFromVectorIndexRetriever,
   generateText,
   retrieveTextChunks,
-  splitRecursivelyAtCharacter,
+  splitRecursivelyAtToken,
   splitTextChunks,
   streamText,
   throttleMaxConcurrency,
@@ -48,7 +48,10 @@ const vectorIndex = new MemoryVectorIndex<{
 
   const pages = await loadPdfPages(file);
   const chunks = await splitTextChunks(
-    splitRecursivelyAtCharacter({ maxChunkSize: 256 * 4 }),
+    splitRecursivelyAtToken({
+      maxChunkSize: 256,
+      tokenizer: embeddingModel.tokenizer,
+    }),
     pages
   );
   await upsertTextChunks({ vectorIndex, embeddingModel, chunks });
