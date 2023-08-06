@@ -37,7 +37,7 @@ const { text } = await generateText(
 
 ### Embed Text
 
-[HuggingFaceEmbeddingModel API](/api/classes/HuggingFaceEmbeddingModel)
+[HuggingFaceTextEmbeddingModel API](/api/classes/HuggingFaceTextEmbeddingModel)
 
 Text embeddings are using the HuggingFace feature extract pipeline.
 
