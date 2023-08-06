@@ -34,9 +34,7 @@ const { file }: { file: string } = program.opts();
 
 const embeddingModel = new OpenAITextEmbeddingModel({
   model: "text-embedding-ada-002",
-  throttle: throttleMaxConcurrency({
-    maxConcurrentCalls: 5,
-  }),
+  throttle: throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
 });
 
 const vectorIndex = new MemoryVectorIndex<{
@@ -95,7 +93,7 @@ const vectorIndex = new MemoryVectorIndex<{
       hypotheticalAnswer
     );
 
-    // answer the user's question using the information:
+    // answer the user's question using the retrieved information:
     const { textStream } = await streamText(
       // use stronger model to answer the question:
       new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
