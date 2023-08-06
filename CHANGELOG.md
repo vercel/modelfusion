@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.0 - 2023-08-06
+
+### Added
+
+- HuggingFace text embedding support.
+
 ## v0.3.0 - 2023-08-05
 
 ### Added
