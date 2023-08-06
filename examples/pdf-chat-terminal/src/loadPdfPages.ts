@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 
-export async function loadPdfAsText(path: string) {
+export async function loadPdfPages(path: string) {
   const rawBuffer = await fs.readFile(path);
 
   const data = rawBuffer.buffer.slice(

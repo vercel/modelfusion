@@ -15,7 +15,7 @@ import {
   upsertTextChunks,
 } from "modelfusion";
 import * as readline from "node:readline/promises";
-import { loadPdfAsText } from "./loadPdfAsText";
+import { loadPdfPages } from "./loadPdfPages";
 
 dotenv.config();
 
@@ -42,7 +42,7 @@ const embeddingModel = new OpenAITextEmbeddingModel({
 
 (async () => {
   console.log("Loading PDF...");
-  const pages = await loadPdfAsText(file);
+  const pages = await loadPdfPages(file);
 
   // Split into chunks that include the page number:
   const chunks = (
