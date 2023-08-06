@@ -64,7 +64,8 @@ export class HuggingFaceTextEmbeddingModel
   constructor(settings: HuggingFaceTextEmbeddingModelSettings) {
     super({ settings });
 
-    this.maxTextsPerCall = settings.maxTextsPerCall ?? 1;
+    // There is no limit documented in the HuggingFace API. Use 1024 as a reasonable default.
+    this.maxTextsPerCall = settings.maxTextsPerCall ?? 1024;
     this.embeddingDimensions = settings.embeddingDimensions;
   }
 
