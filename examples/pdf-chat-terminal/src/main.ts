@@ -9,6 +9,7 @@ import {
   generateText,
   retrieveTextChunks,
   splitRecursivelyAtCharacter,
+  splitTextChunks,
   streamText,
   throttleMaxConcurrency,
   upsertTextChunks,
@@ -25,12 +26,12 @@ program
   .requiredOption("-f, --file <value>", "Path to PDF file")
   .parse(process.argv);
 
+const { file }: { file: string } = program.opts();
+
 const chat = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-
-const { file }: { file: string } = program.opts();
 
 const embeddingModel = new OpenAITextEmbeddingModel({
   model: "text-embedding-ada-002",
@@ -44,25 +45,12 @@ const vectorIndex = new MemoryVectorIndex<{
 
 (async () => {
   console.log("Indexing PDF...");
+
   const pages = await loadPdfPages(file);
-
-  // Split into chunks that include the page number:
-  const chunks = (
-    await Promise.all(
-      pages.map(async (page) => {
-        const pageTexts = await splitRecursivelyAtCharacter({
-          maxChunkSize: 256 * 4,
-          text: page.text,
-        });
-
-        return pageTexts.map((text) => ({
-          text,
-          pageNumber: page.pageNumber,
-        }));
-      })
-    )
-  ).flat();
-
+  const chunks = await splitTextChunks(
+    splitRecursivelyAtCharacter({ maxChunkSize: 256 * 4 }),
+    pages
+  );
   await upsertTextChunks({ vectorIndex, embeddingModel, chunks });
 
   console.log("Ready.");

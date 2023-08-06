@@ -5,4 +5,5 @@ export * from "./retrieve-text-chunks/retrieveTextChunks.js";
 export * from "./split/SplitFunction.js";
 export * from "./split/splitOnSeparator.js";
 export * from "./split/splitRecursively.js";
+export * from "./split/splitTextChunks.js";
 export * from "./upsertTextChunks.js";
