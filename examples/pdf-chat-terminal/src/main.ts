@@ -41,26 +41,33 @@ const embeddingModel = new OpenAITextEmbeddingModel({
 });
 
 (async () => {
-  // TODO this omits the page numbers
   console.log("Loading PDF...");
-  const text = await loadPdfAsText(file);
+  const pages = await loadPdfAsText(file);
 
-  // TODO would be nice to have richer chunks
-  const chunks = await splitRecursivelyAtCharacter({
-    maxChunkSize: 256 * 4,
-    text,
-  });
+  // Split into chunks that include the page number:
+  const chunks = (
+    await Promise.all(
+      pages.map(async (page) => {
+        const pageTexts = await splitRecursivelyAtCharacter({
+          maxChunkSize: 256 * 4,
+          text: page.text,
+        });
 
-  const vectorIndex = new MemoryVectorIndex<TextChunk>();
+        return pageTexts.map((text) => ({
+          text,
+          pageNumber: page.pageNumber,
+        }));
+      })
+    )
+  ).flat();
 
-  // load chunks into vector index:
+  const vectorIndex = new MemoryVectorIndex<{
+    pageNumber: number;
+    text: string;
+  }>();
+
   console.log("Indexing content...");
-  await upsertTextChunks({
-    vectorIndex,
-    embeddingModel,
-    // TODO ideally the chunks are already TextChunks
-    chunks: chunks.map((text) => ({ text })),
-  });
+  await upsertTextChunks({ vectorIndex, embeddingModel, chunks });
 
   console.log();
 
@@ -97,6 +104,8 @@ const embeddingModel = new OpenAITextEmbeddingModel({
         OpenAIChatMessage.system(
           // Instruct the model on how to answer:
           `Answer the user's question using only the provided information.\n` +
+            // Provide some context:
+            `Include the page number of the information that you are using.\n` +
             // To reduce hallucination, it is important to give the model an answer
             // that it can use when the information is not sufficient:
             `If the user's question cannot be answered using the provided information, ` +
