@@ -14,6 +14,10 @@ title: Hugging Face
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/huggingface)
 
+If the model is not loaded on Hugging Face, ModelFusion will wait by default.
+This can take a minute and longer for the first call.
+You can override this behavior by setting `waitForModel` to `false` in the model settings.
+
 ### Generate Text
 
 [HuggingFaceTextGenerationModel API](/api/classes/HuggingFaceTextGenerationModel)
@@ -28,5 +32,26 @@ const { text } = await generateText(
     maxNewTokens: 500,
   }),
   "Write a short story about a robot learning to love:\n\n"
+);
+```
+
+### Embed Text
+
+[HuggingFaceEmbeddingModel API](/api/classes/HuggingFaceEmbeddingModel)
+
+Text embeddings are using the HuggingFace feature extract pipeline.
+
+```ts
+import { HuggingFaceTextEmbeddingModel, embedTexts } from "modelfusion";
+
+const { embeddings } = await embedTexts(
+  new HuggingFaceTextEmbeddingModel({
+    model: "intfloat/e5-base-v2",
+    embeddingDimensions: 768,
+  }),
+  [
+    "At first, Nox didn't know what to do with the pup.",
+    "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+  ]
 );
 ```
