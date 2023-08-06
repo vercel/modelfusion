@@ -15,9 +15,11 @@ import {
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
-export interface LlamaCppEmbeddingModelSettings
+export interface LlamaCppTextEmbeddingModelSettings
   extends TextEmbeddingModelSettings {
   baseUrl?: string;
+
+  embeddingDimensions?: number;
 
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
@@ -29,14 +31,14 @@ export interface LlamaCppEmbeddingModelSettings
 }
 
 export class LlamaCppTextEmbeddingModel
-  extends AbstractModel<LlamaCppEmbeddingModelSettings>
+  extends AbstractModel<LlamaCppTextEmbeddingModelSettings>
   implements
     TextEmbeddingModel<
       LlamaCppTextEmbeddingResponse,
-      LlamaCppEmbeddingModelSettings
+      LlamaCppTextEmbeddingModelSettings
     >
 {
-  constructor(settings: LlamaCppEmbeddingModelSettings = {}) {
+  constructor(settings: LlamaCppTextEmbeddingModelSettings = {}) {
     super({ settings });
 
     this.tokenizer = new LlamaCppTokenizer({
@@ -44,6 +46,8 @@ export class LlamaCppTextEmbeddingModel
       retry: this.settings.tokenizerSettings?.retry,
       throttle: this.settings.tokenizerSettings?.throttle,
     });
+
+    this.embeddingDimensions = this.settings.embeddingDimensions;
   }
 
   readonly provider = "llamacpp" as const;
@@ -54,7 +58,7 @@ export class LlamaCppTextEmbeddingModel
   readonly maxTextsPerCall = 1;
 
   readonly contextWindowSize = undefined;
-  readonly embeddingDimensions = undefined;
+  readonly embeddingDimensions;
 
   private readonly tokenizer: LlamaCppTokenizer;
 
@@ -64,7 +68,7 @@ export class LlamaCppTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: FunctionOptions<LlamaCppEmbeddingModelSettings>
+    options?: FunctionOptions<LlamaCppTextEmbeddingModelSettings>
   ): Promise<LlamaCppTextEmbeddingResponse> {
     if (texts.length > this.maxTextsPerCall) {
       throw new Error(
@@ -89,7 +93,7 @@ export class LlamaCppTextEmbeddingModel
 
   generateEmbeddingResponse(
     texts: string[],
-    options?: FunctionOptions<LlamaCppEmbeddingModelSettings>
+    options?: FunctionOptions<LlamaCppTextEmbeddingModelSettings>
   ) {
     return this.callAPI(texts, options);
   }
@@ -98,7 +102,9 @@ export class LlamaCppTextEmbeddingModel
     return [response.embedding];
   }
 
-  withSettings(additionalSettings: Partial<LlamaCppEmbeddingModelSettings>) {
+  withSettings(
+    additionalSettings: Partial<LlamaCppTextEmbeddingModelSettings>
+  ) {
     return new LlamaCppTextEmbeddingModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
