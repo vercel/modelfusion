@@ -33,7 +33,9 @@ export async function createTweetFromPdf({
     await summarizeRecursivelyWithTextGenerationAndTokenSplitting(
       {
         text: textFromPdf,
-        model: model.withSettings({ temperature: 0 }),
+        model: model
+          .withSettings({ temperature: 0 })
+          .withMaxCompletionTokens(1024),
         prompt: async ({ text }: { text: string }) => [
           OpenAIChatMessage.user(`## TOPIC\n${topic}`),
           OpenAIChatMessage.system(
@@ -46,7 +48,6 @@ export async function createTweetFromPdf({
           ),
           OpenAIChatMessage.user(`## TEXT\n${text}`),
         ],
-        reservedCompletionTokens: 1024,
       },
       {
         functionId: "extract-information",

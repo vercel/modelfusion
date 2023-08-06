@@ -1,6 +1,6 @@
-import { TextGenerationModel } from "model-function/generate-text/TextGenerationModel.js";
-import { validateChatPrompt } from "./validateChatPrompt.js";
+import { TextGenerationModel } from "../../model-function/generate-text/TextGenerationModel.js";
 import { ChatPrompt } from "./ChatPrompt.js";
+import { validateChatPrompt } from "./validateChatPrompt.js";
 
 /**
  * Keeps only the most recent messages in the prompt, while leaving enough space for the completion.
@@ -15,13 +15,13 @@ import { ChatPrompt } from "./ChatPrompt.js";
 export async function trimChatPrompt({
   prompt,
   model,
-  tokenLimit = model.contextWindowSize - model.maxCompletionTokens,
+  tokenLimit = model.contextWindowSize -
+    (model.maxCompletionTokens ?? model.contextWindowSize / 4),
 }: {
   prompt: ChatPrompt;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   model: TextGenerationModel<ChatPrompt, any, any, any> & {
     contextWindowSize: number;
-    maxCompletionTokens: number;
     countPromptTokens: (prompt: ChatPrompt) => PromiseLike<number>;
   };
   tokenLimit?: number;

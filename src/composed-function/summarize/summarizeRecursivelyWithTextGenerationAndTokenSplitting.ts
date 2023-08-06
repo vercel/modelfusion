@@ -20,7 +20,8 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     text,
     model,
     prompt,
-    reservedCompletionTokens,
+    tokenLimit = model.contextWindowSize -
+      (model.maxCompletionTokens ?? model.contextWindowSize / 4),
     join,
   }: {
     text: string;
@@ -37,7 +38,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
       countPromptTokens: (prompt: PROMPT) => PromiseLike<number>;
     };
     prompt: (input: { text: string }) => Promise<PROMPT>;
-    reservedCompletionTokens: number;
+    tokenLimit?: number;
     join?: (texts: Array<string>) => string;
   },
   options?: {
@@ -53,14 +54,11 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     {
       split: splitRecursivelyAtTokenAsSplitFunction({
         tokenizer: model.tokenizer,
-        maxChunkSize:
-          model.contextWindowSize -
-          reservedCompletionTokens -
-          emptyPromptTokens,
+        maxChunkSize: tokenLimit - emptyPromptTokens,
       }),
       summarize: async (input: { text: string }) => {
         const { text } = await generateText(
-          model.withMaxCompletionTokens(reservedCompletionTokens),
+          model,
           await prompt(input),
           options
         );

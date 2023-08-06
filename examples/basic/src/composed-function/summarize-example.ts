@@ -16,7 +16,6 @@ const summarize = ({ text }: { text: string }) =>
       OpenAIChatMessage.system("Summarize the following text:"),
       OpenAIChatMessage.user(text),
     ],
-    reservedCompletionTokens: 1000,
   });
 
 (async () => {

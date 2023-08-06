@@ -4,13 +4,13 @@ import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { ModelCallEventSource } from "../ModelCallEventSource.js";
+import { CallMetadata } from "../executeCall.js";
 import { DeltaEvent } from "./DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
 import { extractTextDeltas } from "./extractTextDeltas.js";
-import { CallMetadata } from "model-function/executeCall.js";
 
 export async function streamText<
   PROMPT,
