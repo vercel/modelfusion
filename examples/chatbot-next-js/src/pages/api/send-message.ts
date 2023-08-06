@@ -18,8 +18,6 @@ const messageSchame = z.object({
   content: z.string(),
 });
 
-type Message = z.infer<typeof messageSchame>;
-
 const requestSchema = z.array(messageSchame);
 
 const gpt35turboModel = new OpenAIChatModel({
