@@ -33,6 +33,13 @@ const chat = readline.createInterface({
 
 const { file }: { file: string } = program.opts();
 
+const embeddingModel = new OpenAITextEmbeddingModel({
+  model: "text-embedding-ada-002",
+  throttle: throttleMaxConcurrency({
+    maxConcurrentCalls: 5,
+  }),
+});
+
 (async () => {
   // TODO this omits the page numbers
   console.log("Loading PDF...");
@@ -45,12 +52,6 @@ const { file }: { file: string } = program.opts();
   });
 
   const vectorIndex = new MemoryVectorIndex<TextChunk>();
-  const embeddingModel = new OpenAITextEmbeddingModel({
-    model: "text-embedding-ada-002",
-    throttle: throttleMaxConcurrency({
-      maxConcurrentCalls: 5,
-    }),
-  });
 
   // load chunks into vector index:
   console.log("Indexing content...");
@@ -69,6 +70,7 @@ const { file }: { file: string } = program.opts();
 
     // hypothetical document embeddings:
     const { text: hypotheticalAnswer } = await generateText(
+      // use cheaper model to generate hypothetical answer:
       new OpenAIChatModel({ model: "gpt-3.5-turbo", temperature: 0 }),
       [
         OpenAIChatMessage.system(`Answer the user's question.`),
@@ -89,21 +91,21 @@ const { file }: { file: string } = program.opts();
 
     // answer the user's question using the information:
     const { textStream } = await streamText(
+      // use stronger model to answer the question:
       new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
       [
         OpenAIChatMessage.system(
-          [
-            // Instruct the model on how to answer:
-            `Answer the user's question using only the provided information.`,
+          // Instruct the model on how to answer:
+          `Answer the user's question using only the provided information.\n` +
             // To reduce hallucination, it is important to give the model an answer
             // that it can use when the information is not sufficient:
             `If the user's question cannot be answered using the provided information, ` +
-              `respond with "I don't know".`,
-          ].join("\n")
+            `respond with "I don't know".`
         ),
-        OpenAIChatMessage.user(`## QUESTION\n${question}`),
-        OpenAIChatMessage.user(
-          `## INFORMATION\n${JSON.stringify(information)}`
+        OpenAIChatMessage.user(question),
+        OpenAIChatMessage.functionResult(
+          "getInformation",
+          JSON.stringify(information)
         ),
       ]
     );
