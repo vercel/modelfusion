@@ -6,7 +6,7 @@ export interface TextChunkRetrieverSettings {}
 export interface TextChunkRetriever<
   CHUNK extends TextChunk,
   QUERY,
-  SETTINGS extends TextChunkRetrieverSettings
+  SETTINGS extends TextChunkRetrieverSettings,
 > {
   retrieveTextChunks(
     query: QUERY,

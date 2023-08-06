@@ -5,8 +5,8 @@ import {
   TextEmbeddingModelSettings,
 } from "../model-function/embed-text/TextEmbeddingModel.js";
 import { embedTexts } from "../model-function/embed-text/embedText.js";
-import { TextChunk } from "../text-chunk/TextChunk.js";
-import { VectorIndex } from "./VectorIndex.js";
+import { TextChunk } from "./TextChunk.js";
+import { VectorIndex } from "../vector-index/VectorIndex.js";
 
 export async function upsertTextChunks<
   CHUNK extends TextChunk,

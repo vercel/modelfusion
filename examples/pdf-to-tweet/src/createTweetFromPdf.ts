@@ -4,7 +4,7 @@ import {
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
   Run,
-  VectorIndexSimilarTextChunkRetriever,
+  SimilarTextChunksFromVectorIndexRetriever,
   generateText,
   retrieveTextChunks,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
@@ -79,7 +79,7 @@ export async function createTweetFromPdf({
 
   // search for similar tweets:
   const { chunks: similarTweets } = await retrieveTextChunks(
-    new VectorIndexSimilarTextChunkRetriever({
+    new SimilarTextChunksFromVectorIndexRetriever({
       vectorIndex: await MemoryVectorIndex.deserialize({
         serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
         schema: z.object({ text: z.string() }),

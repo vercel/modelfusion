@@ -1,12 +1,12 @@
 import { PineconeClient } from "@pinecone-database/pinecone";
+import dotenv from "dotenv";
 import {
   CohereTextEmbeddingModel,
   PineconeVectorIndex,
-  VectorIndexSimilarTextChunkRetriever,
+  SimilarTextChunksFromVectorIndexRetriever,
   retrieveTextChunks,
   upsertTextChunks,
 } from "modelfusion";
-import dotenv from "dotenv";
 import { z } from "zod";
 
 dotenv.config();
@@ -59,7 +59,7 @@ if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
   });
 
   const { chunks } = await retrieveTextChunks(
-    new VectorIndexSimilarTextChunkRetriever({
+    new SimilarTextChunksFromVectorIndexRetriever({
       vectorIndex,
       embeddingModel,
       maxResults: 3,

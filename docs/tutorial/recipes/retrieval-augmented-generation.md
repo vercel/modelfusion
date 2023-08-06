@@ -22,7 +22,7 @@ Retrieval augmented generation consists of two steps:
 
 ```ts
 const { chunks } = await retrieveTextChunks(
-  new VectorIndexSimilarTextChunkRetriever({
+  new SimilarTextChunksFromVectorIndexRetriever({
     // some vector index that contains the information:
     vectorIndex,
     // use the same embedding model that was used when adding information:

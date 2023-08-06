@@ -5,8 +5,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
-  TextChunk,
-  VectorIndexSimilarTextChunkRetriever,
+  SimilarTextChunksFromVectorIndexRetriever,
   generateText,
   retrieveTextChunks,
   splitRecursivelyAtCharacter,
@@ -40,8 +39,13 @@ const embeddingModel = new OpenAITextEmbeddingModel({
   }),
 });
 
+const vectorIndex = new MemoryVectorIndex<{
+  pageNumber: number;
+  text: string;
+}>();
+
 (async () => {
-  console.log("Loading PDF...");
+  console.log("Indexing PDF...");
   const pages = await loadPdfPages(file);
 
   // Split into chunks that include the page number:
@@ -61,14 +65,9 @@ const embeddingModel = new OpenAITextEmbeddingModel({
     )
   ).flat();
 
-  const vectorIndex = new MemoryVectorIndex<{
-    pageNumber: number;
-    text: string;
-  }>();
-
-  console.log("Indexing content...");
   await upsertTextChunks({ vectorIndex, embeddingModel, chunks });
 
+  console.log("Ready.");
   console.log();
 
   // chat loop:
@@ -87,7 +86,7 @@ const embeddingModel = new OpenAITextEmbeddingModel({
 
     // search for text chunks that are similar to the hypothetical answer:
     const { chunks: information } = await retrieveTextChunks(
-      new VectorIndexSimilarTextChunkRetriever({
+      new SimilarTextChunksFromVectorIndexRetriever({
         vectorIndex,
         embeddingModel,
         maxResults: 5,

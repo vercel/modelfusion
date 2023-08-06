@@ -322,7 +322,7 @@ await upsertTextChunks({
 
 // retrieve text chunks from the vector index - usually done at query time:
 const { chunks } = await retrieveTextChunks(
-  new VectorIndexSimilarTextChunkRetriever({
+  new SimilarTextChunksFromVectorIndexRetriever({
     vectorIndex,
     embeddingModel,
     maxResults: 3,
