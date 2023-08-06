@@ -116,6 +116,7 @@ const vectorIndex = new MemoryVectorIndex<{
       ]
     );
 
+    // stream the answer to the terminal:
     let fullResponse = "";
     process.stdout.write("\nAI : ");
     for await (const textFragment of textStream) {
