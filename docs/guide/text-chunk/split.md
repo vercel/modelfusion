@@ -19,19 +19,19 @@ The implementations provided by ModelFusion are factory functions that create a 
 
 ### splitOnSeparator
 
-Splits text on a separator string.
+Splits text on a separator string. The separator is omitted from the resulting chunks.
 
 ```ts
 const split = splitOnSeparator({ separator: "\n" });
 const result = await split({ text });
 ```
 
-### splitRecursivelyAtCharacter
+### splitAtCharacter
 
-Splits text recursively until the resulting chunks are smaller than the `maxChunkSize`. The text is recursively split in the middle, so that all chunks are roughtly the same size.
+Splits text recursively until the resulting chunks are smaller than the `maxCharactersPerChunk`. The text is recursively split in the middle, so that all chunks are roughtly the same size.
 
 ```ts
-const split = splitRecursivelyAtCharacter({ maxChunkSize: 1000 });
+const split = splitAtCharacter({ maxCharactersPerChunk: 1000 });
 const result = await split({ text });
 ```
 
@@ -51,7 +51,7 @@ This is helpful when you want to retain metadata, e.g. to identify the original 
 // chunks will be of type Array<{ text: string; source: string; }>
 const chunks = await splitTextChunk(
   // split function:
-  splitRecursivelyAtCharacter({ maxChunkSize: 1000 }),
+  splitAtCharacter({ maxCharactersPerChunk: 1000 }),
   {
     // text property (string) = input to split:
     text: sanFranciscoWikipediaText,
@@ -79,7 +79,7 @@ const inputChunks: Array<{
 
 // outputChunks will be of type Array<{ text: string; source: string; }>
 const outputChunks = await splitTextChunks(
-  splitRecursivelyAtCharacter({ maxChunkSize: 1000 }),
+  splitAtCharacter({ maxCharactersPerChunk: 1000 }),
   inputChunks
 );
 ```

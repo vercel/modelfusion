@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { splitRecursivelyAtCharacter, splitTextChunk } from "modelfusion";
+import { splitAtCharacter, splitTextChunk } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
@@ -10,7 +10,7 @@ dotenv.config();
   ).content as string;
 
   const chunks = await splitTextChunk(
-    splitRecursivelyAtCharacter({ maxChunkSize: 1000 }), // split function
+    splitAtCharacter({ maxCharactersPerChunk: 1000 }), // split function
     {
       text: sanFranciscoWikipediaText, // text property (string) = input to split
       source: "data/san-francisco-wikipedia.json", // other properties are replicated

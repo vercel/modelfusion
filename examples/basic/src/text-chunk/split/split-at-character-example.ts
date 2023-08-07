@@ -1,4 +1,4 @@
-import { splitRecursivelyAtCharacter } from "modelfusion";
+import { splitAtCharacter } from "modelfusion";
 import fs from "node:fs";
 
 (async () => {
@@ -6,7 +6,7 @@ import fs from "node:fs";
     fs.readFileSync("data/san-francisco-wikipedia.json", "utf8")
   ).content as string;
 
-  const split = splitRecursivelyAtCharacter({ maxChunkSize: 1000 });
+  const split = splitAtCharacter({ maxCharactersPerChunk: 1000 });
 
   const result = await split({
     text: sanFranciscoWikipediaText,

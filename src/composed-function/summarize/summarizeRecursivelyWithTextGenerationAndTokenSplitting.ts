@@ -5,7 +5,7 @@ import {
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { Run } from "../../run/Run.js";
-import { splitRecursivelyAtToken } from "../../text-chunk/split/splitRecursively.js";
+import { splitAtToken } from "../../text-chunk/split/splitRecursively.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";
 
 /**
@@ -52,9 +52,9 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
 
   return summarizeRecursively(
     {
-      split: splitRecursivelyAtToken({
+      split: splitAtToken({
         tokenizer: model.tokenizer,
-        maxChunkSize: tokenLimit - emptyPromptTokens,
+        maxTokensPerChunk: tokenLimit - emptyPromptTokens,
       }),
       summarize: async (input: { text: string }) => {
         const { text } = await generateText(

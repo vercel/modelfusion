@@ -30,27 +30,31 @@ function splitRecursively({
 }
 
 /**
- * Splits text recursively until the resulting chunks are smaller than the `maxChunkSize`.
+ * Splits text recursively until the resulting chunks are smaller than the `maxCharactersPerChunk`.
  * The text is recursively split in the middle, so that all chunks are roughtly the same size.
  */
-export const splitRecursivelyAtCharacter =
-  ({ maxChunkSize }: { maxChunkSize: number }): SplitFunction =>
-  async ({ text }: { text: string }) =>
-    splitRecursively({
-      maxChunkSize,
-      segments: text,
-    });
-
-export const splitRecursivelyAtToken =
+export const splitAtCharacter =
   ({
-    tokenizer,
-    maxChunkSize,
+    maxCharactersPerChunk,
   }: {
-    tokenizer: FullTokenizer;
-    maxChunkSize: number;
+    maxCharactersPerChunk: number;
   }): SplitFunction =>
   async ({ text }: { text: string }) =>
     splitRecursively({
-      maxChunkSize,
+      maxChunkSize: maxCharactersPerChunk,
+      segments: text,
+    });
+
+export const splitAtToken =
+  ({
+    tokenizer,
+    maxTokensPerChunk,
+  }: {
+    tokenizer: FullTokenizer;
+    maxTokensPerChunk: number;
+  }): SplitFunction =>
+  async ({ text }: { text: string }) =>
+    splitRecursively({
+      maxChunkSize: maxTokensPerChunk,
       segments: (await tokenizer.tokenizeWithTexts(text)).tokenTexts,
     });
