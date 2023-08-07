@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Cost Calculation
 
-Calls to generative models such as OpenAI's API can get expensive quickly. To keep track of your costs and to enable you to understand them, ModelFusion contains a cost calculation framework. You can use it to log the costs of [runs](/guide/run/) or even implement budgeting that automatically aborts a run when it exceeds a certain cost.
+Calls to generative models such as OpenAI's API can get expensive quickly. To keep track of your costs and to enable you to understand them, ModelFusion contains cost calculation functionality. You can use it to log the costs of [runs](/guide/run/) or even implement budgeting that automatically aborts a run when it exceeds a certain cost.
 
 > ⚠️ Cost calculation is currently only supported for OpenAI models. It depends on the current pricing of the API. The cost calculation can be inaccurate when the pricing changes or when there are e.g. aborted calls.
 
