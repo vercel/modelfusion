@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.5.0 - 2023-08-07
+
+### Added
+
+- `splitTextChunks` function.
+- Chat with PDF demo.
+
+### Changed
+
+- **Breaking change**: Renamed VectorIndexSimilarTextChunkRetriever to SimilarTextChunksFromVectorIndexRetriever.
+- **Breaking change**: Renamed 'content' property in TextChunk to 'text.
+
+### Removed
+
+- `VectorIndexTextChunkStore`
+
 ## v0.4.1 - 2023-08-06
 
 ### Fixed
