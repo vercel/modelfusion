@@ -30,3 +30,24 @@ const chunks = await splitTextChunk(
   }
 );
 ```
+
+## splitTextChunks
+
+[splitTextChunks API](/api/modules/#splittextchunks)
+
+The `splitTextChunks` functions splits many text chunks into multiple smaller text chunks and flattens the result.
+Otherwise it behaves the same as `splitTextChunk`.
+
+```ts
+const inputChunks: Array<{
+  { text: string; source: string; }
+}> = [
+  // ....
+];
+
+// outputChunks will be of type Array<{ text: string; source: string; }>
+const outputChunks = await splitTextChunks(
+  splitRecursivelyAtCharacter({ maxChunkSize: 1000 }),
+  inputChunks
+);
+```
