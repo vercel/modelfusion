@@ -12,9 +12,11 @@ ModelFusion is a library for building AI apps, chatbots, and agents. It provides
 - **More than LLMs**: ModelFusion supports other models, e.g., text-to-image and voice-to-text, to help you build rich AI applications that go beyond just text.
 - **Integrated support features**: Essential features like logging, retries, throttling, tracing, and error handling are built-in, helping you focus more on building your application.
 
-## Disclaimer
+:::note
 
 ModelFusion is in its initial development phase. Until version 1.0 there may be breaking changes.
+
+:::
 
 ## Installation
 
