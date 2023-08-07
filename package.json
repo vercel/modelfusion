@@ -1,7 +1,7 @@
 {
   "name": "modelfusion",
   "description": "Build AI applications, chatbots, and agents with JavaScript and TypeScript.",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [

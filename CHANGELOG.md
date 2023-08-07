@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.6.0 - 2023-08-07
+
+### Added
+
+- `splitTextChunk` function.
+
+### Changed
+
+- **Breaking change**: Restructured text splitter functions.
+
 ## v0.5.0 - 2023-08-07
 
 ### Added
