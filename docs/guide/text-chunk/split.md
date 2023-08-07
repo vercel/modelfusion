@@ -7,7 +7,28 @@ sidebar_position: 10
 When you want to load text chunks into a vector index, you often need to split the text into smaller pieces.
 This can help finding the right text chunks when querying the vector index, for example, for [retrieval-augmented generation](/tutorial/recipes/retrieval-augmented-generation).
 
-## splitTextChunk
+## Split Functions
+
+Split functions take a text string as input and return an array of text strings.
+
+```ts
+type SplitFunction = ({ text }: { text: string }) => string[];
+```
+
+The implementations provided by ModelFusion are factory functions that create a split function for a given configuration.
+
+### splitOnSeparator
+
+Splits text on a separator string.
+
+```ts
+const split = splitOnSeparator({ separator: "\n" });
+const result = await split({ text });
+```
+
+## Splitting Text Chunks
+
+### splitTextChunk
 
 [splitTextChunk API](/api/modules/#splittextchunk)
 
@@ -31,12 +52,14 @@ const chunks = await splitTextChunk(
 );
 ```
 
-## splitTextChunks
+### splitTextChunks
 
 [splitTextChunks API](/api/modules/#splittextchunks)
 
 The `splitTextChunks` functions splits many text chunks into multiple smaller text chunks and flattens the result.
 Otherwise it behaves the same as `splitTextChunk`.
+
+#### Example
 
 ```ts
 const inputChunks: Array<{

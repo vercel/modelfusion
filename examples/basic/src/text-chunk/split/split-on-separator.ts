@@ -7,6 +7,7 @@ import fs from "node:fs";
   ).content as string;
 
   const split = splitOnSeparator({ separator: "\n" });
+
   const result = await split({
     text: sanFranciscoWikipediaText,
   });
