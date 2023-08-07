@@ -6,6 +6,9 @@ sidebar_position: 20
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/text-chunk/)
 
+Using vector indices to store and retrieve text chunks is a common pattern when working with language models.
+One important use case is [retrieval augmented generation](/tutorial/recipes/retrieval-augmented-generation).
+
 ## TextChunk
 
 [TextChunk API](/api/modules#textchunk)
