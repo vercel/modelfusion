@@ -440,6 +440,12 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 
 Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.
 
+### [Chat with PDF](https://github.com/lgrammel/modelfusion/tree/main/examples/pdf-chat-terminal)
+
+> _terminal app_, _PDF parsing_, _in memory vector indices_, _retrieval augmented generation_, _hypothetical document embedding_
+
+Ask questions about a PDF document and get answers from the document.
+
 ### [PDF to Tweet](https://github.com/lgrammel/modelfusion/tree/main/examples/pdf-to-tweet)
 
 > _terminal app_, _PDF parsing_, _recursive information extraction_, _in memory vector index, \_style example retrieval_, _OpenAI GPT-4_, _cost calculation_
