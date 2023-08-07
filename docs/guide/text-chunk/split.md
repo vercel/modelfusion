@@ -26,6 +26,15 @@ const split = splitOnSeparator({ separator: "\n" });
 const result = await split({ text });
 ```
 
+### splitRecursivelyAtCharacter
+
+Splits text recursively until the resulting chunks are smaller than the `maxChunkSize`. The text is recursively split in the middle, so that all chunks are roughtly the same size.
+
+```ts
+const split = splitRecursivelyAtCharacter({ maxChunkSize: 1000 });
+const result = await split({ text });
+```
+
 ## Splitting Text Chunks
 
 ### splitTextChunk

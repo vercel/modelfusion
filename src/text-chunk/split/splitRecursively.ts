@@ -29,6 +29,10 @@ function splitRecursively({
   ];
 }
 
+/**
+ * Splits text recursively until the resulting chunks are smaller than the `maxChunkSize`.
+ * The text is recursively split in the middle, so that all chunks are roughtly the same size.
+ */
 export const splitRecursivelyAtCharacter =
   ({ maxChunkSize }: { maxChunkSize: number }): SplitFunction =>
   async ({ text }: { text: string }) =>
