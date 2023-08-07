@@ -35,6 +35,20 @@ const split = splitAtCharacter({ maxCharactersPerChunk: 1000 });
 const result = await split({ text });
 ```
 
+### splitAtToken
+
+Splits text recursively until the resulting chunks are smaller than the `maxTokensPerChunk`, while respecting the token boundaries. The text is recursively split in the middle, so that all chunks are roughtly the same size.
+
+```ts
+const split = splitAtToken({
+  maxTokensPerChunk: 256,
+  // You can get a tokenizer from a model or create it explicitly.
+  // The tokenizer must support getting the text for a single token.
+  tokenizer: new TikTokenTokenizer({ model: "gpt-4" }),
+});
+const result = await split({ text });
+```
+
 ## Splitting Text Chunks
 
 ### splitTextChunk
