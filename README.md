@@ -343,9 +343,9 @@ const { chunks } = await retrieveTextChunks(
   - [Transcribe Audio](https://modelfusion.dev/guide/function/transcribe-audio)
   - [Generate images](https://modelfusion.dev/guide/function/generate-image)
 - Summarize text
-- Split text
 - [Tools](https://modelfusion.dev/guide/tools)
-- [Text Chunks](https://modelfusion.dev/guide/text-chunks)
+- [Text Chunks](https://modelfusion.dev/guide/text-chunk/)
+  - [Split Text](https://modelfusion.dev/guide/text-chunk/split)
 - [Run abstraction](https://modelfusion.dev/guide/run/)
   - [Abort signals](https://modelfusion.dev/guide/run/abort)
   - [Cost calculation](https://modelfusion.dev/guide/run/cost-calculation)
@@ -416,6 +416,12 @@ Examples for the individual functions and objects.
 
 A web chat with an AI assistant, implemented as a Next.js app.
 
+### [Chat with PDF](https://github.com/lgrammel/modelfusion/tree/main/examples/pdf-chat-terminal)
+
+> _terminal app_, _PDF parsing_, _in memory vector indices_, _retrieval augmented generation_, _hypothetical document embedding_
+
+Ask questions about a PDF document and get answers from the document.
+
 ### [Image generator (Next.js)](https://github.com/lgrammel/modelfusion/tree/main/examples/image-generator-next-js)
 
 > _Next.js app_, _Stability AI image generation_
@@ -439,12 +445,6 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 > _terminal app_, _agent_, _tools_, _GPT-4_
 
 Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.
-
-### [Chat with PDF](https://github.com/lgrammel/modelfusion/tree/main/examples/pdf-chat-terminal)
-
-> _terminal app_, _PDF parsing_, _in memory vector indices_, _retrieval augmented generation_, _hypothetical document embedding_
-
-Ask questions about a PDF document and get answers from the document.
 
 ### [PDF to Tweet](https://github.com/lgrammel/modelfusion/tree/main/examples/pdf-to-tweet)
 
