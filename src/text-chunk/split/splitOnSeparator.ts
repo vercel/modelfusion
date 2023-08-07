@@ -1,19 +1,9 @@
 import { SplitFunction } from "./SplitFunction.js";
 
-export const splitOnSeparator = async ({
+export function splitOnSeparator({
   separator,
-  text,
 }: {
   separator: string;
-  text: string;
-}) => {
-  return text.split(separator);
-};
-
-export const splitOnSeparatorAsSplitFunction =
-  ({ separator }: { separator: string }): SplitFunction =>
-  async ({ text }: { text: string }) =>
-    splitOnSeparator({
-      separator,
-      text,
-    });
+}): SplitFunction {
+  return async ({ text }: { text: string }) => text.split(separator);
+}
