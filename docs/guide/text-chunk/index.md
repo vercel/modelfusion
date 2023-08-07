@@ -4,7 +4,7 @@ sidebar_position: 20
 
 # Text Chunks & Vector Indices
 
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/vector-index/)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/text-chunk/)
 
 ## TextChunk
 

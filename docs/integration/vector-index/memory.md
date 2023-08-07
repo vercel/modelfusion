@@ -11,7 +11,7 @@ The memory vector index is a simple implementation of the [VectorIndex](/api/int
 
 [API](/api/classes/MemoryVectorIndex)
 |
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/vector-index/)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/text-chunk/)
 
 ### Create a Vector Index
 
