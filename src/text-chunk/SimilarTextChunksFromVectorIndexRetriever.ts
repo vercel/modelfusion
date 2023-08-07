@@ -4,28 +4,32 @@ import {
   TextEmbeddingModelSettings,
 } from "../model-function/embed-text/TextEmbeddingModel.js";
 import { embedText } from "../model-function/embed-text/embedText.js";
-import { TextChunk } from "../text-chunk/TextChunk.js";
+import { TextChunk } from "./TextChunk.js";
 import {
   TextChunkRetriever,
   TextChunkRetrieverSettings,
-} from "../text-chunk/retrieve-text-chunks/TextChunkRetriever.js";
-import { VectorIndex } from "./VectorIndex.js";
+} from "./retrieve-text-chunks/TextChunkRetriever.js";
+import { VectorIndex } from "../vector-index/VectorIndex.js";
 
-export interface VectorIndexTextChunkRetrieverSettings {
+export interface SimilarTextChunksFromVectorIndexRetrieverSettings {
   maxResults?: number;
   similarityThreshold?: number;
 }
 
-export class VectorIndexSimilarTextChunkRetriever<
+export class SimilarTextChunksFromVectorIndexRetriever<
   CHUNK extends TextChunk,
   INDEX,
   SETTINGS extends TextEmbeddingModelSettings,
 > implements
-    TextChunkRetriever<CHUNK, string, VectorIndexTextChunkRetrieverSettings>
+    TextChunkRetriever<
+      CHUNK,
+      string,
+      SimilarTextChunksFromVectorIndexRetrieverSettings
+    >
 {
   private readonly vectorIndex: VectorIndex<CHUNK, INDEX>;
   private readonly embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
-  private readonly settings: VectorIndexTextChunkRetrieverSettings;
+  private readonly settings: SimilarTextChunksFromVectorIndexRetrieverSettings;
 
   constructor({
     vectorIndex,
@@ -35,7 +39,7 @@ export class VectorIndexSimilarTextChunkRetriever<
   }: {
     vectorIndex: VectorIndex<CHUNK, INDEX>;
     embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
-  } & VectorIndexTextChunkRetrieverSettings) {
+  } & SimilarTextChunksFromVectorIndexRetrieverSettings) {
     this.vectorIndex = vectorIndex;
     this.embeddingModel = embeddingModel;
     this.settings = {
@@ -70,9 +74,9 @@ export class VectorIndexSimilarTextChunkRetriever<
   }
 
   withSettings(
-    additionalSettings: Partial<VectorIndexTextChunkRetrieverSettings>
+    additionalSettings: Partial<SimilarTextChunksFromVectorIndexRetrieverSettings>
   ): this {
-    return new VectorIndexSimilarTextChunkRetriever(
+    return new SimilarTextChunksFromVectorIndexRetriever(
       Object.assign({}, this.settings, additionalSettings, {
         vectorIndex: this.vectorIndex,
         embeddingModel: this.embeddingModel,

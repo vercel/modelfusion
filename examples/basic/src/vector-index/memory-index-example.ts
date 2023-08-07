@@ -1,12 +1,12 @@
+import dotenv from "dotenv";
 import {
   MemoryVectorIndex,
   OpenAITextEmbeddingModel,
+  SimilarTextChunksFromVectorIndexRetriever,
   TextChunk,
-  VectorIndexSimilarTextChunkRetriever,
   retrieveTextChunks,
   upsertTextChunks,
 } from "modelfusion";
-import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -32,11 +32,11 @@ dotenv.config();
   await upsertTextChunks({
     vectorIndex,
     embeddingModel,
-    chunks: texts.map((text) => ({ content: text })),
+    chunks: texts.map((text) => ({ text })),
   });
 
   const { chunks } = await retrieveTextChunks(
-    new VectorIndexSimilarTextChunkRetriever({
+    new SimilarTextChunksFromVectorIndexRetriever({
       vectorIndex,
       embeddingModel,
       maxResults: 3,

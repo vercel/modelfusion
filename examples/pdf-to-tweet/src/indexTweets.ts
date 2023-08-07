@@ -36,7 +36,7 @@ const { inputFile, outputFile } = program.opts();
         maxConcurrentCalls: 5,
       }),
     }),
-    chunks: exampleTweets.map((tweet) => ({ content: tweet })),
+    chunks: exampleTweets.map((text) => ({ text })),
   });
 
   fs.writeFileSync(outputFile, vectorIndex.serialize());

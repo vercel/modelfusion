@@ -1,3 +1,3 @@
 export type TextChunk = {
-  content: string;
+  text: string;
 };

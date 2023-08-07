@@ -1,15 +1,15 @@
+import dotenv from "dotenv";
 import {
   MemoryVectorIndex,
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
+  SimilarTextChunksFromVectorIndexRetriever,
   TextChunk,
-  VectorIndexSimilarTextChunkRetriever,
   generateText,
   retrieveTextChunks,
   upsertTextChunks,
 } from "modelfusion";
-import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ const question = `What is a rainbow?`;
 
   // Retrieve related information from a vector index:
   const { chunks } = await retrieveTextChunks(
-    new VectorIndexSimilarTextChunkRetriever({
+    new SimilarTextChunksFromVectorIndexRetriever({
       // some vector index that contains the information:
       vectorIndex,
       // use the same embedding model that was used when adding information:
@@ -85,7 +85,7 @@ async function ingestInformation() {
   await upsertTextChunks({
     vectorIndex,
     embeddingModel,
-    chunks: texts.map((text) => ({ content: text })),
+    chunks: texts.map((text) => ({ text })),
   });
 
   return vectorIndex;

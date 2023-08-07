@@ -1,11 +1,11 @@
 import {
-  TextGenerationModelSettings,
   TextGenerationModel,
+  TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { Run } from "../../run/Run.js";
-import { splitRecursivelyAtTokenAsSplitFunction } from "../../text-chunk/split/splitRecursively.js";
+import { splitRecursivelyAtToken } from "../../text-chunk/split/splitRecursively.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";
 
 /**
@@ -52,7 +52,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
 
   return summarizeRecursively(
     {
-      split: splitRecursivelyAtTokenAsSplitFunction({
+      split: splitRecursivelyAtToken({
         tokenizer: model.tokenizer,
         maxChunkSize: tokenLimit - emptyPromptTokens,
       }),
