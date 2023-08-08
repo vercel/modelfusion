@@ -137,6 +137,7 @@ const config = {
             activeBaseRegex: `/api/`,
             position: "left",
           },
+          { to: "blog", label: "Blog", position: "right" },
           {
             href: "https://github.com/lgrammel/modelfusion",
             label: "GitHub",
