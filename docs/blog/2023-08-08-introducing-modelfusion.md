@@ -4,7 +4,7 @@ description: Open-source library for building AI applications, chatbots, and age
 slug: introducing-modelfusion
 authors:
   - name: Lars Grammel
-    title: Creator of ModelFusion
+    title: AI Engineer
     url: https://github.com/lgrammel
     image_url: https://avatars.githubusercontent.com/u/205036
 tags: [modelfusion]
