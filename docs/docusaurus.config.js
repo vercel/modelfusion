@@ -169,7 +169,7 @@ const config = {
             title: "Learn",
             items: [
               {
-                label: "Recipes & Prompts",
+                label: "Examples & Tutorials",
                 to: "/tutorial/",
               },
               {
@@ -181,6 +181,10 @@ const config = {
           {
             title: "More",
             items: [
+              {
+                label: "Blog",
+                to: "blog",
+              },
               {
                 label: "Twitter",
                 href: "https://twitter.com/lgrammel",
