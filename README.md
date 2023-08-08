@@ -398,6 +398,7 @@ Use higher level prompts that are mapped into model specific prompt formats.
 - [Examples & Tutorials](https://modelfusion.dev/tutorial)
 - [Integrations](https://modelfusion.dev/integration/model-provider)
 - [API Reference](https://modelfusion.dev/api/modules)
+- [Blog](https://modelfusion.dev/api/blog)
 
 ## More Examples
 
