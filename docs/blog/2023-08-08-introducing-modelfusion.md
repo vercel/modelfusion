@@ -18,7 +18,7 @@ If you're a JavaScript or TypeScript developer, you've likely noticed the skyroc
 
 Maybe you've experienced this yourself, as I did: You start with something like LangChain, build your first app, and feel a sense of accomplishment. But then, you hit a wall as you realize it's not easily adjustable to your unique needs. You might then resort to using OpenAI or other APIs directly, only to end up rolling your own framework. It's a path filled with complexity and unnecessary hassle.
 
-That's why I created **[ModelFusion](https://github.com/lgrammel/modelfusion)**. I went through this exact process, and I recognized the need for a solution that bridges the gap between accessibility and control. Unlike other tools that may feel like "black magic," ModelFusion is designed as a library, not a framework. Think of it as a **toolbox** that empowers you with **full power and control over the underlying models**, adding support features with minimal overhead.
+That's why I created **[ModelFusion](https://github.com/lgrammel/modelfusion)**. I went through this exact process and recognized the need for a solution that provides many reusable elements and unification across models without being too constraining. Unlike other tools that may feel like "black magic," ModelFusion is designed as a library, not a framework. Think of it as a **toolbox** that empowers you with **full power and control over the underlying models**, adding support features with minimal overhead.
 
 ### Quick Example
 
