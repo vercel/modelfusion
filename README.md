@@ -274,7 +274,7 @@ const { image } = await generateImage(
 Create embeddings for text. Embeddings are vectors that represent the meaning of the text.
 
 ```ts
-const { embeddings } = await embedTexts(
+const embeddings = await embedTexts(
   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
   [
     "At first, Nox didn't know what to do with the pup.",

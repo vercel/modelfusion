@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 (async () => {
-  const { embeddings } = await embedTexts(
+  const embeddings = await embedTexts(
     new OpenAITextEmbeddingModel({
       model: "text-embedding-ada-002",
       throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),

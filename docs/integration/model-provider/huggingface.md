@@ -44,7 +44,7 @@ Text embeddings are using the HuggingFace feature extract pipeline.
 ```ts
 import { HuggingFaceTextEmbeddingModel, embedTexts } from "modelfusion";
 
-const { embeddings } = await embedTexts(
+const embeddings = await embedTexts(
   new HuggingFaceTextEmbeddingModel({
     model: "intfloat/e5-base-v2",
     embeddingDimensions: 768,

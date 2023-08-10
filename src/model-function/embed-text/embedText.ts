@@ -10,7 +10,7 @@ import {
  * Generate embeddings for multiple texts.
  *
  * @example
- * const { embeddings } = await embedTexts(
+ * const embeddings = await embedTexts(
  *   new OpenAITextEmbeddingModel(...),
  *   [
  *     "At first, Nox didn't know what to do with the pup.",
@@ -24,11 +24,39 @@ export async function embedTexts<
 >(
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   texts: string[],
-  options?: FunctionOptions<SETTINGS>
+  options: FunctionOptions<SETTINGS> & {
+    fullResponse: true;
+  }
 ): Promise<{
   embeddings: Array<Vector>;
   metadata: CallMetadata<TextEmbeddingModel<RESPONSE, SETTINGS>>;
-}> {
+}>;
+export async function embedTexts<
+  RESPONSE,
+  SETTINGS extends TextEmbeddingModelSettings,
+>(
+  model: TextEmbeddingModel<RESPONSE, SETTINGS>,
+  texts: string[],
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: false;
+  }
+): Promise<Array<Vector>>;
+export async function embedTexts<
+  RESPONSE,
+  SETTINGS extends TextEmbeddingModelSettings,
+>(
+  model: TextEmbeddingModel<RESPONSE, SETTINGS>,
+  texts: string[],
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: boolean;
+  }
+): Promise<
+  | {
+      embeddings: Array<Vector>;
+      metadata: CallMetadata<TextEmbeddingModel<RESPONSE, SETTINGS>>;
+    }
+  | Array<Vector>
+> {
   const result = await executeCall({
     model,
     options,
@@ -85,17 +113,19 @@ export async function embedTexts<
     }),
   });
 
-  return {
-    embeddings: result.output,
-    metadata: result.metadata,
-  };
+  return options?.fullResponse === true
+    ? {
+        embeddings: result.output,
+        metadata: result.metadata,
+      }
+    : result.output;
 }
 
 /**
  * Generate an embedding for a single text.
  *
  * @example
- * const { embedding } = await embedText(
+ * const embedding = await embedText(
  *   new OpenAITextEmbeddingModel(...),
  *   "At first, Nox didn't know what to do with the pup."
  * );
@@ -106,15 +136,55 @@ export async function embedText<
 >(
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   text: string,
-  options?: FunctionOptions<SETTINGS>
+  options: FunctionOptions<SETTINGS> & {
+    fullResponse: true;
+  }
 ): Promise<{
   embedding: Vector;
   metadata: CallMetadata<TextEmbeddingModel<RESPONSE, SETTINGS>>;
-}> {
-  const result = await embedTexts(model, [text], options);
+}>;
+export async function embedText<
+  RESPONSE,
+  SETTINGS extends TextEmbeddingModelSettings,
+>(
+  model: TextEmbeddingModel<RESPONSE, SETTINGS>,
+  text: string,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: false;
+  }
+): Promise<Vector>;
+export async function embedText<
+  RESPONSE,
+  SETTINGS extends TextEmbeddingModelSettings,
+>(
+  model: TextEmbeddingModel<RESPONSE, SETTINGS>,
+  text: string,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: boolean;
+  }
+): Promise<
+  | {
+      embedding: Vector;
+      metadata: CallMetadata<TextEmbeddingModel<RESPONSE, SETTINGS>>;
+    }
+  | Vector
+> {
+  if (options?.fullResponse === true) {
+    const result = await embedTexts(model, [text], {
+      ...options,
+      fullResponse: true,
+    });
 
-  return {
-    embedding: result.embeddings[0],
-    metadata: result.metadata,
-  };
+    return {
+      embedding: result.embeddings[0],
+      metadata: result.metadata,
+    };
+  } else {
+    const result = await embedTexts(model, [text], {
+      ...options,
+      fullResponse: false,
+    });
+
+    return result[0];
+  }
 }

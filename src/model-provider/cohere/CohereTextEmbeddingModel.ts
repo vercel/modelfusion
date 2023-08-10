@@ -58,7 +58,7 @@ export interface CohereTextEmbeddingModelSettings
  * @see https://docs.cohere.com/reference/embed
  *
  * @example
- * const { embeddings } = await embedTexts(
+ * const embeddings = await embedTexts(
  *   new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
  *   [
  *     "At first, Nox didn't know what to do with the pup.",
