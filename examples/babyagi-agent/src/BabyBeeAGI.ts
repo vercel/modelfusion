@@ -184,7 +184,9 @@ async function runBabyBeeAGI({
     result = result.substring(0, 4000);
 
     const prompt = [
-      `You are a task management AI tasked with cleaning the formatting of and reprioritizing the following tasks: ${minifiedTaskList}. `,
+      `You are a task management AI tasked with cleaning the formatting of and reprioritizing the following tasks: ${JSON.stringify(
+        minifiedTaskList
+      )}. `,
       `Consider the ultimate objective of your team: ${objective}. `,
       "Do not remove any tasks. Return the result as a JSON-formatted list of dictionaries.\n",
       "Create new tasks based on the result of last task if necessary for the objective. Limit tasks types to those that can be completed with the available tools listed below. Task description should be detailed.",
