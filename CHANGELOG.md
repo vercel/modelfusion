@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.7.0 - 2023-08-10
+
+### Changed
+
+- **Breaking change**: Model functions return a simple object by default to make the 95% use case easier. You can use the `fullResponse` option to get a richer response object that includes the original model response and metadata.
+
 ## v0.6.0 - 2023-08-07
 
 ### Added
