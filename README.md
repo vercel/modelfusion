@@ -447,9 +447,9 @@ Record audio with push-to-talk and transcribe it using Whisper, implemented as a
 
 ### [BabyAGI Agent](https://github.com/lgrammel/modelfusion/tree/main/examples/babyagi-agent)
 
-> _terminal app_, _agent_, _BabyAGI_, _OpenAI text-davinci-003_
+> _terminal app_, _agent_, _BabyAGI_
 
-TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakajima/babyagi/blob/main/classic/babyagi.py) by [@yoheinakajima](https://twitter.com/yoheinakajima) without embeddings.
+TypeScript implementation of the BabyAGI classic and BabyBeeAGI.
 
 ### [Middle school math agent](https://github.com/lgrammel/modelfusion/tree/main/examples/middle-school-math-agent)
 
