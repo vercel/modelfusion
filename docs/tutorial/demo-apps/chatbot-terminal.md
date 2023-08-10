@@ -41,7 +41,7 @@ const chat = readline.createInterface({
       nPredict: 512,
     }).mapPrompt(ChatToLlama2PromptMapping());
 
-    const { textStream } = await streamText(
+    const textStream = await streamText(
       model,
       await trimChatPrompt({
         prompt: [{ system: systemPrompt }, ...messages],

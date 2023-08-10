@@ -85,7 +85,7 @@ const vectorIndex = new MemoryVectorIndex<{
     );
 
     // answer the user's question using the retrieved information:
-    const { textStream } = await streamText(
+    const textStream = await streamText(
       // use stronger model to answer the question:
       new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
       [

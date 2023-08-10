@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 (async () => {
-  const { textStream } = await streamText(
+  const textStream = await streamText(
     new CohereTextGenerationModel({
       model: "command-nightly",
       temperature: 0.7,

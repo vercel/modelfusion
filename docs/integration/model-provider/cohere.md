@@ -38,7 +38,7 @@ const text = await generateText(
 ```ts
 import { CohereTextGenerationModel, streamText } from "modelfusion";
 
-const { textStream } = await streamText(
+const textStream = await streamText(
   new CohereTextGenerationModel({
     model: "command-nightly",
     temperature: 0.7,

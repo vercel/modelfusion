@@ -43,7 +43,7 @@ const text = await generateText(new OpenAIChatModel(/* ... */), [
 #### With OpenAI chat model
 
 ```ts
-const { textStream } = await streamText(new OpenAIChatModel(/* ... */), [
+const textStream = await streamText(new OpenAIChatModel(/* ... */), [
   OpenAIChatMessage.system("You are a story writer. Write a story about:"),
   OpenAIChatMessage.user("A robot learning to love"),
 ]);

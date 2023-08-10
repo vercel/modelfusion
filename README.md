@@ -57,7 +57,7 @@ const text = await generateText(
 #### streamText
 
 ```ts
-const { textStream } = await streamText(
+const textStream = await streamText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
   [
     OpenAIChatMessage.system("You are a story writer."),
@@ -88,7 +88,7 @@ const text = await generateText(
 ```
 
 ```ts
-const { textStream } = await streamText(
+const textStream = await streamText(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
   }).mapPrompt(ChatToOpenAIChatPromptMapping()),
