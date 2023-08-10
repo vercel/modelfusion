@@ -169,22 +169,15 @@ export async function embedText<
     }
   | Vector
 > {
-  if (options?.fullResponse === true) {
-    const result = await embedTexts(model, [text], {
-      ...options,
-      fullResponse: true,
-    });
+  const result = await embedTexts(model, [text], {
+    ...(options ?? {}),
+    fullResponse: true,
+  });
 
-    return {
-      embedding: result.embeddings[0],
-      metadata: result.metadata,
-    };
-  } else {
-    const result = await embedTexts(model, [text], {
-      ...options,
-      fullResponse: false,
-    });
-
-    return result[0];
-  }
+  return options?.fullResponse === true
+    ? {
+        embedding: result.embeddings[0],
+        metadata: result.metadata,
+      }
+    : result.embeddings[0];
 }

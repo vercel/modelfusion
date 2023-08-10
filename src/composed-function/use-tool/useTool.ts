@@ -54,7 +54,10 @@ export async function useTool<
       schema: tool.inputSchema,
     },
     () => prompt(tool),
-    options
+    {
+      ...(options ?? {}),
+      fullResponse: true,
+    }
   );
 
   return {

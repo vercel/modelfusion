@@ -116,7 +116,7 @@ import {
 } from "modelfusion";
 import { z } from "zod";
 
-const { value: sentiment } = await generateJson(
+const sentiment = await generateJson(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,

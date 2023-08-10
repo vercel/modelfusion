@@ -20,12 +20,53 @@ export async function generateJson<
   prompt: (
     schemaDefinition: SchemaDefinition<NAME, STRUCTURE>
   ) => PROMPT & GenerateJsonPrompt<RESPONSE>,
-  options?: FunctionOptions<SETTINGS>
+  options: FunctionOptions<SETTINGS> & {
+    fullResponse: true;
+  }
 ): Promise<{
   value: STRUCTURE;
   response: RESPONSE;
   metadata: CallMetadata<GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>>;
-}> {
+}>;
+export async function generateJson<
+  STRUCTURE,
+  PROMPT,
+  RESPONSE,
+  NAME extends string,
+  SETTINGS extends GenerateJsonModelSettings,
+>(
+  model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
+  schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
+  prompt: (
+    schemaDefinition: SchemaDefinition<NAME, STRUCTURE>
+  ) => PROMPT & GenerateJsonPrompt<RESPONSE>,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: false;
+  }
+): Promise<STRUCTURE>;
+export async function generateJson<
+  STRUCTURE,
+  PROMPT,
+  RESPONSE,
+  NAME extends string,
+  SETTINGS extends GenerateJsonModelSettings,
+>(
+  model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
+  schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
+  prompt: (
+    schemaDefinition: SchemaDefinition<NAME, STRUCTURE>
+  ) => PROMPT & GenerateJsonPrompt<RESPONSE>,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: boolean;
+  }
+): Promise<
+  | {
+      value: STRUCTURE;
+      response: RESPONSE;
+      metadata: CallMetadata<GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>>;
+    }
+  | STRUCTURE
+> {
   const expandedPrompt = prompt(schemaDefinition);
 
   const result = await executeCall({
@@ -80,9 +121,11 @@ export async function generateJson<
     }),
   });
 
-  return {
-    value: result.output,
-    response: result.response,
-    metadata: result.metadata,
-  };
+  return options?.fullResponse === true
+    ? {
+        value: result.output,
+        response: result.response,
+        metadata: result.metadata,
+      }
+    : result.output;
 }

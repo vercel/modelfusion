@@ -120,7 +120,7 @@ const { text, response, metadata } = await generateText(
 Generate JSON value that matches a schema.
 
 ```ts
-const { value } = await generateJson(
+const value = await generateJson(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,
