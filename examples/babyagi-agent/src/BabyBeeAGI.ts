@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { Command } from "commander";
 import dotenv from "dotenv";
+import { JSDOM } from "jsdom";
 import {
   OpenAIChatMessage,
   OpenAIChatModel,
@@ -63,9 +64,9 @@ async function runBabyBeeAGI({
     return taskList.filter((task) => task.status === "complete");
   }
 
-  // Tool functions
-  async function textCompletionTool(prompt: string) {
-    return await generateText(
+  // ### Tool functions ##############################
+  const textCompletionTool = async (prompt: string) =>
+    generateText(
       new OpenAITextGenerationModel({
         model: "text-davinci-003",
         temperature: 0.5,
@@ -73,11 +74,27 @@ async function runBabyBeeAGI({
       }),
       prompt
     );
-  }
+
+  const webScrapeTool = async (url: string) => {
+    const response = await fetch(url);
+    const html = await response.text();
+    const dom = new JSDOM(html);
+
+    let result = dom.window.document.body.textContent?.trim() || "";
+    result += "URLs: ";
+
+    const links = dom.window.document.querySelectorAll('a[href^="https://"]');
+
+    links.forEach((link) => {
+      result += `${link.getAttribute("href")}, `;
+    });
+
+    return result;
+  };
 
   let taskIdCounter = 0;
 
-  // Agent functions
+  // ### Agent functions ##############################
   async function executeTask(task: Task) {
     // Check if dependent_task_id is complete
     if (task.dependentTaskId) {
@@ -103,6 +120,8 @@ async function runBabyBeeAGI({
     let result: string;
     if (task.tool === "text-completion") {
       result = await textCompletionTool(taskPrompt);
+    } else if (task.tool === "web-scrape") {
+      result = await webScrapeTool(task.task);
     } else {
       result = "Unknown tool";
     }
@@ -199,12 +218,9 @@ async function runBabyBeeAGI({
     }
 
     // Add the 'result' field back in
-    for (const [index, task] of taskList.entries()) {
-      if (
-        originalTaskList[index] != null &&
-        "result" in originalTaskList[index]
-      ) {
-        task.result = originalTaskList[index].result;
+    for (let i = 0; i < taskList.length && i < originalTaskList.length; i++) {
+      if ("result" in originalTaskList[i]) {
+        taskList[i].result = originalTaskList[i].result;
       }
     }
 
@@ -238,7 +254,7 @@ async function runBabyBeeAGI({
       )
       .join("\n");
 
-    const text = await generateText(
+    return await generateText(
       new OpenAITextGenerationModel({
         model: "text-davinci-003",
         temperature: 0.5,
@@ -252,8 +268,6 @@ async function runBabyBeeAGI({
         `Updated session summary, which should describe all tasks in chronological order:`,
       ].join("\n")
     );
-
-    return text;
   }
 
   // ### Main Loop ##############################

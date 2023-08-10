@@ -4,12 +4,14 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "modelfusion": "*",
+    "chalk": "^4",
     "commander": "10.0.1",
     "dotenv": "16.0.3",
-    "chalk": "^4"
+    "jsdom": "^22.1.0",
+    "modelfusion": "*"
   },
   "devDependencies": {
+    "@types/jsdom": "^21.1.1",
     "@types/node": "20.2.3",
     "ts-node": "10.9.1"
   }
