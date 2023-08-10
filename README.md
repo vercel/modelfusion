@@ -11,7 +11,7 @@
 [Introduction](#introduction) | [Quick Install](#quick-install) | [Usage](#usage-examples) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#more-examples) | [modelfusion.dev](https://modelfusion.dev)
 
 > [!NOTE]
-> ModelFusion is in its initial development phase. Until version 1.0 there may be breaking changes.
+> ModelFusion is in its initial development phase. Until version 1.0 there may be breaking changes, because we are still exploring the API design. We welcome your feedback and suggestions.
 
 ## Introduction
 
