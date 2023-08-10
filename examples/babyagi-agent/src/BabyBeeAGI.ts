@@ -190,9 +190,9 @@ async function runBabyBeeAGI({
       "Create new tasks based on the result of last task if necessary for the objective. Limit tasks types to those that can be completed with the available tools listed below. Task description should be detailed.",
       "The maximum task list length is 7. Do not add an 8th task.",
       `The last completed task has the following result: ${result}. `,
-      `Current tool option is [text-completion] [web-search] and [web-scrape] only.`, // web-search is added automatically if SERPAPI exists
+      `Current tool option is [text-completion] [web-search] and [web-scrape] only.`,
       "For tasks using [web-scrape], provide only the URL to scrape as the task description. Do not provide placeholder URLs, but use ones provided by a search step or the initial objective.",
-      // "If the objective is research related, use at least one [web-search] with the query as the task description, and after, add up to three URLs from the search result as a task with [web-scrape], then use [text-completion] to write a comprehensive summary of each site thas has been scraped.'",
+      "If the objective is research related, use at least one [web-search] with the query as the task description, and after, add up to three URLs from the search result as a task with [web-scrape], then use [text-completion] to write a comprehensive summary of each site thas has been scraped.'",
       "For tasks using [web-search], provide the search query, and only the search query to use (eg. not 'research waterproof shoes, but 'waterproof shoes')",
       "dependent_task_id should always be null or a number.",
       "Do not reorder completed tasks. Only reorder and dedupe incomplete tasks.\n",
