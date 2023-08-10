@@ -16,7 +16,7 @@ dotenv.config();
     costCalculators: [new OpenAICostCalculator()],
   });
 
-  const { transcription } = await transcribe(
+  const transcription = await transcribe(
     new OpenAITranscriptionModel({ model: "whisper-1" }),
     { type: "mp3", data },
     { run }

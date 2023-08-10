@@ -249,7 +249,7 @@ const { tool, parameters, result, text } = await useToolOrGenerateText(
 Turn audio (voice) into text.
 
 ```ts
-const { transcription } = await transcribe(
+const transcription = await transcribe(
   new OpenAITranscriptionModel({ model: "whisper-1" }),
   {
     type: "mp3",

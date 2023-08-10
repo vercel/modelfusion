@@ -11,7 +11,7 @@ import {
  * @example
  * const data = await fs.promises.readFile("data/test.mp3");
  *
- * const { transcription } = await transcribe(
+ * const transcription = await transcribe(
  *   new OpenAITranscriptionModel({ model: "whisper-1" }),
  *   {
  *     type: "mp3",
@@ -26,12 +26,43 @@ export async function transcribe<
 >(
   model: TranscriptionModel<DATA, RESPONSE, SETTINGS>,
   data: DATA,
-  options?: FunctionOptions<SETTINGS>
+  options: FunctionOptions<SETTINGS> & {
+    fullResponse: true;
+  }
 ): Promise<{
   transcription: string;
   response: RESPONSE;
   metadata: CallMetadata<TranscriptionModel<DATA, RESPONSE, SETTINGS>>;
-}> {
+}>;
+export async function transcribe<
+  DATA,
+  RESPONSE,
+  SETTINGS extends TranscriptionModelSettings,
+>(
+  model: TranscriptionModel<DATA, RESPONSE, SETTINGS>,
+  data: DATA,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: false;
+  }
+): Promise<string>;
+export async function transcribe<
+  DATA,
+  RESPONSE,
+  SETTINGS extends TranscriptionModelSettings,
+>(
+  model: TranscriptionModel<DATA, RESPONSE, SETTINGS>,
+  data: DATA,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: boolean;
+  }
+): Promise<
+  | {
+      transcription: string;
+      response: RESPONSE;
+      metadata: CallMetadata<TranscriptionModel<DATA, RESPONSE, SETTINGS>>;
+    }
+  | string
+> {
   const result = await executeCall({
     model,
     options,
@@ -70,9 +101,11 @@ export async function transcribe<
     }),
   });
 
-  return {
-    transcription: result.output,
-    response: result.response,
-    metadata: result.metadata,
-  };
+  return options?.fullResponse === true
+    ? {
+        transcription: result.output,
+        response: result.response,
+        metadata: result.metadata,
+      }
+    : result.output;
 }
