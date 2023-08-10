@@ -40,7 +40,7 @@ async function runBabyAGI({
     objective: string;
     task: string;
   }) {
-    const result = await generateText(
+    return await generateText(
       model,
       [
         `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}`,
@@ -48,7 +48,6 @@ async function runBabyAGI({
       ].join("\n"),
       { settings: { temperature: 0.7, maxTokens: 2000 } }
     );
-    return result.text;
   }
 
   async function generateNewTasks({
@@ -62,7 +61,7 @@ async function runBabyAGI({
     completedTaskResult: string;
     existingTasks: string[];
   }) {
-    const { text: newTasksText } = await generateText(
+    const newTasksText = await generateText(
       model,
       [
         `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.`,
@@ -87,7 +86,7 @@ async function runBabyAGI({
     objective: string;
     nextTaskId: number;
   }) {
-    const { text: prioritizedTasksText } = await generateText(
+    const prioritizedTasksText = await generateText(
       model,
       [
         `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:`,

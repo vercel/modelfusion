@@ -91,7 +91,7 @@ function extractText({ text, topic }: { text: string; topic: string }) {
   );
 }
 
-const { text: extractedInformation } = await extractText({
+const extractedInformation = await extractText({
   text: sanFranciscoWikipedia.slice(0, 2000),
   topic: "number of residents",
 });

@@ -10,7 +10,7 @@ if (HELICONE_API_KEY == null) {
 }
 
 (async () => {
-  const { textStream } = await streamText(
+  const textStream = await streamText(
     new OpenAIChatModel({
       baseUrl: "https://oai.hconeai.com/v1",
       headers: {

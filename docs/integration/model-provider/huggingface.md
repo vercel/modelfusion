@@ -25,7 +25,7 @@ You can override this behavior by setting `waitForModel` to `false` in the model
 ```ts
 import { HuggingFaceTextGenerationModel, generateText } from "modelfusion";
 
-const { text } = await generateText(
+const text = await generateText(
   new HuggingFaceTextGenerationModel({
     model: "tiiuae/falcon-7b",
     temperature: 700,
@@ -44,7 +44,7 @@ Text embeddings are using the HuggingFace feature extract pipeline.
 ```ts
 import { HuggingFaceTextEmbeddingModel, embedTexts } from "modelfusion";
 
-const { embeddings } = await embedTexts(
+const embeddings = await embedTexts(
   new HuggingFaceTextEmbeddingModel({
     model: "intfloat/e5-base-v2",
     embeddingDimensions: 768,

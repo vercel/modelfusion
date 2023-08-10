@@ -23,7 +23,7 @@ title: OpenAI
 ```ts
 import { OpenAITextGenerationModel, generateText } from "modelfusion";
 
-const { text } = await generateText(
+const text = await generateText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
     temperature: 0.7,
@@ -42,7 +42,7 @@ The OpenAI chat models include GPT-3.5-turbo and GPT-4.
 ```ts
 import { OpenAIChatMessage, OpenAIChatModel, generateText } from "modelfusion";
 
-const { text } = await generateText(
+const text = await generateText(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0.7,
@@ -65,7 +65,7 @@ const { text } = await generateText(
 ```ts
 import { OpenAITextGenerationModel, streamText } from "modelfusion";
 
-const { textStream } = await streamText(
+const textStream = await streamText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
     maxTokens: 1000,
@@ -85,7 +85,7 @@ for await (const textFragment of textStream) {
 ```ts
 import { OpenAIChatMessage, OpenAIChatModel, streamText } from "modelfusion";
 
-const { textStream } = await streamText(
+const textStream = await streamText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
   [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
@@ -116,7 +116,7 @@ import {
 } from "modelfusion";
 import { z } from "zod";
 
-const { value: sentiment } = await generateJson(
+const sentiment = await generateJson(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,
@@ -212,7 +212,7 @@ switch (schema) {
 ```ts
 import { OpenAITextEmbeddingModel, embedTexts } from "modelfusion";
 
-const { embeddings } = await embedTexts(
+const embeddings = await embedTexts(
   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
   [
     "At first, Nox didn't know what to do with the pup.",
@@ -248,7 +248,7 @@ import { OpenAITranscriptionModel, transcribe } from "modelfusion";
 
 const data = await fs.promises.readFile("data/test.mp3");
 
-const { transcription } = await transcribe(
+const transcription = await transcribe(
   new OpenAITranscriptionModel({ model: "whisper-1" }),
   {
     type: "mp3",
@@ -266,7 +266,7 @@ OpenAI provides a model called DALL-E that can generate images from text descrip
 ```ts
 import { OpenAIImageGenerationModel, generateImage } from "modelfusion";
 
-const { image } = await generateImage(
+const image = await generateImage(
   new OpenAIImageGenerationModel({ size: "512x512" }),
   "the wicked witch of the west in the style of early 19th century painting"
 );

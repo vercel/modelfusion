@@ -25,14 +25,61 @@ export async function streamText<
     extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
   },
   prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: false;
+  }
+): Promise<AsyncIterable<string>>;
+export async function streamText<
+  PROMPT,
+  FULL_DELTA,
+  SETTINGS extends TextGenerationModelSettings,
+>(
+  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
+    generateDeltaStreamResponse: (
+      prompt: PROMPT,
+      options: FunctionOptions<SETTINGS>
+    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
+    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
+  },
+  prompt: PROMPT,
+  options: FunctionOptions<SETTINGS> & {
+    fullResponse: true;
+  }
 ): Promise<{
   textStream: AsyncIterable<string>;
   metadata: Omit<
     CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
     "durationInMs"
   >;
-}> {
+}>;
+export async function streamText<
+  PROMPT,
+  FULL_DELTA,
+  SETTINGS extends TextGenerationModelSettings,
+>(
+  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
+    generateDeltaStreamResponse: (
+      prompt: PROMPT,
+      options: FunctionOptions<SETTINGS>
+    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
+    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
+  },
+  prompt: PROMPT,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: boolean;
+  }
+): Promise<
+  | AsyncIterable<string>
+  | {
+      textStream: AsyncIterable<string>;
+      metadata: Omit<
+        CallMetadata<
+          TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>
+        >,
+        "durationInMs"
+      >;
+    }
+> {
   if (options?.settings != null) {
     model = model.withSettings(options.settings);
     options = {
@@ -148,8 +195,10 @@ export async function streamText<
     throw result.error;
   }
 
-  return {
-    textStream: result.output,
-    metadata: startMetadata,
-  };
+  return options?.fullResponse === true
+    ? {
+        textStream: result.output,
+        metadata: startMetadata,
+      }
+    : result.output;
 }

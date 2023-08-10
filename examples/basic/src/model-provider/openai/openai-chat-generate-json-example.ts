@@ -10,7 +10,7 @@ import { z } from "zod";
 dotenv.config();
 
 (async () => {
-  const { value: sentiment } = await generateJson(
+  const sentiment = await generateJson(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
       temperature: 0,

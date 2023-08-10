@@ -65,16 +65,14 @@ async function runBabyBeeAGI({
 
   // Tool functions
   async function textCompletionTool(prompt: string) {
-    return (
-      await generateText(
-        new OpenAITextGenerationModel({
-          model: "text-davinci-003",
-          temperature: 0.5,
-          maxTokens: 1500,
-        }),
-        prompt
-      )
-    ).text;
+    return await generateText(
+      new OpenAITextGenerationModel({
+        model: "text-davinci-003",
+        temperature: 0.5,
+        maxTokens: 1500,
+      }),
+      prompt
+    );
   }
 
   let taskIdCounter = 0;
@@ -174,7 +172,7 @@ async function runBabyBeeAGI({
 
     console.log(chalk.gray.italic(`\nRunning task manager agent...`));
 
-    const { text } = await generateText(
+    const text = await generateText(
       new OpenAIChatModel({
         model: "gpt-4",
         temperature: 0.2,
@@ -216,7 +214,7 @@ async function runBabyBeeAGI({
   }
 
   async function summarizerAgent(input: string) {
-    const { text } = await generateText(
+    return await generateText(
       new OpenAITextGenerationModel({
         model: "text-davinci-003",
         temperature: 0.5,
@@ -228,8 +226,6 @@ async function runBabyBeeAGI({
         `Summary:`,
       ].join("\n")
     );
-
-    return text;
   }
 
   async function overviewAgent(lastTaskId: number) {
@@ -242,7 +238,7 @@ async function runBabyBeeAGI({
       )
       .join("\n");
 
-    const { text } = await generateText(
+    const text = await generateText(
       new OpenAITextGenerationModel({
         model: "text-davinci-003",
         temperature: 0.5,

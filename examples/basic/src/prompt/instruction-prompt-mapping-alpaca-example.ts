@@ -6,7 +6,7 @@ import {
 
 (async () => {
   // example assumes you are running https://huggingface.co/TheBloke/Chronos-13B-v2-GGML with llama.cpp
-  const { textStream } = await streamText(
+  const textStream = await streamText(
     new LlamaCppTextGenerationModel({
       contextWindowSize: 2048, // context window size of Chronos-13B-v2-GGML
       nPredict: 1024,

@@ -9,7 +9,7 @@ dotenv.config();
 
 (async () => {
   // example assumes you are running https://huggingface.co/TheBloke/vicuna-7B-v1.5-GGML with llama.cpp
-  const { textStream } = await streamText(
+  const textStream = await streamText(
     new LlamaCppTextGenerationModel({
       contextWindowSize: 2048, // Vicuna v1.5 context window size
       nPredict: 512,

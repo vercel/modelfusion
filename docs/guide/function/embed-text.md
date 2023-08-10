@@ -15,7 +15,7 @@ Generate an embedding for a single text.
 #### With OpenAI embedding model
 
 ```ts
-const { embedding } = await embedText(
+const embedding = await embedText(
   new OpenAITextEmbeddingModel(/* ... */),
   "At first, Nox didn't know what to do with the pup."
 );
@@ -30,7 +30,7 @@ Generate embeddings for multiple texts.
 #### With OpenAI embedding model
 
 ```ts
-const { embeddings } = await embedTexts(
+const embeddings = await embedTexts(
   new OpenAITextEmbeddingModel({
     /* ... */
   }),

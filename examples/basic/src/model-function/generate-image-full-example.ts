@@ -5,7 +5,7 @@ import fs from "node:fs";
 dotenv.config();
 
 (async () => {
-  const image = await generateImage(
+  const { image, metadata, response } = await generateImage(
     new StabilityImageGenerationModel({
       model: "stable-diffusion-512-v2-1",
       cfgScale: 7,
@@ -18,7 +18,8 @@ dotenv.config();
     [
       { text: "the wicked witch of the west" },
       { text: "style of early 19th century painting", weight: 0.5 },
-    ]
+    ],
+    { fullResponse: true }
   );
 
   const path = `./stability-image-example.png`;

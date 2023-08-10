@@ -64,7 +64,7 @@ const vectorIndex = new MemoryVectorIndex<{
     const question = await chat.question("You: ");
 
     // hypothetical document embeddings:
-    const { text: hypotheticalAnswer } = await generateText(
+    const hypotheticalAnswer = await generateText(
       // use cheaper model to generate hypothetical answer:
       new OpenAIChatModel({ model: "gpt-3.5-turbo", temperature: 0 }),
       [
@@ -85,7 +85,7 @@ const vectorIndex = new MemoryVectorIndex<{
     );
 
     // answer the user's question using the retrieved information:
-    const { textStream } = await streamText(
+    const textStream = await streamText(
       // use stronger model to answer the question:
       new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
       [

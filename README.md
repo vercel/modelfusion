@@ -48,7 +48,7 @@ You can use [prompt mappings](https://modelfusion.dev/guide/function/generate-te
 #### generateText
 
 ```ts
-const { text } = await generateText(
+const text = await generateText(
   new OpenAITextGenerationModel({ model: "text-davinci-003" }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -57,7 +57,7 @@ const { text } = await generateText(
 #### streamText
 
 ```ts
-const { textStream } = await streamText(
+const textStream = await streamText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
   [
     OpenAIChatMessage.system("You are a story writer."),
@@ -75,7 +75,7 @@ for await (const textFragment of textStream) {
 [Prompt mapping](https://modelfusion.dev/guide/function/generate-text/prompt-mapping) lets you use higher level prompt structures (such as instruction or chat prompts) for different models.
 
 ```ts
-const { text } = await generateText(
+const text = await generateText(
   new LlamaCppTextGenerationModel({
     contextWindowSize: 4096, // Llama 2 context window size
     nPredict: 1000,
@@ -88,7 +88,7 @@ const { text } = await generateText(
 ```
 
 ```ts
-const { textStream } = await streamText(
+const textStream = await streamText(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
   }).mapPrompt(ChatToOpenAIChatPromptMapping()),
@@ -103,14 +103,15 @@ const { textStream } = await streamText(
 
 #### Metadata and original responses
 
-Most ModelFusion model functions return rich results that include the original response and metadata.
+ModelFusion model functions return rich results that include the original response and metadata when you set the `fullResponse` option to `true`.
 
 ```ts
 const { text, response, metadata } = await generateText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
   }),
-  "Write a short story about a robot learning to love:\n\n"
+  "Write a short story about a robot learning to love:\n\n",
+  { fullResponse: true }
 );
 ```
 
@@ -119,7 +120,7 @@ const { text, response, metadata } = await generateText(
 Generate JSON value that matches a schema.
 
 ```ts
-const { value } = await generateJson(
+const value = await generateJson(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,
@@ -248,7 +249,7 @@ const { tool, parameters, result, text } = await useToolOrGenerateText(
 Turn audio (voice) into text.
 
 ```ts
-const { transcription } = await transcribe(
+const transcription = await transcribe(
   new OpenAITranscriptionModel({ model: "whisper-1" }),
   {
     type: "mp3",
@@ -262,7 +263,7 @@ const { transcription } = await transcribe(
 Generate a base64-encoded image from a prompt.
 
 ```ts
-const { image } = await generateImage(
+const image = await generateImage(
   new OpenAIImageGenerationModel({ size: "512x512" }),
   "the wicked witch of the west in the style of early 19th century painting"
 );
@@ -273,7 +274,7 @@ const { image } = await generateImage(
 Create embeddings for text. Embeddings are vectors that represent the meaning of the text.
 
 ```ts
-const { embeddings } = await embedTexts(
+const embeddings = await embedTexts(
   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
   [
     "At first, Nox didn't know what to do with the pup.",

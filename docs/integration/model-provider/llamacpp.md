@@ -29,7 +29,7 @@ Consider [mapping the prompt to the prompt format](#prompt-mappings) that your m
 ```ts
 import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
 
-const { text } = await generateText(
+const text = await generateText(
   new LlamaCppTextGenerationModel({ nPredict: 256 }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -44,7 +44,7 @@ Consider [mapping the prompt to the prompt format](#prompt-mappings) that your m
 ```ts
 import { LlamaCppTextGenerationModel, streamText } from "modelfusion";
 
-const { textStream } = await streamText(
+const textStream = await streamText(
   new LlamaCppTextGenerationModel({ nPredict: 1024, temperature: 0.7 }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -61,7 +61,7 @@ for await (const textFragment of textStream) {
 ```ts
 import { LlamaCppTextEmbeddingModel, embedTexts } from "modelfusion";
 
-const { embeddings } = await embedTexts(new LlamaCppTextEmbeddingModel(), [
+const embeddings = await embedTexts(new LlamaCppTextEmbeddingModel(), [
   "At first, Nox didn't know what to do with the pup.",
   "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
 ]);
@@ -126,7 +126,7 @@ ${ system prompt }
 You can use the [InstructionToLlama2PromptMapping](/api/modules#instructiontollama2promptmapping) to create instruction prompts:
 
 ```ts
-const { textStream } = await streamText(
+const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
   }).mapPrompt(InstructionToLlama2PromptMapping()),
@@ -150,7 +150,7 @@ ${ user msg 1 } [/INST] ${ model response 1 } </s><s>[INST] ${ user msg 2 } [/IN
 You can use the [ChatToLlama2PromptMapping](/api/modules#chattollama2promptmapping) to create instruction prompts:
 
 ```ts
-const { textStream } = await streamText(
+const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
   }).mapPrompt(ChatToLlama2PromptMapping()),
@@ -199,7 +199,7 @@ You can use the [InstructionToAlpacaPromptMapping](/api/modules#instructiontoalp
 > ℹ️ Setting the system property overrides the Alpaca system prompt and can impact the model responses.
 
 ```ts
-const { textStream } = await streamText(
+const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
   }).mapPrompt(InstructionToAlpacaPromptMapping()),
@@ -228,7 +228,7 @@ You can use the [ChatToVicunaPromptMapping](/api/modules#chattovicunapromptmappi
 > ℹ️ Setting the system property overrides the Vicuna system prompt and can impact the model responses.
 
 ```ts
-const { textStream } = await streamText(
+const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
   }).mapPrompt(ChatToVicunaPromptMapping()),

@@ -26,7 +26,7 @@ The [InstructionToTextPromptMapping](/api/modules#instructiontotextpromptmapping
 You can now generate text using an instruction prompt:
 
 ```ts
-const { text } = await generateText(model, {
+const text = await generateText(model, {
   system: "You are a celebrated poet.", // optional
   instruction: "Write a short story about:",
   input: "a robot learning to love", // optional
@@ -70,7 +70,7 @@ The [ChatToOpenAIChatPromptMapping](/api/modules#chattoopenaichatpromptmapping) 
 You can now generate text using a chat prompt:
 
 ```ts
-const { textStream } = await streamText(model, [
+const textStream = await streamText(model, [
   { system: "You are a celebrated poet." },
   { user: "Write a short story about a robot learning to love." },
   { ai: "Once upon a time, there was a robot who learned to love." },
@@ -95,7 +95,7 @@ const messages: Array<{ user: string } | { ai: string }> = [
   // ...
 ];
 
-const { textStream } = await streamText(
+const textStream = await streamText(
   model,
   await trimChatPrompt({
     prompt: [{ system: systemPrompt }, ...messages],

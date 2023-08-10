@@ -69,7 +69,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
 
   const model = llama2Model; // change this to your preferred model
 
-  const { textStream } = await streamText(
+  const textStream = await streamText(
     model,
     // limit the size of the prompt to leave room for the answer:
     await trimChatPrompt({

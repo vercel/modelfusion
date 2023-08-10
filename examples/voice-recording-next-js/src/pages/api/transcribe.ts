@@ -41,7 +41,7 @@ export default async function handler(
     const audioFile = files.audio as File;
     const fileData = fs.readFileSync(audioFile.filepath);
 
-    const { transcription } = await transcribe(
+    const transcription = await transcribe(
       new OpenAITranscriptionModel({ model: "whisper-1" }),
       {
         type: "mp3",

@@ -26,7 +26,7 @@ const chat = readline.createInterface({
       nPredict: 512,
     }).mapPrompt(ChatToTextPromptMapping({ user: "user", ai: "assistant" }));
 
-    const { textStream } = await streamText(
+    const textStream = await streamText(
       model,
       await trimChatPrompt({
         prompt: [{ system: systemPrompt }, ...messages],

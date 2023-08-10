@@ -12,7 +12,7 @@ import {
  * and Stability AI models expect an array of text prompts with optional weights.
  *
  * @example
- * const { image } = await generateImage(
+ * const image = await generateImage(
  *   new StabilityImageGenerationModel(...),
  *   [
  *     { text: "the wicked witch of the west" },
@@ -27,12 +27,43 @@ export async function generateImage<
 >(
   model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options: FunctionOptions<SETTINGS> & {
+    fullResponse: true;
+  }
 ): Promise<{
   image: string;
   response: RESPONSE;
   metadata: CallMetadata<ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>>;
-}> {
+}>;
+export async function generateImage<
+  PROMPT,
+  RESPONSE,
+  SETTINGS extends ImageGenerationModelSettings,
+>(
+  model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  prompt: PROMPT,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: false;
+  }
+): Promise<string>;
+export async function generateImage<
+  PROMPT,
+  RESPONSE,
+  SETTINGS extends ImageGenerationModelSettings,
+>(
+  model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  prompt: PROMPT,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: boolean;
+  }
+): Promise<
+  | {
+      image: string;
+      response: RESPONSE;
+      metadata: CallMetadata<ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>>;
+    }
+  | string
+> {
   const result = await executeCall({
     model,
     options,
@@ -70,9 +101,11 @@ export async function generateImage<
     }),
   });
 
-  return {
-    image: result.output,
-    response: result.response,
-    metadata: result.metadata,
-  };
+  return options?.fullResponse === true
+    ? {
+        image: result.output,
+        response: result.response,
+        metadata: result.metadata,
+      }
+    : result.output;
 }

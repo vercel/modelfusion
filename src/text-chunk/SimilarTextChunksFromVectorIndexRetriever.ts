@@ -59,7 +59,7 @@ export class SimilarTextChunksFromVectorIndexRetriever<
       });
     }
 
-    const { embedding } = await embedText(this.embeddingModel, query, {
+    const embedding = await embedText(this.embeddingModel, query, {
       functionId: options?.functionId,
       run: options?.run,
     });

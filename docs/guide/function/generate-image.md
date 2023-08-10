@@ -17,7 +17,7 @@ For example, OpenAI image models expect a string prompt, and Stability AI models
 #### With OpenAI image model
 
 ```ts
-const { image } = await generateImage(
+const image = await generateImage(
   new OpenAIImageGenerationModel(/* ... */),
   "the wicked witch of the west in the style of early 19th century painting"
 );
@@ -26,7 +26,7 @@ const { image } = await generateImage(
 #### With Stability AI model
 
 ```ts
-const { image } = await generateImage(
+const image = await generateImage(
   new StabilityImageGenerationModel(/* ... */),
   [
     { text: "the wicked witch of the west" },

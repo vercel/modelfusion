@@ -45,7 +45,7 @@ export interface HuggingFaceTextEmbeddingModelSettings
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
- * const { embeddings } = await embedTexts(
+ * const embeddings = await embedTexts(
  *   model,
  *   [
  *     "At first, Nox didn't know what to do with the pup.",

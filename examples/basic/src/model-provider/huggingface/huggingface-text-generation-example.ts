@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 (async () => {
-  const { text } = await generateText(
+  const text = await generateText(
     new HuggingFaceTextGenerationModel({
       model: "tiiuae/falcon-7b",
       temperature: 700,

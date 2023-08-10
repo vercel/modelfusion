@@ -20,7 +20,7 @@ import { failedStabilityCallResponseHandler } from "./StabilityError.js";
  * @see https://api.stability.ai/docs#tag/v1generation/operation/textToImage
  *
  * @example
- * const { image } = await generateImage(
+ * const image = await generateImage(
  *   new StabilityImageGenerationModel({
  *     model: "stable-diffusion-512-v2-1",
  *     cfgScale: 7,

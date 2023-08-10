@@ -13,7 +13,7 @@ import {
  * @example
  * const model = new OpenAITextGenerationModel(...);
  *
- * const { text } = await model.generateText(
+ * const text = await model.generateText(
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  */
@@ -25,14 +25,40 @@ export async function generateText<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
   prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options: FunctionOptions<SETTINGS> & {
+    fullResponse: true;
+  }
 ): Promise<{
   text: string;
   response: RESPONSE;
   metadata: CallMetadata<
     TextGenerationModel<PROMPT, RESPONSE, unknown, SETTINGS>
   >;
-}> {
+}>;
+export async function generateText<
+  PROMPT,
+  RESPONSE,
+  SETTINGS extends TextGenerationModelSettings,
+>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
+  prompt: PROMPT,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: false;
+  }
+): Promise<string>;
+export async function generateText<
+  PROMPT,
+  RESPONSE,
+  SETTINGS extends TextGenerationModelSettings,
+>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
+  prompt: PROMPT,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: boolean;
+  }
+) {
   const result = await executeCall({
     model,
     options,
@@ -75,9 +101,11 @@ export async function generateText<
     }),
   });
 
-  return {
-    text: result.output,
-    response: result.response,
-    metadata: result.metadata,
-  };
+  return options?.fullResponse === true
+    ? {
+        text: result.output,
+        response: result.response,
+        metadata: result.metadata,
+      }
+    : result.output;
 }

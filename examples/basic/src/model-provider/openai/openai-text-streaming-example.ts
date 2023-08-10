@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 (async () => {
-  const { textStream } = await streamText(
+  const textStream = await streamText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
       maxTokens: 1000,

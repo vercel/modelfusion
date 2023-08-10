@@ -4,7 +4,7 @@ import { HuggingFaceTextEmbeddingModel, embedTexts } from "modelfusion";
 dotenv.config();
 
 (async () => {
-  const { embeddings } = await embedTexts(
+  const embeddings = await embedTexts(
     new HuggingFaceTextEmbeddingModel({
       model: "intfloat/e5-base-v2",
       embeddingDimensions: 768,

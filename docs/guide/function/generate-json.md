@@ -17,7 +17,7 @@ and classification tasks (e.g. [sentiment analysis](/tutorial/recipes/sentiment-
 #### OpenAI chat model
 
 ```ts
-const { value: sentiment } = await generateJson(
+const sentiment = await generateJson(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,

@@ -16,7 +16,7 @@ export default async function handler(
 
   const { text: description } = req.body;
 
-  const { image } = await generateImage(
+  const image = await generateImage(
     new StabilityImageGenerationModel({
       model: "stable-diffusion-512-v2-1",
       clipGuidancePreset: "FAST_BLUE",

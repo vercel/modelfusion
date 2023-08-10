@@ -10,7 +10,11 @@ import { z } from "zod";
 dotenv.config();
 
 (async () => {
-  const sentiment = await generateJson(
+  const {
+    value: sentiment,
+    metadata,
+    response,
+  } = await generateJson(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
       temperature: 0,
@@ -34,7 +38,8 @@ dotenv.config();
         "After I opened the package, I was met by a very unpleasant smell " +
           "that did not disappear even after washing. Never again!"
       ),
-    ])
+    ]),
+    { fullResponse: true }
   );
 
   console.log(JSON.stringify(sentiment, null, 2));
