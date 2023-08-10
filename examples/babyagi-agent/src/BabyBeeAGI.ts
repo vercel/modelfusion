@@ -8,6 +8,7 @@ import {
   OpenAITextGenerationModel,
   generateText,
 } from "modelfusion";
+import { getJson } from "serpapi";
 
 dotenv.config();
 
@@ -19,8 +20,6 @@ program
   .parse(process.argv);
 
 const { objective } = program.opts();
-
-const webSearchVar = "";
 
 runBabyBeeAGI({
   objective,
@@ -49,13 +48,18 @@ async function runBabyBeeAGI({
 }) {
   let sessionSummary = "";
 
-  // Task list functions:
-  let taskList: Array<Task> = [];
+  let taskIdCounter = 0;
 
-  function addTask(task: Task) {
-    taskList.push(task);
-  }
+  let taskList: Array<Task> = [
+    {
+      id: 1,
+      task: firstTask,
+      tool: "text-completion",
+      status: "incomplete",
+    },
+  ];
 
+  // ### Task list functions #########################
   function getTaskById(taskId: number) {
     return taskList.find((task) => task.id === taskId);
   }
@@ -75,6 +79,17 @@ async function runBabyBeeAGI({
       prompt
     );
 
+  const webSearchTool = async (query: string) => {
+    const searchResults = await getJson({
+      engine: "google",
+      q: query,
+      api_key: process.env.SERPAPI_API_KEY,
+      num: 3,
+    });
+
+    return JSON.stringify(searchResults.organic_results);
+  };
+
   const webScrapeTool = async (url: string) => {
     const response = await fetch(url);
     const html = await response.text();
@@ -91,8 +106,6 @@ async function runBabyBeeAGI({
 
     return result;
   };
-
-  let taskIdCounter = 0;
 
   // ### Agent functions ##############################
   async function executeTask(task: Task) {
@@ -120,6 +133,8 @@ async function runBabyBeeAGI({
     let result: string;
     if (task.tool === "text-completion") {
       result = await textCompletionTool(taskPrompt);
+    } else if (task.tool === "web-search") {
+      result = await webSearchTool(task.task);
     } else if (task.tool === "web-scrape") {
       result = await webScrapeTool(task.task);
     } else {
@@ -175,7 +190,7 @@ async function runBabyBeeAGI({
       "Create new tasks based on the result of last task if necessary for the objective. Limit tasks types to those that can be completed with the available tools listed below. Task description should be detailed.",
       "The maximum task list length is 7. Do not add an 8th task.",
       `The last completed task has the following result: ${result}. `,
-      `Current tool option is [text-completion] ${webSearchVar} and [web-scrape] only.`, // web-search is added automatically if SERPAPI exists
+      `Current tool option is [text-completion] [web-search] and [web-scrape] only.`, // web-search is added automatically if SERPAPI exists
       "For tasks using [web-scrape], provide only the URL to scrape as the task description. Do not provide placeholder URLs, but use ones provided by a search step or the initial objective.",
       // "If the objective is research related, use at least one [web-search] with the query as the task description, and after, add up to three URLs from the search result as a task with [web-scrape], then use [text-completion] to write a comprehensive summary of each site thas has been scraped.'",
       "For tasks using [web-search], provide the search query, and only the search query to use (eg. not 'research waterproof shoes, but 'waterproof shoes')",
@@ -271,14 +286,6 @@ async function runBabyBeeAGI({
   }
 
   // ### Main Loop ##############################
-
-  // Add the first task
-  addTask({
-    id: 1,
-    task: firstTask,
-    tool: "text-completion",
-    status: "incomplete",
-  });
 
   console.log(chalk.cyan.bold("\n*****OBJECTIVE*****\n"));
   console.log(objective);
