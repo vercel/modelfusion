@@ -106,13 +106,23 @@ const textStream = await streamText(
 ModelFusion model functions return rich results that include the original response and metadata when you set the `fullResponse` option to `true`.
 
 ```ts
-const { text, response, metadata } = await generateText(
+// access the full response and the metadata:
+// the response type is specific to the model that's being used
+const { response, metadata } = await generateText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
+    maxTokens: 1000,
+    n: 2, // generate 2 completions
   }),
   "Write a short story about a robot learning to love:\n\n",
   { fullResponse: true }
 );
+
+for (const choice of response.choices) {
+  console.log(choice.text);
+}
+
+console.log(`Duration: ${metadata.durationInMs}ms`);
 ```
 
 ### [Generate JSON](https://modelfusion.dev/guide/function/generate-json)
