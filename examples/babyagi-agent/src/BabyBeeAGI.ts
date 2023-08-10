@@ -201,7 +201,9 @@ async function runBabyBeeAGI({
       "Do not include the result from the last task in the JSON, that will be added after..\n",
       "The last step is always to provide a final summary report of all tasks.\n",
       "An example of the desired output format is: ",
-      '[{"id": 1, "task": "https://untapped.vc", "tool": "web-scrape", "dependent_task_id": null, "status": "incomplete", "result": null, "result_summary": null}, {"id": 2, "task": "Analyze the contents of...", "tool": "text-completion", "dependent_task_id": 1, "status": "incomplete", "result": null, "result_summary": null}, {"id": 3, "task": "Untapped Capital", "tool": "web-search", "dependent_task_id": null, "status": "incomplete", "result": null, "result_summary": null}].',
+      '[{"id": 1, "task": "https://untapped.vc", "tool": "web-scrape", "dependentTaskId": null, "status": "incomplete", "result": null, "resultSummary": null},' +
+        ' {"id": 2, "task": "Analyze the contents of...", "tool": "text-completion", "dependentTaskId": 1, "status": "incomplete", "result": null, "resultSummary": null},' +
+        ' {"id": 3, "task": "Untapped Capital", "tool": "web-search", "dependentTaskId": null, "status": "incomplete", "result": null, "resultSummary": null}].',
     ].join("");
 
     console.log(chalk.gray.italic(`\nRunning task manager agent...`));
