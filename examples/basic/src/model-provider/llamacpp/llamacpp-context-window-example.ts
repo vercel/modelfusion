@@ -1,7 +1,7 @@
 import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
 
 (async () => {
-  const { text } = await generateText(
+  const text = await generateText(
     new LlamaCppTextGenerationModel({
       nPredict: 512,
       temperature: 0.7,

@@ -8,7 +8,8 @@ dotenv.config();
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
     }),
-    "Write a short story about a robot learning to love:\n\n"
+    "Write a short story about a robot learning to love:\n\n",
+    { fullResponse: true }
   );
 
   console.log(text);

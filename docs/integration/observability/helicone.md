@@ -20,7 +20,7 @@ You can change the `baseUrl` of the OpenAI model and pass in the Helicone API ke
 ### Example: OpenAI Chat
 
 ```ts
-const { text } = await generateText(
+const text = await generateText(
   new OpenAIChatModel({
     // Change the baseUrl to the Helicone proxy:
     baseUrl: "https://oai.hconeai.com/v1",

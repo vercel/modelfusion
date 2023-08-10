@@ -29,7 +29,7 @@ Consider [mapping the prompt to the prompt format](#prompt-mappings) that your m
 ```ts
 import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
 
-const { text } = await generateText(
+const text = await generateText(
   new LlamaCppTextGenerationModel({ nPredict: 256 }),
   "Write a short story about a robot learning to love:\n\n"
 );

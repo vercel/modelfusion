@@ -25,7 +25,7 @@ That's why I created **[ModelFusion](https://github.com/lgrammel/modelfusion)**.
 Here's a simple example demonstrating how you might use ModelFusion to generate text with OpenAI:
 
 ```ts
-const { text } = await generateText(
+const text = await generateText(
   new OpenAITextGenerationModel({ model: "text-davinci-003" }),
   "Write a short story about a robot learning to love:\n\n"
 );

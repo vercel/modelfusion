@@ -21,7 +21,7 @@ title: Cohere
 ```ts
 import { CohereTextGenerationModel, generateText } from "modelfusion";
 
-const { text } = await generateText(
+const text = await generateText(
   new CohereTextGenerationModel({
     model: "command-nightly",
     temperature: 0.7,

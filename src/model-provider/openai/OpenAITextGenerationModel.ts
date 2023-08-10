@@ -130,7 +130,7 @@ export interface OpenAITextGenerationModelSettings
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
- * const { text } = await generateText(
+ * const text = await generateText(
  *   model,
  *   "Write a short story about a robot learning to love:\n\n"
  * );

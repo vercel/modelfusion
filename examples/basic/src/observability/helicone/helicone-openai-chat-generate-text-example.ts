@@ -10,7 +10,7 @@ if (HELICONE_API_KEY == null) {
 }
 
 (async () => {
-  const { text } = await generateText(
+  const text = await generateText(
     new OpenAIChatModel({
       baseUrl: "https://oai.hconeai.com/v1",
       headers: {

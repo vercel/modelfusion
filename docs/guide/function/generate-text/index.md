@@ -20,7 +20,7 @@ You can use [prompt mappings](/guide/function/generate-text/prompt-mapping) to c
 #### With OpenAI text model
 
 ```ts
-const { text } = await generateText(
+const text = await generateText(
   new OpenAITextGenerationModel(/* ... */),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -29,7 +29,7 @@ const { text } = await generateText(
 #### With OpenAI chat model
 
 ```ts
-const { text } = await generateText(new OpenAIChatModel(/* ... */), [
+const text = await generateText(new OpenAIChatModel(/* ... */), [
   OpenAIChatMessage.system(
     "Write a short story about a robot learning to love:"
   ),

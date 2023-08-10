@@ -43,7 +43,7 @@ The `retryNever` strategy never retries a failed API call.
 ```ts
 import { retryNever } from "modelfusion";
 
-const { text } = await generateText(
+const text = await generateText(
   model,
   "Write a short story about a robot learning to love:\n\n",
   { settings: { retry: retryNever() } }

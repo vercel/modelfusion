@@ -31,7 +31,7 @@ dotenv.config();
     fs.readFileSync("data/san-francisco-wikipedia.json", "utf8")
   ).content;
 
-  const { text: extractedInformation } = await extractText({
+  const extractedInformation = await extractText({
     text: sanFranciscoWikipedia.slice(0, 2000),
     topic: "number of residents",
   });

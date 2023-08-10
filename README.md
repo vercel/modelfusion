@@ -48,7 +48,7 @@ You can use [prompt mappings](https://modelfusion.dev/guide/function/generate-te
 #### generateText
 
 ```ts
-const { text } = await generateText(
+const text = await generateText(
   new OpenAITextGenerationModel({ model: "text-davinci-003" }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -75,7 +75,7 @@ for await (const textFragment of textStream) {
 [Prompt mapping](https://modelfusion.dev/guide/function/generate-text/prompt-mapping) lets you use higher level prompt structures (such as instruction or chat prompts) for different models.
 
 ```ts
-const { text } = await generateText(
+const text = await generateText(
   new LlamaCppTextGenerationModel({
     contextWindowSize: 4096, // Llama 2 context window size
     nPredict: 1000,
@@ -103,14 +103,15 @@ const { textStream } = await streamText(
 
 #### Metadata and original responses
 
-Most ModelFusion model functions return rich results that include the original response and metadata.
+ModelFusion model functions return rich results that include the original response and metadata when you set the `fullResponse` option to `true`.
 
 ```ts
 const { text, response, metadata } = await generateText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
   }),
-  "Write a short story about a robot learning to love:\n\n"
+  "Write a short story about a robot learning to love:\n\n",
+  { fullResponse: true }
 );
 ```
 

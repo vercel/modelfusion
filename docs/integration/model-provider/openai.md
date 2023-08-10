@@ -23,7 +23,7 @@ title: OpenAI
 ```ts
 import { OpenAITextGenerationModel, generateText } from "modelfusion";
 
-const { text } = await generateText(
+const text = await generateText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
     temperature: 0.7,
@@ -42,7 +42,7 @@ The OpenAI chat models include GPT-3.5-turbo and GPT-4.
 ```ts
 import { OpenAIChatMessage, OpenAIChatModel, generateText } from "modelfusion";
 
-const { text } = await generateText(
+const text = await generateText(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0.7,

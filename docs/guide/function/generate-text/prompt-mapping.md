@@ -26,7 +26,7 @@ The [InstructionToTextPromptMapping](/api/modules#instructiontotextpromptmapping
 You can now generate text using an instruction prompt:
 
 ```ts
-const { text } = await generateText(model, {
+const text = await generateText(model, {
   system: "You are a celebrated poet.", // optional
   instruction: "Write a short story about:",
   input: "a robot learning to love", // optional

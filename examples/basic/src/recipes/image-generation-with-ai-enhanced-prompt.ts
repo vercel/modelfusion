@@ -11,7 +11,7 @@ import fs from "node:fs";
 dotenv.config();
 
 async function generateImageWithAIPrompt(prompt: string) {
-  const { text: aiPrompt } = await generateText(
+  const aiPrompt = await generateText(
     new OpenAIChatModel({
       model: "gpt-4",
       temperature: 0, // remove randomness

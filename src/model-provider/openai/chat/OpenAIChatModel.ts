@@ -151,7 +151,7 @@ export interface OpenAIChatSettings
  *   maxTokens: 500,
  * });
  *
- * const { text } = await generateText([
+ * const text = await generateText([
  *   model,
  *   OpenAIChatMessage.system(
  *     "Write a short story about a robot learning to love:"

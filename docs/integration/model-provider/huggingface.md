@@ -25,7 +25,7 @@ You can override this behavior by setting `waitForModel` to `false` in the model
 ```ts
 import { HuggingFaceTextGenerationModel, generateText } from "modelfusion";
 
-const { text } = await generateText(
+const text = await generateText(
   new HuggingFaceTextGenerationModel({
     model: "tiiuae/falcon-7b",
     temperature: 700,

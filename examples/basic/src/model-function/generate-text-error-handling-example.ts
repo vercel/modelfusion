@@ -2,7 +2,7 @@ import { OpenAITextGenerationModel, generateText } from "modelfusion";
 
 (async () => {
   try {
-    const { text } = await generateText(
+    const text = await generateText(
       new OpenAITextGenerationModel({
         apiKey: "invalid-api-key",
         model: "text-davinci-003",

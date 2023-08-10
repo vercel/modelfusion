@@ -56,7 +56,7 @@ export async function createTweetFromPdf({
     );
 
   // generate a draft tweet:
-  const { text: draftTweet } = await generateText(
+  const draftTweet = await generateText(
     model,
     [
       OpenAIChatMessage.user(`## TOPIC\n${topic}`),
