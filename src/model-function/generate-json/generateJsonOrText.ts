@@ -45,12 +45,54 @@ export async function generateJsonOrText<
   prompt: (
     schemaDefinitions: SCHEMAS
   ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
-  options?: FunctionOptions<SETTINGS>
+  options: FunctionOptions<SETTINGS> & {
+    fullResponse: true;
+  }
 ): Promise<
   ({ schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>) & {
     response: RESPONSE;
     metadata: CallMetadata<GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>>;
   }
+>;
+export async function generateJsonOrText<
+  SCHEMAS extends SchemaDefinition<any, any>[],
+  PROMPT,
+  RESPONSE,
+  SETTINGS extends GenerateJsonOrTextModelSettings,
+>(
+  model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
+  schemaDefinitions: SCHEMAS,
+  prompt: (
+    schemaDefinitions: SCHEMAS
+  ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: false;
+  }
+): Promise<
+  { schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>
+>;
+export async function generateJsonOrText<
+  SCHEMAS extends SchemaDefinition<any, any>[],
+  PROMPT,
+  RESPONSE,
+  SETTINGS extends GenerateJsonOrTextModelSettings,
+>(
+  model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
+  schemaDefinitions: SCHEMAS,
+  prompt: (
+    schemaDefinitions: SCHEMAS
+  ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
+  options?: FunctionOptions<SETTINGS> & {
+    fullResponse?: boolean;
+  }
+): Promise<
+  | ({ schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>)
+  | (({ schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>) & {
+      response: RESPONSE;
+      metadata: CallMetadata<
+        GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>
+      >;
+    })
 > {
   const expandedPrompt = prompt(schemaDefinitions);
 
@@ -124,9 +166,11 @@ export async function generateJsonOrText<
     }),
   });
 
-  return {
-    ...result.output,
-    response: result.response,
-    metadata: result.metadata,
-  };
+  return options?.fullResponse === true
+    ? {
+        ...result.output,
+        response: result.response,
+        metadata: result.metadata,
+      }
+    : result.output;
 }
