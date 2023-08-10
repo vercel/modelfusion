@@ -5,7 +5,7 @@ import fs from "node:fs";
 dotenv.config();
 
 (async () => {
-  const { image } = await generateImage(
+  const image = await generateImage(
     new StabilityImageGenerationModel({
       model: "stable-diffusion-512-v2-1",
       cfgScale: 7,

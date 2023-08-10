@@ -5,7 +5,7 @@ import fs from "node:fs";
 dotenv.config();
 
 (async () => {
-  const { image } = await generateImage(
+  const image = await generateImage(
     new OpenAIImageGenerationModel({ size: "512x512" }),
     "the wicked witch of the west in the style of early 19th century painting"
   );

@@ -263,7 +263,7 @@ const { transcription } = await transcribe(
 Generate a base64-encoded image from a prompt.
 
 ```ts
-const { image } = await generateImage(
+const image = await generateImage(
   new OpenAIImageGenerationModel({ size: "512x512" }),
   "the wicked witch of the west in the style of early 19th century painting"
 );
