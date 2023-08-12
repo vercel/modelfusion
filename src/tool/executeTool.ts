@@ -17,6 +17,9 @@ export type ExecuteToolMetadata = {
   durationInMs: number;
 };
 
+/**
+ * `executeTool` directly executes a tool with the given parameters.
+ */
 export async function executeTool<INPUT, OUTPUT>(
   tool: Tool<string, INPUT, OUTPUT>,
   input: INPUT,

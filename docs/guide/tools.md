@@ -125,6 +125,38 @@ console.log(`TEXT: ${text}`);
 console.log(`RESULT: ${JSON.stringify(result)}`);
 ```
 
+### executeTool
+
+[executeTool API](/api/modules/#executetool)
+
+`executeTool` directly executes a tool with the given parameters.
+It also records the runtime and handles errors.
+`executeTool` is used by `useTool` and `useToolOrGenerateText`.
+
+#### Basic Example
+
+```ts
+const result = await executeTool(calculator, {
+  operator: "*" as const,
+  a: 14,
+  b: 12,
+});
+```
+
+#### With full response
+
+```ts
+const { metadata, output } = await executeTool(
+  calculator,
+  {
+    operator: "*" as const,
+    a: 14,
+    b: 12,
+  },
+  { fullResponse: true }
+);
+```
+
 ## Demo Apps
 
 ### [Middle school math](https://github.com/lgrammel/modelfusion/tree/main/examples/middle-school-math-agent)
