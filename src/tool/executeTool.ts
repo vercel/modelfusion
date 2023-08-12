@@ -5,6 +5,7 @@ import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
 import { Tool } from "./Tool.js";
+import { ToolExecutionError } from "./ToolExecutionError.js";
 
 export async function executeTool<
   INPUT,
@@ -69,8 +70,13 @@ export async function executeTool<
       error: result.error,
     });
 
-    // TODO special ToolExecutionError
-    throw result.error;
+    throw new ToolExecutionError({
+      toolName: tool.name,
+      input,
+      cause: result.error,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      message: (result.error as any)?.message,
+    });
   }
 
   const output = result.output;
