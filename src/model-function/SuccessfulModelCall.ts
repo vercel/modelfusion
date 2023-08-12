@@ -8,6 +8,7 @@ export type SuccessfulModelCall = {
   type:
     | "image-generation"
     | "json-generation"
+    | "json-or-text-generation"
     | "text-embedding"
     | "text-generation"
     | "text-streaming"
@@ -38,6 +39,7 @@ export function extractSuccessfulModelCalls(
 const eventTypeToCostType = {
   "image-generation-finished": "image-generation" as const,
   "json-generation-finished": "json-generation" as const,
+  "json-or-text-generation-finished": "json-or-text-generation" as const,
   "text-embedding-finished": "text-embedding" as const,
   "text-generation-finished": "text-generation" as const,
   "text-streaming-finished": "text-streaming" as const,

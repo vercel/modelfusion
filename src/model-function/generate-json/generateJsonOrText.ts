@@ -135,20 +135,20 @@ export async function generateJsonOrText<
       };
     },
     getStartEvent: (metadata, settings) => ({
-      type: "json-generation-started",
+      type: "json-or-text-generation-started",
       metadata,
       settings,
       prompt,
     }),
     getAbortEvent: (metadata, settings) => ({
-      type: "json-generation-finished",
+      type: "json-or-text-generation-finished",
       status: "abort",
       metadata,
       settings,
       prompt,
     }),
     getFailureEvent: (metadata, settings, error) => ({
-      type: "json-generation-finished",
+      type: "json-or-text-generation-finished",
       status: "failure",
       metadata,
       settings,
@@ -156,7 +156,7 @@ export async function generateJsonOrText<
       error,
     }),
     getSuccessEvent: (metadata, settings, response, output) => ({
-      type: "json-generation-finished",
+      type: "json-or-text-generation-finished",
       status: "success",
       metadata,
       settings,
