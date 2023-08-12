@@ -121,17 +121,18 @@ async function runBabyBeeAGI({
     console.log(chalk.green.bold(`\n*****NEXT TASK*****\n`));
     console.log(`${task.id}: ${task.task} [${task.tool}]`);
 
-    let taskPrompt = `Complete your assigned task based on the objective: ${objective}. Your task: ${task.task}`;
-
-    if (task.dependentTaskId) {
-      const dependentTask = getTaskById(task.dependentTaskId)!;
-      const dependentTaskResult = dependentTask.result;
-      taskPrompt += `\nThe previous task (${dependentTask.id}. ${dependentTask.task}) result: ${dependentTaskResult}`;
-    }
-
-    taskPrompt += "\nResponse:";
     let result: string;
     if (task.tool === "text-completion") {
+      let taskPrompt = `Complete your assigned task based on the objective: ${objective}. Your task: ${task.task}`;
+
+      if (task.dependentTaskId) {
+        const dependentTask = getTaskById(task.dependentTaskId)!;
+        const dependentTaskResult = dependentTask.result;
+        taskPrompt += `\nThe previous task (${dependentTask.id}. ${dependentTask.task}) result: ${dependentTaskResult}`;
+      }
+
+      taskPrompt += "\nResponse:";
+
       result = await textCompletionTool(taskPrompt);
     } else if (task.tool === "web-search") {
       result = await webSearchTool(task.task);
