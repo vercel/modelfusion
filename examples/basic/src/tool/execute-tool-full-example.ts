@@ -31,7 +31,7 @@ dotenv.config();
     },
   });
 
-  const result = await executeTool(
+  const { metadata, output } = await executeTool(
     calculator,
     {
       a: 14,
@@ -41,6 +41,6 @@ dotenv.config();
     { fullResponse: true }
   );
 
-  console.log(`Result: ${result.output}`);
-  console.log(`Duration: ${result.metadata.durationInMs}ms`);
+  console.log(`Result: ${output}`);
+  console.log(`Duration: ${metadata.durationInMs}ms`);
 })();
