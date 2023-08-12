@@ -7,11 +7,46 @@ import { runSafe } from "../util/runSafe.js";
 import { Tool } from "./Tool.js";
 import { ToolExecutionError } from "./ToolExecutionError.js";
 
+export type ExecuteToolMetadata = {
+  callId: string;
+  runId?: string;
+  sessionId?: string;
+  userId?: string;
+  functionId?: string;
+  startEpochSeconds: number;
+  durationInMs: number;
+};
+
 export async function executeTool<INPUT, OUTPUT>(
   tool: Tool<string, INPUT, OUTPUT>,
   input: INPUT,
-  options?: FunctionOptions<undefined>
-): Promise<OUTPUT> {
+  options: FunctionOptions<undefined> & {
+    fullResponse: true;
+  }
+): Promise<{
+  output: OUTPUT;
+  metadata: ExecuteToolMetadata;
+}>;
+export async function executeTool<INPUT, OUTPUT>(
+  tool: Tool<string, INPUT, OUTPUT>,
+  input: INPUT,
+  options?: FunctionOptions<undefined> & {
+    fullResponse?: false;
+  }
+): Promise<OUTPUT>;
+export async function executeTool<INPUT, OUTPUT>(
+  tool: Tool<string, INPUT, OUTPUT>,
+  input: INPUT,
+  options?: FunctionOptions<undefined> & {
+    fullResponse?: boolean;
+  }
+): Promise<
+  | OUTPUT
+  | {
+      output: OUTPUT;
+      metadata: ExecuteToolMetadata;
+    }
+> {
   const run = options?.run;
 
   const eventSource = new RunFunctionEventSource({
@@ -86,5 +121,10 @@ export async function executeTool<INPUT, OUTPUT>(
     output,
   });
 
-  return output;
+  return options?.fullResponse === true
+    ? {
+        output,
+        metadata: finishMetadata,
+      }
+    : output;
 }
