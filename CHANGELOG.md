@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.8.0 - 2023-08-12
+
+### Added
+
+- `executeTool` function that directly executes a single tool and records execution metadata.
+
+### Changed
+
+- Reworked event system and introduced RunFunctionEvent.
+
 ## v0.7.0 - 2023-08-10
 
 ### Changed
