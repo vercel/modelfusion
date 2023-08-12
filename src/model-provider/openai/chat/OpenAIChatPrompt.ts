@@ -1,10 +1,10 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { Tool } from "../../../composed-function/use-tool/Tool.js";
 import { GenerateJsonPrompt } from "../../../model-function/generate-json/GenerateJsonModel.js";
 import { GenerateJsonOrTextPrompt } from "../../../model-function/generate-json/GenerateJsonOrTextModel.js";
 import { SchemaDefinition } from "../../../model-function/generate-json/SchemaDefinition.js";
+import { Tool } from "../../../tool/Tool.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";
 

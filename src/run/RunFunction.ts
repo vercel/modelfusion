@@ -1,4 +1,3 @@
-import { SafeResult } from "../util/SafeResult.js";
 import { Run } from "./Run.js";
 
 /**
@@ -12,10 +11,3 @@ export type RunFunction<INPUT, OUTPUT> = (
     run?: Run;
   }
 ) => PromiseLike<OUTPUT>;
-
-export type SafeRunFunction<INPUT, OUTPUT> = (
-  input: INPUT,
-  options?: {
-    run?: Run;
-  }
-) => PromiseLike<SafeResult<OUTPUT>>;

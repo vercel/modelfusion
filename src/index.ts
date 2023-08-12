@@ -5,5 +5,6 @@ export * from "./model-provider/index.js";
 export * from "./prompt/index.js";
 export * from "./run/index.js";
 export * from "./text-chunk/index.js";
+export * from "./tool/index.js";
 export * from "./util/index.js";
 export * from "./vector-index/index.js";

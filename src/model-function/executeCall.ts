@@ -1,4 +1,5 @@
 import { nanoid as createId } from "nanoid";
+import { RunFunctionEventSource } from "../run/RunFunctionEventSource.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
@@ -10,7 +11,6 @@ import {
   ModelCallStartedEvent,
   ModelCallStartedEventMetadata,
 } from "./ModelCallEvent.js";
-import { ModelCallEventSource } from "./ModelCallEventSource.js";
 
 export type CallMetadata<MODEL extends Model<unknown>> = {
   callId: string;
@@ -79,7 +79,7 @@ export async function executeCall<
   const run = options?.run;
   const settings = model.settings;
 
-  const eventSource = new ModelCallEventSource({
+  const eventSource = new RunFunctionEventSource({
     observers: [...(settings.observers ?? []), ...(run?.observers ?? [])],
     errorHandler: run?.errorHandler,
   });
@@ -96,7 +96,7 @@ export async function executeCall<
     startEpochSeconds: durationMeasurement.startEpochSeconds,
   };
 
-  eventSource.notifyModelCallStarted(getStartEvent(startMetadata, settings));
+  eventSource.notifyRunFunctionStarted(getStartEvent(startMetadata, settings));
 
   const result = await runSafe(() =>
     generateResponse({
@@ -113,13 +113,13 @@ export async function executeCall<
 
   if (!result.ok) {
     if (result.isAborted) {
-      eventSource.notifyModelCallFinished(
+      eventSource.notifyRunFunctionFinished(
         getAbortEvent(finishMetadata, settings)
       );
       throw new AbortError();
     }
 
-    eventSource.notifyModelCallFinished(
+    eventSource.notifyRunFunctionFinished(
       getFailureEvent(finishMetadata, settings, result.error)
     );
     throw result.error;
@@ -128,7 +128,7 @@ export async function executeCall<
   const response = result.output;
   const output = extractOutputValue(response);
 
-  eventSource.notifyModelCallFinished(
+  eventSource.notifyRunFunctionFinished(
     getSuccessEvent(finishMetadata, settings, response, output)
   );
 
