@@ -7,12 +7,8 @@ import { runSafe } from "../util/runSafe.js";
 import { Tool } from "./Tool.js";
 import { ToolExecutionError } from "./ToolExecutionError.js";
 
-export async function executeTool<
-  INPUT,
-  OUTPUT,
-  TOOL extends Tool<string, INPUT, OUTPUT>,
->(
-  tool: TOOL,
+export async function executeTool<INPUT, OUTPUT>(
+  tool: Tool<string, INPUT, OUTPUT>,
   input: INPUT,
   options?: FunctionOptions<undefined>
 ): Promise<OUTPUT> {

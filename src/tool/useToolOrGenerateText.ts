@@ -77,9 +77,9 @@ export async function useToolOrGenerateText<
 
   const toolParameters = modelResponse.value;
 
-  const result = (await executeTool(tool, toolParameters, {
+  const result = await executeTool(tool, toolParameters, {
     run: options?.run,
-  })) as any;
+  });
 
   return {
     tool: schema as keyof ToToolMap<TOOLS>,
