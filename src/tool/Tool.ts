@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { SchemaDefinition } from "../../model-function/generate-json/SchemaDefinition.js";
-import { RunFunction } from "../../run/RunFunction.js";
+import { SchemaDefinition } from "../model-function/generate-json/SchemaDefinition.js";
+import { RunFunction } from "../run/RunFunction.js";
 
 export class Tool<NAME extends string, INPUT, OUTPUT> {
   readonly name: NAME;

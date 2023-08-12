@@ -1,16 +1,16 @@
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { FunctionOptions } from "../model-function/FunctionOptions.js";
 import {
   GenerateJsonModel,
   GenerateJsonModelSettings,
   GenerateJsonPrompt,
-} from "../../model-function/generate-json/GenerateJsonModel.js";
+} from "../model-function/generate-json/GenerateJsonModel.js";
 import {
   GenerateJsonOrTextModel,
   GenerateJsonOrTextModelSettings,
   GenerateJsonOrTextPrompt,
-} from "../../model-function/generate-json/GenerateJsonOrTextModel.js";
-import { generateJson } from "../../model-function/generate-json/generateJson.js";
-import { generateJsonOrText } from "../../model-function/generate-json/generateJsonOrText.js";
+} from "../model-function/generate-json/GenerateJsonOrTextModel.js";
+import { generateJson } from "../model-function/generate-json/generateJson.js";
+import { generateJsonOrText } from "../model-function/generate-json/generateJsonOrText.js";
 import { NoSuchToolError } from "./NoSuchToolError.js";
 import { Tool } from "./Tool.js";
 
