@@ -1,7 +1,5 @@
-import {
-  ModelCallFinishedEvent,
-  ModelCallStartedEvent,
-} from "./ModelCallEvent.js";
+import { RunFunctionEvent } from "../run/RunFunctionEvent.js";
+import { ModelCallFinishedEvent } from "./ModelCallEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 
 export type SuccessfulModelCall = {
@@ -19,12 +17,14 @@ export type SuccessfulModelCall = {
 };
 
 export function extractSuccessfulModelCalls(
-  modelCallEvents: (ModelCallFinishedEvent | ModelCallStartedEvent)[]
+  runFunctionEvents: RunFunctionEvent[]
 ) {
-  return modelCallEvents
+  return runFunctionEvents
     .filter(
       (event): event is ModelCallFinishedEvent & { status: "success" } =>
-        "status" in event && event.status === "success"
+        Object.keys(eventTypeToCostType).includes(event.type) &&
+        "status" in event &&
+        event.status === "success"
     )
     .map(
       (event): SuccessfulModelCall => ({
