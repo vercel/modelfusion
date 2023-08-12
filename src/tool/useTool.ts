@@ -6,6 +6,7 @@ import {
 } from "../model-function/generate-json/GenerateJsonModel.js";
 import { generateJson } from "../model-function/generate-json/generateJson.js";
 import { Tool } from "./Tool.js";
+import { executeTool } from "./executeTool.js";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
 // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
@@ -56,6 +57,8 @@ export async function useTool<
   return {
     tool: tool.name,
     parameters: value,
-    result: await tool.execute(value),
+    result: await executeTool(tool, value, {
+      run: options?.run,
+    }),
   };
 }

@@ -7,6 +7,7 @@ import {
 import { generateJsonOrText } from "../model-function/generate-json/generateJsonOrText.js";
 import { NoSuchToolError } from "./NoSuchToolError.js";
 import { Tool } from "./Tool.js";
+import { executeTool } from "./executeTool.js";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
 // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
@@ -76,7 +77,9 @@ export async function useToolOrGenerateText<
 
   const toolParameters = modelResponse.value;
 
-  const result = await tool.execute(toolParameters);
+  const result = (await executeTool(tool, toolParameters, {
+    run: options?.run,
+  })) as any;
 
   return {
     tool: schema as keyof ToToolMap<TOOLS>,
