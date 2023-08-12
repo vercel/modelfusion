@@ -20,7 +20,7 @@ const run = new DefaultRun({
   costCalculators: [new OpenAICostCalculator()],
   observers: [
     {
-      onModelCallStarted(event) {
+      onRunFunctionStarted(event) {
         if (event.type === "text-generation-started") {
           console.log(
             `Generate text ${event.metadata.functionId ?? "unknown"} started.`
@@ -32,7 +32,7 @@ const run = new DefaultRun({
         }
       },
 
-      onModelCallFinished(event) {
+      onRunFunctionFinished(event) {
         if (event.type === "text-generation-finished") {
           console.log(
             `Generate text ${event.metadata.functionId ?? "unknown"} finished.`

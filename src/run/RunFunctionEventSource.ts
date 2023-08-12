@@ -1,39 +1,39 @@
 import { ErrorHandler } from "../util/ErrorHandler.js";
 import {
-  ModelCallFinishedEvent,
-  ModelCallStartedEvent,
-} from "./ModelCallEvent.js";
-import { ModelCallObserver } from "./ModelCallObserver.js";
+  RunFunctionFinishedEvent,
+  RunFunctionStartedEvent,
+} from "./RunFunctionEvent.js";
+import { RunFunctionObserver } from "./RunFunctionObserver.js";
 
-export class ModelCallEventSource {
-  readonly observers: ModelCallObserver[];
+export class RunFunctionEventSource {
+  readonly observers: RunFunctionObserver[];
   readonly errorHandler: ErrorHandler;
 
   constructor({
     observers,
     errorHandler,
   }: {
-    observers: ModelCallObserver[];
+    observers: RunFunctionObserver[];
     errorHandler?: ErrorHandler;
   }) {
     this.observers = observers;
     this.errorHandler = errorHandler ?? ((error) => console.error(error));
   }
 
-  notifyModelCallStarted(event: ModelCallStartedEvent) {
+  notifyRunFunctionStarted(event: RunFunctionStartedEvent) {
     for (const observer of this.observers) {
       try {
-        observer.onModelCallStarted?.(event);
+        observer.onRunFunctionStarted?.(event);
       } catch (error) {
         this.errorHandler(error);
       }
     }
   }
 
-  notifyModelCallFinished(event: ModelCallFinishedEvent) {
+  notifyRunFunctionFinished(event: RunFunctionFinishedEvent) {
     for (const observer of this.observers) {
       try {
-        observer.onModelCallFinished?.(event);
+        observer.onRunFunctionFinished?.(event);
       } catch (error) {
         this.errorHandler(error);
       }

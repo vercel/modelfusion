@@ -1,4 +1,7 @@
-import { IdMetadata } from "../run/IdMetadata.js";
+import {
+  RunFunctionFinishedEventMetadata,
+  RunFunctionStartedEventMetadata,
+} from "../run/RunFunctionEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
   TextEmbeddingFinishedEvent,
@@ -25,11 +28,8 @@ import {
   TranscriptionStartedEvent,
 } from "./transcribe-audio/TranscriptionEvent.js";
 
-export type ModelCallEvent = ModelCallStartedEvent | ModelCallFinishedEvent;
-
-export type ModelCallStartedEventMetadata = IdMetadata & {
+export type ModelCallStartedEventMetadata = RunFunctionStartedEventMetadata & {
   model: ModelInformation;
-  startEpochSeconds: number;
 };
 
 export type ModelCallStartedEvent =
@@ -40,9 +40,10 @@ export type ModelCallStartedEvent =
   | TextStreamingStartedEvent
   | TranscriptionStartedEvent;
 
-export type ModelCallFinishedEventMetadata = ModelCallStartedEventMetadata & {
-  durationInMs: number;
-};
+export type ModelCallFinishedEventMetadata =
+  RunFunctionFinishedEventMetadata & {
+    model: ModelInformation;
+  };
 
 export type ModelCallFinishedEvent =
   | ImageGenerationFinishedEvent

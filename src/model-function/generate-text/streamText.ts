@@ -1,15 +1,16 @@
 import { nanoid as createId } from "nanoid";
+import { RunFunctionEventSource } from "../../run/RunFunctionEventSource.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { FunctionOptions } from "../FunctionOptions.js";
-import { ModelCallEventSource } from "../ModelCallEventSource.js";
 import { CallMetadata } from "../executeCall.js";
 import { DeltaEvent } from "./DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
+import { TextStreamingFinishedEvent } from "./TextStreamingEvent.js";
 import { extractTextDeltas } from "./extractTextDeltas.js";
 
 export async function streamText<
@@ -91,7 +92,7 @@ export async function streamText<
   const run = options?.run;
   const settings = model.settings;
 
-  const eventSource = new ModelCallEventSource({
+  const eventSource = new RunFunctionEventSource({
     observers: [...(settings.observers ?? []), ...(run?.observers ?? [])],
     errorHandler: run?.errorHandler,
   });
@@ -108,7 +109,7 @@ export async function streamText<
     startEpochSeconds: durationMeasurement.startEpochSeconds,
   };
 
-  eventSource.notifyModelCallStarted({
+  eventSource.notifyRunFunctionStarted({
     type: "text-streaming-started",
     metadata: startMetadata,
     settings,
@@ -129,7 +130,7 @@ export async function streamText<
           durationInMs: durationMeasurement.durationInMs,
         };
 
-        eventSource.notifyModelCallFinished({
+        eventSource.notifyRunFunctionFinished({
           type: "text-streaming-finished",
           status: "success",
           metadata: finishMetadata,
@@ -137,7 +138,7 @@ export async function streamText<
           prompt,
           response: lastFullDelta,
           generatedText: fullText,
-        });
+        } as TextStreamingFinishedEvent);
       },
       onError: (error) => {
         const finishMetadata = {
@@ -145,7 +146,7 @@ export async function streamText<
           durationInMs: durationMeasurement.durationInMs,
         };
 
-        eventSource.notifyModelCallFinished(
+        eventSource.notifyRunFunctionFinished(
           error instanceof AbortError
             ? {
                 type: "text-streaming-finished",
@@ -174,7 +175,7 @@ export async function streamText<
     };
 
     if (result.isAborted) {
-      eventSource.notifyModelCallFinished({
+      eventSource.notifyRunFunctionFinished({
         type: "text-streaming-finished",
         status: "abort",
         metadata: finishMetadata,
@@ -184,7 +185,7 @@ export async function streamText<
       throw new AbortError();
     }
 
-    eventSource.notifyModelCallFinished({
+    eventSource.notifyRunFunctionFinished({
       type: "text-streaming-finished",
       status: "failure",
       metadata: finishMetadata,

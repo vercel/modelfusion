@@ -1,5 +1,5 @@
 import { ErrorHandler } from "../util/ErrorHandler.js";
-import { ModelCallObserver } from "../model-function/ModelCallObserver.js";
+import { RunFunctionObserver } from "./RunFunctionObserver.js";
 
 export interface Run {
   /**
@@ -27,7 +27,7 @@ export interface Run {
    */
   abortSignal?: AbortSignal;
 
-  observers?: ModelCallObserver[];
+  observers?: RunFunctionObserver[];
 
   errorHandler?: ErrorHandler;
 }

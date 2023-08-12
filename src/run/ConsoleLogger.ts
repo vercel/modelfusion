@@ -1,15 +1,15 @@
 import {
-  ModelCallFinishedEvent,
-  ModelCallStartedEvent,
-} from "../model-function/ModelCallEvent.js";
-import { ModelCallObserver } from "../model-function/ModelCallObserver.js";
+  RunFunctionFinishedEvent,
+  RunFunctionStartedEvent,
+} from "./RunFunctionEvent.js";
+import { RunFunctionObserver } from "./RunFunctionObserver.js";
 
-export class ConsoleLogger implements ModelCallObserver {
-  onModelCallStarted(event: ModelCallStartedEvent) {
+export class ConsoleLogger implements RunFunctionObserver {
+  onRunFunctionStarted(event: RunFunctionStartedEvent) {
     console.log(JSON.stringify(event, null, 2));
   }
 
-  onModelCallFinished(event: ModelCallFinishedEvent) {
+  onRunFunctionFinished(event: RunFunctionFinishedEvent) {
     console.log(JSON.stringify(event, null, 2));
   }
 }
