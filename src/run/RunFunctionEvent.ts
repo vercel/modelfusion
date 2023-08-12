@@ -1,4 +1,8 @@
 import {
+  ExecuteToolFinishedEvent,
+  ExecuteToolStartedEvent,
+} from "tool/ExecuteToolEvent.js";
+import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
 } from "../model-function/ModelCallEvent.js";
@@ -12,11 +16,15 @@ export type RunFunctionStartedEventMetadata = IdMetadata & {
   startEpochSeconds: number;
 };
 
-export type RunFunctionStartedEvent = ModelCallStartedEvent;
+export type RunFunctionStartedEvent =
+  | ModelCallStartedEvent
+  | ExecuteToolStartedEvent;
 
 export type RunFunctionFinishedEventMetadata =
   RunFunctionStartedEventMetadata & {
     durationInMs: number;
   };
 
-export type RunFunctionFinishedEvent = ModelCallFinishedEvent;
+export type RunFunctionFinishedEvent =
+  | ModelCallFinishedEvent
+  | ExecuteToolFinishedEvent;
