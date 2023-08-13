@@ -59,7 +59,10 @@ const readWikipediaArticle = new Tool({
 
     // extract the topic from the text:
     return await summarizeRecursivelyWithTextGenerationAndTokenSplitting({
-      model: new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+      model: new OpenAIChatModel({
+        model: "gpt-3.5-turbo-16k",
+        temperature: 0,
+      }),
       text,
       prompt: async ({ text }) => [
         OpenAIChatMessage.system(
@@ -92,18 +95,14 @@ const readWikipediaArticle = new Tool({
 
   while (true) {
     const { tool, parameters, result, text } = await useToolOrGenerateText(
-      new OpenAIChatModel({
-        model: "gpt-4",
-        temperature: 0,
-        maxTokens: 1000,
-      }),
+      new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
       [searchWikipedia, readWikipediaArticle, answer],
       OpenAIChatFunctionPrompt.forToolsCurried(messages)
     );
 
     switch (tool) {
       case null: {
-        console.log(chalk.blue.bold(`*****TEXT*****`));
+        console.log(chalk.yellow.bold(`*****TEXT*****`));
         console.log(result);
         console.log();
 
@@ -113,20 +112,20 @@ const readWikipediaArticle = new Tool({
       }
 
       case "search_wikipedia": {
-        console.log(chalk.blue.bold(`*****SEARCH WIKIPEDIA*****`));
+        console.log(chalk.yellow.bold(`*****SEARCH WIKIPEDIA*****`));
         console.log(`Query: ${parameters.query}`);
         console.log();
 
         if (text != null) {
-          console.log(chalk.yellow("*****REASONING*****"));
+          console.log(chalk.blueBright.bold("*****REASONING*****"));
           console.log(text);
           console.log();
         }
 
-        console.log(chalk.yellow("*****RESULTS*****"));
+        console.log(chalk.blueBright.bold("*****RESULTS*****"));
         for (const entry of result.results) {
           console.log(chalk.bold(entry.title));
-          console.log(chalk.blueBright(entry.link));
+          console.log(entry.link);
           console.log(entry.snippet);
           console.log();
         }
@@ -144,12 +143,12 @@ const readWikipediaArticle = new Tool({
       }
 
       case "read_wikipedia_article": {
-        console.log(chalk.blue.bold(`*****READ ARTICLE*****`));
-        console.log(chalk.blueBright(parameters.url));
-        console.log(chalk.yellow(`Topic: ${parameters.topic}`));
+        console.log(chalk.yellow.bold(`*****READ ARTICLE*****`));
+        console.log(parameters.url);
+        console.log(`Topic: ${parameters.topic}`);
         console.log();
 
-        console.log(chalk.yellow("*****SUMMARY*****"));
+        console.log(chalk.blueBright.bold("*****SUMMARY*****"));
         console.log(result);
         console.log();
 
@@ -170,7 +169,7 @@ const readWikipediaArticle = new Tool({
         console.log(result.answer);
         console.log();
 
-        console.log(chalk.yellow(`*****EXPLANATION*****`));
+        console.log(chalk.green(`*****EXPLANATION*****`));
         console.log(result.explanation);
         console.log();
 
