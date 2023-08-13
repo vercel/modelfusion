@@ -1,5 +1,5 @@
 {
-  "name": "@lgrammel/modelfusion-example-baby-agi",
+  "name": "@lgrammel/modelfusion-example-wikipedia-agent",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
@@ -10,6 +10,7 @@
     "html-to-text": "9.0.5",
     "jsdom": "^22.1.0",
     "modelfusion": "*",
+    "@modelfusion/google-custom-search-tool": "*",
     "serpapi": "^2.0.0"
   },
   "devDependencies": {
