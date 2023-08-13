@@ -119,12 +119,12 @@ const problem = questions[Math.floor(Math.random() * questions.length)];
         );
         messages.push(
           OpenAIChatMessage.functionCall(text, {
-            name: calculator.name,
+            name: tool,
             arguments: JSON.stringify(parameters),
           })
         );
         messages.push(
-          OpenAIChatMessage.functionResult("calculator", result.toString())
+          OpenAIChatMessage.functionResult(tool, JSON.stringify(result))
         );
         break;
       }
