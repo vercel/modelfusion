@@ -3,7 +3,7 @@ import { WebSearchTool } from "modelfusion";
 export type GoogleCustomSearchToolSettings = {
   description: string;
   apiKey?: string;
-  cx?: string;
+  searchEngineId?: string;
   maxResults?: number;
 };
 
@@ -20,10 +20,10 @@ export class GoogleCustomSearchTool<
       name,
       description: settings.description,
       execute: async ({ query }) => {
-        const { cx, apiKey } = this;
+        const { searchEngineId, apiKey } = this;
 
         const result = await fetch(
-          `https://www.googleapis.com/customsearch/v1/siterestrict?key=${apiKey}&cx=${cx}&q=${query}`
+          `https://www.googleapis.com/customsearch/v1/siterestrict?key=${apiKey}&cx=${searchEngineId}&q=${query}`
         );
 
         const data = await result.json();
@@ -50,7 +50,7 @@ export class GoogleCustomSearchTool<
 
     if (apiKey == null) {
       throw new Error(
-        `GOOGLE_CUSTOM_SEARCH API key is missing. ` +
+        `Google Custom Search API key is missing. ` +
           `Pass it as an argument to the constructor or set it as an environment variable named GOOGLE_CUSTOM_SEARCH_API_KEY.`
       );
     }
@@ -58,16 +58,18 @@ export class GoogleCustomSearchTool<
     return apiKey;
   }
 
-  private get cx() {
-    const cx = this.settings.cx ?? process.env.GOOGLE_CUSTOM_SEARCH_CX;
+  private get searchEngineId() {
+    const searchEngineId =
+      this.settings.searchEngineId ??
+      process.env.GOOGLE_CUSTOM_SEARCH_ENGINE_ID;
 
-    if (cx == null) {
+    if (searchEngineId == null) {
       throw new Error(
-        `GOOGLE_CUSTOM_SEARCH cx setting is missing. ` +
-          `Pass it as an argument to the constructor or set it as an environment variable named GOOGLE_CUSTOM_SEARCH_CX.`
+        `Google Custom Search search engine id setting is missing. ` +
+          `Pass it as an argument to the constructor or set it as an environment variable named GOOGLE_CUSTOM_SEARCH_ENGINE_ID.`
       );
     }
 
-    return cx;
+    return searchEngineId;
   }
 }
