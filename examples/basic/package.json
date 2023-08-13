@@ -6,6 +6,7 @@
   "dependencies": {
     "@pinecone-database/pinecone": "^0.1.6",
     "modelfusion": "*",
+    "@modelfusion/serpapi-tools": "*",
     "dotenv": "16.0.3"
   },
   "devDependencies": {
