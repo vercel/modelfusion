@@ -451,6 +451,12 @@ Record audio with push-to-talk and transcribe it using Whisper, implemented as a
 
 TypeScript implementation of the BabyAGI classic and BabyBeeAGI.
 
+### [Wikipedia Agent](https://github.com/lgrammel/modelfusion/tree/main/examples/wikipedia-agent)
+
+> _terminal app_, _ReAct agent_, _GPT-4_, _OpenAI functions_, _tools_
+
+Get answers to questions from Wikipedia, e.g. "Who was born first, Einstein or Picasso?"
+
 ### [Middle school math agent](https://github.com/lgrammel/modelfusion/tree/main/examples/middle-school-math-agent)
 
 > _terminal app_, _agent_, _tools_, _GPT-4_
