@@ -15,6 +15,9 @@ const OUTPUT_SCHEMA = z.object({
   ),
 });
 
+/**
+ * @see https://serpapi.com/search-api
+ */
 export class WebSearchTool<NAME extends string> extends Tool<
   NAME,
   z.infer<typeof INPUT_SCHEMA>,

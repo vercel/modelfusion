@@ -4,7 +4,10 @@ sidebar_position: 15
 
 # Tools
 
-Tools are functions with a description and a defined input schema.
+Tools enable chatbots and agents to execute actions.
+They are the glue that connects them to the outside world.
+
+In ModelFusion, tools are functions with a description and a defined input schema.
 Language models can be instructed to use tools by selecting a tool and generating parameters for it.
 
 The tool description and the text description in the zod schema (as well as the names in the schema) are used as part of the prompt.
@@ -156,6 +159,12 @@ const { metadata, output } = await executeTool(
   { fullResponse: true }
 );
 ```
+
+## Pre-defined Tools
+
+The following tools are available as a separate packages:
+
+- [SerpAPI](/integration/tool/serpapi)
 
 ## Demo Apps
 
