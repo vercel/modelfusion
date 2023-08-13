@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.0 - 2023-08-13
+
+### Added
+
+- `WebSearchTool` definition to support the SerpAPI tool (separate package: `@modelfusion/serpapi-tools`)
+
 ## v0.8.0 - 2023-08-12
 
 ### Added
