@@ -18,7 +18,7 @@ Currently only the Google search is supported as a tool.
    npm i @modelfusion/serpapi-tools
    ```
 
-3. Add your SERPAPI_API_KEY to your environment variables or `.env` file.
+3. Add `SERPAPI_API_KEY` with your SerpAPI api key to your environment variables or `.env` file.
 
 ## Usage
 

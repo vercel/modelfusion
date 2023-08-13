@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.10.0 - 2023-08-13
+
+### Added
+
+- Convenience functions to create OpenAI chat messages from tool calls and results.
+
 ## v0.9.0 - 2023-08-13
 
 ### Added

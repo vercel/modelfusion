@@ -10,3 +10,4 @@ Several tools for common tasks are already available for you to use.
 ## Available Pre-defined Tools
 
 - [SerpAPI](/integration/tool/serpapi)
+- [Google Custom Search](/integration/tool/google-custom-search)

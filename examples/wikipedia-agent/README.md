@@ -2,13 +2,17 @@
 
 > _terminal app_, _ReAct agent_, _GPT-4_, _OpenAI functions_, _tools_
 
-### Setup
+Get answers to questions from Wikipedia, e.g. "Who was born first, Einstein or Picasso?"
 
-https://developers.google.com/custom-search/v1/introduction
+## Setup
 
-### Usage
+1. Create a programmable search engine for Wikipedia
 
-1. Create .env file with the following content:
+   You need to create a [programmable search engine](https://programmablesearchengine.google.com/about/) for Wikipedia. When you set up the search engine, configure the site to be `en.wikipedia.org/*`.
+   The search engine id on the overview page.
+   You can get the [api key in the documentation](https://developers.google.com/custom-search/v1/introduction) ("Get a Key"). You need to create a Google cloud project to get the api key.
+
+2. Create .env file with the following content:
 
    ```
    OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
@@ -16,9 +20,11 @@ https://developers.google.com/custom-search/v1/introduction
    GOOGLE_CUSTOM_SEARCH_ENGINE_ID="YOUR_GOOGLE_CUSTOM_SEARCH_ENGINE_ID_FOR_WIKIPEDIA"
    ```
 
-2. Run the following commands:
+### Usage
 
-   ```sh
-   npm install
-   npx ts-node src/WikipediaReactAgent.ts --question "Who was born first, Einstein or Picasso?"
-   ```
+Run the following commands:
+
+```sh
+npm install
+npx ts-node src/WikipediaReactAgent.ts --question "Who was born first, Einstein or Picasso?"
+```

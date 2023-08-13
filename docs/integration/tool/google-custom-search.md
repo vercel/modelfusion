@@ -1,10 +1,11 @@
-# Google Custom Search Tool for ModelFusion
+---
+sidebar_position: 5
+title: Google Custom Search
+---
+
+# Google Custom Search Tool
 
 [Google Custom Search](https://developers.google.com/custom-search/v1/overview) lets you create programmable search engines that are limited to a subset of the web (e.g. a domain or a set of domains) and access the results via an API.
-
-## Requirements
-
-- [ModelFusion](https://modelfusion.dev) v0.9.0 or higher
 
 ## Setup
 
