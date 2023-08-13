@@ -199,7 +199,7 @@ A tool is a function with a name, a description, and a schema for the input para
 
 ```ts
 const calculator = new Tool({
-  name: "calculator" as const, // mark 'as const' for type inference
+  name: "calculator",
   description: "Execute a calculation",
 
   inputSchema: z.object({

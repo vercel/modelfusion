@@ -41,7 +41,7 @@ const problem = questions[Math.floor(Math.random() * questions.length)];
 
 (async () => {
   const calculator = new Tool({
-    name: "calculator" as const,
+    name: "calculator",
     description: "Execute a calculation",
 
     inputSchema: z.object({
@@ -67,7 +67,7 @@ const problem = questions[Math.floor(Math.random() * questions.length)];
   });
 
   const answer = new Tool({
-    name: "answer" as const,
+    name: "answer",
     description: "Provide the final answer to the question",
 
     inputSchema: z.object({
@@ -117,15 +117,10 @@ const problem = questions[Math.floor(Math.random() * questions.length)];
         console.log(
           `CALCULATION: ${parameters.a} ${parameters.operator} ${parameters.b} = ${result}\n`
         );
-        messages.push(
-          OpenAIChatMessage.functionCall(text, {
-            name: calculator.name,
-            arguments: JSON.stringify(parameters),
-          })
-        );
-        messages.push(
-          OpenAIChatMessage.functionResult("calculator", result.toString())
-        );
+
+        messages.push(OpenAIChatMessage.toolCall({ text, tool, parameters }));
+        messages.push(OpenAIChatMessage.toolResult({ tool, result }));
+
         break;
       }
 

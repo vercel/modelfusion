@@ -1,6 +1,6 @@
 # Middle school math agent
 
-> _terminal app_, _agent_, _tools_, _GPT-4_
+> _terminal app_, _ReAct agent_, _tools_, _GPT-4_
 
 Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.
 

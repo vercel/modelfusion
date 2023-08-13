@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { SchemaDefinition } from "../model-function/generate-json/SchemaDefinition.js";
 import { RunFunction } from "../run/RunFunction.js";
+import { InvalidToolNameError } from "./InvalidToolNameError.js";
+
+const namePattern = /^[a-zA-Z0-9_-]{1,64}$/;
 
 /**
  * A tool is a function with a name, description and defined inputs that can be used
@@ -8,7 +11,9 @@ import { RunFunction } from "../run/RunFunction.js";
  */
 export class Tool<NAME extends string, INPUT, OUTPUT> {
   /**
-   * The name of the tool. Should be understandable for language models and unique among the tools that they know.
+   * The name of the tool.
+   * It has to be a function name that matches the regular expression pattern '^[a-zA-Z0-9_-]{1,64}$'.
+   * Should be understandable for language models and unique among the tools that they know.
    */
   readonly name: NAME;
 
@@ -33,18 +38,32 @@ export class Tool<NAME extends string, INPUT, OUTPUT> {
    */
   readonly execute: RunFunction<INPUT, OUTPUT>;
 
-  constructor(options: {
+  constructor({
+    name,
+    description,
+    inputSchema,
+    outputSchema,
+    execute,
+  }: {
     name: NAME;
     description: string;
     inputSchema: z.ZodSchema<INPUT>;
     outputSchema?: z.ZodSchema<OUTPUT>;
     execute(input: INPUT): Promise<OUTPUT>;
   }) {
-    this.name = options.name;
-    this.description = options.description;
-    this.inputSchema = options.inputSchema;
-    this.outputSchema = options.outputSchema;
-    this.execute = options.execute;
+    // check that the name is a valid function name:
+    if (!namePattern.test(name)) {
+      throw new InvalidToolNameError({
+        toolName: name,
+        namePattern,
+      });
+    }
+
+    this.name = name;
+    this.description = description;
+    this.inputSchema = inputSchema;
+    this.outputSchema = outputSchema;
+    this.execute = execute;
   }
 
   /**
