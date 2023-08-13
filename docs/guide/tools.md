@@ -164,7 +164,7 @@ const { metadata, output } = await executeTool(
 
 The following tools are available as a separate packages:
 
-- [SerpAPI](/integration/tool/serpapi)
+- [SerpAPI websearch](/integration/tool/serpapi)
 
 ## Demo Apps
 

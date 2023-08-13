@@ -1,9 +1,9 @@
 ---
 sidebar_position: 2
-title: Serp API
+title: SerpAPI
 ---
 
-# Serp API Tools
+# SerpAPI WebSearch Tools
 
 [SerpAPI](https://serpapi.com/) is a service that provides search results from Google, Bing, and other search engines.
 Currently only the Google search is supported as a tool.
