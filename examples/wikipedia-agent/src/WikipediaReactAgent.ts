@@ -89,6 +89,7 @@ const readWikipediaArticle = new Tool({
     OpenAIChatMessage.user(question),
   ];
 
+  console.log();
   console.log(chalk.green.bold(`*****QUESTION*****`));
   console.log(`${question}`);
   console.log();
@@ -130,15 +131,9 @@ const readWikipediaArticle = new Tool({
           console.log();
         }
 
-        messages.push(
-          OpenAIChatMessage.functionCall(text, {
-            name: tool,
-            arguments: JSON.stringify(parameters),
-          })
-        );
-        messages.push(
-          OpenAIChatMessage.functionResult(tool, result.toString())
-        );
+        messages.push(OpenAIChatMessage.toolCall({ text, tool, parameters }));
+        messages.push(OpenAIChatMessage.toolResult({ tool, result }));
+
         break;
       }
 
@@ -152,15 +147,9 @@ const readWikipediaArticle = new Tool({
         console.log(result);
         console.log();
 
-        messages.push(
-          OpenAIChatMessage.functionCall(text, {
-            name: tool,
-            arguments: JSON.stringify(parameters),
-          })
-        );
-        messages.push(
-          OpenAIChatMessage.functionResult(tool, result.toString())
-        );
+        messages.push(OpenAIChatMessage.toolCall({ text, tool, parameters }));
+        messages.push(OpenAIChatMessage.toolResult({ tool, result }));
+
         break;
       }
 

@@ -117,15 +117,10 @@ const problem = questions[Math.floor(Math.random() * questions.length)];
         console.log(
           `CALCULATION: ${parameters.a} ${parameters.operator} ${parameters.b} = ${result}\n`
         );
-        messages.push(
-          OpenAIChatMessage.functionCall(text, {
-            name: tool,
-            arguments: JSON.stringify(parameters),
-          })
-        );
-        messages.push(
-          OpenAIChatMessage.functionResult(tool, JSON.stringify(result))
-        );
+
+        messages.push(OpenAIChatMessage.toolCall({ text, tool, parameters }));
+        messages.push(OpenAIChatMessage.toolResult({ tool, result }));
+
         break;
       }
 
