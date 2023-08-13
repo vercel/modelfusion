@@ -23,7 +23,7 @@ You can create the tools that you need for yor application by using the [Tool cl
 
 ```ts
 const calculator = new Tool({
-  name: "calculator" as const, // mark 'as const' for type inference
+  name: "calculator",
   description: "Execute a calculation",
 
   inputSchema: z.object({

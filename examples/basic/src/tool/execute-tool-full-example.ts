@@ -6,7 +6,7 @@ dotenv.config();
 
 (async () => {
   const calculator = new Tool({
-    name: "calculator" as const, // mark 'as const' for type inference
+    name: "calculator",
     description: "Execute a calculation",
 
     inputSchema: z.object({
