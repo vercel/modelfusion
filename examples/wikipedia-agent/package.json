@@ -9,8 +9,8 @@
     "dotenv": "16.0.3",
     "html-to-text": "9.0.5",
     "jsdom": "^22.1.0",
-    "modelfusion": "*",
-    "@modelfusion/google-custom-search-tool": "*",
+    "modelfusion": "^0.11.0",
+    "@modelfusion/google-custom-search-tool": "^0.3.0",
     "serpapi": "^2.0.0"
   },
   "devDependencies": {
