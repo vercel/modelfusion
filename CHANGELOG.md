@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.11.0 - 2023-08-14
+
+### Changed
+
+- WebSearchTool signature updated.
+
 ## v0.10.0 - 2023-08-13
 
 ### Added
