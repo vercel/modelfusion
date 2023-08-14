@@ -1,7 +1,7 @@
 import { WebSearchTool } from "modelfusion";
 import { getJson } from "serpapi";
 
-export type SerpapiGoogleWebsearchToolSettings<NAME extends string> = {
+export type SerpapiGoogleWebSearchToolSettings<NAME extends string> = {
   name: NAME;
   description: string;
   queryDescription?: string;
@@ -20,12 +20,12 @@ export type SerpapiGoogleWebsearchToolSettings<NAME extends string> = {
 /**
  * @see https://serpapi.com/search-api
  */
-export class SerpapiGoogleWebsearchTool<
+export class SerpapiGoogleWebSearchTool<
   NAME extends string,
 > extends WebSearchTool<NAME> {
-  readonly settings: SerpapiGoogleWebsearchToolSettings<NAME>;
+  readonly settings: SerpapiGoogleWebSearchToolSettings<NAME>;
 
-  constructor(settings: SerpapiGoogleWebsearchToolSettings<NAME>) {
+  constructor(settings: SerpapiGoogleWebSearchToolSettings<NAME>) {
     super({
       name: settings.name,
       description: settings.description,
