@@ -15,31 +15,42 @@ const OUTPUT_SCHEMA = z.object({
   ),
 });
 
-/**
- * @see https://serpapi.com/search-api
- */
 export class WebSearchTool<NAME extends string> extends Tool<
   NAME,
   z.infer<typeof INPUT_SCHEMA>,
   z.infer<typeof OUTPUT_SCHEMA>
 > {
   // expose the schemas to library consumers:
-  static readonly INPUT_SCHEMA = INPUT_SCHEMA;
-  static readonly OUTPUT_SCHEMA = OUTPUT_SCHEMA;
+  static readonly createInputSchema = (description: string) =>
+    // same structure, but with description:
+    z.object({
+      query: z.string().describe(description),
+    });
+  static readonly createOutputSchema = () => OUTPUT_SCHEMA;
 
-  constructor(options: {
+  readonly outputSchema: typeof OUTPUT_SCHEMA;
+
+  constructor({
+    name,
+    description,
+    queryDescription = "Search query",
+    execute,
+  }: {
     name: NAME;
     description: string;
+    queryDescription?: string;
     execute(
       input: z.infer<typeof INPUT_SCHEMA>
     ): Promise<z.infer<typeof OUTPUT_SCHEMA>>;
   }) {
     super({
-      name: options.name,
-      description: options.description,
-      inputSchema: INPUT_SCHEMA,
+      name,
+      description,
+      inputSchema: WebSearchTool.createInputSchema(queryDescription),
       outputSchema: OUTPUT_SCHEMA,
-      execute: options.execute,
+      execute,
     });
+
+    this.outputSchema = OUTPUT_SCHEMA;
   }
 }

@@ -1,8 +1,12 @@
 import { WebSearchTool } from "modelfusion";
 
-export type GoogleCustomSearchToolSettings = {
+export type GoogleCustomSearchToolSettings<NAME extends string> = {
+  name: NAME;
   description: string;
+  queryDescription?: string;
+
   apiKey?: string;
+
   searchEngineId?: string;
   maxResults?: number;
 };
@@ -13,12 +17,13 @@ export type GoogleCustomSearchToolSettings = {
 export class GoogleCustomSearchTool<
   NAME extends string,
 > extends WebSearchTool<NAME> {
-  readonly settings: GoogleCustomSearchToolSettings;
+  readonly settings: GoogleCustomSearchToolSettings<NAME>;
 
-  constructor(name: NAME, settings: GoogleCustomSearchToolSettings) {
+  constructor(settings: GoogleCustomSearchToolSettings<NAME>) {
     super({
-      name,
+      name: settings.name,
       description: settings.description,
+      queryDescription: settings.queryDescription,
       execute: async ({ query }) => {
         const { searchEngineId, apiKey } = this;
 
@@ -30,7 +35,7 @@ export class GoogleCustomSearchTool<
 
         const items = data.items.slice(0, this.settings.maxResults ?? 5);
 
-        return WebSearchTool.OUTPUT_SCHEMA.parse({
+        return this.outputSchema.parse({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           results: items.map((item: any) => ({
             title: item.title,

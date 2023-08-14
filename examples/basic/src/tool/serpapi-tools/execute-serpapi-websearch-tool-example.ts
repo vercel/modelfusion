@@ -5,7 +5,8 @@ import { executeTool } from "modelfusion";
 dotenv.config();
 
 (async () => {
-  const websearchTool = new SerpapiGoogleWebsearchTool("search web", {
+  const websearchTool = new SerpapiGoogleWebsearchTool({
+    name: "websearch",
     description: "Search the web.",
     num: 3,
   });

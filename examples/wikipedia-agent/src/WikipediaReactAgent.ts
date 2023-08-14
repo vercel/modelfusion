@@ -36,7 +36,8 @@ const answer = new Tool({
   execute: async (result) => result,
 });
 
-const searchWikipedia = new GoogleCustomSearchTool("search_wikipedia", {
+const searchWikipedia = new GoogleCustomSearchTool({
+  name: "search_wikipedia",
   description: "Search Wikipedia pages using a query",
   maxResults: 5,
 });

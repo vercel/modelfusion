@@ -26,7 +26,8 @@
 ```ts
 import { GoogleCustomSearchTool } from "@modelfusion/google-custom-search-tool";
 
-const searchWikipedia = new GoogleCustomSearchTool("search_wikipedia", {
+const searchWikipedia = new GoogleCustomSearchTool({
+  name: "search_wikipedia",
   description: "Search Wikipedia pages using a query",
   maxResults: 5,
 });

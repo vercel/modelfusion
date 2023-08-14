@@ -27,7 +27,8 @@ Currently only the Google search is supported as a tool.
 ```ts
 import { SerpapiGoogleWebsearchTool } from "@modelfusion/serpapi-tools";
 
-const websearchTool = new SerpapiGoogleWebsearchTool("search web", {
+const websearchTool = new SerpapiGoogleWebsearchTool({
+  name: "websearch",
   description: "Search the web.",
   num: 3,
 });

@@ -1,9 +1,13 @@
 import { WebSearchTool } from "modelfusion";
 import { getJson } from "serpapi";
 
-export type SerpapiGoogleWebsearchToolSettings = {
+export type SerpapiGoogleWebsearchToolSettings<NAME extends string> = {
+  name: NAME;
   description: string;
+  queryDescription?: string;
+
   apiKey?: string;
+
   num?: number;
   location?: string;
   googleDomain?: string;
@@ -13,15 +17,19 @@ export type SerpapiGoogleWebsearchToolSettings = {
   safe?: "active" | "off";
 };
 
+/**
+ * @see https://serpapi.com/search-api
+ */
 export class SerpapiGoogleWebsearchTool<
   NAME extends string,
 > extends WebSearchTool<NAME> {
-  readonly settings: SerpapiGoogleWebsearchToolSettings;
+  readonly settings: SerpapiGoogleWebsearchToolSettings<NAME>;
 
-  constructor(name: NAME, settings: SerpapiGoogleWebsearchToolSettings) {
+  constructor(settings: SerpapiGoogleWebsearchToolSettings<NAME>) {
     super({
-      name,
+      name: settings.name,
       description: settings.description,
+      queryDescription: settings.queryDescription,
       execute: async ({ query }) => {
         const searchResults = await getJson({
           ...settings,
@@ -39,7 +47,7 @@ export class SerpapiGoogleWebsearchTool<
           })
         );
 
-        return WebSearchTool.OUTPUT_SCHEMA.parse({
+        return this.outputSchema.parse({
           results: organicResults,
         });
       },
