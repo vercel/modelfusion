@@ -1,7 +1,6 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { GenerateJsonPrompt } from "../../../model-function/generate-json/GenerateJsonModel.js";
 import { GenerateJsonOrTextPrompt } from "../../../model-function/generate-json/GenerateJsonOrTextModel.js";
 import { SchemaDefinition } from "../../../model-function/generate-json/SchemaDefinition.js";
 import { Tool } from "../../../tool/Tool.js";
@@ -118,26 +117,19 @@ export const OpenAIChatFunctionPrompt = {
   },
 };
 
-export class OpenAIChatSingleFunctionPrompt<T>
-  implements GenerateJsonPrompt<OpenAIChatResponse>
-{
+export class OpenAIChatSingleFunctionPrompt<FUNCTION> {
   readonly messages: OpenAIChatMessage[];
-  readonly fn: OpenAIFunctionDescription<T>;
+  readonly fn: OpenAIFunctionDescription<FUNCTION>;
 
   constructor({
     messages,
     fn,
   }: {
     messages: OpenAIChatMessage[];
-    fn: OpenAIFunctionDescription<T>;
+    fn: OpenAIFunctionDescription<FUNCTION>;
   }) {
     this.messages = messages;
     this.fn = fn;
-  }
-
-  extractJson(response: OpenAIChatResponse) {
-    const jsonText = response.choices[0]!.message.function_call!.arguments;
-    return SecureJSON.parse(jsonText);
   }
 
   get functionCall() {
