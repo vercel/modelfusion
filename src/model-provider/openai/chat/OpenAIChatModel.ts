@@ -1,6 +1,8 @@
+import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { FunctionOptions } from "../../../model-function/FunctionOptions.js";
+import { GenerateJsonModel } from "../../../model-function/generate-json/GenerateJsonModel.js";
 import { GenerateJsonOrTextModel } from "../../../model-function/generate-json/GenerateJsonOrTextModel.js";
 import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
 import {
@@ -167,9 +169,13 @@ export class OpenAIChatModel
       OpenAIChatDelta,
       OpenAIChatSettings
     >,
+    GenerateJsonModel<
+      OpenAIChatSingleFunctionPrompt<unknown>,
+      OpenAIChatResponse,
+      OpenAIChatSettings
+    >,
     GenerateJsonOrTextModel<
-      | OpenAIChatSingleFunctionPrompt<unknown>
-      | OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
+      OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
       OpenAIChatResponse,
       OpenAIChatSettings
     >
@@ -296,6 +302,11 @@ export class OpenAIChatModel
       settings: settingsWithFunctionCall,
       run: options?.run,
     });
+  }
+
+  extractJson(response: OpenAIChatResponse): unknown {
+    const jsonText = response.choices[0]!.message.function_call!.arguments;
+    return SecureJSON.parse(jsonText);
   }
 
   mapPrompt<INPUT_PROMPT>(

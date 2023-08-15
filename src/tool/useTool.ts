@@ -2,7 +2,6 @@ import { FunctionOptions } from "../model-function/FunctionOptions.js";
 import {
   GenerateJsonModel,
   GenerateJsonModelSettings,
-  GenerateJsonPrompt,
 } from "../model-function/generate-json/GenerateJsonModel.js";
 import { generateJson } from "../model-function/generate-json/generateJson.js";
 import { Tool } from "./Tool.js";
@@ -27,7 +26,7 @@ export async function useTool<
 >(
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   tool: TOOL,
-  prompt: (tool: TOOL) => PROMPT & GenerateJsonPrompt<RESPONSE>,
+  prompt: (tool: TOOL) => PROMPT,
   options?: FunctionOptions<SETTINGS>
 ): Promise<{
   tool: TOOL["name"];

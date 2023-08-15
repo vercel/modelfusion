@@ -3,7 +3,6 @@ import { CallMetadata, executeCall } from "../executeCall.js";
 import {
   GenerateJsonModel,
   GenerateJsonModelSettings,
-  GenerateJsonPrompt,
 } from "./GenerateJsonModel.js";
 import { SchemaDefinition } from "./SchemaDefinition.js";
 import { SchemaValidationError } from "./SchemaValidationError.js";
@@ -17,9 +16,7 @@ export async function generateJson<
 >(
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
-  prompt: (
-    schemaDefinition: SchemaDefinition<NAME, STRUCTURE>
-  ) => PROMPT & GenerateJsonPrompt<RESPONSE>,
+  prompt: (schemaDefinition: SchemaDefinition<NAME, STRUCTURE>) => PROMPT,
   options: FunctionOptions<SETTINGS> & {
     fullResponse: true;
   }
@@ -37,9 +34,7 @@ export async function generateJson<
 >(
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
-  prompt: (
-    schemaDefinition: SchemaDefinition<NAME, STRUCTURE>
-  ) => PROMPT & GenerateJsonPrompt<RESPONSE>,
+  prompt: (schemaDefinition: SchemaDefinition<NAME, STRUCTURE>) => PROMPT,
   options?: FunctionOptions<SETTINGS> & {
     fullResponse?: false;
   }
@@ -53,9 +48,7 @@ export async function generateJson<
 >(
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
-  prompt: (
-    schemaDefinition: SchemaDefinition<NAME, STRUCTURE>
-  ) => PROMPT & GenerateJsonPrompt<RESPONSE>,
+  prompt: (schemaDefinition: SchemaDefinition<NAME, STRUCTURE>) => PROMPT,
   options?: FunctionOptions<SETTINGS> & {
     fullResponse?: boolean;
   }
@@ -75,7 +68,7 @@ export async function generateJson<
     generateResponse: (options) =>
       model.generateJsonResponse(expandedPrompt, options),
     extractOutputValue: (response): STRUCTURE => {
-      const json = expandedPrompt.extractJson(response);
+      const json = model.extractJson(response);
 
       const parseResult = schemaDefinition.schema.safeParse(json);
 
