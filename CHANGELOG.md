@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.12.0 - 2023-08-15
+
+### Added
+
+- JsonTextGenerationModel and InstructionWithSchemaPrompt to support generateJson on text generation models.
+
 ## v0.11.0 - 2023-08-14
 
 ### Changed
