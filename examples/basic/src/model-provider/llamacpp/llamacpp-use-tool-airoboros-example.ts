@@ -1,14 +1,9 @@
 import dotenv from "dotenv";
 import {
-  FunctionOptions,
-  GenerateJsonModel,
-  InstructionWithSchema,
   InstructionWithSchemaPrompt,
+  JsonTextGenerationModel,
   LlamaCppTextGenerationModel,
   SchemaDefinition,
-  TextGenerationModel,
-  TextGenerationModelSettings,
-  generateText,
   useTool,
 } from "modelfusion";
 import SecureJSON from "secure-json-parse";
@@ -67,65 +62,6 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
   extractJson(response: string): unknown {
     const json = SecureJSON.parse(this.prefix + response);
     return airoborosFunctionSchema.parse(json).params;
-  }
-}
-
-type JsonTextPromptFormat = {
-  createPrompt: (prompt: {
-    instruction: string;
-    schemaDefinition: SchemaDefinition<any, unknown>;
-  }) => string;
-  extractJson: (response: string) => unknown;
-};
-
-class JsonTextGenerationModel<
-  SETTINGS extends TextGenerationModelSettings,
-  MODEL extends TextGenerationModel<string, any, any, SETTINGS>,
-> implements
-    GenerateJsonModel<InstructionWithSchema<any, unknown>, string, SETTINGS>
-{
-  private readonly model: MODEL;
-  private readonly format: JsonTextPromptFormat;
-
-  constructor({
-    model,
-    format,
-  }: {
-    model: MODEL;
-    format: JsonTextPromptFormat;
-  }) {
-    this.model = model;
-    this.format = format;
-  }
-
-  get modelInformation() {
-    return this.model.modelInformation;
-  }
-
-  get settings() {
-    return this.model.settings;
-  }
-
-  async generateJsonResponse(
-    prompt: InstructionWithSchema<any, unknown>,
-    options?: FunctionOptions<SETTINGS> | undefined
-  ): Promise<string> {
-    return await generateText(
-      this.model,
-      this.format.createPrompt(prompt),
-      options
-    );
-  }
-
-  extractJson(response: string): unknown {
-    return this.format.extractJson(response);
-  }
-
-  withSettings(additionalSettings: Partial<SETTINGS>): this {
-    return new JsonTextGenerationModel({
-      model: this.model.withSettings(additionalSettings),
-      format: this.format,
-    }) as this;
   }
 }
 
