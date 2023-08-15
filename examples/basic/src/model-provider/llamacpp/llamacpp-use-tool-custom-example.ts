@@ -2,13 +2,11 @@ import dotenv from "dotenv";
 import {
   FunctionOptions,
   GenerateJsonModel,
-  GenerateJsonPrompt,
   LlamaCppTextGenerationModel,
   SchemaDefinition,
   TextGenerationModel,
   TextGenerationModelSettings,
   Tool,
-  generateJson,
   generateText,
   useTool,
 } from "modelfusion";
@@ -27,27 +25,20 @@ const airoborosFunctionSchema = z.object({
 
 // Prompt for Airoboros L2 13B GPT4 2.0:
 // https://huggingface.co/TheBloke/airoboros-l2-13b-gpt4-2.0-GGML
-class AiroborosFunctionPrompt<STRUCTURE> implements GenerateJsonPrompt<string> {
+class AiroborosFunctionPromptFormat<STRUCTURE> {
   readonly prefix = `{`;
-  readonly schemaDefinition: SchemaDefinition<any, STRUCTURE>;
-  readonly instruction: string;
 
-  constructor({
+  createPrompt({
     schemaDefinition,
     instruction,
   }: {
     schemaDefinition: SchemaDefinition<any, STRUCTURE>;
     instruction: string;
-  }) {
-    this.schemaDefinition = schemaDefinition;
-    this.instruction = instruction;
-  }
-
-  create(): string {
+  }): string {
     // map schema definition
     // TODO add check for object instead of any
     const properties: Record<string, { type: string; description: string }> = (
-      zodToJsonSchema(this.schemaDefinition.schema) as any
+      zodToJsonSchema(schemaDefinition.schema) as any
     ).properties;
 
     return [
@@ -56,9 +47,9 @@ class AiroborosFunctionPrompt<STRUCTURE> implements GenerateJsonPrompt<string> {
         `Provide your response in JSON format.`,
       ``,
       `Available functions:`,
-      `${this.schemaDefinition.name}:`,
+      `${schemaDefinition.name}:`,
       // TODO only include definition if defined:
-      `  description: ${this.schemaDefinition.description ?? ""}`,
+      `  description: ${schemaDefinition.description ?? ""}`,
       `  params:`,
       // TODO support nested schemas
       ...Object.entries(properties).map(
@@ -66,7 +57,7 @@ class AiroborosFunctionPrompt<STRUCTURE> implements GenerateJsonPrompt<string> {
           `    ${name}: (${type}) ${description}`
       ),
       ``,
-      `Input: ${this.instruction}`,
+      `Input: ${instruction}`,
       ``,
       `Response: ${this.prefix}`,
     ].join("\n");
@@ -78,16 +69,37 @@ class AiroborosFunctionPrompt<STRUCTURE> implements GenerateJsonPrompt<string> {
   }
 }
 
-class OutputParsingTextGenerationModel<
+type JsonTextPromptFormat = {
+  createPrompt: (prompt: {
+    instruction: string;
+    schemaDefinition: SchemaDefinition<any, unknown>;
+  }) => string;
+  extractJson: (response: string) => unknown;
+};
+
+type InstructionWithSchema<NAME extends string, STRUCTURE> = {
+  instruction: string;
+  schemaDefinition: SchemaDefinition<NAME, STRUCTURE>;
+};
+
+class JsonTextGenerationModel<
   SETTINGS extends TextGenerationModelSettings,
   MODEL extends TextGenerationModel<string, any, any, SETTINGS>,
 > implements
-    GenerateJsonModel<AiroborosFunctionPrompt<unknown>, string, SETTINGS>
+    GenerateJsonModel<InstructionWithSchema<any, unknown>, string, SETTINGS>
 {
   private readonly model: MODEL;
+  private readonly format: JsonTextPromptFormat;
 
-  constructor({ model }: { model: MODEL }) {
+  constructor({
+    model,
+    format,
+  }: {
+    model: MODEL;
+    format: JsonTextPromptFormat;
+  }) {
     this.model = model;
+    this.format = format;
   }
 
   get modelInformation() {
@@ -99,20 +111,29 @@ class OutputParsingTextGenerationModel<
   }
 
   async generateJsonResponse(
-    prompt: AiroborosFunctionPrompt<unknown>,
+    prompt: InstructionWithSchema<any, unknown>,
     options?: FunctionOptions<SETTINGS> | undefined
   ): Promise<string> {
-    return await generateText(this.model, prompt.create(), options);
+    return await generateText(
+      this.model,
+      this.format.createPrompt(prompt),
+      options
+    );
+  }
+
+  extractJson(response: string): unknown {
+    return this.format.extractJson(response);
   }
 
   withSettings(additionalSettings: Partial<SETTINGS>): this {
-    return new OutputParsingTextGenerationModel({
+    return new JsonTextGenerationModel({
       model: this.model.withSettings(additionalSettings),
+      format: this.format,
     }) as this;
   }
 }
 
-const OutputParsingFunctionPrompt = {
+const InstructionWithSchemaPrompt = {
   forSchema<STRUCTURE>({
     instruction,
     schemaDefinition,
@@ -120,10 +141,7 @@ const OutputParsingFunctionPrompt = {
     instruction: string;
     schemaDefinition: SchemaDefinition<any, STRUCTURE>;
   }) {
-    return new AiroborosFunctionPrompt({
-      schemaDefinition,
-      instruction,
-    });
+    return { schemaDefinition, instruction };
   },
 
   forTool<INPUT, OUTPUT>({
@@ -133,7 +151,7 @@ const OutputParsingFunctionPrompt = {
     instruction: string;
     tool: Tool<any, INPUT, OUTPUT>;
   }) {
-    return OutputParsingFunctionPrompt.forSchema({
+    return InstructionWithSchemaPrompt.forSchema({
       instruction,
       schemaDefinition: tool.inputSchemaDefinition,
     });
@@ -147,16 +165,16 @@ const OutputParsingFunctionPrompt = {
 
 (async () => {
   const { tool, parameters, result } = await useTool(
-    new OutputParsingTextGenerationModel({
+    new JsonTextGenerationModel({
       model: new LlamaCppTextGenerationModel({
         nPredict: 1024,
         temperature: 0,
         contextWindowSize: 2048,
       }),
+      format: new AiroborosFunctionPromptFormat(),
     }),
     calculator,
-    // TODO inject Airoboros
-    OutputParsingFunctionPrompt.forToolCurried("What's fourteen times twelve?")
+    InstructionWithSchemaPrompt.forToolCurried("What's fourteen times twelve?")
   );
 
   console.log(`Tool: ${tool}`);
