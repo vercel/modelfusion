@@ -2,11 +2,12 @@ import dotenv from "dotenv";
 import {
   FunctionOptions,
   GenerateJsonModel,
+  InstructionWithSchema,
+  InstructionWithSchemaPrompt,
   LlamaCppTextGenerationModel,
   SchemaDefinition,
   TextGenerationModel,
   TextGenerationModelSettings,
-  Tool,
   generateText,
   useTool,
 } from "modelfusion";
@@ -77,11 +78,6 @@ type JsonTextPromptFormat = {
   extractJson: (response: string) => unknown;
 };
 
-type InstructionWithSchema<NAME extends string, STRUCTURE> = {
-  instruction: string;
-  schemaDefinition: SchemaDefinition<NAME, STRUCTURE>;
-};
-
 class JsonTextGenerationModel<
   SETTINGS extends TextGenerationModelSettings,
   MODEL extends TextGenerationModel<string, any, any, SETTINGS>,
@@ -132,36 +128,6 @@ class JsonTextGenerationModel<
     }) as this;
   }
 }
-
-const InstructionWithSchemaPrompt = {
-  forSchema<STRUCTURE>({
-    instruction,
-    schemaDefinition,
-  }: {
-    instruction: string;
-    schemaDefinition: SchemaDefinition<any, STRUCTURE>;
-  }) {
-    return { schemaDefinition, instruction };
-  },
-
-  forTool<INPUT, OUTPUT>({
-    instruction,
-    tool,
-  }: {
-    instruction: string;
-    tool: Tool<any, INPUT, OUTPUT>;
-  }) {
-    return InstructionWithSchemaPrompt.forSchema({
-      instruction,
-      schemaDefinition: tool.inputSchemaDefinition,
-    });
-  },
-
-  forToolCurried<INPUT, OUTPUT>(instruction: string) {
-    return (tool: Tool<any, INPUT, OUTPUT>) =>
-      this.forTool({ instruction, tool });
-  },
-};
 
 (async () => {
   const { tool, parameters, result } = await useTool(
