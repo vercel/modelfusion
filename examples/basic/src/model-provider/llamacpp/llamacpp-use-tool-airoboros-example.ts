@@ -32,7 +32,6 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
     instruction: string;
   }): string {
     // map schema definition
-    // TODO add check for object instead of any
     const properties: Record<string, { type: string; description: string }> = (
       zodToJsonSchema(schemaDefinition.schema) as any
     ).properties;
@@ -44,10 +43,9 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
       ``,
       `Available functions:`,
       `${schemaDefinition.name}:`,
-      // TODO only include definition if defined:
       `  description: ${schemaDefinition.description ?? ""}`,
       `  params:`,
-      // TODO support nested schemas
+      // Note: Does support nested schemas yet
       ...Object.entries(properties).map(
         ([name, { type, description }]) =>
           `    ${name}: (${type}) ${description}`
