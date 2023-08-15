@@ -20,8 +20,8 @@ OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 npm install
 ```
 
-3. Run any example:
+3. Run:
 
 ```sh
-npx ts-node src/main.ts
+npx ts-node src/MiddleSchoolMathOpenAIFunctions.ts
 ```
