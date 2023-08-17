@@ -2,12 +2,12 @@
 sidebar_position: 5
 ---
 
-# Prompt Mapping
+# Prompt Format
 
-[Prompt mappings](/api/interfaces/PromptMapping) change the prompt format that a model accepts.
+[Prompt formats](/api/interfaces/PromptFormat) change the prompt format that a model accepts.
 This enables the use of abstracted prompts such as [instruction](/api/modules#instructionprompt) or [chat](/api/modules#chatprompt) prompts.
 
-You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `mapPrompt()` method.
+You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `withPromptFormat()` method.
 
 ## Instruction Prompts
 
@@ -18,10 +18,10 @@ You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGeneration
 ```ts
 const model = new CohereTextGenerationModel({
   // ...
-}).mapPrompt(InstructionToTextPromptMapping());
+}).withPromptFormat(TextInstructionPromptFormat());
 ```
 
-The [InstructionToTextPromptMapping](/api/modules#instructiontotextpromptmapping) maps the instruction prompt to a text prompt (that is expected by the [CohereTextGenerationModel](/api/classes/CohereTextGenerationModel)).
+The [TextInstructionPromptFormat](/api/modules#textinstructionpromptformat) maps the instruction prompt to a text prompt (that is expected by the [CohereTextGenerationModel](/api/classes/CohereTextGenerationModel)).
 
 You can now generate text using an instruction prompt:
 
@@ -33,17 +33,17 @@ const text = await generateText(model, {
 });
 ```
 
-### Prompt Mappings
+### Prompt Formats
 
-The following prompt mappings are available for instruction prompts:
+The following prompt formats are available for instruction prompts:
 
-- [InstructionToOpenAIChatPromptMapping](/api/modules#instructiontoopenaichatpromptmapping)
+- [OpenAIChatInstructionPromptFormat](/api/modules#openaichatinstructionpromptformat)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- [InstructionToLlama2PromptMapping](/api/modules#instructiontollama2promptmapping)
+- [Llama2InstructionPromptFormat](/api/modules#llama2instructionpromptformat)
   for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
-- [InstructionToAlpacaPromptMapping](/api/modules#instructiontoalpacapromptmapping)
+- [AlpacaInstructionPromptFormat](/api/modules#alpacainstructionpromptformat)
   for models that use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release).
-- [InstructionToTextPromptMapping](/api/modules#instructiontotextpromptmapping)
+- [TextInstructionPromptFormat](/api/modules#textinstructionpromptformat)
   for other models that expect a generic text prompt.
 
 ## Chat Prompts
@@ -62,10 +62,10 @@ Chat prompts are an array with several constraints that are checked at runtime:
 ```ts
 const model = new OpenAIChatModel({
   model: "gpt-3.5-turbo",
-}).mapPrompt(ChatToOpenAIChatPromptMapping());
+}).withPromptFormat(OpenAIChatChatPromptFormat());
 ```
 
-The [ChatToOpenAIChatPromptMapping](/api/modules#chattoopenaichatpromptmapping) maps the chat prompt to an OpenAI chat prompt (that is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel)).
+The [OpenAIChatChatPromptFormat](/api/modules#openaichatcahtpromptformat) maps the chat prompt to an OpenAI chat prompt (that is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel)).
 
 You can now generate text using a chat prompt:
 
@@ -104,40 +104,40 @@ const textStream = await streamText(
 );
 ```
 
-### Prompt Mappings
+### Prompt Formats
 
-The following prompt mappings are available for chat prompts:
+The following prompt formats are available for chat prompts:
 
-- [ChatToOpenAIChatPromptMapping](/api/modules#chattoopenaichatpromptmapping)
+- [OpenAIChatChatPromptFormat](/api/modules#openaichatchatpromptformat)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- [ChatToLlama2PromptMapping](/api/modules#chattollama2promptmapping)
+- [Llama2ChatPromptFormat](/api/modules#llama2chatpromptformat)
   for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
-- [ChatToVicunaPromptMapping](/api/modules#chattovicunapromptmapping)
+- [VicunaChatPromptFormat](/api/modules#vicunachatpromptformat)
   for models that use the Vicuna prompt format.
-- [ChatToTextPromptMapping](/api/modules#chattotextpromptmapping)
+- [TextChatPromptFormat](/api/modules#textchatpromptformat)
   for other models that expect a generic text prompt.
 
 ## Custom Prompts
 
-You can also create your own custom prompt formats and prompt mappings.
+You can also create your own custom prompt formats and prompt formats.
 
 For this, you need to:
 
 1. create an interface/type for your prompt format, and
-2. create prompt mappings that map your prompt format to the prompt formats of the models that you want to use.
+2. create prompt formats that map your prompt format to the prompt formats of the models that you want to use.
 
-The interface for [prompt mapping](/api/interfaces/PromptMapping) consists of a map function
+The interface for [prompt format](/api/interfaces/PromptFormat) consists of a map function
 and a list of stop tokens.
 
 ```ts
-interface PromptMapping<SOURCE_PROMPT, TARGET_PROMPT> {
+interface PromptFormat<SOURCE_PROMPT, TARGET_PROMPT> {
   map(sourcePrompt: SOURCE_PROMPT): TARGET_PROMPT;
   stopTokens: string[];
 }
 ```
 
-When you have a prompt mapping that matches the prompt format of a model, you can apply it as follows:
+When you have a prompt format that matches the prompt format of a model, you can apply it as follows:
 
 ```ts
-const modelWithMyCustomPromptFormat = model.mapPrompt(myPromptMapping);
+const modelWithMyCustomPromptFormat = model.withPromptFormat(myPromptFormat);
 ```

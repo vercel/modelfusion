@@ -1,5 +1,5 @@
 import {
-  InstructionToAlpacaPromptMapping,
+  AlpacaInstructionPromptFormat,
   LlamaCppTextGenerationModel,
   streamText,
 } from "modelfusion";
@@ -10,7 +10,7 @@ import {
     new LlamaCppTextGenerationModel({
       contextWindowSize: 2048, // context window size of Chronos-13B-v2-GGML
       nPredict: 1024,
-    }).mapPrompt(InstructionToAlpacaPromptMapping()),
+    }).withPromptFormat(AlpacaInstructionPromptFormat()),
     {
       instruction: "You are a celebrated poet. Write a short story about:",
       input: "a robot learning to love.",

@@ -1,14 +1,17 @@
-import { PromptMapping } from "./PromptMapping.js";
+import { PromptFormat } from "./PromptFormat.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
 import { ChatPrompt } from "./chat/ChatPrompt.js";
 import { validateChatPrompt } from "./chat/validateChatPrompt.js";
 
-export const InstructionToTextPromptMapping: () => PromptMapping<
+/**
+ * Formats an instruction prompt as a basic text prompt.
+ */
+export const TextInstructionPromptFormat: () => PromptFormat<
   InstructionPrompt,
   string
 > = () => ({
   stopTokens: [],
-  map: (instruction) => {
+  format: (instruction) => {
     let text = "";
 
     if (instruction.system != null) {
@@ -26,19 +29,19 @@ export const InstructionToTextPromptMapping: () => PromptMapping<
 });
 
 /**
- * A mapping from a chat prompt to a text prompt.
+ * Formats a chat prompt as a basic text prompt.
  *
  * @param user The label of the user in the chat.
  * @param ai The name of the AI in the chat.
  */
-export const ChatToTextPromptMapping: ({
+export const TextChatPromptFormat: ({
   user,
   ai,
 }: {
   user: string;
   ai: string;
-}) => PromptMapping<ChatPrompt, string> = ({ user, ai }) => ({
-  map: (chatPrompt) => {
+}) => PromptFormat<ChatPrompt, string> = ({ user, ai }) => ({
+  format: (chatPrompt) => {
     validateChatPrompt(chatPrompt);
 
     let text = "";

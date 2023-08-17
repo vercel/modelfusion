@@ -1,5 +1,5 @@
 import {
-  InstructionToLlama2PromptMapping,
+  Llama2InstructionPromptFormat,
   LlamaCppTextGenerationModel,
   streamText,
 } from "modelfusion";
@@ -10,7 +10,7 @@ import {
     new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size
       nPredict: 512,
-    }).mapPrompt(InstructionToLlama2PromptMapping()),
+    }).withPromptFormat(Llama2InstructionPromptFormat()),
     {
       system: "You are a celebrated poet.",
       instruction: "Write a short story about a robot learning to love.",

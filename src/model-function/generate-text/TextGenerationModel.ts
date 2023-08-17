@@ -1,5 +1,5 @@
-import { PromptMapping } from "../../prompt/PromptMapping.js";
-import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
+import { PromptFormat } from "../../prompt/PromptFormat.js";
+import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
 import { FunctionOptions } from "../FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
@@ -50,9 +50,9 @@ export interface TextGenerationModel<
     | ((fullDelta: FULL_DELTA) => string | undefined)
     | undefined;
 
-  mapPrompt<INPUT_PROMPT>(
-    promptMapping: PromptMapping<INPUT_PROMPT, PROMPT>
-  ): PromptMappingTextGenerationModel<
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
+  ): PromptFormatTextGenerationModel<
     INPUT_PROMPT,
     PROMPT,
     RESPONSE,

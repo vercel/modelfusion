@@ -1,5 +1,5 @@
 import { InstructionPrompt } from "./InstructionPrompt.js";
-import { PromptMapping } from "./PromptMapping.js";
+import { PromptFormat } from "./PromptFormat.js";
 
 const DEFAULT_SYSTEM_PROMPT_INPUT =
   "Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.";
@@ -7,19 +7,19 @@ const DEFAULT_SYSTEM_PROMPT_NO_INPUT =
   "Below is an instruction that describes a task. Write a response that appropriately completes the request.";
 
 /**
- * Maps an instruction prompt to the Alpaca prompt format.
+ * Formats an instruction prompt as an Alpaca prompt.
  *
  * If the instruction has a system prompt, it overrides the default system prompt
  * (which can impact the results, because the model may be trained on the default system prompt).
  *
  * @see https://github.com/tatsu-lab/stanford_alpaca#data-release
  */
-export const InstructionToAlpacaPromptMapping: () => PromptMapping<
+export const AlpacaInstructionPromptFormat: () => PromptFormat<
   InstructionPrompt,
   string
 > = () => ({
   stopTokens: [],
-  map: (instruction) => {
+  format: (instruction) => {
     let text =
       instruction.system ??
       (instruction.input != null

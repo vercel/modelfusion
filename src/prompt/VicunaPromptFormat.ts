@@ -1,4 +1,4 @@
-import { PromptMapping } from "./PromptMapping.js";
+import { PromptFormat } from "./PromptFormat.js";
 import { ChatPrompt } from "./chat/ChatPrompt.js";
 import { validateChatPrompt } from "./chat/validateChatPrompt.js";
 
@@ -6,7 +6,7 @@ const DEFAULT_SYSTEM_PROMPT =
   "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.";
 
 /**
- * A mapping from a chat prompt to a Vicuna prompt.
+ * Formats a chat prompt as a Vicuna prompt.
  *
  * Overridding the system message in the first chat message can affect model respones.
  *
@@ -18,11 +18,11 @@ const DEFAULT_SYSTEM_PROMPT =
  * ASSISTANT:
  * ```
  */
-export const ChatToVicunaPromptMapping: () => PromptMapping<
+export const VicunaChatPromptFormat: () => PromptFormat<
   ChatPrompt,
   string
 > = () => ({
-  map: (chatPrompt) => {
+  format: (chatPrompt) => {
     validateChatPrompt(chatPrompt);
 
     let text = "";

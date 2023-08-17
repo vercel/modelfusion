@@ -1,1 +1,1 @@
-export * from "./SerpapiWebSearchTool.js";
+export * from "./SerpapiGoogleWebSearchTool.js";

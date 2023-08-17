@@ -1,4 +1,4 @@
-import { PromptMapping } from "./PromptMapping.js";
+import { PromptFormat } from "./PromptFormat.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
 import { ChatPrompt } from "./chat/ChatPrompt.js";
 import { validateChatPrompt } from "./chat/validateChatPrompt.js";
@@ -12,16 +12,16 @@ const BEGIN_SYSTEM = "<<SYS>>\n";
 const END_SYSTEM = "\n<</SYS>>\n\n";
 
 /**
- * Maps an instruction prompt to the Llama2 prompt format.
+ * Formats an instruction prompt as a Llama 2 prompt.
  *
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
  */
-export const InstructionToLlama2PromptMapping: () => PromptMapping<
+export const Llama2InstructionPromptFormat: () => PromptFormat<
   InstructionPrompt,
   string
 > = () => ({
   stopTokens: [END_SEGMENT],
-  map: (instruction) =>
+  format: (instruction) =>
     `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${
       instruction.system != null
         ? ` ${BEGIN_SYSTEM}${instruction.system}${END_SYSTEM}`
@@ -31,11 +31,14 @@ export const InstructionToLlama2PromptMapping: () => PromptMapping<
     } ${END_INSTRUCTION}\n`,
 });
 
-export const ChatToLlama2PromptMapping: () => PromptMapping<
+/**
+ * Formats a chat prompt as a Llama 2 prompt.
+ */
+export const Llama2ChatPromptFormat: () => PromptFormat<
   ChatPrompt,
   string
 > = () => ({
-  map: (chatPrompt) => {
+  format: (chatPrompt) => {
     validateChatPrompt(chatPrompt);
 
     let text = "";

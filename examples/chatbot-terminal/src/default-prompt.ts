@@ -1,6 +1,6 @@
 import {
-  ChatToTextPromptMapping,
   LlamaCppTextGenerationModel,
+  TextChatPromptFormat,
   streamText,
   trimChatPrompt,
 } from "modelfusion";
@@ -24,7 +24,9 @@ const chat = readline.createInterface({
     const model = new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size, adjust for other models
       nPredict: 512,
-    }).mapPrompt(ChatToTextPromptMapping({ user: "user", ai: "assistant" }));
+    }).withPromptFormat(
+      TextChatPromptFormat({ user: "user", ai: "assistant" })
+    );
 
     const textStream = await streamText(
       model,

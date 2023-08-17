@@ -6,6 +6,7 @@ import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
 import { Tool } from "./Tool.js";
 import { ToolExecutionError } from "./ToolExecutionError.js";
+import { z } from "zod";
 
 export type ExecuteToolMetadata = {
   callId: string;
@@ -20,33 +21,36 @@ export type ExecuteToolMetadata = {
 /**
  * `executeTool` directly executes a tool with the given parameters.
  */
-export async function executeTool<INPUT, OUTPUT>(
-  tool: Tool<string, INPUT, OUTPUT>,
-  input: INPUT,
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function executeTool<TOOL extends Tool<any, any, any>>(
+  tool: TOOL,
+  input: z.infer<TOOL["inputSchema"]>,
   options: FunctionOptions<undefined> & {
     fullResponse: true;
   }
 ): Promise<{
-  output: OUTPUT;
+  output: Awaited<ReturnType<TOOL["execute"]>>;
   metadata: ExecuteToolMetadata;
 }>;
-export async function executeTool<INPUT, OUTPUT>(
-  tool: Tool<string, INPUT, OUTPUT>,
-  input: INPUT,
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function executeTool<TOOL extends Tool<any, any, any>>(
+  tool: TOOL,
+  input: z.infer<TOOL["inputSchema"]>,
   options?: FunctionOptions<undefined> & {
     fullResponse?: false;
   }
-): Promise<OUTPUT>;
-export async function executeTool<INPUT, OUTPUT>(
-  tool: Tool<string, INPUT, OUTPUT>,
-  input: INPUT,
+): Promise<ReturnType<TOOL["execute"]>>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function executeTool<TOOL extends Tool<any, any, any>>(
+  tool: TOOL,
+  input: z.infer<TOOL["inputSchema"]>,
   options?: FunctionOptions<undefined> & {
     fullResponse?: boolean;
   }
 ): Promise<
-  | OUTPUT
+  | ReturnType<TOOL["execute"]>
   | {
-      output: OUTPUT;
+      output: Awaited<ReturnType<TOOL["execute"]>>;
       metadata: ExecuteToolMetadata;
     }
 > {
