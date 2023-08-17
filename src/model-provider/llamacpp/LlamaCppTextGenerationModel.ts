@@ -9,8 +9,8 @@ import {
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
-import { PromptMapping } from "../../prompt/PromptMapping.js";
-import { PromptMappingTextGenerationModel } from "../../prompt/PromptMappingTextGenerationModel.js";
+import { PromptFormat } from "../../prompt/PromptFormat.js";
+import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
@@ -157,9 +157,9 @@ export class LlamaCppTextGenerationModel<
     return fullDelta.delta;
   }
 
-  mapPrompt<INPUT_PROMPT>(
-    promptMapping: PromptMapping<INPUT_PROMPT, string>
-  ): PromptMappingTextGenerationModel<
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: PromptFormat<INPUT_PROMPT, string>
+  ): PromptFormatTextGenerationModel<
     INPUT_PROMPT,
     string,
     LlamaCppTextGenerationResponse,
@@ -167,9 +167,9 @@ export class LlamaCppTextGenerationModel<
     LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
-    return new PromptMappingTextGenerationModel({
-      model: this.withStopTokens(promptMapping.stopTokens),
-      promptMapping,
+    return new PromptFormatTextGenerationModel({
+      model: this.withStopTokens(promptFormat.stopTokens),
+      promptFormat,
     });
   }
 

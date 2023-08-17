@@ -2,13 +2,16 @@ import { OpenAIChatMessage } from "../model-provider/openai/chat/OpenAIChatMessa
 import { ChatPrompt } from "./chat/ChatPrompt.js";
 import { validateChatPrompt } from "./chat/validateChatPrompt.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
-import { PromptMapping } from "./PromptMapping.js";
+import { PromptFormat } from "./PromptFormat.js";
 
-export const InstructionToOpenAIChatPromptMapping: () => PromptMapping<
+/**
+ * Formats an instruction prompt as an OpenAI chat prompt.
+ */
+export const OpenAIChatInstructionPromptFormat: () => PromptFormat<
   InstructionPrompt,
   Array<OpenAIChatMessage>
 > = () => ({
-  map: (instruction) => {
+  format: (instruction) => {
     const messages: Array<OpenAIChatMessage> = [];
 
     if (instruction.system != null) {
@@ -35,11 +38,14 @@ export const InstructionToOpenAIChatPromptMapping: () => PromptMapping<
   stopTokens: [],
 });
 
-export const ChatToOpenAIChatPromptMapping: () => PromptMapping<
+/**
+ * Formats a chat prompt as an OpenAI chat prompt.
+ */
+export const OpenAIChatChatPromptFormat: () => PromptFormat<
   ChatPrompt,
   Array<OpenAIChatMessage>
 > = () => ({
-  map: (chatPrompt) => {
+  format: (chatPrompt) => {
     validateChatPrompt(chatPrompt);
 
     const messages: Array<OpenAIChatMessage> = [];

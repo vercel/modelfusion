@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
-  ChatToVicunaPromptMapping,
   LlamaCppTextGenerationModel,
+  VicunaChatPromptFormat,
   streamText,
 } from "modelfusion";
 
@@ -13,7 +13,7 @@ dotenv.config();
     new LlamaCppTextGenerationModel({
       contextWindowSize: 2048, // Vicuna v1.5 context window size
       nPredict: 512,
-    }).mapPrompt(ChatToVicunaPromptMapping()),
+    }).withPromptFormat(VicunaChatPromptFormat()),
     [
       { user: "Write a short story about a robot learning to love." },
       { ai: "Once upon a time, there was a robot who learned to love." },

@@ -4,9 +4,9 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../model-function/generate-text/TextGenerationModel.js";
-import { PromptMapping } from "./PromptMapping.js";
+import { PromptFormat } from "./PromptFormat.js";
 
-export class PromptMappingTextGenerationModel<
+export class PromptFormatTextGenerationModel<
   PROMPT,
   MODEL_PROMPT,
   RESPONSE,
@@ -21,17 +21,17 @@ export class PromptMappingTextGenerationModel<
 > implements TextGenerationModel<PROMPT, RESPONSE, FULL_DELTA, SETTINGS>
 {
   private readonly model: MODEL;
-  private readonly promptMapping: PromptMapping<PROMPT, MODEL_PROMPT>;
+  private readonly promptFormat: PromptFormat<PROMPT, MODEL_PROMPT>;
 
   constructor({
     model,
-    promptMapping,
+    promptFormat,
   }: {
     model: MODEL;
-    promptMapping: PromptMapping<PROMPT, MODEL_PROMPT>;
+    promptFormat: PromptFormat<PROMPT, MODEL_PROMPT>;
   }) {
     this.model = model;
-    this.promptMapping = promptMapping;
+    this.promptFormat = promptFormat;
   }
 
   get modelInformation() {
@@ -65,7 +65,7 @@ export class PromptMappingTextGenerationModel<
 
     return ((prompt: PROMPT) =>
       originalCountPromptTokens(
-        this.promptMapping.map(prompt)
+        this.promptFormat.format(prompt)
       )) as MODEL["countPromptTokens"] extends undefined
       ? undefined
       : (prompt: PROMPT) => PromiseLike<number>;
@@ -75,7 +75,7 @@ export class PromptMappingTextGenerationModel<
     prompt: PROMPT,
     options?: FunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE> {
-    const mappedPrompt = this.promptMapping.map(prompt);
+    const mappedPrompt = this.promptFormat.format(prompt);
     return this.model.generateTextResponse(mappedPrompt, options);
   }
 
@@ -102,7 +102,7 @@ export class PromptMappingTextGenerationModel<
     }
 
     return ((prompt: PROMPT, options: FunctionOptions<SETTINGS>) => {
-      const mappedPrompt = this.promptMapping.map(prompt);
+      const mappedPrompt = this.promptFormat.format(prompt);
       return originalGenerateDeltaStreamResponse(mappedPrompt, options);
     }) as MODEL["generateDeltaStreamResponse"] extends undefined
       ? undefined
@@ -116,9 +116,9 @@ export class PromptMappingTextGenerationModel<
     return this.model.extractTextDelta;
   }
 
-  mapPrompt<INPUT_PROMPT>(
-    promptMapping: PromptMapping<INPUT_PROMPT, PROMPT>
-  ): PromptMappingTextGenerationModel<
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
+  ): PromptFormatTextGenerationModel<
     INPUT_PROMPT,
     PROMPT,
     RESPONSE,
@@ -126,7 +126,7 @@ export class PromptMappingTextGenerationModel<
     SETTINGS,
     this
   > {
-    return new PromptMappingTextGenerationModel<
+    return new PromptFormatTextGenerationModel<
       INPUT_PROMPT,
       PROMPT,
       RESPONSE,
@@ -134,15 +134,15 @@ export class PromptMappingTextGenerationModel<
       SETTINGS,
       this
     >({
-      model: this.withStopTokens(promptMapping.stopTokens),
-      promptMapping,
+      model: this.withStopTokens(promptFormat.stopTokens),
+      promptFormat,
     });
   }
 
   withSettings(additionalSettings: Partial<SETTINGS>): this {
-    return new PromptMappingTextGenerationModel({
+    return new PromptFormatTextGenerationModel({
       model: this.model.withSettings(additionalSettings),
-      promptMapping: this.promptMapping,
+      promptFormat: this.promptFormat,
     }) as this;
   }
 
@@ -151,16 +151,16 @@ export class PromptMappingTextGenerationModel<
   }
 
   withMaxCompletionTokens(maxCompletionTokens: number): this {
-    return new PromptMappingTextGenerationModel({
+    return new PromptFormatTextGenerationModel({
       model: this.model.withMaxCompletionTokens(maxCompletionTokens),
-      promptMapping: this.promptMapping,
+      promptFormat: this.promptFormat,
     }) as this;
   }
 
   withStopTokens(stopTokens: string[]): this {
-    return new PromptMappingTextGenerationModel({
+    return new PromptFormatTextGenerationModel({
       model: this.model.withStopTokens(stopTokens),
-      promptMapping: this.promptMapping,
+      promptFormat: this.promptFormat,
     }) as this;
   }
 }

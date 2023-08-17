@@ -1,5 +1,5 @@
 import {
-  ChatToLlama2PromptMapping,
+  Llama2ChatPromptFormat,
   LlamaCppTextGenerationModel,
   streamText,
   trimChatPrompt,
@@ -24,7 +24,7 @@ const chat = readline.createInterface({
     const model = new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size
       nPredict: 512,
-    }).mapPrompt(ChatToLlama2PromptMapping());
+    }).withPromptFormat(Llama2ChatPromptFormat());
 
     const textStream = await streamText(
       model,

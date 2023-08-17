@@ -9,8 +9,8 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../../model-function/generate-text/TextGenerationModel.js";
-import { PromptMapping } from "../../../prompt/PromptMapping.js";
-import { PromptMappingTextGenerationModel } from "../../../prompt/PromptMappingTextGenerationModel.js";
+import { PromptFormat } from "../../../prompt/PromptFormat.js";
+import { PromptFormatTextGenerationModel } from "../../../prompt/PromptFormatTextGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -309,9 +309,9 @@ export class OpenAIChatModel
     return SecureJSON.parse(jsonText);
   }
 
-  mapPrompt<INPUT_PROMPT>(
-    promptMapping: PromptMapping<INPUT_PROMPT, OpenAIChatMessage[]>
-  ): PromptMappingTextGenerationModel<
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: PromptFormat<INPUT_PROMPT, OpenAIChatMessage[]>
+  ): PromptFormatTextGenerationModel<
     INPUT_PROMPT,
     OpenAIChatMessage[],
     OpenAIChatResponse,
@@ -319,9 +319,9 @@ export class OpenAIChatModel
     OpenAIChatSettings,
     this
   > {
-    return new PromptMappingTextGenerationModel({
-      model: this.withStopTokens(promptMapping.stopTokens),
-      promptMapping,
+    return new PromptFormatTextGenerationModel({
+      model: this.withStopTokens(promptFormat.stopTokens),
+      promptFormat,
     });
   }
 

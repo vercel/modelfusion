@@ -1,6 +1,6 @@
 import {
   CohereTextGenerationModel,
-  InstructionToTextPromptMapping,
+  TextInstructionPromptFormat,
   streamText,
 } from "modelfusion";
 import dotenv from "dotenv";
@@ -12,7 +12,7 @@ dotenv.config();
     new CohereTextGenerationModel({
       model: "command",
       maxTokens: 500,
-    }).mapPrompt(InstructionToTextPromptMapping()),
+    }).withPromptFormat(TextInstructionPromptFormat()),
     {
       system: "You are a celebrated poet.",
       instruction: "Write a short story about:",

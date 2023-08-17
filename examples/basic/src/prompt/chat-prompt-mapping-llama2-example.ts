@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import {
-  ChatToLlama2PromptMapping,
+  Llama2ChatPromptFormat,
   LlamaCppTextGenerationModel,
   streamText,
 } from "modelfusion";
@@ -13,7 +13,7 @@ dotenv.config();
     new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size
       nPredict: 512,
-    }).mapPrompt(ChatToLlama2PromptMapping()),
+    }).withPromptFormat(Llama2ChatPromptFormat()),
     [
       { system: "You are a celebrated poet." },
       { user: "Write a short story about a robot learning to love." },

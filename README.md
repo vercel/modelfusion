@@ -43,7 +43,7 @@ You can provide API keys for the different [integrations](https://modelfusion.de
 
 Generate text using a language model and a prompt.
 You can stream the text if it is supported by the model.
-You can use [prompt mappings](https://modelfusion.dev/guide/function/generate-text/prompt-mapping) to change the prompt format of a model.
+You can use [prompt formats](https://modelfusion.dev/guide/function/generate-text/prompt-format) to change the prompt format of a model.
 
 #### generateText
 
@@ -70,16 +70,16 @@ for await (const textFragment of textStream) {
 }
 ```
 
-#### Prompt Mapping
+#### Prompt Format
 
-[Prompt mapping](https://modelfusion.dev/guide/function/generate-text/prompt-mapping) lets you use higher level prompt structures (such as instruction or chat prompts) for different models.
+[Prompt format](https://modelfusion.dev/guide/function/generate-text/prompt-format) lets you use higher level prompt structures (such as instruction or chat prompts) for different models.
 
 ```ts
 const text = await generateText(
   new LlamaCppTextGenerationModel({
     contextWindowSize: 4096, // Llama 2 context window size
     nPredict: 1000,
-  }).mapPrompt(InstructionToLlama2PromptMapping()),
+  }).withPromptFormat(Llama2InstructionPromptFormat()),
   {
     system: "You are a story writer.",
     instruction: "Write a short story about a robot learning to love.",
@@ -91,7 +91,7 @@ const text = await generateText(
 const textStream = await streamText(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
-  }).mapPrompt(ChatToOpenAIChatPromptMapping()),
+  }).withPromptFormat(OpenAIChatChatPromptFormat()),
   [
     { system: "You are a celebrated poet." },
     { user: "Write a short story about a robot learning to love." },
