@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.14.0 - 2023-08-17
+
+### Changed
+
+- **Breaking change**: Renamed prompt mappings (and related code) to prompt format.
+- Improved type inference for WebSearchTool and executeTool.
+
 ## v0.12.0 - 2023-08-15
 
 ### Added
