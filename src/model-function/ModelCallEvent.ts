@@ -24,6 +24,10 @@ import {
   TextStreamingStartedEvent,
 } from "./generate-text/TextStreamingEvent.js";
 import {
+  SpeechSynthesisFinishedEvent,
+  SpeechSynthesisStartedEvent,
+} from "./synthesize-speech/SpeechSynthesisEvent.js";
+import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
 } from "./transcribe-speech/TranscriptionEvent.js";
@@ -35,6 +39,7 @@ export type ModelCallStartedEventMetadata = RunFunctionStartedEventMetadata & {
 export type ModelCallStartedEvent =
   | ImageGenerationStartedEvent
   | JsonGenerationStartedEvent
+  | SpeechSynthesisStartedEvent
   | TextEmbeddingStartedEvent
   | TextGenerationStartedEvent
   | TextStreamingStartedEvent
@@ -48,6 +53,7 @@ export type ModelCallFinishedEventMetadata =
 export type ModelCallFinishedEvent =
   | ImageGenerationFinishedEvent
   | JsonGenerationFinishedEvent
+  | SpeechSynthesisFinishedEvent
   | TextEmbeddingFinishedEvent
   | TextGenerationFinishedEvent
   | TextStreamingFinishedEvent

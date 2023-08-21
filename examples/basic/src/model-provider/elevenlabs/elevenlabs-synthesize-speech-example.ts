@@ -1,16 +1,17 @@
 import dotenv from "dotenv";
-import { ElevenLabsSpeechSynthesisModel } from "modelfusion";
+import { ElevenLabsSpeechSynthesisModel, synthesizeSpeech } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
 
 (async () => {
-  const model = new ElevenLabsSpeechSynthesisModel({
-    voice: "21m00Tcm4TlvDq8ikWAM", // Rachel
-  });
-
-  const speechBuffer = await model.generateSpeechResponse("Hello world!");
+  const speech = await synthesizeSpeech(
+    new ElevenLabsSpeechSynthesisModel({
+      voice: "ErXwobaYiN019PkySvjV",
+    }),
+    "Hello, World!"
+  );
 
   const path = `./elevenlabs-speech-example.mp3`;
-  fs.writeFileSync(path, speechBuffer);
+  fs.writeFileSync(path, speech);
 })();
