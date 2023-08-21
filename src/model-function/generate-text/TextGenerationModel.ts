@@ -13,7 +13,7 @@ export interface TextGenerationModelSettings extends ModelSettings {
   maxCompletionTokens?: number | undefined;
 
   /**
-   * Stop tokens to use. Stop tokens are not included in the generated text.
+   * Stop sequences to use. Stop sequences are not included in the generated text.
    * Does nothing if the model does not support this setting.
    */
   stopSequences?: string[] | undefined;
