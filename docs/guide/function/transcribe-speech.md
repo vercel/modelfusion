@@ -2,7 +2,7 @@
 sidebar_position: 30
 ---
 
-# Transcribe Audio
+# Transcribe Speech
 
 ## Usage
 
@@ -10,7 +10,7 @@ sidebar_position: 30
 
 [transcribe API](/api/modules#transcribe)
 
-Transcribe audio data into text.
+Transcribe speech (audio) data into text.
 
 #### With OpenAI transcription model
 

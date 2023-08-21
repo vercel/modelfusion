@@ -26,7 +26,7 @@ import {
 import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
-} from "./transcribe-audio/TranscriptionEvent.js";
+} from "./transcribe-speech/TranscriptionEvent.js";
 
 export type ModelCallStartedEventMetadata = RunFunctionStartedEventMetadata & {
   model: ModelInformation;

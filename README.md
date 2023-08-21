@@ -260,9 +260,9 @@ const { tool, parameters, result, text } = await useToolOrGenerateText(
 );
 ```
 
-### [Transcribe Audio](https://modelfusion.dev/guide/function/transcribe-audio)
+### [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
 
-Turn audio (voice) into text.
+Turn speech (audio) into text.
 
 ```ts
 const transcription = await transcribe(
@@ -356,7 +356,7 @@ const { chunks } = await retrieveTextChunks(
   - [Generate JSON or text](https://modelfusion.dev/guide/function/generate-json-or-text)
   - [Embed Text](https://modelfusion.dev/guide/function/embed-text)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
-  - [Transcribe Audio](https://modelfusion.dev/guide/function/transcribe-audio)
+  - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
   - [Generate images](https://modelfusion.dev/guide/function/generate-image)
 - Summarize text
 - [Tools](https://modelfusion.dev/guide/tools)
@@ -385,7 +385,7 @@ const { chunks } = await retrieveTextChunks(
 | [Embed text](https://modelfusion.dev/guide/function/embed-text)                       | ✅                                                                  | ✅                                                                  | ✅                                                                       | ✅                                                                             |                                                                              |                                                                                   |
 | [Tokenize text](https://modelfusion.dev/guide/function/tokenize-text)                 | full                                                                | full                                                                | basic                                                                    |                                                                                |                                                                              |                                                                                   |
 | [Generate image](https://modelfusion.dev/guide/function/generate-image)               | ✅                                                                  |                                                                     |                                                                          |                                                                                | ✅                                                                           | ✅                                                                                |
-| [Transcribe audio](https://modelfusion.dev/guide/function/transcribe-audio)           | ✅                                                                  |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
+| [Transcribe speech](https://modelfusion.dev/guide/function/transcribe-speech)         | ✅                                                                  |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
 | [Cost calculation](https://modelfusion.dev/guide/run/cost-calculation)                | ✅                                                                  |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
 
 ### Vector Indices
