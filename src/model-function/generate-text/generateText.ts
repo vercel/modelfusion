@@ -64,8 +64,8 @@ export async function generateText<
     options,
     generateResponse: (options) => model.generateTextResponse(prompt, options),
     extractOutputValue: (result) => {
-      const shouldTrimOutput = model.settings.trimOutput ?? true;
-      return shouldTrimOutput
+      const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
+      return shouldTrimWhitespace
         ? model.extractText(result).trim()
         : model.extractText(result);
     },

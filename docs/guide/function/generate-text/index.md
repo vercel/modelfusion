@@ -19,7 +19,7 @@ The different [TextGenerationModel](/api/interfaces/TextGenerationModel) impleme
 
 - **maxCompletionTokens**: The maximum number of tokens to generate, or undefined to generate an unlimited number of tokens.
 - **stopTokens**: An array of texts that will stop the generation when generated.
-- **trimOutput**: Whether to trim the whitespace from the generated text.
+- **trimWhitespace**: When true (default), the leading and trailing white space and line terminator characters are removed from the generated text.
 
 In addition to these common settings, each model exposes its own settings.
 The settings can be set in the constructor of the model, or in the `withSettings` method.
