@@ -3,4 +3,4 @@
 build
 dist
 node_modules
-examples/*/package-lock.json
+package-lock.json
