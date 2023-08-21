@@ -25,6 +25,7 @@ export * from "./generate-text/TextGenerationEvent.js";
 export * from "./generate-text/TextGenerationModel.js";
 export * from "./generate-text/generateText.js";
 export * from "./generate-text/streamText.js";
+export * from "./synthesize-speech/SpeechSynthesisModel.js";
 export * from "./tokenize-text/Tokenizer.js";
 export * from "./tokenize-text/countTokens.js";
 export * from "./transcribe-speech/TranscriptionEvent.js";
