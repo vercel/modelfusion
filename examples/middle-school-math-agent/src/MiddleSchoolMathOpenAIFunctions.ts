@@ -45,7 +45,7 @@ const problem = questions[Math.floor(Math.random() * questions.length)];
       new OpenAIChatModel({
         model: "gpt-4",
         temperature: 0,
-        maxTokens: 500,
+        maxCompletionTokens: 500,
       }),
       [calculator, answer],
       OpenAIChatFunctionPrompt.forToolsCurried(messages)

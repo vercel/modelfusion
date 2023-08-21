@@ -44,7 +44,7 @@ const answer = await generateText(
   new OpenAIChatModel({
     model: "gpt-4",
     temperature: 0, // remove randomness as much as possible
-    maxTokens: 500,
+    maxCompletionTokens: 500,
   }),
   [
     OpenAIChatMessage.system(

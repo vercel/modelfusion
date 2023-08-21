@@ -66,5 +66,5 @@ export const VicunaChatPromptFormat: () => PromptFormat<
 
     return text;
   },
-  stopTokens: [`\nUSER:`],
+  stopSequences: [`\nUSER:`],
 });

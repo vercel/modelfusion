@@ -11,7 +11,7 @@ dotenv.config();
   const textStream = await streamText(
     new CohereTextGenerationModel({
       model: "command",
-      maxTokens: 500,
+      maxCompletionTokens: 500,
     }).withPromptFormat(TextInstructionPromptFormat()),
     {
       system: "You are a celebrated poet.",

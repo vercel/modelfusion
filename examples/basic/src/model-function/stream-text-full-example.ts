@@ -5,7 +5,7 @@ dotenv.config();
 
 (async () => {
   const { textStream, metadata } = await streamText(
-    new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
+    new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
     [
       OpenAIChatMessage.system("You are a story writer. Write a story about:"),
       OpenAIChatMessage.user("A robot learning to love"),

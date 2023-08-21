@@ -30,7 +30,7 @@ Consider [mapping the prompt to the prompt format](#prompt-formats) that your mo
 import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
 
 const text = await generateText(
-  new LlamaCppTextGenerationModel({ nPredict: 256 }),
+  new LlamaCppTextGenerationModel({ maxCompletionTokens: 256 }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -45,7 +45,10 @@ Consider [mapping the prompt to the prompt format](#prompt-formats) that your mo
 import { LlamaCppTextGenerationModel, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({ nPredict: 1024, temperature: 0.7 }),
+  new LlamaCppTextGenerationModel({
+    maxCompletionTokens: 1024,
+    temperature: 0.7,
+  }),
   "Write a short story about a robot learning to love:\n\n"
 );
 

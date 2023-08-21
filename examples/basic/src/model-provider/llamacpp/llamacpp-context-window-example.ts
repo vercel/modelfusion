@@ -3,7 +3,7 @@ import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
 (async () => {
   const text = await generateText(
     new LlamaCppTextGenerationModel({
-      nPredict: 512,
+      maxCompletionTokens: 512,
       temperature: 0.7,
 
       // Assuming the default Llama2 7B model is loaded, the context window size is 4096 tokens.

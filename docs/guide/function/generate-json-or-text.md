@@ -18,7 +18,10 @@ This is useful for building chatbots with plugins and agents.
 
 ```ts
 const { schema, value, text } = await generateJsonOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    maxCompletionTokens: 1000,
+  }),
   [
     {
       name: "getCurrentWeather" as const, // mark 'as const' for type inference

@@ -18,7 +18,7 @@ export const AlpacaInstructionPromptFormat: () => PromptFormat<
   InstructionPrompt,
   string
 > = () => ({
-  stopTokens: [],
+  stopSequences: [],
   format: (instruction) => {
     let text =
       instruction.system ??

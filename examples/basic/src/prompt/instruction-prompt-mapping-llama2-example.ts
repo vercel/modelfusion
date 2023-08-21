@@ -9,7 +9,7 @@ import {
   const textStream = await streamText(
     new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size
-      nPredict: 512,
+      maxCompletionTokens: 512,
     }).withPromptFormat(Llama2InstructionPromptFormat()),
     {
       system: "You are a celebrated poet.",

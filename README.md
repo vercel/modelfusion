@@ -58,7 +58,10 @@ const text = await generateText(
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    maxCompletionTokens: 1000,
+  }),
   [
     OpenAIChatMessage.system("You are a story writer."),
     OpenAIChatMessage.user("Write a story about a robot learning to love"),
@@ -78,7 +81,7 @@ for await (const textFragment of textStream) {
 const text = await generateText(
   new LlamaCppTextGenerationModel({
     contextWindowSize: 4096, // Llama 2 context window size
-    nPredict: 1000,
+    maxCompletionTokens: 1000,
   }).withPromptFormat(Llama2InstructionPromptFormat()),
   {
     system: "You are a story writer.",
@@ -111,7 +114,7 @@ ModelFusion model functions return rich results that include the original respon
 const { response, metadata } = await generateText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
-    maxTokens: 1000,
+    maxCompletionTokens: 1000,
     n: 2, // generate 2 completions
   }),
   "Write a short story about a robot learning to love:\n\n",
@@ -134,7 +137,7 @@ const value = await generateJson(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,
-    maxTokens: 50,
+    maxCompletionTokens: 50,
   }),
   {
     name: "sentiment" as const,
@@ -165,7 +168,10 @@ It either matches one of the schemas or is text reponse.
 
 ```ts
 const { schema, value, text } = await generateJsonOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    maxCompletionTokens: 1000,
+  }),
   [
     {
       name: "getCurrentWeather" as const, // mark 'as const' for type inference

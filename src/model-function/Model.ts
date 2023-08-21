@@ -15,11 +15,11 @@ export interface Model<SETTINGS> {
    * @example
    * const model = new OpenAITextGenerationModel({
    *   model: "text-davinci-003",
-   *   maxTokens: 500,
+   *   maxCompletionTokens: 500,
    * });
    *
    * const modelWithMoreTokens = model.withSettings({
-   *   maxTokens: 1000,
+   *   maxCompletionTokens: 1000,
    * });
    */
   withSettings(additionalSettings: Partial<SETTINGS>): this;

@@ -13,7 +13,7 @@ dotenv.config();
   generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
-      maxTokens: 500,
+      maxCompletionTokens: 500,
     }),
     "Write a short story about a robot learning to love:\n\n",
     {

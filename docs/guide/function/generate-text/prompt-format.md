@@ -132,7 +132,7 @@ and a list of stop tokens.
 ```ts
 interface PromptFormat<SOURCE_PROMPT, TARGET_PROMPT> {
   map(sourcePrompt: SOURCE_PROMPT): TARGET_PROMPT;
-  stopTokens: string[];
+  stopSequences: string[];
 }
 ```
 

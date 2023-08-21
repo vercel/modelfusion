@@ -16,7 +16,7 @@ export async function trimChatPrompt({
   prompt,
   model,
   tokenLimit = model.contextWindowSize -
-    (model.maxCompletionTokens ?? model.contextWindowSize / 4),
+    (model.settings.maxCompletionTokens ?? model.contextWindowSize / 4),
 }: {
   prompt: ChatPrompt;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

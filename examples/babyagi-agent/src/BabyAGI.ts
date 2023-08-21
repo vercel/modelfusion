@@ -46,7 +46,7 @@ async function runBabyAGI({
         `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}`,
         `Response:`,
       ].join("\n"),
-      { settings: { temperature: 0.7, maxTokens: 2000 } }
+      { settings: { temperature: 0.7, maxCompletionTokens: 2000 } }
     );
   }
 
@@ -71,7 +71,7 @@ async function runBabyAGI({
         `Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.`,
         `Return the tasks as an array.`,
       ].join("\n"),
-      { settings: { temperature: 0.5, maxTokens: 100 } }
+      { settings: { temperature: 0.5, maxCompletionTokens: 100 } }
     );
 
     return newTasksText.split("\n");
@@ -98,7 +98,7 @@ async function runBabyAGI({
         `#. Second task`,
         `Start the task list with number ${nextTaskId}.`,
       ].join("\n"),
-      { settings: { temperature: 0.5, maxTokens: 1000 } }
+      { settings: { temperature: 0.5, maxCompletionTokens: 1000 } }
     );
 
     return prioritizedTasksText.split("\n").map((task) => {

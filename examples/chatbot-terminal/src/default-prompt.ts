@@ -23,7 +23,7 @@ const chat = readline.createInterface({
 
     const model = new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size, adjust for other models
-      nPredict: 512,
+      maxCompletionTokens: 512,
     }).withPromptFormat(
       TextChatPromptFormat({ user: "user", ai: "assistant" })
     );

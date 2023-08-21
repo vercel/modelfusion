@@ -6,7 +6,23 @@ import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
 import { DeltaEvent } from "./DeltaEvent.js";
 
 export interface TextGenerationModelSettings extends ModelSettings {
-  trimOutput?: boolean;
+  /**
+   * Maximum number of tokens to generate.
+   * Does nothing if the model does not support this setting.
+   */
+  maxCompletionTokens?: number | undefined;
+
+  /**
+   * Stop sequences to use. Stop sequences are not included in the generated text.
+   * Does nothing if the model does not support this setting.
+   */
+  stopSequences?: string[] | undefined;
+
+  /**
+   * When true, the leading and trailing white space and line terminator characters
+   * are removed from the generated text.
+   */
+  trimWhitespace?: boolean;
 }
 
 export interface TextGenerationModel<
@@ -60,21 +76,4 @@ export interface TextGenerationModel<
     SETTINGS,
     this
   >;
-
-  /**
-   * Maximum number of tokens to generate.
-   */
-  readonly maxCompletionTokens: number | undefined;
-
-  /**
-   * Sets the maximum number of tokens to generate.
-   * Does nothing if the model does not support this setting.
-   */
-  withMaxCompletionTokens(maxCompletionTokens: number): this;
-
-  /**
-   * Sets the stop tokens to use. Stop tokens are not included in the generated text.
-   * Does nothing if the model does not support this setting.
-   */
-  withStopTokens(stopTokens: string[]): this;
 }

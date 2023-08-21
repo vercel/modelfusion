@@ -12,7 +12,7 @@ dotenv.config();
   const textStream = await streamText(
     new LlamaCppTextGenerationModel({
       contextWindowSize: 2048, // Vicuna v1.5 context window size
-      nPredict: 512,
+      maxCompletionTokens: 512,
     }).withPromptFormat(VicunaChatPromptFormat()),
     [
       { user: "Write a short story about a robot learning to love." },

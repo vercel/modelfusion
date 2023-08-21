@@ -21,7 +21,7 @@ const sentiment = await generateJson(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,
-    maxTokens: 50,
+    maxCompletionTokens: 50,
   }),
   {
     name: "sentiment" as const,

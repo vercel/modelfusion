@@ -38,7 +38,7 @@ const chat = readline.createInterface({
 
     const model = new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size
-      nPredict: 512,
+      maxCompletionTokens: 512,
     }).withPromptFormat(Llama2ChatPromptFormat());
 
     const textStream = await streamText(

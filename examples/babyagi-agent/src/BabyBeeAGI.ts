@@ -74,7 +74,7 @@ async function runBabyBeeAGI({
       new OpenAITextGenerationModel({
         model: "text-davinci-003",
         temperature: 0.5,
-        maxTokens: 1500,
+        maxCompletionTokens: 1500,
       }),
       prompt
     );
@@ -254,7 +254,7 @@ async function runBabyBeeAGI({
       new OpenAITextGenerationModel({
         model: "text-davinci-003",
         temperature: 0.5,
-        maxTokens: 100,
+        maxCompletionTokens: 100,
       }),
       [
         `Please summarize the following text:`,
@@ -278,7 +278,7 @@ async function runBabyBeeAGI({
       new OpenAITextGenerationModel({
         model: "text-davinci-003",
         temperature: 0.5,
-        maxTokens: 200,
+        maxCompletionTokens: 200,
       }),
       [
         `Here is the current session summary:`,

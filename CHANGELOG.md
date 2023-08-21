@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.15.0 - UNRELEASED
+
+### Changed
+
+- Introduced unified `stopSequences` and `maxCompletionTokens` properties for all text generation models. **Breaking change**: `maxCompletionTokens` and `stopSequences` are part of the base TextGenerationModel. Specific names for these properties in models have been replaced by this, e.g. `maxTokens` in OpenAI models is now `maxCompletionTokens`.
+
 ## v0.14.0 - 2023-08-17
 
 ### Changed

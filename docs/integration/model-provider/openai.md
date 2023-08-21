@@ -27,7 +27,7 @@ const text = await generateText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
     temperature: 0.7,
-    maxTokens: 500,
+    maxCompletionTokens: 500,
   }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -46,7 +46,7 @@ const text = await generateText(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0.7,
-    maxTokens: 500,
+    maxCompletionTokens: 500,
   }),
   [
     OpenAIChatMessage.system(
@@ -68,7 +68,7 @@ import { OpenAITextGenerationModel, streamText } from "modelfusion";
 const textStream = await streamText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
-    maxTokens: 1000,
+    maxCompletionTokens: 1000,
   }),
   "You are a story writer. Write a story about a robot learning to love"
 );
@@ -86,7 +86,7 @@ for await (const textFragment of textStream) {
 import { OpenAIChatMessage, OpenAIChatModel, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
+  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
   [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
     OpenAIChatMessage.user("A robot learning to love"),
@@ -120,7 +120,7 @@ const sentiment = await generateJson(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,
-    maxTokens: 50,
+    maxCompletionTokens: 50,
   }),
   {
     name: "sentiment" as const,
@@ -155,7 +155,7 @@ JSON generation uses the [OpenAI GPT function calling API](https://platform.open
 
 ```ts
 const { schema, value, text } = await generateJsonOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxTokens: 1000 }),
+  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
   [
     {
       name: "getCurrentWeather" as const, // mark 'as const' for type inference

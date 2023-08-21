@@ -44,9 +44,7 @@ export interface LlamaCppTextGenerationModelSettings<
   temperature?: number;
   topK?: number;
   topP?: number;
-  nPredict?: number;
   nKeep?: number;
-  stop?: string[];
   tfsZ?: number;
   typicalP?: number;
   repeatPenalty?: number;
@@ -107,11 +105,19 @@ export class LlamaCppTextGenerationModel<
   ): Promise<RESPONSE> {
     const { run, settings, responseFormat } = options;
 
-    const callSettings = Object.assign(this.settings, settings, {
+    const combinedSettings = {
+      ...this.settings,
+      ...settings,
+    };
+
+    const callSettings = {
+      ...combinedSettings,
+      nPredict: combinedSettings.maxCompletionTokens,
+      stop: combinedSettings.stopSequences,
       abortSignal: run?.abortSignal,
       prompt,
       responseFormat,
-    });
+    };
 
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
@@ -168,7 +174,9 @@ export class LlamaCppTextGenerationModel<
     this
   > {
     return new PromptFormatTextGenerationModel({
-      model: this.withStopTokens(promptFormat.stopTokens),
+      model: this.withSettings({
+        stopSequences: promptFormat.stopSequences,
+      }),
       promptFormat,
     });
   }
@@ -181,18 +189,6 @@ export class LlamaCppTextGenerationModel<
     return new LlamaCppTextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
-  }
-
-  get maxCompletionTokens() {
-    return this.settings.nPredict;
-  }
-
-  withMaxCompletionTokens(maxCompletionTokens: number) {
-    return this.withSettings({ nPredict: maxCompletionTokens });
-  }
-
-  withStopTokens(stopTokens: string[]) {
-    return this.withSettings({ stop: stopTokens });
   }
 }
 

@@ -30,7 +30,7 @@ Model functions return rich results that include the original response and metad
 const { response, metadata } = await generateText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
-    maxTokens: 1000,
+    maxCompletionTokens: 1000,
     n: 2, // generate 2 completions
   }),
   "Write a short story about a robot learning to love:\n\n",
@@ -62,7 +62,7 @@ Models are created using a constructor call. The constructors take a single conf
 ```ts
 const model = new OpenAITextGenerationModel({
   model: "text-davinci-003",
-  maxTokens: 500,
+  maxCompletionTokens: 500,
 });
 ```
 
@@ -72,7 +72,7 @@ The `withSettings` method creates a new model with the same configuration as the
 
 ```ts
 const modelWithMoreTokens = model.withSettings({
-  maxTokens: 1000,
+  maxCompletionTokens: 1000,
 });
 ```
 

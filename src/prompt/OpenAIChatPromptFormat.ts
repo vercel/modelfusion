@@ -35,7 +35,7 @@ export const OpenAIChatInstructionPromptFormat: () => PromptFormat<
 
     return messages;
   },
-  stopTokens: [],
+  stopSequences: [],
 });
 
 /**
@@ -93,5 +93,5 @@ export const OpenAIChatChatPromptFormat: () => PromptFormat<
 
     return messages;
   },
-  stopTokens: [],
+  stopSequences: [],
 });

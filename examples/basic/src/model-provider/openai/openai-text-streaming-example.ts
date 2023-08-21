@@ -7,7 +7,7 @@ dotenv.config();
   const textStream = await streamText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
-      maxTokens: 1000,
+      maxCompletionTokens: 1000,
     }),
     "You are a story writer. Write a story about a robot learning to love"
   );
