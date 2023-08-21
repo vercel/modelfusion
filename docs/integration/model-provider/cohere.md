@@ -25,7 +25,7 @@ const text = await generateText(
   new CohereTextGenerationModel({
     model: "command-nightly",
     temperature: 0.7,
-    maxTokens: 500,
+    maxCompletionTokens: 500,
   }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -42,7 +42,7 @@ const textStream = await streamText(
   new CohereTextGenerationModel({
     model: "command-nightly",
     temperature: 0.7,
-    maxTokens: 500,
+    maxCompletionTokens: 500,
   }),
   "Write a short story about a robot learning to love:\n\n"
 );

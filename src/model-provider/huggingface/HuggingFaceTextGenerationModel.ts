@@ -30,10 +30,10 @@ export interface HuggingFaceTextGenerationModelSettings
   topP?: number;
   temperature?: number;
   repetitionPenalty?: number;
-  maxNewTokens?: number;
   maxTime?: number;
   numReturnSequences?: number;
   doSample?: boolean;
+
   options?: {
     useCache?: boolean;
     waitForModel?: boolean;
@@ -49,7 +49,7 @@ export interface HuggingFaceTextGenerationModelSettings
  * const model = new HuggingFaceTextGenerationModel({
  *   model: "tiiuae/falcon-7b",
  *   temperature: 0.7,
- *   maxTokens: 500,
+ *   maxCompletionTokens: 500,
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
@@ -99,21 +99,22 @@ export class HuggingFaceTextGenerationModel
     const run = options?.run;
     const settings = options?.settings;
 
-    const callSettings = Object.assign(
-      {
-        apiKey: this.apiKey,
-        options: {
-          useCache: true,
-          waitForModel: true,
-        },
+    const combinedSettings = {
+      ...this.settings,
+      ...settings,
+    };
+
+    const callSettings = {
+      apiKey: this.apiKey,
+      options: {
+        useCache: true,
+        waitForModel: true,
       },
-      this.settings,
-      settings,
-      {
-        abortSignal: run?.abortSignal,
-        inputs: prompt,
-      }
-    );
+      ...combinedSettings,
+      maxNewTokens: combinedSettings.maxCompletionTokens,
+      abortSignal: run?.abortSignal,
+      inputs: prompt,
+    };
 
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
@@ -160,19 +161,6 @@ export class HuggingFaceTextGenerationModel
     return new HuggingFaceTextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
-  }
-
-  get maxCompletionTokens() {
-    return this.settings.maxNewTokens;
-  }
-
-  withMaxCompletionTokens(maxCompletionTokens: number): this {
-    return this.withSettings({ maxNewTokens: maxCompletionTokens });
-  }
-
-  withStopTokens(): this {
-    // stop tokens are not supported by the HuggingFace API
-    return this;
   }
 }
 

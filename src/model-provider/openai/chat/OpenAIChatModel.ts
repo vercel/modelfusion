@@ -137,7 +137,7 @@ export interface OpenAIChatCallSettings {
 export interface OpenAIChatSettings
   extends TextGenerationModelSettings,
     OpenAIModelSettings,
-    OpenAIChatCallSettings {
+    Omit<OpenAIChatCallSettings, "stop" | "maxTokens"> {
   isUserIdForwardingEnabled?: boolean;
 }
 
@@ -150,7 +150,7 @@ export interface OpenAIChatSettings
  * const model = new OpenAIChatModel({
  *   model: "gpt-3.5-turbo",
  *   temperature: 0.7,
- *   maxTokens: 500,
+ *   maxCompletionTokens: 500,
  * });
  *
  * const text = await generateText([
@@ -229,19 +229,21 @@ export class OpenAIChatModel
   ): Promise<RESULT> {
     const { run, settings, responseFormat } = options;
 
-    const callSettings = Object.assign(
-      {
-        apiKey: this.apiKey,
-        user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
-      },
-      this.settings,
-      settings,
-      {
-        abortSignal: run?.abortSignal,
-        messages,
-        responseFormat,
-      }
-    );
+    const combinedSettings = {
+      ...this.settings,
+      ...settings,
+    };
+
+    const callSettings = {
+      apiKey: this.apiKey,
+      user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
+      ...combinedSettings,
+      stop: combinedSettings.stopTokens,
+      maxTokens: combinedSettings.maxCompletionTokens,
+      abortSignal: run?.abortSignal,
+      messages,
+      responseFormat,
+    };
 
     return callWithRetryAndThrottle({
       retry: callSettings.retry,
@@ -320,7 +322,7 @@ export class OpenAIChatModel
     this
   > {
     return new PromptFormatTextGenerationModel({
-      model: this.withStopTokens(promptFormat.stopTokens),
+      model: this.withSettings({ stopTokens: promptFormat.stopTokens }),
       promptFormat,
     });
   }
@@ -329,18 +331,6 @@ export class OpenAIChatModel
     return new OpenAIChatModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
-  }
-
-  get maxCompletionTokens() {
-    return this.settings.maxTokens;
-  }
-
-  withMaxCompletionTokens(maxCompletionTokens: number) {
-    return this.withSettings({ maxTokens: maxCompletionTokens });
-  }
-
-  withStopTokens(stopTokens: string[]): this {
-    return this.withSettings({ stop: stopTokens });
   }
 }
 

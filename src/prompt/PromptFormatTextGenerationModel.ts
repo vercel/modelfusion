@@ -134,7 +134,9 @@ export class PromptFormatTextGenerationModel<
       SETTINGS,
       this
     >({
-      model: this.withStopTokens(promptFormat.stopTokens),
+      model: this.withSettings({
+        stopTokens: promptFormat.stopTokens,
+      } as Partial<SETTINGS>),
       promptFormat,
     });
   }
@@ -142,24 +144,6 @@ export class PromptFormatTextGenerationModel<
   withSettings(additionalSettings: Partial<SETTINGS>): this {
     return new PromptFormatTextGenerationModel({
       model: this.model.withSettings(additionalSettings),
-      promptFormat: this.promptFormat,
-    }) as this;
-  }
-
-  get maxCompletionTokens(): MODEL["maxCompletionTokens"] {
-    return this.model.maxCompletionTokens;
-  }
-
-  withMaxCompletionTokens(maxCompletionTokens: number): this {
-    return new PromptFormatTextGenerationModel({
-      model: this.model.withMaxCompletionTokens(maxCompletionTokens),
-      promptFormat: this.promptFormat,
-    }) as this;
-  }
-
-  withStopTokens(stopTokens: string[]): this {
-    return new PromptFormatTextGenerationModel({
-      model: this.model.withStopTokens(stopTokens),
       promptFormat: this.promptFormat,
     }) as this;
   }

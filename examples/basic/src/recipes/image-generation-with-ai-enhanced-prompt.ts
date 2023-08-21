@@ -15,7 +15,7 @@ async function generateImageWithAIPrompt(prompt: string) {
     new OpenAIChatModel({
       model: "gpt-4",
       temperature: 0, // remove randomness
-      maxTokens: 500, // enough tokens for prompt
+      maxCompletionTokens: 500, // enough tokens for prompt
     }),
     [
       OpenAIChatMessage.system(

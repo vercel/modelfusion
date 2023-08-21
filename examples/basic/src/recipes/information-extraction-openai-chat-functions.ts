@@ -16,7 +16,7 @@ dotenv.config();
       new OpenAIChatModel({
         model: "gpt-4",
         temperature: 0, // remove randomness as much as possible
-        maxTokens: 200, // only a few tokens needed for the response
+        maxCompletionTokens: 200, // only a few tokens needed for the response
       }),
       {
         name: "storeCity",

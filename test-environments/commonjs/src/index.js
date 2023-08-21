@@ -12,7 +12,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
   });
 
   const response = await textGenerationModel
-    .withSettings({ maxTokens: 500 })
+    .withSettings({ maxCompletionTokens: 500 })
     .generate("Write a short story about a robot learning to love:\n\n");
 
   const text = await textGenerationModel.extractText(response);

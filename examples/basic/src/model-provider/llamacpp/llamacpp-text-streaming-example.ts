@@ -2,7 +2,10 @@ import { LlamaCppTextGenerationModel, streamText } from "modelfusion";
 
 (async () => {
   const textStream = await streamText(
-    new LlamaCppTextGenerationModel({ nPredict: 1024, temperature: 0.7 }),
+    new LlamaCppTextGenerationModel({
+      maxCompletionTokens: 1024,
+      temperature: 0.7,
+    }),
     "Write a short story about a robot learning to love:\n\n"
   );
 

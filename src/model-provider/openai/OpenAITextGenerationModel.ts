@@ -105,13 +105,11 @@ export interface OpenAITextGenerationModelSettings
   isUserIdForwardingEnabled?: boolean;
 
   suffix?: string;
-  maxTokens?: number;
   temperature?: number;
   topP?: number;
   n?: number;
   logprobs?: number;
   echo?: boolean;
-  stop?: string | string[];
   presencePenalty?: number;
   frequencyPenalty?: number;
   bestOf?: number;
@@ -126,7 +124,7 @@ export interface OpenAITextGenerationModelSettings
  * const model = new OpenAITextGenerationModel({
  *   model: "text-davinci-003",
  *   temperature: 0.7,
- *   maxTokens: 500,
+ *   maxCompletionTokens: 500,
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
@@ -190,19 +188,27 @@ export class OpenAITextGenerationModel
   ): Promise<RESULT> {
     const { run, settings, responseFormat } = options;
 
-    const callSettings = Object.assign(
-      {
-        apiKey: this.apiKey,
-        user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
-      },
-      this.settings,
-      settings,
-      {
-        abortSignal: run?.abortSignal,
-        prompt,
-        responseFormat,
-      }
-    );
+    const combinedSettings = {
+      ...this.settings,
+      ...settings,
+    };
+
+    const callSettings = {
+      apiKey: this.apiKey,
+      user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
+
+      // Copied settings:
+      ...combinedSettings,
+
+      // map to OpenAI API names:
+      stop: combinedSettings.stopTokens,
+      maxTokens: combinedSettings.maxCompletionTokens,
+
+      // other settings:
+      abortSignal: run?.abortSignal,
+      prompt,
+      responseFormat,
+    };
 
     return callWithRetryAndThrottle({
       retry: callSettings.retry,
@@ -250,7 +256,9 @@ export class OpenAITextGenerationModel
     this
   > {
     return new PromptFormatTextGenerationModel({
-      model: this.withStopTokens(promptFormat.stopTokens),
+      model: this.withSettings({
+        stopTokens: promptFormat.stopTokens,
+      }),
       promptFormat,
     });
   }
@@ -259,18 +267,6 @@ export class OpenAITextGenerationModel
     return new OpenAITextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
-  }
-
-  get maxCompletionTokens() {
-    return this.settings.maxTokens;
-  }
-
-  withMaxCompletionTokens(maxCompletionTokens: number) {
-    return this.withSettings({ maxTokens: maxCompletionTokens });
-  }
-
-  withStopTokens(stopTokens: string[]) {
-    return this.withSettings({ stop: stopTokens });
   }
 }
 

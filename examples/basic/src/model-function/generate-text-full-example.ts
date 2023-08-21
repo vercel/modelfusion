@@ -9,7 +9,7 @@ dotenv.config();
   const { response, metadata } = await generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
-      maxTokens: 1000,
+      maxCompletionTokens: 1000,
       n: 2, // generate 2 completions
     }),
     "Write a short story about a robot learning to love:\n\n",

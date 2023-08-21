@@ -20,7 +20,7 @@ const analyzeSentiment = async (productReview: string) =>
     new OpenAIChatModel({
       model: "gpt-4",
       temperature: 0, // remove randomness
-      maxTokens: 500, // enough tokens for reasoning and sentiment
+      maxCompletionTokens: 500, // enough tokens for reasoning and sentiment
     }),
     {
       name: "sentiment" as const,

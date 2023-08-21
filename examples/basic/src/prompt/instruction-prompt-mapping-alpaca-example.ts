@@ -9,7 +9,7 @@ import {
   const textStream = await streamText(
     new LlamaCppTextGenerationModel({
       contextWindowSize: 2048, // context window size of Chronos-13B-v2-GGML
-      nPredict: 1024,
+      maxCompletionTokens: 1024,
     }).withPromptFormat(AlpacaInstructionPromptFormat()),
     {
       instruction: "You are a celebrated poet. Write a short story about:",

@@ -12,7 +12,7 @@ dotenv.config();
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
       temperature: 0.7,
-      maxTokens: 500,
+      maxCompletionTokens: 500,
       retry: retryWithExponentialBackoff({
         maxTries: 8,
         initialDelayInMs: 1000,

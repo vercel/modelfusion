@@ -22,22 +22,22 @@ const requestSchema = z.array(messageSchame);
 
 const gpt35turboModel = new OpenAIChatModel({
   model: "gpt-3.5-turbo",
-  maxTokens: 512,
+  maxCompletionTokens: 512,
 }).withPromptFormat(OpenAIChatChatPromptFormat());
 
 const llama2Model = new LlamaCppTextGenerationModel({
   contextWindowSize: 4096, // Llama 2 context window size
-  nPredict: 512,
+  maxCompletionTokens: 512,
 }).withPromptFormat(Llama2ChatPromptFormat());
 
 const otherLlamaCppModel = new LlamaCppTextGenerationModel({
   contextWindowSize: 2048, // set to your models context window size
-  nPredict: 512,
+  maxCompletionTokens: 512,
 }).withPromptFormat(TextChatPromptFormat({ user: "user", ai: "assistant" }));
 
 const cohereModel = new CohereTextGenerationModel({
   model: "command",
-  maxTokens: 512,
+  maxCompletionTokens: 512,
 }).withPromptFormat(TextChatPromptFormat({ user: "user", ai: "assistant" }));
 
 const sendMessage = async (request: Request): Promise<Response> => {

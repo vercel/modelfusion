@@ -56,13 +56,11 @@ export interface CohereTextGenerationModelSettings
   };
 
   numGenerations?: number;
-  maxTokens?: number;
   temperature?: number;
   k?: number;
   p?: number;
   frequencyPenalty?: number;
   presencePenalty?: number;
-  endSequences?: string[];
   stopSequences?: string[];
   returnLikelihoods?: "GENERATION" | "ALL" | "NONE";
   logitBias?: Record<string, number>;
@@ -78,7 +76,7 @@ export interface CohereTextGenerationModelSettings
  * const model = new CohereTextGenerationModel({
  *   model: "command-nightly",
  *   temperature: 0.7,
- *   maxTokens: 500,
+ *   maxCompletionTokens: 500,
  * });
  *
  * const text = await generateText(
@@ -143,18 +141,25 @@ export class CohereTextGenerationModel
   ): Promise<RESPONSE> {
     const { run, settings, responseFormat } = options;
 
-    const callSettings = Object.assign(
-      {
-        apiKey: this.apiKey,
-      },
-      this.settings,
+    const combinedSettings = {
+      ...this.settings,
       settings,
-      {
-        abortSignal: run?.abortSignal,
-        prompt,
-        responseFormat,
-      }
-    );
+    };
+
+    const callSettings = {
+      apiKey: this.apiKey,
+
+      ...combinedSettings,
+
+      // use endSequences instead of stopSequences
+      // to exclude stop tokens from the generated text
+      endSequences: combinedSettings.stopTokens,
+      maxTokens: combinedSettings.maxCompletionTokens,
+
+      abortSignal: run?.abortSignal,
+      prompt,
+      responseFormat,
+    };
 
     return callWithRetryAndThrottle({
       retry: this.settings.retry,
@@ -202,7 +207,9 @@ export class CohereTextGenerationModel
     this
   > {
     return new PromptFormatTextGenerationModel({
-      model: this.withStopTokens(promptFormat.stopTokens),
+      model: this.withSettings({
+        stopTokens: promptFormat.stopTokens,
+      }),
       promptFormat,
     });
   }
@@ -211,20 +218,6 @@ export class CohereTextGenerationModel
     return new CohereTextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
-  }
-
-  get maxCompletionTokens() {
-    return this.settings.maxTokens;
-  }
-
-  withMaxCompletionTokens(maxCompletionTokens: number) {
-    return this.withSettings({ maxTokens: maxCompletionTokens });
-  }
-
-  withStopTokens(stopTokens: string[]) {
-    // use endSequences instead of stopSequences
-    // to exclude stop tokens from the generated text
-    return this.withSettings({ endSequences: stopTokens });
   }
 }
 
