@@ -13,6 +13,17 @@ You can use [prompt formats](/guide/function/generate-text/prompt-format) to cha
 
 ## Usage
 
+### TextGenerationModel
+
+The different [TextGenerationModel](/api/interfaces/TextGenerationModel) implementations share some common settings:
+
+- **maxCompletionTokens**: The maximum number of tokens to generate, or undefined to generate an unlimited number of tokens.
+- **stopTokens**: An array of texts that will stop the generation when generated.
+- **trimOutput**: Whether to trim the whitespace from the generated text.
+
+In addition to these common settings, each model exposes its own settings.
+The settings can be set in the constructor of the model, or in the `withSettings` method.
+
 ### generateText
 
 [generateText API](/api/modules#generatetext)

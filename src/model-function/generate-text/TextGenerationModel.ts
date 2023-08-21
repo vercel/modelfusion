@@ -18,6 +18,9 @@ export interface TextGenerationModelSettings extends ModelSettings {
    */
   stopTokens?: string[] | undefined;
 
+  /**
+   * When true, whitespace is trimmed from the beginning and end of the generated text.
+   */
   trimOutput?: boolean;
 }
 
