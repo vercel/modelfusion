@@ -30,6 +30,22 @@ export const createTextResponseHandler =
   async ({ response }) =>
     response.text();
 
+export const createAudioMpegResponseHandler =
+  (): ResponseHandler<Buffer> =>
+  async ({ response, url, requestBodyValues }) => {
+    if (response.headers.get("Content-Type") !== "audio/mpeg") {
+      throw new ApiCallError({
+        message: "Invalid Content-Type (must be audio/mpeg)",
+        statusCode: response.status,
+        url,
+        requestBodyValues,
+      });
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    return Buffer.from(arrayBuffer);
+  };
+
 export const postJsonToApi = async <T>({
   url,
   headers,
