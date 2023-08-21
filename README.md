@@ -274,6 +274,20 @@ const transcription = await transcribe(
 );
 ```
 
+### Synthesize Speech
+
+Turn text into speech (audio).
+
+```ts
+// `speech` is a Buffer with MP3 audio data
+const speech = await synthesizeSpeech(
+  new ElevenLabsSpeechSynthesisModel({
+    voice: "ErXwobaYiN019PkySvjV",
+  }),
+  "Hello, World!"
+);
+```
+
 ### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 
 Generate a base64-encoded image from a prompt.
