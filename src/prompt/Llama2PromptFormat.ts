@@ -20,7 +20,7 @@ export const Llama2InstructionPromptFormat: () => PromptFormat<
   InstructionPrompt,
   string
 > = () => ({
-  stopTokens: [END_SEGMENT],
+  stopSequences: [END_SEGMENT],
   format: (instruction) =>
     `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${
       instruction.system != null
@@ -76,5 +76,5 @@ export const Llama2ChatPromptFormat: () => PromptFormat<
 
     return text;
   },
-  stopTokens: [END_SEGMENT],
+  stopSequences: [END_SEGMENT],
 });

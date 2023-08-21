@@ -113,7 +113,7 @@ export class LlamaCppTextGenerationModel<
     const callSettings = {
       ...combinedSettings,
       nPredict: combinedSettings.maxCompletionTokens,
-      stop: combinedSettings.stopTokens,
+      stop: combinedSettings.stopSequences,
       abortSignal: run?.abortSignal,
       prompt,
       responseFormat,
@@ -175,7 +175,7 @@ export class LlamaCppTextGenerationModel<
   > {
     return new PromptFormatTextGenerationModel({
       model: this.withSettings({
-        stopTokens: promptFormat.stopTokens,
+        stopSequences: promptFormat.stopSequences,
       }),
       promptFormat,
     });

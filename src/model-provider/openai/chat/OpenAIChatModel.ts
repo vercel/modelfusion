@@ -238,7 +238,7 @@ export class OpenAIChatModel
       apiKey: this.apiKey,
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
       ...combinedSettings,
-      stop: combinedSettings.stopTokens,
+      stop: combinedSettings.stopSequences,
       maxTokens: combinedSettings.maxCompletionTokens,
       abortSignal: run?.abortSignal,
       messages,
@@ -322,7 +322,7 @@ export class OpenAIChatModel
     this
   > {
     return new PromptFormatTextGenerationModel({
-      model: this.withSettings({ stopTokens: promptFormat.stopTokens }),
+      model: this.withSettings({ stopSequences: promptFormat.stopSequences }),
       promptFormat,
     });
   }

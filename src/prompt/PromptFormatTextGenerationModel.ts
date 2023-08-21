@@ -135,7 +135,7 @@ export class PromptFormatTextGenerationModel<
       this
     >({
       model: this.withSettings({
-        stopTokens: promptFormat.stopTokens,
+        stopSequences: promptFormat.stopSequences,
       } as Partial<SETTINGS>),
       promptFormat,
     });

@@ -16,7 +16,7 @@ export interface TextGenerationModelSettings extends ModelSettings {
    * Stop tokens to use. Stop tokens are not included in the generated text.
    * Does nothing if the model does not support this setting.
    */
-  stopTokens?: string[] | undefined;
+  stopSequences?: string[] | undefined;
 
   /**
    * When true, the leading and trailing white space and line terminator characters

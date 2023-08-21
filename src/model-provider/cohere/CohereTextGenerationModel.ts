@@ -153,7 +153,7 @@ export class CohereTextGenerationModel
 
       // use endSequences instead of stopSequences
       // to exclude stop tokens from the generated text
-      endSequences: combinedSettings.stopTokens,
+      endSequences: combinedSettings.stopSequences,
       maxTokens: combinedSettings.maxCompletionTokens,
 
       abortSignal: run?.abortSignal,
@@ -208,7 +208,7 @@ export class CohereTextGenerationModel
   > {
     return new PromptFormatTextGenerationModel({
       model: this.withSettings({
-        stopTokens: promptFormat.stopTokens,
+        stopSequences: promptFormat.stopSequences,
       }),
       promptFormat,
     });

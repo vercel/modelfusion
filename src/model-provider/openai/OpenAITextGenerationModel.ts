@@ -201,7 +201,7 @@ export class OpenAITextGenerationModel
       ...combinedSettings,
 
       // map to OpenAI API names:
-      stop: combinedSettings.stopTokens,
+      stop: combinedSettings.stopSequences,
       maxTokens: combinedSettings.maxCompletionTokens,
 
       // other settings:
@@ -257,7 +257,7 @@ export class OpenAITextGenerationModel
   > {
     return new PromptFormatTextGenerationModel({
       model: this.withSettings({
-        stopTokens: promptFormat.stopTokens,
+        stopSequences: promptFormat.stopSequences,
       }),
       promptFormat,
     });

@@ -8,8 +8,8 @@ export interface PromptFormat<SOURCE_PROMPT, TARGET_PROMPT> {
   format(sourcePrompt: SOURCE_PROMPT): TARGET_PROMPT;
 
   /**
-   * The tokens that should be used as default stop tokens.
+   * The texts that should be used as default stop sequences.
    * This is e.g. important for chat formats.
    */
-  stopTokens: string[];
+  stopSequences: string[];
 }

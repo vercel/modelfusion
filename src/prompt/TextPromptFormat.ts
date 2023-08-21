@@ -10,7 +10,7 @@ export const TextInstructionPromptFormat: () => PromptFormat<
   InstructionPrompt,
   string
 > = () => ({
-  stopTokens: [],
+  stopSequences: [],
   format: (instruction) => {
     let text = "";
 
@@ -80,5 +80,5 @@ export const TextChatPromptFormat: ({
 
     return text;
   },
-  stopTokens: [`\n${user}:`],
+  stopSequences: [`\n${user}:`],
 });

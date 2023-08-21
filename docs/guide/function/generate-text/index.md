@@ -18,7 +18,7 @@ You can use [prompt formats](/guide/function/generate-text/prompt-format) to cha
 The different [TextGenerationModel](/api/interfaces/TextGenerationModel) implementations share some common settings:
 
 - **maxCompletionTokens**: The maximum number of tokens to generate, or undefined to generate an unlimited number of tokens.
-- **stopTokens**: An array of texts that will stop the generation when generated.
+- **stopSequences**: An array of text sequences that will stop the text generation when they are generated. The sequences are not included in the generated text. The default is an empty array.
 - **trimWhitespace**: When true (default), the leading and trailing white space and line terminator characters are removed from the generated text. Only applies to `generateText`.
 
 In addition to these common settings, each model exposes its own settings.
