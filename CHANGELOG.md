@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.17.0 - 2023-08-21
+
+### Added
+
+- `synthesizeSpeech` function to generate speech from text.
+- ElevenLabs support.
+
 ## v0.15.0 - 2023-08-21
 
 ### Changed
