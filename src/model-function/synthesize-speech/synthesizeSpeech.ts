@@ -5,6 +5,9 @@ import {
   SpeechSynthesisModelSettings,
 } from "./SpeechSynthesisModel.js";
 
+/**
+ * Synthesizes speech from text.
+ */
 export async function synthesizeSpeech<
   SETTINGS extends SpeechSynthesisModelSettings,
 >(

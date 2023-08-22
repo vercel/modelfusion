@@ -15,7 +15,7 @@ You can use [prompt formats](/guide/function/generate-text/prompt-format) to cha
 
 ### TextGenerationModel
 
-The different [TextGenerationModel](/api/interfaces/TextGenerationModel) implementations share some common settings:
+The different [TextGenerationModel](/api/interfaces/TextGenerationModel) implementations (see [available providers](#available-providers)) share some common settings:
 
 - **maxCompletionTokens**: The maximum number of tokens to generate, or undefined to generate an unlimited number of tokens.
 - **stopSequences**: An array of text sequences that will stop the text generation when they are generated. The sequences are not included in the generated text. The default is an empty array.

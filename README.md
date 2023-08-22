@@ -274,7 +274,7 @@ const transcription = await transcribe(
 );
 ```
 
-### Synthesize Speech
+### [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
 
 Turn text into speech (audio).
 
@@ -371,6 +371,7 @@ const { chunks } = await retrieveTextChunks(
   - [Embed Text](https://modelfusion.dev/guide/function/embed-text)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
+  - [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
   - [Generate images](https://modelfusion.dev/guide/function/generate-image)
 - Summarize text
 - [Tools](https://modelfusion.dev/guide/tools)
@@ -389,18 +390,30 @@ const { chunks } = await retrieveTextChunks(
 
 ### Model Providers
 
-|                                                                                       | [OpenAI](https://modelfusion.dev/integration/model-provider/openai) | [Cohere](https://modelfusion.dev/integration/model-provider/cohere) | [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp) | [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface) | [Stability AI](https://modelfusion.dev/integration/model-provider/stability) | [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111) |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Hosting                                                                               | cloud                                                               | cloud                                                               | server (local)                                                           | cloud                                                                          | cloud                                                                        | server (local)                                                                    |
-| [Generate text](https://modelfusion.dev/guide/function/generate-text)                 | ✅                                                                  | ✅                                                                  | ✅                                                                       | ✅                                                                             |                                                                              |                                                                                   |
-| [Stream text](https://modelfusion.dev/guide/function/generate-text)                   | ✅                                                                  | ✅                                                                  | ✅                                                                       |                                                                                |                                                                              |                                                                                   |
-| [Generate JSON](https://modelfusion.dev/guide/function/generate-json)                 | chat models                                                         |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
-| [Generate JSON or Text](https://modelfusion.dev/guide/function/generate-json-or-text) | chat models                                                         |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
-| [Embed text](https://modelfusion.dev/guide/function/embed-text)                       | ✅                                                                  | ✅                                                                  | ✅                                                                       | ✅                                                                             |                                                                              |                                                                                   |
-| [Tokenize text](https://modelfusion.dev/guide/function/tokenize-text)                 | full                                                                | full                                                                | basic                                                                    |                                                                                |                                                                              |                                                                                   |
-| [Generate image](https://modelfusion.dev/guide/function/generate-image)               | ✅                                                                  |                                                                     |                                                                          |                                                                                | ✅                                                                           | ✅                                                                                |
-| [Transcribe speech](https://modelfusion.dev/guide/function/transcribe-speech)         | ✅                                                                  |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
-| [Cost calculation](https://modelfusion.dev/guide/run/cost-calculation)                | ✅                                                                  |                                                                     |                                                                          |                                                                                |                                                                              |                                                                                   |
+#### Text and JSON Generation
+
+|                                                                                       | [OpenAI](https://modelfusion.dev/integration/model-provider/openai) | [Cohere](https://modelfusion.dev/integration/model-provider/cohere) | [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp) | [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface) |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| [Generate text](https://modelfusion.dev/guide/function/generate-text)                 | ✅                                                                  | ✅                                                                  | ✅                                                                       | ✅                                                                             |
+| [Stream text](https://modelfusion.dev/guide/function/generate-text)                   | ✅                                                                  | ✅                                                                  | ✅                                                                       |                                                                                |
+| [Generate JSON](https://modelfusion.dev/guide/function/generate-json)                 | chat models                                                         |                                                                     |                                                                          |                                                                                |
+| [Generate JSON or Text](https://modelfusion.dev/guide/function/generate-json-or-text) | chat models                                                         |                                                                     |                                                                          |                                                                                |
+| [Embed text](https://modelfusion.dev/guide/function/embed-text)                       | ✅                                                                  | ✅                                                                  | ✅                                                                       | ✅                                                                             |
+| [Tokenize text](https://modelfusion.dev/guide/function/tokenize-text)                 | full                                                                | full                                                                | basic                                                                    |                                                                                |
+
+#### Image Generation
+
+- [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider/openai)
+- [Stability AI](https://modelfusion.dev/integration/model-provider/stability)
+- [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111)
+
+#### Speech Transcription
+
+- [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai)
+
+#### Speech Synthesis
+
+- [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs)
 
 ### Vector Indices
 

@@ -6,17 +6,27 @@ sidebar_position: 1
 
 Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for using AI models, e.g. large language models (LLMs), image generation models, or speech-to-text models.
 
-## Available Providers
+#### Text and JSON Generation
 
-|                                                                | [OpenAI](/integration/model-provider/openai) | [Cohere](/integration/model-provider/cohere) | [Llama.cpp](/integration/model-provider/llamacpp) | [Hugging Face](/integration/model-provider/huggingface) | [Stability AI](/integration/model-provider/stability) | [Automatic1111](/integration/model-provider/automatic1111) |
-| -------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------- |
-| Hosting                                                        | cloud                                        | cloud                                        | server (local)                                    | cloud                                                   | cloud                                                 | server (local)                                             |
-| [Generate text](/guide/function/generate-text)                 | ✅                                           | ✅                                           | ✅                                                | ✅                                                      |                                                       |                                                            |
-| [Stream text](/guide/function/generate-text)                   | ✅                                           | ✅                                           | ✅                                                |                                                         |                                                       |                                                            |
-| [Generate JSON](/guide/function/generate-json)                 | chat models                                  |                                              |                                                   |                                                         |                                                       |                                                            |
-| [Generate JSON or Text](/guide/function/generate-json-or-text) | chat models                                  |                                              |                                                   |                                                         |                                                       |                                                            |
-| [Embed text](/guide/function/embed-text)                       | ✅                                           | ✅                                           | ✅                                                | ✅                                                      |                                                       |                                                            |
-| [Tokenize text](/guide/function/tokenize-text)                 | full                                         | full                                         | basic                                             |                                                         |                                                       |                                                            |
-| [Generate image](/guide/function/generate-image)               | ✅                                           |                                              |                                                   |                                                         | ✅                                                    | ✅                                                         |
-| [Transcribe speech](/guide/function/transcribe-speech)         | ✅                                           |                                              |                                                   |                                                         |                                                       |                                                            |
-| [Cost calculation](/guide/run/cost-calculation)                | ✅                                           |                                              |                                                   |                                                         |                                                       |                                                            |
+|                                                                | [OpenAI](/integration/model-provider/openai) | [Cohere](/integration/model-provider/cohere) | [Llama.cpp](/integration/model-provider/llamacpp) | [Hugging Face](/integration/model-provider/huggingface) |
+| -------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------- |
+| [Generate text](/guide/function/generate-text)                 | ✅                                           | ✅                                           | ✅                                                | ✅                                                      |
+| [Stream text](/guide/function/generate-text)                   | ✅                                           | ✅                                           | ✅                                                |                                                         |
+| [Generate JSON](/guide/function/generate-json)                 | chat models                                  |                                              |                                                   |                                                         |
+| [Generate JSON or Text](/guide/function/generate-json-or-text) | chat models                                  |                                              |                                                   |                                                         |
+| [Embed text](/guide/function/embed-text)                       | ✅                                           | ✅                                           | ✅                                                | ✅                                                      |
+| [Tokenize text](/guide/function/tokenize-text)                 | full                                         | full                                         | basic                                             |                                                         |
+
+#### Image Generation
+
+- [OpenAI (Dall·E)](/integration/model-provider/openai)
+- [Stability AI](/integration/model-provider/stability)
+- [Automatic1111](/integration/model-provider/automatic1111)
+
+#### Speech Transcription
+
+- [OpenAI (Whisper)](/integration/model-provider/openai)
+
+#### Speech Synthesis
+
+- [Eleven Labs](/integration/model-provider/elevenlabs)
