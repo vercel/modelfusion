@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.18.0 - 2023-08-22
+
+### Added
+
+- Support for ElevenLabs speech synthesis parameters.
+
 ## v0.17.0 - 2023-08-21
 
 ### Added
