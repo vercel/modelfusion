@@ -20,6 +20,14 @@ export interface ElevenLabsSpeechSynthesisModelSettings
   baseUrl?: string;
   apiKey?: string;
 
+  model?: string;
+  voiceSettings?: {
+    stability: number;
+    similarityBoost: number;
+    style?: number;
+    useSpeakerBoost?: boolean;
+  };
+
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
 }
@@ -69,6 +77,8 @@ export class ElevenLabsSpeechSynthesisModel
           apiKey: this.apiKey,
           text,
           voiceId: combinedSettings.voice,
+          modelId: combinedSettings.model,
+          voiceSettings: combinedSettings.voiceSettings,
         }),
     });
   }
@@ -101,12 +111,21 @@ async function callElevenLabsTextToSpeechAPI({
   apiKey,
   text,
   voiceId,
+  modelId,
+  voiceSettings,
 }: {
   baseUrl?: string;
   abortSignal?: AbortSignal;
   apiKey: string;
   text: string;
   voiceId: string;
+  modelId?: string;
+  voiceSettings?: {
+    stability: number;
+    similarityBoost: number;
+    style?: number;
+    useSpeakerBoost?: boolean;
+  };
 }): Promise<Buffer> {
   return postJsonToApi({
     url: `${baseUrl}/text-to-speech/${voiceId}`,
@@ -115,6 +134,16 @@ async function callElevenLabsTextToSpeechAPI({
     },
     body: {
       text,
+      model_id: modelId,
+      voice_settings:
+        voiceSettings != null
+          ? {
+              stability: voiceSettings.stability,
+              similarity_boost: voiceSettings.similarityBoost,
+              style: voiceSettings.style,
+              use_speaker_boost: voiceSettings.useSpeakerBoost,
+            }
+          : undefined,
     },
     failedResponseHandler: failedElevenLabsCallResponseHandler,
     successfulResponseHandler: createAudioMpegResponseHandler(),
