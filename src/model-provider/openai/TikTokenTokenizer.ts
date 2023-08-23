@@ -77,6 +77,8 @@ function getEncodingNameForModel(
     case "text-davinci-003": {
       return "p50k_base";
     }
+    case "babbage-002":
+    case "davinci-002":
     case "ada":
     case "babbage":
     case "curie":
