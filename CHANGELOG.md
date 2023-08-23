@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.19.0 - 2023-08-23
+
+### Added
+
+- Support for "babbage-002" and "davinci-002" OpenAI base models.
+
+### Fixed
+
+- Choose correct tokenizer for older OpenAI text models.
+
 ## v0.18.0 - 2023-08-22
 
 ### Added
