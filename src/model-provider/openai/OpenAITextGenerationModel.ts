@@ -30,6 +30,14 @@ import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
  * @see https://openai.com/pricing
  */
 export const OPENAI_TEXT_GENERATION_MODELS = {
+  "davinci-002": {
+    contextWindowSize: 16_384,
+    tokenCostInMillicents: 0.2,
+  },
+  "babbage-002": {
+    contextWindowSize: 16_384,
+    tokenCostInMillicents: 0.04,
+  },
   "text-davinci-003": {
     contextWindowSize: 4096,
     tokenCostInMillicents: 2,
