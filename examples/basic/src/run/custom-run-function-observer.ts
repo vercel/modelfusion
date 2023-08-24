@@ -43,7 +43,6 @@ dotenv.config();
       model: "text-davinci-003",
       temperature: 0.7,
       maxCompletionTokens: 50,
-      observers: [observer],
     }),
     "Write a short story about a robot named Pam:\n\n",
     { run }
@@ -55,7 +54,6 @@ dotenv.config();
       model: "text-davinci-003",
       temperature: 0.7,
       maxCompletionTokens: 50,
-      observers: [observer],
     }),
     "Write a short story about a robot named Nox:\n\n",
     { settings: { observers: [observer] } }
