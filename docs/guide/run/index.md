@@ -9,9 +9,7 @@ The [Run interface](/api/interfaces/Run) provides a structured way to share info
 ### Example
 
 ```ts
-const run = new DefaultRun({
-  costCalculators: [new OpenAICostCalculator()],
-});
+const run = new DefaultRun();
 
 const text = await generateText(
   new OpenAITextGenerationModel(/* ... */),

@@ -252,7 +252,7 @@ Text is generated as a fallback.
 ```ts
 const { tool, parameters, result, text } = await useToolOrGenerateText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  [calculator /* ... */],
+  [calculator /* and other tools... */],
   OpenAIChatFunctionPrompt.forToolsCurried([
     OpenAIChatMessage.user("What's fourteen times twelve?"),
   ])
