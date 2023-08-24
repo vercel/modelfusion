@@ -13,74 +13,110 @@ import {
 import { TextStreamingFinishedEvent } from "./TextStreamingEvent.js";
 import { extractTextDeltas } from "./extractTextDeltas.js";
 
-export async function streamText<
+export class StreamTextPromise<
   PROMPT,
   FULL_DELTA,
   SETTINGS extends TextGenerationModelSettings,
->(
-  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
-    generateDeltaStreamResponse: (
-      prompt: PROMPT,
-      options: FunctionOptions<SETTINGS>
-    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
-    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
-  },
-  prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: false;
-  }
-): Promise<AsyncIterable<string>>;
-export async function streamText<
-  PROMPT,
-  FULL_DELTA,
-  SETTINGS extends TextGenerationModelSettings,
->(
-  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
-    generateDeltaStreamResponse: (
-      prompt: PROMPT,
-      options: FunctionOptions<SETTINGS>
-    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
-    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
-  },
-  prompt: PROMPT,
-  options: FunctionOptions<SETTINGS> & {
-    fullResponse: true;
-  }
-): Promise<{
-  textStream: AsyncIterable<string>;
-  metadata: Omit<
-    CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
-    "durationInMs"
-  >;
-}>;
-export async function streamText<
-  PROMPT,
-  FULL_DELTA,
-  SETTINGS extends TextGenerationModelSettings,
->(
-  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
-    generateDeltaStreamResponse: (
-      prompt: PROMPT,
-      options: FunctionOptions<SETTINGS>
-    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
-    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
-  },
-  prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: boolean;
-  }
-): Promise<
-  | AsyncIterable<string>
-  | {
-      textStream: AsyncIterable<string>;
+> extends Promise<AsyncIterable<string>> {
+  private outputPromise: Promise<AsyncIterable<string>>;
+
+  constructor(
+    private fullPromise: Promise<{
+      output: AsyncIterable<string>;
       metadata: Omit<
         CallMetadata<
           TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>
         >,
         "durationInMs"
       >;
-    }
-> {
+    }>
+  ) {
+    super((resolve) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      resolve(null as any); // we override the resolve function
+    });
+
+    this.outputPromise = fullPromise.then((result) => result.output);
+  }
+
+  asFullResponse(): Promise<{
+    output: AsyncIterable<string>;
+    metadata: Omit<
+      CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
+      "durationInMs"
+    >;
+  }> {
+    return this.fullPromise;
+  }
+
+  override then<TResult1 = AsyncIterable<string>, TResult2 = never>(
+    onfulfilled?:
+      | ((value: AsyncIterable<string>) => TResult1 | PromiseLike<TResult1>)
+      | undefined
+      | null,
+    onrejected?:
+      | ((reason: unknown) => TResult2 | PromiseLike<TResult2>)
+      | undefined
+      | null
+  ): Promise<TResult1 | TResult2> {
+    return this.outputPromise.then(onfulfilled, onrejected);
+  }
+
+  override catch<TResult = never>(
+    onrejected?:
+      | ((reason: unknown) => TResult | PromiseLike<TResult>)
+      | undefined
+      | null
+  ): Promise<AsyncIterable<string> | TResult> {
+    return this.outputPromise.catch(onrejected);
+  }
+
+  override finally(
+    onfinally?: (() => void) | undefined | null
+  ): Promise<AsyncIterable<string>> {
+    return this.outputPromise.finally(onfinally);
+  }
+}
+
+export function streamText<
+  PROMPT,
+  FULL_DELTA,
+  SETTINGS extends TextGenerationModelSettings,
+>(
+  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
+    generateDeltaStreamResponse: (
+      prompt: PROMPT,
+      options: FunctionOptions<SETTINGS>
+    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
+    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
+  },
+  prompt: PROMPT,
+  options?: FunctionOptions<SETTINGS>
+): StreamTextPromise<PROMPT, FULL_DELTA, SETTINGS> {
+  return new StreamTextPromise(doStreamText(model, prompt, options));
+}
+
+async function doStreamText<
+  PROMPT,
+  FULL_DELTA,
+  SETTINGS extends TextGenerationModelSettings,
+>(
+  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
+    generateDeltaStreamResponse: (
+      prompt: PROMPT,
+      options: FunctionOptions<SETTINGS>
+    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
+    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
+  },
+  prompt: PROMPT,
+  options?: FunctionOptions<SETTINGS>
+): Promise<{
+  output: AsyncIterable<string>;
+  metadata: Omit<
+    CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
+    "durationInMs"
+  >;
+}> {
   if (options?.settings != null) {
     model = model.withSettings(options.settings);
     options = {
@@ -196,10 +232,8 @@ export async function streamText<
     throw result.error;
   }
 
-  return options?.fullResponse === true
-    ? {
-        textStream: result.output,
-        metadata: startMetadata,
-      }
-    : result.output;
+  return {
+    output: result.output,
+    metadata: startMetadata,
+  };
 }
