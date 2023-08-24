@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { CallMetadata, executeCall } from "../executeCall.js";
+import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   SpeechSynthesisModel,
   SpeechSynthesisModelSettings,
@@ -8,43 +8,12 @@ import {
 /**
  * Synthesizes speech from text.
  */
-export async function synthesizeSpeech<
-  SETTINGS extends SpeechSynthesisModelSettings,
->(
+export function synthesizeSpeech<SETTINGS extends SpeechSynthesisModelSettings>(
   model: SpeechSynthesisModel<SETTINGS>,
   text: string,
-  options: FunctionOptions<SETTINGS> & {
-    fullResponse: true;
-  }
-): Promise<{
-  speech: Buffer;
-  metadata: CallMetadata<SpeechSynthesisModel<SETTINGS>>;
-}>;
-export async function synthesizeSpeech<
-  SETTINGS extends SpeechSynthesisModelSettings,
->(
-  model: SpeechSynthesisModel<SETTINGS>,
-  text: string,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: false;
-  }
-): Promise<Buffer>;
-export async function synthesizeSpeech<
-  SETTINGS extends SpeechSynthesisModelSettings,
->(
-  model: SpeechSynthesisModel<SETTINGS>,
-  text: string,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: boolean;
-  }
-): Promise<
-  | {
-      speech: Buffer;
-      metadata: CallMetadata<SpeechSynthesisModel<SETTINGS>>;
-    }
-  | Buffer
-> {
-  const result = await executeCall({
+  options?: FunctionOptions<SETTINGS>
+): ModelFunctionPromise<SpeechSynthesisModel<SETTINGS>, Buffer, Buffer> {
+  return executeCall({
     model,
     options,
     generateResponse: (options) => model.generateSpeechResponse(text, options),
@@ -80,11 +49,4 @@ export async function synthesizeSpeech<
       speech: output,
     }),
   });
-
-  return options?.fullResponse === true
-    ? {
-        speech: result.output,
-        metadata: result.metadata,
-      }
-    : result.output;
 }

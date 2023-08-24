@@ -23,7 +23,122 @@ export type CallMetadata<MODEL extends Model<unknown>> = {
   durationInMs: number;
 };
 
-export async function executeCall<
+export function executeCall<
+  SETTINGS extends ModelSettings,
+  MODEL extends Model<SETTINGS>,
+  OUTPUT,
+  RESPONSE,
+>({
+  model,
+  options,
+  getStartEvent,
+  getAbortEvent,
+  getFailureEvent,
+  getSuccessEvent,
+  generateResponse,
+  extractOutputValue,
+}: {
+  model: MODEL;
+  options?: FunctionOptions<SETTINGS>;
+  getStartEvent: (
+    metadata: ModelCallStartedEventMetadata,
+    settings: SETTINGS
+  ) => ModelCallStartedEvent;
+  getAbortEvent: (
+    metadata: ModelCallFinishedEventMetadata,
+    settings: SETTINGS
+  ) => ModelCallFinishedEvent;
+  getFailureEvent: (
+    metadata: ModelCallFinishedEventMetadata,
+    settings: SETTINGS,
+    error: unknown
+  ) => ModelCallFinishedEvent;
+  getSuccessEvent: (
+    metadata: ModelCallFinishedEventMetadata,
+    settings: SETTINGS,
+    response: RESPONSE,
+    output: OUTPUT
+  ) => ModelCallFinishedEvent;
+  generateResponse: (
+    options: FunctionOptions<SETTINGS>
+  ) => PromiseLike<RESPONSE>;
+  extractOutputValue: (response: RESPONSE) => OUTPUT;
+}): ModelFunctionPromise<MODEL, OUTPUT, RESPONSE> {
+  return new ModelFunctionPromise(
+    doExecuteCall({
+      model,
+      options,
+      getStartEvent,
+      getAbortEvent,
+      getFailureEvent,
+      getSuccessEvent,
+      generateResponse,
+      extractOutputValue,
+    })
+  );
+}
+
+export class ModelFunctionPromise<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  MODEL extends Model<any>,
+  OUTPUT,
+  RESPONSE,
+> extends Promise<OUTPUT> {
+  private outputPromise: Promise<OUTPUT>;
+
+  constructor(
+    private fullPromise: Promise<{
+      output: OUTPUT;
+      response: RESPONSE;
+      metadata: CallMetadata<MODEL>;
+    }>
+  ) {
+    super((resolve) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      resolve(null as any); // we override the resolve function
+    });
+
+    this.outputPromise = fullPromise.then((result) => result.output);
+  }
+
+  asFullResponse(): Promise<{
+    output: OUTPUT;
+    response: RESPONSE;
+    metadata: CallMetadata<MODEL>;
+  }> {
+    return this.fullPromise;
+  }
+
+  override then<TResult1 = OUTPUT, TResult2 = never>(
+    onfulfilled?:
+      | ((value: OUTPUT) => TResult1 | PromiseLike<TResult1>)
+      | undefined
+      | null,
+    onrejected?:
+      | ((reason: unknown) => TResult2 | PromiseLike<TResult2>)
+      | undefined
+      | null
+  ): Promise<TResult1 | TResult2> {
+    return this.outputPromise.then(onfulfilled, onrejected);
+  }
+
+  override catch<TResult = never>(
+    onrejected?:
+      | ((reason: unknown) => TResult | PromiseLike<TResult>)
+      | undefined
+      | null
+  ): Promise<OUTPUT | TResult> {
+    return this.outputPromise.catch(onrejected);
+  }
+
+  override finally(
+    onfinally?: (() => void) | undefined | null
+  ): Promise<OUTPUT> {
+    return this.outputPromise.finally(onfinally);
+  }
+}
+
+async function doExecuteCall<
   SETTINGS extends ModelSettings,
   MODEL extends Model<SETTINGS>,
   OUTPUT,

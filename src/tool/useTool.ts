@@ -33,7 +33,7 @@ export async function useTool<
   parameters: TOOL["inputSchema"];
   result: Awaited<ReturnType<TOOL["execute"]>>;
 }> {
-  const { value } = await generateJson<
+  const { output: value } = await generateJson<
     TOOL["inputSchema"],
     PROMPT,
     RESPONSE,
@@ -49,9 +49,8 @@ export async function useTool<
     () => prompt(tool),
     {
       ...(options ?? {}),
-      fullResponse: true,
     }
-  );
+  ).asFullResponse();
 
   return {
     tool: tool.name,

@@ -11,7 +11,7 @@ dotenv.config();
 
 (async () => {
   const {
-    value: sentiment,
+    output: sentiment,
     metadata,
     response,
   } = await generateJson(
@@ -38,9 +38,8 @@ dotenv.config();
         "After I opened the package, I was met by a very unpleasant smell " +
           "that did not disappear even after washing. Never again!"
       ),
-    ]),
-    { fullResponse: true }
-  );
+    ])
+  ).asFullResponse();
 
   console.log(JSON.stringify(sentiment, null, 2));
 })();
