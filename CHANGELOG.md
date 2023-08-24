@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.20.0 - 2023-08-24
+
+### Changed
+
+- **Breaking change**: Use `.asFullResponse()` to get full responses from model functions (replaces the `fullResponse: true` option).
+
 ## v0.19.0 - 2023-08-23
 
 ### Added
