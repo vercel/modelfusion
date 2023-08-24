@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { CallMetadata, executeCall } from "../executeCall.js";
+import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   GenerateJsonModel,
   GenerateJsonModelSettings,
@@ -7,7 +7,7 @@ import {
 import { SchemaDefinition } from "./SchemaDefinition.js";
 import { SchemaValidationError } from "./SchemaValidationError.js";
 
-export async function generateJson<
+export function generateJson<
   STRUCTURE,
   PROMPT,
   RESPONSE,
@@ -17,52 +17,15 @@ export async function generateJson<
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
   prompt: (schemaDefinition: SchemaDefinition<NAME, STRUCTURE>) => PROMPT,
-  options: FunctionOptions<SETTINGS> & {
-    fullResponse: true;
-  }
-): Promise<{
-  value: STRUCTURE;
-  response: RESPONSE;
-  metadata: CallMetadata<GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>>;
-}>;
-export async function generateJson<
+  options?: FunctionOptions<SETTINGS>
+): ModelFunctionPromise<
+  GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   STRUCTURE,
-  PROMPT,
-  RESPONSE,
-  NAME extends string,
-  SETTINGS extends GenerateJsonModelSettings,
->(
-  model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
-  schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
-  prompt: (schemaDefinition: SchemaDefinition<NAME, STRUCTURE>) => PROMPT,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: false;
-  }
-): Promise<STRUCTURE>;
-export async function generateJson<
-  STRUCTURE,
-  PROMPT,
-  RESPONSE,
-  NAME extends string,
-  SETTINGS extends GenerateJsonModelSettings,
->(
-  model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
-  schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
-  prompt: (schemaDefinition: SchemaDefinition<NAME, STRUCTURE>) => PROMPT,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: boolean;
-  }
-): Promise<
-  | {
-      value: STRUCTURE;
-      response: RESPONSE;
-      metadata: CallMetadata<GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>>;
-    }
-  | STRUCTURE
+  RESPONSE
 > {
   const expandedPrompt = prompt(schemaDefinition);
 
-  const result = await executeCall({
+  return executeCall({
     model,
     options,
     generateResponse: (options) =>
@@ -113,12 +76,4 @@ export async function generateJson<
       generatedJson: output,
     }),
   });
-
-  return options?.fullResponse === true
-    ? {
-        value: result.output,
-        response: result.response,
-        metadata: result.metadata,
-      }
-    : result.output;
 }

@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { CallMetadata, executeCall } from "../executeCall.js";
+import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
@@ -20,51 +20,20 @@ import {
  *   ]
  * );
  */
-export async function generateImage<
+export function generateImage<
   PROMPT,
   RESPONSE,
   SETTINGS extends ImageGenerationModelSettings,
 >(
   model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   prompt: PROMPT,
-  options: FunctionOptions<SETTINGS> & {
-    fullResponse: true;
-  }
-): Promise<{
-  image: string;
-  response: RESPONSE;
-  metadata: CallMetadata<ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>>;
-}>;
-export async function generateImage<
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends ImageGenerationModelSettings,
->(
-  model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: false;
-  }
-): Promise<string>;
-export async function generateImage<
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends ImageGenerationModelSettings,
->(
-  model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: boolean;
-  }
-): Promise<
-  | {
-      image: string;
-      response: RESPONSE;
-      metadata: CallMetadata<ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>>;
-    }
-  | string
+  options?: FunctionOptions<SETTINGS>
+): ModelFunctionPromise<
+  ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  string,
+  RESPONSE
 > {
-  const result = await executeCall({
+  return executeCall({
     model,
     options,
     generateResponse: (options) => model.generateImageResponse(prompt, options),
@@ -100,12 +69,4 @@ export async function generateImage<
       generatedImage: output,
     }),
   });
-
-  return options?.fullResponse === true
-    ? {
-        image: result.output,
-        response: result.response,
-        metadata: result.metadata,
-      }
-    : result.output;
 }

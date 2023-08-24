@@ -12,12 +12,13 @@ dotenv.config();
       maxCompletionTokens: 1000,
       n: 2, // generate 2 completions
     }),
-    "Write a short story about a robot learning to love:\n\n",
-    { fullResponse: true }
-  );
+    "Write a short story about a robot learning to love:\n\n"
+  ).asFullResponse();
 
   for (const choice of response.choices) {
     console.log(choice.text);
+    console.log();
+    console.log();
   }
 
   console.log(`Duration: ${metadata.durationInMs}ms`);

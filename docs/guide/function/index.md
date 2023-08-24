@@ -22,20 +22,19 @@ const text = await generateText(
 ## Rich Responses
 
 For more advanced use cases, you might want to access the full response from the model, or the metadata about the call.
-Model functions return rich results that include the original response and metadata when you set the `fullResponse` option to `true`.
+Model functions return rich results that include the original response and metadata when you call `.asFullResponse()` before resolving the promise.
 
 ```ts
 // access the full response and the metadata:
 // the response type is specific to the model that's being used
-const { response, metadata } = await generateText(
+const { output, response, metadata } = await generateText(
   new OpenAITextGenerationModel({
     model: "text-davinci-003",
     maxCompletionTokens: 1000,
     n: 2, // generate 2 completions
   }),
-  "Write a short story about a robot learning to love:\n\n",
-  { fullResponse: true }
-);
+  "Write a short story about a robot learning to love:\n\n"
+).asFullResponse();
 
 for (const choice of response.choices) {
   console.log(choice.text);

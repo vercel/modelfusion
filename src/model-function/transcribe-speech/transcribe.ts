@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { CallMetadata, executeCall } from "../executeCall.js";
+import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
@@ -19,51 +19,20 @@ import {
  *   }
  * );
  */
-export async function transcribe<
+export function transcribe<
   DATA,
   RESPONSE,
   SETTINGS extends TranscriptionModelSettings,
 >(
   model: TranscriptionModel<DATA, RESPONSE, SETTINGS>,
   data: DATA,
-  options: FunctionOptions<SETTINGS> & {
-    fullResponse: true;
-  }
-): Promise<{
-  transcription: string;
-  response: RESPONSE;
-  metadata: CallMetadata<TranscriptionModel<DATA, RESPONSE, SETTINGS>>;
-}>;
-export async function transcribe<
-  DATA,
-  RESPONSE,
-  SETTINGS extends TranscriptionModelSettings,
->(
-  model: TranscriptionModel<DATA, RESPONSE, SETTINGS>,
-  data: DATA,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: false;
-  }
-): Promise<string>;
-export async function transcribe<
-  DATA,
-  RESPONSE,
-  SETTINGS extends TranscriptionModelSettings,
->(
-  model: TranscriptionModel<DATA, RESPONSE, SETTINGS>,
-  data: DATA,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: boolean;
-  }
-): Promise<
-  | {
-      transcription: string;
-      response: RESPONSE;
-      metadata: CallMetadata<TranscriptionModel<DATA, RESPONSE, SETTINGS>>;
-    }
-  | string
+  options?: FunctionOptions<SETTINGS>
+): ModelFunctionPromise<
+  TranscriptionModel<DATA, RESPONSE, SETTINGS>,
+  string,
+  RESPONSE
 > {
-  const result = await executeCall({
+  return executeCall({
     model,
     options,
     generateResponse: (options) =>
@@ -100,12 +69,4 @@ export async function transcribe<
       transcription: output,
     }),
   });
-
-  return options?.fullResponse === true
-    ? {
-        transcription: result.output,
-        response: result.response,
-        metadata: result.metadata,
-      }
-    : result.output;
 }

@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { CallMetadata, executeCall } from "../executeCall.js";
+import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -17,7 +17,7 @@ import {
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  */
-export async function generateText<
+export function generateText<
   PROMPT,
   RESPONSE,
   SETTINGS extends TextGenerationModelSettings,
@@ -25,41 +25,14 @@ export async function generateText<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
   prompt: PROMPT,
-  options: FunctionOptions<SETTINGS> & {
-    fullResponse: true;
-  }
-): Promise<{
-  text: string;
-  response: RESPONSE;
-  metadata: CallMetadata<
-    TextGenerationModel<PROMPT, RESPONSE, unknown, SETTINGS>
-  >;
-}>;
-export async function generateText<
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends TextGenerationModelSettings,
->(
+  options?: FunctionOptions<SETTINGS>
+): ModelFunctionPromise<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
-  prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: false;
-  }
-): Promise<string>;
-export async function generateText<
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends TextGenerationModelSettings,
->(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
-  prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: boolean;
-  }
-) {
-  const result = await executeCall({
+  TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
+  string,
+  RESPONSE
+> {
+  return executeCall({
     model,
     options,
     generateResponse: (options) => model.generateTextResponse(prompt, options),
@@ -100,12 +73,4 @@ export async function generateText<
       generatedText: output,
     }),
   });
-
-  return options?.fullResponse === true
-    ? {
-        text: result.output,
-        response: result.response,
-        metadata: result.metadata,
-      }
-    : result.output;
 }

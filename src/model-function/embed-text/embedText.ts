@@ -1,6 +1,6 @@
 import { Vector } from "../../run/Vector.js";
 import { FunctionOptions } from "../FunctionOptions.js";
-import { CallMetadata, executeCall } from "../executeCall.js";
+import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
@@ -18,46 +18,19 @@ import {
  *   ]
  * );
  */
-export async function embedTexts<
+export function embedTexts<
   RESPONSE,
   SETTINGS extends TextEmbeddingModelSettings,
 >(
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   texts: string[],
-  options: FunctionOptions<SETTINGS> & {
-    fullResponse: true;
-  }
-): Promise<{
-  embeddings: Array<Vector>;
-  metadata: CallMetadata<TextEmbeddingModel<RESPONSE, SETTINGS>>;
-}>;
-export async function embedTexts<
-  RESPONSE,
-  SETTINGS extends TextEmbeddingModelSettings,
->(
-  model: TextEmbeddingModel<RESPONSE, SETTINGS>,
-  texts: string[],
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: false;
-  }
-): Promise<Array<Vector>>;
-export async function embedTexts<
-  RESPONSE,
-  SETTINGS extends TextEmbeddingModelSettings,
->(
-  model: TextEmbeddingModel<RESPONSE, SETTINGS>,
-  texts: string[],
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: boolean;
-  }
-): Promise<
-  | {
-      embeddings: Array<Vector>;
-      metadata: CallMetadata<TextEmbeddingModel<RESPONSE, SETTINGS>>;
-    }
-  | Array<Vector>
+  options?: FunctionOptions<SETTINGS>
+): ModelFunctionPromise<
+  TextEmbeddingModel<RESPONSE, SETTINGS>,
+  Vector[],
+  RESPONSE[]
 > {
-  const result = await executeCall({
+  return executeCall({
     model,
     options,
     generateResponse: (options) => {
@@ -112,13 +85,6 @@ export async function embedTexts<
       generatedEmbeddings: output,
     }),
   });
-
-  return options?.fullResponse === true
-    ? {
-        embeddings: result.output,
-        metadata: result.metadata,
-      }
-    : result.output;
 }
 
 /**
@@ -130,54 +96,58 @@ export async function embedTexts<
  *   "At first, Nox didn't know what to do with the pup."
  * );
  */
-export async function embedText<
+export function embedText<
   RESPONSE,
   SETTINGS extends TextEmbeddingModelSettings,
 >(
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   text: string,
-  options: FunctionOptions<SETTINGS> & {
-    fullResponse: true;
-  }
-): Promise<{
-  embedding: Vector;
-  metadata: CallMetadata<TextEmbeddingModel<RESPONSE, SETTINGS>>;
-}>;
-export async function embedText<
-  RESPONSE,
-  SETTINGS extends TextEmbeddingModelSettings,
->(
-  model: TextEmbeddingModel<RESPONSE, SETTINGS>,
-  text: string,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: false;
-  }
-): Promise<Vector>;
-export async function embedText<
-  RESPONSE,
-  SETTINGS extends TextEmbeddingModelSettings,
->(
-  model: TextEmbeddingModel<RESPONSE, SETTINGS>,
-  text: string,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: boolean;
-  }
-): Promise<
-  | {
-      embedding: Vector;
-      metadata: CallMetadata<TextEmbeddingModel<RESPONSE, SETTINGS>>;
-    }
-  | Vector
+  options?: FunctionOptions<SETTINGS>
+): ModelFunctionPromise<
+  TextEmbeddingModel<RESPONSE, SETTINGS>,
+  Vector,
+  RESPONSE
 > {
-  const result = await embedTexts(model, [text], {
-    ...(options ?? {}),
-    fullResponse: true,
-  });
+  const texts = [text];
 
-  return options?.fullResponse === true
-    ? {
-        embedding: result.embeddings[0],
-        metadata: result.metadata,
-      }
-    : result.embeddings[0];
+  return executeCall({
+    model,
+    options,
+    generateResponse: (options) => {
+      return model.generateEmbeddingResponse(texts, options);
+    },
+    extractOutputValue: (result) => {
+      return model.extractEmbeddings(result)[0];
+    },
+    getStartEvent: (metadata, settings) => ({
+      type: "text-embedding-started",
+      metadata,
+      settings,
+      texts,
+    }),
+    getAbortEvent: (metadata, settings) => ({
+      type: "text-embedding-finished",
+      status: "abort",
+      metadata,
+      settings,
+      texts,
+    }),
+    getFailureEvent: (metadata, settings, error) => ({
+      type: "text-embedding-finished",
+      status: "failure",
+      metadata,
+      settings,
+      error,
+      texts,
+    }),
+    getSuccessEvent: (metadata, settings, response, output) => ({
+      type: "text-embedding-finished",
+      status: "success",
+      metadata,
+      settings,
+      texts,
+      response,
+      generatedEmbeddings: [output],
+    }),
+  });
 }

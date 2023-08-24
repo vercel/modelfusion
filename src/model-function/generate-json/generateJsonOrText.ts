@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../FunctionOptions.js";
-import { CallMetadata, executeCall } from "../executeCall.js";
+import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   GenerateJsonOrTextModel,
   GenerateJsonOrTextModelSettings,
@@ -34,7 +34,7 @@ type ToOutputValue<
   SCHEMAS extends SchemaDefinitionArray<SchemaDefinition<any, any>[]>,
 > = ToSchemaUnion<ToSchemaDefinitionsMap<SCHEMAS>>;
 
-export async function generateJsonOrText<
+export function generateJsonOrText<
   SCHEMAS extends SchemaDefinition<any, any>[],
   PROMPT,
   RESPONSE,
@@ -45,58 +45,15 @@ export async function generateJsonOrText<
   prompt: (
     schemaDefinitions: SCHEMAS
   ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
-  options: FunctionOptions<SETTINGS> & {
-    fullResponse: true;
-  }
-): Promise<
-  ({ schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>) & {
-    response: RESPONSE;
-    metadata: CallMetadata<GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>>;
-  }
->;
-export async function generateJsonOrText<
-  SCHEMAS extends SchemaDefinition<any, any>[],
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends GenerateJsonOrTextModelSettings,
->(
-  model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
-  schemaDefinitions: SCHEMAS,
-  prompt: (
-    schemaDefinitions: SCHEMAS
-  ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: false;
-  }
-): Promise<
-  { schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>
->;
-export async function generateJsonOrText<
-  SCHEMAS extends SchemaDefinition<any, any>[],
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends GenerateJsonOrTextModelSettings,
->(
-  model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
-  schemaDefinitions: SCHEMAS,
-  prompt: (
-    schemaDefinitions: SCHEMAS
-  ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
-  options?: FunctionOptions<SETTINGS> & {
-    fullResponse?: boolean;
-  }
-): Promise<
-  | ({ schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>)
-  | (({ schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>) & {
-      response: RESPONSE;
-      metadata: CallMetadata<
-        GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>
-      >;
-    })
+  options?: FunctionOptions<SETTINGS>
+): ModelFunctionPromise<
+  GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
+  { schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>,
+  RESPONSE
 > {
   const expandedPrompt = prompt(schemaDefinitions);
 
-  const result = await executeCall({
+  return executeCall({
     model,
     options,
     generateResponse: (options) =>
@@ -165,12 +122,4 @@ export async function generateJsonOrText<
       generatedJson: output,
     }),
   });
-
-  return options?.fullResponse === true
-    ? {
-        ...result.output,
-        response: result.response,
-        metadata: result.metadata,
-      }
-    : result.output;
 }
