@@ -1,5 +1,5 @@
 import { Run } from "./Run.js";
-import { RunFunctionObserver } from "./RunFunctionObserver.js";
+import { FunctionObserver } from "./FunctionObserver.js";
 
 /**
  * Additional settings for ModelFusion functions.
@@ -13,7 +13,7 @@ export type FunctionOptions = {
   /**
    * Observers that are called when the function is invoked.
    */
-  observers?: Array<RunFunctionObserver>;
+  observers?: Array<FunctionObserver>;
 
   run?: Run;
 };

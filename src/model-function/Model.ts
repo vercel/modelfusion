@@ -1,11 +1,11 @@
 import { ModelInformation } from "./ModelInformation.js";
-import { RunFunctionObserver } from "../run/RunFunctionObserver.js";
+import { FunctionObserver } from "../run/FunctionObserver.js";
 
 export interface ModelSettings {
   /**
    * Observers that are called when the model is used in run functions.
    */
-  observers?: Array<RunFunctionObserver>;
+  observers?: Array<FunctionObserver>;
 }
 
 export interface Model<SETTINGS> {

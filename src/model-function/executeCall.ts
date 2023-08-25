@@ -1,5 +1,5 @@
 import { nanoid as createId } from "nanoid";
-import { RunFunctionEventSource } from "../run/RunFunctionEventSource.js";
+import { FunctionEventSource } from "../run/FunctionEventSource.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
@@ -194,7 +194,7 @@ async function doExecuteCall<
   const run = options?.run;
   const settings = model.settings;
 
-  const eventSource = new RunFunctionEventSource({
+  const eventSource = new FunctionEventSource({
     observers: [...(settings.observers ?? []), ...(run?.observers ?? [])],
     errorHandler: run?.errorHandler,
   });
@@ -211,7 +211,7 @@ async function doExecuteCall<
     startEpochSeconds: durationMeasurement.startEpochSeconds,
   };
 
-  eventSource.notifyRunFunctionStarted(getStartEvent(startMetadata, settings));
+  eventSource.notifyFunctionStarted(getStartEvent(startMetadata, settings));
 
   const result = await runSafe(() =>
     generateResponse({
@@ -228,13 +228,13 @@ async function doExecuteCall<
 
   if (!result.ok) {
     if (result.isAborted) {
-      eventSource.notifyRunFunctionFinished(
+      eventSource.notifyFunctionFinished(
         getAbortEvent(finishMetadata, settings)
       );
       throw new AbortError();
     }
 
-    eventSource.notifyRunFunctionFinished(
+    eventSource.notifyFunctionFinished(
       getFailureEvent(finishMetadata, settings, result.error)
     );
     throw result.error;
@@ -243,7 +243,7 @@ async function doExecuteCall<
   const response = result.output;
   const output = extractOutputValue(response);
 
-  eventSource.notifyRunFunctionFinished(
+  eventSource.notifyFunctionFinished(
     getSuccessEvent(finishMetadata, settings, response, output)
   );
 

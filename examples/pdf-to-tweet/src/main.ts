@@ -1,6 +1,6 @@
-import { DefaultRun, OpenAICostCalculator } from "modelfusion";
 import { Command } from "commander";
 import dotenv from "dotenv";
+import { DefaultRun, OpenAICostCalculator } from "modelfusion";
 import { createTweetFromPdf } from "./createTweetFromPdf";
 
 dotenv.config();
@@ -20,7 +20,7 @@ const run = new DefaultRun({
   costCalculators: [new OpenAICostCalculator()],
   observers: [
     {
-      onRunFunctionStarted(event) {
+      onFunctionStarted(event) {
         if (event.type === "text-generation-started") {
           console.log(
             `Generate text ${event.metadata.functionId ?? "unknown"} started.`
@@ -32,7 +32,7 @@ const run = new DefaultRun({
         }
       },
 
-      onRunFunctionFinished(event) {
+      onFunctionFinished(event) {
         if (event.type === "text-generation-finished") {
           console.log(
             `Generate text ${event.metadata.functionId ?? "unknown"} finished.`

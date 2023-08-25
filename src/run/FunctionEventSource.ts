@@ -1,39 +1,39 @@
 import { ErrorHandler } from "../util/ErrorHandler.js";
 import {
-  RunFunctionFinishedEvent,
-  RunFunctionStartedEvent,
-} from "./RunFunctionEvent.js";
-import { RunFunctionObserver } from "./RunFunctionObserver.js";
+  FunctionFinishedEvent,
+  FunctionStartedEvent,
+} from "./FunctionEvent.js";
+import { FunctionObserver } from "./FunctionObserver.js";
 
-export class RunFunctionEventSource {
-  readonly observers: RunFunctionObserver[];
+export class FunctionEventSource {
+  readonly observers: FunctionObserver[];
   readonly errorHandler: ErrorHandler;
 
   constructor({
     observers,
     errorHandler,
   }: {
-    observers: RunFunctionObserver[];
+    observers: FunctionObserver[];
     errorHandler?: ErrorHandler;
   }) {
     this.observers = observers;
     this.errorHandler = errorHandler ?? ((error) => console.error(error));
   }
 
-  notifyRunFunctionStarted(event: RunFunctionStartedEvent) {
+  notifyFunctionStarted(event: FunctionStartedEvent) {
     for (const observer of this.observers) {
       try {
-        observer.onRunFunctionStarted?.(event);
+        observer.onFunctionStarted?.(event);
       } catch (error) {
         this.errorHandler(error);
       }
     }
   }
 
-  notifyRunFunctionFinished(event: RunFunctionFinishedEvent) {
+  notifyFunctionFinished(event: FunctionFinishedEvent) {
     for (const observer of this.observers) {
       try {
-        observer.onRunFunctionFinished?.(event);
+        observer.onFunctionFinished?.(event);
       } catch (error) {
         this.errorHandler(error);
       }

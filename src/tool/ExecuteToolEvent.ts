@@ -1,19 +1,19 @@
 import {
-  RunFunctionFinishedEventMetadata,
-  RunFunctionStartedEventMetadata,
-} from "../run/RunFunctionEvent.js";
+  FunctionFinishedEventMetadata,
+  FunctionStartedEventMetadata,
+} from "../run/FunctionEvent.js";
 import { Tool } from "./Tool.js";
 
 export type ExecuteToolStartedEvent = {
   type: "execute-tool-started";
-  metadata: RunFunctionStartedEventMetadata;
+  metadata: FunctionStartedEventMetadata;
   tool: Tool<string, unknown, unknown>;
   input: unknown;
 };
 
 export type ExecuteToolFinishedEvent = {
   type: "execute-tool-finished";
-  metadata: RunFunctionFinishedEventMetadata;
+  metadata: FunctionFinishedEventMetadata;
   tool: Tool<string, unknown, unknown>;
   input: unknown;
 } & (

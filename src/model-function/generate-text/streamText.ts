@@ -1,5 +1,5 @@
 import { nanoid as createId } from "nanoid";
-import { RunFunctionEventSource } from "../../run/RunFunctionEventSource.js";
+import { FunctionEventSource } from "../../run/FunctionEventSource.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
@@ -128,7 +128,7 @@ async function doStreamText<
   const run = options?.run;
   const settings = model.settings;
 
-  const eventSource = new RunFunctionEventSource({
+  const eventSource = new FunctionEventSource({
     observers: [...(settings.observers ?? []), ...(run?.observers ?? [])],
     errorHandler: run?.errorHandler,
   });
@@ -145,7 +145,7 @@ async function doStreamText<
     startEpochSeconds: durationMeasurement.startEpochSeconds,
   };
 
-  eventSource.notifyRunFunctionStarted({
+  eventSource.notifyFunctionStarted({
     type: "text-streaming-started",
     metadata: startMetadata,
     settings,
@@ -166,7 +166,7 @@ async function doStreamText<
           durationInMs: durationMeasurement.durationInMs,
         };
 
-        eventSource.notifyRunFunctionFinished({
+        eventSource.notifyFunctionFinished({
           type: "text-streaming-finished",
           status: "success",
           metadata: finishMetadata,
@@ -182,7 +182,7 @@ async function doStreamText<
           durationInMs: durationMeasurement.durationInMs,
         };
 
-        eventSource.notifyRunFunctionFinished(
+        eventSource.notifyFunctionFinished(
           error instanceof AbortError
             ? {
                 type: "text-streaming-finished",
@@ -211,7 +211,7 @@ async function doStreamText<
     };
 
     if (result.isAborted) {
-      eventSource.notifyRunFunctionFinished({
+      eventSource.notifyFunctionFinished({
         type: "text-streaming-finished",
         status: "abort",
         metadata: finishMetadata,
@@ -221,7 +221,7 @@ async function doStreamText<
       throw new AbortError();
     }
 
-    eventSource.notifyRunFunctionFinished({
+    eventSource.notifyFunctionFinished({
       type: "text-streaming-finished",
       status: "failure",
       metadata: finishMetadata,

@@ -1,5 +1,5 @@
 import { ErrorHandler } from "../util/ErrorHandler.js";
-import { RunFunctionObserver } from "./RunFunctionObserver.js";
+import { FunctionObserver } from "./FunctionObserver.js";
 
 export interface Run {
   /**
@@ -27,7 +27,7 @@ export interface Run {
    */
   abortSignal?: AbortSignal;
 
-  observers?: RunFunctionObserver[];
+  observers?: FunctionObserver[];
 
   errorHandler?: ErrorHandler;
 }

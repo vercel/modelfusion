@@ -2,21 +2,22 @@ import dotenv from "dotenv";
 import {
   DefaultRun,
   OpenAITextGenerationModel,
-  RunFunctionFinishedEvent,
-  RunFunctionStartedEvent,
+  FunctionFinishedEvent,
+  FunctionStartedEvent,
   generateText,
+  FunctionObserver,
 } from "modelfusion";
 
 dotenv.config();
 
 (async () => {
-  const observer = {
-    onRunFunctionStarted(event: RunFunctionStartedEvent) {
+  const observer: FunctionObserver = {
+    onFunctionStarted(event: FunctionStartedEvent) {
       console.log(
         `Started ${event.type} (${event.metadata.callId}) at ${event.metadata.startEpochSeconds}`
       );
     },
-    onRunFunctionFinished(event: RunFunctionFinishedEvent) {
+    onFunctionFinished(event: FunctionFinishedEvent) {
       console.log(
         `Finished ${event.type} (${event.metadata.callId}) in ${event.metadata.durationInMs}ms`
       );

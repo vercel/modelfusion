@@ -1,4 +1,4 @@
-import { RunFunctionEvent } from "../run/RunFunctionEvent.js";
+import { FunctionEvent } from "../run/FunctionEvent.js";
 import { ModelCallFinishedEvent } from "./ModelCallEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 
@@ -18,7 +18,7 @@ export type SuccessfulModelCall = {
 };
 
 export function extractSuccessfulModelCalls(
-  runFunctionEvents: RunFunctionEvent[]
+  runFunctionEvents: FunctionEvent[]
 ) {
   return runFunctionEvents
     .filter(

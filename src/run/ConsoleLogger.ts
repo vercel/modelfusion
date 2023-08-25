@@ -1,15 +1,15 @@
 import {
-  RunFunctionFinishedEvent,
-  RunFunctionStartedEvent,
-} from "./RunFunctionEvent.js";
-import { RunFunctionObserver } from "./RunFunctionObserver.js";
+  FunctionFinishedEvent,
+  FunctionStartedEvent,
+} from "./FunctionEvent.js";
+import { FunctionObserver } from "./FunctionObserver.js";
 
-export class ConsoleLogger implements RunFunctionObserver {
-  onRunFunctionStarted(event: RunFunctionStartedEvent) {
+export class ConsoleLogger implements FunctionObserver {
+  onFunctionStarted(event: FunctionStartedEvent) {
     console.log(JSON.stringify(event, null, 2));
   }
 
-  onRunFunctionFinished(event: RunFunctionFinishedEvent) {
+  onFunctionFinished(event: FunctionFinishedEvent) {
     console.log(JSON.stringify(event, null, 2));
   }
 }

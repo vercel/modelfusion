@@ -1,7 +1,7 @@
 import { nanoid as createId } from "nanoid";
 import { z } from "zod";
 import { FunctionOptions } from "../run/FunctionOptions.js";
-import { RunFunctionEventSource } from "../run/RunFunctionEventSource.js";
+import { FunctionEventSource } from "../run/FunctionEventSource.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
@@ -94,7 +94,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 }> {
   const run = options?.run;
 
-  const eventSource = new RunFunctionEventSource({
+  const eventSource = new FunctionEventSource({
     observers: run?.observers ?? [],
     errorHandler: run?.errorHandler,
   });
@@ -110,7 +110,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     startEpochSeconds: durationMeasurement.startEpochSeconds,
   };
 
-  eventSource.notifyRunFunctionStarted({
+  eventSource.notifyFunctionStarted({
     type: "execute-tool-started",
     metadata: startMetadata,
     tool: tool as Tool<string, unknown, unknown>,
@@ -126,7 +126,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   if (!result.ok) {
     if (result.isAborted) {
-      eventSource.notifyRunFunctionFinished({
+      eventSource.notifyFunctionFinished({
         type: "execute-tool-finished",
         status: "abort",
         metadata: finishMetadata,
@@ -137,7 +137,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
       throw new AbortError();
     }
 
-    eventSource.notifyRunFunctionFinished({
+    eventSource.notifyFunctionFinished({
       type: "execute-tool-finished",
       status: "failure",
       metadata: finishMetadata,
@@ -157,7 +157,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   const output = result.output;
 
-  eventSource.notifyRunFunctionFinished({
+  eventSource.notifyFunctionFinished({
     type: "execute-tool-finished",
     status: "success",
     metadata: finishMetadata,
