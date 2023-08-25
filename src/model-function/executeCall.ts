@@ -1,9 +1,9 @@
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../run/FunctionEventSource.js";
+import { getGlobalFunctionObservers } from "../run/GlobalFunctionObservers.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
-import { ModelFunctionOptions } from "./ModelFunctionOptions.js";
 import { Model, ModelSettings } from "./Model.js";
 import {
   ModelCallFinishedEvent,
@@ -11,6 +11,7 @@ import {
   ModelCallStartedEvent,
   ModelCallStartedEventMetadata,
 } from "./ModelCallEvent.js";
+import { ModelFunctionOptions } from "./ModelFunctionOptions.js";
 
 export type CallMetadata<MODEL extends Model<unknown>> = {
   callId: string;
@@ -196,6 +197,7 @@ async function doExecuteCall<
 
   const eventSource = new FunctionEventSource({
     observers: [
+      ...getGlobalFunctionObservers(),
       ...(settings.observers ?? []),
       ...(run?.observers ?? []),
       ...(options?.observers ?? []),

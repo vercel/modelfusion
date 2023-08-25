@@ -1,7 +1,8 @@
 import { nanoid as createId } from "nanoid";
 import { z } from "zod";
-import { FunctionOptions } from "../run/FunctionOptions.js";
 import { FunctionEventSource } from "../run/FunctionEventSource.js";
+import { FunctionOptions } from "../run/FunctionOptions.js";
+import { getGlobalFunctionObservers } from "../run/GlobalFunctionObservers.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
@@ -95,7 +96,11 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   const run = options?.run;
 
   const eventSource = new FunctionEventSource({
-    observers: [...(run?.observers ?? []), ...(options?.observers ?? [])],
+    observers: [
+      ...getGlobalFunctionObservers(),
+      ...(run?.observers ?? []),
+      ...(options?.observers ?? []),
+    ],
     errorHandler: run?.errorHandler,
   });
 

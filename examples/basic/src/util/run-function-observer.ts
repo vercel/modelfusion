@@ -1,11 +1,12 @@
 import dotenv from "dotenv";
 import {
   DefaultRun,
-  OpenAITextGenerationModel,
   FunctionFinishedEvent,
-  FunctionStartedEvent,
-  generateText,
   FunctionObserver,
+  FunctionStartedEvent,
+  OpenAITextGenerationModel,
+  generateText,
+  setGlobalFunctionObservers,
 } from "modelfusion";
 
 dotenv.config();
@@ -24,22 +25,34 @@ dotenv.config();
     },
   };
 
-  // Example 1: Set the observer on the model
+  // Example 1: Set a global funtion observer
+  setGlobalFunctionObservers([observer]);
   const text1 = await generateText(
+    new OpenAITextGenerationModel({
+      model: "text-davinci-003",
+      temperature: 0.7,
+      maxCompletionTokens: 50,
+    }),
+    "Write a short story about a robot name Evo:\n\n"
+  );
+  setGlobalFunctionObservers([]);
+
+  // Example 2: Set the observer on the model
+  const text2 = await generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
       temperature: 0.7,
       maxCompletionTokens: 50,
       observers: [observer],
     }),
-    "Write a short story about a robot name Buddy:\n\n"
+    "Write a short story about a robot name Bud:\n\n"
   );
 
-  // Example 2: Set the observer on the run
+  // Example 3: Set the observer on the run
   const run = new DefaultRun({
     observers: [observer],
   });
-  const text2 = await generateText(
+  const text3 = await generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
       temperature: 0.7,
@@ -49,8 +62,8 @@ dotenv.config();
     { run }
   );
 
-  // Example 3: Set the observer on the function call
-  const text3 = await generateText(
+  // Example 4: Set the observer on the function call
+  const text4 = await generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
       temperature: 0.7,
