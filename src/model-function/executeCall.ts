@@ -195,7 +195,11 @@ async function doExecuteCall<
   const settings = model.settings;
 
   const eventSource = new FunctionEventSource({
-    observers: [...(settings.observers ?? []), ...(run?.observers ?? [])],
+    observers: [
+      ...(settings.observers ?? []),
+      ...(run?.observers ?? []),
+      ...(options?.observers ?? []),
+    ],
     errorHandler: run?.errorHandler,
   });
 

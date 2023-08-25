@@ -57,6 +57,6 @@ dotenv.config();
       maxCompletionTokens: 50,
     }),
     "Write a short story about a robot named Nox:\n\n",
-    { settings: { observers: [observer] } }
+    { observers: [observer] }
   );
 })();

@@ -95,7 +95,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   const run = options?.run;
 
   const eventSource = new FunctionEventSource({
-    observers: run?.observers ?? [],
+    observers: [...(run?.observers ?? []), ...(options?.observers ?? [])],
     errorHandler: run?.errorHandler,
   });
 
