@@ -30,7 +30,6 @@ dotenv.config();
   const text1 = await generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
-      temperature: 0.7,
       maxCompletionTokens: 50,
     }),
     "Write a short story about a robot name Evo:\n\n"
@@ -41,7 +40,6 @@ dotenv.config();
   const text2 = await generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
-      temperature: 0.7,
       maxCompletionTokens: 50,
       observers: [observer],
     }),
@@ -55,7 +53,6 @@ dotenv.config();
   const text3 = await generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
-      temperature: 0.7,
       maxCompletionTokens: 50,
     }),
     "Write a short story about a robot named Pam:\n\n",
@@ -66,7 +63,6 @@ dotenv.config();
   const text4 = await generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
-      temperature: 0.7,
       maxCompletionTokens: 50,
     }),
     "Write a short story about a robot named Nox:\n\n",
