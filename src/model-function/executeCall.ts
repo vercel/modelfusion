@@ -3,7 +3,7 @@ import { RunFunctionEventSource } from "../run/RunFunctionEventSource.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
-import { FunctionOptions } from "./FunctionOptions.js";
+import { ModelFunctionOptions } from "./ModelFunctionOptions.js";
 import { Model, ModelSettings } from "./Model.js";
 import {
   ModelCallFinishedEvent,
@@ -39,7 +39,7 @@ export function executeCall<
   extractOutputValue,
 }: {
   model: MODEL;
-  options?: FunctionOptions<SETTINGS>;
+  options?: ModelFunctionOptions<SETTINGS>;
   getStartEvent: (
     metadata: ModelCallStartedEventMetadata,
     settings: SETTINGS
@@ -60,7 +60,7 @@ export function executeCall<
     output: OUTPUT
   ) => ModelCallFinishedEvent;
   generateResponse: (
-    options: FunctionOptions<SETTINGS>
+    options: ModelFunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
   extractOutputValue: (response: RESPONSE) => OUTPUT;
 }): ModelFunctionPromise<MODEL, OUTPUT, RESPONSE> {
@@ -154,7 +154,7 @@ async function doExecuteCall<
   extractOutputValue,
 }: {
   model: MODEL;
-  options?: FunctionOptions<SETTINGS>;
+  options?: ModelFunctionOptions<SETTINGS>;
   getStartEvent: (
     metadata: ModelCallStartedEventMetadata,
     settings: SETTINGS
@@ -175,7 +175,7 @@ async function doExecuteCall<
     output: OUTPUT
   ) => ModelCallFinishedEvent;
   generateResponse: (
-    options: FunctionOptions<SETTINGS>
+    options: ModelFunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
   extractOutputValue: (response: RESPONSE) => OUTPUT;
 }): Promise<{

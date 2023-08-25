@@ -1,5 +1,5 @@
 import { Vector } from "../../run/Vector.js";
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
 export interface TextEmbeddingModelSettings extends ModelSettings {}
@@ -22,7 +22,7 @@ export interface TextEmbeddingModel<
 
   generateEmbeddingResponse(
     texts: string[],
-    options?: FunctionOptions<SETTINGS>
+    options?: ModelFunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE>;
 
   extractEmbeddings(response: RESPONSE): Vector[];

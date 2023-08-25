@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   TranscriptionModel,
@@ -26,7 +26,7 @@ export function transcribe<
 >(
   model: TranscriptionModel<DATA, RESPONSE, SETTINGS>,
   data: DATA,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   TranscriptionModel<DATA, RESPONSE, SETTINGS>,
   string,

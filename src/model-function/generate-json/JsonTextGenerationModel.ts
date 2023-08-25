@@ -5,7 +5,7 @@ import {
 import { SchemaDefinition } from "./SchemaDefinition.js";
 import { InstructionWithSchema } from "./InstructionWithSchemaPrompt.js";
 import { GenerateJsonModel } from "./GenerateJsonModel.js";
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { generateText } from "../generate-text/generateText.js";
 
 export type JsonTextPromptFormat = {
@@ -47,7 +47,7 @@ export class JsonTextGenerationModel<
 
   async generateJsonResponse(
     prompt: InstructionWithSchema<string, unknown>,
-    options?: FunctionOptions<SETTINGS> | undefined
+    options?: ModelFunctionOptions<SETTINGS> | undefined
   ): Promise<string> {
     return await generateText(
       this.model,

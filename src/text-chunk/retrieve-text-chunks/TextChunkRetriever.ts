@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { TextChunk } from "../TextChunk.js";
 
 export interface TextChunkRetrieverSettings {}
@@ -10,7 +10,7 @@ export interface TextChunkRetriever<
 > {
   retrieveTextChunks(
     query: QUERY,
-    options?: FunctionOptions<TextChunkRetrieverSettings>
+    options?: ModelFunctionOptions<TextChunkRetrieverSettings>
   ): Promise<CHUNK[]>;
 
   withSettings(additionalSettings: Partial<SETTINGS>): this;

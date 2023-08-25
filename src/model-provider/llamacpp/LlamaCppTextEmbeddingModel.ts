@@ -1,6 +1,6 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
@@ -68,7 +68,7 @@ export class LlamaCppTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: FunctionOptions<LlamaCppTextEmbeddingModelSettings>
+    options?: ModelFunctionOptions<LlamaCppTextEmbeddingModelSettings>
   ): Promise<LlamaCppTextEmbeddingResponse> {
     if (texts.length > this.maxTextsPerCall) {
       throw new Error(
@@ -93,7 +93,7 @@ export class LlamaCppTextEmbeddingModel
 
   generateEmbeddingResponse(
     texts: string[],
-    options?: FunctionOptions<LlamaCppTextEmbeddingModelSettings>
+    options?: ModelFunctionOptions<LlamaCppTextEmbeddingModelSettings>
   ) {
     return this.callAPI(texts, options);
   }

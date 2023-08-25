@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
@@ -50,7 +50,7 @@ export class SimilarTextChunksFromVectorIndexRetriever<
 
   async retrieveTextChunks(
     query: string,
-    options?: FunctionOptions<TextChunkRetrieverSettings>
+    options?: ModelFunctionOptions<TextChunkRetrieverSettings>
   ): Promise<CHUNK[]> {
     if (options?.settings != null) {
       return this.withSettings(options.settings).retrieveTextChunks(query, {

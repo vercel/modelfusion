@@ -1,6 +1,6 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
@@ -100,7 +100,7 @@ export class OpenAITranscriptionModel
 
   generateTranscriptionResponse(
     data: OpenAITranscriptionInput,
-    options?: FunctionOptions<
+    options?: ModelFunctionOptions<
       Partial<OpenAITranscriptionModelSettings & OpenAIModelSettings>
     >
   ): PromiseLike<OpenAITranscriptionVerboseJsonResponse> {
@@ -134,7 +134,7 @@ export class OpenAITranscriptionModel
     data: OpenAITranscriptionInput,
     options: {
       responseFormat: OpenAITranscriptionResponseFormatType<RESULT>;
-    } & FunctionOptions<
+    } & ModelFunctionOptions<
       Partial<OpenAITranscriptionModelSettings & OpenAIModelSettings>
     >
   ): Promise<RESULT> {

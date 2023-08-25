@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { SchemaDefinition } from "../model-function/generate-json/SchemaDefinition.js";
-import { RunFunction } from "../run/RunFunction.js";
+import { FunctionOptions } from "../run/FunctionOptions.js";
 import { InvalidToolNameError } from "./InvalidToolNameError.js";
 
 const namePattern = /^[a-zA-Z0-9_-]{1,64}$/;
@@ -36,7 +36,10 @@ export class Tool<NAME extends string, INPUT, OUTPUT> {
   /**
    * The actual execution function of the tool.
    */
-  readonly execute: RunFunction<INPUT, OUTPUT>;
+  readonly execute: (
+    input: INPUT,
+    options?: FunctionOptions
+  ) => PromiseLike<OUTPUT>;
 
   constructor({
     name,
@@ -49,7 +52,7 @@ export class Tool<NAME extends string, INPUT, OUTPUT> {
     description: string;
     inputSchema: z.ZodSchema<INPUT>;
     outputSchema?: z.ZodSchema<OUTPUT>;
-    execute(input: INPUT): Promise<OUTPUT>;
+    execute(input: INPUT, options?: FunctionOptions): PromiseLike<OUTPUT>;
   }) {
     // check that the name is a valid function name:
     if (!namePattern.test(name)) {

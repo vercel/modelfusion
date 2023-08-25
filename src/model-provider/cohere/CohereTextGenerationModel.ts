@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
@@ -137,7 +137,7 @@ export class CohereTextGenerationModel
     prompt: string,
     options: {
       responseFormat: CohereTextGenerationResponseFormatType<RESPONSE>;
-    } & FunctionOptions<CohereTextGenerationModelSettings>
+    } & ModelFunctionOptions<CohereTextGenerationModelSettings>
   ): Promise<RESPONSE> {
     const { run, settings, responseFormat } = options;
 
@@ -170,7 +170,7 @@ export class CohereTextGenerationModel
 
   generateTextResponse(
     prompt: string,
-    options?: FunctionOptions<CohereTextGenerationModelSettings>
+    options?: ModelFunctionOptions<CohereTextGenerationModelSettings>
   ) {
     return this.callAPI(prompt, {
       ...options,
@@ -184,7 +184,7 @@ export class CohereTextGenerationModel
 
   generateDeltaStreamResponse(
     prompt: string,
-    options?: FunctionOptions<CohereTextGenerationModelSettings>
+    options?: ModelFunctionOptions<CohereTextGenerationModelSettings>
   ) {
     return this.callAPI(prompt, {
       ...options,

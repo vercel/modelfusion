@@ -1,5 +1,5 @@
 import { Vector } from "../../run/Vector.js";
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   TextEmbeddingModel,
@@ -24,7 +24,7 @@ export function embedTexts<
 >(
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   texts: string[],
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   TextEmbeddingModel<RESPONSE, SETTINGS>,
   Vector[],
@@ -102,7 +102,7 @@ export function embedText<
 >(
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   text: string,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   TextEmbeddingModel<RESPONSE, SETTINGS>,
   Vector,

@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   SpeechSynthesisModel,
@@ -11,7 +11,7 @@ import {
 export function synthesizeSpeech<SETTINGS extends SpeechSynthesisModelSettings>(
   model: SpeechSynthesisModel<SETTINGS>,
   text: string,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<SpeechSynthesisModel<SETTINGS>, Buffer, Buffer> {
   return executeCall({
     model,

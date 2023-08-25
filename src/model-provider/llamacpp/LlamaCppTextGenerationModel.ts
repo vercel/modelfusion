@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
@@ -99,7 +99,7 @@ export class LlamaCppTextGenerationModel<
     prompt: string,
     options: {
       responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
-    } & FunctionOptions<
+    } & ModelFunctionOptions<
       LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
     >
   ): Promise<RESPONSE> {
@@ -133,7 +133,7 @@ export class LlamaCppTextGenerationModel<
 
   generateTextResponse(
     prompt: string,
-    options?: FunctionOptions<
+    options?: ModelFunctionOptions<
       LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
     >
   ) {
@@ -149,7 +149,7 @@ export class LlamaCppTextGenerationModel<
 
   generateDeltaStreamResponse(
     prompt: string,
-    options?: FunctionOptions<
+    options?: ModelFunctionOptions<
       LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
     >
   ) {

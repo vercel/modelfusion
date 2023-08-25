@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   GenerateJsonModel,
@@ -17,7 +17,7 @@ export function generateJson<
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
   prompt: (schemaDefinition: SchemaDefinition<NAME, STRUCTURE>) => PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   STRUCTURE,

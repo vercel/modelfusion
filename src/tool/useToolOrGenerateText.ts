@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import {
   GenerateJsonOrTextModel,
   GenerateJsonOrTextModelSettings,
@@ -40,7 +40,7 @@ export async function useToolOrGenerateText<
   model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
   tools: TOOLS,
   prompt: (tools: TOOLS) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): Promise<
   | { tool: null; parameters: null; result: null; text: string }
   | ToOutputValue<TOOLS>

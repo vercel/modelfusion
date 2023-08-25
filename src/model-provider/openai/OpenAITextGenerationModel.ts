@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
@@ -187,7 +187,7 @@ export class OpenAITextGenerationModel
     prompt: string,
     options: {
       responseFormat: OpenAITextResponseFormatType<RESULT>;
-    } & FunctionOptions<
+    } & ModelFunctionOptions<
       Partial<
         OpenAIImageGenerationCallSettings &
           OpenAIModelSettings & { user?: string }
@@ -227,7 +227,7 @@ export class OpenAITextGenerationModel
 
   generateTextResponse(
     prompt: string,
-    options?: FunctionOptions<OpenAITextGenerationModelSettings>
+    options?: ModelFunctionOptions<OpenAITextGenerationModelSettings>
   ) {
     return this.callAPI(prompt, {
       ...options,
@@ -241,7 +241,7 @@ export class OpenAITextGenerationModel
 
   generateDeltaStreamResponse(
     prompt: string,
-    options?: FunctionOptions<OpenAITextGenerationModelSettings>
+    options?: ModelFunctionOptions<OpenAITextGenerationModelSettings>
   ) {
     return this.callAPI(prompt, {
       ...options,

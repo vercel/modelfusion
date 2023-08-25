@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
 export interface GenerateJsonOrTextModelSettings extends ModelSettings {}
@@ -20,10 +20,10 @@ export interface GenerateJsonOrTextPrompt<RESPONSE> {
 export interface GenerateJsonOrTextModel<
   PROMPT,
   RESPONSE,
-  SETTINGS extends GenerateJsonOrTextModelSettings
+  SETTINGS extends GenerateJsonOrTextModelSettings,
 > extends Model<SETTINGS> {
   generateJsonResponse(
     prompt: PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
-    options?: FunctionOptions<SETTINGS>
+    options?: ModelFunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE>;
 }

@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   GenerateJsonOrTextModel,
@@ -45,7 +45,7 @@ export function generateJsonOrText<
   prompt: (
     schemaDefinitions: SCHEMAS
   ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
   { schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>,

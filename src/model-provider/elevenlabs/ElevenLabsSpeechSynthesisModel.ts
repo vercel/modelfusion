@@ -1,5 +1,5 @@
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   SpeechSynthesisModel,
   SpeechSynthesisModelSettings,
@@ -57,7 +57,7 @@ export class ElevenLabsSpeechSynthesisModel
 
   private async callAPI(
     text: string,
-    options?: FunctionOptions<ElevenLabsSpeechSynthesisModelSettings>
+    options?: ModelFunctionOptions<ElevenLabsSpeechSynthesisModelSettings>
   ): Promise<Buffer> {
     const run = options?.run;
     const settings = options?.settings;
@@ -86,7 +86,7 @@ export class ElevenLabsSpeechSynthesisModel
   generateSpeechResponse(
     text: string,
     options?:
-      | FunctionOptions<ElevenLabsSpeechSynthesisModelSettings>
+      | ModelFunctionOptions<ElevenLabsSpeechSynthesisModelSettings>
       | undefined
   ) {
     return this.callAPI(text, options);

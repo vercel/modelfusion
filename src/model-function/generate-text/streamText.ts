@@ -3,7 +3,7 @@ import { RunFunctionEventSource } from "../../run/RunFunctionEventSource.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { CallMetadata } from "../executeCall.js";
 import { DeltaEvent } from "./DeltaEvent.js";
 import {
@@ -86,12 +86,12 @@ export function streamText<
   model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
     generateDeltaStreamResponse: (
       prompt: PROMPT,
-      options: FunctionOptions<SETTINGS>
+      options: ModelFunctionOptions<SETTINGS>
     ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
     extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
   },
   prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): StreamTextPromise<PROMPT, FULL_DELTA, SETTINGS> {
   return new StreamTextPromise(doStreamText(model, prompt, options));
 }
@@ -104,12 +104,12 @@ async function doStreamText<
   model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
     generateDeltaStreamResponse: (
       prompt: PROMPT,
-      options: FunctionOptions<SETTINGS>
+      options: ModelFunctionOptions<SETTINGS>
     ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
     extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
   },
   prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): Promise<{
   output: AsyncIterable<string>;
   metadata: Omit<

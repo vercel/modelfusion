@@ -1,6 +1,6 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
@@ -95,7 +95,7 @@ export class HuggingFaceTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: FunctionOptions<HuggingFaceTextEmbeddingModelSettings>
+    options?: ModelFunctionOptions<HuggingFaceTextEmbeddingModelSettings>
   ): Promise<HuggingFaceTextEmbeddingResponse> {
     if (texts.length > this.maxTextsPerCall) {
       throw new Error(
@@ -133,7 +133,7 @@ export class HuggingFaceTextEmbeddingModel
 
   generateEmbeddingResponse(
     texts: string[],
-    options?: FunctionOptions<HuggingFaceTextEmbeddingModelSettings>
+    options?: ModelFunctionOptions<HuggingFaceTextEmbeddingModelSettings>
   ) {
     return this.callAPI(texts, options);
   }

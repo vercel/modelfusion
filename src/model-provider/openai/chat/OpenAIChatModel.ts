@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../../model-function/ModelFunctionOptions.js";
 import { GenerateJsonModel } from "../../../model-function/generate-json/GenerateJsonModel.js";
 import { GenerateJsonOrTextModel } from "../../../model-function/generate-json/GenerateJsonOrTextModel.js";
 import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
@@ -223,7 +223,7 @@ export class OpenAIChatModel
     messages: Array<OpenAIChatMessage>,
     options: {
       responseFormat: OpenAIChatResponseFormatType<RESULT>;
-    } & FunctionOptions<
+    } & ModelFunctionOptions<
       Partial<OpenAIChatCallSettings & OpenAIModelSettings & { user?: string }>
     >
   ): Promise<RESULT> {
@@ -254,7 +254,7 @@ export class OpenAIChatModel
 
   generateTextResponse(
     prompt: OpenAIChatMessage[],
-    options?: FunctionOptions<OpenAIChatSettings>
+    options?: ModelFunctionOptions<OpenAIChatSettings>
   ) {
     return this.callAPI(prompt, {
       ...options,
@@ -268,7 +268,7 @@ export class OpenAIChatModel
 
   generateDeltaStreamResponse(
     prompt: OpenAIChatMessage[],
-    options?: FunctionOptions<OpenAIChatSettings>
+    options?: ModelFunctionOptions<OpenAIChatSettings>
   ) {
     return this.callAPI(prompt, {
       ...options,
@@ -291,7 +291,7 @@ export class OpenAIChatModel
     prompt:
       | OpenAIChatSingleFunctionPrompt<unknown>
       | OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
-    options?: FunctionOptions<OpenAIChatSettings> | undefined
+    options?: ModelFunctionOptions<OpenAIChatSettings> | undefined
   ): PromiseLike<OpenAIChatResponse> {
     const settingsWithFunctionCall = Object.assign({}, options, {
       functionCall: prompt.functionCall,

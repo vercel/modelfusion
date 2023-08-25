@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   ImageGenerationModel,
@@ -27,7 +27,7 @@ export function generateImage<
 >(
   model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   string,

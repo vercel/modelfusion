@@ -1,6 +1,6 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
@@ -124,7 +124,7 @@ export class OpenAITextEmbeddingModel
 
   async callAPI(
     text: string,
-    options?: FunctionOptions<OpenAITextEmbeddingModelSettings>
+    options?: ModelFunctionOptions<OpenAITextEmbeddingModelSettings>
   ): Promise<OpenAITextEmbeddingResponse> {
     const run = options?.run;
     const settings = options?.settings;
@@ -151,7 +151,7 @@ export class OpenAITextEmbeddingModel
 
   generateEmbeddingResponse(
     texts: string[],
-    options?: FunctionOptions<OpenAITextEmbeddingModelSettings>
+    options?: ModelFunctionOptions<OpenAITextEmbeddingModelSettings>
   ) {
     if (texts.length > this.maxTextsPerCall) {
       throw new Error(

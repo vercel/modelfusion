@@ -1,5 +1,5 @@
 import { nanoid as createId } from "nanoid";
-import { FunctionOptions } from "../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
@@ -25,7 +25,7 @@ export async function upsertTextChunks<
     chunks: CHUNK[];
     ids?: Array<string | undefined>;
   },
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ) {
   // many embedding models support bulk embedding, so we first embed all texts:
   const embeddings = await embedTexts(

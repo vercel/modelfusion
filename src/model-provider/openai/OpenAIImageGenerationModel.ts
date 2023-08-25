@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
@@ -85,7 +85,7 @@ export class OpenAIImageGenerationModel
     prompt: string,
     options: {
       responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
-    } & FunctionOptions<
+    } & ModelFunctionOptions<
       Partial<
         OpenAIImageGenerationCallSettings &
           OpenAIModelSettings & { user?: string }
@@ -119,7 +119,7 @@ export class OpenAIImageGenerationModel
 
   generateImageResponse(
     prompt: string,
-    options?: FunctionOptions<OpenAIImageGenerationSettings>
+    options?: ModelFunctionOptions<OpenAIImageGenerationSettings>
   ) {
     return this.callAPI(prompt, {
       responseFormat: OpenAIImageGenerationResponseFormat.base64Json,

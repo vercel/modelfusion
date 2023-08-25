@@ -1,6 +1,6 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -94,7 +94,7 @@ export class HuggingFaceTextGenerationModel
 
   async callAPI(
     prompt: string,
-    options?: FunctionOptions<HuggingFaceTextGenerationModelSettings>
+    options?: ModelFunctionOptions<HuggingFaceTextGenerationModelSettings>
   ): Promise<HuggingFaceTextGenerationResponse> {
     const run = options?.run;
     const settings = options?.settings;
@@ -127,7 +127,7 @@ export class HuggingFaceTextGenerationModel
 
   generateTextResponse(
     prompt: string,
-    options?: FunctionOptions<HuggingFaceTextGenerationModelSettings>
+    options?: ModelFunctionOptions<HuggingFaceTextGenerationModelSettings>
   ) {
     return this.callAPI(prompt, options);
   }

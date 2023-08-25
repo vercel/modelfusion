@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
 export interface SpeechSynthesisModelSettings extends ModelSettings {}
@@ -9,6 +9,6 @@ export interface SpeechSynthesisModel<SETTINGS> extends Model<SETTINGS> {
    */
   generateSpeechResponse: (
     text: string,
-    options?: FunctionOptions<SETTINGS>
+    options?: ModelFunctionOptions<SETTINGS>
   ) => PromiseLike<Buffer>;
 }
