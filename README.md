@@ -376,14 +376,12 @@ const { chunks } = await retrieveTextChunks(
 - [Tools](https://modelfusion.dev/guide/tools)
 - [Text Chunks](https://modelfusion.dev/guide/text-chunk/)
   - [Split Text](https://modelfusion.dev/guide/text-chunk/split)
-- [Run abstraction](https://modelfusion.dev/guide/run/)
-  - [Abort signals](https://modelfusion.dev/guide/run/abort)
-  - [Cost calculation](https://modelfusion.dev/guide/run/cost-calculation)
-  - Call recording
 - Utilities
   - [Retry strategies](https://modelfusion.dev/guide/util/retry)
   - [Throttling strategies](https://modelfusion.dev/guide/util/throttle)
-  - Error handling
+  - [Run abstraction](https://modelfusion.dev/guide/util/run)
+  - [Abort signals](https://modelfusion.dev/guide/util/abort)
+  - [Cost calculation](https://modelfusion.dev/guide/util/cost-calculation)
 
 ## Integrations
 
