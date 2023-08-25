@@ -11,9 +11,12 @@ export type FunctionOptions = {
   functionId?: string;
 
   /**
-   * Observers that are called when the function is invoked.
+   * Optional observers that are called when the function is invoked.
    */
   observers?: Array<FunctionObserver>;
 
+  /**
+   * Optional run as part of which this function is called.
+   */
   run?: Run;
 };

@@ -20,7 +20,8 @@ export type CallMetadata<MODEL extends Model<unknown>> = {
   userId?: string;
   functionId?: string;
   model: MODEL["modelInformation"];
-  startEpochSeconds: number;
+  startTimestamp: Date;
+  finishTimestamp: Date;
   durationInMs: number;
 };
 
@@ -188,6 +189,7 @@ async function doExecuteCall<
     model = model.withSettings(options.settings);
     options = {
       functionId: options.functionId,
+      observers: options.observers,
       run: options.run,
     };
   }
@@ -214,7 +216,7 @@ async function doExecuteCall<
     userId: run?.userId,
     functionId: options?.functionId,
     model: model.modelInformation,
-    startEpochSeconds: durationMeasurement.startEpochSeconds,
+    startTimestamp: durationMeasurement.startDate,
   };
 
   eventSource.notifyFunctionStarted(getStartEvent(startMetadata, settings));
@@ -229,6 +231,7 @@ async function doExecuteCall<
 
   const finishMetadata = {
     ...startMetadata,
+    finishTimestamp: new Date(),
     durationInMs: durationMeasurement.durationInMs,
   };
 

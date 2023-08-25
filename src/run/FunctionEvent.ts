@@ -38,10 +38,11 @@ export type IdMetadata = {
 };
 
 export type FunctionStartedEventMetadata = IdMetadata & {
-  startEpochSeconds: number;
+  startTimestamp: Date;
 };
 
 export type FunctionFinishedEventMetadata = FunctionStartedEventMetadata & {
+  finishTimestamp: Date;
   durationInMs: number;
 };
 

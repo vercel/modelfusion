@@ -7,6 +7,7 @@ export function startDurationMeasurement(): DurationMeasurement {
 
 export interface DurationMeasurement {
   startEpochSeconds: number;
+  startDate: Date;
   durationInMs: number;
 }
 
@@ -19,6 +20,10 @@ class PerformanceNowDurationMeasurement implements DurationMeasurement {
     );
   }
 
+  get startDate() {
+    return new Date(this.startEpochSeconds * 1000);
+  }
+
   get durationInMs() {
     return Math.ceil(globalThis.performance.now() - this.startTime);
   }
@@ -29,6 +34,10 @@ class DateDurationMeasurement implements DurationMeasurement {
 
   get startEpochSeconds() {
     return Math.floor(this.startTime / 1000);
+  }
+
+  get startDate() {
+    return new Date(this.startTime);
   }
 
   get durationInMs() {

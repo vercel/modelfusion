@@ -15,7 +15,8 @@ export type ExecuteToolMetadata = {
   sessionId?: string;
   userId?: string;
   functionId?: string;
-  startEpochSeconds: number;
+  startTimestamp: Date;
+  finishTimestamp: Date;
   durationInMs: number;
 };
 
@@ -112,7 +113,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     sessionId: run?.sessionId,
     userId: run?.userId,
     functionId: options?.functionId,
-    startEpochSeconds: durationMeasurement.startEpochSeconds,
+    startTimestamp: durationMeasurement.startDate,
   };
 
   eventSource.notifyFunctionStarted({
@@ -126,6 +127,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   const finishMetadata = {
     ...startMetadata,
+    finishTimestamp: new Date(),
     durationInMs: durationMeasurement.durationInMs,
   };
 

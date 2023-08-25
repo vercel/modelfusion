@@ -55,6 +55,7 @@ export class SimilarTextChunksFromVectorIndexRetriever<
     if (options?.settings != null) {
       return this.withSettings(options.settings).retrieveTextChunks(query, {
         functionId: options.functionId,
+        observers: options.observers,
         run: options.run,
       });
     }

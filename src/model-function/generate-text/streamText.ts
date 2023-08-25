@@ -28,7 +28,7 @@ export class StreamTextPromise<
         CallMetadata<
           TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>
         >,
-        "durationInMs"
+        "durationInMs" | "finishTimestamp"
       >;
     }>
   ) {
@@ -44,7 +44,7 @@ export class StreamTextPromise<
     output: AsyncIterable<string>;
     metadata: Omit<
       CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
-      "durationInMs"
+      "durationInMs" | "finishTimestamp"
     >;
   }> {
     return this.fullPromise;
@@ -115,13 +115,14 @@ async function doStreamText<
   output: AsyncIterable<string>;
   metadata: Omit<
     CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
-    "durationInMs"
+    "durationInMs" | "finishTimestamp"
   >;
 }> {
   if (options?.settings != null) {
     model = model.withSettings(options.settings);
     options = {
       functionId: options.functionId,
+      observers: options.observers,
       run: options.run,
     };
   }
@@ -148,7 +149,7 @@ async function doStreamText<
     userId: run?.userId,
     functionId: options?.functionId,
     model: model.modelInformation,
-    startEpochSeconds: durationMeasurement.startEpochSeconds,
+    startTimestamp: durationMeasurement.startDate,
   };
 
   eventSource.notifyFunctionStarted({
@@ -169,6 +170,7 @@ async function doStreamText<
       onDone: (fullText, lastFullDelta) => {
         const finishMetadata = {
           ...startMetadata,
+          finishTimestamp: new Date(),
           durationInMs: durationMeasurement.durationInMs,
         };
 
@@ -185,6 +187,7 @@ async function doStreamText<
       onError: (error) => {
         const finishMetadata = {
           ...startMetadata,
+          finishTimestamp: new Date(),
           durationInMs: durationMeasurement.durationInMs,
         };
 
@@ -213,6 +216,7 @@ async function doStreamText<
   if (!result.ok) {
     const finishMetadata = {
       ...startMetadata,
+      finishTimestamp: new Date(),
       durationInMs: durationMeasurement.durationInMs,
     };
 
