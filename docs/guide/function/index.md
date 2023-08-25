@@ -80,5 +80,5 @@ const modelWithMoreTokens = model.withSettings({
 Functions offer the following additional functionality:
 
 - **Observable**: You can receive events for the start and finish of calls to the model.
-- **Run support**: You can pass a [Run](/guide/run/) as an option, which you can use to control and monitor the execution of the function.
+- **Run support**: You can pass a [Run](/guide/util/run) as an option, which you can use to control and monitor the execution of the function.
 - **Settings override**: You can override the settings of the model for a single call to the function.
