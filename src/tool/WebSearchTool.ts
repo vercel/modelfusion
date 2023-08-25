@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { FunctionOptions } from "../run/FunctionOptions.js";
 import { Tool } from "./Tool.js";
 
 const OUTPUT_SCHEMA = z.object({
@@ -44,7 +45,10 @@ export class WebSearchTool<NAME extends string> extends Tool<
     name: NAME;
     description: string;
     queryDescription?: string;
-    execute(input: WebSearchToolInput): Promise<WebSearchToolOutput>;
+    execute(
+      input: WebSearchToolInput,
+      options?: FunctionOptions
+    ): PromiseLike<WebSearchToolOutput>;
   }) {
     super({
       name,
