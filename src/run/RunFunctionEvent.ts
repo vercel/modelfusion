@@ -37,23 +37,23 @@ export type IdMetadata = {
   userId?: string | undefined;
 };
 
-export type RunFunctionEvent =
-  | RunFunctionStartedEvent
-  | RunFunctionFinishedEvent;
-
 export type RunFunctionStartedEventMetadata = IdMetadata & {
   startEpochSeconds: number;
 };
-
-export type RunFunctionStartedEvent =
-  | ModelCallStartedEvent
-  | ExecuteToolStartedEvent;
 
 export type RunFunctionFinishedEventMetadata =
   RunFunctionStartedEventMetadata & {
     durationInMs: number;
   };
 
+export type RunFunctionStartedEvent =
+  | ModelCallStartedEvent
+  | ExecuteToolStartedEvent;
+
 export type RunFunctionFinishedEvent =
   | ModelCallFinishedEvent
   | ExecuteToolFinishedEvent;
+
+export type RunFunctionEvent =
+  | RunFunctionStartedEvent
+  | RunFunctionFinishedEvent;
