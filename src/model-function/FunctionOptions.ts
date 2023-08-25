@@ -1,7 +1,5 @@
-import { Run } from "../run/Run.js";
+import { RunFunctionOptions } from "../run/RunFunction.js";
 
-export interface FunctionOptions<SETTINGS> {
-  functionId?: string;
+export interface FunctionOptions<SETTINGS> extends RunFunctionOptions {
   settings?: Partial<SETTINGS>;
-  run?: Run;
 }

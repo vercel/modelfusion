@@ -1,12 +1,12 @@
 import { nanoid as createId } from "nanoid";
-import { FunctionOptions } from "../model-function/FunctionOptions.js";
+import { z } from "zod";
+import { RunFunctionOptions } from "../run/RunFunction.js";
 import { RunFunctionEventSource } from "../run/RunFunctionEventSource.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
 import { Tool } from "./Tool.js";
 import { ToolExecutionError } from "./ToolExecutionError.js";
-import { z } from "zod";
 
 export type ExecuteToolMetadata = {
   callId: string;
@@ -78,7 +78,7 @@ export class ExecuteToolPromise<OUTPUT> extends Promise<OUTPUT> {
 export function executeTool<TOOL extends Tool<any, any, any>>(
   tool: TOOL,
   input: z.infer<TOOL["inputSchema"]>,
-  options?: FunctionOptions<undefined>
+  options?: RunFunctionOptions
 ): ExecuteToolPromise<ReturnType<TOOL["execute"]>> {
   return new ExecuteToolPromise(doExecuteTool(tool, input, options));
 }
@@ -87,7 +87,7 @@ export function executeTool<TOOL extends Tool<any, any, any>>(
 async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   tool: TOOL,
   input: z.infer<TOOL["inputSchema"]>,
-  options?: FunctionOptions<undefined>
+  options?: RunFunctionOptions
 ): Promise<{
   output: Awaited<ReturnType<TOOL["execute"]>>;
   metadata: ExecuteToolMetadata;

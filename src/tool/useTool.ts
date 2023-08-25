@@ -47,16 +47,12 @@ export async function useTool<
       schema: tool.inputSchema,
     },
     () => prompt(tool),
-    {
-      ...(options ?? {}),
-    }
+    options
   ).asFullResponse();
 
   return {
     tool: tool.name,
     parameters: value,
-    result: await executeTool(tool, value, {
-      run: options?.run,
-    }),
+    result: await executeTool(tool, value, options),
   };
 }
