@@ -1,5 +1,6 @@
 # Utilities
 
+- [Function observers](/guide/util/observer)
 - [Retry strategies](/guide/util/retry)
 - [Throttling strategies](/guide/util/throttle)
 - [Abort signals](/guide/util/abort)

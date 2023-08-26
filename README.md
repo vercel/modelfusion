@@ -376,6 +376,7 @@ const { chunks } = await retrieveTextChunks(
 - [Text Chunks](https://modelfusion.dev/guide/text-chunk/)
   - [Split Text](https://modelfusion.dev/guide/text-chunk/split)
 - [Utilities](https://modelfusion.dev/guide/util/)
+  - [Function observers](https://modelfusion.dev/guide/util/observer)
   - [Retry strategies](https://modelfusion.dev/guide/util/retry)
   - [Throttling strategies](https://modelfusion.dev/guide/util/throttle)
   - [Run abstraction](https://modelfusion.dev/guide/util/run)
