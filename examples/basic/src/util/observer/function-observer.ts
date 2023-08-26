@@ -1,9 +1,8 @@
 import dotenv from "dotenv";
 import {
   DefaultRun,
-  FunctionFinishedEvent,
+  FunctionEvent,
   FunctionObserver,
-  FunctionStartedEvent,
   OpenAITextGenerationModel,
   generateText,
   setGlobalFunctionObservers,
@@ -13,19 +12,17 @@ dotenv.config();
 
 (async () => {
   const observer: FunctionObserver = {
-    onFunctionStarted(event: FunctionStartedEvent) {
+    onFunctionEvent(event: FunctionEvent) {
       console.log(
         `[${event.metadata.startTimestamp.toISOString()}] ${
           event.metadata.callId
         } - ${event.type}`
       );
-    },
-    onFunctionFinished(event: FunctionFinishedEvent) {
-      console.log(
-        `[${event.metadata.finishTimestamp.toISOString()}] ${
-          event.metadata.callId
-        } - ${event.type} in ${event.metadata.durationInMs}ms`
-      );
+      // console.log(
+      //   `[${event.metadata.finishTimestamp.toISOString()}] ${
+      //     event.metadata.callId
+      //   } - ${event.type} in ${event.metadata.durationInMs}ms`
+      // );
     },
   };
 

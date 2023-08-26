@@ -44,10 +44,7 @@ export class DefaultRun implements Run {
 
     this.observers = [
       {
-        onFunctionStarted: (event) => {
-          this.events.push(event);
-        },
-        onFunctionFinished: (event) => {
+        onFunctionEvent: (event) => {
           this.events.push(event);
         },
       },

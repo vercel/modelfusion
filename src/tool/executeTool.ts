@@ -116,7 +116,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     startTimestamp: durationMeasurement.startDate,
   };
 
-  eventSource.notifyFunctionStarted({
+  eventSource.notify({
     type: "execute-tool-started",
     metadata: startMetadata,
     tool: tool as Tool<string, unknown, unknown>,
@@ -133,7 +133,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   if (!result.ok) {
     if (result.isAborted) {
-      eventSource.notifyFunctionFinished({
+      eventSource.notify({
         type: "execute-tool-finished",
         status: "abort",
         metadata: finishMetadata,
@@ -144,7 +144,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
       throw new AbortError();
     }
 
-    eventSource.notifyFunctionFinished({
+    eventSource.notify({
       type: "execute-tool-finished",
       status: "failure",
       metadata: finishMetadata,
@@ -164,7 +164,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   const output = result.output;
 
-  eventSource.notifyFunctionFinished({
+  eventSource.notify({
     type: "execute-tool-finished",
     status: "success",
     metadata: finishMetadata,

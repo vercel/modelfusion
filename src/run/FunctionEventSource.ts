@@ -1,8 +1,5 @@
 import { ErrorHandler } from "../util/ErrorHandler.js";
-import {
-  FunctionFinishedEvent,
-  FunctionStartedEvent,
-} from "./FunctionEvent.js";
+import { FunctionEvent } from "./FunctionEvent.js";
 import { FunctionObserver } from "./FunctionObserver.js";
 
 export class FunctionEventSource {
@@ -20,20 +17,10 @@ export class FunctionEventSource {
     this.errorHandler = errorHandler ?? ((error) => console.error(error));
   }
 
-  notifyFunctionStarted(event: FunctionStartedEvent) {
+  notify(event: FunctionEvent) {
     for (const observer of this.observers) {
       try {
-        observer.onFunctionStarted?.(event);
-      } catch (error) {
-        this.errorHandler(error);
-      }
-    }
-  }
-
-  notifyFunctionFinished(event: FunctionFinishedEvent) {
-    for (const observer of this.observers) {
-      try {
-        observer.onFunctionFinished?.(event);
+        observer.onFunctionEvent?.(event);
       } catch (error) {
         this.errorHandler(error);
       }

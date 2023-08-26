@@ -20,27 +20,34 @@ const run = new DefaultRun({
   costCalculators: [new OpenAICostCalculator()],
   observers: [
     {
-      onFunctionStarted(event) {
-        if (event.type === "text-generation-started") {
-          console.log(
-            `Generate text ${event.metadata.functionId ?? "unknown"} started.`
-          );
-        } else if (event.type === "text-embedding-started") {
-          console.log(
-            `Embed text ${event.metadata.functionId ?? "unknown"} started.`
-          );
-        }
-      },
-
-      onFunctionFinished(event) {
-        if (event.type === "text-generation-finished") {
-          console.log(
-            `Generate text ${event.metadata.functionId ?? "unknown"} finished.`
-          );
-        } else if (event.type === "text-embedding-finished") {
-          console.log(
-            `Embed text ${event.metadata.functionId ?? "unknown"} finished.`
-          );
+      onFunctionEvent(event) {
+        switch (event.type) {
+          case "text-generation-started": {
+            console.log(
+              `Generate text ${event.metadata.functionId ?? "unknown"} started.`
+            );
+            break;
+          }
+          case "text-generation-finished": {
+            console.log(
+              `Generate text ${
+                event.metadata.functionId ?? "unknown"
+              } finished.`
+            );
+            break;
+          }
+          case "text-embedding-started": {
+            console.log(
+              `Embed text ${event.metadata.functionId ?? "unknown"} started.`
+            );
+            break;
+          }
+          case "text-embedding-finished": {
+            console.log(
+              `Embed text ${event.metadata.functionId ?? "unknown"} finished.`
+            );
+            break;
+          }
         }
       },
     },

@@ -152,7 +152,7 @@ async function doStreamText<
     startTimestamp: durationMeasurement.startDate,
   };
 
-  eventSource.notifyFunctionStarted({
+  eventSource.notify({
     type: "text-streaming-started",
     metadata: startMetadata,
     settings,
@@ -174,7 +174,7 @@ async function doStreamText<
           durationInMs: durationMeasurement.durationInMs,
         };
 
-        eventSource.notifyFunctionFinished({
+        eventSource.notify({
           type: "text-streaming-finished",
           status: "success",
           metadata: finishMetadata,
@@ -191,7 +191,7 @@ async function doStreamText<
           durationInMs: durationMeasurement.durationInMs,
         };
 
-        eventSource.notifyFunctionFinished(
+        eventSource.notify(
           error instanceof AbortError
             ? {
                 type: "text-streaming-finished",
@@ -221,7 +221,7 @@ async function doStreamText<
     };
 
     if (result.isAborted) {
-      eventSource.notifyFunctionFinished({
+      eventSource.notify({
         type: "text-streaming-finished",
         status: "abort",
         metadata: finishMetadata,
@@ -231,7 +231,7 @@ async function doStreamText<
       throw new AbortError();
     }
 
-    eventSource.notifyFunctionFinished({
+    eventSource.notify({
       type: "text-streaming-finished",
       status: "failure",
       metadata: finishMetadata,

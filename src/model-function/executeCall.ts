@@ -219,7 +219,7 @@ async function doExecuteCall<
     startTimestamp: durationMeasurement.startDate,
   };
 
-  eventSource.notifyFunctionStarted(getStartEvent(startMetadata, settings));
+  eventSource.notify(getStartEvent(startMetadata, settings));
 
   const result = await runSafe(() =>
     generateResponse({
@@ -237,22 +237,18 @@ async function doExecuteCall<
 
   if (!result.ok) {
     if (result.isAborted) {
-      eventSource.notifyFunctionFinished(
-        getAbortEvent(finishMetadata, settings)
-      );
+      eventSource.notify(getAbortEvent(finishMetadata, settings));
       throw new AbortError();
     }
 
-    eventSource.notifyFunctionFinished(
-      getFailureEvent(finishMetadata, settings, result.error)
-    );
+    eventSource.notify(getFailureEvent(finishMetadata, settings, result.error));
     throw result.error;
   }
 
   const response = result.output;
   const output = extractOutputValue(response);
 
-  eventSource.notifyFunctionFinished(
+  eventSource.notify(
     getSuccessEvent(finishMetadata, settings, response, output)
   );
 

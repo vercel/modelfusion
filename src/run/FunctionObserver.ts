@@ -1,9 +1,5 @@
-import {
-  FunctionFinishedEvent,
-  FunctionStartedEvent,
-} from "./FunctionEvent.js";
+import { FunctionEvent } from "./FunctionEvent.js";
 
 export type FunctionObserver = {
-  onFunctionStarted?: (event: FunctionStartedEvent) => void;
-  onFunctionFinished?: (event: FunctionFinishedEvent) => void;
+  onFunctionEvent?: (event: FunctionEvent) => void;
 };
