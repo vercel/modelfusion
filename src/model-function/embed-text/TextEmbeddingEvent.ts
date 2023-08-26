@@ -1,27 +1,25 @@
 import { Vector } from "../../run/Vector.js";
 import {
-  ModelCallFinishedEventMetadata,
-  ModelCallStartedEventMetadata,
+  BaseModelCallFinishedEvent,
+  BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type TextEmbeddingStartedEvent = {
-  type: "text-embedding-started";
-  metadata: ModelCallStartedEventMetadata;
+export type TextEmbeddingStartedEvent = BaseModelCallStartedEvent & {
+  functionType: "text-embedding";
   settings: unknown;
   texts: Array<string>;
 };
 
-export type TextEmbeddingFinishedEvent = {
-  type: "text-embedding-finished";
-  metadata: ModelCallFinishedEventMetadata;
+export type TextEmbeddingFinishedEvent = BaseModelCallFinishedEvent & {
+  functionType: "text-embedding";
   settings: unknown;
   texts: Array<string>;
 } & (
-  | {
-      status: "success";
-      response: unknown;
-      generatedEmbeddings: Array<Vector>;
-    }
-  | { status: "failure"; error: unknown }
-  | { status: "abort" }
-);
+    | {
+        status: "success";
+        response: unknown;
+        generatedEmbeddings: Array<Vector>;
+      }
+    | { status: "error"; error: unknown }
+    | { status: "abort" }
+  );

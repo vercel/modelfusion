@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import {
   GenerateJsonModel,
   GenerateJsonModelSettings,
@@ -27,7 +27,7 @@ export async function useTool<
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   tool: TOOL,
   prompt: (tool: TOOL) => PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): Promise<{
   tool: TOOL["name"];
   parameters: TOOL["inputSchema"];

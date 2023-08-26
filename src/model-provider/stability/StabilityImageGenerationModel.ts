@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
@@ -69,7 +69,7 @@ export class StabilityImageGenerationModel
 
   async callAPI(
     input: StabilityImageGenerationPrompt,
-    options?: FunctionOptions<StabilityImageGenerationModelSettings>
+    options?: ModelFunctionOptions<StabilityImageGenerationModelSettings>
   ): Promise<StabilityImageGenerationResponse> {
     const run = options?.run;
     const settings = options?.settings;
@@ -96,7 +96,7 @@ export class StabilityImageGenerationModel
 
   generateImageResponse(
     prompt: StabilityImageGenerationPrompt,
-    options?: FunctionOptions<StabilityImageGenerationModelSettings>
+    options?: ModelFunctionOptions<StabilityImageGenerationModelSettings>
   ) {
     return this.callAPI(prompt, options);
   }

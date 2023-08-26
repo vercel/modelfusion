@@ -1,7 +1,7 @@
 import {
-  RunFunctionFinishedEventMetadata,
-  RunFunctionStartedEventMetadata,
-} from "../run/RunFunctionEvent.js";
+  BaseFunctionFinishedEvent,
+  BaseFunctionStartedEvent,
+} from "../run/FunctionEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
   TextEmbeddingFinishedEvent,
@@ -32,7 +32,7 @@ import {
   TranscriptionStartedEvent,
 } from "./transcribe-speech/TranscriptionEvent.js";
 
-export type ModelCallStartedEventMetadata = RunFunctionStartedEventMetadata & {
+export type BaseModelCallStartedEvent = BaseFunctionStartedEvent & {
   model: ModelInformation;
 };
 
@@ -45,10 +45,9 @@ export type ModelCallStartedEvent =
   | TextStreamingStartedEvent
   | TranscriptionStartedEvent;
 
-export type ModelCallFinishedEventMetadata =
-  RunFunctionFinishedEventMetadata & {
-    model: ModelInformation;
-  };
+export type BaseModelCallFinishedEvent = BaseFunctionFinishedEvent & {
+  model: ModelInformation;
+};
 
 export type ModelCallFinishedEvent =
   | ImageGenerationFinishedEvent

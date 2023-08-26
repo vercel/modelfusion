@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
@@ -40,7 +40,7 @@ export class Automatic1111ImageGenerationModel
 
   async callAPI(
     input: A111ImageGenerationPrompt,
-    options?: FunctionOptions<Automatic1111ImageGenerationModelSettings>
+    options?: ModelFunctionOptions<Automatic1111ImageGenerationModelSettings>
   ): Promise<Automatic1111ImageGenerationResponse> {
     const run = options?.run;
     const settings = options?.settings;
@@ -60,7 +60,7 @@ export class Automatic1111ImageGenerationModel
 
   generateImageResponse(
     prompt: A111ImageGenerationPrompt,
-    options?: FunctionOptions<Automatic1111ImageGenerationModelSettings>
+    options?: ModelFunctionOptions<Automatic1111ImageGenerationModelSettings>
   ) {
     return this.callAPI(prompt, options);
   }

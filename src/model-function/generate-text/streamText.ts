@@ -1,16 +1,20 @@
 import { nanoid as createId } from "nanoid";
-import { RunFunctionEventSource } from "../../run/RunFunctionEventSource.js";
+import { FunctionEventSource } from "../../run/FunctionEventSource.js";
+import { getGlobalFunctionObservers } from "../../run/GlobalFunctionObservers.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { CallMetadata } from "../executeCall.js";
 import { DeltaEvent } from "./DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
-import { TextStreamingFinishedEvent } from "./TextStreamingEvent.js";
+import {
+  TextStreamingFinishedEvent,
+  TextStreamingStartedEvent,
+} from "./TextStreamingEvent.js";
 import { extractTextDeltas } from "./extractTextDeltas.js";
 
 export class StreamTextPromise<
@@ -27,7 +31,7 @@ export class StreamTextPromise<
         CallMetadata<
           TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>
         >,
-        "durationInMs"
+        "durationInMs" | "finishTimestamp"
       >;
     }>
   ) {
@@ -43,7 +47,7 @@ export class StreamTextPromise<
     output: AsyncIterable<string>;
     metadata: Omit<
       CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
-      "durationInMs"
+      "durationInMs" | "finishTimestamp"
     >;
   }> {
     return this.fullPromise;
@@ -86,12 +90,12 @@ export function streamText<
   model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
     generateDeltaStreamResponse: (
       prompt: PROMPT,
-      options: FunctionOptions<SETTINGS>
+      options: ModelFunctionOptions<SETTINGS>
     ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
     extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
   },
   prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): StreamTextPromise<PROMPT, FULL_DELTA, SETTINGS> {
   return new StreamTextPromise(doStreamText(model, prompt, options));
 }
@@ -104,23 +108,24 @@ async function doStreamText<
   model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
     generateDeltaStreamResponse: (
       prompt: PROMPT,
-      options: FunctionOptions<SETTINGS>
+      options: ModelFunctionOptions<SETTINGS>
     ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
     extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
   },
   prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): Promise<{
   output: AsyncIterable<string>;
   metadata: Omit<
     CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
-    "durationInMs"
+    "durationInMs" | "finishTimestamp"
   >;
 }> {
   if (options?.settings != null) {
     model = model.withSettings(options.settings);
     options = {
       functionId: options.functionId,
+      observers: options.observers,
       run: options.run,
     };
   }
@@ -128,8 +133,13 @@ async function doStreamText<
   const run = options?.run;
   const settings = model.settings;
 
-  const eventSource = new RunFunctionEventSource({
-    observers: [...(settings.observers ?? []), ...(run?.observers ?? [])],
+  const eventSource = new FunctionEventSource({
+    observers: [
+      ...getGlobalFunctionObservers(),
+      ...(settings.observers ?? []),
+      ...(run?.observers ?? []),
+      ...(options?.observers ?? []),
+    ],
     errorHandler: run?.errorHandler,
   });
 
@@ -142,15 +152,18 @@ async function doStreamText<
     userId: run?.userId,
     functionId: options?.functionId,
     model: model.modelInformation,
-    startEpochSeconds: durationMeasurement.startEpochSeconds,
+
+    timestamp: durationMeasurement.startDate,
+    startTimestamp: durationMeasurement.startDate,
   };
 
-  eventSource.notifyRunFunctionStarted({
-    type: "text-streaming-started",
-    metadata: startMetadata,
+  eventSource.notify({
+    ...startMetadata,
+    functionType: "text-streaming",
+    eventType: "started",
     settings,
     prompt,
-  });
+  } satisfies TextStreamingStartedEvent);
 
   const result = await runSafe(async () =>
     extractTextDeltas({
@@ -163,38 +176,42 @@ async function doStreamText<
       onDone: (fullText, lastFullDelta) => {
         const finishMetadata = {
           ...startMetadata,
+          eventType: "finished" as const,
+          finishTimestamp: new Date(),
           durationInMs: durationMeasurement.durationInMs,
         };
 
-        eventSource.notifyRunFunctionFinished({
-          type: "text-streaming-finished",
+        eventSource.notify({
+          ...finishMetadata,
+          functionType: "text-streaming",
           status: "success",
-          metadata: finishMetadata,
           settings,
           prompt,
           response: lastFullDelta,
           generatedText: fullText,
-        } as TextStreamingFinishedEvent);
+        } satisfies TextStreamingFinishedEvent);
       },
       onError: (error) => {
         const finishMetadata = {
           ...startMetadata,
+          eventType: "finished" as const,
+          finishTimestamp: new Date(),
           durationInMs: durationMeasurement.durationInMs,
         };
 
-        eventSource.notifyRunFunctionFinished(
+        eventSource.notify(
           error instanceof AbortError
             ? {
-                type: "text-streaming-finished",
+                ...finishMetadata,
+                functionType: "text-streaming",
                 status: "abort",
-                metadata: finishMetadata,
                 settings,
                 prompt,
               }
             : {
-                type: "text-streaming-finished",
-                status: "failure",
-                metadata: finishMetadata,
+                ...finishMetadata,
+                functionType: "text-streaming",
+                status: "error",
                 settings,
                 prompt,
                 error,
@@ -207,24 +224,26 @@ async function doStreamText<
   if (!result.ok) {
     const finishMetadata = {
       ...startMetadata,
+      eventType: "finished" as const,
+      finishTimestamp: new Date(),
       durationInMs: durationMeasurement.durationInMs,
     };
 
     if (result.isAborted) {
-      eventSource.notifyRunFunctionFinished({
-        type: "text-streaming-finished",
+      eventSource.notify({
+        ...finishMetadata,
+        functionType: "text-streaming",
         status: "abort",
-        metadata: finishMetadata,
         settings,
         prompt,
       });
       throw new AbortError();
     }
 
-    eventSource.notifyRunFunctionFinished({
-      type: "text-streaming-finished",
-      status: "failure",
-      metadata: finishMetadata,
+    eventSource.notify({
+      ...finishMetadata,
+      functionType: "text-streaming",
+      status: "error",
       settings,
       prompt,
       error: result.error,

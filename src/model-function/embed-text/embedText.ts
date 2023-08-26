@@ -1,5 +1,5 @@
 import { Vector } from "../../run/Vector.js";
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   TextEmbeddingModel,
@@ -24,7 +24,7 @@ export function embedTexts<
 >(
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   texts: string[],
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   TextEmbeddingModel<RESPONSE, SETTINGS>,
   Vector[],
@@ -55,30 +55,27 @@ export function embedTexts<
       return embeddings;
     },
     getStartEvent: (metadata, settings) => ({
-      type: "text-embedding-started",
-      metadata,
+      ...metadata,
+      functionType: "text-embedding",
       settings,
       texts,
     }),
     getAbortEvent: (metadata, settings) => ({
-      type: "text-embedding-finished",
-      status: "abort",
-      metadata,
+      ...metadata,
+      functionType: "text-embedding",
       settings,
       texts,
     }),
     getFailureEvent: (metadata, settings, error) => ({
-      type: "text-embedding-finished",
-      status: "failure",
-      metadata,
+      ...metadata,
+      functionType: "text-embedding",
       settings,
       error,
       texts,
     }),
     getSuccessEvent: (metadata, settings, response, output) => ({
-      type: "text-embedding-finished",
-      status: "success",
-      metadata,
+      ...metadata,
+      functionType: "text-embedding",
       settings,
       texts,
       response,
@@ -102,7 +99,7 @@ export function embedText<
 >(
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   text: string,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   TextEmbeddingModel<RESPONSE, SETTINGS>,
   Vector,
@@ -120,30 +117,27 @@ export function embedText<
       return model.extractEmbeddings(result)[0];
     },
     getStartEvent: (metadata, settings) => ({
-      type: "text-embedding-started",
-      metadata,
+      ...metadata,
+      functionType: "text-embedding",
       settings,
       texts,
     }),
     getAbortEvent: (metadata, settings) => ({
-      type: "text-embedding-finished",
-      status: "abort",
-      metadata,
+      ...metadata,
+      functionType: "text-embedding",
       settings,
       texts,
     }),
     getFailureEvent: (metadata, settings, error) => ({
-      type: "text-embedding-finished",
-      status: "failure",
-      metadata,
+      ...metadata,
+      functionType: "text-embedding",
       settings,
       error,
       texts,
     }),
     getSuccessEvent: (metadata, settings, response, output) => ({
-      type: "text-embedding-finished",
-      status: "success",
-      metadata,
+      ...metadata,
+      functionType: "text-embedding",
       settings,
       texts,
       response,

@@ -1,6 +1,6 @@
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
 import { DeltaEvent } from "./DeltaEvent.js";
@@ -44,7 +44,7 @@ export interface TextGenerationModel<
 
   generateTextResponse(
     prompt: PROMPT,
-    options?: FunctionOptions<SETTINGS>
+    options?: ModelFunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE>;
 
   extractText(response: RESPONSE): string;
@@ -55,7 +55,7 @@ export interface TextGenerationModel<
   readonly generateDeltaStreamResponse:
     | ((
         prompt: PROMPT,
-        options: FunctionOptions<SETTINGS>
+        options: ModelFunctionOptions<SETTINGS>
       ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>)
     | undefined;
 

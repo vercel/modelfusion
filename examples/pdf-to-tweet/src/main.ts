@@ -1,6 +1,6 @@
-import { DefaultRun, OpenAICostCalculator } from "modelfusion";
 import { Command } from "commander";
 import dotenv from "dotenv";
+import { DefaultRun, OpenAICostCalculator } from "modelfusion";
 import { createTweetFromPdf } from "./createTweetFromPdf";
 
 dotenv.config();
@@ -20,27 +20,24 @@ const run = new DefaultRun({
   costCalculators: [new OpenAICostCalculator()],
   observers: [
     {
-      onRunFunctionStarted(event) {
-        if (event.type === "text-generation-started") {
-          console.log(
-            `Generate text ${event.metadata.functionId ?? "unknown"} started.`
-          );
-        } else if (event.type === "text-embedding-started") {
-          console.log(
-            `Embed text ${event.metadata.functionId ?? "unknown"} started.`
-          );
-        }
-      },
-
-      onRunFunctionFinished(event) {
-        if (event.type === "text-generation-finished") {
-          console.log(
-            `Generate text ${event.metadata.functionId ?? "unknown"} finished.`
-          );
-        } else if (event.type === "text-embedding-finished") {
-          console.log(
-            `Embed text ${event.metadata.functionId ?? "unknown"} finished.`
-          );
+      onFunctionEvent(event) {
+        switch (event.functionType) {
+          case "text-generation": {
+            console.log(
+              `Generate text ${event.functionId ?? "unknown"} ${
+                event.functionType
+              }.`
+            );
+            break;
+          }
+          case "text-embedding": {
+            console.log(
+              `Embed text ${event.functionId ?? "unknown"} ${
+                event.functionType
+              }.`
+            );
+            break;
+          }
         }
       },
     },

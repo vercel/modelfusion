@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   TranscriptionModel,
@@ -26,7 +26,7 @@ export function transcribe<
 >(
   model: TranscriptionModel<DATA, RESPONSE, SETTINGS>,
   data: DATA,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   TranscriptionModel<DATA, RESPONSE, SETTINGS>,
   string,
@@ -39,30 +39,27 @@ export function transcribe<
       model.generateTranscriptionResponse(data, options),
     extractOutputValue: model.extractTranscriptionText,
     getStartEvent: (metadata, settings) => ({
-      type: "transcription-started",
-      metadata,
+      ...metadata,
+      functionType: "transcription",
       settings,
       data,
     }),
     getAbortEvent: (metadata, settings) => ({
-      type: "transcription-finished",
-      status: "abort",
+      ...metadata,
+      functionType: "transcription",
       settings,
-      metadata,
       data,
     }),
     getFailureEvent: (metadata, settings, error) => ({
-      type: "transcription-finished",
-      status: "failure",
-      metadata,
+      ...metadata,
+      functionType: "transcription",
       settings,
       data,
       error,
     }),
     getSuccessEvent: (metadata, settings, response, output) => ({
-      type: "transcription-finished",
-      status: "success",
-      metadata,
+      ...metadata,
+      functionType: "transcription",
       settings,
       data,
       response,

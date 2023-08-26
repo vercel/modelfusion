@@ -1,4 +1,4 @@
-import { RunFunctionEvent } from "../run/RunFunctionEvent.js";
+import { FunctionEvent } from "../run/FunctionEvent.js";
 import { ModelCallFinishedEvent } from "./ModelCallEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 
@@ -18,32 +18,19 @@ export type SuccessfulModelCall = {
 };
 
 export function extractSuccessfulModelCalls(
-  runFunctionEvents: RunFunctionEvent[]
+  runFunctionEvents: FunctionEvent[]
 ) {
   return runFunctionEvents
     .filter(
       (event): event is ModelCallFinishedEvent & { status: "success" } =>
-        Object.keys(eventTypeToCostType).includes(event.type) &&
-        "status" in event &&
-        event.status === "success"
+        "status" in event && event.status === "success"
     )
     .map(
       (event): SuccessfulModelCall => ({
-        model: event.metadata.model,
+        model: event.model,
         settings: event.settings,
         response: event.response,
-        type: eventTypeToCostType[event.type],
+        type: event.functionType,
       })
     );
 }
-
-const eventTypeToCostType = {
-  "image-generation-finished": "image-generation" as const,
-  "json-generation-finished": "json-generation" as const,
-  "json-or-text-generation-finished": "json-or-text-generation" as const,
-  "speech-synthesis-finished": "speech-synthesis" as const,
-  "text-embedding-finished": "text-embedding" as const,
-  "text-generation-finished": "text-generation" as const,
-  "text-streaming-finished": "text-streaming" as const,
-  "transcription-finished": "transcription" as const,
-};

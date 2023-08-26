@@ -1,6 +1,6 @@
-export * from "./FunctionOptions.js";
 export * from "./Model.js";
 export * from "./ModelCallEvent.js";
+export * from "./ModelFunctionOptions.js";
 export * from "./ModelInformation.js";
 export * from "./SuccessfulModelCall.js";
 export * from "./embed-text/TextEmbeddingEvent.js";

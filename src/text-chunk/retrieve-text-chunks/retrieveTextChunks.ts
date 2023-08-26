@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { TextChunk } from "../TextChunk.js";
 import {
   TextChunkRetriever,
@@ -12,7 +12,7 @@ export async function retrieveTextChunks<
 >(
   retriever: TextChunkRetriever<CHUNK, QUERY, SETTINGS>,
   query: QUERY,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): Promise<{
   chunks: CHUNK[];
 }> {

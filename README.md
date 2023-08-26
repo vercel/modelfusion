@@ -372,11 +372,11 @@ const { chunks } = await retrieveTextChunks(
   - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
   - [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
   - [Generate images](https://modelfusion.dev/guide/function/generate-image)
-- Summarize text
 - [Tools](https://modelfusion.dev/guide/tools)
 - [Text Chunks](https://modelfusion.dev/guide/text-chunk/)
   - [Split Text](https://modelfusion.dev/guide/text-chunk/split)
-- Utilities
+- [Utilities](https://modelfusion.dev/guide/util/)
+  - [Function observers](https://modelfusion.dev/guide/util/observer)
   - [Retry strategies](https://modelfusion.dev/guide/util/retry)
   - [Throttling strategies](https://modelfusion.dev/guide/util/throttle)
   - [Run abstraction](https://modelfusion.dev/guide/util/run)

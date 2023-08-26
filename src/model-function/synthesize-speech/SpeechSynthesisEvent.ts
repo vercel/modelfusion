@@ -1,25 +1,23 @@
 import {
-  ModelCallFinishedEventMetadata,
-  ModelCallStartedEventMetadata,
+  BaseModelCallFinishedEvent,
+  BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type SpeechSynthesisStartedEvent = {
-  type: "speech-synthesis-started";
-  metadata: ModelCallStartedEventMetadata;
+export type SpeechSynthesisStartedEvent = BaseModelCallStartedEvent & {
+  functionType: "speech-synthesis";
   settings: unknown;
   text: string;
 };
 
-export type SpeechSynthesisFinishedEvent = {
-  type: "speech-synthesis-finished";
-  metadata: ModelCallFinishedEventMetadata;
+export type SpeechSynthesisFinishedEvent = BaseModelCallFinishedEvent & {
+  functionType: "speech-synthesis";
   settings: unknown;
   text: string;
 } & (
-  | {
-      status: "success";
-      response: Buffer;
-    }
-  | { status: "failure"; error: unknown }
-  | { status: "abort" }
-);
+    | {
+        status: "success";
+        response: Buffer;
+      }
+    | { status: "error"; error: unknown }
+    | { status: "abort" }
+  );

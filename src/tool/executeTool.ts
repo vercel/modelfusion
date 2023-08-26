@@ -1,7 +1,8 @@
 import { nanoid as createId } from "nanoid";
 import { z } from "zod";
-import { RunFunctionOptions } from "../run/RunFunction.js";
-import { RunFunctionEventSource } from "../run/RunFunctionEventSource.js";
+import { FunctionEventSource } from "../run/FunctionEventSource.js";
+import { FunctionOptions } from "../run/FunctionOptions.js";
+import { getGlobalFunctionObservers } from "../run/GlobalFunctionObservers.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
@@ -14,7 +15,8 @@ export type ExecuteToolMetadata = {
   sessionId?: string;
   userId?: string;
   functionId?: string;
-  startEpochSeconds: number;
+  startTimestamp: Date;
+  finishTimestamp: Date;
   durationInMs: number;
 };
 
@@ -78,7 +80,7 @@ export class ExecuteToolPromise<OUTPUT> extends Promise<OUTPUT> {
 export function executeTool<TOOL extends Tool<any, any, any>>(
   tool: TOOL,
   input: z.infer<TOOL["inputSchema"]>,
-  options?: RunFunctionOptions
+  options?: FunctionOptions
 ): ExecuteToolPromise<ReturnType<TOOL["execute"]>> {
   return new ExecuteToolPromise(doExecuteTool(tool, input, options));
 }
@@ -87,62 +89,68 @@ export function executeTool<TOOL extends Tool<any, any, any>>(
 async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   tool: TOOL,
   input: z.infer<TOOL["inputSchema"]>,
-  options?: RunFunctionOptions
+  options?: FunctionOptions
 ): Promise<{
   output: Awaited<ReturnType<TOOL["execute"]>>;
   metadata: ExecuteToolMetadata;
 }> {
   const run = options?.run;
 
-  const eventSource = new RunFunctionEventSource({
-    observers: run?.observers ?? [],
+  const eventSource = new FunctionEventSource({
+    observers: [
+      ...getGlobalFunctionObservers(),
+      ...(run?.observers ?? []),
+      ...(options?.observers ?? []),
+    ],
     errorHandler: run?.errorHandler,
   });
 
   const durationMeasurement = startDurationMeasurement();
 
-  const startMetadata = {
+  const metadata = {
+    functionType: "execute-tool" as const,
+
     callId: `call-${createId()}`,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
     functionId: options?.functionId,
-    startEpochSeconds: durationMeasurement.startEpochSeconds,
-  };
 
-  eventSource.notifyRunFunctionStarted({
-    type: "execute-tool-started",
-    metadata: startMetadata,
     tool: tool as Tool<string, unknown, unknown>,
     input,
+  };
+
+  eventSource.notify({
+    ...metadata,
+    eventType: "started",
+    timestamp: durationMeasurement.startDate,
+    startTimestamp: durationMeasurement.startDate,
   });
 
   const result = await runSafe(() => tool.execute(input, options));
 
   const finishMetadata = {
-    ...startMetadata,
+    ...metadata,
+    eventType: "finished" as const,
+    timestamp: new Date(),
+    startTimestamp: durationMeasurement.startDate,
+    finishTimestamp: new Date(),
     durationInMs: durationMeasurement.durationInMs,
   };
 
   if (!result.ok) {
     if (result.isAborted) {
-      eventSource.notifyRunFunctionFinished({
-        type: "execute-tool-finished",
+      eventSource.notify({
+        ...finishMetadata,
         status: "abort",
-        metadata: finishMetadata,
-        tool: tool as Tool<string, unknown, unknown>,
-        input,
       });
 
       throw new AbortError();
     }
 
-    eventSource.notifyRunFunctionFinished({
-      type: "execute-tool-finished",
-      status: "failure",
-      metadata: finishMetadata,
-      tool: tool as Tool<string, unknown, unknown>,
-      input,
+    eventSource.notify({
+      ...finishMetadata,
+      status: "error",
       error: result.error,
     });
 
@@ -157,12 +165,9 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   const output = result.output;
 
-  eventSource.notifyRunFunctionFinished({
-    type: "execute-tool-finished",
+  eventSource.notify({
+    ...finishMetadata,
     status: "success",
-    metadata: finishMetadata,
-    tool: tool as Tool<string, unknown, unknown>,
-    input,
     output,
   });
 

@@ -1,3 +1,8 @@
-import { RunFunction } from "../../run/RunFunction.js";
+import { FunctionOptions } from "../../run/FunctionOptions.js";
 
-export type SummarizationFunction = RunFunction<{ text: string }, string>;
+export type SummarizationFunction = (
+  input: {
+    text: string;
+  },
+  options?: FunctionOptions
+) => PromiseLike<string>;

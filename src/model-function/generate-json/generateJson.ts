@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   GenerateJsonModel,
@@ -17,7 +17,7 @@ export function generateJson<
   model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
   prompt: (schemaDefinition: SchemaDefinition<NAME, STRUCTURE>) => PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
   STRUCTURE,
@@ -46,30 +46,27 @@ export function generateJson<
       return parseResult.data;
     },
     getStartEvent: (metadata, settings) => ({
-      type: "json-generation-started",
-      metadata,
+      ...metadata,
+      functionType: "json-generation",
       settings,
       prompt,
     }),
     getAbortEvent: (metadata, settings) => ({
-      type: "json-generation-finished",
-      status: "abort",
-      metadata,
+      ...metadata,
+      functionType: "json-generation",
       settings,
       prompt,
     }),
     getFailureEvent: (metadata, settings, error) => ({
-      type: "json-generation-finished",
-      status: "failure",
-      metadata,
+      ...metadata,
+      functionType: "json-generation",
       settings,
       prompt,
       error,
     }),
     getSuccessEvent: (metadata, settings, response, output) => ({
-      type: "json-generation-finished",
-      status: "success",
-      metadata,
+      ...metadata,
+      functionType: "json-generation",
       settings,
       prompt,
       response,

@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   ImageGenerationModel,
@@ -27,7 +27,7 @@ export function generateImage<
 >(
   model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   string,
@@ -39,30 +39,27 @@ export function generateImage<
     generateResponse: (options) => model.generateImageResponse(prompt, options),
     extractOutputValue: model.extractBase64Image,
     getStartEvent: (metadata, settings) => ({
-      type: "image-generation-started",
-      metadata,
+      ...metadata,
+      functionType: "image-generation",
       settings,
       prompt,
     }),
     getAbortEvent: (metadata, settings) => ({
-      type: "image-generation-finished",
-      status: "abort",
-      metadata,
+      ...metadata,
+      functionType: "image-generation",
       settings,
       prompt,
     }),
     getFailureEvent: (metadata, settings, error) => ({
-      type: "image-generation-finished",
-      status: "failure",
-      metadata,
+      ...metadata,
+      functionType: "image-generation",
       settings,
       prompt,
       error,
     }),
     getSuccessEvent: (metadata, settings, response, output) => ({
-      type: "image-generation-finished",
-      status: "success",
-      metadata,
+      ...metadata,
+      functionType: "image-generation",
       settings,
       prompt,
       response,

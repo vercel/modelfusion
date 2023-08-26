@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import { DeltaEvent } from "../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
@@ -73,7 +73,7 @@ export class PromptFormatTextGenerationModel<
 
   generateTextResponse(
     prompt: PROMPT,
-    options?: FunctionOptions<SETTINGS>
+    options?: ModelFunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE> {
     const mappedPrompt = this.promptFormat.format(prompt);
     return this.model.generateTextResponse(mappedPrompt, options);
@@ -87,7 +87,7 @@ export class PromptFormatTextGenerationModel<
     ? undefined
     : (
         prompt: PROMPT,
-        options: FunctionOptions<SETTINGS>
+        options: ModelFunctionOptions<SETTINGS>
       ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>> {
     const originalGenerateDeltaStreamResponse =
       this.model.generateDeltaStreamResponse?.bind(this.model);
@@ -97,18 +97,18 @@ export class PromptFormatTextGenerationModel<
         ? undefined
         : (
             prompt: PROMPT,
-            options: FunctionOptions<SETTINGS>
+            options: ModelFunctionOptions<SETTINGS>
           ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
     }
 
-    return ((prompt: PROMPT, options: FunctionOptions<SETTINGS>) => {
+    return ((prompt: PROMPT, options: ModelFunctionOptions<SETTINGS>) => {
       const mappedPrompt = this.promptFormat.format(prompt);
       return originalGenerateDeltaStreamResponse(mappedPrompt, options);
     }) as MODEL["generateDeltaStreamResponse"] extends undefined
       ? undefined
       : (
           prompt: PROMPT,
-          options: FunctionOptions<SETTINGS>
+          options: ModelFunctionOptions<SETTINGS>
         ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
   }
 

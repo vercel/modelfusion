@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   TextGenerationModel,
@@ -25,7 +25,7 @@ export function generateText<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
   prompt: PROMPT,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
@@ -43,30 +43,27 @@ export function generateText<
         : model.extractText(result);
     },
     getStartEvent: (metadata, settings) => ({
-      type: "text-generation-started",
-      metadata,
+      ...metadata,
+      functionType: "text-generation",
       settings,
       prompt,
     }),
     getAbortEvent: (metadata, settings) => ({
-      type: "text-generation-finished",
-      status: "abort",
-      metadata,
+      ...metadata,
+      functionType: "text-generation",
       settings,
       prompt,
     }),
     getFailureEvent: (metadata, settings, error) => ({
-      type: "text-generation-finished",
-      status: "failure",
-      metadata,
+      ...metadata,
+      functionType: "text-generation",
       settings,
       prompt,
       error,
     }),
     getSuccessEvent: (metadata, settings, response, output) => ({
-      type: "text-generation-finished",
-      status: "success",
-      metadata,
+      ...metadata,
+      functionType: "text-generation",
       settings,
       prompt,
       response,

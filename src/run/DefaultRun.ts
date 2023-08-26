@@ -6,8 +6,8 @@ import {
   extractSuccessfulModelCalls,
 } from "../model-function/SuccessfulModelCall.js";
 import { Run } from "./Run.js";
-import { RunFunctionEvent } from "./RunFunctionEvent.js";
-import { RunFunctionObserver } from "./RunFunctionObserver.js";
+import { FunctionEvent } from "./FunctionEvent.js";
+import { FunctionObserver } from "./FunctionObserver.js";
 
 export class DefaultRun implements Run {
   readonly runId: string;
@@ -17,9 +17,9 @@ export class DefaultRun implements Run {
   readonly abortSignal?: AbortSignal;
   readonly costCalculators: CostCalculator[];
 
-  readonly events: RunFunctionEvent[] = [];
+  readonly events: FunctionEvent[] = [];
 
-  readonly observers?: RunFunctionObserver[];
+  readonly observers?: FunctionObserver[];
 
   constructor({
     runId = createId(),
@@ -33,7 +33,7 @@ export class DefaultRun implements Run {
     sessionId?: string;
     userId?: string;
     abortSignal?: AbortSignal;
-    observers?: RunFunctionObserver[];
+    observers?: FunctionObserver[];
     costCalculators?: CostCalculator[];
   } = {}) {
     this.runId = runId;
@@ -44,10 +44,7 @@ export class DefaultRun implements Run {
 
     this.observers = [
       {
-        onRunFunctionStarted: (event) => {
-          this.events.push(event);
-        },
-        onRunFunctionFinished: (event) => {
+        onFunctionEvent: (event) => {
           this.events.push(event);
         },
       },

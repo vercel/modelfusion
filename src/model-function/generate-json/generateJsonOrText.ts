@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../FunctionOptions.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   GenerateJsonOrTextModel,
@@ -45,7 +45,7 @@ export function generateJsonOrText<
   prompt: (
     schemaDefinitions: SCHEMAS
   ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
-  options?: FunctionOptions<SETTINGS>
+  options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
   { schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>,
@@ -92,30 +92,27 @@ export function generateJsonOrText<
       };
     },
     getStartEvent: (metadata, settings) => ({
-      type: "json-or-text-generation-started",
-      metadata,
+      ...metadata,
+      functionType: "json-or-text-generation",
       settings,
       prompt,
     }),
     getAbortEvent: (metadata, settings) => ({
-      type: "json-or-text-generation-finished",
-      status: "abort",
-      metadata,
+      ...metadata,
+      functionType: "json-or-text-generation",
       settings,
       prompt,
     }),
     getFailureEvent: (metadata, settings, error) => ({
-      type: "json-or-text-generation-finished",
-      status: "failure",
-      metadata,
+      ...metadata,
+      functionType: "json-or-text-generation",
       settings,
       prompt,
       error,
     }),
     getSuccessEvent: (metadata, settings, response, output) => ({
-      type: "json-or-text-generation-finished",
-      status: "success",
-      metadata,
+      ...metadata,
+      functionType: "json-or-text-generation",
       settings,
       prompt,
       response,

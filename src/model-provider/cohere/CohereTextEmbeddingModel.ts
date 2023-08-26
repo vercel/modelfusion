@@ -1,6 +1,6 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../model-function/FunctionOptions.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
@@ -130,7 +130,7 @@ export class CohereTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: FunctionOptions<CohereTextEmbeddingModelSettings>
+    options?: ModelFunctionOptions<CohereTextEmbeddingModelSettings>
   ): Promise<CohereTextEmbeddingResponse> {
     if (texts.length > this.maxTextsPerCall) {
       throw new Error(
@@ -162,7 +162,7 @@ export class CohereTextEmbeddingModel
 
   generateEmbeddingResponse(
     texts: string[],
-    options?: FunctionOptions<CohereTextEmbeddingModelSettings>
+    options?: ModelFunctionOptions<CohereTextEmbeddingModelSettings>
   ) {
     return this.callAPI(texts, options);
   }
