@@ -1,7 +1,7 @@
 {
   "name": "@modelfusion/google-custom-search-tool",
   "description": "Google Custom Search tool for ModelFusion",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [

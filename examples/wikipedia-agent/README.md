@@ -17,8 +17,9 @@ Get answers to questions from Wikipedia, e.g. "Who was born first, Einstein or P
    ```
    OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
    GOOGLE_CUSTOM_SEARCH_API_KEY="YOUR_GOOGLE_CUSTOM_SEARCH_API_KEY"
-   GOOGLE_CUSTOM_SEARCH_ENGINE_ID="YOUR_GOOGLE_CUSTOM_SEARCH_ENGINE_ID_FOR_WIKIPEDIA"
    ```
+
+3. Update the searchEngineId in the `WikipediaReactAgent.ts` file.
 
 ### Usage
 

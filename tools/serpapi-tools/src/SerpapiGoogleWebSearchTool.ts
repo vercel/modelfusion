@@ -47,7 +47,7 @@ export class SerpapiGoogleWebSearchTool<
           })
         );
 
-        return this.outputSchema.parse({
+        return this.outputSchema!.parse({
           results: organicResults,
         });
       },

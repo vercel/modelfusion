@@ -18,7 +18,7 @@ title: Google Custom Search
    npm i @modelfusion/google-custom-search-tool
    ```
 
-5. Add `GOOGLE_CUSTOM_SEARCH_API_KEY` and `GOOGLE_CUSTOM_SEARCH_ENGINE_ID` with your API key and search engine ID to your environment variables or `.env` file.
+5. Add `GOOGLE_CUSTOM_SEARCH_API_KEY` with your API key to your environment variables or `.env` file.
 
 ## Usage
 
@@ -30,6 +30,7 @@ import { GoogleCustomSearchTool } from "@modelfusion/google-custom-search-tool";
 const searchWikipedia = new GoogleCustomSearchTool({
   name: "search_wikipedia",
   description: "Search Wikipedia pages using a query",
+  searchEngineId: "76fe2b5e95a3e4215", // replace with your search engine id
   maxResults: 5,
 });
 ```

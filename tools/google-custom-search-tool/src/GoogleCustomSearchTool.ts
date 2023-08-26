@@ -7,7 +7,7 @@ export type GoogleCustomSearchToolSettings<NAME extends string> = {
 
   apiKey?: string;
 
-  searchEngineId?: string;
+  searchEngineId: string;
   maxResults?: number;
 };
 
@@ -25,17 +25,17 @@ export class GoogleCustomSearchTool<
       description: settings.description,
       queryDescription: settings.queryDescription,
       execute: async ({ query }) => {
-        const { searchEngineId, apiKey } = this;
+        const { apiKey } = this;
 
         const result = await fetch(
-          `https://www.googleapis.com/customsearch/v1/siterestrict?key=${apiKey}&cx=${searchEngineId}&q=${query}`
+          `https://www.googleapis.com/customsearch/v1/siterestrict?key=${apiKey}&cx=${this.settings.searchEngineId}&q=${query}`
         );
 
         const data = await result.json();
 
         const items = data.items.slice(0, this.settings.maxResults ?? 5);
 
-        return this.outputSchema.parse({
+        return this.outputSchema!.parse({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           results: items.map((item: any) => ({
             title: item.title,
@@ -61,20 +61,5 @@ export class GoogleCustomSearchTool<
     }
 
     return apiKey;
-  }
-
-  private get searchEngineId() {
-    const searchEngineId =
-      this.settings.searchEngineId ??
-      process.env.GOOGLE_CUSTOM_SEARCH_ENGINE_ID;
-
-    if (searchEngineId == null) {
-      throw new Error(
-        `Google Custom Search search engine id setting is missing. ` +
-          `Pass it as an argument to the constructor or set it as an environment variable named GOOGLE_CUSTOM_SEARCH_ENGINE_ID.`
-      );
-    }
-
-    return searchEngineId;
   }
 }
