@@ -1,26 +1,24 @@
 import {
-  ModelCallFinishedEventMetadata,
-  ModelCallStartedEventMetadata,
+  BaseModelCallFinishedEvent,
+  BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type ImageGenerationStartedEvent = {
-  type: "image-generation-started";
-  metadata: ModelCallStartedEventMetadata;
+export type ImageGenerationStartedEvent = BaseModelCallStartedEvent & {
+  functionType: "image-generation";
   settings: unknown;
   prompt: unknown;
 };
 
-export type ImageGenerationFinishedEvent = {
-  type: "image-generation-finished";
-  metadata: ModelCallFinishedEventMetadata;
+export type ImageGenerationFinishedEvent = BaseModelCallFinishedEvent & {
+  functionType: "image-generation";
   settings: unknown;
   prompt: unknown;
 } & (
-  | {
-      status: "success";
-      response: unknown;
-      generatedImage: string;
-    }
-  | { status: "failure"; error: unknown }
-  | { status: "abort" }
-);
+    | {
+        status: "success";
+        response: unknown;
+        generatedImage: string;
+      }
+    | { status: "error"; error: unknown }
+    | { status: "abort" }
+  );

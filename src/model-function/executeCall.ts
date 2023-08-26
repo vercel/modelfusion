@@ -6,10 +6,10 @@ import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
 import { Model, ModelSettings } from "./Model.js";
 import {
+  BaseModelCallFinishedEvent,
+  BaseModelCallStartedEvent,
   ModelCallFinishedEvent,
-  ModelCallFinishedEventMetadata,
   ModelCallStartedEvent,
-  ModelCallStartedEventMetadata,
 } from "./ModelCallEvent.js";
 import { ModelFunctionOptions } from "./ModelFunctionOptions.js";
 
@@ -43,20 +43,35 @@ export function executeCall<
   model: MODEL;
   options?: ModelFunctionOptions<SETTINGS>;
   getStartEvent: (
-    metadata: ModelCallStartedEventMetadata,
+    metadata: Omit<BaseModelCallStartedEvent, "functionType">,
     settings: SETTINGS
   ) => ModelCallStartedEvent;
   getAbortEvent: (
-    metadata: ModelCallFinishedEventMetadata,
+    metadata: Omit<
+      BaseModelCallFinishedEvent & {
+        status: "abort";
+      },
+      "functionType"
+    >,
     settings: SETTINGS
   ) => ModelCallFinishedEvent;
   getFailureEvent: (
-    metadata: ModelCallFinishedEventMetadata,
+    metadata: Omit<
+      BaseModelCallFinishedEvent & {
+        status: "error";
+      },
+      "functionType"
+    >,
     settings: SETTINGS,
     error: unknown
   ) => ModelCallFinishedEvent;
   getSuccessEvent: (
-    metadata: ModelCallFinishedEventMetadata,
+    metadata: Omit<
+      BaseModelCallFinishedEvent & {
+        status: "success";
+      },
+      "functionType"
+    >,
     settings: SETTINGS,
     response: RESPONSE,
     output: OUTPUT
@@ -158,20 +173,35 @@ async function doExecuteCall<
   model: MODEL;
   options?: ModelFunctionOptions<SETTINGS>;
   getStartEvent: (
-    metadata: ModelCallStartedEventMetadata,
+    metadata: Omit<BaseModelCallStartedEvent, "functionType">,
     settings: SETTINGS
   ) => ModelCallStartedEvent;
   getAbortEvent: (
-    metadata: ModelCallFinishedEventMetadata,
+    metadata: Omit<
+      BaseModelCallFinishedEvent & {
+        status: "abort";
+      },
+      "functionType"
+    >,
     settings: SETTINGS
   ) => ModelCallFinishedEvent;
   getFailureEvent: (
-    metadata: ModelCallFinishedEventMetadata,
+    metadata: Omit<
+      BaseModelCallFinishedEvent & {
+        status: "error";
+      },
+      "functionType"
+    >,
     settings: SETTINGS,
     error: unknown
   ) => ModelCallFinishedEvent;
   getSuccessEvent: (
-    metadata: ModelCallFinishedEventMetadata,
+    metadata: Omit<
+      BaseModelCallFinishedEvent & {
+        status: "success";
+      },
+      "functionType"
+    >,
     settings: SETTINGS,
     response: RESPONSE,
     output: OUTPUT
@@ -215,11 +245,22 @@ async function doExecuteCall<
     sessionId: run?.sessionId,
     userId: run?.userId,
     functionId: options?.functionId,
+
     model: model.modelInformation,
+
+    timestamp: durationMeasurement.startDate,
     startTimestamp: durationMeasurement.startDate,
   };
 
-  eventSource.notify(getStartEvent(startMetadata, settings));
+  eventSource.notify(
+    getStartEvent(
+      {
+        ...startMetadata,
+        eventType: "started",
+      },
+      settings
+    )
+  );
 
   const result = await runSafe(() =>
     generateResponse({
@@ -231,17 +272,35 @@ async function doExecuteCall<
 
   const finishMetadata = {
     ...startMetadata,
+    eventType: "finished" as const,
     finishTimestamp: new Date(),
     durationInMs: durationMeasurement.durationInMs,
   };
 
   if (!result.ok) {
     if (result.isAborted) {
-      eventSource.notify(getAbortEvent(finishMetadata, settings));
+      eventSource.notify(
+        getAbortEvent(
+          {
+            ...finishMetadata,
+            status: "abort",
+          },
+          settings
+        )
+      );
       throw new AbortError();
     }
 
-    eventSource.notify(getFailureEvent(finishMetadata, settings, result.error));
+    eventSource.notify(
+      getFailureEvent(
+        {
+          ...finishMetadata,
+          status: "error",
+        },
+        settings,
+        result.error
+      )
+    );
     throw result.error;
   }
 
@@ -249,7 +308,15 @@ async function doExecuteCall<
   const output = extractOutputValue(response);
 
   eventSource.notify(
-    getSuccessEvent(finishMetadata, settings, response, output)
+    getSuccessEvent(
+      {
+        ...finishMetadata,
+        status: "success",
+      },
+      settings,
+      response,
+      output
+    )
   );
 
   return {

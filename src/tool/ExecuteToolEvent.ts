@@ -1,26 +1,24 @@
 import {
-  FunctionFinishedEventMetadata,
-  FunctionStartedEventMetadata,
+  BaseFunctionFinishedEvent,
+  BaseFunctionStartedEvent,
 } from "../run/FunctionEvent.js";
 import { Tool } from "./Tool.js";
 
-export type ExecuteToolStartedEvent = {
-  type: "execute-tool-started";
-  metadata: FunctionStartedEventMetadata;
+export type ExecuteToolStartedEvent = BaseFunctionStartedEvent & {
+  functionType: "execute-tool";
   tool: Tool<string, unknown, unknown>;
   input: unknown;
 };
 
-export type ExecuteToolFinishedEvent = {
-  type: "execute-tool-finished";
-  metadata: FunctionFinishedEventMetadata;
+export type ExecuteToolFinishedEvent = BaseFunctionFinishedEvent & {
+  functionType: "execute-tool";
   tool: Tool<string, unknown, unknown>;
   input: unknown;
 } & (
-  | {
-      status: "success";
-      output: unknown;
-    }
-  | { status: "failure"; error: unknown }
-  | { status: "abort" }
-);
+    | {
+        status: "success";
+        output: unknown;
+      }
+    | { status: "error"; error: unknown }
+    | { status: "abort" }
+  );

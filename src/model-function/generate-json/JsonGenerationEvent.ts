@@ -1,26 +1,24 @@
 import {
-  ModelCallFinishedEventMetadata,
-  ModelCallStartedEventMetadata,
+  BaseModelCallFinishedEvent,
+  BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type JsonGenerationStartedEvent = {
-  type: "json-generation-started" | "json-or-text-generation-started";
-  metadata: ModelCallStartedEventMetadata;
+export type JsonGenerationStartedEvent = BaseModelCallStartedEvent & {
+  functionType: "json-generation" | "json-or-text-generation";
   settings: unknown;
   prompt: unknown;
 };
 
-export type JsonGenerationFinishedEvent = {
-  type: "json-generation-finished" | "json-or-text-generation-finished";
-  metadata: ModelCallFinishedEventMetadata;
+export type JsonGenerationFinishedEvent = BaseModelCallFinishedEvent & {
+  functionType: "json-generation" | "json-or-text-generation";
   settings: unknown;
   prompt: unknown;
 } & (
-  | {
-      status: "success";
-      response: unknown;
-      generatedJson: unknown;
-    }
-  | { status: "failure"; error: unknown }
-  | { status: "abort" }
-);
+    | {
+        status: "success";
+        response: unknown;
+        generatedJson: unknown;
+      }
+    | { status: "error"; error: unknown }
+    | { status: "abort" }
+  );

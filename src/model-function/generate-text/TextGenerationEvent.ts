@@ -1,26 +1,24 @@
 import {
-  ModelCallFinishedEventMetadata,
-  ModelCallStartedEventMetadata,
+  BaseModelCallFinishedEvent,
+  BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type TextGenerationStartedEvent = {
-  type: "text-generation-started";
-  metadata: ModelCallStartedEventMetadata;
+export type TextGenerationStartedEvent = BaseModelCallStartedEvent & {
+  functionType: "text-generation";
   settings: unknown;
   prompt: unknown;
 };
 
-export type TextGenerationFinishedEvent = {
-  type: "text-generation-finished";
-  metadata: ModelCallFinishedEventMetadata;
+export type TextGenerationFinishedEvent = BaseModelCallFinishedEvent & {
+  functionType: "text-generation";
   settings: unknown;
   prompt: unknown;
 } & (
-  | {
-      status: "success";
-      response: unknown;
-      generatedText: string;
-    }
-  | { status: "failure"; error: unknown }
-  | { status: "abort" }
-);
+    | {
+        status: "success";
+        response: unknown;
+        generatedText: string;
+      }
+    | { status: "error"; error: unknown }
+    | { status: "abort" }
+  );

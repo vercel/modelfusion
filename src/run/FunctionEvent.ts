@@ -7,11 +7,11 @@ import {
   ModelCallStartedEvent,
 } from "../model-function/ModelCallEvent.js";
 
-export type IdMetadata = {
+export type BaseFunctionEvent = {
   /**
    * Unique identifier for the function call.
    */
-  callId?: string | undefined;
+  callId: string | undefined;
 
   /**
    * Optional unique identifier for the function.
@@ -35,23 +35,41 @@ export type IdMetadata = {
    * Only available if the function is part of a run with a user.
    */
   userId?: string | undefined;
+
+  /**
+   * Timestamp of the event.
+   */
+  timestamp: Date;
+
+  /**
+   * Type of the event. Defined in the subclasses.
+   */
+  eventType: "started" | "finished";
+
+  /**
+   * Type of the function. Defined in the subclasses.
+   */
+  functionType: string;
 };
 
-export type FunctionStartedEventMetadata = IdMetadata & {
+export type BaseFunctionStartedEvent = BaseFunctionEvent & {
+  eventType: "started";
+
   startTimestamp: Date;
 };
 
-export type FunctionFinishedEventMetadata = FunctionStartedEventMetadata & {
+export type BaseFunctionFinishedEvent = BaseFunctionEvent & {
+  eventType: "finished";
+
+  status: "success" | "error" | "abort";
+
+  startTimestamp: Date;
   finishTimestamp: Date;
   durationInMs: number;
 };
 
-export type FunctionStartedEvent =
+export type FunctionEvent =
   | ModelCallStartedEvent
-  | ExecuteToolStartedEvent;
-
-export type FunctionFinishedEvent =
+  | ExecuteToolStartedEvent
   | ModelCallFinishedEvent
   | ExecuteToolFinishedEvent;
-
-export type FunctionEvent = FunctionStartedEvent | FunctionFinishedEvent;

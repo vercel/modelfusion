@@ -13,16 +13,24 @@ dotenv.config();
 (async () => {
   const observer: FunctionObserver = {
     onFunctionEvent(event: FunctionEvent) {
-      console.log(
-        `[${event.metadata.startTimestamp.toISOString()}] ${
-          event.metadata.callId
-        } - ${event.type}`
-      );
-      // console.log(
-      //   `[${event.metadata.finishTimestamp.toISOString()}] ${
-      //     event.metadata.callId
-      //   } - ${event.type} in ${event.metadata.durationInMs}ms`
-      // );
+      switch (event.eventType) {
+        case "started": {
+          console.log(
+            `[${event.timestamp.toISOString()}] ${event.callId} - ${
+              event.functionType
+            } ${event.eventType}`
+          );
+          break;
+        }
+        case "finished": {
+          console.log(
+            `[${event.timestamp.toISOString()}] ${event.callId} - ${
+              event.functionType
+            } ${event.eventType} in ${event.durationInMs}ms`
+          );
+          break;
+        }
+      }
     },
   };
 

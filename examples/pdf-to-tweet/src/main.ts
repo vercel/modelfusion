@@ -21,30 +21,20 @@ const run = new DefaultRun({
   observers: [
     {
       onFunctionEvent(event) {
-        switch (event.type) {
-          case "text-generation-started": {
+        switch (event.functionType) {
+          case "text-generation": {
             console.log(
-              `Generate text ${event.metadata.functionId ?? "unknown"} started.`
+              `Generate text ${event.functionId ?? "unknown"} ${
+                event.functionType
+              }.`
             );
             break;
           }
-          case "text-generation-finished": {
+          case "text-embedding": {
             console.log(
-              `Generate text ${
-                event.metadata.functionId ?? "unknown"
-              } finished.`
-            );
-            break;
-          }
-          case "text-embedding-started": {
-            console.log(
-              `Embed text ${event.metadata.functionId ?? "unknown"} started.`
-            );
-            break;
-          }
-          case "text-embedding-finished": {
-            console.log(
-              `Embed text ${event.metadata.functionId ?? "unknown"} finished.`
+              `Embed text ${event.functionId ?? "unknown"} ${
+                event.functionType
+              }.`
             );
             break;
           }

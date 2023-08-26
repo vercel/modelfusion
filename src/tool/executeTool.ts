@@ -107,26 +107,33 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   const durationMeasurement = startDurationMeasurement();
 
-  const startMetadata = {
+  const metadata = {
+    functionType: "execute-tool" as const,
+
     callId: `call-${createId()}`,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
     functionId: options?.functionId,
-    startTimestamp: durationMeasurement.startDate,
+
+    tool: tool as Tool<string, unknown, unknown>,
+    input,
   };
 
   eventSource.notify({
-    type: "execute-tool-started",
-    metadata: startMetadata,
-    tool: tool as Tool<string, unknown, unknown>,
-    input,
+    ...metadata,
+    eventType: "started",
+    timestamp: durationMeasurement.startDate,
+    startTimestamp: durationMeasurement.startDate,
   });
 
   const result = await runSafe(() => tool.execute(input, options));
 
   const finishMetadata = {
-    ...startMetadata,
+    ...metadata,
+    eventType: "finished" as const,
+    timestamp: new Date(),
+    startTimestamp: durationMeasurement.startDate,
     finishTimestamp: new Date(),
     durationInMs: durationMeasurement.durationInMs,
   };
@@ -134,22 +141,16 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   if (!result.ok) {
     if (result.isAborted) {
       eventSource.notify({
-        type: "execute-tool-finished",
+        ...finishMetadata,
         status: "abort",
-        metadata: finishMetadata,
-        tool: tool as Tool<string, unknown, unknown>,
-        input,
       });
 
       throw new AbortError();
     }
 
     eventSource.notify({
-      type: "execute-tool-finished",
-      status: "failure",
-      metadata: finishMetadata,
-      tool: tool as Tool<string, unknown, unknown>,
-      input,
+      ...finishMetadata,
+      status: "error",
       error: result.error,
     });
 
@@ -165,11 +166,8 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   const output = result.output;
 
   eventSource.notify({
-    type: "execute-tool-finished",
+    ...finishMetadata,
     status: "success",
-    metadata: finishMetadata,
-    tool: tool as Tool<string, unknown, unknown>,
-    input,
     output,
   });
 

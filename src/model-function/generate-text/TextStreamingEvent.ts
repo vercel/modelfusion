@@ -1,26 +1,24 @@
 import {
-  ModelCallFinishedEventMetadata,
-  ModelCallStartedEventMetadata,
+  BaseModelCallFinishedEvent,
+  BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type TextStreamingStartedEvent = {
-  type: "text-streaming-started";
-  metadata: ModelCallStartedEventMetadata;
+export type TextStreamingStartedEvent = BaseModelCallStartedEvent & {
+  functionType: "text-streaming";
   settings: unknown;
   prompt: unknown;
 };
 
-export type TextStreamingFinishedEvent = {
-  type: "text-streaming-finished";
-  metadata: ModelCallFinishedEventMetadata;
+export type TextStreamingFinishedEvent = BaseModelCallFinishedEvent & {
+  functionType: "text-streaming";
   settings: unknown;
   prompt: unknown;
 } & (
-  | {
-      status: "success";
-      response: unknown;
-      generatedText: string;
-    }
-  | { status: "failure"; error: unknown }
-  | { status: "abort" }
-);
+    | {
+        status: "success";
+        response: unknown;
+        generatedText: string;
+      }
+    | { status: "error"; error: unknown }
+    | { status: "abort" }
+  );

@@ -1,26 +1,24 @@
 import {
-  ModelCallFinishedEventMetadata,
-  ModelCallStartedEventMetadata,
+  BaseModelCallFinishedEvent,
+  BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type TranscriptionStartedEvent = {
-  type: "transcription-started";
-  metadata: ModelCallStartedEventMetadata;
+export type TranscriptionStartedEvent = BaseModelCallStartedEvent & {
+  functionType: "transcription";
   settings: unknown;
   data: unknown;
 };
 
-export type TranscriptionFinishedEvent = {
-  type: "transcription-finished";
-  metadata: ModelCallFinishedEventMetadata;
+export type TranscriptionFinishedEvent = BaseModelCallFinishedEvent & {
+  functionType: "transcription";
   settings: unknown;
   data: unknown;
 } & (
-  | {
-      status: "success";
-      response: unknown;
-      transcription: string;
-    }
-  | { status: "failure"; error: unknown }
-  | { status: "abort" }
-);
+    | {
+        status: "success";
+        response: unknown;
+        transcription: string;
+      }
+    | { status: "error"; error: unknown }
+    | { status: "abort" }
+  );

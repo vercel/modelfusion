@@ -11,7 +11,10 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
-import { TextStreamingFinishedEvent } from "./TextStreamingEvent.js";
+import {
+  TextStreamingFinishedEvent,
+  TextStreamingStartedEvent,
+} from "./TextStreamingEvent.js";
 import { extractTextDeltas } from "./extractTextDeltas.js";
 
 export class StreamTextPromise<
@@ -149,15 +152,18 @@ async function doStreamText<
     userId: run?.userId,
     functionId: options?.functionId,
     model: model.modelInformation,
+
+    timestamp: durationMeasurement.startDate,
     startTimestamp: durationMeasurement.startDate,
   };
 
   eventSource.notify({
-    type: "text-streaming-started",
-    metadata: startMetadata,
+    ...startMetadata,
+    functionType: "text-streaming",
+    eventType: "started",
     settings,
     prompt,
-  });
+  } satisfies TextStreamingStartedEvent);
 
   const result = await runSafe(async () =>
     extractTextDeltas({
@@ -170,23 +176,25 @@ async function doStreamText<
       onDone: (fullText, lastFullDelta) => {
         const finishMetadata = {
           ...startMetadata,
+          eventType: "finished" as const,
           finishTimestamp: new Date(),
           durationInMs: durationMeasurement.durationInMs,
         };
 
         eventSource.notify({
-          type: "text-streaming-finished",
+          ...finishMetadata,
+          functionType: "text-streaming",
           status: "success",
-          metadata: finishMetadata,
           settings,
           prompt,
           response: lastFullDelta,
           generatedText: fullText,
-        } as TextStreamingFinishedEvent);
+        } satisfies TextStreamingFinishedEvent);
       },
       onError: (error) => {
         const finishMetadata = {
           ...startMetadata,
+          eventType: "finished" as const,
           finishTimestamp: new Date(),
           durationInMs: durationMeasurement.durationInMs,
         };
@@ -194,16 +202,16 @@ async function doStreamText<
         eventSource.notify(
           error instanceof AbortError
             ? {
-                type: "text-streaming-finished",
+                ...finishMetadata,
+                functionType: "text-streaming",
                 status: "abort",
-                metadata: finishMetadata,
                 settings,
                 prompt,
               }
             : {
-                type: "text-streaming-finished",
-                status: "failure",
-                metadata: finishMetadata,
+                ...finishMetadata,
+                functionType: "text-streaming",
+                status: "error",
                 settings,
                 prompt,
                 error,
@@ -216,15 +224,16 @@ async function doStreamText<
   if (!result.ok) {
     const finishMetadata = {
       ...startMetadata,
+      eventType: "finished" as const,
       finishTimestamp: new Date(),
       durationInMs: durationMeasurement.durationInMs,
     };
 
     if (result.isAborted) {
       eventSource.notify({
-        type: "text-streaming-finished",
+        ...finishMetadata,
+        functionType: "text-streaming",
         status: "abort",
-        metadata: finishMetadata,
         settings,
         prompt,
       });
@@ -232,9 +241,9 @@ async function doStreamText<
     }
 
     eventSource.notify({
-      type: "text-streaming-finished",
-      status: "failure",
-      metadata: finishMetadata,
+      ...finishMetadata,
+      functionType: "text-streaming",
+      status: "error",
       settings,
       prompt,
       error: result.error,
