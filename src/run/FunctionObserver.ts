@@ -1,5 +1,8 @@
 import { FunctionEvent } from "./FunctionEvent.js";
 
-export type FunctionObserver = {
-  onFunctionEvent?: (event: FunctionEvent) => void;
-};
+export interface FunctionObserver {
+  /**
+   * Called when a function event occurs.
+   */
+  onFunctionEvent(event: FunctionEvent): void;
+}

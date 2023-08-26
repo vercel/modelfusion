@@ -20,7 +20,7 @@ export class FunctionEventSource {
   notify(event: FunctionEvent) {
     for (const observer of this.observers) {
       try {
-        observer.onFunctionEvent?.(event);
+        observer.onFunctionEvent(event);
       } catch (error) {
         this.errorHandler(error);
       }
