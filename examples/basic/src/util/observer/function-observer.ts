@@ -15,12 +15,16 @@ dotenv.config();
   const observer: FunctionObserver = {
     onFunctionStarted(event: FunctionStartedEvent) {
       console.log(
-        `Started ${event.type} (${event.metadata.callId}) at ${event.metadata.startEpochSeconds}`
+        `[${event.metadata.startTimestamp.toISOString()}] ${
+          event.metadata.callId
+        } - ${event.type}`
       );
     },
     onFunctionFinished(event: FunctionFinishedEvent) {
       console.log(
-        `Finished ${event.type} (${event.metadata.callId}) in ${event.metadata.durationInMs}ms`
+        `[${event.metadata.finishTimestamp.toISOString()}] ${
+          event.metadata.callId
+        } - ${event.type} in ${event.metadata.durationInMs}ms`
       );
     },
   };
