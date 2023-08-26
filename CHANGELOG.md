@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.21.0 - 2023-08-26
+
+### Changed
+
+- **Breaking change**: Reworked the function observer system. See [Function observers](https://modelfusion.dev/guide/util/observer) for details on how to use the new system.
+
 ## v0.20.0 - 2023-08-24
 
 ### Changed
