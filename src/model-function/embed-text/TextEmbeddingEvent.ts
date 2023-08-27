@@ -6,13 +6,11 @@ import {
 
 export interface TextEmbeddingStartedEvent extends BaseModelCallStartedEvent {
   functionType: "text-embedding";
-  settings: unknown;
   texts: Array<string>;
 }
 
 export type TextEmbeddingFinishedEvent = BaseModelCallFinishedEvent & {
   functionType: "text-embedding";
-  settings: unknown;
   texts: Array<string>;
 } & (
     | {

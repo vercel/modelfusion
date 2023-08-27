@@ -34,6 +34,7 @@ import {
 
 export interface BaseModelCallStartedEvent extends BaseFunctionStartedEvent {
   model: ModelInformation;
+  settings: unknown;
 }
 
 export type ModelCallStartedEvent =
@@ -47,6 +48,7 @@ export type ModelCallStartedEvent =
 
 export type BaseModelCallFinishedEvent = BaseFunctionFinishedEvent & {
   model: ModelInformation;
+  settings: unknown;
 };
 
 export type ModelCallFinishedEvent =

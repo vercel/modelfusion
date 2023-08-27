@@ -5,13 +5,11 @@ import {
 
 export interface TextStreamingStartedEvent extends BaseModelCallStartedEvent {
   functionType: "text-streaming";
-  settings: unknown;
   prompt: unknown;
 }
 
 export type TextStreamingFinishedEvent = BaseModelCallFinishedEvent & {
   functionType: "text-streaming";
-  settings: unknown;
   prompt: unknown;
 } & (
     | {

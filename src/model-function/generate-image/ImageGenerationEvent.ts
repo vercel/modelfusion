@@ -5,13 +5,11 @@ import {
 
 export interface ImageGenerationStartedEvent extends BaseModelCallStartedEvent {
   functionType: "image-generation";
-  settings: unknown;
   prompt: unknown;
 }
 
 export type ImageGenerationFinishedEvent = BaseModelCallFinishedEvent & {
   functionType: "image-generation";
-  settings: unknown;
   prompt: unknown;
 } & (
     | {

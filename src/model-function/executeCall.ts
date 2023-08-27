@@ -43,7 +43,7 @@ export function executeCall<
   model: MODEL;
   options?: ModelFunctionOptions<SETTINGS>;
   getStartEvent: (
-    metadata: Omit<BaseModelCallStartedEvent, "functionType">,
+    metadata: Omit<BaseModelCallStartedEvent, "functionType" | "settings">,
     settings: SETTINGS
   ) => ModelCallStartedEvent;
   getAbortEvent: (
@@ -51,7 +51,7 @@ export function executeCall<
       BaseModelCallFinishedEvent & {
         status: "abort";
       },
-      "functionType"
+      "functionType" | "settings"
     >,
     settings: SETTINGS
   ) => ModelCallFinishedEvent;
@@ -60,7 +60,7 @@ export function executeCall<
       BaseModelCallFinishedEvent & {
         status: "error";
       },
-      "functionType"
+      "functionType" | "settings"
     >,
     settings: SETTINGS,
     error: unknown
@@ -70,7 +70,7 @@ export function executeCall<
       BaseModelCallFinishedEvent & {
         status: "success";
       },
-      "functionType"
+      "functionType" | "settings"
     >,
     settings: SETTINGS,
     response: RESPONSE,
@@ -173,7 +173,7 @@ async function doExecuteCall<
   model: MODEL;
   options?: ModelFunctionOptions<SETTINGS>;
   getStartEvent: (
-    metadata: Omit<BaseModelCallStartedEvent, "functionType">,
+    metadata: Omit<BaseModelCallStartedEvent, "functionType" | "settings">,
     settings: SETTINGS
   ) => ModelCallStartedEvent;
   getAbortEvent: (
@@ -181,7 +181,7 @@ async function doExecuteCall<
       BaseModelCallFinishedEvent & {
         status: "abort";
       },
-      "functionType"
+      "functionType" | "settings"
     >,
     settings: SETTINGS
   ) => ModelCallFinishedEvent;
@@ -190,7 +190,7 @@ async function doExecuteCall<
       BaseModelCallFinishedEvent & {
         status: "error";
       },
-      "functionType"
+      "functionType" | "settings"
     >,
     settings: SETTINGS,
     error: unknown
@@ -200,7 +200,7 @@ async function doExecuteCall<
       BaseModelCallFinishedEvent & {
         status: "success";
       },
-      "functionType"
+      "functionType" | "settings"
     >,
     settings: SETTINGS,
     response: RESPONSE,

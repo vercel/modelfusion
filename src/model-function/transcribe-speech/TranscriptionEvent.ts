@@ -5,13 +5,11 @@ import {
 
 export interface TranscriptionStartedEvent extends BaseModelCallStartedEvent {
   functionType: "transcription";
-  settings: unknown;
   data: unknown;
 }
 
 export type TranscriptionFinishedEvent = BaseModelCallFinishedEvent & {
   functionType: "transcription";
-  settings: unknown;
   data: unknown;
 } & (
     | {
