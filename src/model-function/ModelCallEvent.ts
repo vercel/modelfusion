@@ -32,9 +32,9 @@ import {
   TranscriptionStartedEvent,
 } from "./transcribe-speech/TranscriptionEvent.js";
 
-export type BaseModelCallStartedEvent = BaseFunctionStartedEvent & {
+export interface BaseModelCallStartedEvent extends BaseFunctionStartedEvent {
   model: ModelInformation;
-};
+}
 
 export type ModelCallStartedEvent =
   | ImageGenerationStartedEvent

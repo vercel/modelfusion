@@ -3,11 +3,11 @@ import {
   BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type SpeechSynthesisStartedEvent = BaseModelCallStartedEvent & {
+export interface SpeechSynthesisStartedEvent extends BaseModelCallStartedEvent {
   functionType: "speech-synthesis";
   settings: unknown;
   text: string;
-};
+}
 
 export type SpeechSynthesisFinishedEvent = BaseModelCallFinishedEvent & {
   functionType: "speech-synthesis";

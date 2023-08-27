@@ -3,11 +3,11 @@ import {
   BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type TextGenerationStartedEvent = BaseModelCallStartedEvent & {
+export interface TextGenerationStartedEvent extends BaseModelCallStartedEvent {
   functionType: "text-generation";
   settings: unknown;
   prompt: unknown;
-};
+}
 
 export type TextGenerationFinishedEvent = BaseModelCallFinishedEvent & {
   functionType: "text-generation";

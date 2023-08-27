@@ -4,11 +4,11 @@ import {
   BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type TextEmbeddingStartedEvent = BaseModelCallStartedEvent & {
+export interface TextEmbeddingStartedEvent extends BaseModelCallStartedEvent {
   functionType: "text-embedding";
   settings: unknown;
   texts: Array<string>;
-};
+}
 
 export type TextEmbeddingFinishedEvent = BaseModelCallFinishedEvent & {
   functionType: "text-embedding";

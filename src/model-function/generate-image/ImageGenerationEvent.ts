@@ -3,11 +3,11 @@ import {
   BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type ImageGenerationStartedEvent = BaseModelCallStartedEvent & {
+export interface ImageGenerationStartedEvent extends BaseModelCallStartedEvent {
   functionType: "image-generation";
   settings: unknown;
   prompt: unknown;
-};
+}
 
 export type ImageGenerationFinishedEvent = BaseModelCallFinishedEvent & {
   functionType: "image-generation";

@@ -7,7 +7,7 @@ import {
   ModelCallStartedEvent,
 } from "../model-function/ModelCallEvent.js";
 
-export type BaseFunctionEvent = {
+export interface BaseFunctionEvent {
   /**
    * Unique identifier for the function call.
    */
@@ -50,22 +50,36 @@ export type BaseFunctionEvent = {
    * Type of the function. Defined in the subclasses.
    */
   functionType: string;
-};
+}
 
-export type BaseFunctionStartedEvent = BaseFunctionEvent & {
+export interface BaseFunctionStartedEvent extends BaseFunctionEvent {
   eventType: "started";
 
+  /**
+   * Timestamp when the function call started.
+   */
   startTimestamp: Date;
-};
+}
 
 export type BaseFunctionFinishedEvent = BaseFunctionEvent & {
   eventType: "finished";
 
-  status: "success" | "error" | "abort";
-
+  /**
+   * Timestamp when the function call started.
+   */
   startTimestamp: Date;
+
+  /**
+   * Timestamp when the function call finished.
+   */
   finishTimestamp: Date;
+
+  /**
+   * Duration of the function call in milliseconds.
+   */
   durationInMs: number;
+
+  status: "success" | "error" | "abort";
 };
 
 export type FunctionEvent =
