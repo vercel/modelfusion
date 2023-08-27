@@ -1,6 +1,6 @@
 import { nanoid as createId } from "nanoid";
-import { FunctionEventSource } from "../run/FunctionEventSource.js";
-import { getGlobalFunctionObservers } from "../run/GlobalFunctionObservers.js";
+import { FunctionEventSource } from "../core/FunctionEventSource.js";
+import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";

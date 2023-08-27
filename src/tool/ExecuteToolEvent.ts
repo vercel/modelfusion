@@ -1,7 +1,7 @@
 import {
   BaseFunctionFinishedEvent,
   BaseFunctionStartedEvent,
-} from "../run/FunctionEvent.js";
+} from "../core/FunctionEvent.js";
 import { Tool } from "./Tool.js";
 
 export type ExecuteToolStartedEvent = BaseFunctionStartedEvent & {

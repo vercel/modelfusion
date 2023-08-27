@@ -1,4 +1,4 @@
-import { Vector } from "../../run/Vector.js";
+import { Vector } from "../../core/Vector.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {

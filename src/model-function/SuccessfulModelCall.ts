@@ -1,4 +1,4 @@
-import { FunctionEvent } from "../run/FunctionEvent.js";
+import { FunctionEvent } from "../core/FunctionEvent.js";
 import { ModelCallFinishedEvent } from "./ModelCallEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 

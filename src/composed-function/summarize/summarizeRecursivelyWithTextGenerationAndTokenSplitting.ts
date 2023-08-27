@@ -4,7 +4,7 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { Run } from "../../run/Run.js";
+import { Run } from "../../core/Run.js";
 import { splitAtToken } from "../../text-chunk/split/splitRecursively.js";
 import { summarizeRecursively } from "./summarizeRecursively.js";
 

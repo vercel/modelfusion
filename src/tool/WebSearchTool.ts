@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../run/FunctionOptions.js";
+import { FunctionOptions } from "../core/FunctionOptions.js";
 import { Tool } from "./Tool.js";
 
 const OUTPUT_SCHEMA = z.object({

@@ -1,4 +1,4 @@
-import { Vector } from "../../run/Vector.js";
+import { Vector } from "../../core/Vector.js";
 import {
   BaseModelCallFinishedEvent,
   BaseModelCallStartedEvent,

@@ -1,7 +1,7 @@
 import {
   BaseFunctionFinishedEvent,
   BaseFunctionStartedEvent,
-} from "../run/FunctionEvent.js";
+} from "../core/FunctionEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
   TextEmbeddingFinishedEvent,

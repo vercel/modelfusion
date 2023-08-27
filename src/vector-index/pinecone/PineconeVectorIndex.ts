@@ -1,6 +1,6 @@
 import { VectorOperationsApi } from "@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch/index.js";
 import { z } from "zod";
-import { Vector } from "../../run/Vector.js";
+import { Vector } from "../../core/Vector.js";
 import { VectorIndex } from "../VectorIndex.js";
 
 export class PineconeVectorIndex<DATA extends object | undefined>
