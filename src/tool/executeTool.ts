@@ -142,7 +142,10 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     if (result.isAborted) {
       eventSource.notify({
         ...finishMetadata,
-        status: "abort",
+        status: "abort", // TODO remove
+        result: {
+          status: "abort",
+        },
       });
 
       throw new AbortError();
@@ -150,8 +153,11 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
     eventSource.notify({
       ...finishMetadata,
-      status: "error",
-      error: result.error,
+      status: "error", // TODO remove
+      result: {
+        status: "error",
+        error: result.error,
+      },
     });
 
     throw new ToolExecutionError({
@@ -167,8 +173,11 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   eventSource.notify({
     ...finishMetadata,
-    status: "success",
-    output,
+    status: "success", // TODO remove
+    result: {
+      status: "success",
+      output,
+    },
   });
 
   return {
