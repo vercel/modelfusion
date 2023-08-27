@@ -18,6 +18,8 @@ export type SerpapiGoogleWebSearchToolSettings<NAME extends string> = {
 };
 
 /**
+ * A tool for searching the web using SerpAPI.
+ *
  * @see https://serpapi.com/search-api
  */
 export class SerpapiGoogleWebSearchTool<
@@ -47,7 +49,7 @@ export class SerpapiGoogleWebSearchTool<
           })
         );
 
-        return this.outputSchema!.parse({
+        return this.outputSchema.parse({
           results: organicResults,
         });
       },
