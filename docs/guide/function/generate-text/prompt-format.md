@@ -117,7 +117,7 @@ The following prompt formats are available for chat prompts:
 - [TextChatPromptFormat](/api/modules#textchatpromptformat)
   for other models that expect a generic text prompt.
 
-## Custom Prompts
+## Custom Prompt Formats
 
 You can also create your own custom prompt formats and prompt formats.
 
