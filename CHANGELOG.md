@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.22.0 - 2023-08-28
+
+### Changed
+
+- **Breaking change**: Restructured the function call events.
+
 ## v0.21.0 - 2023-08-26
 
 ### Changed
