@@ -4,6 +4,8 @@ sidebar_position: 3
 
 # Function Observers
 
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/util/observer)
+
 Observing model calls or tool executions can be useful for many reasons. You can for example use them for logging, to send functional call data to observability APIs, or to record function calls in your DB.
 
 ModelFusion provides a simple way to observe function calls. [Function observers](/api/interfaces/FunctionObserver) are called when [function events](/api/modules#functionevent) occur. The supported functions are model calls and tool executions.
