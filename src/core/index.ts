@@ -1,4 +1,3 @@
-export * from "./ConsoleLogger.js";
 export * from "./DefaultRun.js";
 export * from "./FunctionEvent.js";
 export * from "./FunctionEventSource.js";
