@@ -1,24 +1,16 @@
 import {
   BaseFunctionFinishedEvent,
   BaseFunctionStartedEvent,
-} from "../run/FunctionEvent.js";
-import { Tool } from "./Tool.js";
+} from "../core/FunctionEvent.js";
 
-export type ExecuteToolStartedEvent = BaseFunctionStartedEvent & {
+export interface ExecuteToolStartedEvent extends BaseFunctionStartedEvent {
   functionType: "execute-tool";
-  tool: Tool<string, unknown, unknown>;
+  toolName: string;
   input: unknown;
-};
+}
 
-export type ExecuteToolFinishedEvent = BaseFunctionFinishedEvent & {
+export interface ExecuteToolFinishedEvent extends BaseFunctionFinishedEvent {
   functionType: "execute-tool";
-  tool: Tool<string, unknown, unknown>;
+  toolName: string;
   input: unknown;
-} & (
-    | {
-        status: "success";
-        output: unknown;
-      }
-    | { status: "error"; error: unknown }
-    | { status: "abort" }
-  );
+}

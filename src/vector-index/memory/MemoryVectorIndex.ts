@@ -1,5 +1,5 @@
 import z from "zod";
-import { Vector } from "../../run/Vector.js";
+import { Vector } from "../../core/Vector.js";
 import { cosineSimilarity } from "../../util/cosineSimilarity.js";
 import { VectorIndex } from "../VectorIndex.js";
 

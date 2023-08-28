@@ -1,7 +1,7 @@
 import {
   BaseFunctionFinishedEvent,
   BaseFunctionStartedEvent,
-} from "../run/FunctionEvent.js";
+} from "../core/FunctionEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
   TextEmbeddingFinishedEvent,
@@ -32,9 +32,27 @@ import {
   TranscriptionStartedEvent,
 } from "./transcribe-speech/TranscriptionEvent.js";
 
-export type BaseModelCallStartedEvent = BaseFunctionStartedEvent & {
+export interface BaseModelCallStartedEvent extends BaseFunctionStartedEvent {
   model: ModelInformation;
-};
+  settings: unknown;
+  input: unknown;
+}
+
+export type BaseModelCallFinishedEventResult =
+  | {
+      status: "success";
+      response: unknown;
+      output: unknown;
+    }
+  | { status: "error"; error: unknown }
+  | { status: "abort" };
+
+export interface BaseModelCallFinishedEvent extends BaseFunctionFinishedEvent {
+  model: ModelInformation;
+  settings: unknown;
+  input: unknown;
+  result: BaseModelCallFinishedEventResult;
+}
 
 export type ModelCallStartedEvent =
   | ImageGenerationStartedEvent
@@ -44,10 +62,6 @@ export type ModelCallStartedEvent =
   | TextGenerationStartedEvent
   | TextStreamingStartedEvent
   | TranscriptionStartedEvent;
-
-export type BaseModelCallFinishedEvent = BaseFunctionFinishedEvent & {
-  model: ModelInformation;
-};
 
 export type ModelCallFinishedEvent =
   | ImageGenerationFinishedEvent

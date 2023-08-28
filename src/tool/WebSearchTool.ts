@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../run/FunctionOptions.js";
+import { FunctionOptions } from "../core/FunctionOptions.js";
 import { Tool } from "./Tool.js";
 
 const OUTPUT_SCHEMA = z.object({
@@ -31,11 +31,39 @@ export type WebSearchToolOutput = {
   }[];
 };
 
+/**
+ * A tool for searching the web.
+ *
+ * The input schema takes a query string.
+ * ```ts
+ * {
+ *   query: "How many people live in Berlin?"
+ * }
+ * ```
+ *
+ * The output schema is an array of search results with title, link and snippet.
+ * ```ts
+ * {
+ *  results:
+ *   [
+ *     {
+ *       title: "Berlin - Wikipedia",
+ *       link: "https://en.wikipedia.org/wiki/Berlin",
+ *       snippet: "Berlin is the capital and largest city of Germany by...",
+ *     },
+ *     ...
+ *   ]
+ * }
+ * ```
+ */
 export class WebSearchTool<NAME extends string> extends Tool<
   NAME,
   WebSearchToolInput,
   WebSearchToolOutput
 > {
+  // output schema is always available
+  declare readonly outputSchema: typeof OUTPUT_SCHEMA;
+
   constructor({
     name,
     description,

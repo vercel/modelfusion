@@ -22,7 +22,7 @@ export class DefaultRun implements Run {
   readonly observers?: FunctionObserver[];
 
   constructor({
-    runId = createId(),
+    runId = `run-${createId()}`,
     sessionId,
     userId,
     abortSignal,

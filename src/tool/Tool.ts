@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { SchemaDefinition } from "../model-function/generate-json/SchemaDefinition.js";
-import { FunctionOptions } from "../run/FunctionOptions.js";
+import { FunctionOptions } from "../core/FunctionOptions.js";
 import { InvalidToolNameError } from "./InvalidToolNameError.js";
 
 const namePattern = /^[a-zA-Z0-9_-]{1,64}$/;

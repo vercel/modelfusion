@@ -1,8 +1,8 @@
 import { nanoid as createId } from "nanoid";
 import { z } from "zod";
-import { FunctionEventSource } from "../run/FunctionEventSource.js";
-import { FunctionOptions } from "../run/FunctionOptions.js";
-import { getGlobalFunctionObservers } from "../run/GlobalFunctionObservers.js";
+import { FunctionEventSource } from "../core/FunctionEventSource.js";
+import { FunctionOptions } from "../core/FunctionOptions.js";
+import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
@@ -116,7 +116,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     userId: run?.userId,
     functionId: options?.functionId,
 
-    tool: tool as Tool<string, unknown, unknown>,
+    toolName: tool.name,
     input,
   };
 
@@ -142,7 +142,9 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     if (result.isAborted) {
       eventSource.notify({
         ...finishMetadata,
-        status: "abort",
+        result: {
+          status: "abort",
+        },
       });
 
       throw new AbortError();
@@ -150,8 +152,10 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
     eventSource.notify({
       ...finishMetadata,
-      status: "error",
-      error: result.error,
+      result: {
+        status: "error",
+        error: result.error,
+      },
     });
 
     throw new ToolExecutionError({
@@ -167,8 +171,10 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   eventSource.notify({
     ...finishMetadata,
-    status: "success",
-    output,
+    result: {
+      status: "success",
+      output,
+    },
   });
 
   return {

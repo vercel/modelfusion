@@ -1,4 +1,4 @@
-import { FunctionEvent } from "../run/FunctionEvent.js";
+import { FunctionEvent } from "../core/FunctionEvent.js";
 import { ModelCallFinishedEvent } from "./ModelCallEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 
@@ -22,14 +22,18 @@ export function extractSuccessfulModelCalls(
 ) {
   return runFunctionEvents
     .filter(
-      (event): event is ModelCallFinishedEvent & { status: "success" } =>
-        "status" in event && event.status === "success"
+      (
+        event
+      ): event is ModelCallFinishedEvent & { result: { status: "success" } } =>
+        "result" in event &&
+        "status" in event.result &&
+        event.result.status === "success"
     )
     .map(
       (event): SuccessfulModelCall => ({
         model: event.model,
         settings: event.settings,
-        response: event.response,
+        response: event.result.response,
         type: event.functionType,
       })
     );

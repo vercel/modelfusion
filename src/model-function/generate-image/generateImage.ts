@@ -34,36 +34,11 @@ export function generateImage<
   RESPONSE
 > {
   return executeCall({
+    functionType: "image-generation",
+    input: prompt,
     model,
     options,
     generateResponse: (options) => model.generateImageResponse(prompt, options),
     extractOutputValue: model.extractBase64Image,
-    getStartEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "image-generation",
-      settings,
-      prompt,
-    }),
-    getAbortEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "image-generation",
-      settings,
-      prompt,
-    }),
-    getFailureEvent: (metadata, settings, error) => ({
-      ...metadata,
-      functionType: "image-generation",
-      settings,
-      prompt,
-      error,
-    }),
-    getSuccessEvent: (metadata, settings, response, output) => ({
-      ...metadata,
-      functionType: "image-generation",
-      settings,
-      prompt,
-      response,
-      generatedImage: output,
-    }),
   });
 }

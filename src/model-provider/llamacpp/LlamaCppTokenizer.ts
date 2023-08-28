@@ -1,6 +1,6 @@
 import z from "zod";
 import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { Run } from "../../run/Run.js";
+import { Run } from "../../core/Run.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";

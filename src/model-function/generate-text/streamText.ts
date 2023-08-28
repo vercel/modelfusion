@@ -1,6 +1,6 @@
 import { nanoid as createId } from "nanoid";
-import { FunctionEventSource } from "../../run/FunctionEventSource.js";
-import { getGlobalFunctionObservers } from "../../run/GlobalFunctionObservers.js";
+import { FunctionEventSource } from "../../core/FunctionEventSource.js";
+import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
@@ -153,16 +153,17 @@ async function doStreamText<
     functionId: options?.functionId,
     model: model.modelInformation,
 
+    functionType: "text-streaming" as const,
+    input: prompt,
+    settings,
+
     timestamp: durationMeasurement.startDate,
     startTimestamp: durationMeasurement.startDate,
   };
 
   eventSource.notify({
     ...startMetadata,
-    functionType: "text-streaming",
     eventType: "started",
-    settings,
-    prompt,
   } satisfies TextStreamingStartedEvent);
 
   const result = await runSafe(async () =>
@@ -183,12 +184,11 @@ async function doStreamText<
 
         eventSource.notify({
           ...finishMetadata,
-          functionType: "text-streaming",
-          status: "success",
-          settings,
-          prompt,
-          response: lastFullDelta,
-          generatedText: fullText,
+          result: {
+            status: "success",
+            response: lastFullDelta,
+            output: fullText,
+          },
         } satisfies TextStreamingFinishedEvent);
       },
       onError: (error) => {
@@ -203,18 +203,16 @@ async function doStreamText<
           error instanceof AbortError
             ? {
                 ...finishMetadata,
-                functionType: "text-streaming",
-                status: "abort",
-                settings,
-                prompt,
+                result: {
+                  status: "abort",
+                },
               }
             : {
                 ...finishMetadata,
-                functionType: "text-streaming",
-                status: "error",
-                settings,
-                prompt,
-                error,
+                result: {
+                  status: "error",
+                  error,
+                },
               }
         );
       },
@@ -232,21 +230,19 @@ async function doStreamText<
     if (result.isAborted) {
       eventSource.notify({
         ...finishMetadata,
-        functionType: "text-streaming",
-        status: "abort",
-        settings,
-        prompt,
+        result: {
+          status: "abort",
+        },
       });
       throw new AbortError();
     }
 
     eventSource.notify({
       ...finishMetadata,
-      functionType: "text-streaming",
-      status: "error",
-      settings,
-      prompt,
-      error: result.error,
+      result: {
+        status: "error",
+        error: result.error,
+      },
     });
     throw result.error;
   }

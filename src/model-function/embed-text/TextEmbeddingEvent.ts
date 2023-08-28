@@ -1,25 +1,25 @@
-import { Vector } from "../../run/Vector.js";
+import { Vector } from "../../core/Vector.js";
 import {
   BaseModelCallFinishedEvent,
   BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export type TextEmbeddingStartedEvent = BaseModelCallStartedEvent & {
+export interface TextEmbeddingStartedEvent extends BaseModelCallStartedEvent {
   functionType: "text-embedding";
-  settings: unknown;
-  texts: Array<string>;
-};
+  input: string | Array<string>;
+}
 
-export type TextEmbeddingFinishedEvent = BaseModelCallFinishedEvent & {
+export type TextEmbeddingFinishedEventResult =
+  | {
+      status: "success";
+      response: unknown;
+      output: Vector | Array<Vector>;
+    }
+  | { status: "error"; error: unknown }
+  | { status: "abort" };
+
+export interface TextEmbeddingFinishedEvent extends BaseModelCallFinishedEvent {
   functionType: "text-embedding";
-  settings: unknown;
-  texts: Array<string>;
-} & (
-    | {
-        status: "success";
-        response: unknown;
-        generatedEmbeddings: Array<Vector>;
-      }
-    | { status: "error"; error: unknown }
-    | { status: "abort" }
-  );
+  input: string | Array<string>;
+  result: TextEmbeddingFinishedEventResult;
+}

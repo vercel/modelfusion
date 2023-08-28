@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../run/FunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 
 export type SplitFunction = (
   input: {

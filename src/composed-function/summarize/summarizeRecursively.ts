@@ -1,4 +1,4 @@
-import { Run } from "../../run/Run.js";
+import { Run } from "../../core/Run.js";
 import { SplitFunction } from "../../text-chunk/split/SplitFunction.js";
 import { SummarizationFunction } from "./SummarizationFunction.js";
 

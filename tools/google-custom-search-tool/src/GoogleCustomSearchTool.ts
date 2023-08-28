@@ -12,6 +12,8 @@ export type GoogleCustomSearchToolSettings<NAME extends string> = {
 };
 
 /**
+ * A tool for searching the web using Google Custom Search.
+ *
  * @see https://developers.google.com/custom-search/v1/using_rest
  */
 export class GoogleCustomSearchTool<
@@ -35,7 +37,7 @@ export class GoogleCustomSearchTool<
 
         const items = data.items.slice(0, this.settings.maxResults ?? 5);
 
-        return this.outputSchema!.parse({
+        return this.outputSchema.parse({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           results: items.map((item: any) => ({
             title: item.title,

@@ -14,37 +14,11 @@ export function synthesizeSpeech<SETTINGS extends SpeechSynthesisModelSettings>(
   options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<SpeechSynthesisModel<SETTINGS>, Buffer, Buffer> {
   return executeCall({
+    functionType: "speech-synthesis",
+    input: text,
     model,
     options,
     generateResponse: (options) => model.generateSpeechResponse(text, options),
     extractOutputValue: (buffer) => buffer,
-    getStartEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "speech-synthesis",
-      settings,
-      text,
-    }),
-    getAbortEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "speech-synthesis",
-      status: "abort",
-      settings,
-      text,
-    }),
-    getFailureEvent: (metadata, settings, error) => ({
-      ...metadata,
-      functionType: "speech-synthesis",
-      settings,
-      text,
-      error,
-    }),
-    getSuccessEvent: (metadata, settings, response, output) => ({
-      ...metadata,
-      functionType: "speech-synthesis",
-      settings,
-      text,
-      response,
-      speech: output,
-    }),
   });
 }

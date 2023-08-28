@@ -33,37 +33,12 @@ export function transcribe<
   RESPONSE
 > {
   return executeCall({
+    functionType: "transcription",
+    input: data,
     model,
     options,
     generateResponse: (options) =>
       model.generateTranscriptionResponse(data, options),
     extractOutputValue: model.extractTranscriptionText,
-    getStartEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "transcription",
-      settings,
-      data,
-    }),
-    getAbortEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "transcription",
-      settings,
-      data,
-    }),
-    getFailureEvent: (metadata, settings, error) => ({
-      ...metadata,
-      functionType: "transcription",
-      settings,
-      data,
-      error,
-    }),
-    getSuccessEvent: (metadata, settings, response, output) => ({
-      ...metadata,
-      functionType: "transcription",
-      settings,
-      data,
-      response,
-      transcription: output,
-    }),
   });
 }
