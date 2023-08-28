@@ -116,7 +116,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     userId: run?.userId,
     functionId: options?.functionId,
 
-    tool: tool as Tool<string, unknown, unknown>,
+    toolName: tool.name,
     input,
   };
 
