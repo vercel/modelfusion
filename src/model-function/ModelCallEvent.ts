@@ -35,6 +35,23 @@ import {
 export interface BaseModelCallStartedEvent extends BaseFunctionStartedEvent {
   model: ModelInformation;
   settings: unknown;
+  input: unknown;
+}
+
+export type BaseModelCallFinishedEventResult =
+  | {
+      status: "success";
+      response: unknown;
+      output: unknown;
+    }
+  | { status: "error"; error: unknown }
+  | { status: "abort" };
+
+export interface BaseModelCallFinishedEvent extends BaseFunctionFinishedEvent {
+  model: ModelInformation;
+  settings: unknown;
+  input: unknown;
+  result: BaseModelCallFinishedEventResult;
 }
 
 export type ModelCallStartedEvent =
@@ -45,11 +62,6 @@ export type ModelCallStartedEvent =
   | TextGenerationStartedEvent
   | TextStreamingStartedEvent
   | TranscriptionStartedEvent;
-
-export type BaseModelCallFinishedEvent = BaseFunctionFinishedEvent & {
-  model: ModelInformation;
-  settings: unknown;
-};
 
 export type ModelCallFinishedEvent =
   | ImageGenerationFinishedEvent

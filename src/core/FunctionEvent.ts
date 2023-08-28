@@ -61,7 +61,15 @@ export interface BaseFunctionStartedEvent extends BaseFunctionEvent {
   startTimestamp: Date;
 }
 
-export type BaseFunctionFinishedEvent = BaseFunctionEvent & {
+export type BaseFunctionFinishedEventResult =
+  | {
+      status: "success";
+      output: unknown;
+    }
+  | { status: "error"; error: unknown }
+  | { status: "abort" };
+
+export interface BaseFunctionFinishedEvent extends BaseFunctionEvent {
   eventType: "finished";
 
   /**
@@ -79,8 +87,11 @@ export type BaseFunctionFinishedEvent = BaseFunctionEvent & {
    */
   durationInMs: number;
 
-  status: "success" | "error" | "abort";
-};
+  /**
+   * Result of the function call.
+   */
+  result: BaseFunctionFinishedEventResult;
+}
 
 export type FunctionEvent =
   | ModelCallStartedEvent

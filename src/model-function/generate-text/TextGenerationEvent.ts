@@ -8,15 +8,18 @@ export interface TextGenerationStartedEvent extends BaseModelCallStartedEvent {
   prompt: unknown;
 }
 
-export type TextGenerationFinishedEvent = BaseModelCallFinishedEvent & {
+export type TextGenerationFinishedEventResult =
+  | {
+      status: "success";
+      response: unknown;
+      output: string;
+    }
+  | { status: "error"; error: unknown }
+  | { status: "abort" };
+
+export interface TextGenerationFinishedEvent
+  extends BaseModelCallFinishedEvent {
   functionType: "text-generation";
   prompt: unknown;
-} & (
-    | {
-        status: "success";
-        response: unknown;
-        generatedText: string;
-      }
-    | { status: "error"; error: unknown }
-    | { status: "abort" }
-  );
+  result: TextGenerationFinishedEventResult;
+}

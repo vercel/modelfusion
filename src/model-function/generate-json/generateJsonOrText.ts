@@ -54,6 +54,8 @@ export function generateJsonOrText<
   const expandedPrompt = prompt(schemaDefinitions);
 
   return executeCall({
+    functionType: "json-or-text-generation",
+    input: expandedPrompt,
     model,
     options,
     generateResponse: (options) =>
@@ -91,32 +93,5 @@ export function generateJsonOrText<
         text: text as any, // text is string | null, which is part of the response for schema values
       };
     },
-    getStartEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "json-or-text-generation",
-      settings,
-      prompt,
-    }),
-    getAbortEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "json-or-text-generation",
-      settings,
-      prompt,
-    }),
-    getFailureEvent: (metadata, settings, error) => ({
-      ...metadata,
-      functionType: "json-or-text-generation",
-      settings,
-      prompt,
-      error,
-    }),
-    getSuccessEvent: (metadata, settings, response, output) => ({
-      ...metadata,
-      functionType: "json-or-text-generation",
-      settings,
-      prompt,
-      response,
-      generatedJson: output,
-    }),
   });
 }

@@ -26,6 +26,8 @@ export function generateJson<
   const expandedPrompt = prompt(schemaDefinition);
 
   return executeCall({
+    functionType: "json-generation",
+    input: expandedPrompt,
     model,
     options,
     generateResponse: (options) =>
@@ -45,32 +47,5 @@ export function generateJson<
 
       return parseResult.data;
     },
-    getStartEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "json-generation",
-      settings,
-      prompt,
-    }),
-    getAbortEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "json-generation",
-      settings,
-      prompt,
-    }),
-    getFailureEvent: (metadata, settings, error) => ({
-      ...metadata,
-      functionType: "json-generation",
-      settings,
-      prompt,
-      error,
-    }),
-    getSuccessEvent: (metadata, settings, response, output) => ({
-      ...metadata,
-      functionType: "json-generation",
-      settings,
-      prompt,
-      response,
-      generatedJson: output,
-    }),
   });
 }

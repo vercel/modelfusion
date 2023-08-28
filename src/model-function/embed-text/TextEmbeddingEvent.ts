@@ -6,18 +6,20 @@ import {
 
 export interface TextEmbeddingStartedEvent extends BaseModelCallStartedEvent {
   functionType: "text-embedding";
-  texts: Array<string>;
+  input: string | Array<string>;
 }
 
-export type TextEmbeddingFinishedEvent = BaseModelCallFinishedEvent & {
+export type TextEmbeddingFinishedEventResult =
+  | {
+      status: "success";
+      response: unknown;
+      output: Vector | Array<Vector>;
+    }
+  | { status: "error"; error: unknown }
+  | { status: "abort" };
+
+export interface TextEmbeddingFinishedEvent extends BaseModelCallFinishedEvent {
   functionType: "text-embedding";
-  texts: Array<string>;
-} & (
-    | {
-        status: "success";
-        response: unknown;
-        generatedEmbeddings: Array<Vector>;
-      }
-    | { status: "error"; error: unknown }
-    | { status: "abort" }
-  );
+  input: string | Array<string>;
+  result: TextEmbeddingFinishedEventResult;
+}

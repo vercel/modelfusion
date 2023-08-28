@@ -5,18 +5,18 @@ import {
 
 export interface TranscriptionStartedEvent extends BaseModelCallStartedEvent {
   functionType: "transcription";
-  data: unknown;
 }
 
-export type TranscriptionFinishedEvent = BaseModelCallFinishedEvent & {
+export type TranscriptionFinishedEventResult =
+  | {
+      status: "success";
+      response: unknown;
+      output: string;
+    }
+  | { status: "error"; error: unknown }
+  | { status: "abort" };
+
+export interface TranscriptionFinishedEvent extends BaseModelCallFinishedEvent {
   functionType: "transcription";
-  data: unknown;
-} & (
-    | {
-        status: "success";
-        response: unknown;
-        transcription: string;
-      }
-    | { status: "error"; error: unknown }
-    | { status: "abort" }
-  );
+  result: TranscriptionFinishedEventResult;
+}

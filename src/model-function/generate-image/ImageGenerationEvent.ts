@@ -5,18 +5,19 @@ import {
 
 export interface ImageGenerationStartedEvent extends BaseModelCallStartedEvent {
   functionType: "image-generation";
-  prompt: unknown;
 }
 
-export type ImageGenerationFinishedEvent = BaseModelCallFinishedEvent & {
+export type ImageGenerationFinishedEventResult =
+  | {
+      status: "success";
+      response: unknown;
+      output: string;
+    }
+  | { status: "error"; error: unknown }
+  | { status: "abort" };
+
+export interface ImageGenerationFinishedEvent
+  extends BaseModelCallFinishedEvent {
   functionType: "image-generation";
-  prompt: unknown;
-} & (
-    | {
-        status: "success";
-        response: unknown;
-        generatedImage: string;
-      }
-    | { status: "error"; error: unknown }
-    | { status: "abort" }
-  );
+  result: ImageGenerationFinishedEventResult;
+}

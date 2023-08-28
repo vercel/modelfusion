@@ -8,14 +8,18 @@ export interface SpeechSynthesisStartedEvent extends BaseModelCallStartedEvent {
   text: string;
 }
 
-export type SpeechSynthesisFinishedEvent = BaseModelCallFinishedEvent & {
+export type SpeechSynthesisFinishedEventResult =
+  | {
+      status: "success";
+      response: unknown;
+      output: Buffer;
+    }
+  | { status: "error"; error: unknown }
+  | { status: "abort" };
+
+export interface SpeechSynthesisFinishedEvent
+  extends BaseModelCallFinishedEvent {
   functionType: "speech-synthesis";
   text: string;
-} & (
-    | {
-        status: "success";
-        response: Buffer;
-      }
-    | { status: "error"; error: unknown }
-    | { status: "abort" }
-  );
+  result: SpeechSynthesisFinishedEventResult;
+}

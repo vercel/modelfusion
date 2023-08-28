@@ -31,6 +31,8 @@ export function embedTexts<
   RESPONSE[]
 > {
   return executeCall({
+    functionType: "text-embedding",
+    input: texts,
     model,
     options,
     generateResponse: (options) => {
@@ -54,33 +56,6 @@ export function embedTexts<
       }
       return embeddings;
     },
-    getStartEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "text-embedding",
-      settings,
-      texts,
-    }),
-    getAbortEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "text-embedding",
-      settings,
-      texts,
-    }),
-    getFailureEvent: (metadata, settings, error) => ({
-      ...metadata,
-      functionType: "text-embedding",
-      settings,
-      error,
-      texts,
-    }),
-    getSuccessEvent: (metadata, settings, response, output) => ({
-      ...metadata,
-      functionType: "text-embedding",
-      settings,
-      texts,
-      response,
-      generatedEmbeddings: output,
-    }),
   });
 }
 
@@ -105,43 +80,13 @@ export function embedText<
   Vector,
   RESPONSE
 > {
-  const texts = [text];
-
   return executeCall({
+    functionType: "text-embedding",
+    input: text,
     model,
     options,
-    generateResponse: (options) => {
-      return model.generateEmbeddingResponse(texts, options);
-    },
-    extractOutputValue: (result) => {
-      return model.extractEmbeddings(result)[0];
-    },
-    getStartEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "text-embedding",
-      settings,
-      texts,
-    }),
-    getAbortEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "text-embedding",
-      settings,
-      texts,
-    }),
-    getFailureEvent: (metadata, settings, error) => ({
-      ...metadata,
-      functionType: "text-embedding",
-      settings,
-      error,
-      texts,
-    }),
-    getSuccessEvent: (metadata, settings, response, output) => ({
-      ...metadata,
-      functionType: "text-embedding",
-      settings,
-      texts,
-      response,
-      generatedEmbeddings: [output],
-    }),
+    generateResponse: (options) =>
+      model.generateEmbeddingResponse([text], options),
+    extractOutputValue: (result) => model.extractEmbeddings(result)[0],
   });
 }

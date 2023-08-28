@@ -5,18 +5,8 @@ import {
 
 export interface TextStreamingStartedEvent extends BaseModelCallStartedEvent {
   functionType: "text-streaming";
-  prompt: unknown;
 }
 
-export type TextStreamingFinishedEvent = BaseModelCallFinishedEvent & {
+export interface TextStreamingFinishedEvent extends BaseModelCallFinishedEvent {
   functionType: "text-streaming";
-  prompt: unknown;
-} & (
-    | {
-        status: "success";
-        response: unknown;
-        generatedText: string;
-      }
-    | { status: "error"; error: unknown }
-    | { status: "abort" }
-  );
+}

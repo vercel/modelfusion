@@ -33,6 +33,8 @@ export function generateText<
   RESPONSE
 > {
   return executeCall({
+    functionType: "text-generation",
+    input: prompt,
     model,
     options,
     generateResponse: (options) => model.generateTextResponse(prompt, options),
@@ -42,32 +44,5 @@ export function generateText<
         ? model.extractText(result).trim()
         : model.extractText(result);
     },
-    getStartEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "text-generation",
-      settings,
-      prompt,
-    }),
-    getAbortEvent: (metadata, settings) => ({
-      ...metadata,
-      functionType: "text-generation",
-      settings,
-      prompt,
-    }),
-    getFailureEvent: (metadata, settings, error) => ({
-      ...metadata,
-      functionType: "text-generation",
-      settings,
-      prompt,
-      error,
-    }),
-    getSuccessEvent: (metadata, settings, response, output) => ({
-      ...metadata,
-      functionType: "text-generation",
-      settings,
-      prompt,
-      response,
-      generatedText: output,
-    }),
   });
 }
