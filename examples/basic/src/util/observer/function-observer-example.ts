@@ -13,8 +13,6 @@ dotenv.config();
 (async () => {
   const observer: FunctionObserver = {
     onFunctionEvent(event: FunctionEvent) {
-      console.log(event);
-
       switch (event.eventType) {
         case "started": {
           console.log(
