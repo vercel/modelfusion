@@ -20,5 +20,7 @@ export const customObserver: FunctionObserver = {
         break;
       }
     }
+    console.log(event);
+    console.log();
   },
 };
