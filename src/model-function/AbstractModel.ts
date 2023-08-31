@@ -19,6 +19,8 @@ export abstract class AbstractModel<SETTINGS extends ModelSettings>
     };
   }
 
+  abstract get settingsForEvent(): Partial<SETTINGS>;
+
   readonly settings: SETTINGS;
 
   abstract withSettings(additionalSettings: Partial<SETTINGS>): this;

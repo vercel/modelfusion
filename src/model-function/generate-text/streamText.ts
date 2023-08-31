@@ -5,7 +5,7 @@ import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
-import { CallMetadata } from "../executeCall.js";
+import { ModelCallMetadata } from "../executeCall.js";
 import { DeltaEvent } from "./DeltaEvent.js";
 import {
   TextGenerationModel,
@@ -17,22 +17,13 @@ import {
 } from "./TextStreamingEvent.js";
 import { extractTextDeltas } from "./extractTextDeltas.js";
 
-export class StreamTextPromise<
-  PROMPT,
-  FULL_DELTA,
-  SETTINGS extends TextGenerationModelSettings,
-> extends Promise<AsyncIterable<string>> {
+export class StreamTextPromise extends Promise<AsyncIterable<string>> {
   private outputPromise: Promise<AsyncIterable<string>>;
 
   constructor(
     private fullPromise: Promise<{
       output: AsyncIterable<string>;
-      metadata: Omit<
-        CallMetadata<
-          TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>
-        >,
-        "durationInMs" | "finishTimestamp"
-      >;
+      metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }>
   ) {
     super((resolve) => {
@@ -45,10 +36,7 @@ export class StreamTextPromise<
 
   asFullResponse(): Promise<{
     output: AsyncIterable<string>;
-    metadata: Omit<
-      CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
-      "durationInMs" | "finishTimestamp"
-    >;
+    metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
   }> {
     return this.fullPromise;
   }
@@ -96,7 +84,7 @@ export function streamText<
   },
   prompt: PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
-): StreamTextPromise<PROMPT, FULL_DELTA, SETTINGS> {
+): StreamTextPromise {
   return new StreamTextPromise(doStreamText(model, prompt, options));
 }
 
@@ -116,10 +104,7 @@ async function doStreamText<
   options?: ModelFunctionOptions<SETTINGS>
 ): Promise<{
   output: AsyncIterable<string>;
-  metadata: Omit<
-    CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
-    "durationInMs" | "finishTimestamp"
-  >;
+  metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
   if (options?.settings != null) {
     model = model.withSettings(options.settings);
@@ -155,7 +140,7 @@ async function doStreamText<
 
     functionType: "text-streaming" as const,
     input: prompt,
-    settings,
+    settings: model.settingsForEvent,
 
     timestamp: durationMeasurement.startDate,
     startTimestamp: durationMeasurement.startDate,

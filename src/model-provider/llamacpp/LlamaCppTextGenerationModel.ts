@@ -126,6 +126,39 @@ export class LlamaCppTextGenerationModel<
     });
   }
 
+  get settingsForEvent(): Partial<
+    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+  > {
+    const eventSettingProperties: Array<string> = [
+      "maxCompletionTokens",
+      "stopSequences",
+
+      "baseUrl",
+      "contextWindowSize",
+      "temperature",
+      "topK",
+      "topP",
+      "nKeep",
+      "tfsZ",
+      "typicalP",
+      "repeatPenalty",
+      "repeatLastN",
+      "penalizeNl",
+      "mirostat",
+      "mirostatTau",
+      "mirostatEta",
+      "seed",
+      "ignoreEos",
+      "logitBias",
+    ] satisfies (keyof LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>)[];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
+  }
+
   async countPromptTokens(prompt: string): Promise<number> {
     const tokens = await this.tokenizer.tokenize(prompt);
     return tokens.length;

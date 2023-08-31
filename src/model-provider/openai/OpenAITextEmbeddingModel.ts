@@ -149,6 +149,12 @@ export class OpenAITextEmbeddingModel
     });
   }
 
+  get settingsForEvent(): Partial<OpenAITextEmbeddingModelSettings> {
+    return {
+      baseUrl: this.settings.baseUrl,
+    };
+  }
+
   generateEmbeddingResponse(
     texts: string[],
     options?: ModelFunctionOptions<OpenAITextEmbeddingModelSettings>

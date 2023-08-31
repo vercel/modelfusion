@@ -18,11 +18,7 @@ export function generateJson<
   schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
   prompt: (schemaDefinition: SchemaDefinition<NAME, STRUCTURE>) => PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<
-  GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
-  STRUCTURE,
-  RESPONSE
-> {
+): ModelFunctionPromise<STRUCTURE, RESPONSE> {
   const expandedPrompt = prompt(schemaDefinition);
 
   return executeCall({

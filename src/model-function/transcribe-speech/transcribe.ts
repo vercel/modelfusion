@@ -27,11 +27,7 @@ export function transcribe<
   model: TranscriptionModel<DATA, RESPONSE, SETTINGS>,
   data: DATA,
   options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<
-  TranscriptionModel<DATA, RESPONSE, SETTINGS>,
-  string,
-  RESPONSE
-> {
+): ModelFunctionPromise<string, RESPONSE> {
   return executeCall({
     functionType: "transcription",
     input: data,

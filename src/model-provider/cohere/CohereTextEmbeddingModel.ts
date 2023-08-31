@@ -160,6 +160,13 @@ export class CohereTextEmbeddingModel
     });
   }
 
+  get settingsForEvent(): Partial<CohereTextEmbeddingModelSettings> {
+    return {
+      baseUrl: this.settings.baseUrl,
+      truncate: this.settings.truncate,
+    };
+  }
+
   generateEmbeddingResponse(
     texts: string[],
     options?: ModelFunctionOptions<CohereTextEmbeddingModelSettings>

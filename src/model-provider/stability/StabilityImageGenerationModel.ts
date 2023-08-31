@@ -94,6 +94,27 @@ export class StabilityImageGenerationModel
     });
   }
 
+  get settingsForEvent(): Partial<StabilityImageGenerationModelSettings> {
+    const eventSettingProperties = [
+      "baseUrl",
+      "height",
+      "width",
+      "cfgScale",
+      "clipGuidancePreset",
+      "sampler",
+      "samples",
+      "seed",
+      "steps",
+      "stylePreset",
+    ];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
+  }
+
   generateImageResponse(
     prompt: StabilityImageGenerationPrompt,
     options?: ModelFunctionOptions<StabilityImageGenerationModelSettings>

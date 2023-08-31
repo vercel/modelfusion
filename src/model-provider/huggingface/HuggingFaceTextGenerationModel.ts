@@ -123,6 +123,29 @@ export class HuggingFaceTextGenerationModel
     });
   }
 
+  get settingsForEvent(): Partial<HuggingFaceTextGenerationModelSettings> {
+    const eventSettingProperties: Array<string> = [
+      "stopSequences",
+      "maxCompletionTokens",
+
+      "baseUrl",
+      "topK",
+      "topP",
+      "temperature",
+      "repetitionPenalty",
+      "maxTime",
+      "numReturnSequences",
+      "doSample",
+      "options",
+    ] satisfies (keyof HuggingFaceTextGenerationModelSettings)[];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
+  }
+
   readonly countPromptTokens = undefined;
 
   generateTextResponse(

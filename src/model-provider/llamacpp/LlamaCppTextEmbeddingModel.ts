@@ -91,6 +91,13 @@ export class LlamaCppTextEmbeddingModel
     });
   }
 
+  get settingsForEvent(): Partial<LlamaCppTextEmbeddingModelSettings> {
+    return {
+      baseUrl: this.settings.baseUrl,
+      embeddingDimensions: this.settings.embeddingDimensions,
+    };
+  }
+
   generateEmbeddingResponse(
     texts: string[],
     options?: ModelFunctionOptions<LlamaCppTextEmbeddingModelSettings>

@@ -129,6 +129,14 @@ export class HuggingFaceTextEmbeddingModel
     });
   }
 
+  get settingsForEvent(): Partial<HuggingFaceTextEmbeddingModelSettings> {
+    return {
+      baseUrl: this.settings.baseUrl,
+      embeddingDimensions: this.settings.embeddingDimensions,
+      options: this.settings.options,
+    };
+  }
+
   readonly countPromptTokens = undefined;
 
   generateEmbeddingResponse(

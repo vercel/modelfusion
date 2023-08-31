@@ -225,6 +225,30 @@ export class OpenAITextGenerationModel
     });
   }
 
+  get settingsForEvent(): Partial<OpenAITextGenerationModelSettings> {
+    const eventSettingProperties: Array<string> = [
+      "maxCompletionTokens",
+      "stopSequences",
+
+      "baseUrl",
+      "suffix",
+      "temperature",
+      "topP",
+      "n",
+      "logprobs",
+      "echo",
+      "presencePenalty",
+      "frequencyPenalty",
+      "bestOf",
+    ] satisfies (keyof OpenAITextGenerationModelSettings)[];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
+  }
+
   generateTextResponse(
     prompt: string,
     options?: ModelFunctionOptions<OpenAITextGenerationModelSettings>

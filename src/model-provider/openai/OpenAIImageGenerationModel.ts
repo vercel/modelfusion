@@ -117,6 +117,20 @@ export class OpenAIImageGenerationModel
     });
   }
 
+  get settingsForEvent(): Partial<OpenAIImageGenerationSettings> {
+    const eventSettingProperties: Array<string> = [
+      "baseUrl",
+      "n",
+      "size",
+    ] satisfies (keyof OpenAIImageGenerationSettings)[];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
+  }
+
   generateImageResponse(
     prompt: string,
     options?: ModelFunctionOptions<OpenAIImageGenerationSettings>

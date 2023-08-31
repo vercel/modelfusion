@@ -47,7 +47,6 @@ export function generateJsonOrText<
   ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
   options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
-  GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
   { schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>,
   RESPONSE
 > {

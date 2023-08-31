@@ -12,7 +12,7 @@ export function synthesizeSpeech<SETTINGS extends SpeechSynthesisModelSettings>(
   model: SpeechSynthesisModel<SETTINGS>,
   text: string,
   options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<SpeechSynthesisModel<SETTINGS>, Buffer, Buffer> {
+): ModelFunctionPromise<Buffer, Buffer> {
   return executeCall({
     functionType: "speech-synthesis",
     input: text,

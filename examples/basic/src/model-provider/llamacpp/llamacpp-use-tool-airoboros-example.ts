@@ -65,7 +65,7 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
 
 (async () => {
   const { tool, parameters, result } = await useTool(
-    new JsonTextGenerationModel({
+    new JsonTextGenerationModel<LlamaCppTextGenerationModel<2048>>({
       model: new LlamaCppTextGenerationModel({
         maxCompletionTokens: 1024,
         temperature: 0,

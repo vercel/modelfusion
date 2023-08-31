@@ -252,6 +252,26 @@ export class OpenAIChatModel
     });
   }
 
+  get settingsForEvent(): Partial<OpenAIChatSettings> {
+    const eventSettingProperties: Array<string> = [
+      "stopSequences",
+      "maxCompletionTokens",
+
+      "baseUrl",
+      "functions",
+      "functionCall",
+      "temperature",
+      "topP",
+      "n",
+    ] satisfies (keyof OpenAIChatSettings)[];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
+  }
+
   generateTextResponse(
     prompt: OpenAIChatMessage[],
     options?: ModelFunctionOptions<OpenAIChatSettings>

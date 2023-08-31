@@ -17,11 +17,20 @@ export type JsonTextPromptFormat = {
 };
 
 export class JsonTextGenerationModel<
-  SETTINGS extends TextGenerationModelSettings,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  MODEL extends TextGenerationModel<string, any, any, SETTINGS>,
+  MODEL extends TextGenerationModel<
+    string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    any,
+    TextGenerationModelSettings
+  >,
 > implements
-    GenerateJsonModel<InstructionWithSchema<string, unknown>, string, SETTINGS>
+    GenerateJsonModel<
+      InstructionWithSchema<string, unknown>,
+      string,
+      MODEL["settings"]
+    >
 {
   private readonly model: MODEL;
   private readonly format: JsonTextPromptFormat;
@@ -45,9 +54,13 @@ export class JsonTextGenerationModel<
     return this.model.settings;
   }
 
+  get settingsForEvent(): Partial<MODEL["settings"]> {
+    return this.model.settingsForEvent;
+  }
+
   async generateJsonResponse(
     prompt: InstructionWithSchema<string, unknown>,
-    options?: ModelFunctionOptions<SETTINGS> | undefined
+    options?: ModelFunctionOptions<MODEL["settings"]> | undefined
   ): Promise<string> {
     return await generateText(
       this.model,
@@ -60,7 +73,7 @@ export class JsonTextGenerationModel<
     return this.format.extractJson(response);
   }
 
-  withSettings(additionalSettings: Partial<SETTINGS>): this {
+  withSettings(additionalSettings: Partial<MODEL["settings"]>): this {
     return new JsonTextGenerationModel({
       model: this.model.withSettings(additionalSettings),
       format: this.format,

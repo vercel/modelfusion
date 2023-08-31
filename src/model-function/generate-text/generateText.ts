@@ -26,12 +26,7 @@ export function generateText<
   model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
   prompt: PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
-  string,
-  RESPONSE
-> {
+): ModelFunctionPromise<string, RESPONSE> {
   return executeCall({
     functionType: "text-generation",
     input: prompt,
