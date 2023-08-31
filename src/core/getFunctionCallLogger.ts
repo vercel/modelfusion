@@ -1,8 +1,8 @@
-import { FunctionOptions } from "../core/FunctionOptions.js";
-import { FunctionEvent } from "../core/FunctionEvent.js";
-import { FunctionObserver } from "../core/FunctionObserver.js";
+import { FunctionOptions } from "./FunctionOptions.js";
+import { FunctionEvent } from "./FunctionEvent.js";
+import { FunctionObserver } from "./FunctionObserver.js";
 
-export function getModelCallLogger(
+export function getFunctionCallLogger(
   logging: FunctionOptions["logging"]
 ): Array<FunctionObserver> {
   switch (logging) {
