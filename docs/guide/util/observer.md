@@ -32,7 +32,7 @@ Events with `eventType = 'finished'` have the following additional properties:
 - `durationInMs`: The duration of the function execution in milliseconds.
 - `result`: The result of the function execution.
   - `status`: Can be `success`, `error`or `abort`.
-    - `success`: The function execution was successful. The output is usually available as part of the event.
+    - `success`: The function execution was successful. Additional information such as the original response, the output, and usage information are available depending on the function type and model.
     - `error`: The function execution failed. The error is available in the `error` property.
     - `abort`: The function execution was aborted.
 
