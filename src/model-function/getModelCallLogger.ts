@@ -1,9 +1,9 @@
+import { FunctionOptions } from "../core/FunctionOptions.js";
 import { FunctionEvent } from "../core/FunctionEvent.js";
 import { FunctionObserver } from "../core/FunctionObserver.js";
-import { ModelSettings } from "./Model.js";
 
 export function getModelCallLogger(
-  logging: ModelSettings["logging"]
+  logging: FunctionOptions["logging"]
 ): Array<FunctionObserver> {
   switch (logging) {
     case "basic-text":

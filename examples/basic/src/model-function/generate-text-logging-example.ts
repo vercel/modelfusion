@@ -12,10 +12,9 @@ dotenv.config();
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
       maxCompletionTokens: 50,
-
-      logging: "basic-text", // configure logging
     }),
-    "Write a short story about a robot learning to love:\n\n"
+    "Write a short story about a robot learning to love:\n\n",
+    { logging: "basic-text" } // configure logging
   );
 
   console.log();
@@ -26,10 +25,9 @@ dotenv.config();
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
       maxCompletionTokens: 50,
-
-      logging: "detailed-object", // configure logging
     }),
-    "Write a short story about a robot learning to love:\n\n"
+    "Write a short story about a robot learning to love:\n\n",
+    { logging: "detailed-object" } // configure logging
   );
 
   console.log();
@@ -40,9 +38,8 @@ dotenv.config();
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
       maxCompletionTokens: 50,
-
-      logging: "detailed-json", // configure logging
     }),
-    "Write a short story about a robot learning to love:\n\n"
+    "Write a short story about a robot learning to love:\n\n",
+    { logging: "detailed-json" } // configure logging
   );
 })();

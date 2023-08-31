@@ -153,6 +153,7 @@ async function doExecuteCall<
     model = model.withSettings(options.settings);
     options = {
       functionId: options.functionId,
+      logging: options.logging,
       observers: options.observers,
       run: options.run,
     };
@@ -163,7 +164,7 @@ async function doExecuteCall<
 
   const eventSource = new FunctionEventSource({
     observers: [
-      ...getModelCallLogger(settings.logging),
+      ...getModelCallLogger(options?.logging),
       ...getGlobalFunctionObservers(),
       ...(settings.observers ?? []),
       ...(run?.observers ?? []),
