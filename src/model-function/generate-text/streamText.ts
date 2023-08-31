@@ -1,11 +1,13 @@
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../../core/FunctionEventSource.js";
+import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelCallMetadata } from "../executeCall.js";
+import { getModelCallLogger } from "../getModelCallLogger.js";
 import { DeltaEvent } from "./DeltaEvent.js";
 import {
   TextGenerationModel,
@@ -120,6 +122,7 @@ async function doStreamText<
 
   const eventSource = new FunctionEventSource({
     observers: [
+      ...getModelCallLogger(options?.logging ?? getGlobalFunctionLogging()),
       ...getGlobalFunctionObservers(),
       ...(settings.observers ?? []),
       ...(run?.observers ?? []),

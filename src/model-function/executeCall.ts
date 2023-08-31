@@ -1,5 +1,6 @@
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../core/FunctionEventSource.js";
+import { getGlobalFunctionLogging } from "../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
@@ -164,7 +165,7 @@ async function doExecuteCall<
 
   const eventSource = new FunctionEventSource({
     observers: [
-      ...getModelCallLogger(options?.logging),
+      ...getModelCallLogger(options?.logging ?? getGlobalFunctionLogging()),
       ...getGlobalFunctionObservers(),
       ...(settings.observers ?? []),
       ...(run?.observers ?? []),
