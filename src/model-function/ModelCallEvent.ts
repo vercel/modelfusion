@@ -34,8 +34,16 @@ import {
 
 export interface BaseModelCallStartedEvent extends BaseFunctionStartedEvent {
   model: ModelInformation;
-  settings: unknown;
+
+  /**
+   * The main input to the model call. The type depends on the call type or model.
+   */
   input: unknown;
+
+  /**
+   * The model settings used for the call. The type depends on the model.
+   */
+  settings: unknown;
 }
 
 export type BaseModelCallFinishedEventResult =
@@ -43,14 +51,31 @@ export type BaseModelCallFinishedEventResult =
       status: "success";
       response: unknown;
       output: unknown;
+
+      /**
+       * Optional usage information for the model call. The type depends on the call type.
+       */
+      usage?: unknown;
     }
   | { status: "error"; error: unknown }
   | { status: "abort" };
 
 export interface BaseModelCallFinishedEvent extends BaseFunctionFinishedEvent {
   model: ModelInformation;
-  settings: unknown;
+
+  /**
+   * The main input to the model call. The type depends on the call type or model.
+   */
   input: unknown;
+
+  /**
+   * The model settings used for the call. The type depends on the model.
+   */
+  settings: unknown;
+
+  /**
+   * The result of the model call. Can be "success", "error", or "abort". Additional information is provided depending on the status.
+   */
   result: BaseModelCallFinishedEventResult;
 }
 

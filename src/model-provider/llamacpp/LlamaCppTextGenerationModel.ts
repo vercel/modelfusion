@@ -214,6 +214,14 @@ export class LlamaCppTextGenerationModel<
     });
   }
 
+  extractUsage(response: LlamaCppTextGenerationResponse) {
+    return {
+      promptTokens: response.tokens_evaluated,
+      completionTokens: response.tokens_predicted,
+      totalTokens: response.tokens_evaluated + response.tokens_predicted,
+    };
+  }
+
   withSettings(
     additionalSettings: Partial<
       LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>

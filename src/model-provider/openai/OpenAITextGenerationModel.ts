@@ -295,6 +295,14 @@ export class OpenAITextGenerationModel
     });
   }
 
+  extractUsage(response: OpenAITextGenerationResponse) {
+    return {
+      promptTokens: response.usage.prompt_tokens,
+      completionTokens: response.usage.completion_tokens,
+      totalTokens: response.usage.total_tokens,
+    };
+  }
+
   withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {
     return new OpenAITextGenerationModel(
       Object.assign({}, this.settings, additionalSettings)

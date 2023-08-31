@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { GenerateJsonOrTextPrompt } from "../../../model-function/generate-json/GenerateJsonOrTextModel.js";
+import { JsonOrTextGenerationPrompt } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
 import { SchemaDefinition } from "../../../model-function/generate-json/SchemaDefinition.js";
 import { Tool } from "../../../tool/Tool.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
@@ -149,7 +149,7 @@ export class OpenAIChatSingleFunctionPrompt<FUNCTION> {
 
 export class OpenAIChatAutoFunctionPrompt<
   FUNCTIONS extends Array<OpenAIFunctionDescription<any>>,
-> implements GenerateJsonOrTextPrompt<OpenAIChatResponse>
+> implements JsonOrTextGenerationPrompt<OpenAIChatResponse>
 {
   readonly messages: OpenAIChatMessage[];
 

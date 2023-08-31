@@ -131,24 +131,25 @@ async function doStreamText<
   const durationMeasurement = startDurationMeasurement();
 
   const startMetadata = {
+    functionType: "text-streaming" as const,
+
     callId: `call-${createId()}`,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
     functionId: options?.functionId,
-    model: model.modelInformation,
 
-    functionType: "text-streaming" as const,
-    input: prompt,
+    model: model.modelInformation,
     settings: model.settingsForEvent,
+    input: prompt,
 
     timestamp: durationMeasurement.startDate,
     startTimestamp: durationMeasurement.startDate,
   };
 
   eventSource.notify({
-    ...startMetadata,
     eventType: "started",
+    ...startMetadata,
   } satisfies TextStreamingStartedEvent);
 
   const result = await runSafe(async () =>
@@ -161,8 +162,8 @@ async function doStreamText<
       extractDelta: (fullDelta) => model.extractTextDelta(fullDelta),
       onDone: (fullText, lastFullDelta) => {
         const finishMetadata = {
-          ...startMetadata,
           eventType: "finished" as const,
+          ...startMetadata,
           finishTimestamp: new Date(),
           durationInMs: durationMeasurement.durationInMs,
         };
@@ -178,8 +179,8 @@ async function doStreamText<
       },
       onError: (error) => {
         const finishMetadata = {
-          ...startMetadata,
           eventType: "finished" as const,
+          ...startMetadata,
           finishTimestamp: new Date(),
           durationInMs: durationMeasurement.durationInMs,
         };
@@ -206,8 +207,8 @@ async function doStreamText<
 
   if (!result.ok) {
     const finishMetadata = {
-      ...startMetadata,
       eventType: "finished" as const,
+      ...startMetadata,
       finishTimestamp: new Date(),
       durationInMs: durationMeasurement.durationInMs,
     };

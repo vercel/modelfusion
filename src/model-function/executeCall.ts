@@ -95,6 +95,7 @@ export function executeCall<
   functionType,
   generateResponse,
   extractOutputValue,
+  extractUsage,
 }: {
   model: MODEL;
   options?: ModelFunctionOptions<SETTINGS>;
@@ -104,6 +105,7 @@ export function executeCall<
     options: ModelFunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
   extractOutputValue: (response: RESPONSE) => OUTPUT;
+  extractUsage?: (response: RESPONSE) => unknown;
 }): ModelFunctionPromise<OUTPUT, RESPONSE> {
   return new ModelFunctionPromise(
     doExecuteCall({
@@ -113,6 +115,7 @@ export function executeCall<
       functionType,
       generateResponse,
       extractOutputValue,
+      extractUsage,
     })
   );
 }
@@ -129,6 +132,7 @@ async function doExecuteCall<
   functionType,
   generateResponse,
   extractOutputValue,
+  extractUsage,
 }: {
   model: MODEL;
   options?: ModelFunctionOptions<SETTINGS>;
@@ -138,6 +142,7 @@ async function doExecuteCall<
     options: ModelFunctionOptions<SETTINGS>
   ) => PromiseLike<RESPONSE>;
   extractOutputValue: (response: RESPONSE) => OUTPUT;
+  extractUsage?: (response: RESPONSE) => unknown;
 }): Promise<{
   output: OUTPUT;
   response: RESPONSE;
@@ -168,6 +173,8 @@ async function doExecuteCall<
   const durationMeasurement = startDurationMeasurement();
 
   const startMetadata = {
+    functionType,
+
     callId: `call-${createId()}`,
     runId: run?.runId,
     sessionId: run?.sessionId,
@@ -175,18 +182,16 @@ async function doExecuteCall<
     functionId: options?.functionId,
 
     model: model.modelInformation,
-
-    functionType,
-    input,
     settings: model.settingsForEvent,
+    input,
 
     timestamp: durationMeasurement.startDate,
     startTimestamp: durationMeasurement.startDate,
   };
 
   eventSource.notify({
-    ...startMetadata,
     eventType: "started",
+    ...startMetadata,
   } as ModelCallStartedEvent);
 
   const result = await runSafe(() =>
@@ -198,8 +203,8 @@ async function doExecuteCall<
   );
 
   const finishMetadata = {
-    ...startMetadata,
     eventType: "finished" as const,
+    ...startMetadata,
     finishTimestamp: new Date(),
     durationInMs: durationMeasurement.durationInMs,
   };
@@ -230,12 +235,14 @@ async function doExecuteCall<
 
   const response = result.output;
   const output = extractOutputValue(response);
+  const usage = extractUsage?.(response);
 
   eventSource.notify({
     ...finishMetadata,
     eventType: "finished",
     result: {
       status: "success",
+      usage,
       response,
       output,
     },

@@ -66,6 +66,12 @@ export interface TextGenerationModel<
     | ((fullDelta: FULL_DELTA) => string | undefined)
     | undefined;
 
+  extractUsage?(response: RESPONSE): {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
+
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
   ): PromptFormatTextGenerationModel<

@@ -4,7 +4,7 @@ import {
 } from "../generate-text/TextGenerationModel.js";
 import { SchemaDefinition } from "./SchemaDefinition.js";
 import { InstructionWithSchema } from "./InstructionWithSchemaPrompt.js";
-import { GenerateJsonModel } from "./GenerateJsonModel.js";
+import { JsonGenerationModel } from "./JsonGenerationModel.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { generateText } from "../generate-text/generateText.js";
 
@@ -26,7 +26,7 @@ export class JsonTextGenerationModel<
     TextGenerationModelSettings
   >,
 > implements
-    GenerateJsonModel<
+    JsonGenerationModel<
       InstructionWithSchema<string, unknown>,
       string,
       MODEL["settings"]

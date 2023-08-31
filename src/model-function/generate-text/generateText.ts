@@ -39,5 +39,6 @@ export function generateText<
         ? model.extractText(result).trim()
         : model.extractText(result);
     },
+    extractUsage: (result) => model.extractUsage?.(result),
   });
 }

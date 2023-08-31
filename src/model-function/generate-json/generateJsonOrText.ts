@@ -1,10 +1,10 @@
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
-  GenerateJsonOrTextModel,
-  GenerateJsonOrTextModelSettings,
-  GenerateJsonOrTextPrompt,
-} from "./GenerateJsonOrTextModel.js";
+  JsonOrTextGenerationModel,
+  JsonOrTextGenerationModelSettings,
+  JsonOrTextGenerationPrompt,
+} from "./JsonOrTextGenerationModel.js";
 import { NoSuchSchemaError } from "./NoSuchSchemaError.js";
 import { SchemaDefinition } from "./SchemaDefinition.js";
 import { SchemaValidationError } from "./SchemaValidationError.js";
@@ -38,13 +38,13 @@ export function generateJsonOrText<
   SCHEMAS extends SchemaDefinition<any, any>[],
   PROMPT,
   RESPONSE,
-  SETTINGS extends GenerateJsonOrTextModelSettings,
+  SETTINGS extends JsonOrTextGenerationModelSettings,
 >(
-  model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
+  model: JsonOrTextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   schemaDefinitions: SCHEMAS,
   prompt: (
     schemaDefinitions: SCHEMAS
-  ) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
+  ) => PROMPT & JsonOrTextGenerationPrompt<RESPONSE>,
   options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   { schema: null; value: null; text: string } | ToOutputValue<SCHEMAS>,
@@ -92,5 +92,6 @@ export function generateJsonOrText<
         text: text as any, // text is string | null, which is part of the response for schema values
       };
     },
+    extractUsage: (result) => model.extractUsage?.(result),
   });
 }
