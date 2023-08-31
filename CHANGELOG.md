@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.23.0 - 2023-08-31
+
+### Added
+
+- Function logging support.
+- Usage information for events.
+- Filtering of model settings for events.
+
 ## v0.22.0 - 2023-08-28
 
 ### Changed
