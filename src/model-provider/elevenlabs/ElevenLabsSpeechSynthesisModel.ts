@@ -83,6 +83,15 @@ export class ElevenLabsSpeechSynthesisModel
     });
   }
 
+  get settingsForEvent(): Partial<ElevenLabsSpeechSynthesisModelSettings> {
+    return {
+      baseUrl: this.settings.baseUrl,
+      model: this.settings.model,
+      voice: this.settings.voice,
+      voiceSettings: this.settings.voiceSettings,
+    };
+  }
+
   generateSpeechResponse(
     text: string,
     options?:

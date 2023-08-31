@@ -8,9 +8,15 @@ export interface ModelSettings {
   observers?: Array<FunctionObserver>;
 }
 
-export interface Model<SETTINGS> {
+export interface Model<SETTINGS extends ModelSettings> {
   modelInformation: ModelInformation;
   readonly settings: SETTINGS;
+
+  /**
+   * Returns settings that should be recorded in observability events.
+   * Security-related settings (e.g. API keys) should not be included here.
+   */
+  get settingsForEvent(): Partial<SETTINGS>;
 
   /**
    * The `withSettings` method creates a new model with the same configuration as the original model, but with the specified settings changed.

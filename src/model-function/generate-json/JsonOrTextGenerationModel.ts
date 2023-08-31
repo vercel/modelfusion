@@ -1,9 +1,9 @@
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
-export interface GenerateJsonOrTextModelSettings extends ModelSettings {}
+export interface JsonOrTextGenerationModelSettings extends ModelSettings {}
 
-export interface GenerateJsonOrTextPrompt<RESPONSE> {
+export interface JsonOrTextGenerationPrompt<RESPONSE> {
   extractJsonAndText(response: RESPONSE):
     | {
         schema: null;
@@ -17,13 +17,19 @@ export interface GenerateJsonOrTextPrompt<RESPONSE> {
       };
 }
 
-export interface GenerateJsonOrTextModel<
+export interface JsonOrTextGenerationModel<
   PROMPT,
   RESPONSE,
-  SETTINGS extends GenerateJsonOrTextModelSettings,
+  SETTINGS extends JsonOrTextGenerationModelSettings,
 > extends Model<SETTINGS> {
   generateJsonResponse(
-    prompt: PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
+    prompt: PROMPT & JsonOrTextGenerationPrompt<RESPONSE>,
     options?: ModelFunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE>;
+
+  extractUsage?(response: RESPONSE): {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
 }

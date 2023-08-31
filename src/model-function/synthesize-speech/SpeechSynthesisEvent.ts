@@ -5,7 +5,7 @@ import {
 
 export interface SpeechSynthesisStartedEvent extends BaseModelCallStartedEvent {
   functionType: "speech-synthesis";
-  text: string;
+  input: string;
 }
 
 export type SpeechSynthesisFinishedEventResult =
@@ -20,6 +20,6 @@ export type SpeechSynthesisFinishedEventResult =
 export interface SpeechSynthesisFinishedEvent
   extends BaseModelCallFinishedEvent {
   functionType: "speech-synthesis";
-  text: string;
+  input: string;
   result: SpeechSynthesisFinishedEventResult;
 }

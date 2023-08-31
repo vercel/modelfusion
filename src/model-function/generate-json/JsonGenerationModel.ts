@@ -1,12 +1,12 @@
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
-export interface GenerateJsonModelSettings extends ModelSettings {}
+export interface JsonGenerationModelSettings extends ModelSettings {}
 
-export interface GenerateJsonModel<
+export interface JsonGenerationModel<
   PROMPT,
   RESPONSE,
-  SETTINGS extends GenerateJsonModelSettings,
+  SETTINGS extends JsonGenerationModelSettings,
 > extends Model<SETTINGS> {
   generateJsonResponse(
     prompt: PROMPT,
@@ -14,4 +14,10 @@ export interface GenerateJsonModel<
   ): PromiseLike<RESPONSE>;
 
   extractJson(response: RESPONSE): unknown;
+
+  extractUsage?(response: RESPONSE): {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
 }

@@ -141,6 +141,10 @@ export class PromptFormatTextGenerationModel<
     });
   }
 
+  get settingsForEvent(): Partial<SETTINGS> {
+    return this.model.settingsForEvent;
+  }
+
   withSettings(additionalSettings: Partial<SETTINGS>): this {
     return new PromptFormatTextGenerationModel({
       model: this.model.withSettings(additionalSettings),

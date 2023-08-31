@@ -1,9 +1,9 @@
 import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import {
-  GenerateJsonOrTextModel,
-  GenerateJsonOrTextModelSettings,
-  GenerateJsonOrTextPrompt,
-} from "../model-function/generate-json/GenerateJsonOrTextModel.js";
+  JsonOrTextGenerationModel,
+  JsonOrTextGenerationModelSettings,
+  JsonOrTextGenerationPrompt,
+} from "../model-function/generate-json/JsonOrTextGenerationModel.js";
 import { generateJsonOrText } from "../model-function/generate-json/generateJsonOrText.js";
 import { NoSuchToolError } from "./NoSuchToolError.js";
 import { Tool } from "./Tool.js";
@@ -34,12 +34,12 @@ type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
 export async function useToolOrGenerateText<
   PROMPT,
   RESPONSE,
-  SETTINGS extends GenerateJsonOrTextModelSettings,
+  SETTINGS extends JsonOrTextGenerationModelSettings,
   TOOLS extends Array<Tool<any, any, any>>,
 >(
-  model: GenerateJsonOrTextModel<PROMPT, RESPONSE, SETTINGS>,
+  model: JsonOrTextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   tools: TOOLS,
-  prompt: (tools: TOOLS) => PROMPT & GenerateJsonOrTextPrompt<RESPONSE>,
+  prompt: (tools: TOOLS) => PROMPT & JsonOrTextGenerationPrompt<RESPONSE>,
   options?: ModelFunctionOptions<SETTINGS>
 ): Promise<
   | { tool: null; parameters: null; result: null; text: string }

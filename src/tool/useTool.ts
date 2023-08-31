@@ -1,8 +1,8 @@
 import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import {
-  GenerateJsonModel,
-  GenerateJsonModelSettings,
-} from "../model-function/generate-json/GenerateJsonModel.js";
+  JsonGenerationModel,
+  JsonGenerationModelSettings,
+} from "../model-function/generate-json/JsonGenerationModel.js";
 import { generateJson } from "../model-function/generate-json/generateJson.js";
 import { Tool } from "./Tool.js";
 import { executeTool } from "./executeTool.js";
@@ -21,10 +21,10 @@ import { executeTool } from "./executeTool.js";
 export async function useTool<
   PROMPT,
   RESPONSE,
-  SETTINGS extends GenerateJsonModelSettings,
+  SETTINGS extends JsonGenerationModelSettings,
   TOOL extends Tool<any, any, any>,
 >(
-  model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
+  model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   tool: TOOL,
   prompt: (tool: TOOL) => PROMPT,
   options?: ModelFunctionOptions<SETTINGS>

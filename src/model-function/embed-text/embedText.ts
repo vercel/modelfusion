@@ -25,11 +25,7 @@ export function embedTexts<
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   texts: string[],
   options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<
-  TextEmbeddingModel<RESPONSE, SETTINGS>,
-  Vector[],
-  RESPONSE[]
-> {
+): ModelFunctionPromise<Vector[], RESPONSE[]> {
   return executeCall({
     functionType: "text-embedding",
     input: texts,
@@ -75,11 +71,7 @@ export function embedText<
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   text: string,
   options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<
-  TextEmbeddingModel<RESPONSE, SETTINGS>,
-  Vector,
-  RESPONSE
-> {
+): ModelFunctionPromise<Vector, RESPONSE> {
   return executeCall({
     functionType: "text-embedding",
     input: text,

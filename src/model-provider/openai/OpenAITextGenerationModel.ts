@@ -225,6 +225,30 @@ export class OpenAITextGenerationModel
     });
   }
 
+  get settingsForEvent(): Partial<OpenAITextGenerationModelSettings> {
+    const eventSettingProperties: Array<string> = [
+      "maxCompletionTokens",
+      "stopSequences",
+
+      "baseUrl",
+      "suffix",
+      "temperature",
+      "topP",
+      "n",
+      "logprobs",
+      "echo",
+      "presencePenalty",
+      "frequencyPenalty",
+      "bestOf",
+    ] satisfies (keyof OpenAITextGenerationModelSettings)[];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
+  }
+
   generateTextResponse(
     prompt: string,
     options?: ModelFunctionOptions<OpenAITextGenerationModelSettings>
@@ -269,6 +293,14 @@ export class OpenAITextGenerationModel
       }),
       promptFormat,
     });
+  }
+
+  extractUsage(response: OpenAITextGenerationResponse) {
+    return {
+      promptTokens: response.usage.prompt_tokens,
+      completionTokens: response.usage.completion_tokens,
+      totalTokens: response.usage.total_tokens,
+    };
   }
 
   withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {

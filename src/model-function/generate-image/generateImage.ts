@@ -28,11 +28,7 @@ export function generateImage<
   model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   prompt: PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<
-  ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  string,
-  RESPONSE
-> {
+): ModelFunctionPromise<string, RESPONSE> {
   return executeCall({
     functionType: "image-generation",
     input: prompt,

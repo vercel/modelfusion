@@ -2,8 +2,8 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../../model-function/ModelFunctionOptions.js";
-import { GenerateJsonModel } from "../../../model-function/generate-json/GenerateJsonModel.js";
-import { GenerateJsonOrTextModel } from "../../../model-function/generate-json/GenerateJsonOrTextModel.js";
+import { JsonGenerationModel } from "../../../model-function/generate-json/JsonGenerationModel.js";
+import { JsonOrTextGenerationModel } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
 import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
@@ -169,12 +169,12 @@ export class OpenAIChatModel
       OpenAIChatDelta,
       OpenAIChatSettings
     >,
-    GenerateJsonModel<
+    JsonGenerationModel<
       OpenAIChatSingleFunctionPrompt<unknown>,
       OpenAIChatResponse,
       OpenAIChatSettings
     >,
-    GenerateJsonOrTextModel<
+    JsonOrTextGenerationModel<
       OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
       OpenAIChatResponse,
       OpenAIChatSettings
@@ -252,6 +252,26 @@ export class OpenAIChatModel
     });
   }
 
+  get settingsForEvent(): Partial<OpenAIChatSettings> {
+    const eventSettingProperties: Array<string> = [
+      "stopSequences",
+      "maxCompletionTokens",
+
+      "baseUrl",
+      "functions",
+      "functionCall",
+      "temperature",
+      "topP",
+      "n",
+    ] satisfies (keyof OpenAIChatSettings)[];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
+  }
+
   generateTextResponse(
     prompt: OpenAIChatMessage[],
     options?: ModelFunctionOptions<OpenAIChatSettings>
@@ -309,6 +329,14 @@ export class OpenAIChatModel
   extractJson(response: OpenAIChatResponse): unknown {
     const jsonText = response.choices[0]!.message.function_call!.arguments;
     return SecureJSON.parse(jsonText);
+  }
+
+  extractUsage(response: OpenAIChatResponse) {
+    return {
+      promptTokens: response.usage.prompt_tokens,
+      completionTokens: response.usage.completion_tokens,
+      totalTokens: response.usage.total_tokens,
+    };
   }
 
   withPromptFormat<INPUT_PROMPT>(

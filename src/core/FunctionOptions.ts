@@ -11,6 +11,12 @@ export type FunctionOptions = {
   functionId?: string;
 
   /**
+   * Optional logging to use for the function. Logs are sent to the console.
+   * Overrides the global function logging setting.
+   */
+  logging?: FunctionLogging;
+
+  /**
    * Optional observers that are called when the function is invoked.
    */
   observers?: Array<FunctionObserver>;
@@ -20,3 +26,18 @@ export type FunctionOptions = {
    */
   run?: Run;
 };
+
+/**
+ * The logging to use for the function. Logs are sent to the console.
+ *
+ * - `off` or undefined: No logging.
+ * - `basic-text`: Log the timestamp and the type of event as a single line of text.
+ * - `detailed-object`: Log everything except the original response as an object to the console.
+ * - `detailed-json`: Log everything except the original response as a JSON string to the console.
+ */
+export type FunctionLogging =
+  | undefined
+  | "off"
+  | "basic-text"
+  | "detailed-object"
+  | "detailed-json";

@@ -165,6 +165,20 @@ export class OpenAITranscriptionModel
     });
   }
 
+  getEventSettingProperties(): (keyof OpenAITranscriptionModelSettings)[] {
+    return ["baseUrl"];
+  }
+
+  get settingsForEvent(): Partial<OpenAITranscriptionModelSettings> {
+    const eventSettingProperties = ["baseUrl"];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
+  }
+
   withSettings(additionalSettings: OpenAITranscriptionModelSettings) {
     return new OpenAITranscriptionModel(
       Object.assign({}, this.settings, additionalSettings)

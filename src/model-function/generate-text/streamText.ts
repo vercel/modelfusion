@@ -1,11 +1,13 @@
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../../core/FunctionEventSource.js";
+import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
+import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { AbortError } from "../../util/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
-import { CallMetadata } from "../executeCall.js";
+import { ModelCallMetadata } from "../executeCall.js";
 import { DeltaEvent } from "./DeltaEvent.js";
 import {
   TextGenerationModel,
@@ -17,22 +19,13 @@ import {
 } from "./TextStreamingEvent.js";
 import { extractTextDeltas } from "./extractTextDeltas.js";
 
-export class StreamTextPromise<
-  PROMPT,
-  FULL_DELTA,
-  SETTINGS extends TextGenerationModelSettings,
-> extends Promise<AsyncIterable<string>> {
+export class StreamTextPromise extends Promise<AsyncIterable<string>> {
   private outputPromise: Promise<AsyncIterable<string>>;
 
   constructor(
     private fullPromise: Promise<{
       output: AsyncIterable<string>;
-      metadata: Omit<
-        CallMetadata<
-          TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>
-        >,
-        "durationInMs" | "finishTimestamp"
-      >;
+      metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }>
   ) {
     super((resolve) => {
@@ -45,10 +38,7 @@ export class StreamTextPromise<
 
   asFullResponse(): Promise<{
     output: AsyncIterable<string>;
-    metadata: Omit<
-      CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
-      "durationInMs" | "finishTimestamp"
-    >;
+    metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
   }> {
     return this.fullPromise;
   }
@@ -96,7 +86,7 @@ export function streamText<
   },
   prompt: PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
-): StreamTextPromise<PROMPT, FULL_DELTA, SETTINGS> {
+): StreamTextPromise {
   return new StreamTextPromise(doStreamText(model, prompt, options));
 }
 
@@ -116,10 +106,7 @@ async function doStreamText<
   options?: ModelFunctionOptions<SETTINGS>
 ): Promise<{
   output: AsyncIterable<string>;
-  metadata: Omit<
-    CallMetadata<TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS>>,
-    "durationInMs" | "finishTimestamp"
-  >;
+  metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
   if (options?.settings != null) {
     model = model.withSettings(options.settings);
@@ -135,6 +122,7 @@ async function doStreamText<
 
   const eventSource = new FunctionEventSource({
     observers: [
+      ...getFunctionCallLogger(options?.logging ?? getGlobalFunctionLogging()),
       ...getGlobalFunctionObservers(),
       ...(settings.observers ?? []),
       ...(run?.observers ?? []),
@@ -146,24 +134,25 @@ async function doStreamText<
   const durationMeasurement = startDurationMeasurement();
 
   const startMetadata = {
+    functionType: "text-streaming" as const,
+
     callId: `call-${createId()}`,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
     functionId: options?.functionId,
-    model: model.modelInformation,
 
-    functionType: "text-streaming" as const,
+    model: model.modelInformation,
+    settings: model.settingsForEvent,
     input: prompt,
-    settings,
 
     timestamp: durationMeasurement.startDate,
     startTimestamp: durationMeasurement.startDate,
   };
 
   eventSource.notify({
-    ...startMetadata,
     eventType: "started",
+    ...startMetadata,
   } satisfies TextStreamingStartedEvent);
 
   const result = await runSafe(async () =>
@@ -176,8 +165,8 @@ async function doStreamText<
       extractDelta: (fullDelta) => model.extractTextDelta(fullDelta),
       onDone: (fullText, lastFullDelta) => {
         const finishMetadata = {
-          ...startMetadata,
           eventType: "finished" as const,
+          ...startMetadata,
           finishTimestamp: new Date(),
           durationInMs: durationMeasurement.durationInMs,
         };
@@ -193,8 +182,8 @@ async function doStreamText<
       },
       onError: (error) => {
         const finishMetadata = {
-          ...startMetadata,
           eventType: "finished" as const,
+          ...startMetadata,
           finishTimestamp: new Date(),
           durationInMs: durationMeasurement.durationInMs,
         };
@@ -221,8 +210,8 @@ async function doStreamText<
 
   if (!result.ok) {
     const finishMetadata = {
-      ...startMetadata,
       eventType: "finished" as const,
+      ...startMetadata,
       finishTimestamp: new Date(),
       durationInMs: durationMeasurement.durationInMs,
     };

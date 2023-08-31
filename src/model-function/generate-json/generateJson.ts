@@ -1,9 +1,9 @@
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
-  GenerateJsonModel,
-  GenerateJsonModelSettings,
-} from "./GenerateJsonModel.js";
+  JsonGenerationModel,
+  JsonGenerationModelSettings,
+} from "./JsonGenerationModel.js";
 import { SchemaDefinition } from "./SchemaDefinition.js";
 import { SchemaValidationError } from "./SchemaValidationError.js";
 
@@ -12,17 +12,13 @@ export function generateJson<
   PROMPT,
   RESPONSE,
   NAME extends string,
-  SETTINGS extends GenerateJsonModelSettings,
+  SETTINGS extends JsonGenerationModelSettings,
 >(
-  model: GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
+  model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   schemaDefinition: SchemaDefinition<NAME, STRUCTURE>,
   prompt: (schemaDefinition: SchemaDefinition<NAME, STRUCTURE>) => PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<
-  GenerateJsonModel<PROMPT, RESPONSE, SETTINGS>,
-  STRUCTURE,
-  RESPONSE
-> {
+): ModelFunctionPromise<STRUCTURE, RESPONSE> {
   const expandedPrompt = prompt(schemaDefinition);
 
   return executeCall({
@@ -47,5 +43,6 @@ export function generateJson<
 
       return parseResult.data;
     },
+    extractUsage: (result) => model.extractUsage?.(result),
   });
 }

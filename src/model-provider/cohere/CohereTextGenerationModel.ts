@@ -61,10 +61,11 @@ export interface CohereTextGenerationModelSettings
   p?: number;
   frequencyPenalty?: number;
   presencePenalty?: number;
-  stopSequences?: string[];
   returnLikelihoods?: "GENERATION" | "ALL" | "NONE";
   logitBias?: Record<string, number>;
   truncate?: "NONE" | "START" | "END";
+
+  cohereStopSequences?: string[]; // renamed because of conflict with stopSequences
 }
 
 /**
@@ -156,6 +157,9 @@ export class CohereTextGenerationModel
       endSequences: combinedSettings.stopSequences,
       maxTokens: combinedSettings.maxCompletionTokens,
 
+      // mapped name because of conflict with stopSequences:
+      stopSequences: combinedSettings.cohereStopSequences,
+
       abortSignal: run?.abortSignal,
       prompt,
       responseFormat,
@@ -166,6 +170,31 @@ export class CohereTextGenerationModel
       throttle: this.settings.throttle,
       call: async () => callCohereTextGenerationAPI(callSettings),
     });
+  }
+
+  get settingsForEvent(): Partial<CohereTextGenerationModelSettings> {
+    const eventSettingProperties: Array<string> = [
+      "maxCompletionTokens",
+      "stopSequences",
+
+      "baseUrl",
+      "numGenerations",
+      "temperature",
+      "k",
+      "p",
+      "frequencyPenalty",
+      "presencePenalty",
+      "returnLikelihoods",
+      "logitBias",
+      "truncate",
+      "cohereStopSequences",
+    ] satisfies (keyof CohereTextGenerationModelSettings)[];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
   }
 
   generateTextResponse(

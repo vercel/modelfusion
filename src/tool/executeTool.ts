@@ -2,7 +2,9 @@ import { nanoid as createId } from "nanoid";
 import { z } from "zod";
 import { FunctionEventSource } from "../core/FunctionEventSource.js";
 import { FunctionOptions } from "../core/FunctionOptions.js";
+import { getGlobalFunctionLogging } from "../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
+import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { AbortError } from "../util/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
@@ -98,6 +100,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   const eventSource = new FunctionEventSource({
     observers: [
+      ...getFunctionCallLogger(options?.logging ?? getGlobalFunctionLogging()),
       ...getGlobalFunctionObservers(),
       ...(run?.observers ?? []),
       ...(options?.observers ?? []),

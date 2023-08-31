@@ -58,6 +58,16 @@ export class Automatic1111ImageGenerationModel
     });
   }
 
+  get settingsForEvent(): Partial<Automatic1111ImageGenerationModelSettings> {
+    return {
+      baseUrl: this.settings.baseUrl,
+      height: this.settings.height,
+      width: this.settings.width,
+      sampler: this.settings.sampler,
+      steps: this.settings.steps,
+    };
+  }
+
   generateImageResponse(
     prompt: A111ImageGenerationPrompt,
     options?: ModelFunctionOptions<Automatic1111ImageGenerationModelSettings>
