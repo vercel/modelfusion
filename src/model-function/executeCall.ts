@@ -11,6 +11,7 @@ import {
 } from "./ModelCallEvent.js";
 import { ModelFunctionOptions } from "./ModelFunctionOptions.js";
 import { ModelInformation } from "./ModelInformation.js";
+import { getModelCallLogger } from "./getModelCallLogger.js";
 
 export type ModelCallMetadata = {
   callId: string;
@@ -162,6 +163,7 @@ async function doExecuteCall<
 
   const eventSource = new FunctionEventSource({
     observers: [
+      ...getModelCallLogger(settings.logging),
       ...getGlobalFunctionObservers(),
       ...(settings.observers ?? []),
       ...(run?.observers ?? []),

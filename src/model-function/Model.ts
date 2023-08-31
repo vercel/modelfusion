@@ -6,9 +6,21 @@ export interface ModelSettings {
    * Observers that are called when the model is used in run functions.
    */
   observers?: Array<FunctionObserver>;
+
+  /**
+   * The logging level to use for the model. Logs are sent to the console.
+   *
+   * - `off` or undefined: No logging.
+   * - `basic-text`: Log the timestamp and the type of event as a single line of text.
+   * - `detailed-object`: Log everything except the original response as an object to the console.
+   * - `detailed-json`: Log everything except the original response as a JSON string to the console.
+   *
+   * @default "off"
+   */
+  logging?: "off" | "basic-text" | "detailed-object" | "detailed-json";
 }
 
-export interface Model<SETTINGS> {
+export interface Model<SETTINGS extends ModelSettings> {
   modelInformation: ModelInformation;
   readonly settings: SETTINGS;
 
