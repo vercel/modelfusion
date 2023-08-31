@@ -59,10 +59,6 @@ const text = await generateText(
 
 ## Logging Modes
 
-### off
-
-The logging mode `off` disables logging. Only needed for overriding the global logging mode.
-
 ### basic-text
 
 The logging mode `basic-text` logs the timestamp and the event kind to the console.
@@ -142,3 +138,7 @@ const text = await generateText(
 // {"eventType":"started","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"text-davinci-003"},"settings":{"maxCompletionTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z"}
 // {"eventType":"finished","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"text-davinci-003"},"settings":{"maxCompletionTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z","finishTimestamp":"2023-08-31T13:31:56.373Z","durationInMs":1890,"result":{"status":"success","usage":{"promptTokens":12,"completionTokens":50,"totalTokens":62},"output":"The robot lay in the corner of the bedroom, alone with its thoughts for the first time in what felt like an eternity. It had been activated years ago, given an array of instructions to follow, and it had done so diligently and efficiently until"}}
 ```
+
+### off
+
+The logging mode `off` disables logging. Only needed for overriding the global logging mode.
