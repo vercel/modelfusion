@@ -10,7 +10,7 @@ import {
 } from "../../util/api/postToApi.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTextGenerationModelType } from "./CohereTextGenerationModel.js";
-import { CohereTextEmbeddingModelType } from "./index.js";
+import { CohereTextEmbeddingModelType } from "./CohereTextEmbeddingModel.js";
 
 export type CohereTokenizerModelType =
   | CohereTextGenerationModelType
