@@ -33,10 +33,12 @@ export const OPENAI_TEXT_GENERATION_MODELS = {
   "davinci-002": {
     contextWindowSize: 16_384,
     tokenCostInMillicents: 0.2,
+    fineTunedTokenCostInMillicents: 1.2,
   },
   "babbage-002": {
     contextWindowSize: 16_384,
     tokenCostInMillicents: 0.04,
+    fineTunedTokenCostInMillicents: 0.16,
   },
   "text-davinci-003": {
     contextWindowSize: 4096,
@@ -80,13 +82,67 @@ export const OPENAI_TEXT_GENERATION_MODELS = {
   },
 };
 
-export type OpenAITextGenerationModelType =
+export function getOpenAITextGenerationModelInformation(
+  model: OpenAITextGenerationModelType
+): {
+  baseModel: OpenAITextGenerationBaseModelType;
+  isFineTuned: boolean;
+  contextWindowSize: number;
+  tokenCostInMillicents: number;
+} {
+  // Model is already a base model:
+  if (model in OPENAI_TEXT_GENERATION_MODELS) {
+    const baseModelInformation =
+      OPENAI_TEXT_GENERATION_MODELS[model as OpenAITextGenerationBaseModelType];
+
+    return {
+      baseModel: model as OpenAITextGenerationBaseModelType,
+      isFineTuned: false,
+      contextWindowSize: baseModelInformation.contextWindowSize,
+      tokenCostInMillicents: baseModelInformation.tokenCostInMillicents,
+    };
+  }
+
+  // Extract the base model from the fine-tuned model:
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, baseModel, ___, ____, _____] = model.split(":");
+
+  if (["davinci-002", "babbage-002"].includes(baseModel)) {
+    const baseModelInformation =
+      OPENAI_TEXT_GENERATION_MODELS[
+        baseModel as FineTuneableOpenAITextGenerationModelType
+      ];
+
+    return {
+      baseModel: baseModel as FineTuneableOpenAITextGenerationModelType,
+      isFineTuned: true,
+      contextWindowSize: baseModelInformation.contextWindowSize,
+      tokenCostInMillicents:
+        baseModelInformation.fineTunedTokenCostInMillicents,
+    };
+  }
+
+  throw new Error(`Unknown OpenAI chat base model ${baseModel}.`);
+}
+
+type FineTuneableOpenAITextGenerationModelType = "davinci-002" | "babbage-002";
+
+type FineTunedOpenAITextGenerationModelType =
+  `ft:${FineTuneableOpenAITextGenerationModelType}:${string}:${string}:${string}`;
+
+export type OpenAITextGenerationBaseModelType =
   keyof typeof OPENAI_TEXT_GENERATION_MODELS;
+
+export type OpenAITextGenerationModelType =
+  | OpenAITextGenerationBaseModelType
+  | FineTunedOpenAITextGenerationModelType;
 
 export const isOpenAITextGenerationModel = (
   model: string
 ): model is OpenAITextGenerationModelType =>
-  model in OPENAI_TEXT_GENERATION_MODELS;
+  model in OPENAI_TEXT_GENERATION_MODELS ||
+  model.startsWith("ft:davinci-002:") ||
+  model.startsWith("ft:babbage-002:");
 
 export const calculateOpenAITextGenerationCostInMillicents = ({
   model,
@@ -96,7 +152,7 @@ export const calculateOpenAITextGenerationCostInMillicents = ({
   response: OpenAITextGenerationResponse;
 }) =>
   response.usage.total_tokens *
-  OPENAI_TEXT_GENERATION_MODELS[model].tokenCostInMillicents;
+  getOpenAITextGenerationModelInformation(model).tokenCostInMillicents;
 
 export interface OpenAITextGenerationModelSettings
   extends TextGenerationModelSettings {
@@ -154,9 +210,14 @@ export class OpenAITextGenerationModel
   constructor(settings: OpenAITextGenerationModelSettings) {
     super({ settings });
 
-    this.tokenizer = new TikTokenTokenizer({ model: settings.model });
-    this.contextWindowSize =
-      OPENAI_TEXT_GENERATION_MODELS[settings.model].contextWindowSize;
+    const modelInformation = getOpenAITextGenerationModelInformation(
+      this.settings.model
+    );
+
+    this.tokenizer = new TikTokenTokenizer({
+      model: modelInformation.baseModel,
+    });
+    this.contextWindowSize = modelInformation.contextWindowSize;
   }
 
   readonly provider = "openai" as const;

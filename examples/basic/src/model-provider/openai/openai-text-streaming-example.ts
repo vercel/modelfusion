@@ -6,10 +6,10 @@ dotenv.config();
 (async () => {
   const textStream = await streamText(
     new OpenAITextGenerationModel({
-      model: "text-davinci-003",
+      model: "ft:babbage-002:p42-software-ug::7uOojvDL",
       maxCompletionTokens: 1000,
     }),
-    "You are a story writer. Write a story about a robot learning to love"
+    "German cars during the holidays."
   );
 
   for await (const textFragment of textStream) {

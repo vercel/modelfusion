@@ -2,7 +2,7 @@ import { Tiktoken, TiktokenEncoding, getEncoding } from "js-tiktoken";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { never } from "../../util/never.js";
 import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
-import { OpenAITextGenerationModelType } from "./OpenAITextGenerationModel.js";
+import { OpenAITextGenerationBaseModelType } from "./OpenAITextGenerationModel.js";
 import { OpenAIChatBaseModelType } from "./chat/OpenAIChatModel.js";
 
 /**
@@ -29,8 +29,8 @@ export class TikTokenTokenizer implements FullTokenizer {
       | {
           model:
             | OpenAIChatBaseModelType
-            | OpenAITextEmbeddingModelType
-            | OpenAITextGenerationModelType;
+            | OpenAITextGenerationBaseModelType
+            | OpenAITextEmbeddingModelType;
         }
       | { encoding: TiktokenEncoding }
   ) {
@@ -66,8 +66,8 @@ export class TikTokenTokenizer implements FullTokenizer {
 function getEncodingNameForModel(
   model:
     | OpenAIChatBaseModelType
+    | OpenAITextGenerationBaseModelType
     | OpenAITextEmbeddingModelType
-    | OpenAITextGenerationModelType
 ) {
   switch (model) {
     case "code-davinci-002":
