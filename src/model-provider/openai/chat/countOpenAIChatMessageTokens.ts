@@ -3,7 +3,7 @@ import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import {
   OpenAIChatModelType,
-  getOpenAIChatBaseModel,
+  getOpenAIChatModelInformation,
 } from "./OpenAIChatModel.js";
 
 /**
@@ -26,7 +26,9 @@ export async function countOpenAIChatMessageTokens({
   model: OpenAIChatModelType;
 }) {
   const contentTokenCount = await countTokens(
-    new TikTokenTokenizer({ model: getOpenAIChatBaseModel(model) }),
+    new TikTokenTokenizer({
+      model: getOpenAIChatModelInformation(model).baseModel,
+    }),
     message.content ?? ""
   );
 
