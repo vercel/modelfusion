@@ -30,6 +30,8 @@ You need to install `zod` and a matching version of `zod-to-json-schema` (peer d
 npm install zod zod-to-json-schema
 ```
 
+Or use a template: [ModelFusion terminal app starter](https://github.com/lgrammel/modelfusion-terminal-app-starter)
+
 ## API Keys
 
 You can provide API keys for the different [providers](/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or by passing them in as options to the model constructors.
