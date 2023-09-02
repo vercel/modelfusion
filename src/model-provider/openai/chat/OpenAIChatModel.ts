@@ -158,7 +158,10 @@ export type OpenAIChatModelType =
 
 export const isOpenAIChatModel = (
   model: string
-): model is OpenAIChatModelType => model in OPENAI_CHAT_MODELS;
+): model is OpenAIChatModelType =>
+  model in OPENAI_CHAT_MODELS ||
+  model.startsWith("ft:gpt-3.5-turbo-0613:") ||
+  model.startsWith("ft:gpt-3.5-turbo:");
 
 export const calculateOpenAIChatCostInMillicents = ({
   model,
