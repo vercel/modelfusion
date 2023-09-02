@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.24.0 - 2023-09-02
+
+### Added
+
+- Support for fine-tuned OpenAI models (for the `davinci-002`, `babbage-002`, and `gpt-3.5-turbo` base models).
+
 ## v0.23.0 - 2023-08-31
 
 ### Added
