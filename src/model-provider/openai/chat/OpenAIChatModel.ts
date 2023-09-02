@@ -96,7 +96,34 @@ export const OPENAI_CHAT_MODELS = {
   },
 };
 
-export type OpenAIChatModelType = keyof typeof OPENAI_CHAT_MODELS;
+export function getOpenAIChatBaseModel(
+  model: OpenAIChatModelType
+): OpenAIChatBaseModelType {
+  // Model is already a base model:
+  if (model in OPENAI_CHAT_MODELS) {
+    return model as OpenAIChatBaseModelType;
+  }
+
+  // Extract the base model from the fine-tuned model:
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, baseModel, ___, ____, _____] = model.split(":");
+
+  if (baseModel in OPENAI_CHAT_MODELS) {
+    return baseModel as OpenAIChatBaseModelType;
+  }
+
+  throw new Error(`Unknown OpenAI chat base model ${baseModel}.`);
+}
+
+export type FineTunedOpenAIChatModelType = `ft:${
+  | "gpt-3.5-turbo"
+  | "gpt-3.5-turbo-0613"}:${string}:${string}:${string}`;
+
+export type OpenAIChatBaseModelType = keyof typeof OPENAI_CHAT_MODELS;
+
+export type OpenAIChatModelType =
+  | OpenAIChatBaseModelType
+  | FineTunedOpenAIChatModelType;
 
 export const isOpenAIChatModel = (
   model: string
@@ -108,11 +135,17 @@ export const calculateOpenAIChatCostInMillicents = ({
 }: {
   model: OpenAIChatModelType;
   response: OpenAIChatResponse;
-}): number =>
-  response.usage.prompt_tokens *
-    OPENAI_CHAT_MODELS[model].promptTokenCostInMillicents +
-  response.usage.completion_tokens *
-    OPENAI_CHAT_MODELS[model].completionTokenCostInMillicents;
+}): number => {
+  const baseModel = getOpenAIChatBaseModel(model);
+
+  // TODO incorrect when fine-tuned
+  return (
+    response.usage.prompt_tokens *
+      OPENAI_CHAT_MODELS[baseModel].promptTokenCostInMillicents +
+    response.usage.completion_tokens *
+      OPENAI_CHAT_MODELS[baseModel].completionTokenCostInMillicents
+  );
+};
 
 export interface OpenAIChatCallSettings {
   model: OpenAIChatModelType;
@@ -183,9 +216,10 @@ export class OpenAIChatModel
   constructor(settings: OpenAIChatSettings) {
     super({ settings });
 
-    this.tokenizer = new TikTokenTokenizer({ model: this.settings.model });
-    this.contextWindowSize =
-      OPENAI_CHAT_MODELS[this.settings.model].contextWindowSize;
+    const baseModel = getOpenAIChatBaseModel(this.settings.model);
+
+    this.tokenizer = new TikTokenTokenizer({ model: baseModel });
+    this.contextWindowSize = OPENAI_CHAT_MODELS[baseModel].contextWindowSize;
   }
 
   readonly provider = "openai" as const;

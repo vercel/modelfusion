@@ -1,7 +1,10 @@
 import { countTokens } from "../../../model-function/tokenize-text/countTokens.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import { OpenAIChatModelType } from "./OpenAIChatModel.js";
+import {
+  OpenAIChatModelType,
+  getOpenAIChatBaseModel,
+} from "./OpenAIChatModel.js";
 
 /**
  * Prompt tokens that are included automatically for every full
@@ -22,10 +25,12 @@ export async function countOpenAIChatMessageTokens({
   message: OpenAIChatMessage;
   model: OpenAIChatModelType;
 }) {
-  return (
-    OPENAI_CHAT_MESSAGE_BASE_TOKEN_COUNT +
-    (await countTokens(new TikTokenTokenizer({ model }), message.content ?? ""))
+  const contentTokenCount = await countTokens(
+    new TikTokenTokenizer({ model: getOpenAIChatBaseModel(model) }),
+    message.content ?? ""
   );
+
+  return OPENAI_CHAT_MESSAGE_BASE_TOKEN_COUNT + contentTokenCount;
 }
 
 export async function countOpenAIChatPromptTokens({

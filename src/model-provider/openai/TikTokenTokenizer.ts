@@ -1,11 +1,9 @@
 import { Tiktoken, TiktokenEncoding, getEncoding } from "js-tiktoken";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { never } from "../../util/never.js";
-import {
-  OpenAIChatModelType,
-  OpenAITextEmbeddingModelType,
-  OpenAITextGenerationModelType,
-} from "./index.js";
+import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
+import { OpenAITextGenerationModelType } from "./OpenAITextGenerationModel.js";
+import { OpenAIChatBaseModelType } from "./chat/OpenAIChatModel.js";
 
 /**
  * TikToken tokenizer for OpenAI language models.
@@ -30,7 +28,7 @@ export class TikTokenTokenizer implements FullTokenizer {
     options:
       | {
           model:
-            | OpenAIChatModelType
+            | OpenAIChatBaseModelType
             | OpenAITextEmbeddingModelType
             | OpenAITextGenerationModelType;
         }
@@ -67,7 +65,7 @@ export class TikTokenTokenizer implements FullTokenizer {
 // when new models are released
 function getEncodingNameForModel(
   model:
-    | OpenAIChatModelType
+    | OpenAIChatBaseModelType
     | OpenAITextEmbeddingModelType
     | OpenAITextGenerationModelType
 ) {
