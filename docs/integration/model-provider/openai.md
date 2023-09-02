@@ -33,6 +33,10 @@ const text = await generateText(
 );
 ```
 
+:::note
+You can use your fine-tuned `davinci-002` and `babbage-002` models similarly to the base models. Learn more about [OpenAI fine-tuning](https://platform.openai.com/docs/guides/fine-tuning).
+:::
+
 #### Chat Model
 
 The OpenAI chat models include GPT-3.5-turbo and GPT-4.
@@ -55,6 +59,10 @@ const text = await generateText(
   ]
 );
 ```
+
+:::note
+You can use your fine-tuned `gpt-3.5-turbo` models similarly to the base models. Learn more about [OpenAI fine-tuning](https://platform.openai.com/docs/guides/fine-tuning).
+:::
 
 ### Stream Text
 
