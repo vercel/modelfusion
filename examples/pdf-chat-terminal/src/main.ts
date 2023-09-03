@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import dotenv from "dotenv";
+import fs from "fs/promises";
 import {
   MemoryVectorIndex,
   OpenAIChatMessage,
@@ -15,7 +16,6 @@ import {
   upsertTextChunks,
 } from "modelfusion";
 import * as readline from "node:readline/promises";
-import { loadPdfPages } from "./loadPdfPages";
 
 dotenv.config();
 
@@ -28,25 +28,16 @@ program
 
 const { file }: { file: string } = program.opts();
 
-const chat = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-const embeddingModel = new OpenAITextEmbeddingModel({
-  model: "text-embedding-ada-002",
-  throttle: throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
-});
-
-const vectorIndex = new MemoryVectorIndex<{
-  pageNumber: number;
-  text: string;
-}>();
-
-(async () => {
+async function main() {
   console.log("Indexing PDF...");
 
   const pages = await loadPdfPages(file);
+
+  const embeddingModel = new OpenAITextEmbeddingModel({
+    model: "text-embedding-ada-002",
+    throttle: throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
+  });
+
   const chunks = await splitTextChunks(
     splitAtToken({
       maxTokensPerChunk: 256,
@@ -54,12 +45,23 @@ const vectorIndex = new MemoryVectorIndex<{
     }),
     pages
   );
+
+  const vectorIndex = new MemoryVectorIndex<{
+    pageNumber: number;
+    text: string;
+  }>();
+
   await upsertTextChunks({ vectorIndex, embeddingModel, chunks });
 
   console.log("Ready.");
   console.log();
 
   // chat loop:
+  const chat = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
   while (true) {
     const question = await chat.question("You: ");
 
@@ -114,4 +116,40 @@ const vectorIndex = new MemoryVectorIndex<{
     }
     process.stdout.write("\n\n");
   }
-})();
+}
+
+async function loadPdfPages(path: string) {
+  const data = await fs.readFile(path);
+
+  // only load when needed (otherwise this can cause node canvas setup issues when you don't need PDFs):
+  const PdfJs = await import("pdfjs-dist/legacy/build/pdf");
+
+  const pdf = await PdfJs.getDocument({
+    data,
+    useSystemFonts: true, // https://github.com/mozilla/pdf.js/issues/4244#issuecomment-1479534301
+  }).promise;
+
+  const pageTexts: Array<{
+    pageNumber: number;
+    text: string;
+  }> = [];
+
+  for (let i = 0; i < pdf.numPages; i++) {
+    const page = await pdf.getPage(i + 1);
+    const pageContent = await page.getTextContent();
+
+    pageTexts.push({
+      pageNumber: i + 1,
+      text: pageContent.items
+        // limit to TextItem, extract str:
+        .filter((item) => (item as any).str != null)
+        .map((item) => (item as any).str as string)
+        .join(" ")
+        .replace(/\s+/g, " "), // reduce whitespace to single space
+    });
+  }
+
+  return pageTexts;
+}
+
+main();
