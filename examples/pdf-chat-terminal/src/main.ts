@@ -16,6 +16,7 @@ import {
   upsertTextChunks,
 } from "modelfusion";
 import * as readline from "node:readline/promises";
+import * as PdfJs from "pdfjs-dist/legacy/build/pdf";
 
 dotenv.config();
 
@@ -119,13 +120,14 @@ async function main() {
 }
 
 async function loadPdfPages(path: string) {
-  const data = await fs.readFile(path);
-
-  // only load when needed (otherwise this can cause node canvas setup issues when you don't need PDFs):
-  const PdfJs = await import("pdfjs-dist/legacy/build/pdf");
+  const pdfData = await fs.readFile(path);
 
   const pdf = await PdfJs.getDocument({
-    data,
+    data: new Uint8Array(
+      pdfData.buffer,
+      pdfData.byteOffset,
+      pdfData.byteLength
+    ),
     useSystemFonts: true, // https://github.com/mozilla/pdf.js/issues/4244#issuecomment-1479534301
   }).promise;
 
