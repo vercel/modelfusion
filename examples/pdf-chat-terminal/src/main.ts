@@ -120,15 +120,17 @@ async function main() {
 }
 
 async function loadPdfPages(path: string) {
+  // read the PDF file from disk:
   const pdfData = await fs.readFile(path);
 
+  // parse the PDF file:
   const pdf = await PdfJs.getDocument({
     data: new Uint8Array(
       pdfData.buffer,
       pdfData.byteOffset,
       pdfData.byteLength
     ),
-    useSystemFonts: true, // https://github.com/mozilla/pdf.js/issues/4244#issuecomment-1479534301
+    useSystemFonts: true, // see https://github.com/mozilla/pdf.js/issues/4244#issuecomment-1479534301
   }).promise;
 
   const pageTexts: Array<{
@@ -136,6 +138,7 @@ async function loadPdfPages(path: string) {
     text: string;
   }> = [];
 
+  // extract text from each page:
   for (let i = 0; i < pdf.numPages; i++) {
     const page = await pdf.getPage(i + 1);
     const pageContent = await page.getTextContent();
@@ -147,7 +150,7 @@ async function loadPdfPages(path: string) {
         .filter((item) => (item as any).str != null)
         .map((item) => (item as any).str as string)
         .join(" ")
-        .replace(/\s+/g, " "), // reduce whitespace to single space
+        .replace(/\s+/g, " "), // reduce multiple whitespaces to single space
     });
   }
 
