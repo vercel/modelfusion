@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.24.1 - 2023-09-04
+
+### Added
+
+- Exposed `logitBias` setting for OpenAI chat and text generation models.
+
 ## v0.24.0 - 2023-09-02
 
 ### Added
