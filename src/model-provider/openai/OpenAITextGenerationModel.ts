@@ -12,8 +12,6 @@ import { parseEventSourceReadableStream } from "../../model-function/generate-te
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -154,29 +152,30 @@ export const calculateOpenAITextGenerationCostInMillicents = ({
   response.usage.total_tokens *
   getOpenAITextGenerationModelInformation(model).tokenCostInMillicents;
 
-export interface OpenAITextGenerationModelSettings
-  extends TextGenerationModelSettings {
+export interface OpenAITextGenerationCallSettings {
   model: OpenAITextGenerationModelType;
 
   headers?: Record<string, string>;
 
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-
-  isUserIdForwardingEnabled?: boolean;
-
   suffix?: string;
+  maxTokens?: number;
   temperature?: number;
   topP?: number;
   n?: number;
   logprobs?: number;
   echo?: boolean;
+  stop?: string | string[];
   presencePenalty?: number;
   frequencyPenalty?: number;
   bestOf?: number;
+  logitBias?: Record<number, number>;
+}
+
+export interface OpenAITextGenerationModelSettings
+  extends TextGenerationModelSettings,
+    OpenAIModelSettings,
+    Omit<OpenAITextGenerationCallSettings, "stop" | "maxTokens"> {
+  isUserIdForwardingEnabled?: boolean;
 }
 
 /**
@@ -301,6 +300,7 @@ export class OpenAITextGenerationModel
       "presencePenalty",
       "frequencyPenalty",
       "bestOf",
+      "logitBias",
     ] satisfies (keyof OpenAITextGenerationModelSettings)[];
 
     return Object.fromEntries(
@@ -426,8 +426,9 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
   presencePenalty,
   frequencyPenalty,
   bestOf,
+  logitBias,
   user,
-}: {
+}: OpenAITextGenerationCallSettings & {
   baseUrl?: string;
   headers?: Record<string, string>;
   abortSignal?: AbortSignal;
@@ -435,17 +436,6 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
   apiKey: string;
   model: OpenAITextGenerationModelType;
   prompt: string;
-  suffix?: string;
-  maxTokens?: number;
-  temperature?: number;
-  topP?: number;
-  n?: number;
-  logprobs?: number;
-  echo?: boolean;
-  stop?: string | string[];
-  presencePenalty?: number;
-  frequencyPenalty?: number;
-  bestOf?: number;
   user?: string;
 }): Promise<RESPONSE> {
   return postJsonToApi({
@@ -469,6 +459,7 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
       presence_penalty: presencePenalty,
       frequency_penalty: frequencyPenalty,
       best_of: bestOf,
+      logit_bias: logitBias,
       user,
     },
     failedResponseHandler: failedOpenAICallResponseHandler,
