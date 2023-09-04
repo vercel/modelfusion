@@ -191,13 +191,16 @@ export interface OpenAIChatCallSettings {
     parameters: unknown;
   }>;
   functionCall?: "none" | "auto" | { name: string };
+
+  stop?: string | string[];
+  maxTokens?: number;
+
   temperature?: number;
   topP?: number;
   n?: number;
-  stop?: string | string[];
-  maxTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
+  logitBias?: Record<number, number>;
 }
 
 export interface OpenAIChatSettings
@@ -332,6 +335,9 @@ export class OpenAIChatModel
       "temperature",
       "topP",
       "n",
+      "presencePenalty",
+      "frequencyPenalty",
+      "logitBias",
     ] satisfies (keyof OpenAIChatSettings)[];
 
     return Object.fromEntries(
@@ -479,6 +485,7 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
   maxTokens,
   presencePenalty,
   frequencyPenalty,
+  logitBias,
   user,
 }: OpenAIChatCallSettings & {
   baseUrl?: string;
@@ -508,6 +515,7 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
       max_tokens: maxTokens,
       presence_penalty: presencePenalty,
       frequency_penalty: frequencyPenalty,
+      logit_bias: logitBias,
       user,
     },
     failedResponseHandler: failedOpenAICallResponseHandler,
