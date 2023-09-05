@@ -27,7 +27,11 @@ export interface Run {
    */
   abortSignal?: AbortSignal;
 
-  observers?: FunctionObserver[];
+  /**
+   * Optional field that represents the run as a function observer. When it is defined,
+   * the run will be notified of all function events.
+   */
+  functionObserver?: FunctionObserver;
 
   errorHandler?: ErrorHandler;
 }

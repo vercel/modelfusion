@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import dotenv from "dotenv";
-import { DefaultRun, OpenAICostCalculator } from "modelfusion";
+import { DefaultRun, OpenAICostCalculator, calculateCost } from "modelfusion";
 import { createTweetFromPdf } from "./createTweetFromPdf";
 
 dotenv.config();
@@ -17,7 +17,6 @@ program
 const { file, topic, examples } = program.opts();
 
 const run = new DefaultRun({
-  costCalculators: [new OpenAICostCalculator()],
   observers: [
     {
       onFunctionEvent(event) {
@@ -51,7 +50,10 @@ createTweetFromPdf({
   run,
 })
   .then(async (result) => {
-    const cost = await run.calculateCost();
+    const cost = await calculateCost({
+      calls: run.successfulModelCalls,
+      costCalculators: [new OpenAICostCalculator()],
+    });
 
     console.log();
     console.log(result);

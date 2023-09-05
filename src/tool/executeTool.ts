@@ -102,7 +102,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     observers: [
       ...getFunctionCallLogger(options?.logging ?? getGlobalFunctionLogging()),
       ...getGlobalFunctionObservers(),
-      ...(run?.observers ?? []),
+      ...(run?.functionObserver != null ? [run.functionObserver] : []),
       ...(options?.observers ?? []),
     ],
     errorHandler: run?.errorHandler,

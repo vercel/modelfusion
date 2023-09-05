@@ -1,17 +1,16 @@
+import dotenv from "dotenv";
 import {
   DefaultRun,
   OpenAICostCalculator,
   OpenAITextGenerationModel,
+  calculateCost,
   generateText,
 } from "modelfusion";
-import dotenv from "dotenv";
 
 dotenv.config();
 
 (async () => {
-  const run = new DefaultRun({
-    costCalculators: [new OpenAICostCalculator()],
-  });
+  const run = new DefaultRun();
 
   const text = await generateText(
     new OpenAITextGenerationModel({
@@ -25,7 +24,10 @@ dotenv.config();
 
   console.log(text);
 
-  const cost = await run.calculateCost();
+  const cost = await calculateCost({
+    calls: run.successfulModelCalls,
+    costCalculators: [new OpenAICostCalculator()],
+  });
 
   console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
 })();
