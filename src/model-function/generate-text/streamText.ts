@@ -125,7 +125,7 @@ async function doStreamText<
       ...getFunctionCallLogger(options?.logging ?? getGlobalFunctionLogging()),
       ...getGlobalFunctionObservers(),
       ...(settings.observers ?? []),
-      ...(run?.observers ?? []),
+      ...(run?.functionObserver != null ? [run.functionObserver] : []),
       ...(options?.observers ?? []),
     ],
     errorHandler: run?.errorHandler,
