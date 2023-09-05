@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.25.0 - 2023-09-05
+
+### Changed
+
+- Separated cost calculation from Run.
+
 ## v0.24.1 - 2023-09-04
 
 ### Added
