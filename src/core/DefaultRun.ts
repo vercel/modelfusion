@@ -1,6 +1,4 @@
 import { nanoid as createId } from "nanoid";
-import { CostCalculator } from "../cost/CostCalculator.js";
-import { calculateCost } from "../cost/calculateCost.js";
 import {
   SuccessfulModelCall,
   extractSuccessfulModelCalls,
@@ -17,7 +15,6 @@ export class DefaultRun implements Run {
   readonly userId?: string;
 
   readonly abortSignal?: AbortSignal;
-  readonly costCalculators: CostCalculator[];
 
   readonly errorHandler: ErrorHandler;
 
@@ -31,7 +28,6 @@ export class DefaultRun implements Run {
     userId,
     abortSignal,
     observers,
-    costCalculators = [],
     errorHandler,
   }: {
     runId?: string;
@@ -39,14 +35,12 @@ export class DefaultRun implements Run {
     userId?: string;
     abortSignal?: AbortSignal;
     observers?: FunctionObserver[];
-    costCalculators?: CostCalculator[];
     errorHandler?: ErrorHandler;
   } = {}) {
     this.runId = runId;
     this.sessionId = sessionId;
     this.userId = userId;
     this.abortSignal = abortSignal;
-    this.costCalculators = costCalculators;
 
     this.errorHandler = errorHandler ?? ((error) => console.error(error));
 
@@ -65,12 +59,5 @@ export class DefaultRun implements Run {
 
   get successfulModelCalls(): Array<SuccessfulModelCall> {
     return extractSuccessfulModelCalls(this.events);
-  }
-
-  calculateCost() {
-    return calculateCost({
-      calls: this.successfulModelCalls,
-      costCalculators: this.costCalculators,
-    });
   }
 }

@@ -1,10 +1,11 @@
+import dotenv from "dotenv";
 import {
   DefaultRun,
   OpenAICostCalculator,
   OpenAITranscriptionModel,
+  calculateCost,
   transcribe,
 } from "modelfusion";
-import dotenv from "dotenv";
 import fs from "node:fs";
 
 dotenv.config();
@@ -12,9 +13,7 @@ dotenv.config();
 (async () => {
   const data = await fs.promises.readFile("data/test.mp3");
 
-  const run = new DefaultRun({
-    costCalculators: [new OpenAICostCalculator()],
-  });
+  const run = new DefaultRun();
 
   const transcription = await transcribe(
     new OpenAITranscriptionModel({ model: "whisper-1" }),
@@ -24,7 +23,10 @@ dotenv.config();
 
   console.log(transcription);
 
-  const cost = await run.calculateCost();
+  const cost = await calculateCost({
+    calls: run.successfulModelCalls,
+    costCalculators: [new OpenAICostCalculator()],
+  });
 
   console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
 })();
