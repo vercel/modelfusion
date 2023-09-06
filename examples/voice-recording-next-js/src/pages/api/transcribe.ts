@@ -1,6 +1,6 @@
-import { OpenAITranscriptionModel, transcribe } from "modelfusion";
 import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
+import { OpenAITranscriptionModel, transcribe } from "modelfusion";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {
@@ -55,7 +55,7 @@ export default async function handler(
     res.status(200).json({ transcription });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: error?.toString(), error: error });
+    res.status(500).json({ message: error?.toString(), error });
     return;
   }
 }
