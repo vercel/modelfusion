@@ -414,6 +414,7 @@ const { chunks } = await retrieveTextChunks(
 #### Speech Synthesis
 
 - [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs)
+- [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
 
 ### Vector Indices
 
