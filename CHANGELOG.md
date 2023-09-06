@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.26.0 - 2023-09-06
+
+### Added
+
+- LMNT speech synthesis support.
+
 ## v0.25.0 - 2023-09-05
 
 ### Changed
