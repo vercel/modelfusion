@@ -30,3 +30,4 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 #### Speech Synthesis
 
 - [Eleven Labs](/integration/model-provider/elevenlabs)
+- [LMNT](/integration/model-provider/lmnt)

@@ -8,7 +8,7 @@
 [![Discord](https://discordapp.com/api/guilds/1136309340740006029/widget.png?style=shield)](https://discord.gg/GqCwYZATem)
 [![Created by Lars Grammel](https://img.shields.io/badge/created%20by-@lgrammel-4BBAAB.svg)](https://twitter.com/lgrammel)
 
-[Introduction](#introduction) | [Quick Install](#quick-install) | [Usage](#usage-examples) | [Features](#features) | [Integrations](#integrations) | [Documentation](#documentation) | [Examples](#more-examples) | [Contributing](#contributing) | [modelfusion.dev](https://modelfusion.dev)
+[Introduction](#introduction) | [Quick Install](#quick-install) | [Usage](#usage-examples) | [Documentation](#documentation) | [Examples](#more-examples) | [Contributing](#contributing) | [modelfusion.dev](https://modelfusion.dev)
 
 > [!NOTE]
 > ModelFusion is in its initial development phase. Until version 1.0 there may be breaking changes, because I am still exploring the API design. Feedback and suggestions are welcome.
@@ -56,6 +56,8 @@ const text = await generateText(
 );
 ```
 
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface)
+
 #### streamText
 
 ```ts
@@ -74,6 +76,8 @@ for await (const textFragment of textStream) {
   process.stdout.write(textFragment);
 }
 ```
+
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
 
 #### Prompt Format
 
@@ -105,6 +109,14 @@ const textStream = await streamText(
   ]
 );
 ```
+
+| Prompt Format | Instruction Prompt | Chat Prompt |
+| ------------- | ------------------ | ----------- |
+| OpenAI Chat   | ✅                 | ✅          |
+| Llama 2       | ✅                 | ✅          |
+| Alpaca        | ✅                 | ❌          |
+| Vicuna        | ❌                 | ✅          |
+| Generic Text  | ✅                 | ✅          |
 
 #### Metadata and original responses
 
@@ -162,6 +174,8 @@ const value = await generateJson(
 );
 ```
 
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
+
 ### [Generate JSON or Text](https://modelfusion.dev/guide/function/generate-json-or-text)
 
 Generate JSON (or text as a fallback) using a prompt and multiple schemas.
@@ -196,9 +210,13 @@ const { schema, value, text } = await generateJsonOrText(
 );
 ```
 
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
+
 ### [Tools](https://modelfusion.dev/guide/tools)
 
 Tools are functions that can be executed by an AI model. They are useful for building chatbots and agents.
+
+Predefined tools: [SerpAPI](https://modelfusion.dev/integration/tool/serpapi), [Google Custom Search](https://modelfusion.dev/integration/tool/google-custom-search)
 
 #### Create Tool
 
@@ -275,6 +293,8 @@ const transcription = await transcribe(
 );
 ```
 
+Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai)
+
 ### [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
 
 Turn text into speech (audio).
@@ -282,12 +302,17 @@ Turn text into speech (audio).
 ```ts
 // `speech` is a Buffer with MP3 audio data
 const speech = await synthesizeSpeech(
-  new ElevenLabsSpeechSynthesisModel({
-    voice: "ErXwobaYiN019PkySvjV",
+  new LmntSpeechSynthesisModel({
+    voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
-  "Hello, World!"
+  "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
+    "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
+    "fresh tunes in nearly twenty years, featuring the illustrious Lady Gaga, the " +
+    "magical Stevie Wonder, and the final beats from the late Charlie Watts."
 );
 ```
+
+Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
 
 ### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 
@@ -299,6 +324,8 @@ const image = await generateImage(
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```
+
+Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider/openai), [Stability AI](https://modelfusion.dev/integration/model-provider/stability), [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111)
 
 ### [Embed Text](https://modelfusion.dev/guide/function/embed-text)
 
@@ -313,6 +340,8 @@ const embeddings = await embedTexts(
   ]
 );
 ```
+
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface)
 
 ### [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
 
@@ -329,6 +358,8 @@ const tokens = await tokenizer.tokenize(text);
 const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
 const reconstructedText = await tokenizer.detokenize(tokens);
 ```
+
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
 
 ### [Upserting and Retrieving Text Chunks from Vector Indices](https://modelfusion.dev/guide/text-chunks)
 
@@ -363,7 +394,15 @@ const { chunks } = await retrieveTextChunks(
 );
 ```
 
-## Features
+Available Vector Stores: [Memory](https://modelfusion.dev/integration/vector-index/memory), [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
+
+### Observability
+
+Integrations: [Helicone](https://modelfusion.dev/integration/observability/helicone)
+
+## Documentation
+
+### [Guide](https://modelfusion.dev/guide)
 
 - [Model Functions](https://modelfusion.dev/guide/function/)
   - [Generate and stream text](https://modelfusion.dev/guide/function/generate-text)
@@ -386,70 +425,15 @@ const { chunks } = await retrieveTextChunks(
   - [Abort signals](https://modelfusion.dev/guide/util/abort)
   - [Cost calculation](https://modelfusion.dev/guide/util/cost-calculation)
 
-## Integrations
+### [Integrations](https://modelfusion.dev/integration/model-provider)
 
-### Model Providers
-
-#### Text and JSON Generation
-
-|                                                                                       | [OpenAI](https://modelfusion.dev/integration/model-provider/openai) | [Cohere](https://modelfusion.dev/integration/model-provider/cohere) | [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp) | [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface) |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| [Generate text](https://modelfusion.dev/guide/function/generate-text)                 | ✅                                                                  | ✅                                                                  | ✅                                                                       | ✅                                                                             |
-| [Stream text](https://modelfusion.dev/guide/function/generate-text)                   | ✅                                                                  | ✅                                                                  | ✅                                                                       |                                                                                |
-| [Generate JSON](https://modelfusion.dev/guide/function/generate-json)                 | chat models                                                         |                                                                     |                                                                          |                                                                                |
-| [Generate JSON or Text](https://modelfusion.dev/guide/function/generate-json-or-text) | chat models                                                         |                                                                     |                                                                          |                                                                                |
-| [Embed text](https://modelfusion.dev/guide/function/embed-text)                       | ✅                                                                  | ✅                                                                  | ✅                                                                       | ✅                                                                             |
-| [Tokenize text](https://modelfusion.dev/guide/function/tokenize-text)                 | full                                                                | full                                                                | basic                                                                    |                                                                                |
-
-#### Image Generation
-
-- [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider/openai)
-- [Stability AI](https://modelfusion.dev/integration/model-provider/stability)
-- [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111)
-
-#### Speech Transcription
-
-- [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai)
-
-#### Speech Synthesis
-
-- [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs)
-- [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
-
-### Vector Indices
-
-- [Memory](https://modelfusion.dev/integration/vector-index/memory)
-- [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
-
-### Observability
-
-- [Helicone](https://modelfusion.dev/integration/observability/helicone)
-
-### Prompt Formats
-
-Use higher level prompts that are mapped into model specific prompt formats.
-
-| Prompt Format | Instruction Prompt | Chat Prompt |
-| ------------- | ------------------ | ----------- |
-| OpenAI Chat   | ✅                 | ✅          |
-| Llama 2       | ✅                 | ✅          |
-| Alpaca        | ✅                 | ❌          |
-| Vicuna        | ❌                 | ✅          |
-| Generic Text  | ✅                 | ✅          |
-
-## Documentation
-
-- [Guide](https://modelfusion.dev/guide)
-- [Examples & Tutorials](https://modelfusion.dev/tutorial)
-- [Integrations](https://modelfusion.dev/integration/model-provider)
-- [API Reference](https://modelfusion.dev/api/modules)
-- [Blog](https://modelfusion.dev/api/blog)
+### [API Reference](https://modelfusion.dev/api/modules)
 
 ## More Examples
 
 ### [Basic Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic)
 
-Examples for the individual functions and objects.
+Examples for almost all of the individual functions and objects. Highly recommended to get started.
 
 ### [Chatbot (Terminal)](https://github.com/lgrammel/modelfusion/tree/main/examples/chatbot-terminal)
 
