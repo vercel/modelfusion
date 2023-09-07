@@ -1,3 +1,4 @@
+export * from "./AzureOpenAIApiConfiguration.js";
 export * from "./OpenAIApiConfiguration.js";
 export * from "./OpenAICostCalculator.js";
 export { OpenAIError, OpenAIErrorData } from "./OpenAIError.js";
