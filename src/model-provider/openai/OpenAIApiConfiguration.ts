@@ -1,14 +1,10 @@
-import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
+import { AbstractProviderApiConfiguration } from "../../model-function/AbstractProviderApiConfiguration.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { loadApiKey } from "../../util/api/loadApiKey.js";
 
-export class OpenAIApiConfiguration implements ProviderApiConfiguration {
-  readonly baseUrl: string;
+export class OpenAIApiConfiguration extends AbstractProviderApiConfiguration {
   readonly apiKey: string;
-
-  readonly retry?: RetryFunction;
-  readonly throttle?: ThrottleFunction;
 
   constructor({
     baseUrl = "https://api.openai.com/v1",
@@ -21,19 +17,17 @@ export class OpenAIApiConfiguration implements ProviderApiConfiguration {
     retry?: RetryFunction;
     throttle?: ThrottleFunction;
   } = {}) {
-    this.baseUrl = baseUrl;
-    this.retry = retry;
-    this.throttle = throttle;
+    super({
+      baseUrl,
+      retry,
+      throttle,
+    });
 
     this.apiKey = loadApiKey({
       apiKey,
       environmentVariableName: "OPENAI_API_KEY",
       description: "OpenAI",
     });
-  }
-
-  assembleUrl(path: string): string {
-    return `${this.baseUrl}${path}`;
   }
 
   get headers(): Record<string, string> {

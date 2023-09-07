@@ -1,18 +1,11 @@
-import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
+import { AbstractProviderApiConfiguration } from "../../model-function/AbstractProviderApiConfiguration.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { loadApiKey } from "../../util/api/loadApiKey.js";
 
-export class HeliconeOpenAIApiConfiguration
-  implements ProviderApiConfiguration
-{
-  readonly baseUrl: string;
-
+export class HeliconeOpenAIApiConfiguration extends AbstractProviderApiConfiguration {
   readonly openAIApiKey: string;
   readonly heliconeApiKey: string;
-
-  readonly retry?: RetryFunction;
-  readonly throttle?: ThrottleFunction;
 
   constructor({
     baseUrl = "https://oai.hconeai.com/v1",
@@ -27,9 +20,11 @@ export class HeliconeOpenAIApiConfiguration
     retry?: RetryFunction;
     throttle?: ThrottleFunction;
   } = {}) {
-    this.baseUrl = baseUrl;
-    this.retry = retry;
-    this.throttle = throttle;
+    super({
+      baseUrl,
+      retry,
+      throttle,
+    });
 
     this.openAIApiKey = loadApiKey({
       apiKey: openAIApiKey,
@@ -44,10 +39,6 @@ export class HeliconeOpenAIApiConfiguration
       apiKeyParameterName: "heliconeApiKey",
       description: "Helicone",
     });
-  }
-
-  assembleUrl(path: string): string {
-    return `${this.baseUrl}${path}`;
   }
 
   get headers(): Record<string, string> {
