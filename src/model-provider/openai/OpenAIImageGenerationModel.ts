@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
@@ -11,8 +12,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
-import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 
 export interface OpenAIImageGenerationCallSettings {
   n?: number;
@@ -37,8 +38,8 @@ export const calculateOpenAIImageGenerationCostInMillicents = ({
 
 export interface OpenAIImageGenerationSettings
   extends ImageGenerationModelSettings,
-    OpenAIImageGenerationCallSettings,
-    OpenAIModelSettings {
+    OpenAIImageGenerationCallSettings {
+  api?: ProviderApiConfiguration;
   isUserIdForwardingEnabled?: boolean;
 }
 
@@ -69,57 +70,47 @@ export class OpenAIImageGenerationModel
   readonly provider = "openai" as const;
   readonly modelName = null;
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        `OpenAI API key is missing. Pass it as an argument to the constructor or set it as an environment variable named OPENAI_API_KEY.`
-      );
-    }
-
-    return apiKey;
-  }
-
   async callAPI<RESULT>(
     prompt: string,
     options: {
       responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
     } & ModelFunctionOptions<
-      Partial<
-        OpenAIImageGenerationCallSettings &
-          OpenAIModelSettings & { user?: string }
-      >
+      Partial<OpenAIImageGenerationCallSettings & { user?: string }>
     >
   ): Promise<RESULT> {
     const run = options?.run;
     const settings = options?.settings;
     const responseFormat = options?.responseFormat;
 
-    const callSettings = Object.assign(
-      {
-        apiKey: this.apiKey,
-        user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
-      },
-      this.settings,
-      settings,
-      {
-        abortSignal: run?.abortSignal,
-        prompt,
-        responseFormat,
-      }
-    );
+    const combinedSettings = {
+      ...this.settings,
+      ...settings,
+    };
+
+    const api = combinedSettings.api ?? new OpenAIApiConfiguration();
+
+    const callSettings = {
+      api,
+      user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
+
+      // Copied settings:
+      ...combinedSettings,
+
+      // other settings:
+      abortSignal: run?.abortSignal,
+      responseFormat,
+      prompt,
+    };
 
     return callWithRetryAndThrottle({
-      retry: callSettings.retry,
-      throttle: callSettings.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () => callOpenAIImageGenerationAPI(callSettings),
     });
   }
 
   get settingsForEvent(): Partial<OpenAIImageGenerationSettings> {
     const eventSettingProperties: Array<string> = [
-      "baseUrl",
       "n",
       "size",
     ] satisfies (keyof OpenAIImageGenerationSettings)[];
@@ -199,27 +190,23 @@ export const OpenAIImageGenerationResponseFormat = {
 };
 
 async function callOpenAIImageGenerationAPI<RESPONSE>({
-  baseUrl = "https://api.openai.com/v1",
+  api,
   abortSignal,
-  apiKey,
   prompt,
   n,
   size,
   responseFormat,
   user,
 }: OpenAIImageGenerationCallSettings & {
-  baseUrl?: string;
+  api: ProviderApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   prompt: string;
   responseFormat: OpenAIImageGenerationResponseFormatType<RESPONSE>;
   user?: string;
 }): Promise<RESPONSE> {
   return postJsonToApi({
-    url: `${baseUrl}/images/generations`,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl("/images/generations"),
+    headers: api.headers,
     body: {
       prompt,
       n,

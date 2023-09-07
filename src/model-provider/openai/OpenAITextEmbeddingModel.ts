@@ -53,9 +53,7 @@ export const calculateOpenAIEmbeddingCostInMillicents = ({
 export interface OpenAITextEmbeddingModelSettings
   extends TextEmbeddingModelSettings {
   api?: ProviderApiConfiguration;
-
   model: OpenAITextEmbeddingModelType;
-
   isUserIdForwardingEnabled?: boolean;
 }
 
