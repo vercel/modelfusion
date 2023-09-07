@@ -87,10 +87,7 @@ export class OpenAIImageGenerationModel
       ...settings,
     };
 
-    const api = combinedSettings.api ?? new OpenAIApiConfiguration();
-
     const callSettings = {
-      api,
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
 
       // Copied settings:
@@ -103,8 +100,8 @@ export class OpenAIImageGenerationModel
     };
 
     return callWithRetryAndThrottle({
-      retry: api.retry,
-      throttle: api.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callOpenAIImageGenerationAPI(callSettings),
     });
   }
@@ -190,7 +187,7 @@ export const OpenAIImageGenerationResponseFormat = {
 };
 
 async function callOpenAIImageGenerationAPI<RESPONSE>({
-  api,
+  api = new OpenAIApiConfiguration(),
   abortSignal,
   prompt,
   n,
@@ -198,7 +195,7 @@ async function callOpenAIImageGenerationAPI<RESPONSE>({
   responseFormat,
   user,
 }: OpenAIImageGenerationCallSettings & {
-  api: ProviderApiConfiguration;
+  api?: ProviderApiConfiguration;
   abortSignal?: AbortSignal;
   prompt: string;
   responseFormat: OpenAIImageGenerationResponseFormatType<RESPONSE>;

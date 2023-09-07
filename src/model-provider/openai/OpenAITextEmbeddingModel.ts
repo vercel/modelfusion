@@ -117,10 +117,7 @@ export class OpenAITextEmbeddingModel
       ...settings,
     };
 
-    const api = combinedSettings.api ?? new OpenAIApiConfiguration();
-
     const callSettings = {
-      api,
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
 
       // Copied settings:
@@ -132,8 +129,8 @@ export class OpenAITextEmbeddingModel
     };
 
     return callWithRetryAndThrottle({
-      retry: api.retry,
-      throttle: api.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callOpenAITextEmbeddingAPI(callSettings),
     });
   }
@@ -189,13 +186,13 @@ export type OpenAITextEmbeddingResponse = z.infer<
 >;
 
 async function callOpenAITextEmbeddingAPI({
-  api,
+  api = new OpenAIApiConfiguration(),
   abortSignal,
   model,
   input,
   user,
 }: {
-  api: ProviderApiConfiguration;
+  api?: ProviderApiConfiguration;
   abortSignal?: AbortSignal;
   model: OpenAITextEmbeddingModelType;
   input: string;

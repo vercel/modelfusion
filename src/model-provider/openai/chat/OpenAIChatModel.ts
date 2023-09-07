@@ -294,10 +294,7 @@ export class OpenAIChatModel
       ...settings,
     };
 
-    const api = combinedSettings.api ?? new OpenAIApiConfiguration();
-
     const callSettings = {
-      api,
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
 
       // Copied settings:
@@ -314,8 +311,8 @@ export class OpenAIChatModel
     };
 
     return callWithRetryAndThrottle({
-      retry: api.retry,
-      throttle: api.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callOpenAIChatCompletionAPI(callSettings),
     });
   }
@@ -464,7 +461,7 @@ const openAIChatResponseSchema = z.object({
 export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
 
 async function callOpenAIChatCompletionAPI<RESPONSE>({
-  api,
+  api = new OpenAIApiConfiguration(),
   abortSignal,
   responseFormat,
   model,
@@ -481,7 +478,7 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
   logitBias,
   user,
 }: OpenAIChatCallSettings & {
-  api: ProviderApiConfiguration;
+  api?: ProviderApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: OpenAIChatResponseFormatType<RESPONSE>;
   messages: Array<OpenAIChatMessage>;

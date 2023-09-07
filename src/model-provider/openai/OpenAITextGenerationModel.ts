@@ -247,10 +247,7 @@ export class OpenAITextGenerationModel
       ...settings,
     };
 
-    const api = combinedSettings.api ?? new OpenAIApiConfiguration();
-
     const callSettings = {
-      api,
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
 
       // Copied settings:
@@ -267,8 +264,8 @@ export class OpenAITextGenerationModel
     };
 
     return callWithRetryAndThrottle({
-      retry: api.retry,
-      throttle: api.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callOpenAITextGenerationAPI(callSettings),
     });
   }
@@ -379,7 +376,7 @@ const openAITextGenerationResponseSchema = z.object({
 });
 
 async function callOpenAITextGenerationAPI<RESPONSE>({
-  api,
+  api = new OpenAIApiConfiguration(),
   abortSignal,
   responseFormat,
   model,
@@ -398,7 +395,7 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
   logitBias,
   user,
 }: OpenAITextGenerationCallSettings & {
-  api: ProviderApiConfiguration;
+  api?: ProviderApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: OpenAITextResponseFormatType<RESPONSE>;
   prompt: string;

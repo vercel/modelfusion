@@ -1,12 +1,11 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
 } from "../../model-function/transcribe-speech/TranscriptionModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -14,8 +13,8 @@ import {
   createTextResponseHandler,
   postToApi,
 } from "../../util/api/postToApi.js";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
-import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 
 /**
  * @see https://openai.com/pricing
@@ -50,13 +49,8 @@ export const calculateOpenAITranscriptionCostInMillicents = ({
 
 export interface OpenAITranscriptionModelSettings
   extends TranscriptionModelSettings {
+  api?: ProviderApiConfiguration;
   model: OpenAITranscriptionModelType;
-
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
 }
 
 export type OpenAITranscriptionInput = {
@@ -100,9 +94,7 @@ export class OpenAITranscriptionModel
 
   generateTranscriptionResponse(
     data: OpenAITranscriptionInput,
-    options?: ModelFunctionOptions<
-      Partial<OpenAITranscriptionModelSettings & OpenAIModelSettings>
-    >
+    options?: ModelFunctionOptions<Partial<OpenAITranscriptionModelSettings>>
   ): PromiseLike<OpenAITranscriptionVerboseJsonResponse> {
     return this.callAPI(data, {
       responseFormat: OpenAITranscriptionResponseFormat.verboseJson,
@@ -118,65 +110,43 @@ export class OpenAITranscriptionModel
     return response.text;
   }
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        `OpenAI API key is missing. Pass it as an argument to the constructor or set it as an environment variable named OPENAI_API_KEY.`
-      );
-    }
-
-    return apiKey;
-  }
-
   async callAPI<RESULT>(
     data: OpenAITranscriptionInput,
     options: {
       responseFormat: OpenAITranscriptionResponseFormatType<RESULT>;
-    } & ModelFunctionOptions<
-      Partial<OpenAITranscriptionModelSettings & OpenAIModelSettings>
-    >
+    } & ModelFunctionOptions<Partial<OpenAITranscriptionModelSettings>>
   ): Promise<RESULT> {
     const run = options?.run;
     const settings = options?.settings;
     const responseFormat = options?.responseFormat;
 
-    const callSettings = Object.assign(
-      {
-        apiKey: this.apiKey,
+    const combinedSettings = {
+      ...this.settings,
+      ...settings,
+    };
+
+    const callSettings = {
+      // Copied settings:
+      ...combinedSettings,
+
+      // other settings:
+      abortSignal: run?.abortSignal,
+      file: {
+        name: `audio.${data.type}`,
+        data: data.data,
       },
-      this.settings,
-      settings,
-      {
-        abortSignal: run?.abortSignal,
-        file: {
-          name: `audio.${data.type}`,
-          data: data.data,
-        },
-        responseFormat,
-      }
-    );
+      responseFormat,
+    };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callOpenAITranscriptionAPI(callSettings),
     });
   }
 
-  getEventSettingProperties(): (keyof OpenAITranscriptionModelSettings)[] {
-    return ["baseUrl"];
-  }
-
   get settingsForEvent(): Partial<OpenAITranscriptionModelSettings> {
-    const eventSettingProperties = ["baseUrl"];
-
-    return Object.fromEntries(
-      Object.entries(this.settings).filter(([key]) =>
-        eventSettingProperties.includes(key)
-      )
-    );
+    return {};
   }
 
   withSettings(additionalSettings: OpenAITranscriptionModelSettings) {
@@ -186,26 +156,9 @@ export class OpenAITranscriptionModel
   }
 }
 
-/**
- * Call the OpenAI Transcription API to generate a transcription from an audio file.
- *
- * @see https://platform.openai.com/docs/api-reference/audio/create
- *
- * @example
- * const transcriptionResponse = await callOpenAITranscriptionAPI({
- *   apiKey: openAiApiKey,
- *   model: "whisper-1",
- *   file: {
- *     name: "audio.mp3",
- *     data: fileData, // Buffer
- *   },
- *   responseFormat: callOpenAITranscriptionAPI.responseFormat.json,
- * });
- */
 async function callOpenAITranscriptionAPI<RESPONSE>({
-  baseUrl = "https://api.openai.com/v1",
+  api = new OpenAIApiConfiguration(),
   abortSignal,
-  apiKey,
   model,
   file,
   prompt,
@@ -213,9 +166,8 @@ async function callOpenAITranscriptionAPI<RESPONSE>({
   temperature,
   language,
 }: {
-  baseUrl?: string;
+  api?: ProviderApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   model: OpenAITranscriptionModelType;
   file: {
     name: string;
@@ -247,10 +199,8 @@ async function callOpenAITranscriptionAPI<RESPONSE>({
   }
 
   return postToApi({
-    url: `${baseUrl}/audio/transcriptions`,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl("/audio/transcriptions"),
+    headers: api.headers,
     body: {
       content: formData,
       values: {
