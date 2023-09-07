@@ -1,4 +1,5 @@
 export * from "./ApiConfiguration.js";
+export * from "./BasicApiConfiguration.js";
 export * from "./Model.js";
 export * from "./ModelCallEvent.js";
 export * from "./ModelFunctionOptions.js";
