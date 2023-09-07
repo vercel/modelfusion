@@ -1,33 +1,24 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
 } from "../../model-function/embed-text/TextEmbeddingModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
 export interface LlamaCppTextEmbeddingModelSettings
   extends TextEmbeddingModelSettings {
-  baseUrl?: string;
-
+  api?: ApiConfiguration;
   embeddingDimensions?: number;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-
-  tokenizerSettings?: {
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  };
 }
 
 export class LlamaCppTextEmbeddingModel
@@ -41,12 +32,7 @@ export class LlamaCppTextEmbeddingModel
   constructor(settings: LlamaCppTextEmbeddingModelSettings = {}) {
     super({ settings });
 
-    this.tokenizer = new LlamaCppTokenizer({
-      baseUrl: this.settings.baseUrl,
-      retry: this.settings.tokenizerSettings?.retry,
-      throttle: this.settings.tokenizerSettings?.throttle,
-    });
-
+    this.tokenizer = new LlamaCppTokenizer(this.settings.api);
     this.embeddingDimensions = this.settings.embeddingDimensions;
   }
 
@@ -79,21 +65,23 @@ export class LlamaCppTextEmbeddingModel
     const run = options?.run;
     const settings = options?.settings;
 
-    const callSettings = Object.assign({}, this.settings, settings, {
+    const callSettings = {
+      ...this.settings,
+      ...settings,
+
       abortSignal: run?.abortSignal,
       content: texts[0],
-    });
+    };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callLlamaCppEmbeddingAPI(callSettings),
     });
   }
 
   get settingsForEvent(): Partial<LlamaCppTextEmbeddingModelSettings> {
     return {
-      baseUrl: this.settings.baseUrl,
       embeddingDimensions: this.settings.embeddingDimensions,
     };
   }
@@ -127,16 +115,17 @@ export type LlamaCppTextEmbeddingResponse = z.infer<
 >;
 
 async function callLlamaCppEmbeddingAPI({
-  baseUrl = "http://127.0.0.1:8080",
+  api = new LlamaCppApiConfiguration(),
   abortSignal,
   content,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   content: string;
 }): Promise<LlamaCppTextEmbeddingResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/embedding`,
+    url: api.assembleUrl(`/embedding`),
+    headers: api.headers,
     body: { content },
     failedResponseHandler: failedLlamaCppCallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(

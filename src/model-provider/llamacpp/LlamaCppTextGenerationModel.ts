@@ -1,6 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
@@ -11,29 +12,20 @@ import {
 import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
 export interface LlamaCppTextGenerationModelSettings<
   CONTEXT_WINDOW_SIZE extends number | undefined,
 > extends TextGenerationModelSettings {
-  baseUrl?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-
-  tokenizerSettings?: {
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  };
+  api?: ApiConfiguration;
 
   /**
    * Specify the context window size of the model that you have loaded in your
@@ -76,12 +68,7 @@ export class LlamaCppTextGenerationModel<
     settings: LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE> = {}
   ) {
     super({ settings });
-
-    this.tokenizer = new LlamaCppTokenizer({
-      baseUrl: this.settings.baseUrl,
-      retry: this.settings.tokenizerSettings?.retry,
-      throttle: this.settings.tokenizerSettings?.throttle,
-    });
+    this.tokenizer = new LlamaCppTokenizer(this.settings.api);
   }
 
   readonly provider = "llamacpp";
@@ -112,16 +99,20 @@ export class LlamaCppTextGenerationModel<
 
     const callSettings = {
       ...combinedSettings,
+
+      // mapping
       nPredict: combinedSettings.maxCompletionTokens,
       stop: combinedSettings.stopSequences,
+
+      // other
       abortSignal: run?.abortSignal,
       prompt,
       responseFormat,
     };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callLlamaCppTextGenerationAPI(callSettings),
     });
   }
@@ -133,7 +124,6 @@ export class LlamaCppTextGenerationModel<
       "maxCompletionTokens",
       "stopSequences",
 
-      "baseUrl",
       "contextWindowSize",
       "temperature",
       "topK",
@@ -296,7 +286,7 @@ const llamaCppTextStreamingResponseSchema = z.discriminatedUnion("stop", [
 ]);
 
 async function callLlamaCppTextGenerationAPI<RESPONSE>({
-  baseUrl = "http://127.0.0.1:8080",
+  api = new LlamaCppApiConfiguration(),
   abortSignal,
   responseFormat,
   prompt,
@@ -318,7 +308,7 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
   ignoreEos,
   logitBias,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
   prompt: string;
@@ -341,7 +331,8 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
   logitBias?: Array<[number, number | false]>;
 }): Promise<RESPONSE> {
   return postJsonToApi({
-    url: `${baseUrl}/completion`,
+    url: api.assembleUrl(`/completion`),
+    headers: api.headers,
     body: {
       stream: responseFormat.stream,
       prompt,

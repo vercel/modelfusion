@@ -1,21 +1,14 @@
 import z from "zod";
-import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { Run } from "../../core/Run.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
+import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
-
-export interface LlamaCppTokenizerSettings {
-  baseUrl?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-}
 
 /**
  * Tokenizer for LlamaCpp.
@@ -31,10 +24,10 @@ export interface LlamaCppTokenizerSettings {
  * const reconstructedText = await tokenizer.detokenize(tokens);
  */
 export class LlamaCppTokenizer implements BasicTokenizer {
-  readonly settings: LlamaCppTokenizerSettings;
+  readonly api: ApiConfiguration;
 
-  constructor(settings: LlamaCppTokenizerSettings = {}) {
-    this.settings = settings;
+  constructor(api: ApiConfiguration = new LlamaCppApiConfiguration()) {
+    this.api = api;
   }
 
   async callTokenizeAPI(
@@ -42,13 +35,13 @@ export class LlamaCppTokenizer implements BasicTokenizer {
     context?: Run
   ): Promise<LlamaCppTokenizationResponse> {
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: this.api.retry,
+      throttle: this.api.throttle,
       call: async () =>
         callLlamaCppTokenizeAPI({
+          api: this.api,
           abortSignal: context?.abortSignal,
           text,
-          ...this.settings,
         }),
     });
   }
@@ -68,16 +61,17 @@ export type LlamaCppTokenizationResponse = z.infer<
 >;
 
 async function callLlamaCppTokenizeAPI({
-  baseUrl = "http://127.0.0.1:8080",
+  api,
   abortSignal,
   text,
 }: {
-  baseUrl?: string;
+  api: ApiConfiguration;
   abortSignal?: AbortSignal;
   text: string;
 }): Promise<LlamaCppTokenizationResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/tokenize`,
+    url: api.assembleUrl(`/tokenize`),
+    headers: api.headers,
     body: {
       content: text,
     },
