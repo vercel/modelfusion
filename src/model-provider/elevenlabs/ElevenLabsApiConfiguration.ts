@@ -3,7 +3,7 @@ import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { loadApiKey } from "../../util/api/loadApiKey.js";
 
-export class EleventLabsApiConfiguration extends BasicApiConfiguration {
+export class ElevenLabsApiConfiguration extends BasicApiConfiguration {
   readonly apiKey: string;
 
   constructor({

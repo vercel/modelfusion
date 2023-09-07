@@ -10,7 +10,7 @@ import {
   createAudioMpegResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
-import { EleventLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
+import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 
 export interface ElevenLabsSpeechSynthesisModelSettings
@@ -103,7 +103,7 @@ export class ElevenLabsSpeechSynthesisModel
 }
 
 async function callElevenLabsTextToSpeechAPI({
-  api = new EleventLabsApiConfiguration(),
+  api = new ElevenLabsApiConfiguration(),
   abortSignal,
   text,
   voiceId,
