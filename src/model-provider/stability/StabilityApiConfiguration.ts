@@ -3,7 +3,7 @@ import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { loadApiKey } from "../../util/api/loadApiKey.js";
 
-export class StabilityAIApiConfiguration extends BasicApiConfiguration {
+export class StabilityApiConfiguration extends BasicApiConfiguration {
   readonly apiKey: string;
 
   constructor({

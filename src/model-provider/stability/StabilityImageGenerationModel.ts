@@ -12,7 +12,7 @@ import {
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { failedStabilityCallResponseHandler } from "./StabilityError.js";
-import { StabilityAIApiConfiguration } from "./StabilityApiConfiguration.js";
+import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 
 /**
  * Create an image generation model that calls the Stability AI image generation API.
@@ -191,7 +191,7 @@ export type StabilityImageGenerationPrompt = Array<{
 }>;
 
 async function callStabilityImageGenerationAPI({
-  api = new StabilityAIApiConfiguration(),
+  api = new StabilityApiConfiguration(),
   abortSignal,
   engineId,
   height,
