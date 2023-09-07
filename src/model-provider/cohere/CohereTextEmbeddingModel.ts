@@ -1,18 +1,18 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
 } from "../../model-function/embed-text/TextEmbeddingModel.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
 
@@ -36,19 +36,8 @@ export type CohereTextEmbeddingModelType =
 
 export interface CohereTextEmbeddingModelSettings
   extends TextEmbeddingModelSettings {
+  api?: ApiConfiguration;
   model: CohereTextEmbeddingModelType;
-
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-
-  tokenizerSettings?: {
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  };
-
   truncate?: "NONE" | "START" | "END";
 }
 
@@ -82,11 +71,8 @@ export class CohereTextEmbeddingModel
       COHERE_TEXT_EMBEDDING_MODELS[this.modelName].contextWindowSize;
 
     this.tokenizer = new CohereTokenizer({
-      baseUrl: this.settings.baseUrl,
-      apiKey: this.settings.apiKey,
+      api: this.settings.api,
       model: this.settings.model,
-      retry: this.settings.tokenizerSettings?.retry,
-      throttle: this.settings.tokenizerSettings?.throttle,
     });
 
     this.embeddingDimensions =
@@ -116,18 +102,6 @@ export class CohereTextEmbeddingModel
     return this.tokenizer.detokenize(tokens);
   }
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.COHERE_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        "No Cohere API key provided. Pass an API key to the constructor or set the COHERE_API_KEY environment variable."
-      );
-    }
-
-    return apiKey;
-  }
-
   async callAPI(
     texts: Array<string>,
     options?: ModelFunctionOptions<CohereTextEmbeddingModelSettings>
@@ -141,28 +115,22 @@ export class CohereTextEmbeddingModel
     const run = options?.run;
     const settings = options?.settings;
 
-    const callSettings = Object.assign(
-      {
-        apiKey: this.apiKey,
-      },
-      this.settings,
-      settings,
-      {
-        abortSignal: run?.abortSignal,
-        texts,
-      }
-    );
+    const callSettings = {
+      ...this.settings,
+      ...settings,
+      abortSignal: run?.abortSignal,
+      texts,
+    };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callCohereEmbeddingAPI(callSettings),
     });
   }
 
   get settingsForEvent(): Partial<CohereTextEmbeddingModelSettings> {
     return {
-      baseUrl: this.settings.baseUrl,
       truncate: this.settings.truncate,
     };
   }
@@ -200,41 +168,22 @@ export type CohereTextEmbeddingResponse = z.infer<
   typeof cohereTextEmbeddingResponseSchema
 >;
 
-/**
- * Call the Cohere Co.Embed API to generate an embedding for the given input.
- *
- * @see https://docs.cohere.com/reference/embed
- *
- * @example
- * const response = await callCohereEmbeddingAPI({
- *   apiKey: COHERE_API_KEY,
- *   model: "embed-english-light-v2.0",
- *   texts: [
- *     "At first, Nox didn't know what to do with the pup.",
- *     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
- *   ],
- * });
- */
 async function callCohereEmbeddingAPI({
-  baseUrl = "https://api.cohere.ai/v1",
+  api = new CohereApiConfiguration(),
   abortSignal,
-  apiKey,
   model,
   texts,
   truncate,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   model: CohereTextEmbeddingModelType;
   texts: string[];
   truncate?: "NONE" | "START" | "END";
 }): Promise<CohereTextEmbeddingResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/embed`,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl(`/embed`),
+    headers: api.headers,
     body: {
       model,
       texts,

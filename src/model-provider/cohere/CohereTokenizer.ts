@@ -1,29 +1,24 @@
 import z from "zod";
-import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { Run } from "../../core/Run.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
+import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
-import { CohereTextGenerationModelType } from "./CohereTextGenerationModel.js";
 import { CohereTextEmbeddingModelType } from "./CohereTextEmbeddingModel.js";
+import { CohereTextGenerationModelType } from "./CohereTextGenerationModel.js";
+import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 
 export type CohereTokenizerModelType =
   | CohereTextGenerationModelType
   | CohereTextEmbeddingModelType;
 
 export interface CohereTokenizerSettings {
+  api?: ApiConfiguration;
   model: CohereTokenizerModelType;
-
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
 }
 
 /**
@@ -49,29 +44,16 @@ export class CohereTokenizer implements FullTokenizer {
     this.settings = settings;
   }
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.COHERE_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        "No Cohere API key provided. Pass an API key to the constructor or set the COHERE_API_KEY environment variable."
-      );
-    }
-
-    return apiKey;
-  }
-
   async callTokenizeAPI(
     text: string,
     context?: Run
   ): Promise<CohereTokenizationResponse> {
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
       call: async () =>
         callCohereTokenizeAPI({
           abortSignal: context?.abortSignal,
-          apiKey: this.apiKey,
           text,
           ...this.settings,
         }),
@@ -83,12 +65,11 @@ export class CohereTokenizer implements FullTokenizer {
     context?: Run
   ): Promise<CohereDetokenizationResponse> {
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
       call: async () =>
         callCohereDetokenizeAPI({
           abortSignal: context?.abortSignal,
-          apiKey: this.apiKey,
           tokens,
           ...this.settings,
         }),
@@ -128,29 +109,20 @@ export type CohereDetokenizationResponse = z.infer<
   typeof cohereDetokenizationResponseSchema
 >;
 
-/**
- * Call the Cohere Co.Detokenize API to detokenize a text.
- *
- * https://docs.cohere.com/reference/detokenize-1
- */
 async function callCohereDetokenizeAPI({
-  baseUrl = "https://api.cohere.ai/v1",
+  api = new CohereApiConfiguration(),
   abortSignal,
-  apiKey,
   model,
   tokens,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   model?: CohereTokenizerModelType;
   tokens: Array<number>;
 }): Promise<CohereDetokenizationResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/detokenize`,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl(`/detokenize`),
+    headers: api.headers,
     body: {
       model,
       tokens,
@@ -177,29 +149,20 @@ export type CohereTokenizationResponse = z.infer<
   typeof cohereTokenizationResponseSchema
 >;
 
-/**
- * Call the Cohere Co.Tokenize API to tokenize a text.
- *
- * https://docs.cohere.com/reference/tokenize
- */
 async function callCohereTokenizeAPI({
-  baseUrl = "https://api.cohere.ai/v1",
+  api = new CohereApiConfiguration(),
   abortSignal,
-  apiKey,
   model,
   text,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   model?: CohereTokenizerModelType;
   text: string;
 }): Promise<CohereTokenizationResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/tokenize`,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl(`/tokenize`),
+    headers: api.headers,
     body: {
       model,
       text,
