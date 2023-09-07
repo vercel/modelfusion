@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.27.0 - 2023-09-07
+
+### Added
+
+- Support for running OpenAI on Microsoft Azure.
+
+### Changed
+
+- **Breaking change**: Introduce API configuration. This affects setting the baseUrl, throttling, and retries.
+- Improved Helicone support via `HeliconeOpenAIApiConfiguration`.
+
 ## v0.26.0 - 2023-09-06
 
 ### Added
