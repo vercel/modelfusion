@@ -152,7 +152,6 @@ The first step is to initialize a text embedding model. This model will be respo
 ```typescript
 const embeddingModel = new OpenAITextEmbeddingModel({
   model: "text-embedding-ada-002",
-  throttle: throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
 });
 ```
 

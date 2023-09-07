@@ -12,10 +12,17 @@ You can call these functions with a model, a prompt, and additional options.
 const text = await generateText(
   // model:
   new OpenAITextGenerationModel({ model: "text-davinci-003" }),
+
   // prompt (type depends on model):
   "Write a short story about a robot learning to love:\n\n",
-  // additional options:
-  { run }
+
+  // additional configuration (all optional):
+  {
+    functionId, // function identifier for logging
+    logging, // logging configuration
+    observers, // call observers
+    run, // run object
+  }
 );
 ```
 
@@ -65,6 +72,21 @@ const model = new OpenAITextGenerationModel({
 });
 ```
 
+You can pass API configuration objects to the model constructors to configure the underlying API calls. There are preconfigured API configurations for each provider that you can use. The [API configuration](/api/interfaces/ApiConfiguration) contains api keys, base URLs, as well as throttling and retry functions.
+
+```ts
+new OpenAITextGenerationModel({
+  model: "text-davinci-003",
+  api: new OpenAIApiConfiguration({
+    // all parameters are optional:
+    apiKey: "my-api-key",
+    baseUrl: "custom-base-url",
+    retry: retryWithExponentialBackoff({ maxTries: 5 }),
+    throttle: throttleUnlimitedConcurrency(),
+  }),
+});
+```
+
 #### withSettings
 
 The `withSettings` method creates a new model with the same configuration as the original model, but with the specified settings changed.
@@ -74,11 +96,3 @@ const modelWithMoreTokens = model.withSettings({
   maxCompletionTokens: 1000,
 });
 ```
-
-## Additional function features
-
-Functions offer the following additional functionality:
-
-- **Observable**: You can receive events for the start and finish of calls to the model.
-- **Run support**: You can pass a [Run](/guide/util/run) as an option, which you can use to control and monitor the execution of the function.
-- **Settings override**: You can override the settings of the model for a single call to the function.

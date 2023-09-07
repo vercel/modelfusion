@@ -1,6 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
@@ -11,14 +12,13 @@ import {
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
 
@@ -42,18 +42,9 @@ export type CohereTextGenerationModelType =
 
 export interface CohereTextGenerationModelSettings
   extends TextGenerationModelSettings {
+  api?: ApiConfiguration;
+
   model: CohereTextGenerationModelType;
-
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-
-  tokenizerSettings?: {
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  };
 
   numGenerations?: number;
   temperature?: number;
@@ -102,11 +93,8 @@ export class CohereTextGenerationModel
       COHERE_TEXT_GENERATION_MODELS[this.settings.model].contextWindowSize;
 
     this.tokenizer = new CohereTokenizer({
-      baseUrl: this.settings.baseUrl,
-      apiKey: this.settings.apiKey,
+      api: this.settings.api,
       model: this.settings.model,
-      retry: this.settings.tokenizerSettings?.retry,
-      throttle: this.settings.tokenizerSettings?.throttle,
     });
   }
 
@@ -117,18 +105,6 @@ export class CohereTextGenerationModel
 
   readonly contextWindowSize: number;
   readonly tokenizer: CohereTokenizer;
-
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.COHERE_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        "No Cohere API key provided. Pass an API key to the constructor or set the COHERE_API_KEY environment variable."
-      );
-    }
-
-    return apiKey;
-  }
 
   async countPromptTokens(input: string) {
     return countTokens(this.tokenizer, input);
@@ -148,8 +124,6 @@ export class CohereTextGenerationModel
     };
 
     const callSettings = {
-      apiKey: this.apiKey,
-
       ...combinedSettings,
 
       // use endSequences instead of stopSequences
@@ -166,8 +140,8 @@ export class CohereTextGenerationModel
     };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callCohereTextGenerationAPI(callSettings),
     });
   }
@@ -177,7 +151,6 @@ export class CohereTextGenerationModel
       "maxCompletionTokens",
       "stopSequences",
 
-      "baseUrl",
       "numGenerations",
       "temperature",
       "k",
@@ -273,27 +246,10 @@ export type CohereTextGenerationResponse = z.infer<
   typeof cohereTextGenerationResponseSchema
 >;
 
-/**
- * Call the Cohere Co.Generate API to generate a text completion for the given prompt.
- *
- * @see https://docs.cohere.com/reference/generate
- *
- * @example
- * const response = await callCohereTextGenerationAPI({
- *   apiKey: COHERE_API_KEY,
- *   model: "command-nightly",
- *   prompt: "Write a short story about a robot learning to love:\n\n",
- *   temperature: 0.7,
- *   maxTokens: 500,
- * });
- *
- * console.log(response.generations[0].text);
- */
 async function callCohereTextGenerationAPI<RESPONSE>({
-  baseUrl = "https://api.cohere.ai/v1",
+  api = new CohereApiConfiguration(),
   abortSignal,
   responseFormat,
-  apiKey,
   model,
   prompt,
   numGenerations,
@@ -309,10 +265,9 @@ async function callCohereTextGenerationAPI<RESPONSE>({
   logitBias,
   truncate,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: CohereTextGenerationResponseFormatType<RESPONSE>;
-  apiKey: string;
   model: CohereTextGenerationModelType;
   prompt: string;
   numGenerations?: number;
@@ -329,10 +284,8 @@ async function callCohereTextGenerationAPI<RESPONSE>({
   truncate?: "NONE" | "START" | "END";
 }): Promise<RESPONSE> {
   return postJsonToApi({
-    url: `${baseUrl}/generate`,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl(`/generate`),
+    headers: api.headers,
     body: {
       stream: responseFormat.stream,
       model,

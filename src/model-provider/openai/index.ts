@@ -1,7 +1,8 @@
+export * from "./AzureOpenAIApiConfiguration.js";
+export * from "./OpenAIApiConfiguration.js";
 export * from "./OpenAICostCalculator.js";
 export { OpenAIError, OpenAIErrorData } from "./OpenAIError.js";
 export * from "./OpenAIImageGenerationModel.js";
-export * from "./OpenAIModelSettings.js";
 export * from "./OpenAITextEmbeddingModel.js";
 export * from "./OpenAITextGenerationModel.js";
 export * from "./OpenAITranscriptionModel.js";

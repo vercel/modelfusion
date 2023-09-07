@@ -12,7 +12,6 @@ import {
   splitAtToken,
   splitTextChunks,
   streamText,
-  throttleMaxConcurrency,
   upsertTextChunks,
 } from "modelfusion";
 import * as readline from "node:readline/promises";
@@ -36,7 +35,6 @@ async function main() {
 
   const embeddingModel = new OpenAITextEmbeddingModel({
     model: "text-embedding-ada-002",
-    throttle: throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
   });
 
   const chunks = await splitTextChunks(

@@ -1,3 +1,4 @@
+export * from "./LlamaCppApiConfiguration.js";
 export { LlamaCppError, LlamaCppErrorData } from "./LlamaCppError.js";
 export * from "./LlamaCppTextEmbeddingModel.js";
 export * from "./LlamaCppTextGenerationModel.js";

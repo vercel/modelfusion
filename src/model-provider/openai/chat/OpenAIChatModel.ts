@@ -2,6 +2,7 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../../model-function/ModelFunctionOptions.js";
+import { ApiConfiguration } from "../../../model-function/ApiConfiguration.js";
 import { JsonGenerationModel } from "../../../model-function/generate-json/JsonGenerationModel.js";
 import { JsonOrTextGenerationModel } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
 import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
@@ -17,8 +18,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../util/api/postToApi.js";
+import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
-import { OpenAIModelSettings } from "../OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import {
@@ -181,9 +182,9 @@ export const calculateOpenAIChatCostInMillicents = ({
 };
 
 export interface OpenAIChatCallSettings {
-  model: OpenAIChatModelType;
+  api?: ApiConfiguration;
 
-  headers?: Record<string, string>;
+  model: OpenAIChatModelType;
 
   functions?: Array<{
     name: string;
@@ -205,7 +206,6 @@ export interface OpenAIChatCallSettings {
 
 export interface OpenAIChatSettings
   extends TextGenerationModelSettings,
-    OpenAIModelSettings,
     Omit<OpenAIChatCallSettings, "stop" | "maxTokens"> {
   isUserIdForwardingEnabled?: boolean;
 }
@@ -268,18 +268,6 @@ export class OpenAIChatModel
   readonly contextWindowSize: number;
   readonly tokenizer: TikTokenTokenizer;
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        `OpenAI API key is missing. Pass it as an argument to the constructor or set it as an environment variable named OPENAI_API_KEY.`
-      );
-    }
-
-    return apiKey;
-  }
-
   /**
    * Counts the prompt tokens required for the messages. This includes the message base tokens
    * and the prompt base tokens.
@@ -296,7 +284,7 @@ export class OpenAIChatModel
     options: {
       responseFormat: OpenAIChatResponseFormatType<RESULT>;
     } & ModelFunctionOptions<
-      Partial<OpenAIChatCallSettings & OpenAIModelSettings & { user?: string }>
+      Partial<OpenAIChatCallSettings & { user?: string }>
     >
   ): Promise<RESULT> {
     const { run, settings, responseFormat } = options;
@@ -307,19 +295,24 @@ export class OpenAIChatModel
     };
 
     const callSettings = {
-      apiKey: this.apiKey,
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
+
+      // Copied settings:
       ...combinedSettings,
+
+      // map to OpenAI API names:
       stop: combinedSettings.stopSequences,
       maxTokens: combinedSettings.maxCompletionTokens,
+
+      // other settings:
       abortSignal: run?.abortSignal,
       messages,
       responseFormat,
     };
 
     return callWithRetryAndThrottle({
-      retry: callSettings.retry,
-      throttle: callSettings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callOpenAIChatCompletionAPI(callSettings),
     });
   }
@@ -329,7 +322,6 @@ export class OpenAIChatModel
       "stopSequences",
       "maxCompletionTokens",
 
-      "baseUrl",
       "functions",
       "functionCall",
       "temperature",
@@ -469,11 +461,9 @@ const openAIChatResponseSchema = z.object({
 export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
 
 async function callOpenAIChatCompletionAPI<RESPONSE>({
-  baseUrl = "https://api.openai.com/v1",
-  headers,
+  api = new OpenAIApiConfiguration(),
   abortSignal,
   responseFormat,
-  apiKey,
   model,
   messages,
   functions,
@@ -488,20 +478,15 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
   logitBias,
   user,
 }: OpenAIChatCallSettings & {
-  baseUrl?: string;
-  headers?: Record<string, string>;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: OpenAIChatResponseFormatType<RESPONSE>;
-  apiKey: string;
   messages: Array<OpenAIChatMessage>;
   user?: string;
 }): Promise<RESPONSE> {
   return postJsonToApi({
-    url: `${baseUrl}/chat/completions`,
-    headers: {
-      ...headers,
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl("/chat/completions"),
+    headers: api.headers,
     body: {
       stream: responseFormat.stream,
       model,

@@ -1,10 +1,19 @@
-import { OpenAITextGenerationModel, generateText } from "modelfusion";
+import dotenv from "dotenv";
+import {
+  OpenAIApiConfiguration,
+  OpenAITextGenerationModel,
+  generateText,
+} from "modelfusion";
+
+dotenv.config();
 
 (async () => {
   try {
     const text = await generateText(
       new OpenAITextGenerationModel({
-        apiKey: "invalid-api-key",
+        api: new OpenAIApiConfiguration({
+          baseUrl: "invalid-url",
+        }),
         model: "text-davinci-003",
         temperature: 0.7,
         maxCompletionTokens: 500,

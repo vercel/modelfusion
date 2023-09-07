@@ -16,6 +16,21 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/a1111)
 
+### API Configuration
+
+[Automatic1111 API Configuration](/api/classes/Automatic1111ApiConfiguration)
+
+```ts
+const api = new Automatic1111ApiConfiguration({
+  // ...
+});
+
+const model = new Automatic1111ImageGenerationModel({
+  api,
+  // ...
+});
+```
+
 ### Generate Image
 
 [Automatic1111ImageGenerationModel API](/api/classes/Automatic1111ImageGenerationModel)

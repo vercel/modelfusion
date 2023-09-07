@@ -1,18 +1,18 @@
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { failedStabilityCallResponseHandler } from "./StabilityError.js";
+import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 
 /**
  * Create an image generation model that calls the Stability AI image generation API.
@@ -55,18 +55,6 @@ export class StabilityImageGenerationModel
     return this.settings.model;
   }
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.STABILITY_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        "No API key provided. Either pass an API key to the constructor or set the STABILITY_API_KEY environment variable."
-      );
-    }
-
-    return apiKey;
-  }
-
   async callAPI(
     input: StabilityImageGenerationPrompt,
     options?: ModelFunctionOptions<StabilityImageGenerationModelSettings>
@@ -74,22 +62,20 @@ export class StabilityImageGenerationModel
     const run = options?.run;
     const settings = options?.settings;
 
-    const callSettings = Object.assign(
-      {
-        apiKey: this.apiKey,
-      },
-      this.settings,
-      settings,
-      {
-        abortSignal: run?.abortSignal,
-        engineId: this.settings.model,
-        textPrompts: input,
-      }
-    );
+    const callSettings = {
+      // copied settings:
+      ...this.settings,
+      ...settings,
+
+      // other settings:
+      abortSignal: run?.abortSignal,
+      engineId: this.settings.model,
+      textPrompts: input,
+    };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callStabilityImageGenerationAPI(callSettings),
     });
   }
@@ -135,13 +121,9 @@ export class StabilityImageGenerationModel
 
 export interface StabilityImageGenerationModelSettings
   extends ImageGenerationModelSettings {
+  api?: ApiConfiguration;
+
   model: string;
-
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
 
   height?: number;
   width?: number;
@@ -204,38 +186,9 @@ export type StabilityImageGenerationPrompt = Array<{
   weight?: number;
 }>;
 
-/**
- * Call the Stability AI API for image generation.
- *
- * @see https://api.stability.ai/docs#tag/v1generation/operation/textToImage
- *
- * @example
- * const imageResponse = await callStabilityImageGenerationAPI({
- *   apiKey: STABILITY_API_KEY,
- *   engineId: "stable-diffusion-512-v2-1",
- *   textPrompts: [
- *     { text: "the wicked witch of the west" },
- *     { text: "style of early 19th century painting", weight: 0.5 },
- *   ],
- *   cfgScale: 7,
- *   clipGuidancePreset: "FAST_BLUE",
- *   height: 512,
- *   width: 512,
- *   samples: 1,
- *   steps: 30,
- * });
- *
- * imageResponse.artifacts.forEach((image, index) => {
- *   fs.writeFileSync(
- *     `./stability-image-example-${index}.png`,
- *     Buffer.from(image.base64, "base64")
- *   );
- * });
- */
 async function callStabilityImageGenerationAPI({
-  baseUrl = "https://api.stability.ai/v1",
+  api = new StabilityApiConfiguration(),
   abortSignal,
-  apiKey,
   engineId,
   height,
   width,
@@ -248,9 +201,8 @@ async function callStabilityImageGenerationAPI({
   steps,
   stylePreset,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   engineId: string;
   height?: number;
   width?: number;
@@ -264,10 +216,8 @@ async function callStabilityImageGenerationAPI({
   stylePreset?: StabilityImageGenerationStylePreset;
 }): Promise<StabilityImageGenerationResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/generation/${engineId}/text-to-image`,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl(`/generation/${engineId}/text-to-image`),
+    headers: api.headers,
     body: {
       height,
       width,
