@@ -20,10 +20,8 @@ dotenv.config();
 
   const text = await generateText(
     new OpenAITextGenerationModel({
-      api,
       model: "text-davinci-003",
-      temperature: 0.7,
-      maxCompletionTokens: 500,
+      api,
     }),
     "Write a short story about a robot learning to love:\n\n"
   );

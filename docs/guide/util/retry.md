@@ -9,7 +9,8 @@ AI models are often accessed via APIs, and these APIs can fail for a variety of 
 ## Usage
 
 By default, API calls use a retry strategy with a maximum of 3 tries and an exponential backoff of initially 2000 ms and a backoff factor of 2.
-You can configure different retry strategies on models, either in the constructor or as function call parameters.
+
+You can configure different retry strategies on API configurations.
 
 ### retryWithExponentialBackoff
 
@@ -22,13 +23,18 @@ The `retryWithExponentialBackoff` strategy retries a failed API call with an exp
 ```ts
 import { retryWithExponentialBackoff } from "modelfusion";
 
-const model = new OpenAITextGenerationModel({
-  model: // ...,
+const api = new OpenAIApiConfiguration({
+  // configure retries as part of the API configuration
   retry: retryWithExponentialBackoff({
     maxTries: 8,
     initialDelayInMs: 1000,
     backoffFactor: 2,
   }),
+});
+
+const model = new OpenAITextGenerationModel({
+  model: "text-davinci-003",
+  api,
 });
 ```
 
@@ -43,9 +49,12 @@ The `retryNever` strategy never retries a failed API call.
 ```ts
 import { retryNever } from "modelfusion";
 
-const text = await generateText(
-  model,
-  "Write a short story about a robot learning to love:\n\n",
-  { settings: { retry: retryNever() } }
-);
+const api = new OpenAIApiConfiguration({
+  retry: retryNever(),
+});
+
+const model = new OpenAITextGenerationModel({
+  model: "text-davinci-003",
+  api,
+});
 ```
