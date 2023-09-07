@@ -1,4 +1,4 @@
-import { AbstractProviderApiConfiguration } from "../../model-function/AbstractProviderApiConfiguration.js";
+import { BasicApiConfiguration } from "../../model-function/BasicApiConfiguration.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { loadApiKey } from "../../util/api/loadApiKey.js";
@@ -10,7 +10,7 @@ import { loadApiKey } from "../../util/api/loadApiKey.js";
  *
  * @see https://learn.microsoft.com/en-us/azure/ai-services/openai/reference
  */
-export class AzureOpenAIApiConfiguration extends AbstractProviderApiConfiguration {
+export class AzureOpenAIApiConfiguration extends BasicApiConfiguration {
   readonly resourceName: string;
   readonly deploymentId: string;
   readonly apiVersion: string;

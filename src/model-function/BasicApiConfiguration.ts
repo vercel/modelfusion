@@ -2,15 +2,11 @@ import { RetryFunction } from "../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../util/api/ThrottleFunction.js";
 import { ApiConfiguration } from "./ApiConfiguration.js";
 
-export abstract class AbstractProviderApiConfiguration
-  implements ApiConfiguration
-{
+export class BasicApiConfiguration implements ApiConfiguration {
   readonly baseUrl: string;
 
   readonly retry?: RetryFunction;
   readonly throttle?: ThrottleFunction;
-
-  abstract readonly headers: Record<string, string>;
 
   constructor({
     baseUrl,
@@ -24,6 +20,10 @@ export abstract class AbstractProviderApiConfiguration
     this.baseUrl = baseUrl;
     this.retry = retry;
     this.throttle = throttle;
+  }
+
+  get headers(): Record<string, string> {
+    return {};
   }
 
   assembleUrl(path: string): string {

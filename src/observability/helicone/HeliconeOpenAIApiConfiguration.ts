@@ -1,9 +1,9 @@
-import { AbstractProviderApiConfiguration } from "../../model-function/AbstractProviderApiConfiguration.js";
+import { BasicApiConfiguration } from "../../model-function/BasicApiConfiguration.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { loadApiKey } from "../../util/api/loadApiKey.js";
 
-export class HeliconeOpenAIApiConfiguration extends AbstractProviderApiConfiguration {
+export class HeliconeOpenAIApiConfiguration extends BasicApiConfiguration {
   readonly openAIApiKey: string;
   readonly heliconeApiKey: string;
 
