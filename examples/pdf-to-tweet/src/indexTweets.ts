@@ -1,12 +1,11 @@
+import { Command } from "commander";
+import dotenv from "dotenv";
 import {
   MemoryVectorIndex,
   OpenAITextEmbeddingModel,
   TextChunk,
-  throttleMaxConcurrency,
   upsertTextChunks,
 } from "modelfusion";
-import { Command } from "commander";
-import dotenv from "dotenv";
 import fs from "node:fs";
 
 dotenv.config();
@@ -32,9 +31,6 @@ const { inputFile, outputFile } = program.opts();
     vectorIndex,
     embeddingModel: new OpenAITextEmbeddingModel({
       model: "text-embedding-ada-002",
-      throttle: throttleMaxConcurrency({
-        maxConcurrentCalls: 5,
-      }),
     }),
     chunks: exampleTweets.map((text) => ({ text })),
   });
