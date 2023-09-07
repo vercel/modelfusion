@@ -1,3 +1,4 @@
+export * from "./OpenAIApiConfiguration.js";
 export * from "./OpenAICostCalculator.js";
 export { OpenAIError, OpenAIErrorData } from "./OpenAIError.js";
 export * from "./OpenAIImageGenerationModel.js";
