@@ -1,6 +1,7 @@
 import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
 import { RetryFunction } from "../../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
+import { loadApiKey } from "../../util/api/loadApiKey.js";
 
 export class OpenAIApiConfiguration implements ProviderApiConfiguration {
   readonly baseUrl: string;
@@ -24,15 +25,11 @@ export class OpenAIApiConfiguration implements ProviderApiConfiguration {
     this.retry = retry;
     this.throttle = throttle;
 
-    apiKey ??= process.env.OPENAI_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        `OpenAI API key is missing. Pass it using the 'apiKey' parameter or set it as an environment variable named OPENAI_API_KEY.`
-      );
-    }
-
-    this.apiKey = apiKey;
+    this.apiKey = loadApiKey({
+      apiKey,
+      environmentVariableName: "OPENAI_API_KEY",
+      description: "OpenAI",
+    });
   }
 
   assembleUrl(path: string): string {
