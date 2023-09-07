@@ -20,7 +20,6 @@ import {
 } from "../../../util/api/postToApi.js";
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
-import { OpenAIModelSettings } from "../OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import {
@@ -285,7 +284,7 @@ export class OpenAIChatModel
     options: {
       responseFormat: OpenAIChatResponseFormatType<RESULT>;
     } & ModelFunctionOptions<
-      Partial<OpenAIChatCallSettings & OpenAIModelSettings & { user?: string }>
+      Partial<OpenAIChatCallSettings & { user?: string }>
     >
   ): Promise<RESULT> {
     const { run, settings, responseFormat } = options;
@@ -295,8 +294,10 @@ export class OpenAIChatModel
       ...settings,
     };
 
+    const api = combinedSettings.api ?? new OpenAIApiConfiguration();
+
     const callSettings = {
-      api: combinedSettings.api ?? new OpenAIApiConfiguration(),
+      api,
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
       ...combinedSettings,
       stop: combinedSettings.stopSequences,
@@ -307,8 +308,8 @@ export class OpenAIChatModel
     };
 
     return callWithRetryAndThrottle({
-      retry: callSettings.retry,
-      throttle: callSettings.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () => callOpenAIChatCompletionAPI(callSettings),
     });
   }
