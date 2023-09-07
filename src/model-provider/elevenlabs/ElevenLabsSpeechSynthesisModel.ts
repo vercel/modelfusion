@@ -1,24 +1,23 @@
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   SpeechSynthesisModel,
   SpeechSynthesisModelSettings,
 } from "../../model-function/synthesize-speech/SpeechSynthesisModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createAudioMpegResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 
 export interface ElevenLabsSpeechSynthesisModelSettings
   extends SpeechSynthesisModelSettings {
-  voice: string;
+  api?: ApiConfiguration;
 
-  baseUrl?: string;
-  apiKey?: string;
+  voice: string;
 
   model?: string;
   voiceSettings?: {
@@ -27,11 +26,13 @@ export interface ElevenLabsSpeechSynthesisModelSettings
     style?: number;
     useSpeakerBoost?: boolean;
   };
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
 }
 
+/**
+ * Synthesize speech using the ElevenLabs Text to Speech API.
+ *
+ * @see https://api.elevenlabs.io/docs#/text-to-speech/Text_to_speech_v1_text_to_speech__voice_id__post
+ */
 export class ElevenLabsSpeechSynthesisModel
   extends AbstractModel<ElevenLabsSpeechSynthesisModelSettings>
   implements SpeechSynthesisModel<ElevenLabsSpeechSynthesisModelSettings>
@@ -41,18 +42,9 @@ export class ElevenLabsSpeechSynthesisModel
   }
 
   readonly provider = "elevenlabs";
-  readonly modelName = null;
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.ELEVENLABS_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        "No ElevenLabs API key provided. Pass it in the constructor or set the ELEVENLABS_API_KEY environment variable."
-      );
-    }
-
-    return apiKey;
+  get modelName() {
+    return this.settings.voice;
   }
 
   private async callAPI(
@@ -67,25 +59,24 @@ export class ElevenLabsSpeechSynthesisModel
       ...settings,
     };
 
+    const callSettings = {
+      api: combinedSettings.api,
+      abortSignal: run?.abortSignal,
+      text,
+      voiceId: combinedSettings.voice,
+      modelId: combinedSettings.model,
+      voiceSettings: combinedSettings.voiceSettings,
+    };
+
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
-      call: async () =>
-        callElevenLabsTextToSpeechAPI({
-          baseUrl: combinedSettings.baseUrl,
-          abortSignal: run?.abortSignal,
-          apiKey: this.apiKey,
-          text,
-          voiceId: combinedSettings.voice,
-          modelId: combinedSettings.model,
-          voiceSettings: combinedSettings.voiceSettings,
-        }),
+      retry: combinedSettings.api?.retry,
+      throttle: combinedSettings.api?.throttle,
+      call: async () => callElevenLabsTextToSpeechAPI(callSettings),
     });
   }
 
   get settingsForEvent(): Partial<ElevenLabsSpeechSynthesisModelSettings> {
     return {
-      baseUrl: this.settings.baseUrl,
       model: this.settings.model,
       voice: this.settings.voice,
       voiceSettings: this.settings.voiceSettings,
@@ -111,21 +102,16 @@ export class ElevenLabsSpeechSynthesisModel
   }
 }
 
-/**
- * @see https://api.elevenlabs.io/docs#/text-to-speech/Text_to_speech_v1_text_to_speech__voice_id__post
- */
 async function callElevenLabsTextToSpeechAPI({
-  baseUrl = "https://api.elevenlabs.io/v1",
+  api = new ElevenLabsApiConfiguration(),
   abortSignal,
-  apiKey,
   text,
   voiceId,
   modelId,
   voiceSettings,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   text: string;
   voiceId: string;
   modelId?: string;
@@ -137,10 +123,8 @@ async function callElevenLabsTextToSpeechAPI({
   };
 }): Promise<Buffer> {
   return postJsonToApi({
-    url: `${baseUrl}/text-to-speech/${voiceId}`,
-    headers: {
-      "xi-api-key": apiKey,
-    },
+    url: api.assembleUrl(`/text-to-speech/${voiceId}`),
+    headers: api.headers,
     body: {
       text,
       model_id: modelId,

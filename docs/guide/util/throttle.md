@@ -9,11 +9,9 @@ Throttling strategies determine how many parallel API calls are allowed.
 ## Usage
 
 By default, API calls are not throttled.
-You can configure different throttling strategies on models, either in the constructor or as function call parameters.
+You can configure different throttling strategies on API configurations.
 
 Throttling can be particularly useful for [text embedding](/guide/function/embed-text), where each `embedText` call can result in multiple API calls.
-
-Different models can share the same throttling strategy. This will result in a shared maximum number of API calls between them.
 
 ### throttleMaxConcurrency
 
@@ -26,9 +24,13 @@ The `throttleMaxConcurrency` strategy limits the number of parallel API calls.
 ```ts
 import { throttleMaxConcurrency } from "modelfusion";
 
+const api = new OpenAIApiConfiguration({
+  throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
+});
+
 const model = new OpenAITextEmbeddingModel({
   model: "text-embedding-ada-002",
-  throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
+  api,
 });
 ```
 
@@ -43,12 +45,12 @@ The `throttleUnlimitedConcurrency` strategy does not limit parallel API calls.
 ```ts
 import { throttleUnlimitedConcurrency } from "modelfusion";
 
-const embeddings = await embedTexts(
-  new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
-  [
-    "At first, Nox didn't know what to do with the pup.",
-    "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-  ],
-  { settings: { throttle: throttleUnlimitedConcurrency() } }
-);
+const api = new OpenAIApiConfiguration({
+  throttle: throttleUnlimitedConcurrency(),
+});
+
+new OpenAITextEmbeddingModel({
+  model: "text-embedding-ada-002",
+  api,
+});
 ```

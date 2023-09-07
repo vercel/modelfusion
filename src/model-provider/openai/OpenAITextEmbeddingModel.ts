@@ -1,18 +1,18 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
 } from "../../model-function/embed-text/TextEmbeddingModel.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 
@@ -52,13 +52,8 @@ export const calculateOpenAIEmbeddingCostInMillicents = ({
 
 export interface OpenAITextEmbeddingModelSettings
   extends TextEmbeddingModelSettings {
+  api?: ApiConfiguration;
   model: OpenAITextEmbeddingModelType;
-
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
   isUserIdForwardingEnabled?: boolean;
 }
 
@@ -106,18 +101,6 @@ export class OpenAITextEmbeddingModel
   readonly tokenizer: TikTokenTokenizer;
   readonly contextWindowSize: number;
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        `OpenAI API key is missing. Pass it as an argument to the constructor or set it as an environment variable named OPENAI_API_KEY.`
-      );
-    }
-
-    return apiKey;
-  }
-
   async countTokens(input: string) {
     return countTokens(this.tokenizer, input);
   }
@@ -129,30 +112,31 @@ export class OpenAITextEmbeddingModel
     const run = options?.run;
     const settings = options?.settings;
 
-    const callSettings = Object.assign(
-      {
-        apiKey: this.apiKey,
-        user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
-      },
-      this.settings,
-      settings,
-      {
-        abortSignal: run?.abortSignal,
-        input: text,
-      }
-    );
+    const combinedSettings = {
+      ...this.settings,
+      ...settings,
+    };
+
+    const callSettings = {
+      user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
+
+      // Copied settings:
+      ...combinedSettings,
+
+      // other settings:
+      abortSignal: run?.abortSignal,
+      input: text,
+    };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callOpenAITextEmbeddingAPI(callSettings),
     });
   }
 
   get settingsForEvent(): Partial<OpenAITextEmbeddingModelSettings> {
-    return {
-      baseUrl: this.settings.baseUrl,
-    };
+    return {};
   }
 
   generateEmbeddingResponse(
@@ -201,40 +185,22 @@ export type OpenAITextEmbeddingResponse = z.infer<
   typeof openAITextEmbeddingResponseSchema
 >;
 
-/**
- * Call the OpenAI Embedding API to generate an embedding for the given input.
- *
- * @see https://platform.openai.com/docs/api-reference/embeddings
- *
- * @example
- * const response = await callOpenAITextEmbeddingAPI({
- *   apiKey: OPENAI_API_KEY,
- *   model: "text-embedding-ada-002",
- *   input: "At first, Nox didn't know what to do with the pup.",
- * });
- *
- * console.log(response.data[0].embedding);
- */
 async function callOpenAITextEmbeddingAPI({
-  baseUrl = "https://api.openai.com/v1",
+  api = new OpenAIApiConfiguration(),
   abortSignal,
-  apiKey,
   model,
   input,
   user,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   model: OpenAITextEmbeddingModelType;
   input: string;
   user?: string;
 }): Promise<OpenAITextEmbeddingResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/embeddings`,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl("/embeddings"),
+    headers: api.headers,
     body: {
       model,
       input,

@@ -1,32 +1,34 @@
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   SpeechSynthesisModel,
   SpeechSynthesisModelSettings,
 } from "../../model-function/synthesize-speech/SpeechSynthesisModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createAudioMpegResponseHandler,
   postToApi,
 } from "../../util/api/postToApi.js";
+import { LmntApiConfiguration } from "./LmntApiConfiguration.js";
 import { failedLmntCallResponseHandler } from "./LmntError.js";
 
 export interface LmntSpeechSynthesisModelSettings
   extends SpeechSynthesisModelSettings {
-  baseUrl?: string;
-  apiKey?: string;
+  api?: ApiConfiguration;
 
   voice: string;
+
   speed?: number;
   seed?: number;
   length?: number;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
 }
 
+/**
+ * Synthesize speech using the LMNT API.
+ *
+ * @see https://www.lmnt.com/docs/rest/#synthesize-speech
+ */
 export class LmntSpeechSynthesisModel
   extends AbstractModel<LmntSpeechSynthesisModelSettings>
   implements SpeechSynthesisModel<LmntSpeechSynthesisModelSettings>
@@ -36,18 +38,9 @@ export class LmntSpeechSynthesisModel
   }
 
   readonly provider = "lmnt";
-  readonly modelName = null;
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.LMNT_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        "No LMNT API key provided. Pass it in the constructor or set the LMNT_API_KEY environment variable."
-      );
-    }
-
-    return apiKey;
+  get modelName() {
+    return this.settings.voice;
   }
 
   private async callAPI(
@@ -57,31 +50,24 @@ export class LmntSpeechSynthesisModel
     const run = options?.run;
     const settings = options?.settings;
 
-    const combinedSettings = {
+    const callSettings = {
+      // copied settings:
       ...this.settings,
       ...settings,
+
+      abortSignal: run?.abortSignal,
+      text,
     };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
-      call: async () =>
-        callLmntTextToSpeechAPI({
-          baseUrl: combinedSettings.baseUrl,
-          abortSignal: run?.abortSignal,
-          apiKey: this.apiKey,
-          text,
-          voice: combinedSettings.voice,
-          speed: combinedSettings.speed,
-          seed: combinedSettings.seed,
-          length: combinedSettings.length,
-        }),
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
+      call: async () => callLmntTextToSpeechAPI(callSettings),
     });
   }
 
   get settingsForEvent(): Partial<LmntSpeechSynthesisModelSettings> {
     return {
-      baseUrl: this.settings.baseUrl,
       voice: this.settings.voice,
       speed: this.settings.speed,
       seed: this.settings.seed,
@@ -104,22 +90,17 @@ export class LmntSpeechSynthesisModel
   }
 }
 
-/**
- * @see https://www.lmnt.com/docs/rest/#synthesize-speech
- */
 async function callLmntTextToSpeechAPI({
-  baseUrl = "https://api.lmnt.com/speech/beta",
+  api = new LmntApiConfiguration(),
   abortSignal,
-  apiKey,
   text,
   voice,
   speed,
   seed,
   length,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   text: string;
   voice: string;
   speed?: number;
@@ -135,10 +116,8 @@ async function callLmntTextToSpeechAPI({
   if (length != null) formData.append("length", length.toString());
 
   return postToApi({
-    url: `${baseUrl}/synthesize`,
-    headers: {
-      "X-API-Key": apiKey,
-    },
+    url: api.assembleUrl(`/synthesize`),
+    headers: api.headers,
     body: {
       content: formData,
       values: {

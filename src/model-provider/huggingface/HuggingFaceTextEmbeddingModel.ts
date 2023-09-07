@@ -1,31 +1,27 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
 } from "../../model-function/embed-text/TextEmbeddingModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
 import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
+import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
 
 export interface HuggingFaceTextEmbeddingModelSettings
   extends TextEmbeddingModelSettings {
-  model: string;
+  api?: ApiConfiguration;
 
-  baseUrl?: string;
-  apiKey?: string;
+  model: string;
 
   maxTextsPerCall?: number;
   embeddingDimensions?: number;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
 
   options?: {
     useCache?: boolean;
@@ -34,7 +30,7 @@ export interface HuggingFaceTextEmbeddingModelSettings
 }
 
 /**
- * Create a text embeddinng model that calls a Hugging Face Inference API Feature Extraction Task.
+ * Create a text embedding model that calls a Hugging Face Inference API Feature Extraction Task.
  *
  * @see https://huggingface.co/docs/api-inference/detailed_parameters#feature-extraction-task
  *
@@ -81,18 +77,6 @@ export class HuggingFaceTextEmbeddingModel
 
   readonly tokenizer = undefined;
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.HUGGINGFACE_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        "No Hugging Face API key provided. Pass it in the constructor or set the HUGGINGFACE_API_KEY environment variable."
-      );
-    }
-
-    return apiKey;
-  }
-
   async callAPI(
     texts: Array<string>,
     options?: ModelFunctionOptions<HuggingFaceTextEmbeddingModelSettings>
@@ -106,32 +90,30 @@ export class HuggingFaceTextEmbeddingModel
     const run = options?.run;
     const settings = options?.settings;
 
-    const callSettings = Object.assign(
-      {
-        apiKey: this.apiKey,
-        options: {
-          useCache: true,
-          waitForModel: true,
-        },
+    const combinedSettings = {
+      ...this.settings,
+      ...settings,
+    };
+
+    const callSettings = {
+      options: {
+        useCache: true,
+        waitForModel: true,
       },
-      this.settings,
-      settings,
-      {
-        abortSignal: run?.abortSignal,
-        inputs: texts,
-      }
-    );
+      ...combinedSettings,
+      abortSignal: run?.abortSignal,
+      inputs: texts,
+    };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callHuggingFaceTextGenerationAPI(callSettings),
     });
   }
 
   get settingsForEvent(): Partial<HuggingFaceTextEmbeddingModelSettings> {
     return {
-      baseUrl: this.settings.baseUrl,
       embeddingDimensions: this.settings.embeddingDimensions,
       options: this.settings.options,
     };
@@ -166,16 +148,14 @@ export type HuggingFaceTextEmbeddingResponse = z.infer<
 >;
 
 async function callHuggingFaceTextGenerationAPI({
-  baseUrl = "https://api-inference.huggingface.co/pipeline/feature-extraction",
+  api = new HuggingFaceApiConfiguration(),
   abortSignal,
-  apiKey,
   model,
   inputs,
   options,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   model: string;
   inputs: string[];
   options?: {
@@ -184,10 +164,8 @@ async function callHuggingFaceTextGenerationAPI({
   };
 }): Promise<HuggingFaceTextEmbeddingResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/${model}`,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl(`/${model}`),
+    headers: api.headers,
     body: {
       inputs,
       options: options
@@ -195,7 +173,7 @@ async function callHuggingFaceTextGenerationAPI({
             use_cache: options?.useCache,
             wait_for_model: options?.waitForModel,
           }
-        : undefined,
+        : {},
     },
     failedResponseHandler: failedHuggingFaceCallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(

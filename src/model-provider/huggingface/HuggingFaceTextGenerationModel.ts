@@ -1,30 +1,26 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
+import { PromptFormat } from "../../prompt/PromptFormat.js";
+import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
 import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
-import { PromptFormat } from "../../prompt/PromptFormat.js";
-import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
 
 export interface HuggingFaceTextGenerationModelSettings
   extends TextGenerationModelSettings {
+  api?: ApiConfiguration;
+
   model: string;
-
-  baseUrl?: string;
-  apiKey?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
 
   topK?: number;
   topP?: number;
@@ -80,18 +76,6 @@ export class HuggingFaceTextGenerationModel
   readonly contextWindowSize = undefined;
   readonly tokenizer = undefined;
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.HUGGINGFACE_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        "No Hugging Face API key provided. Pass it in the constructor or set the HUGGINGFACE_API_KEY environment variable."
-      );
-    }
-
-    return apiKey;
-  }
-
   async callAPI(
     prompt: string,
     options?: ModelFunctionOptions<HuggingFaceTextGenerationModelSettings>
@@ -105,7 +89,6 @@ export class HuggingFaceTextGenerationModel
     };
 
     const callSettings = {
-      apiKey: this.apiKey,
       options: {
         useCache: true,
         waitForModel: true,
@@ -117,8 +100,8 @@ export class HuggingFaceTextGenerationModel
     };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callHuggingFaceTextGenerationAPI(callSettings),
     });
   }
@@ -128,7 +111,6 @@ export class HuggingFaceTextGenerationModel
       "stopSequences",
       "maxCompletionTokens",
 
-      "baseUrl",
       "topK",
       "topP",
       "temperature",
@@ -197,29 +179,9 @@ export type HuggingFaceTextGenerationResponse = z.infer<
   typeof huggingFaceTextGenerationResponseSchema
 >;
 
-/**
- * Call a Hugging Face Inference API Text Generation Task to generate a text completion for the given prompt.
- *
- * @see https://huggingface.co/docs/api-inference/detailed_parameters#text-generation-task
- *
- * @example
- * const response = await callHuggingFaceTextGenerationAPI({
- *   apiKey: HUGGINGFACE_API_KEY,
- *   model: "tiiuae/falcon-7b",
- *   inputs: "Write a short story about a robot learning to love:\n\n",
- *   temperature: 700,
- *   maxNewTokens: 500,
- *   options: {
- *     waitForModel: true,
- *   },
- * });
- *
- * console.log(response[0].generated_text);
- */
 async function callHuggingFaceTextGenerationAPI({
-  baseUrl = "https://api-inference.huggingface.co/models",
+  api = new HuggingFaceApiConfiguration(),
   abortSignal,
-  apiKey,
   model,
   inputs,
   topK,
@@ -232,9 +194,8 @@ async function callHuggingFaceTextGenerationAPI({
   doSample,
   options,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
-  apiKey: string;
   model: string;
   inputs: string;
   topK?: number;
@@ -251,10 +212,8 @@ async function callHuggingFaceTextGenerationAPI({
   };
 }): Promise<HuggingFaceTextGenerationResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/${model}`,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl(`/${model}`),
+    headers: api.headers,
     body: {
       inputs,
       top_k: topK,

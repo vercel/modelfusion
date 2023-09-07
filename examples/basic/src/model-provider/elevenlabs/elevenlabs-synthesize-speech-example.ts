@@ -7,7 +7,7 @@ dotenv.config();
 (async () => {
   const speech = await synthesizeSpeech(
     new ElevenLabsSpeechSynthesisModel({
-      voice: "ErXwobaYiN019PkySvjV",
+      voice: "pNInz6obpgDQGcFmaJgB", // Adam
     }),
     "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
       "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +

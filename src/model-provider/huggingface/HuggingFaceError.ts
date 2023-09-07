@@ -4,7 +4,7 @@ import { ApiCallError } from "../../util/api/ApiCallError.js";
 import { ResponseHandler } from "../../util/api/postToApi.js";
 
 export const huggingFaceErrorDataSchema = z.object({
-  error: z.string(),
+  error: z.array(z.string()),
 });
 
 export type HuggingFaceErrorData = z.infer<typeof huggingFaceErrorDataSchema>;
@@ -17,7 +17,7 @@ export class HuggingFaceError extends ApiCallError {
     statusCode,
     url,
     requestBodyValues,
-    message = data.error,
+    message = data.error.join("\n\n"),
   }: {
     message?: string;
     statusCode: number;
@@ -40,6 +40,8 @@ export const failedHuggingFaceCallResponseHandler: ResponseHandler<
     const parsedError = huggingFaceErrorDataSchema.parse(
       SecureJSON.parse(responseBody)
     );
+
+    console.error(requestBodyValues);
 
     return new HuggingFaceError({
       url,

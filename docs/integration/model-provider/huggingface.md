@@ -18,6 +18,21 @@ If the model is not loaded on Hugging Face, ModelFusion will wait by default.
 This can take a minute and longer for the first call.
 You can override this behavior by setting `waitForModel` to `false` in the model settings.
 
+### API Configuration
+
+[Hugging Face API Configuration](/api/classes/HuggingFaceApiConfiguration)
+
+```ts
+const api = new HuggingFaceApiConfiguration({
+  // ...
+});
+
+const model = new HuggingFaceTextGenerationModel({
+  api,
+  // ...
+});
+```
+
 ### Generate Text
 
 [HuggingFaceTextGenerationModel API](/api/classes/HuggingFaceTextGenerationModel)

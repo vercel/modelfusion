@@ -20,6 +20,21 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/llamacpp)
 
+### API Configuration
+
+[Llama.cpp API Configuration](/api/classes/LlamaCppApiConfiguration)
+
+```ts
+const api = new LlamaCppApiConfiguration({
+  // ...
+});
+
+const model = new LlamaCppTextGenerationModel({
+  api,
+  // ...
+});
+```
+
 ### Generate Text
 
 [LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)

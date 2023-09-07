@@ -14,6 +14,21 @@ title: Stability AI
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/stability)
 
+### API Configuration
+
+[Stability API Configuration](/api/classes/StabilityApiConfiguration)
+
+```ts
+const api = new StabilityApiConfiguration({
+  // ...
+});
+
+const model = new StabilityImageGenerationModel({
+  api,
+  // ...
+});
+```
+
 ### Generate Image
 
 [StabilityImageGenerationModel API](/api/classes/StabilityImageGenerationModel)

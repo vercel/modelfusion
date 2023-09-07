@@ -1,17 +1,17 @@
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
 import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration.js";
 import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js";
 
 /**
@@ -45,22 +45,24 @@ export class Automatic1111ImageGenerationModel
     const run = options?.run;
     const settings = options?.settings;
 
-    const callSettings = Object.assign(this.settings, settings, {
+    const callSettings = {
+      ...this.settings,
+      ...settings,
+
       abortSignal: run?.abortSignal,
       engineId: this.settings.model,
       prompt: input.prompt,
-    });
+    };
 
     return callWithRetryAndThrottle({
-      retry: this.settings.retry,
-      throttle: this.settings.throttle,
+      retry: callSettings.api?.retry,
+      throttle: callSettings.api?.throttle,
       call: async () => callAutomatic1111ImageGenerationAPI(callSettings),
     });
   }
 
   get settingsForEvent(): Partial<Automatic1111ImageGenerationModelSettings> {
     return {
-      baseUrl: this.settings.baseUrl,
       height: this.settings.height,
       width: this.settings.width,
       sampler: this.settings.sampler,
@@ -88,12 +90,10 @@ export class Automatic1111ImageGenerationModel
 
 export interface Automatic1111ImageGenerationModelSettings
   extends ImageGenerationModelSettings {
-  baseUrl?: string;
-
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
+  api?: ApiConfiguration;
 
   model: string;
+
   height?: number;
   width?: number;
   sampler?: string;
@@ -117,7 +117,7 @@ export type A111ImageGenerationPrompt = {
 };
 
 async function callAutomatic1111ImageGenerationAPI({
-  baseUrl = "http://127.0.0.1:7860",
+  api = new Automatic1111ApiConfiguration(),
   abortSignal,
   height,
   width,
@@ -128,7 +128,7 @@ async function callAutomatic1111ImageGenerationAPI({
   seed,
   model,
 }: {
-  baseUrl?: string;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   height?: number;
   width?: number;
@@ -140,7 +140,8 @@ async function callAutomatic1111ImageGenerationAPI({
   model?: string;
 }): Promise<Automatic1111ImageGenerationResponse> {
   return postJsonToApi({
-    url: `${baseUrl}/sdapi/v1/txt2img`,
+    url: api.assembleUrl(`/txt2img`),
+    headers: api.headers,
     body: {
       height,
       width,

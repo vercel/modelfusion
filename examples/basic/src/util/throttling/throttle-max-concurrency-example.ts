@@ -1,4 +1,5 @@
 import {
+  OpenAIApiConfiguration,
   OpenAITextEmbeddingModel,
   embedTexts,
   throttleMaxConcurrency,
@@ -8,10 +9,14 @@ import dotenv from "dotenv";
 dotenv.config();
 
 (async () => {
+  const api = new OpenAIApiConfiguration({
+    throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
+  });
+
   const embeddings = await embedTexts(
     new OpenAITextEmbeddingModel({
+      api,
       model: "text-embedding-ada-002",
-      throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
     }),
     [
       "At first, Nox didn't know what to do with the pup.",

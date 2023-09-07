@@ -1,7 +1,9 @@
 import {
+  OpenAIApiConfiguration,
   OpenAITextGenerationModel,
   generateText,
   retryWithExponentialBackoff,
+  throttleUnlimitedConcurrency,
 } from "modelfusion";
 import dotenv from "dotenv";
 
@@ -11,12 +13,12 @@ dotenv.config();
   const text = await generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
-      temperature: 0.7,
-      maxCompletionTokens: 500,
-      retry: retryWithExponentialBackoff({
-        maxTries: 8,
-        initialDelayInMs: 1000,
-        backoffFactor: 2,
+      api: new OpenAIApiConfiguration({
+        // all parameters are optional:
+        apiKey: "my-api-key",
+        baseUrl: "custom-base-url",
+        retry: retryWithExponentialBackoff({ maxTries: 5 }),
+        throttle: throttleUnlimitedConcurrency(),
       }),
     }),
     "Write a short story about a robot learning to love:\n\n"
