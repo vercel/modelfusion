@@ -62,14 +62,10 @@ export class StabilityImageGenerationModel
     const run = options?.run;
     const settings = options?.settings;
 
-    const combinedSettings = {
+    const callSettings = {
+      // copied settings:
       ...this.settings,
       ...settings,
-    };
-
-    const callSettings = {
-      // Copied settings:
-      ...combinedSettings,
 
       // other settings:
       abortSignal: run?.abortSignal,
