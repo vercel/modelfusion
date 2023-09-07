@@ -14,6 +14,21 @@ title: Cohere
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/cohere)
 
+### API Configuration
+
+[Cohere API Configuration](/api/classes/CohereApiConfiguration)
+
+```ts
+const api = new CohereApiConfiguration({
+  // ...
+});
+
+const model = new CohereTextGenerationModel({
+  api,
+  // ...
+});
+```
+
 ### Generate Text
 
 [CohereTextGenerationModel API](/api/classes/CohereTextGenerationModel)

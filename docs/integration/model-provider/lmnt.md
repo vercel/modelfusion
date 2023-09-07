@@ -13,6 +13,21 @@ sidebar_position: 21
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/lmnt)
 
+### API Configuration
+
+[LMNT API Configuration](/api/classes/LmntApiConfiguration)
+
+```ts
+const api = new LmntApiConfiguration({
+  // ...
+});
+
+const model = new LmntSpeechSynthesisModel({
+  api,
+  // ...
+});
+```
+
 ### Synthesize Speech
 
 [LmntSpeechSynthesisModel API](/api/classes/LmntSpeechSynthesisModel)

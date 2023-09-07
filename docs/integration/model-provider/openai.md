@@ -14,6 +14,41 @@ title: OpenAI
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/openai)
 
+### API Configuration (OpenAI)
+
+[OpenAI API Configuration](/api/classes/OpenAIApiConfiguration)
+
+```ts
+const api = new OpenAIApiConfiguration({
+  // ...
+});
+
+const model = new OpenAIChatModel({
+  api,
+  // ...
+});
+```
+
+### API Configuration (Azure)
+
+[Azure OpenAI API Configuration](/api/classes/AzureOpenAIApiConfiguration)
+
+This configuration is for using [OpenAI with Azure](https://azure.microsoft.com/en-us/products/ai-services/openai-service).
+
+You need to configure the API as `AZURE_OPENAI_API_KEY` if you want to use it as an environment variable and configure the API as follows:
+
+```ts
+new OpenAIChatModel({
+  api: new AzureOpenAIApiConfiguration({
+    // apiKey: automatically uses process.env.AZURE_OPENAI_API_KEY,
+    resourceName: "my-resource-name",
+    deploymentId: "my-deployment-id",
+    apiVersion: "my-api-version",
+  }),
+  // ...
+});
+```
+
 ### Generate Text
 
 #### Text Model

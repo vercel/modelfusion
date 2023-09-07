@@ -13,6 +13,21 @@ sidebar_position: 20
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/elevenlabs)
 
+### API Configuration
+
+[ElevenLabs API Configuration](/api/classes/ElevenLabsApiConfiguration)
+
+```ts
+const api = new ElevenLabsApiConfiguration({
+  // ...
+});
+
+const model = new ElevenLabsSpeechSynthesisModel({
+  api,
+  // ...
+});
+```
+
 ### Synthesize Speech
 
 [ElevenLabsSpeechSynthesisModel API](/api/classes/ElevenLabsSpeechSynthesisModel)
