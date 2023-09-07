@@ -23,6 +23,11 @@ export interface LmntSpeechSynthesisModelSettings
   length?: number;
 }
 
+/**
+ * Synthesize speech using the LMNT API.
+ *
+ * @see https://www.lmnt.com/docs/rest/#synthesize-speech
+ */
 export class LmntSpeechSynthesisModel
   extends AbstractModel<LmntSpeechSynthesisModelSettings>
   implements SpeechSynthesisModel<LmntSpeechSynthesisModelSettings>
@@ -32,7 +37,10 @@ export class LmntSpeechSynthesisModel
   }
 
   readonly provider = "lmnt";
-  readonly modelName = null;
+
+  get modelName() {
+    return this.settings.voice;
+  }
 
   private async callAPI(
     text: string,
@@ -81,9 +89,6 @@ export class LmntSpeechSynthesisModel
   }
 }
 
-/**
- * @see https://www.lmnt.com/docs/rest/#synthesize-speech
- */
 async function callLmntTextToSpeechAPI({
   api = new LmntApiConfiguration(),
   abortSignal,
