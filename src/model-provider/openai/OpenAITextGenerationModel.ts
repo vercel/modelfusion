@@ -2,8 +2,10 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
 import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
+
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -18,9 +20,9 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../util/api/postToApi.js";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { OpenAIImageGenerationCallSettings } from "./OpenAIImageGenerationModel.js";
-import { OpenAIModelSettings } from "./OpenAIModelSettings.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 
 /**
@@ -153,9 +155,9 @@ export const calculateOpenAITextGenerationCostInMillicents = ({
   getOpenAITextGenerationModelInformation(model).tokenCostInMillicents;
 
 export interface OpenAITextGenerationCallSettings {
-  model: OpenAITextGenerationModelType;
+  api?: ProviderApiConfiguration;
 
-  headers?: Record<string, string>;
+  model: OpenAITextGenerationModelType;
 
   suffix?: string;
   maxTokens?: number;
@@ -173,7 +175,6 @@ export interface OpenAITextGenerationCallSettings {
 
 export interface OpenAITextGenerationModelSettings
   extends TextGenerationModelSettings,
-    OpenAIModelSettings,
     Omit<OpenAITextGenerationCallSettings, "stop" | "maxTokens"> {
   isUserIdForwardingEnabled?: boolean;
 }
@@ -227,18 +228,6 @@ export class OpenAITextGenerationModel
   readonly contextWindowSize: number;
   readonly tokenizer: TikTokenTokenizer;
 
-  private get apiKey() {
-    const apiKey = this.settings.apiKey ?? process.env.OPENAI_API_KEY;
-
-    if (apiKey == null) {
-      throw new Error(
-        `OpenAI API key is missing. Pass it as an argument to the constructor or set it as an environment variable named OPENAI_API_KEY.`
-      );
-    }
-
-    return apiKey;
-  }
-
   async countPromptTokens(input: string) {
     return countTokens(this.tokenizer, input);
   }
@@ -248,10 +237,7 @@ export class OpenAITextGenerationModel
     options: {
       responseFormat: OpenAITextResponseFormatType<RESULT>;
     } & ModelFunctionOptions<
-      Partial<
-        OpenAIImageGenerationCallSettings &
-          OpenAIModelSettings & { user?: string }
-      >
+      Partial<OpenAIImageGenerationCallSettings & { user?: string }>
     >
   ): Promise<RESULT> {
     const { run, settings, responseFormat } = options;
@@ -261,8 +247,10 @@ export class OpenAITextGenerationModel
       ...settings,
     };
 
+    const api = combinedSettings.api ?? new OpenAIApiConfiguration();
+
     const callSettings = {
-      apiKey: this.apiKey,
+      api,
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
 
       // Copied settings:
@@ -279,8 +267,8 @@ export class OpenAITextGenerationModel
     };
 
     return callWithRetryAndThrottle({
-      retry: callSettings.retry,
-      throttle: callSettings.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () => callOpenAITextGenerationAPI(callSettings),
     });
   }
@@ -290,7 +278,6 @@ export class OpenAITextGenerationModel
       "maxCompletionTokens",
       "stopSequences",
 
-      "baseUrl",
       "suffix",
       "temperature",
       "topP",
@@ -391,28 +378,10 @@ const openAITextGenerationResponseSchema = z.object({
   }),
 });
 
-/**
- * Call the OpenAI Text Completion API to generate a text completion for the given prompt.
- *
- * @see https://platform.openai.com/docs/api-reference/completions/create
- *
- * @example
- * const response = await callOpenAITextGenerationAPI({
- *   apiKey: OPENAI_API_KEY,
- *   model: "text-davinci-003",
- *   prompt: "Write a short story about a robot learning to love:\n\n",
- *   temperature: 0.7,
- *   maxTokens: 500,
- * });
- *
- * console.log(response.choices[0].text);
- */
 async function callOpenAITextGenerationAPI<RESPONSE>({
-  baseUrl = "https://api.openai.com/v1",
-  headers,
+  api,
   abortSignal,
   responseFormat,
-  apiKey,
   model,
   prompt,
   suffix,
@@ -429,21 +398,15 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
   logitBias,
   user,
 }: OpenAITextGenerationCallSettings & {
-  baseUrl?: string;
-  headers?: Record<string, string>;
+  api: ProviderApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: OpenAITextResponseFormatType<RESPONSE>;
-  apiKey: string;
-  model: OpenAITextGenerationModelType;
   prompt: string;
   user?: string;
 }): Promise<RESPONSE> {
   return postJsonToApi({
-    url: `${baseUrl}/completions`,
-    headers: {
-      ...headers,
-      Authorization: `Bearer ${apiKey}`,
-    },
+    url: api.assembleUrl("/completions"),
+    headers: api.headers,
     body: {
       stream: responseFormat.stream,
       model,

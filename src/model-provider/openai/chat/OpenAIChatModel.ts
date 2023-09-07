@@ -299,9 +299,15 @@ export class OpenAIChatModel
     const callSettings = {
       api,
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
+
+      // Copied settings:
       ...combinedSettings,
+
+      // map to OpenAI API names:
       stop: combinedSettings.stopSequences,
       maxTokens: combinedSettings.maxCompletionTokens,
+
+      // other settings:
       abortSignal: run?.abortSignal,
       messages,
       responseFormat,
