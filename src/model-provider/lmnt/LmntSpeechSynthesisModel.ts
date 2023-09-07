@@ -18,6 +18,7 @@ export interface LmntSpeechSynthesisModelSettings
   api?: ApiConfiguration;
 
   voice: string;
+
   speed?: number;
   seed?: number;
   length?: number;
