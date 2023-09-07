@@ -41,15 +41,13 @@ You need to configure the API as `AZURE_OPENAI_API_KEY` if you want to use it as
 new OpenAIChatModel({
   api: new AzureOpenAIApiConfiguration({
     // apiKey: automatically uses process.env.AZURE_OPENAI_API_KEY,
-    baseUrl:
-      "https://my-resource-name.openai.azure.com/openai/deployments/my-deployment-id",
+    resourceName: "my-resource-name",
+    deploymentId: "my-deployment-id",
     apiVersion: "my-api-version",
   }),
   // ...
 });
 ```
-
-The `baseUrl` should have a format similar to: `https://${resourceName}.openai.azure.com/openai/deployments/${deploymentId}` (no trailing slash).
 
 ### Generate Text
 
