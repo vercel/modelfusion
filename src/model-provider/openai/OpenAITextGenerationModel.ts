@@ -2,7 +2,7 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 
@@ -155,7 +155,7 @@ export const calculateOpenAITextGenerationCostInMillicents = ({
   getOpenAITextGenerationModelInformation(model).tokenCostInMillicents;
 
 export interface OpenAITextGenerationCallSettings {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
 
   model: OpenAITextGenerationModelType;
 
@@ -395,7 +395,7 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
   logitBias,
   user,
 }: OpenAITextGenerationCallSettings & {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: OpenAITextResponseFormatType<RESPONSE>;
   prompt: string;

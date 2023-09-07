@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
@@ -39,7 +39,7 @@ export const calculateOpenAIImageGenerationCostInMillicents = ({
 export interface OpenAIImageGenerationSettings
   extends ImageGenerationModelSettings,
     OpenAIImageGenerationCallSettings {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
   isUserIdForwardingEnabled?: boolean;
 }
 
@@ -195,7 +195,7 @@ async function callOpenAIImageGenerationAPI<RESPONSE>({
   responseFormat,
   user,
 }: OpenAIImageGenerationCallSettings & {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   prompt: string;
   responseFormat: OpenAIImageGenerationResponseFormatType<RESPONSE>;

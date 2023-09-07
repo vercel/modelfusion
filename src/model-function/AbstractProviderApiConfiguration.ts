@@ -1,9 +1,9 @@
 import { RetryFunction } from "../util/api/RetryFunction.js";
 import { ThrottleFunction } from "../util/api/ThrottleFunction.js";
-import { ProviderApiConfiguration } from "./ProviderApiConfiguration.js";
+import { ApiConfiguration } from "./ApiConfiguration.js";
 
 export abstract class AbstractProviderApiConfiguration
-  implements ProviderApiConfiguration
+  implements ApiConfiguration
 {
   readonly baseUrl: string;
 

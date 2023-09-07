@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
@@ -125,7 +125,7 @@ export class StabilityImageGenerationModel
 
 export interface StabilityImageGenerationModelSettings
   extends ImageGenerationModelSettings {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
 
   model: string;
 
@@ -205,7 +205,7 @@ async function callStabilityImageGenerationAPI({
   steps,
   stylePreset,
 }: {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   engineId: string;
   height?: number;

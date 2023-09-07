@@ -1,7 +1,7 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
@@ -52,7 +52,7 @@ export const calculateOpenAIEmbeddingCostInMillicents = ({
 
 export interface OpenAITextEmbeddingModelSettings
   extends TextEmbeddingModelSettings {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
   model: OpenAITextEmbeddingModelType;
   isUserIdForwardingEnabled?: boolean;
 }
@@ -192,7 +192,7 @@ async function callOpenAITextEmbeddingAPI({
   input,
   user,
 }: {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   model: OpenAITextEmbeddingModelType;
   input: string;

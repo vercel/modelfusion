@@ -1,7 +1,7 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import { ProviderApiConfiguration } from "../../model-function/ProviderApiConfiguration.js";
+import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
@@ -49,7 +49,7 @@ export const calculateOpenAITranscriptionCostInMillicents = ({
 
 export interface OpenAITranscriptionModelSettings
   extends TranscriptionModelSettings {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
   model: OpenAITranscriptionModelType;
 }
 
@@ -166,7 +166,7 @@ async function callOpenAITranscriptionAPI<RESPONSE>({
   temperature,
   language,
 }: {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   model: OpenAITranscriptionModelType;
   file: {

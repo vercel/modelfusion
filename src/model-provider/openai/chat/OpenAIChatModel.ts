@@ -2,7 +2,7 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../../model-function/ModelFunctionOptions.js";
-import { ProviderApiConfiguration } from "../../../model-function/ProviderApiConfiguration.js";
+import { ApiConfiguration } from "../../../model-function/ApiConfiguration.js";
 import { JsonGenerationModel } from "../../../model-function/generate-json/JsonGenerationModel.js";
 import { JsonOrTextGenerationModel } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
 import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
@@ -182,7 +182,7 @@ export const calculateOpenAIChatCostInMillicents = ({
 };
 
 export interface OpenAIChatCallSettings {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
 
   model: OpenAIChatModelType;
 
@@ -478,7 +478,7 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
   logitBias,
   user,
 }: OpenAIChatCallSettings & {
-  api?: ProviderApiConfiguration;
+  api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: OpenAIChatResponseFormatType<RESPONSE>;
   messages: Array<OpenAIChatMessage>;
