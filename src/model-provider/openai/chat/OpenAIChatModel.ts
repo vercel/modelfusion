@@ -2,7 +2,7 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../../model-function/ModelFunctionOptions.js";
-import { ApiConfiguration } from "../../../model-function/ApiConfiguration.js";
+import { ApiConfiguration } from "../../../core/api/ApiConfiguration.js";
 import { JsonGenerationModel } from "../../../model-function/generate-json/JsonGenerationModel.js";
 import { JsonOrTextGenerationModel } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
 import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
@@ -12,12 +12,12 @@ import {
 } from "../../../model-function/generate-text/TextGenerationModel.js";
 import { PromptFormat } from "../../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../../prompt/PromptFormatTextGenerationModel.js";
-import { callWithRetryAndThrottle } from "../../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../../core/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../../util/api/postToApi.js";
+} from "../../../core/api/postToApi.js";
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";

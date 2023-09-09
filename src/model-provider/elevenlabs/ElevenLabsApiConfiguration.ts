@@ -1,11 +1,9 @@
-import { BasicApiConfiguration } from "../../model-function/BasicApiConfiguration.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
-import { loadApiKey } from "../../util/api/loadApiKey.js";
+import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration.js";
+import { RetryFunction } from "../../core/api/RetryFunction.js";
+import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
+import { loadApiKey } from "../../core/api/loadApiKey.js";
 
-export class ElevenLabsApiConfiguration extends BasicApiConfiguration {
-  readonly apiKey: string;
-
+export class ElevenLabsApiConfiguration extends BaseUrlApiConfiguration {
   constructor({
     baseUrl = "https://api.elevenlabs.io/v1",
     apiKey,
@@ -19,18 +17,15 @@ export class ElevenLabsApiConfiguration extends BasicApiConfiguration {
   } = {}) {
     super({
       baseUrl,
+      headers: {
+        "xi-api-key": loadApiKey({
+          apiKey,
+          environmentVariableName: "ELEVENLABS_API_KEY",
+          description: "ElevenLabs",
+        }),
+      },
       retry,
       throttle,
     });
-
-    this.apiKey = loadApiKey({
-      apiKey,
-      environmentVariableName: "ELEVENLABS_API_KEY",
-      description: "ElevenLabs",
-    });
-  }
-
-  get headers(): Record<string, string> {
-    return { "xi-api-key": this.apiKey };
   }
 }

@@ -20,6 +20,7 @@ title: OpenAI
 
 ```ts
 const api = new OpenAIApiConfiguration({
+  apiKey: "my-api-key", // optional; default: process.env.OPENAI_API_KEY
   // ...
 });
 

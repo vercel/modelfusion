@@ -1,17 +1,17 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
 } from "../../model-function/embed-text/TextEmbeddingModel.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";

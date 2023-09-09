@@ -1,16 +1,16 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   TextEmbeddingModel,
   TextEmbeddingModelSettings,
 } from "../../model-function/embed-text/TextEmbeddingModel.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";

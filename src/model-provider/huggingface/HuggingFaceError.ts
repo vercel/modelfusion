@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
-import { ApiCallError } from "../../util/api/ApiCallError.js";
-import { ResponseHandler } from "../../util/api/postToApi.js";
+import { ApiCallError } from "../../core/api/ApiCallError.js";
+import { ResponseHandler } from "../../core/api/postToApi.js";
 
 export const huggingFaceErrorDataSchema = z.object({
   error: z.array(z.string()),

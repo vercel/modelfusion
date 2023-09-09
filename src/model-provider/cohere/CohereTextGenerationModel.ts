@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
@@ -12,12 +12,12 @@ import {
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";

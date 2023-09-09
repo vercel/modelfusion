@@ -1,0 +1,28 @@
+import dotenv from "dotenv";
+import {
+  BaseUrlApiConfiguration,
+  OpenAITextGenerationModel,
+  generateText,
+} from "modelfusion";
+
+dotenv.config();
+
+(async () => {
+  const api = new BaseUrlApiConfiguration({
+    baseUrl: "https://openai.mycompany.com/v1/",
+    headers: {
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      Custom: "A custom header",
+    },
+  });
+
+  const text = await generateText(
+    new OpenAITextGenerationModel({
+      model: "text-davinci-003",
+      api,
+    }),
+    "Write a short story about a robot learning to love:\n\n"
+  );
+
+  console.log(text);
+})();
