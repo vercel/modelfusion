@@ -8,16 +8,14 @@ import {
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
-  TextGenerationModel,
-  TextGenerationModelSettings,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { PromptFormat } from "../../prompt/PromptFormat.js";
-import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
+  ImageDescriptionModel,
+  ImageDescriptionModelSettings,
+} from "../../model-function/describe-image/ImageDescriptionModel.js";
 import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
 import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
 
-export interface HuggingFaceImageToTextModelSettings
-  extends TextGenerationModelSettings {
+export interface HuggingFaceImageDescriptionModelSettings
+  extends ImageDescriptionModelSettings {
   api?: ApiConfiguration;
 
   model: string;
@@ -28,17 +26,16 @@ export interface HuggingFaceImageToTextModelSettings
  *
  * @see https://huggingface.co/tasks/image-to-text
  */
-export class HuggingFaceImageToTextModel
-  extends AbstractModel<HuggingFaceImageToTextModelSettings>
+export class HuggingFaceImageDescriptionModel
+  extends AbstractModel<HuggingFaceImageDescriptionModelSettings>
   implements
-    TextGenerationModel<
+    ImageDescriptionModel<
       Buffer,
-      HuggingFaceImageToTextResponse,
-      undefined,
-      HuggingFaceImageToTextModelSettings
+      HuggingFaceImageDescriptionResponse,
+      HuggingFaceImageDescriptionModelSettings
     >
 {
-  constructor(settings: HuggingFaceImageToTextModelSettings) {
+  constructor(settings: HuggingFaceImageDescriptionModelSettings) {
     super({ settings });
   }
 
@@ -47,13 +44,10 @@ export class HuggingFaceImageToTextModel
     return this.settings.model;
   }
 
-  readonly contextWindowSize = undefined;
-  readonly tokenizer = undefined;
-
   async callAPI(
     data: Buffer,
-    options?: ModelFunctionOptions<HuggingFaceImageToTextModelSettings>
-  ): Promise<HuggingFaceImageToTextResponse> {
+    options?: ModelFunctionOptions<HuggingFaceImageDescriptionModelSettings>
+  ): Promise<HuggingFaceImageDescriptionResponse> {
     const run = options?.run;
     const settings = options?.settings;
 
@@ -67,66 +61,49 @@ export class HuggingFaceImageToTextModel
     return callWithRetryAndThrottle({
       retry: callSettings.api?.retry,
       throttle: callSettings.api?.throttle,
-      call: async () => callHuggingFaceImageToTextAPI(callSettings),
+      call: async () => callHuggingFaceImageDescriptionAPI(callSettings),
     });
   }
 
-  get settingsForEvent(): Partial<HuggingFaceImageToTextModelSettings> {
+  get settingsForEvent(): Partial<HuggingFaceImageDescriptionModelSettings> {
     return {};
   }
 
   readonly countPromptTokens = undefined;
 
-  generateTextResponse(
+  generateImageDescriptionResponse(
     data: Buffer,
-    options?: ModelFunctionOptions<HuggingFaceImageToTextModelSettings>
+    options?: ModelFunctionOptions<HuggingFaceImageDescriptionModelSettings>
   ) {
     return this.callAPI(data, options);
   }
 
-  extractText(response: HuggingFaceImageToTextResponse): string {
+  extractImageDescription(
+    response: HuggingFaceImageDescriptionResponse
+  ): string {
     return response[0].generated_text;
   }
 
-  generateDeltaStreamResponse = undefined;
-  extractTextDelta = undefined;
-
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: PromptFormat<INPUT_PROMPT, Buffer>
-  ): PromptFormatTextGenerationModel<
-    INPUT_PROMPT,
-    Buffer,
-    HuggingFaceImageToTextResponse,
-    undefined,
-    HuggingFaceImageToTextModelSettings,
-    this
-  > {
-    return new PromptFormatTextGenerationModel({
-      model: this,
-      promptFormat,
-    });
-  }
-
   withSettings(
-    additionalSettings: Partial<HuggingFaceImageToTextModelSettings>
+    additionalSettings: Partial<HuggingFaceImageDescriptionModelSettings>
   ) {
-    return new HuggingFaceImageToTextModel(
+    return new HuggingFaceImageDescriptionModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
 }
 
-const huggingFaceImageToTextResponseSchema = z.array(
+const huggingFaceImageDescriptionResponseSchema = z.array(
   z.object({
     generated_text: z.string(),
   })
 );
 
-export type HuggingFaceImageToTextResponse = z.infer<
-  typeof huggingFaceImageToTextResponseSchema
+export type HuggingFaceImageDescriptionResponse = z.infer<
+  typeof huggingFaceImageDescriptionResponseSchema
 >;
 
-async function callHuggingFaceImageToTextAPI({
+async function callHuggingFaceImageDescriptionAPI({
   api = new HuggingFaceApiConfiguration(),
   abortSignal,
   model,
@@ -136,7 +113,7 @@ async function callHuggingFaceImageToTextAPI({
   abortSignal?: AbortSignal;
   model: string;
   data: Buffer;
-}): Promise<HuggingFaceImageToTextResponse> {
+}): Promise<HuggingFaceImageDescriptionResponse> {
   return postToApi({
     url: api.assembleUrl(`/${model}`),
     headers: api.headers,
@@ -146,7 +123,7 @@ async function callHuggingFaceImageToTextAPI({
     },
     failedResponseHandler: failedHuggingFaceCallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
-      huggingFaceImageToTextResponseSchema
+      huggingFaceImageDescriptionResponseSchema
     ),
     abortSignal,
   });

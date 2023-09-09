@@ -4,6 +4,7 @@ import { ModelInformation } from "./ModelInformation.js";
 
 export type SuccessfulModelCall = {
   type:
+    | "image-description"
     | "image-generation"
     | "json-generation"
     | "json-or-text-generation"
