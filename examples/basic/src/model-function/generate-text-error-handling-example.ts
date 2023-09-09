@@ -7,7 +7,7 @@ import {
 
 dotenv.config();
 
-(async () => {
+async function main() {
   try {
     const text = await generateText(
       new OpenAITextGenerationModel({
@@ -25,4 +25,6 @@ dotenv.config();
   } catch (error) {
     console.log(error);
   }
-})();
+}
+
+main().catch(console.error);

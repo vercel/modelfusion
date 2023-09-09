@@ -9,7 +9,7 @@ import { calculator } from "./calculator-tool";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const { tool, parameters, result, text } = await useToolOrGenerateText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     [calculator /* ... */],
@@ -37,4 +37,6 @@ dotenv.config();
   console.log(`PARAMETERS: ${JSON.stringify(parameters)}`);
   console.log(`TEXT: ${text}`);
   console.log(`RESULT: ${JSON.stringify(result)}`);
-})();
+}
+
+main().catch(console.error);

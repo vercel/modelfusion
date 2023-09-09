@@ -8,7 +8,7 @@ import { customObserver } from "./custom-observer";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   // Set the observer on the run:
   const run = new DefaultRun({
     observers: [customObserver],
@@ -22,4 +22,6 @@ dotenv.config();
     "Write a short story about a robot named Pam:\n\n",
     { run }
   );
-})();
+}
+
+main().catch(console.error);

@@ -9,7 +9,7 @@ import { z } from "zod";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const sentiment = await generateJson(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
@@ -38,4 +38,6 @@ dotenv.config();
   );
 
   console.log(JSON.stringify(sentiment, null, 2));
-})();
+}
+
+main().catch(console.error);

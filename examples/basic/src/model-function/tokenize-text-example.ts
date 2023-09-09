@@ -1,6 +1,6 @@
 import { TikTokenTokenizer, countTokens } from "modelfusion";
 
-(async () => {
+async function main() {
   const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });
 
   const text = "At first, Nox didn't know what to do with the pup.";
@@ -14,4 +14,6 @@ import { TikTokenTokenizer, countTokens } from "modelfusion";
   console.log("tokenize", tokens);
   console.log("tokenizeWithTexts", tokensAndTokenTexts);
   console.log("detokenize(tokenize)", reconstructedText);
-})();
+}
+
+main().catch(console.error);

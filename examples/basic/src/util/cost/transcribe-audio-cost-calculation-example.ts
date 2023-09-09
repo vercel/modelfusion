@@ -10,7 +10,7 @@ import fs from "node:fs";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const data = await fs.promises.readFile("data/test.mp3");
 
   const run = new DefaultRun();
@@ -29,4 +29,6 @@ dotenv.config();
   });
 
   console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
-})();
+}
+
+main().catch(console.error);

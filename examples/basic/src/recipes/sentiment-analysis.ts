@@ -9,7 +9,7 @@ import { z } from "zod";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const analyzeSentiment = async (productReview: string) =>
     generateJson(
       new OpenAIChatModel({
@@ -55,4 +55,6 @@ dotenv.config();
   );
 
   console.log(JSON.stringify(result2, null, 2));
-})();
+}
+
+main().catch(console.error);

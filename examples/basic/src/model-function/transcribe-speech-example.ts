@@ -4,7 +4,7 @@ import fs from "node:fs";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const data = await fs.promises.readFile("data/test.mp3");
 
   const transcription = await transcribe(
@@ -16,4 +16,6 @@ dotenv.config();
   );
 
   console.log(transcription);
-})();
+}
+
+main().catch(console.error);

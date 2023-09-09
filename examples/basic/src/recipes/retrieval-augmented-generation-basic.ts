@@ -15,7 +15,7 @@ dotenv.config();
 
 const question = `What is a rainbow?`;
 
-(async () => {
+async function main() {
   // Ingesting information is usually done in a separate pipeline.
   // Here, we do it in the same script for simplicity:
   const vectorIndex = await ingestInformation();
@@ -61,7 +61,9 @@ const question = `What is a rainbow?`;
 
   console.log(`Question: ${question}`);
   console.log(`Answer: ${answer}`);
-})();
+}
+
+main().catch(console.error);
 
 async function ingestInformation() {
   const texts = [

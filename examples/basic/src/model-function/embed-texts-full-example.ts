@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const { output: embeddings, metadata } = await embedTexts(
     new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
     [
@@ -13,4 +13,6 @@ dotenv.config();
   ).asFullResponse();
 
   console.log(embeddings);
-})();
+}
+
+main().catch(console.error);

@@ -20,7 +20,7 @@ program
 
 const { inputFile, outputFile } = program.opts();
 
-(async () => {
+async function main() {
   const inputText = fs.readFileSync(inputFile, "utf-8");
 
   const exampleTweets = inputText.split("\n-----\n");
@@ -36,4 +36,6 @@ const { inputFile, outputFile } = program.opts();
   });
 
   fs.writeFileSync(outputFile, vectorIndex.serialize());
-})();
+}
+
+main().catch(console.error);

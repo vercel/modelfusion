@@ -63,7 +63,7 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
   }
 }
 
-(async () => {
+async function main() {
   const { tool, parameters, result } = await useTool(
     new JsonTextGenerationModel({
       model: new LlamaCppTextGenerationModel({
@@ -80,4 +80,6 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
   console.log(`Tool: ${tool}`);
   console.log(`Parameters: ${JSON.stringify(parameters)}`);
   console.log(`Result: ${result}`);
-})();
+}
+
+main().catch(console.error);

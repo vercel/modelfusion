@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const model = new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0.7,
@@ -29,4 +29,6 @@ dotenv.config();
 
     process.stdout.write(delta?.fullDelta[0].delta.content ?? "");
   }
-})();
+}
+
+main().catch(console.error);

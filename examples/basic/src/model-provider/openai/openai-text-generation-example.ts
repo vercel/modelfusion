@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const text = await generateText(
     new OpenAITextGenerationModel({
       model: "text-davinci-003",
@@ -14,4 +14,6 @@ dotenv.config();
   );
 
   console.log(text);
-})();
+}
+
+main().catch(console.error);

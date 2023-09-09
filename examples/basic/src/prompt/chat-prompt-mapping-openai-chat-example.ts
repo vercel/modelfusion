@@ -7,7 +7,7 @@ import {
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const textStream = await streamText(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
@@ -23,4 +23,6 @@ dotenv.config();
   for await (const textFragment of textStream) {
     process.stdout.write(textFragment);
   }
-})();
+}
+
+main().catch(console.error);

@@ -9,7 +9,7 @@ import { calculator } from "../../tool/calculator-tool";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   console.log();
   console.log("Logging: detailed-object");
   console.log();
@@ -22,4 +22,6 @@ dotenv.config();
     ]),
     { logging: "detailed-object" }
   );
-})();
+}
+
+main().catch(console.error);

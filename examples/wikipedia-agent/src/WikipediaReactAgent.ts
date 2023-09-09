@@ -78,7 +78,7 @@ const readWikipediaArticle = new Tool({
   },
 });
 
-(async () => {
+async function main() {
   const messages = [
     OpenAIChatMessage.system(
       "You are researching the answer to the user's question on Wikipedia. " +
@@ -167,4 +167,6 @@ const readWikipediaArticle = new Tool({
       }
     }
   }
-})();
+}
+
+main().catch(console.error);

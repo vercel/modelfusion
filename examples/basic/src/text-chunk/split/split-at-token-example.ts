@@ -1,7 +1,7 @@
 import { TikTokenTokenizer, splitAtToken } from "modelfusion";
 import fs from "node:fs";
 
-(async () => {
+async function main() {
   const sanFranciscoWikipediaText = JSON.parse(
     fs.readFileSync("data/san-francisco-wikipedia.json", "utf8")
   ).content as string;
@@ -18,4 +18,6 @@ import fs from "node:fs";
   });
 
   console.log(result);
-})();
+}
+
+main().catch(console.error);

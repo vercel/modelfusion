@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   // access the full response and the metadata:
   // the response type is specific to the model that's being used
   const { response, metadata } = await generateText(
@@ -22,4 +22,6 @@ dotenv.config();
   }
 
   console.log(`Duration: ${metadata.durationInMs}ms`);
-})();
+}
+
+main().catch(console.error);

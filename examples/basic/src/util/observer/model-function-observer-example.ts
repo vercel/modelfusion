@@ -4,7 +4,7 @@ import { customObserver } from "./custom-observer";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   // Set the observer on the model:
   const text = await generateText(
     new OpenAITextGenerationModel({
@@ -14,4 +14,6 @@ dotenv.config();
     }),
     "Write a short story about a robot name Bud:\n\n"
   );
-})();
+}
+
+main().catch(console.error);

@@ -4,7 +4,7 @@ import fs from "node:fs";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const image = await generateImage(
     new OpenAIImageGenerationModel({ size: "512x512" }),
     "the wicked witch of the west in the style of early 19th century painting"
@@ -13,4 +13,6 @@ dotenv.config();
   const path = `./openai-image-example.png`;
   fs.writeFileSync(path, Buffer.from(image, "base64"));
   console.log(`Image saved to ${path}`);
-})();
+}
+
+main().catch(console.error);

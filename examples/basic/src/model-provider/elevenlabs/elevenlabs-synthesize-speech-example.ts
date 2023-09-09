@@ -4,7 +4,7 @@ import fs from "node:fs";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const speech = await synthesizeSpeech(
     new ElevenLabsSpeechSynthesisModel({
       voice: "pNInz6obpgDQGcFmaJgB", // Adam
@@ -17,4 +17,6 @@ dotenv.config();
 
   const path = `./elevenlabs-speech-example.mp3`;
   fs.writeFileSync(path, speech);
-})();
+}
+
+main().catch(console.error);

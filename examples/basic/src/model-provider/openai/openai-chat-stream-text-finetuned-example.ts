@@ -3,7 +3,7 @@ import { OpenAIChatMessage, OpenAIChatModel, streamText } from "modelfusion";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const textStream = await streamText(
     new OpenAIChatModel({
       model: "ft:gpt-3.5-turbo-0613:COMPANY_ID::IDSTRING", // You need to provide your own fine-tuned model here
@@ -21,4 +21,6 @@ dotenv.config();
   for await (const textFragment of textStream) {
     process.stdout.write(textFragment);
   }
-})();
+}
+
+main().catch(console.error);

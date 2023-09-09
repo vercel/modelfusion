@@ -46,7 +46,7 @@ async function generateImageWithAIPrompt(prompt: string) {
   return { prompt: aiPrompt, image };
 }
 
-(async () => {
+async function main() {
   const { image, prompt } = await generateImageWithAIPrompt(
     "wicked witch of the west"
   );
@@ -56,4 +56,6 @@ async function generateImageWithAIPrompt(prompt: string) {
   const path = `./a1111-image-example.png`;
   fs.writeFileSync(path, Buffer.from(image, "base64"));
   console.log(`Image saved to ${path}`);
-})();
+}
+
+main().catch(console.error);

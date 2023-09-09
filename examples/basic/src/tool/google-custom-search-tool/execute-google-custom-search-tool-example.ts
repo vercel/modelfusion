@@ -4,7 +4,7 @@ import { executeTool } from "modelfusion";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const wikipediaSearchTool = new GoogleCustomSearchTool({
     name: "search_wikipedia",
     description: "Search Wikipedia pages using a query",
@@ -17,4 +17,6 @@ dotenv.config();
   });
 
   console.log(result);
-})();
+}
+
+main().catch(console.error);

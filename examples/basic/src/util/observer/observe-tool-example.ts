@@ -5,7 +5,7 @@ import { customObserver } from "./custom-observer";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const result = await executeTool(
     calculator,
     {
@@ -17,4 +17,6 @@ dotenv.config();
       observers: [customObserver],
     }
   );
-})();
+}
+
+main().catch(console.error);

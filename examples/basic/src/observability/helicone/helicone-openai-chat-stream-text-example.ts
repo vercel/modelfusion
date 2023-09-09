@@ -8,7 +8,7 @@ import {
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const textStream = await streamText(
     new OpenAIChatModel({
       api: new HeliconeOpenAIApiConfiguration(),
@@ -26,4 +26,6 @@ dotenv.config();
   for await (const textFragment of textStream) {
     process.stdout.write(textFragment);
   }
-})();
+}
+
+main().catch(console.error);

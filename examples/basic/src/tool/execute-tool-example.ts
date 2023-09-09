@@ -4,7 +4,7 @@ import { calculator } from "./calculator-tool";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const result = await executeTool(calculator, {
     a: 14,
     b: 12,
@@ -12,4 +12,6 @@ dotenv.config();
   });
 
   console.log(`Result: ${result}`);
-})();
+}
+
+main().catch(console.error);

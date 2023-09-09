@@ -7,7 +7,7 @@ import {
 
 dotenv.config();
 
-(async () => {
+async function main() {
   // example assumes you are running https://huggingface.co/TheBloke/vicuna-7B-v1.5-GGML with llama.cpp
   const textStream = await streamText(
     new LlamaCppTextGenerationModel({
@@ -24,4 +24,6 @@ dotenv.config();
   for await (const textFragment of textStream) {
     process.stdout.write(textFragment);
   }
-})();
+}
+
+main().catch(console.error);

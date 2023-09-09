@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const abortController = new AbortController();
 
   generateText(
@@ -30,4 +30,6 @@ dotenv.config();
     });
 
   abortController.abort(); // aborts the running generate text call
-})();
+}
+
+main().catch(console.error);

@@ -28,7 +28,7 @@ const chat = readline.createInterface({
   output: process.stdout,
 });
 
-(async () => {
+async function main() {
   const messages: Array<{ user: string } | { ai: string }> = [];
 
   while (true) {
@@ -58,5 +58,7 @@ const chat = readline.createInterface({
     process.stdout.write("\n\n");
     messages.push({ ai: fullResponse });
   }
-})();
+}
+
+main().catch(console.error);
 ```

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const text = await generateText(
     new HuggingFaceTextGenerationModel({
       model: "tiiuae/falcon-7b",
@@ -14,4 +14,6 @@ dotenv.config();
   );
 
   console.log(text);
-})();
+}
+
+main().catch(console.error);

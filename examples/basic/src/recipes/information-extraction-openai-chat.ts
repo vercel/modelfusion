@@ -4,7 +4,7 @@ import fs from "node:fs";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   function extractText({ text, topic }: { text: string; topic: string }) {
     return generateText(
       new OpenAIChatModel({
@@ -37,4 +37,6 @@ dotenv.config();
   });
 
   console.log(extractedInformation);
-})();
+}
+
+main().catch(console.error);

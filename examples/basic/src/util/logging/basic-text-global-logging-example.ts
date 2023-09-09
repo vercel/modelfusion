@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   console.log();
   console.log("Logging: basic-text");
   console.log();
@@ -21,4 +21,6 @@ dotenv.config();
     }),
     "Write a short story about a robot learning to love:\n\n"
   );
-})();
+}
+
+main().catch(console.error);

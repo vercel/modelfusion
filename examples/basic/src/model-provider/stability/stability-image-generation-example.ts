@@ -4,7 +4,7 @@ import fs from "node:fs";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const image = await generateImage(
     new StabilityImageGenerationModel({
       model: "stable-diffusion-512-v2-1",
@@ -24,4 +24,6 @@ dotenv.config();
   const path = `./stability-image-example.png`;
   fs.writeFileSync(path, Buffer.from(image, "base64"));
   console.log(`Image saved to ${path}`);
-})();
+}
+
+main().catch(console.error);

@@ -1,6 +1,6 @@
 import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
 
-(async () => {
+async function main() {
   const text = await generateText(
     new LlamaCppTextGenerationModel({
       maxCompletionTokens: 256,
@@ -10,4 +10,6 @@ import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
   );
 
   console.log(text);
-})();
+}
+
+main().catch(console.error);

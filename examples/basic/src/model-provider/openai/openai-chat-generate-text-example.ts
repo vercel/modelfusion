@@ -3,7 +3,7 @@ import { OpenAIChatMessage, OpenAIChatModel, generateText } from "modelfusion";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const text = await generateText(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
@@ -18,4 +18,6 @@ dotenv.config();
   );
 
   console.log(text);
-})();
+}
+
+main().catch(console.error);

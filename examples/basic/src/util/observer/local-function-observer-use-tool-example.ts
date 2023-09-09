@@ -10,7 +10,7 @@ import { customObserver } from "./custom-observer";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   // Set the observer on the function call:
   const { tool, parameters, result } = await useTool(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
@@ -20,4 +20,6 @@ dotenv.config();
     ]),
     { observers: [customObserver] }
   );
-})();
+}
+
+main().catch(console.error);

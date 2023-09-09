@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const api = new OpenAIApiConfiguration({
     throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
   });
@@ -25,4 +25,6 @@ dotenv.config();
   );
 
   console.log(embeddings);
-})();
+}
+
+main().catch(console.error);

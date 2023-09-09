@@ -10,7 +10,7 @@ import { z } from "zod";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const extractNameAndPopulation = async (text: string) =>
     generateJson(
       new OpenAIChatModel({
@@ -60,4 +60,6 @@ dotenv.config();
   );
 
   console.log(extractedInformation2);
-})();
+}
+
+main().catch(console.error);

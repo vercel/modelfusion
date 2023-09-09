@@ -8,7 +8,7 @@ import { customObserver } from "./custom-observer";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   // Set a global funtion observer:
   setGlobalFunctionObservers([customObserver]);
 
@@ -19,4 +19,6 @@ dotenv.config();
     }),
     "Write a short story about a robot name Evo:\n\n"
   );
-})();
+}
+
+main().catch(console.error);

@@ -9,7 +9,7 @@ import {
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const run = new DefaultRun();
 
   const text = await generateText(
@@ -30,4 +30,6 @@ dotenv.config();
   });
 
   console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
-})();
+}
+
+main().catch(console.error);

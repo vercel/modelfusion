@@ -7,7 +7,7 @@ import {
 
 dotenv.config();
 
-(async () => {
+async function main() {
   // example assumes you are running https://huggingface.co/teleprint-me/llama-2-7b-chat-GGUF with llama.cpp
   const textStream = await streamText(
     new LlamaCppTextGenerationModel({
@@ -25,4 +25,6 @@ dotenv.config();
   for await (const textFragment of textStream) {
     process.stdout.write(textFragment);
   }
-})();
+}
+
+main().catch(console.error);

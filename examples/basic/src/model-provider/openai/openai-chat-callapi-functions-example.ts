@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // example from https://platform.openai.com/docs/guides/gpt/function-calling
-(async () => {
+async function main() {
   function getCurrentWeather(location: string, unit: string = "fahrenheit") {
     return {
       location,
@@ -77,4 +77,6 @@ dotenv.config();
 
     console.log(secondResponse.choices[0].message.content!);
   }
-})();
+}
+
+main().catch(console.error);

@@ -9,7 +9,7 @@ import { z } from "zod";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const {
     output: sentiment,
     metadata,
@@ -42,4 +42,6 @@ dotenv.config();
   ).asFullResponse();
 
   console.log(JSON.stringify(sentiment, null, 2));
-})();
+}
+
+main().catch(console.error);

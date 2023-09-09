@@ -4,7 +4,7 @@ import fs from "node:fs";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const sanFranciscoWikipediaText = JSON.parse(
     fs.readFileSync("data/san-francisco-wikipedia.json", "utf8")
   ).content as string;
@@ -18,4 +18,6 @@ dotenv.config();
   );
 
   console.log(chunks);
-})();
+}
+
+main().catch(console.error);

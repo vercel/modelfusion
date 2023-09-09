@@ -9,7 +9,7 @@ import {
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const run = new DefaultRun();
 
   const image = await generateImage(
@@ -24,4 +24,6 @@ dotenv.config();
   });
 
   console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 3 })}`);
-})();
+}
+
+main().catch(console.error);

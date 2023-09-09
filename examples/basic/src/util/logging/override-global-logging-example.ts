@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   console.log();
   console.log("Logging: off (override)");
   console.log();
@@ -22,4 +22,6 @@ dotenv.config();
     "Write a short story about a robot learning to love:\n\n",
     { logging: "off" } // overrides global logging
   );
-})();
+}
+
+main().catch(console.error);

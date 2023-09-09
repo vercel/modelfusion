@@ -10,7 +10,7 @@ import fs from "node:fs";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const story = await generateText(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
@@ -35,4 +35,6 @@ dotenv.config();
 
   const path = `./generate-narrated-story-example.mp3`;
   fs.writeFileSync(path, narratedStory);
-})();
+}
+
+main().catch(console.error);

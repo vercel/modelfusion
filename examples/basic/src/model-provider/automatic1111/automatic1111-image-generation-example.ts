@@ -1,7 +1,7 @@
 import { Automatic1111ImageGenerationModel, generateImage } from "modelfusion";
 import fs from "node:fs";
 
-(async () => {
+async function main() {
   const image = await generateImage(
     new Automatic1111ImageGenerationModel({
       model: "aZovyaRPGArtistTools_v3.safetensors [25ba966c5d]",
@@ -19,4 +19,6 @@ import fs from "node:fs";
   const path = `./a1111-image-example.png`;
   fs.writeFileSync(path, Buffer.from(image, "base64"));
   console.log(`Image saved to ${path}`);
-})();
+}
+
+main().catch(console.error);

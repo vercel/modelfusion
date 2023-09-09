@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const api = new OpenAIApiConfiguration({
     retry: retryNever(),
   });
@@ -22,4 +22,6 @@ dotenv.config();
   );
 
   console.log(text);
-})();
+}
+
+main().catch(console.error);

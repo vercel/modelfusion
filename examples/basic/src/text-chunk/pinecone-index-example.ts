@@ -11,17 +11,17 @@ import { z } from "zod";
 
 dotenv.config();
 
-const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
-const PINECONE_ENVIRONMENT = process.env.PINECONE_ENVIRONMENT;
-const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
+async function main() {
+  const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
+  const PINECONE_ENVIRONMENT = process.env.PINECONE_ENVIRONMENT;
+  const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
 
-if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
-  throw new Error(
-    "COHERE_API_KEY, PINECONE_API_KEY, PINECONE_ENVIRONMENT and PINECONE_INDEX_NAME must be set"
-  );
-}
+  if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
+    throw new Error(
+      "COHERE_API_KEY, PINECONE_API_KEY, PINECONE_ENVIRONMENT and PINECONE_INDEX_NAME must be set"
+    );
+  }
 
-(async () => {
   const client = new PineconeClient();
   await client.init({
     apiKey: PINECONE_API_KEY,
@@ -68,4 +68,6 @@ if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
   );
 
   console.log(chunks);
-})();
+}
+
+main().catch(console.error);

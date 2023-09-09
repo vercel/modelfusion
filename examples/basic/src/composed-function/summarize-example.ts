@@ -18,7 +18,7 @@ const summarize = ({ text }: { text: string }) =>
     ],
   });
 
-(async () => {
+async function main() {
   const sanFranciscoWikipedia = JSON.parse(
     fs.readFileSync("data/san-francisco-wikipedia.json", "utf8")
   ).content;
@@ -28,4 +28,6 @@ const summarize = ({ text }: { text: string }) =>
   });
 
   console.log(summary);
-})();
+}
+
+main().catch(console.error);

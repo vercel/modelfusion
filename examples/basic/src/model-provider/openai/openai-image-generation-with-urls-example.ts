@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const model = new OpenAIImageGenerationModel({
     size: "512x512",
   });
@@ -21,4 +21,6 @@ dotenv.config();
   const imageUrl = response.data[0].url;
 
   console.log(`Image available at ${imageUrl}`);
-})();
+}
+
+main().catch(console.error);

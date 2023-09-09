@@ -4,7 +4,7 @@ import fs from "node:fs";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const speech = await synthesizeSpeech(
     new LmntSpeechSynthesisModel({
       voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
@@ -17,4 +17,6 @@ dotenv.config();
 
   const path = `./lmnt-speech-example.mp3`;
   fs.writeFileSync(path, speech);
-})();
+}
+
+main().catch(console.error);

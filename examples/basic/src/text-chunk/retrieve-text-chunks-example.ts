@@ -10,7 +10,7 @@ import {
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const texts = [
     "A rainbow is an optical phenomenon that can occur under certain meteorological conditions.",
     "It is caused by refraction, internal reflection and dispersion of light in water droplets resulting in a continuous spectrum of light appearing in the sky.",
@@ -47,4 +47,6 @@ dotenv.config();
   );
 
   console.log(chunks);
-})();
+}
+
+main().catch(console.error);

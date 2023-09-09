@@ -9,7 +9,7 @@ import { z } from "zod";
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const query = "What's the weather like in Boston?";
   // const query = "Where does Kevin work?";
   // const query = "Tell me something random.";
@@ -55,4 +55,6 @@ dotenv.config();
       console.log("No function call. Generated text: ", text);
     }
   }
-})();
+}
+
+main().catch(console.error);

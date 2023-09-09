@@ -14,7 +14,7 @@ dotenv.config();
 
 const problem = questions[Math.floor(Math.random() * questions.length)];
 
-(async () => {
+async function main() {
   const answer = new Tool({
     name: "answer",
     description: "Provide the final answer to the question",
@@ -79,4 +79,6 @@ const problem = questions[Math.floor(Math.random() * questions.length)];
         return; // exit the program
     }
   }
-})();
+}
+
+main().catch(console.error);

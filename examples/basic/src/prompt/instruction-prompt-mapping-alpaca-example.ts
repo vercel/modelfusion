@@ -4,7 +4,7 @@ import {
   streamText,
 } from "modelfusion";
 
-(async () => {
+async function main() {
   // example assumes you are running https://huggingface.co/TheBloke/Chronos-13B-v2-GGML with llama.cpp
   const textStream = await streamText(
     new LlamaCppTextGenerationModel({
@@ -20,4 +20,6 @@ import {
   for await (const textFragment of textStream) {
     process.stdout.write(textFragment);
   }
-})();
+}
+
+main().catch(console.error);

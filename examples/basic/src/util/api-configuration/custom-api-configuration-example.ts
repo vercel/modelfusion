@@ -7,7 +7,7 @@ import {
 
 dotenv.config();
 
-(async () => {
+async function main() {
   const api = new BaseUrlApiConfiguration({
     baseUrl: "https://openai.mycompany.com/v1/",
     headers: {
@@ -25,4 +25,6 @@ dotenv.config();
   );
 
   console.log(text);
-})();
+}
+
+main().catch(console.error);
