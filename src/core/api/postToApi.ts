@@ -87,7 +87,7 @@ export const postToApi = async <T>({
   url: string;
   headers?: Record<string, string>;
   body: {
-    content: string | FormData;
+    content: string | FormData | Buffer;
     values: unknown;
   };
   failedResponseHandler: ResponseHandler<Error>;

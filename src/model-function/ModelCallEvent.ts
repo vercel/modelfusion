@@ -4,6 +4,10 @@ import {
 } from "../core/FunctionEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
+  ImageDescriptionFinishedEvent,
+  ImageDescriptionStartedEvent,
+} from "./describe-image/ImageDescriptionEvent.js";
+import {
   TextEmbeddingFinishedEvent,
   TextEmbeddingStartedEvent,
 } from "./embed-text/TextEmbeddingEvent.js";
@@ -80,6 +84,7 @@ export interface BaseModelCallFinishedEvent extends BaseFunctionFinishedEvent {
 }
 
 export type ModelCallStartedEvent =
+  | ImageDescriptionStartedEvent
   | ImageGenerationStartedEvent
   | JsonGenerationStartedEvent
   | SpeechSynthesisStartedEvent
@@ -89,6 +94,7 @@ export type ModelCallStartedEvent =
   | TranscriptionStartedEvent;
 
 export type ModelCallFinishedEvent =
+  | ImageDescriptionFinishedEvent
   | ImageGenerationFinishedEvent
   | JsonGenerationFinishedEvent
   | SpeechSynthesisFinishedEvent

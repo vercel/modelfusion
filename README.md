@@ -314,6 +314,21 @@ const speech = await synthesizeSpeech(
 
 Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
 
+### [Describe Image](https://modelfusion.dev/guide/function/describe-image)
+
+Describe an image as text, e.g. for image captioning or OCR.
+
+```ts
+const text = await describeImage(
+  new HuggingFaceImageDescriptionModel({
+    model: "nlpconnect/vit-gpt2-image-captioning",
+  }),
+  data: buffer
+);
+```
+
+Providers: [HuggingFace](/integration/model-provider/huggingface)
+
 ### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 
 Generate a base64-encoded image from a prompt.
@@ -412,7 +427,8 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
   - [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
-  - [Generate images](https://modelfusion.dev/guide/function/generate-image)
+  - [Describe Image](https://modelfusion.dev/guide/function/describe-image)
+  - [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 - [Tools](https://modelfusion.dev/guide/tools)
 - [Text Chunks](https://modelfusion.dev/guide/text-chunk/)
   - [Split Text](https://modelfusion.dev/guide/text-chunk/split)
