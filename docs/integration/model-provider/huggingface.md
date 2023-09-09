@@ -70,3 +70,21 @@ const embeddings = await embedTexts(
   ]
 );
 ```
+
+### Describe Image
+
+[HuggingFaceImageDescriptionModel API](/api/classes/HuggingFaceImageDescriptionModel)
+
+```ts
+import { HuggingFaceImageDescriptionModel, describeImage } from "modelfusion";
+
+const imageResponse = await fetch(imageUrl);
+const data = Buffer.from(await imageResponse.arrayBuffer());
+
+const text = await describeImage(
+  new HuggingFaceImageDescriptionModel({
+    model: "nlpconnect/vit-gpt2-image-captioning",
+  }),
+  data
+);
+```
