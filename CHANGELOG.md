@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.28.0 - 2023-09-09
+
+### Added
+
+- BaseUrlApiConfiguration class for setting up API configurations with custom base URLs and headers.
+
 ## v0.27.0 - 2023-09-07
 
 ### Added
