@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+title: Observers
 ---
 
 # Function Observers
