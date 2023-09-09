@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.29.0 - 2023-09-09
+
+### Added
+
+- `describeImage` model function for image captioning and OCR. HuggingFace provider available.
+
 ## v0.28.0 - 2023-09-09
 
 ### Added
