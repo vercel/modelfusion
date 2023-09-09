@@ -1,5 +1,5 @@
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   SpeechSynthesisModel,

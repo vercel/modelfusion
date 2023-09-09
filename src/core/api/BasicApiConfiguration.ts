@@ -1,5 +1,5 @@
-import { RetryFunction } from "../core/api/RetryFunction.js";
-import { ThrottleFunction } from "../core/api/ThrottleFunction.js";
+import { RetryFunction } from "./RetryFunction.js";
+import { ThrottleFunction } from "./ThrottleFunction.js";
 import { ApiConfiguration } from "./ApiConfiguration.js";
 
 export class BasicApiConfiguration implements ApiConfiguration {

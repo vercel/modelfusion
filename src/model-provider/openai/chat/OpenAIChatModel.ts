@@ -2,7 +2,7 @@ import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../../model-function/ModelFunctionOptions.js";
-import { ApiConfiguration } from "../../../model-function/ApiConfiguration.js";
+import { ApiConfiguration } from "../../../core/api/ApiConfiguration.js";
 import { JsonGenerationModel } from "../../../model-function/generate-json/JsonGenerationModel.js";
 import { JsonOrTextGenerationModel } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
 import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";

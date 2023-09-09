@@ -1,15 +1,15 @@
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import {
-  SpeechSynthesisModel,
-  SpeechSynthesisModelSettings,
-} from "../../model-function/synthesize-speech/SpeechSynthesisModel.js";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createAudioMpegResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import {
+  SpeechSynthesisModel,
+  SpeechSynthesisModelSettings,
+} from "../../model-function/synthesize-speech/SpeechSynthesisModel.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 

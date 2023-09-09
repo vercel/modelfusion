@@ -1,6 +1,6 @@
 import z from "zod";
 import { Run } from "../../core/Run.js";
-import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {

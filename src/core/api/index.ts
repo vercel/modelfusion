@@ -1,5 +1,7 @@
 export * from "./AbortError.js";
 export * from "./ApiCallError.js";
+export * from "./ApiConfiguration.js";
+export * from "./BasicApiConfiguration.js";
 export * from "./RetryError.js";
 export * from "./RetryFunction.js";
 export * from "./ThrottleFunction.js";
