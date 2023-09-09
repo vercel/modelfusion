@@ -2,11 +2,11 @@ import z from "zod";
 import { Run } from "../../core/Run.js";
 import { ApiConfiguration } from "../../model-function/ApiConfiguration.js";
 import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 

@@ -5,11 +5,11 @@ import {
   SpeechSynthesisModel,
   SpeechSynthesisModelSettings,
 } from "../../model-function/synthesize-speech/SpeechSynthesisModel.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createAudioMpegResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 

@@ -12,12 +12,12 @@ import {
 import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";

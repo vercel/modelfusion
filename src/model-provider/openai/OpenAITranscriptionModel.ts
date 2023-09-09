@@ -6,13 +6,13 @@ import {
   TranscriptionModel,
   TranscriptionModelSettings,
 } from "../../model-function/transcribe-speech/TranscriptionModel.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   createTextResponseHandler,
   postToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 

@@ -4,7 +4,7 @@ import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
 import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
-import { AbortError } from "../../util/api/AbortError.js";
+import { AbortError } from "../../core/api/AbortError.js";
 import { runSafe } from "../../util/runSafe.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelCallMetadata } from "../executeCall.js";

@@ -5,11 +5,11 @@ import {
   SpeechSynthesisModel,
   SpeechSynthesisModelSettings,
 } from "../../model-function/synthesize-speech/SpeechSynthesisModel.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createAudioMpegResponseHandler,
   postToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { LmntApiConfiguration } from "./LmntApiConfiguration.js";
 import { failedLmntCallResponseHandler } from "./LmntError.js";
 

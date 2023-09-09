@@ -1,5 +1,5 @@
-import { ApiCallError } from "../../util/api/ApiCallError.js";
-import { ResponseHandler } from "../../util/api/postToApi.js";
+import { ApiCallError } from "../../core/api/ApiCallError.js";
+import { ResponseHandler } from "../../core/api/postToApi.js";
 
 export const failedElevenLabsCallResponseHandler: ResponseHandler<
   ApiCallError

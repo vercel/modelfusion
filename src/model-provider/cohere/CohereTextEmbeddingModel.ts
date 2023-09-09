@@ -7,11 +7,11 @@ import {
   TextEmbeddingModelSettings,
 } from "../../model-function/embed-text/TextEmbeddingModel.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";

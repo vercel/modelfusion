@@ -1,7 +1,7 @@
 import { z } from "zod";
 import SecureJSON from "secure-json-parse";
-import { ResponseHandler } from "../../util/api/postToApi.js";
-import { ApiCallError } from "../../util/api/ApiCallError.js";
+import { ResponseHandler } from "../../core/api/postToApi.js";
+import { ApiCallError } from "../../core/api/ApiCallError.js";
 
 export const automatic1111ErrorDataSchema = z.object({
   error: z.string(),

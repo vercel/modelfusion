@@ -1,7 +1,7 @@
 import { BasicApiConfiguration } from "../../model-function/BasicApiConfiguration.js";
-import { RetryFunction } from "../../util/api/RetryFunction.js";
-import { ThrottleFunction } from "../../util/api/ThrottleFunction.js";
-import { loadApiKey } from "../../util/api/loadApiKey.js";
+import { RetryFunction } from "../../core/api/RetryFunction.js";
+import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
+import { loadApiKey } from "../../core/api/loadApiKey.js";
 
 export class StabilityApiConfiguration extends BasicApiConfiguration {
   readonly apiKey: string;

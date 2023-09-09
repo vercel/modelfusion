@@ -6,12 +6,12 @@ import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 

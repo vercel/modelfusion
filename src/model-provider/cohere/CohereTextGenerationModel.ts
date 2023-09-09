@@ -12,12 +12,12 @@ import {
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";

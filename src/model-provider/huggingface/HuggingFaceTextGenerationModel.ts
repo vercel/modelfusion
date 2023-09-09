@@ -8,11 +8,11 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
 import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
 

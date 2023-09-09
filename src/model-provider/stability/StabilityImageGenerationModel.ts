@@ -6,11 +6,11 @@ import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
-import { callWithRetryAndThrottle } from "../../util/api/callWithRetryAndThrottle.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../util/api/postToApi.js";
+} from "../../core/api/postToApi.js";
 import { failedStabilityCallResponseHandler } from "./StabilityError.js";
 import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 
