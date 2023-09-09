@@ -1,11 +1,9 @@
-import { BasicApiConfiguration } from "../../core/api/BasicApiConfiguration.js";
+import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration.js";
 import { RetryFunction } from "../../core/api/RetryFunction.js";
 import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
 
-export class OpenAIApiConfiguration extends BasicApiConfiguration {
-  readonly apiKey: string;
-
+export class OpenAIApiConfiguration extends BaseUrlApiConfiguration {
   constructor({
     baseUrl = "https://api.openai.com/v1",
     apiKey,
@@ -19,20 +17,15 @@ export class OpenAIApiConfiguration extends BasicApiConfiguration {
   } = {}) {
     super({
       baseUrl,
+      headers: {
+        Authorization: `Bearer ${loadApiKey({
+          apiKey,
+          environmentVariableName: "OPENAI_API_KEY",
+          description: "OpenAI",
+        })}`,
+      },
       retry,
       throttle,
     });
-
-    this.apiKey = loadApiKey({
-      apiKey,
-      environmentVariableName: "OPENAI_API_KEY",
-      description: "OpenAI",
-    });
-  }
-
-  get headers(): Record<string, string> {
-    return {
-      Authorization: `Bearer ${this.apiKey}`,
-    };
   }
 }

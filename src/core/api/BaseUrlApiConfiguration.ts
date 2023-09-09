@@ -1,29 +1,25 @@
+import { AbstractApiConfiguration } from "./AbstractApiConfiguration.js";
 import { RetryFunction } from "./RetryFunction.js";
 import { ThrottleFunction } from "./ThrottleFunction.js";
-import { ApiConfiguration } from "./ApiConfiguration.js";
 
-export class BasicApiConfiguration implements ApiConfiguration {
+export class BaseUrlApiConfiguration extends AbstractApiConfiguration {
   readonly baseUrl: string;
-
-  readonly retry?: RetryFunction;
-  readonly throttle?: ThrottleFunction;
+  readonly headers: Record<string, string>;
 
   constructor({
     baseUrl,
+    headers,
     retry,
     throttle,
   }: {
     baseUrl: string;
+    headers: Record<string, string>;
     retry?: RetryFunction;
     throttle?: ThrottleFunction;
   }) {
+    super({ retry, throttle });
     this.baseUrl = baseUrl;
-    this.retry = retry;
-    this.throttle = throttle;
-  }
-
-  get headers(): Record<string, string> {
-    return {};
+    this.headers = headers;
   }
 
   assembleUrl(path: string): string {
