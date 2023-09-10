@@ -5,8 +5,8 @@ import {
   JsonOrTextGenerationModelSettings,
   JsonOrTextGenerationPrompt,
 } from "./JsonOrTextGenerationModel.js";
-import { NoSuchSchemaError } from "./NoSuchSchemaError.js";
-import { SchemaDescription } from "./SchemaDescription.js";
+import { NoSuchStructureError } from "./NoSuchSchemaError.js";
+import { StructureDefinition } from "./StructureDefinition.js";
 import { SchemaValidationError } from "./SchemaValidationError.js";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
@@ -14,28 +14,28 @@ import { SchemaValidationError } from "./SchemaValidationError.js";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // [ { name: "n", schema: z.object<SCHEMA> } | { ... } ]
-type SchemaDefinitionArray<T extends SchemaDescription<any, any>[]> = T;
+type SchemaDefinitionArray<T extends StructureDefinition<any, any>[]> = T;
 
 // { n: { name: "n", schema: z.object<SCHEMA> }, ... }
 type ToSchemaDefinitionsMap<
-  T extends SchemaDefinitionArray<SchemaDescription<any, any>[]>,
+  T extends SchemaDefinitionArray<StructureDefinition<any, any>[]>,
 > = {
-  [K in T[number]["name"]]: Extract<T[number], SchemaDescription<K, any>>;
+  [K in T[number]["name"]]: Extract<T[number], StructureDefinition<K, any>>;
 };
 
 // { schema: "n", value: SCHEMA } | ...
 type ToSchemaUnion<T> = {
-  [KEY in keyof T]: T[KEY] extends SchemaDescription<any, infer SCHEMA>
+  [KEY in keyof T]: T[KEY] extends StructureDefinition<any, infer SCHEMA>
     ? { schema: KEY; value: SCHEMA; text: string | null }
     : never;
 }[keyof T];
 
 type ToOutputValue<
-  SCHEMAS extends SchemaDefinitionArray<SchemaDescription<any, any>[]>,
+  SCHEMAS extends SchemaDefinitionArray<StructureDefinition<any, any>[]>,
 > = ToSchemaUnion<ToSchemaDefinitionsMap<SCHEMAS>>;
 
 export function generateJsonOrText<
-  SCHEMAS extends SchemaDescription<any, any>[],
+  SCHEMAS extends StructureDefinition<any, any>[],
   PROMPT,
   RESPONSE,
   SETTINGS extends JsonOrTextGenerationModelSettings,
@@ -73,7 +73,7 @@ export function generateJsonOrText<
       const definition = schemaDefinitions.find((d) => d.name === schema);
 
       if (definition == undefined) {
-        throw new NoSuchSchemaError(schema);
+        throw new NoSuchStructureError(schema);
       }
 
       const parseResult = definition.schema.validate(value);

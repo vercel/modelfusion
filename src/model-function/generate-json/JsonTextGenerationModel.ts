@@ -2,8 +2,8 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../generate-text/TextGenerationModel.js";
-import { SchemaDescription } from "./SchemaDescription.js";
-import { InstructionWithSchema } from "./InstructionWithSchemaPrompt.js";
+import { StructureDefinition } from "./StructureDefinition.js";
+import { InstructionWithStructure } from "./InstructionWithStructurePrompt.js";
 import { JsonGenerationModel } from "./JsonGenerationModel.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { generateText } from "../generate-text/generateText.js";
@@ -11,7 +11,7 @@ import { generateText } from "../generate-text/generateText.js";
 export type JsonTextPromptFormat = {
   createPrompt: (prompt: {
     instruction: string;
-    schema: SchemaDescription<string, unknown>;
+    structure: StructureDefinition<string, unknown>;
   }) => string;
   extractJson: (response: string) => unknown;
 };
@@ -27,7 +27,7 @@ export class JsonTextGenerationModel<
   >,
 > implements
     JsonGenerationModel<
-      InstructionWithSchema<string, unknown>,
+      InstructionWithStructure<string, unknown>,
       string,
       MODEL["settings"]
     >
@@ -59,7 +59,7 @@ export class JsonTextGenerationModel<
   }
 
   async generateJsonResponse(
-    prompt: InstructionWithSchema<string, unknown>,
+    prompt: InstructionWithStructure<string, unknown>,
     options?: ModelFunctionOptions<MODEL["settings"]> | undefined
   ): Promise<string> {
     return await generateText(

@@ -1,10 +1,10 @@
-export class NoSuchSchemaError extends Error {
-  readonly schemaName: string;
+export class NoSuchStructureError extends Error {
+  readonly structureName: string;
 
-  constructor(schemaName: string) {
-    super(`No such schema: ${schemaName}`);
+  constructor(structureName: string) {
+    super(`No such structure: ${structureName}`);
 
-    this.name = "NoSuchSchemaError";
-    this.schemaName = schemaName;
+    this.name = "NoSuchStructureError";
+    this.structureName = structureName;
   }
 }

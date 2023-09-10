@@ -4,7 +4,7 @@ import {
   JsonGenerationModel,
   JsonGenerationModelSettings,
 } from "./JsonGenerationModel.js";
-import { SchemaDescription } from "./SchemaDescription.js";
+import { StructureDefinition } from "./StructureDefinition.js";
 import { SchemaValidationError } from "./SchemaValidationError.js";
 
 export function generateJson<
@@ -15,8 +15,8 @@ export function generateJson<
   SETTINGS extends JsonGenerationModelSettings,
 >(
   model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  schemaDefinition: SchemaDescription<NAME, STRUCTURE>,
-  prompt: (schemaDefinition: SchemaDescription<NAME, STRUCTURE>) => PROMPT,
+  schemaDefinition: StructureDefinition<NAME, STRUCTURE>,
+  prompt: (schemaDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<STRUCTURE, RESPONSE> {
   const expandedPrompt = prompt(schemaDefinition);

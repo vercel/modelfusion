@@ -3,7 +3,7 @@ import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  ZodSchemaDescription,
+  ZodStructureDefinition,
   generateJson,
 } from "modelfusion";
 import fs from "node:fs";
@@ -19,7 +19,7 @@ async function main() {
         temperature: 0, // remove randomness as much as possible
         maxCompletionTokens: 200, // only a few tokens needed for the response
       }),
-      new ZodSchemaDescription({
+      new ZodStructureDefinition({
         name: "storeCity",
         description: "Save information about the city",
         // structure supports escape hatch:

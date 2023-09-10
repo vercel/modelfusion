@@ -1,6 +1,6 @@
 import { FunctionOptions } from "../core/FunctionOptions.js";
 import { Schema } from "../model-function/generate-json/Schema.js";
-import { SchemaDescription } from "../model-function/generate-json/SchemaDescription.js";
+import { StructureDefinition } from "../model-function/generate-json/StructureDefinition.js";
 import { InvalidToolNameError } from "./InvalidToolNameError.js";
 
 const namePattern = /^[a-zA-Z0-9_-]{1,64}$/;
@@ -70,10 +70,10 @@ export class Tool<NAME extends string, INPUT, OUTPUT> {
   }
 
   /**
-   * Provdes a schema description with the name, description and schema of the input.
+   * Provdes a structure definition with the name, description and schema of the input.
    * This is used by `useTool`.
    */
-  get inputSchemaDescription(): SchemaDescription<NAME, INPUT> {
+  get inputStructureDefinition(): StructureDefinition<NAME, INPUT> {
     return {
       name: this.name,
       description: this.description,

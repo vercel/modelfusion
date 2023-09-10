@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { SchemaDescription } from "./SchemaDescription.js";
+import { StructureDefinition } from "./StructureDefinition.js";
 import { Schema } from "./Schema.js";
 import { ZodSchema } from "./ZodSchema.js";
 
-export class ZodSchemaDescription<NAME extends string, STRUCTURE>
-  implements SchemaDescription<NAME, STRUCTURE>
+export class ZodStructureDefinition<NAME extends string, STRUCTURE>
+  implements StructureDefinition<NAME, STRUCTURE>
 {
   name: NAME;
   description?: string;

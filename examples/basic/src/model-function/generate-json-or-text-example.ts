@@ -3,7 +3,7 @@ import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  ZodSchemaDescription,
+  ZodStructureDefinition,
   generateJsonOrText,
 } from "modelfusion";
 import { z } from "zod";
@@ -18,7 +18,7 @@ async function main() {
   const { schema, value, text } = await generateJsonOrText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
     [
-      new ZodSchemaDescription({
+      new ZodStructureDefinition({
         name: "getCurrentWeather" as const, // mark 'as const' for type inference
         description: "Get the current weather in a given location",
         schema: z.object({
@@ -28,7 +28,7 @@ async function main() {
           unit: z.enum(["celsius", "fahrenheit"]).optional(),
         }),
       }),
-      new ZodSchemaDescription({
+      new ZodStructureDefinition({
         name: "getContactInformation" as const,
         description: "Get the contact information for a given person",
         schema: z.object({

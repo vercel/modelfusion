@@ -3,7 +3,7 @@ import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  ZodSchemaDescription,
+  ZodStructureDefinition,
   generateJson,
 } from "modelfusion";
 import { z } from "zod";
@@ -18,7 +18,7 @@ async function main() {
         temperature: 0, // remove randomness
         maxCompletionTokens: 500, // enough tokens for reasoning and sentiment
       }),
-      new ZodSchemaDescription({
+      new ZodStructureDefinition({
         name: "sentiment",
         description: "Write the sentiment analysis",
         schema: z.object({

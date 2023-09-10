@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
 import { JsonOrTextGenerationPrompt } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
 import { Schema } from "../../../model-function/generate-json/Schema.js";
-import { SchemaDescription } from "../../../model-function/generate-json/SchemaDescription.js";
+import { StructureDefinition } from "../../../model-function/generate-json/StructureDefinition.js";
 import { Tool } from "../../../tool/Tool.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";
@@ -29,7 +29,7 @@ export const OpenAIChatFunctionPrompt = {
     schemaDescription,
   }: {
     messages: OpenAIChatMessage[];
-    schemaDescription: SchemaDescription<any, STRUCTURE>;
+    schemaDescription: StructureDefinition<any, STRUCTURE>;
   }) {
     return this.forOpenAIFunctionDescription({
       messages,
@@ -42,7 +42,7 @@ export const OpenAIChatFunctionPrompt = {
   },
 
   forSchemaCurried<STRUCTURE>(messages: OpenAIChatMessage[]) {
-    return (schemaDescription: SchemaDescription<any, STRUCTURE>) =>
+    return (schemaDescription: StructureDefinition<any, STRUCTURE>) =>
       this.forSchema({
         messages,
         schemaDescription,
@@ -58,7 +58,7 @@ export const OpenAIChatFunctionPrompt = {
   }) {
     return this.forSchema({
       messages,
-      schemaDescription: tool.inputSchemaDescription,
+      schemaDescription: tool.inputStructureDefinition,
     });
   },
 
@@ -72,7 +72,7 @@ export const OpenAIChatFunctionPrompt = {
     return new OpenAIChatAutoFunctionPrompt(options);
   },
 
-  forSchemas<SCHEMAS extends Array<SchemaDescription<any, any>>>({
+  forSchemas<SCHEMAS extends Array<StructureDefinition<any, any>>>({
     messages,
     schemaDescriptions,
   }: {
@@ -89,7 +89,7 @@ export const OpenAIChatFunctionPrompt = {
     });
   },
 
-  forSchemasCurried<SCHEMAS extends Array<SchemaDescription<any, any>>>(
+  forSchemasCurried<SCHEMAS extends Array<StructureDefinition<any, any>>>(
     messages: OpenAIChatMessage[]
   ) {
     return (schemaDescriptions: SCHEMAS) =>
@@ -105,7 +105,7 @@ export const OpenAIChatFunctionPrompt = {
   }) {
     return this.forSchemas({
       messages,
-      schemaDescriptions: tools.map((tool) => tool.inputSchemaDescription),
+      schemaDescriptions: tools.map((tool) => tool.inputStructureDefinition),
     });
   },
 
