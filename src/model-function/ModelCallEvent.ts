@@ -16,9 +16,9 @@ import {
   ImageGenerationStartedEvent,
 } from "./generate-image/ImageGenerationEvent.js";
 import {
-  JsonGenerationFinishedEvent,
-  JsonGenerationStartedEvent,
-} from "./generate-json/JsonGenerationEvent.js";
+  StructureGenerationFinishedEvent,
+  StructureGenerationStartedEvent,
+} from "./generate-structure/StructureGenerationEvent.js";
 import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
@@ -86,7 +86,7 @@ export interface BaseModelCallFinishedEvent extends BaseFunctionFinishedEvent {
 export type ModelCallStartedEvent =
   | ImageDescriptionStartedEvent
   | ImageGenerationStartedEvent
-  | JsonGenerationStartedEvent
+  | StructureGenerationStartedEvent
   | SpeechSynthesisStartedEvent
   | TextEmbeddingStartedEvent
   | TextGenerationStartedEvent
@@ -96,7 +96,7 @@ export type ModelCallStartedEvent =
 export type ModelCallFinishedEvent =
   | ImageDescriptionFinishedEvent
   | ImageGenerationFinishedEvent
-  | JsonGenerationFinishedEvent
+  | StructureGenerationFinishedEvent
   | SpeechSynthesisFinishedEvent
   | TextEmbeddingFinishedEvent
   | TextGenerationFinishedEvent

@@ -1,9 +1,9 @@
 import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import {
-  JsonGenerationModel,
-  JsonGenerationModelSettings,
-} from "../model-function/generate-json/JsonGenerationModel.js";
-import { generateJson } from "../model-function/generate-json/generateJson.js";
+  StructureGenerationModel,
+  StructureGenerationModelSettings,
+} from "../model-function/generate-structure/StructureGenerationModel.js";
+import { generateStructure } from "../model-function/generate-structure/generateStructure.js";
 import { Tool } from "./Tool.js";
 import { executeTool } from "./executeTool.js";
 
@@ -21,10 +21,10 @@ import { executeTool } from "./executeTool.js";
 export async function useTool<
   PROMPT,
   RESPONSE,
-  SETTINGS extends JsonGenerationModelSettings,
+  SETTINGS extends StructureGenerationModelSettings,
   TOOL extends Tool<any, any, any>,
 >(
-  model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  model: StructureGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   tool: TOOL,
   prompt: (tool: TOOL) => PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
@@ -33,7 +33,7 @@ export async function useTool<
   parameters: TOOL["inputSchema"];
   result: Awaited<ReturnType<TOOL["execute"]>>;
 }> {
-  const { output: value } = await generateJson<
+  const { output: value } = await generateStructure<
     TOOL["inputSchema"],
     PROMPT,
     RESPONSE,

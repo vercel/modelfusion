@@ -4,7 +4,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   ZodStructureDefinition,
-  generateJson,
+  generateStructure,
 } from "modelfusion";
 import { z } from "zod";
 
@@ -12,7 +12,7 @@ dotenv.config();
 
 async function main() {
   const analyzeSentiment = async (productReview: string) =>
-    generateJson(
+    generateStructure(
       new OpenAIChatModel({
         model: "gpt-4",
         temperature: 0, // remove randomness

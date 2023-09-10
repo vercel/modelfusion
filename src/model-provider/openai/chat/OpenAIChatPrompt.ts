@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
-import { JsonOrTextGenerationPrompt } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
-import { Schema } from "../../../model-function/generate-json/Schema.js";
-import { StructureDefinition } from "../../../model-function/generate-json/StructureDefinition.js";
+import { StructureOrTextGenerationPrompt } from "../../../model-function/generate-structure/StructureOrTextGenerationModel.js";
+import { Schema } from "../../../model-function/generate-structure/Schema.js";
+import { StructureDefinition } from "../../../model-function/generate-structure/StructureDefinition.js";
 import { Tool } from "../../../tool/Tool.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";
@@ -148,7 +148,7 @@ export class OpenAIChatSingleFunctionPrompt<FUNCTION> {
 
 export class OpenAIChatAutoFunctionPrompt<
   FUNCTIONS extends Array<OpenAIFunctionDescription<any>>,
-> implements JsonOrTextGenerationPrompt<OpenAIChatResponse>
+> implements StructureOrTextGenerationPrompt<OpenAIChatResponse>
 {
   readonly messages: OpenAIChatMessage[];
 
@@ -165,19 +165,19 @@ export class OpenAIChatAutoFunctionPrompt<
     this.fns = fns;
   }
 
-  extractJsonAndText(response: OpenAIChatResponse) {
+  extractStructureAndText(response: OpenAIChatResponse) {
     const message = response.choices[0]!.message;
     const content = message.content;
     const functionCall = message.function_call;
 
     return functionCall == null
       ? {
-          schema: null,
+          structure: null,
           value: null,
           text: content ?? "",
         }
       : {
-          schema: functionCall.name,
+          structure: functionCall.name,
           value: SecureJSON.parse(functionCall.arguments),
           text: content,
         };

@@ -6,8 +6,8 @@ export type SuccessfulModelCall = {
   type:
     | "image-description"
     | "image-generation"
-    | "json-generation"
-    | "json-or-text-generation"
+    | "structure-generation"
+    | "structure-or-text-generation"
     | "speech-synthesis"
     | "text-embedding"
     | "text-generation"

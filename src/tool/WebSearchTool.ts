@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { FunctionOptions } from "../core/FunctionOptions.js";
-import { ZodSchema } from "../model-function/generate-json/ZodSchema.js";
+import { ZodSchema } from "../model-function/generate-structure/ZodSchema.js";
 import { Tool } from "./Tool.js";
 
 const OUTPUT_SCHEMA = new ZodSchema(

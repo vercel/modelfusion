@@ -1,10 +1,10 @@
 import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import {
-  JsonOrTextGenerationModel,
-  JsonOrTextGenerationModelSettings,
-  JsonOrTextGenerationPrompt,
-} from "../model-function/generate-json/JsonOrTextGenerationModel.js";
-import { generateJsonOrText } from "../model-function/generate-json/generateJsonOrText.js";
+  StructureOrTextGenerationModel,
+  StructureOrTextGenerationModelSettings,
+  StructureOrTextGenerationPrompt,
+} from "../model-function/generate-structure/StructureOrTextGenerationModel.js";
+import { generateStructureOrText } from "../model-function/generate-structure/generateStructureOrText.js";
 import { NoSuchToolError } from "./NoSuchToolError.js";
 import { Tool } from "./Tool.js";
 import { executeTool } from "./executeTool.js";
@@ -34,12 +34,12 @@ type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
 export async function useToolOrGenerateText<
   PROMPT,
   RESPONSE,
-  SETTINGS extends JsonOrTextGenerationModelSettings,
+  SETTINGS extends StructureOrTextGenerationModelSettings,
   TOOLS extends Array<Tool<any, any, any>>,
 >(
-  model: JsonOrTextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  model: StructureOrTextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   tools: TOOLS,
-  prompt: (tools: TOOLS) => PROMPT & JsonOrTextGenerationPrompt<RESPONSE>,
+  prompt: (tools: TOOLS) => PROMPT & StructureOrTextGenerationPrompt<RESPONSE>,
   options?: ModelFunctionOptions<SETTINGS>
 ): Promise<
   | { tool: null; parameters: null; result: null; text: string }
@@ -47,7 +47,7 @@ export async function useToolOrGenerateText<
 > {
   const expandedPrompt = prompt(tools);
 
-  const modelResponse = await generateJsonOrText(
+  const modelResponse = await generateStructureOrText(
     model,
     tools.map((tool) => ({
       name: tool.name,
@@ -58,9 +58,9 @@ export async function useToolOrGenerateText<
     options
   );
 
-  const { schema, text } = modelResponse;
+  const { structure, text } = modelResponse;
 
-  if (schema == null) {
+  if (structure == null) {
     return {
       tool: null,
       parameters: null,
@@ -69,10 +69,10 @@ export async function useToolOrGenerateText<
     };
   }
 
-  const tool = tools.find((tool) => tool.name === schema);
+  const tool = tools.find((tool) => tool.name === structure);
 
   if (tool == null) {
-    throw new NoSuchToolError(schema.toString());
+    throw new NoSuchToolError(structure.toString());
   }
 
   const toolParameters = modelResponse.value;
@@ -80,7 +80,7 @@ export async function useToolOrGenerateText<
   const result = await executeTool(tool, toolParameters, options);
 
   return {
-    tool: schema as keyof ToToolMap<TOOLS>,
+    tool: structure as keyof ToToolMap<TOOLS>,
     result,
     parameters: toolParameters,
     text: text as any, // string | null is the expected value here

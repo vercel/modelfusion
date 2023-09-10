@@ -1,28 +1,28 @@
 import { getErrorMessage } from "../../util/getErrorMessage.js";
 
-export class SchemaValidationError extends Error {
-  readonly schemaName: string;
+export class StructureValidationError extends Error {
+  readonly structureName: string;
   readonly cause: unknown;
   readonly value: unknown;
 
   constructor({
-    schemaName,
+    structureName,
     value,
     cause,
   }: {
-    schemaName: string;
+    structureName: string;
     value: unknown;
     cause: unknown;
   }) {
     super(
-      `Schema validation error for '${schemaName}'. ` +
+      `Structure validation error for '${structureName}'. ` +
         `Value: ${JSON.stringify(value)}.\n` +
         `Error message: ${getErrorMessage(cause)}`
     );
 
-    this.name = "SchemaValidationError";
+    this.name = "StructureValidationError";
 
-    this.schemaName = schemaName;
+    this.structureName = structureName;
     this.cause = cause;
     this.value = value;
   }

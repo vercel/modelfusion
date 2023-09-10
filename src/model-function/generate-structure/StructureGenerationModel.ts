@@ -1,19 +1,19 @@
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
-export interface JsonGenerationModelSettings extends ModelSettings {}
+export interface StructureGenerationModelSettings extends ModelSettings {}
 
-export interface JsonGenerationModel<
+export interface StructureGenerationModel<
   PROMPT,
   RESPONSE,
-  SETTINGS extends JsonGenerationModelSettings,
+  SETTINGS extends StructureGenerationModelSettings,
 > extends Model<SETTINGS> {
-  generateJsonResponse(
+  generateStructureResponse(
     prompt: PROMPT,
     options?: ModelFunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE>;
 
-  extractJson(response: RESPONSE): unknown;
+  extractStructure(response: RESPONSE): unknown;
 
   extractUsage?(response: RESPONSE): {
     promptTokens: number;

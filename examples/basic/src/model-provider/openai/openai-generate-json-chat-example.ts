@@ -4,14 +4,14 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   ZodStructureDefinition,
-  generateJson,
+  generateStructure,
 } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
 
 async function main() {
-  const sentiment = await generateJson(
+  const sentiment = await generateStructure(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
       temperature: 0,

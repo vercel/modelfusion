@@ -1,29 +1,29 @@
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
-export interface JsonOrTextGenerationModelSettings extends ModelSettings {}
+export interface StructureOrTextGenerationModelSettings extends ModelSettings {}
 
-export interface JsonOrTextGenerationPrompt<RESPONSE> {
-  extractJsonAndText(response: RESPONSE):
+export interface StructureOrTextGenerationPrompt<RESPONSE> {
+  extractStructureAndText(response: RESPONSE):
     | {
-        schema: null;
+        structure: null;
         value: null;
         text: string;
       }
     | {
-        schema: string;
+        structure: string;
         value: unknown;
         text: string | null;
       };
 }
 
-export interface JsonOrTextGenerationModel<
+export interface StructureOrTextGenerationModel<
   PROMPT,
   RESPONSE,
-  SETTINGS extends JsonOrTextGenerationModelSettings,
+  SETTINGS extends StructureOrTextGenerationModelSettings,
 > extends Model<SETTINGS> {
-  generateJsonResponse(
-    prompt: PROMPT & JsonOrTextGenerationPrompt<RESPONSE>,
+  generateStructureResponse(
+    prompt: PROMPT & StructureOrTextGenerationPrompt<RESPONSE>,
     options?: ModelFunctionOptions<SETTINGS>
   ): PromiseLike<RESPONSE>;
 

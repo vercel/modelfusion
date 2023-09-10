@@ -4,7 +4,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   ZodStructureDefinition,
-  generateJsonOrText,
+  generateStructureOrText,
 } from "modelfusion";
 import { z } from "zod";
 
@@ -15,7 +15,7 @@ async function main() {
   // const query = "Where does Kevin work?";
   // const query = "Tell me something random.";
 
-  const { schema, value, text } = await generateJsonOrText(
+  const { structure, value, text } = await generateStructureOrText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
     [
       new ZodStructureDefinition({
@@ -39,7 +39,7 @@ async function main() {
     OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
   );
 
-  switch (schema) {
+  switch (structure) {
     case "getCurrentWeather": {
       const { location, unit } = value;
       console.log("getCurrentWeather", location, unit);

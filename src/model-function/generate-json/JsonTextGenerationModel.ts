@@ -2,9 +2,9 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../generate-text/TextGenerationModel.js";
-import { StructureDefinition } from "./StructureDefinition.js";
+import { StructureDefinition } from "../generate-structure/StructureDefinition.js";
 import { InstructionWithStructure } from "./InstructionWithStructurePrompt.js";
-import { JsonGenerationModel } from "./JsonGenerationModel.js";
+import { StructureGenerationModel } from "../generate-structure/StructureGenerationModel.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { generateText } from "../generate-text/generateText.js";
 
@@ -26,7 +26,7 @@ export class JsonTextGenerationModel<
     TextGenerationModelSettings
   >,
 > implements
-    JsonGenerationModel<
+    StructureGenerationModel<
       InstructionWithStructure<string, unknown>,
       string,
       MODEL["settings"]
@@ -58,7 +58,7 @@ export class JsonTextGenerationModel<
     return this.model.settingsForEvent;
   }
 
-  async generateJsonResponse(
+  async generateStructureResponse(
     prompt: InstructionWithStructure<string, unknown>,
     options?: ModelFunctionOptions<MODEL["settings"]> | undefined
   ): Promise<string> {
@@ -69,7 +69,7 @@ export class JsonTextGenerationModel<
     );
   }
 
-  extractJson(response: string): unknown {
+  extractStructure(response: string): unknown {
     return this.format.extractJson(response);
   }
 

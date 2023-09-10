@@ -3,8 +3,8 @@ import z from "zod";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../../model-function/ModelFunctionOptions.js";
 import { ApiConfiguration } from "../../../core/api/ApiConfiguration.js";
-import { JsonGenerationModel } from "../../../model-function/generate-json/JsonGenerationModel.js";
-import { JsonOrTextGenerationModel } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
+import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
+import { StructureOrTextGenerationModel } from "../../../model-function/generate-structure/StructureOrTextGenerationModel.js";
 import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
@@ -238,12 +238,12 @@ export class OpenAIChatModel
       OpenAIChatDelta,
       OpenAIChatSettings
     >,
-    JsonGenerationModel<
+    StructureGenerationModel<
       OpenAIChatSingleFunctionPrompt<unknown>,
       OpenAIChatResponse,
       OpenAIChatSettings
     >,
-    JsonOrTextGenerationModel<
+    StructureOrTextGenerationModel<
       OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
       OpenAIChatResponse,
       OpenAIChatSettings
@@ -374,7 +374,7 @@ export class OpenAIChatModel
    *
    * @see https://platform.openai.com/docs/guides/gpt/function-calling
    */
-  generateJsonResponse(
+  generateStructureResponse(
     prompt:
       | OpenAIChatSingleFunctionPrompt<unknown>
       | OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
@@ -393,7 +393,7 @@ export class OpenAIChatModel
     });
   }
 
-  extractJson(response: OpenAIChatResponse): unknown {
+  extractStructure(response: OpenAIChatResponse): unknown {
     const jsonText = response.choices[0]!.message.function_call!.arguments;
     return SecureJSON.parse(jsonText);
   }

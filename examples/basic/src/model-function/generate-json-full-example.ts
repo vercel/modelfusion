@@ -4,7 +4,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   ZodStructureDefinition,
-  generateJson,
+  generateStructure,
 } from "modelfusion";
 import { z } from "zod";
 
@@ -15,7 +15,7 @@ async function main() {
     output: sentiment,
     metadata,
     response,
-  } = await generateJson(
+  } = await generateStructure(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
       temperature: 0,
