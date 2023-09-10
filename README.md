@@ -29,12 +29,6 @@ ModelFusion is a library for building AI apps, chatbots, and agents. It provides
 npm install modelfusion
 ```
 
-You need to install `zod` and a matching version of `zod-to-json-schema` (peer dependencies):
-
-```sh
-npm install zod zod-to-json-schema
-```
-
 Or use a template: [ModelFusion terminal app starter](https://github.com/lgrammel/modelfusion-terminal-app-starter)
 
 ## Usage Examples
