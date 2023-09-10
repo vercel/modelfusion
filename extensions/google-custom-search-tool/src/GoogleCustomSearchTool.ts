@@ -37,7 +37,7 @@ export class GoogleCustomSearchTool<
 
         const items = data.items.slice(0, this.settings.maxResults ?? 5);
 
-        return this.outputSchema.parse({
+        const validationResult = this.outputSchema.validate({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           results: items.map((item: any) => ({
             title: item.title,
@@ -45,6 +45,12 @@ export class GoogleCustomSearchTool<
             snippet: item.snippet,
           })),
         });
+
+        if (!validationResult.success) {
+          throw validationResult.error;
+        }
+
+        return validationResult.value;
       },
     });
 

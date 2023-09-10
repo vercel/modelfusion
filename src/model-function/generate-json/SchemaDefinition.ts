@@ -1,7 +1,7 @@
-import { z } from "zod";
+import { Schema } from "./Schema.js";
 
 export type SchemaDefinition<NAME extends string, STRUCTURE> = {
   name: NAME;
   description?: string;
-  schema: z.Schema<STRUCTURE>;
+  schema: Schema<STRUCTURE>;
 };

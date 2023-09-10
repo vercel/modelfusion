@@ -2,6 +2,7 @@ import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
+  ZodSchema,
   generateJson,
 } from "modelfusion";
 import dotenv from "dotenv";
@@ -22,15 +23,17 @@ async function main() {
         name: "storeCity",
         description: "Save information about the city",
         // structure supports escape hatch:
-        schema: z.object({
-          city: z
-            .object({
-              name: z.string().describe("name of the city"),
-              population: z.number().describe("population of the city"),
-            })
-            .nullable()
-            .describe("information about the city"),
-        }),
+        schema: new ZodSchema(
+          z.object({
+            city: z
+              .object({
+                name: z.string().describe("name of the city"),
+                population: z.number().describe("population of the city"),
+              })
+              .nullable()
+              .describe("information about the city"),
+          })
+        ),
       },
       OpenAIChatFunctionPrompt.forSchemaCurried([
         OpenAIChatMessage.system(

@@ -2,6 +2,7 @@ import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
+  ZodSchema,
   generateJsonOrText,
 } from "modelfusion";
 import dotenv from "dotenv";
@@ -20,19 +21,23 @@ async function main() {
       {
         name: "getCurrentWeather" as const, // mark 'as const' for type inference
         description: "Get the current weather in a given location",
-        schema: z.object({
-          location: z
-            .string()
-            .describe("The city and state, e.g. San Francisco, CA"),
-          unit: z.enum(["celsius", "fahrenheit"]).optional(),
-        }),
+        schema: new ZodSchema(
+          z.object({
+            location: z
+              .string()
+              .describe("The city and state, e.g. San Francisco, CA"),
+            unit: z.enum(["celsius", "fahrenheit"]).optional(),
+          })
+        ),
       },
       {
         name: "getContactInformation" as const,
         description: "Get the contact information for a given person",
-        schema: z.object({
-          name: z.string().describe("The name of the person"),
-        }),
+        schema: new ZodSchema(
+          z.object({
+            name: z.string().describe("The name of the person"),
+          })
+        ),
       },
     ],
     OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])

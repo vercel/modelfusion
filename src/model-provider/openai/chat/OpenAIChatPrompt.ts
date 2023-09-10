@@ -1,7 +1,6 @@
 import SecureJSON from "secure-json-parse";
-import z from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
 import { JsonOrTextGenerationPrompt } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
+import { Schema } from "../../../model-function/generate-json/Schema.js";
 import { SchemaDefinition } from "../../../model-function/generate-json/SchemaDefinition.js";
 import { Tool } from "../../../tool/Tool.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
@@ -14,7 +13,7 @@ import { OpenAIChatResponse } from "./OpenAIChatModel.js";
 export type OpenAIFunctionDescription<T> = {
   name: string;
   description?: string;
-  parameters: z.Schema<T>;
+  parameters: Schema<T>;
 };
 
 export const OpenAIChatFunctionPrompt = {
@@ -141,7 +140,7 @@ export class OpenAIChatSingleFunctionPrompt<FUNCTION> {
       {
         name: this.fn.name,
         description: this.fn.description,
-        parameters: zodToJsonSchema(this.fn.parameters),
+        parameters: this.fn.parameters.getJsonSchema(),
       },
     ];
   }
@@ -192,7 +191,7 @@ export class OpenAIChatAutoFunctionPrompt<
     return this.fns.map((fn) => ({
       name: fn.name,
       description: fn.description,
-      parameters: zodToJsonSchema(fn.parameters),
+      parameters: fn.parameters.getJsonSchema(),
     }));
   }
 }

@@ -31,17 +31,17 @@ export function generateJson<
     extractOutputValue: (response): STRUCTURE => {
       const json = model.extractJson(response);
 
-      const parseResult = schemaDefinition.schema.safeParse(json);
+      const parseResult = schemaDefinition.schema.validate(json);
 
       if (!parseResult.success) {
         throw new SchemaValidationError({
           schemaName: schemaDefinition.name,
           value: json,
-          errors: parseResult.error,
+          cause: parseResult.error,
         });
       }
 
-      return parseResult.data;
+      return parseResult.value;
     },
     extractUsage: (result) => model.extractUsage?.(result),
   });

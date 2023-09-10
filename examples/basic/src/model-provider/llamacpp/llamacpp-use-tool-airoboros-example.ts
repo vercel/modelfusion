@@ -8,7 +8,6 @@ import {
 } from "modelfusion";
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
-import zodToJsonSchema from "zod-to-json-schema";
 import { calculator } from "../../tool/calculator-tool";
 
 dotenv.config();
@@ -16,7 +15,7 @@ dotenv.config();
 // schema is specific to airoboros prompt
 const airoborosFunctionSchema = z.object({
   function: z.string(),
-  params: calculator.inputSchema,
+  params: z.any(),
 });
 
 // Prompt for Airoboros L2 13B GPT4 2.0:
@@ -33,7 +32,7 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
   }): string {
     // map schema definition
     const properties: Record<string, { type: string; description: string }> = (
-      zodToJsonSchema(schemaDefinition.schema) as any
+      schemaDefinition.schema.getJsonSchema() as any
     ).properties;
 
     return [

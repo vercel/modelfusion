@@ -1,32 +1,29 @@
-import { z } from "zod";
+import { getErrorMessage } from "../../util/getErrorMessage.js";
 
 export class SchemaValidationError extends Error {
   readonly schemaName: string;
-  readonly errors: z.ZodError;
+  readonly cause: unknown;
   readonly value: unknown;
 
   constructor({
     schemaName,
     value,
-    errors,
+    cause,
   }: {
     schemaName: string;
     value: unknown;
-    errors: z.ZodError;
+    cause: unknown;
   }) {
     super(
       `Schema validation error for '${schemaName}'. ` +
         `Value: ${JSON.stringify(value)}.\n` +
-        `Error details: ${errors.message}\n` +
-        `Error field(s): ${errors.errors
-          .map((err) => err.path.join("."))
-          .join(", ")}`
+        `Error message: ${getErrorMessage(cause)}`
     );
 
     this.name = "SchemaValidationError";
 
     this.schemaName = schemaName;
-    this.errors = errors;
+    this.cause = cause;
     this.value = value;
   }
 }

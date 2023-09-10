@@ -49,9 +49,15 @@ export class SerpapiGoogleWebSearchTool<
           })
         );
 
-        return this.outputSchema.parse({
+        const validationResult = this.outputSchema.validate({
           results: organicResults,
         });
+
+        if (!validationResult.success) {
+          throw validationResult.error;
+        }
+
+        return validationResult.value;
       },
     });
 

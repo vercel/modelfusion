@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { SchemaDefinition } from "../model-function/generate-json/SchemaDefinition.js";
 import { FunctionOptions } from "../core/FunctionOptions.js";
+import { Schema } from "../model-function/generate-json/Schema.js";
+import { SchemaDefinition } from "../model-function/generate-json/SchemaDefinition.js";
 import { InvalidToolNameError } from "./InvalidToolNameError.js";
 
 const namePattern = /^[a-zA-Z0-9_-]{1,64}$/;
@@ -26,12 +26,12 @@ export class Tool<NAME extends string, INPUT, OUTPUT> {
    * The schema of the input that the tool expects. The language model will use this to generate the input.
    * Use descriptions to make the input understandable for the language model.
    */
-  readonly inputSchema: z.ZodSchema<INPUT>;
+  readonly inputSchema: Schema<INPUT>;
 
   /**
    * An optional schema of the output that the tool produces. This will be used to validate the output.
    */
-  readonly outputSchema?: z.ZodSchema<OUTPUT>;
+  readonly outputSchema?: Schema<OUTPUT>;
 
   /**
    * The actual execution function of the tool.
@@ -50,8 +50,8 @@ export class Tool<NAME extends string, INPUT, OUTPUT> {
   }: {
     name: NAME;
     description: string;
-    inputSchema: z.ZodSchema<INPUT>;
-    outputSchema?: z.ZodSchema<OUTPUT>;
+    inputSchema: Schema<INPUT>;
+    outputSchema?: Schema<OUTPUT>;
     execute(input: INPUT, options?: FunctionOptions): PromiseLike<OUTPUT>;
   }) {
     // check that the name is a valid function name:

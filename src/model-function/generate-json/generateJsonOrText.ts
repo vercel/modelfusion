@@ -76,19 +76,19 @@ export function generateJsonOrText<
         throw new NoSuchSchemaError(schema);
       }
 
-      const parseResult = definition.schema.safeParse(value);
+      const parseResult = definition.schema.validate(value);
 
       if (!parseResult.success) {
         throw new SchemaValidationError({
           schemaName: schema,
           value,
-          errors: parseResult.error,
+          cause: parseResult.error,
         });
       }
 
       return {
         schema: schema as ToOutputValue<SCHEMAS>["schema"],
-        value: parseResult.data,
+        value: parseResult.value,
         text: text as any, // text is string | null, which is part of the response for schema values
       };
     },
