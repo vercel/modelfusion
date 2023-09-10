@@ -35,8 +35,13 @@ export function embedTexts<
       // split the texts into groups that are small enough to be sent in one call:
       const maxTextsPerCall = model.maxTextsPerCall;
       const textGroups: string[][] = [];
-      for (let i = 0; i < texts.length; i += maxTextsPerCall) {
-        textGroups.push(texts.slice(i, i + maxTextsPerCall));
+
+      if (maxTextsPerCall == null) {
+        textGroups.push(texts);
+      } else {
+        for (let i = 0; i < texts.length; i += maxTextsPerCall) {
+          textGroups.push(texts.slice(i, i + maxTextsPerCall));
+        }
       }
 
       return Promise.all(

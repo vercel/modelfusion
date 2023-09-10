@@ -95,7 +95,8 @@ export class OpenAITextEmbeddingModel
     return this.settings.model;
   }
 
-  readonly maxTextsPerCall = 1;
+  readonly maxTextsPerCall = 2048;
+
   readonly embeddingDimensions: number;
 
   readonly tokenizer: TikTokenTokenizer;
@@ -106,7 +107,7 @@ export class OpenAITextEmbeddingModel
   }
 
   async callAPI(
-    text: string,
+    texts: Array<string>,
     options?: ModelFunctionOptions<OpenAITextEmbeddingModelSettings>
   ): Promise<OpenAITextEmbeddingResponse> {
     const run = options?.run;
@@ -125,7 +126,7 @@ export class OpenAITextEmbeddingModel
 
       // other settings:
       abortSignal: run?.abortSignal,
-      input: text,
+      input: texts,
     };
 
     return callWithRetryAndThrottle({
@@ -149,7 +150,7 @@ export class OpenAITextEmbeddingModel
       );
     }
 
-    return this.callAPI(texts[0], options);
+    return this.callAPI(texts, options);
   }
 
   extractEmbeddings(response: OpenAITextEmbeddingResponse) {
@@ -165,15 +166,13 @@ export class OpenAITextEmbeddingModel
 
 const openAITextEmbeddingResponseSchema = z.object({
   object: z.literal("list"),
-  data: z
-    .array(
-      z.object({
-        object: z.literal("embedding"),
-        embedding: z.array(z.number()),
-        index: z.number(),
-      })
-    )
-    .length(1),
+  data: z.array(
+    z.object({
+      object: z.literal("embedding"),
+      embedding: z.array(z.number()),
+      index: z.number(),
+    })
+  ),
   model: z.string(),
   usage: z.object({
     prompt_tokens: z.number(),
@@ -195,7 +194,7 @@ async function callOpenAITextEmbeddingAPI({
   api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   model: OpenAITextEmbeddingModelType;
-  input: string;
+  input: Array<string>;
   user?: string;
 }): Promise<OpenAITextEmbeddingResponse> {
   return postJsonToApi({

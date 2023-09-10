@@ -18,7 +18,10 @@ export interface TextEmbeddingModel<
    */
   readonly embeddingDimensions: number | undefined;
 
-  readonly maxTextsPerCall: number;
+  /**
+   * Limit of how many texts can be sent in a single API call.
+   */
+  readonly maxTextsPerCall: number | undefined;
 
   generateEmbeddingResponse(
     texts: string[],
