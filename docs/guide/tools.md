@@ -55,7 +55,7 @@ const calculator = new Tool({
 
 [useTool API](/api/modules/#useTool)
 
-`useTool` uses [generateJson](/guide/function/generate-json) to generate parameters for a tool and then executes the tool with the parameters.
+`useTool` uses [generateStructure](/guide/function/generate-structure) to generate parameters for a tool and then executes the tool with the parameters.
 
 The result contains the name of the tool (`tool` property), the parameters (`parameters` property, typed), and the result of the tool execution (`result` property, typed).
 
@@ -73,7 +73,7 @@ const { tool, parameters, result } = await useTool(
 
 [useToolOrGenerateText API](/api/modules/#useToolorgeneratetext)
 
-`useToolOrGenerateText` uses [generateJsonOrText](/guide/function/generate-json-or-text)
+`useToolOrGenerateText` uses [generateStructureOrText](/guide/function/generate-structure-or-text)
 to select a tool, generate parameters for it and execute it.
 It can be configured with several tools.
 

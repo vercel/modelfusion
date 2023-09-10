@@ -12,7 +12,7 @@ import { executeTool } from "./executeTool.js";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
- * `useTool` uses `generateJson` to generate parameters for a tool and then executes the tool with the parameters.
+ * `useTool` uses `generateStructure` to generate parameters for a tool and then executes the tool with the parameters.
  *
  * @returns The result contains the name of the tool (`tool` property),
  * the parameters (`parameters` property, typed),
