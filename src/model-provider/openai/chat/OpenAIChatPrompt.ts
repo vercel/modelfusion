@@ -1,7 +1,7 @@
 import SecureJSON from "secure-json-parse";
+import { Schema } from "../../../core/structure/Schema.js";
+import { StructureDefinition } from "../../../core/structure/StructureDefinition.js";
 import { StructureOrTextGenerationPrompt } from "../../../model-function/generate-structure/StructureOrTextGenerationModel.js";
-import { Schema } from "../../../model-function/generate-structure/Schema.js";
-import { StructureDefinition } from "../../../model-function/generate-structure/StructureDefinition.js";
 import { Tool } from "../../../tool/Tool.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";

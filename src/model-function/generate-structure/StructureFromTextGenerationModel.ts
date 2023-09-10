@@ -2,7 +2,7 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../generate-text/TextGenerationModel.js";
-import { StructureDefinition } from "./StructureDefinition.js";
+import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import { InstructionWithStructure } from "./InstructionWithStructurePrompt.js";
 import { StructureGenerationModel } from "./StructureGenerationModel.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";

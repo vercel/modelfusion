@@ -1,10 +1,10 @@
+import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   StructureGenerationModel,
   StructureGenerationModelSettings,
 } from "./StructureGenerationModel.js";
-import { StructureDefinition } from "./StructureDefinition.js";
 import { StructureValidationError } from "./StructureValidationError.js";
 
 export function generateStructure<

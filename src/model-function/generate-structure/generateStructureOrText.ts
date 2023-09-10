@@ -6,7 +6,7 @@ import {
   StructureOrTextGenerationPrompt,
 } from "./StructureOrTextGenerationModel.js";
 import { NoSuchStructureError } from "./NoSuchStructureError.js";
-import { StructureDefinition } from "./StructureDefinition.js";
+import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import { StructureValidationError } from "./StructureValidationError.js";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are

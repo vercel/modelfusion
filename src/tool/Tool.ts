@@ -1,6 +1,6 @@
 import { FunctionOptions } from "../core/FunctionOptions.js";
-import { Schema } from "../model-function/generate-structure/Schema.js";
-import { StructureDefinition } from "../model-function/generate-structure/StructureDefinition.js";
+import { Schema } from "../core/structure/Schema.js";
+import { StructureDefinition } from "../core/structure/StructureDefinition.js";
 import { InvalidToolNameError } from "./InvalidToolNameError.js";
 
 const namePattern = /^[a-zA-Z0-9_-]{1,64}$/;
