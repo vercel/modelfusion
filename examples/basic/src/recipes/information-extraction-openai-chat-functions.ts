@@ -1,11 +1,11 @@
+import dotenv from "dotenv";
 import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  ZodSchema,
+  ZodSchemaDescription,
   generateJson,
 } from "modelfusion";
-import dotenv from "dotenv";
 import fs from "node:fs";
 import { z } from "zod";
 
@@ -19,23 +19,21 @@ async function main() {
         temperature: 0, // remove randomness as much as possible
         maxCompletionTokens: 200, // only a few tokens needed for the response
       }),
-      {
+      new ZodSchemaDescription({
         name: "storeCity",
         description: "Save information about the city",
         // structure supports escape hatch:
-        parameters: new ZodSchema(
-          z.object({
-            city: z
-              .object({
-                name: z.string().describe("name of the city"),
-                population: z.number().describe("population of the city"),
-              })
-              .nullable()
-              .describe("information about the city"),
-          })
-        ),
-      },
-      OpenAIChatFunctionPrompt.forFunctionCurried([
+        schema: z.object({
+          city: z
+            .object({
+              name: z.string().describe("name of the city"),
+              population: z.number().describe("population of the city"),
+            })
+            .nullable()
+            .describe("information about the city"),
+        }),
+      }),
+      OpenAIChatFunctionPrompt.forSchemaCurried([
         OpenAIChatMessage.system(
           [
             "Extract the name and the population of the city.",

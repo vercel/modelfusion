@@ -3,7 +3,7 @@ import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  ZodFunctionDescription,
+  ZodSchemaDescription,
   generateJson,
 } from "modelfusion";
 import { z } from "zod";
@@ -21,16 +21,16 @@ async function main() {
       temperature: 0,
       maxCompletionTokens: 50,
     }),
-    new ZodFunctionDescription({
+    new ZodSchemaDescription({
       name: "sentiment" as const,
       description: "Write the sentiment analysis",
-      parameters: z.object({
+      schema: z.object({
         sentiment: z
           .enum(["positive", "neutral", "negative"])
           .describe("Sentiment."),
       }),
     }),
-    OpenAIChatFunctionPrompt.forFunctionCurried([
+    OpenAIChatFunctionPrompt.forSchemaCurried([
       OpenAIChatMessage.system(
         "You are a sentiment evaluator. " +
           "Analyze the sentiment of the following product review:"

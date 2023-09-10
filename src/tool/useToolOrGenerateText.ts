@@ -49,7 +49,11 @@ export async function useToolOrGenerateText<
 
   const modelResponse = await generateJsonOrText(
     model,
-    tools as Tool<any, any, any>[],
+    tools.map((tool) => ({
+      name: tool.name,
+      description: tool.description,
+      schema: tool.inputSchema,
+    })),
     () => expandedPrompt,
     options
   );

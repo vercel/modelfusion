@@ -6,36 +6,36 @@ import {
   JsonOrTextGenerationPrompt,
 } from "./JsonOrTextGenerationModel.js";
 import { NoSuchSchemaError } from "./NoSuchSchemaError.js";
-import { FunctionDescription } from "./FunctionDescription.js";
-import { FunctionValidationError } from "./FunctionValidationError.js";
+import { SchemaDescription } from "./SchemaDescription.js";
+import { SchemaValidationError } from "./SchemaValidationError.js";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
 // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // [ { name: "n", schema: z.object<SCHEMA> } | { ... } ]
-type SchemaDefinitionArray<T extends FunctionDescription<any, any>[]> = T;
+type SchemaDefinitionArray<T extends SchemaDescription<any, any>[]> = T;
 
 // { n: { name: "n", schema: z.object<SCHEMA> }, ... }
 type ToSchemaDefinitionsMap<
-  T extends SchemaDefinitionArray<FunctionDescription<any, any>[]>,
+  T extends SchemaDefinitionArray<SchemaDescription<any, any>[]>,
 > = {
-  [K in T[number]["name"]]: Extract<T[number], FunctionDescription<K, any>>;
+  [K in T[number]["name"]]: Extract<T[number], SchemaDescription<K, any>>;
 };
 
 // { schema: "n", value: SCHEMA } | ...
 type ToSchemaUnion<T> = {
-  [KEY in keyof T]: T[KEY] extends FunctionDescription<any, infer SCHEMA>
+  [KEY in keyof T]: T[KEY] extends SchemaDescription<any, infer SCHEMA>
     ? { schema: KEY; value: SCHEMA; text: string | null }
     : never;
 }[keyof T];
 
 type ToOutputValue<
-  SCHEMAS extends SchemaDefinitionArray<FunctionDescription<any, any>[]>,
+  SCHEMAS extends SchemaDefinitionArray<SchemaDescription<any, any>[]>,
 > = ToSchemaUnion<ToSchemaDefinitionsMap<SCHEMAS>>;
 
 export function generateJsonOrText<
-  SCHEMAS extends FunctionDescription<any, any>[],
+  SCHEMAS extends SchemaDescription<any, any>[],
   PROMPT,
   RESPONSE,
   SETTINGS extends JsonOrTextGenerationModelSettings,
@@ -76,11 +76,11 @@ export function generateJsonOrText<
         throw new NoSuchSchemaError(schema);
       }
 
-      const parseResult = definition.parameters.validate(value);
+      const parseResult = definition.schema.validate(value);
 
       if (!parseResult.success) {
-        throw new FunctionValidationError({
-          functionName: schema,
+        throw new SchemaValidationError({
+          schemaName: schema,
           value,
           cause: parseResult.error,
         });

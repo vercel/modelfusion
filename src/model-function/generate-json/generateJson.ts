@@ -4,8 +4,8 @@ import {
   JsonGenerationModel,
   JsonGenerationModelSettings,
 } from "./JsonGenerationModel.js";
-import { FunctionDescription } from "./FunctionDescription.js";
-import { FunctionValidationError } from "./FunctionValidationError.js";
+import { SchemaDescription } from "./SchemaDescription.js";
+import { SchemaValidationError } from "./SchemaValidationError.js";
 
 export function generateJson<
   STRUCTURE,
@@ -15,8 +15,8 @@ export function generateJson<
   SETTINGS extends JsonGenerationModelSettings,
 >(
   model: JsonGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  schemaDefinition: FunctionDescription<NAME, STRUCTURE>,
-  prompt: (schemaDefinition: FunctionDescription<NAME, STRUCTURE>) => PROMPT,
+  schemaDefinition: SchemaDescription<NAME, STRUCTURE>,
+  prompt: (schemaDefinition: SchemaDescription<NAME, STRUCTURE>) => PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<STRUCTURE, RESPONSE> {
   const expandedPrompt = prompt(schemaDefinition);
@@ -31,11 +31,11 @@ export function generateJson<
     extractOutputValue: (response): STRUCTURE => {
       const json = model.extractJson(response);
 
-      const parseResult = schemaDefinition.parameters.validate(json);
+      const parseResult = schemaDefinition.schema.validate(json);
 
       if (!parseResult.success) {
-        throw new FunctionValidationError({
-          functionName: schemaDefinition.name,
+        throw new SchemaValidationError({
+          schemaName: schemaDefinition.name,
           value: json,
           cause: parseResult.error,
         });
