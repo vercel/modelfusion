@@ -41,7 +41,7 @@ const { schema, value, text } = await generateJsonOrText(
       }),
     },
   ],
-  OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
+  OpenAIChatFunctionPrompt.forFunctionsCurried([OpenAIChatMessage.user(query)])
 );
 ```
 

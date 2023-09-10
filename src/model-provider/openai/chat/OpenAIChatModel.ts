@@ -25,13 +25,13 @@ import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import {
   OpenAIChatAutoFunctionPrompt,
   OpenAIChatSingleFunctionPrompt,
-  OpenAIFunctionDescription,
 } from "./OpenAIChatPrompt.js";
 import {
   OpenAIChatDelta,
   createOpenAIChatFullDeltaIterableQueue,
 } from "./OpenAIChatStreamIterable.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
+import { FunctionDescription } from "index.js";
 
 /*
  * Available OpenAI chat models, their token limits, and pricing.
@@ -244,7 +244,7 @@ export class OpenAIChatModel
       OpenAIChatSettings
     >,
     JsonOrTextGenerationModel<
-      OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
+      OpenAIChatAutoFunctionPrompt<Array<FunctionDescription<string, unknown>>>,
       OpenAIChatResponse,
       OpenAIChatSettings
     >
@@ -377,7 +377,9 @@ export class OpenAIChatModel
   generateJsonResponse(
     prompt:
       | OpenAIChatSingleFunctionPrompt<unknown>
-      | OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
+      | OpenAIChatAutoFunctionPrompt<
+          Array<FunctionDescription<string, unknown>>
+        >,
     options?: ModelFunctionOptions<OpenAIChatSettings> | undefined
   ): PromiseLike<OpenAIChatResponse> {
     const settingsWithFunctionCall = Object.assign({}, options, {

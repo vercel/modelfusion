@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import {
-  InstructionWithSchemaPrompt,
+  InstructionWithFunctionPrompt,
   JsonTextGenerationModel,
   LlamaCppTextGenerationModel,
-  SchemaDefinition,
+  FunctionDescription,
   useTool,
 } from "modelfusion";
 import SecureJSON from "secure-json-parse";
@@ -24,15 +24,15 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
   readonly prefix = `{`;
 
   createPrompt({
-    schemaDefinition,
+    fn,
     instruction,
   }: {
-    schemaDefinition: SchemaDefinition<any, STRUCTURE>;
+    fn: FunctionDescription<any, STRUCTURE>;
     instruction: string;
   }): string {
-    // map schema definition
+    // map parameters JSON schema
     const properties: Record<string, { type: string; description: string }> = (
-      schemaDefinition.schema.getJsonSchema() as any
+      fn.parameters.getJsonSchema() as any
     ).properties;
 
     return [
@@ -41,8 +41,8 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
         `Provide your response in JSON format.`,
       ``,
       `Available functions:`,
-      `${schemaDefinition.name}:`,
-      `  description: ${schemaDefinition.description ?? ""}`,
+      `${fn.name}:`,
+      `  description: ${fn.description ?? ""}`,
       `  params:`,
       // Note: Does support nested schemas yet
       ...Object.entries(properties).map(
@@ -73,7 +73,9 @@ async function main() {
       format: new AiroborosFunctionPromptFormat(),
     }),
     calculator,
-    InstructionWithSchemaPrompt.forToolCurried("What's fourteen times twelve?")
+    InstructionWithFunctionPrompt.forToolCurried(
+      "What's fourteen times twelve?"
+    )
   );
 
   console.log(`Tool: ${tool}`);

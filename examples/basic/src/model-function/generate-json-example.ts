@@ -1,11 +1,11 @@
+import dotenv from "dotenv";
 import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  ZodSchema,
+  ZodFunctionDescription,
   generateJson,
 } from "modelfusion";
-import dotenv from "dotenv";
 import { z } from "zod";
 
 dotenv.config();
@@ -17,18 +17,16 @@ async function main() {
       temperature: 0,
       maxCompletionTokens: 50,
     }),
-    {
-      name: "sentiment" as const,
+    new ZodFunctionDescription({
+      name: "sentiment",
       description: "Write the sentiment analysis",
-      schema: new ZodSchema(
-        z.object({
-          sentiment: z
-            .enum(["positive", "neutral", "negative"])
-            .describe("Sentiment."),
-        })
-      ),
-    },
-    OpenAIChatFunctionPrompt.forSchemaCurried([
+      parameters: z.object({
+        sentiment: z
+          .enum(["positive", "neutral", "negative"])
+          .describe("Sentiment."),
+      }),
+    }),
+    OpenAIChatFunctionPrompt.forFunctionCurried([
       OpenAIChatMessage.system(
         "You are a sentiment evaluator. " +
           "Analyze the sentiment of the following product review:"

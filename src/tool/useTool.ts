@@ -30,25 +30,16 @@ export async function useTool<
   options?: ModelFunctionOptions<SETTINGS>
 ): Promise<{
   tool: TOOL["name"];
-  parameters: TOOL["inputSchema"];
+  parameters: TOOL["parameters"];
   result: Awaited<ReturnType<TOOL["execute"]>>;
 }> {
   const { output: value } = await generateJson<
-    TOOL["inputSchema"],
+    TOOL["parameters"],
     PROMPT,
     RESPONSE,
     TOOL["name"],
     SETTINGS
-  >(
-    model,
-    {
-      name: tool.name,
-      description: tool.description,
-      schema: tool.inputSchema,
-    },
-    () => prompt(tool),
-    options
-  ).asFullResponse();
+  >(model, tool, () => prompt(tool), options).asFullResponse();
 
   return {
     tool: tool.name,

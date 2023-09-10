@@ -1,20 +1,20 @@
 import { Tool } from "../../tool/Tool.js";
-import { SchemaDefinition } from "./SchemaDefinition.js";
+import { FunctionDescription } from "./FunctionDescription.js";
 
-export type InstructionWithSchema<NAME extends string, STRUCTURE> = {
+export type InstructionWithFunction<NAME extends string, STRUCTURE> = {
   instruction: string;
-  schemaDefinition: SchemaDefinition<NAME, STRUCTURE>;
+  fn: FunctionDescription<NAME, STRUCTURE>;
 };
 
-export const InstructionWithSchemaPrompt = {
-  forSchema<STRUCTURE>({
+export const InstructionWithFunctionPrompt = {
+  forFunction<STRUCTURE>({
     instruction,
-    schemaDefinition,
+    fn,
   }: {
     instruction: string;
-    schemaDefinition: SchemaDefinition<string, STRUCTURE>;
+    fn: FunctionDescription<string, STRUCTURE>;
   }) {
-    return { schemaDefinition, instruction };
+    return { fn, instruction };
   },
 
   forTool<INPUT, OUTPUT>({
@@ -24,9 +24,9 @@ export const InstructionWithSchemaPrompt = {
     instruction: string;
     tool: Tool<string, INPUT, OUTPUT>;
   }) {
-    return InstructionWithSchemaPrompt.forSchema({
+    return InstructionWithFunctionPrompt.forFunction({
       instruction,
-      schemaDefinition: tool.inputSchemaDefinition,
+      fn: tool,
     });
   },
 

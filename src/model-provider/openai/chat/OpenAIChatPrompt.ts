@@ -1,7 +1,6 @@
 import SecureJSON from "secure-json-parse";
+import { FunctionDescription } from "../../../model-function/generate-json/FunctionDescription.js";
 import { JsonOrTextGenerationPrompt } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
-import { Schema } from "../../../model-function/generate-json/Schema.js";
-import { SchemaDefinition } from "../../../model-function/generate-json/SchemaDefinition.js";
 import { Tool } from "../../../tool/Tool.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";
@@ -10,42 +9,19 @@ import { OpenAIChatResponse } from "./OpenAIChatModel.js";
 // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export type OpenAIFunctionDescription<T> = {
-  name: string;
-  description?: string;
-  parameters: Schema<T>;
-};
-
 export const OpenAIChatFunctionPrompt = {
-  forOpenAIFunctionDescription<T>(options: {
+  forFunction<STRUCTURE>(options: {
     messages: OpenAIChatMessage[];
-    fn: OpenAIFunctionDescription<T>;
+    fn: FunctionDescription<string, STRUCTURE>;
   }) {
     return new OpenAIChatSingleFunctionPrompt(options);
   },
 
-  forSchema<STRUCTURE>({
-    messages,
-    schemaDefinition,
-  }: {
-    messages: OpenAIChatMessage[];
-    schemaDefinition: SchemaDefinition<any, STRUCTURE>;
-  }) {
-    return this.forOpenAIFunctionDescription({
-      messages,
-      fn: {
-        name: schemaDefinition.name,
-        description: schemaDefinition.description,
-        parameters: schemaDefinition.schema,
-      },
-    });
-  },
-
-  forSchemaCurried<STRUCTURE>(messages: OpenAIChatMessage[]) {
-    return (schemaDefinition: SchemaDefinition<any, STRUCTURE>) =>
-      this.forSchema({
+  forFunctionCurried<STRUCTURE>(messages: OpenAIChatMessage[]) {
+    return (functionDescription: FunctionDescription<any, STRUCTURE>) =>
+      this.forFunction({
         messages,
-        schemaDefinition,
+        fn: functionDescription,
       });
   },
 
@@ -56,9 +32,9 @@ export const OpenAIChatFunctionPrompt = {
     messages: OpenAIChatMessage[];
     tool: Tool<any, INPUT, OUTPUT>;
   }) {
-    return this.forSchema({
+    return this.forFunction({
       messages,
-      schemaDefinition: tool.inputSchemaDefinition,
+      fn: tool,
     });
   },
 
@@ -66,34 +42,28 @@ export const OpenAIChatFunctionPrompt = {
     return (tool: Tool<any, INPUT, OUTPUT>) => this.forTool({ messages, tool });
   },
 
-  forOpenAIFunctionDescriptions<
-    FUNCTIONS extends Array<OpenAIFunctionDescription<any>>,
-  >(options: { messages: OpenAIChatMessage[]; fns: FUNCTIONS }) {
-    return new OpenAIChatAutoFunctionPrompt(options);
-  },
-
-  forSchemas<SCHEMAS extends Array<SchemaDefinition<any, any>>>({
+  forFunctions<FUNCTIONS extends Array<FunctionDescription<any, any>>>({
     messages,
-    schemaDefinitions,
+    functions,
   }: {
     messages: OpenAIChatMessage[];
-    schemaDefinitions: SCHEMAS;
+    functions: FUNCTIONS;
   }) {
-    return this.forOpenAIFunctionDescriptions({
+    return new OpenAIChatAutoFunctionPrompt({
       messages,
-      fns: schemaDefinitions.map((schemaDefinition) => ({
-        name: schemaDefinition.name,
-        description: schemaDefinition.description,
-        parameters: schemaDefinition.schema,
+      fns: functions.map((fn) => ({
+        name: fn.name,
+        description: fn.description,
+        parameters: fn.parameters,
       })),
     });
   },
 
-  forSchemasCurried<SCHEMAS extends Array<SchemaDefinition<any, any>>>(
+  forFunctionsCurried<FUNCTIONS extends Array<FunctionDescription<any, any>>>(
     messages: OpenAIChatMessage[]
   ) {
-    return (schemaDefinitions: SCHEMAS) =>
-      this.forSchemas({ messages, schemaDefinitions });
+    return (functions: FUNCTIONS) =>
+      this.forFunctions({ messages, functions: functions });
   },
 
   forTools<TOOLS extends Array<Tool<any, any, any>>>({
@@ -103,9 +73,9 @@ export const OpenAIChatFunctionPrompt = {
     messages: OpenAIChatMessage[];
     tools: TOOLS;
   }) {
-    return this.forSchemas({
+    return this.forFunctions({
       messages,
-      schemaDefinitions: tools.map((tool) => tool.inputSchemaDefinition),
+      functions: tools as Tool<any, any, any>[],
     });
   },
 
@@ -118,14 +88,14 @@ export const OpenAIChatFunctionPrompt = {
 
 export class OpenAIChatSingleFunctionPrompt<FUNCTION> {
   readonly messages: OpenAIChatMessage[];
-  readonly fn: OpenAIFunctionDescription<FUNCTION>;
+  readonly fn: FunctionDescription<string, FUNCTION>;
 
   constructor({
     messages,
     fn,
   }: {
     messages: OpenAIChatMessage[];
-    fn: OpenAIFunctionDescription<FUNCTION>;
+    fn: FunctionDescription<string, FUNCTION>;
   }) {
     this.messages = messages;
     this.fn = fn;
@@ -147,12 +117,12 @@ export class OpenAIChatSingleFunctionPrompt<FUNCTION> {
 }
 
 export class OpenAIChatAutoFunctionPrompt<
-  FUNCTIONS extends Array<OpenAIFunctionDescription<any>>,
+  FUNCTIONS extends Array<FunctionDescription<string, any>>,
 > implements JsonOrTextGenerationPrompt<OpenAIChatResponse>
 {
-  readonly messages: OpenAIChatMessage[];
+  private readonly fns: FUNCTIONS;
 
-  readonly fns: FUNCTIONS;
+  readonly messages: OpenAIChatMessage[];
 
   constructor({
     messages,

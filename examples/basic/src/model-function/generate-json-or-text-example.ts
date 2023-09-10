@@ -1,11 +1,11 @@
+import dotenv from "dotenv";
 import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  ZodSchema,
+  ZodFunctionDescription,
   generateJsonOrText,
 } from "modelfusion";
-import dotenv from "dotenv";
 import { z } from "zod";
 
 dotenv.config();
@@ -18,29 +18,27 @@ async function main() {
   const { schema, value, text } = await generateJsonOrText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
     [
-      {
+      new ZodFunctionDescription({
         name: "getCurrentWeather" as const, // mark 'as const' for type inference
         description: "Get the current weather in a given location",
-        schema: new ZodSchema(
-          z.object({
-            location: z
-              .string()
-              .describe("The city and state, e.g. San Francisco, CA"),
-            unit: z.enum(["celsius", "fahrenheit"]).optional(),
-          })
-        ),
-      },
-      {
+        parameters: z.object({
+          location: z
+            .string()
+            .describe("The city and state, e.g. San Francisco, CA"),
+          unit: z.enum(["celsius", "fahrenheit"]).optional(),
+        }),
+      }),
+      new ZodFunctionDescription({
         name: "getContactInformation" as const,
         description: "Get the contact information for a given person",
-        schema: new ZodSchema(
-          z.object({
-            name: z.string().describe("The name of the person"),
-          })
-        ),
-      },
+        parameters: z.object({
+          name: z.string().describe("The name of the person"),
+        }),
+      }),
     ],
-    OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
+    OpenAIChatFunctionPrompt.forFunctionsCurried([
+      OpenAIChatMessage.user(query),
+    ])
   );
 
   switch (schema) {

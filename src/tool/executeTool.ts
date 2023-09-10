@@ -80,7 +80,7 @@ export class ExecuteToolPromise<OUTPUT> extends Promise<OUTPUT> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function executeTool<TOOL extends Tool<any, any, any>>(
   tool: TOOL,
-  input: TOOL["inputSchema"]["_type"],
+  input: TOOL["parameters"]["_type"],
   options?: FunctionOptions
 ): ExecuteToolPromise<ReturnType<TOOL["execute"]>> {
   return new ExecuteToolPromise(doExecuteTool(tool, input, options));
@@ -89,7 +89,7 @@ export function executeTool<TOOL extends Tool<any, any, any>>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   tool: TOOL,
-  input: TOOL["inputSchema"]["_type"],
+  input: TOOL["parameters"]["_type"],
   options?: FunctionOptions
 ): Promise<{
   output: Awaited<ReturnType<TOOL["execute"]>>;

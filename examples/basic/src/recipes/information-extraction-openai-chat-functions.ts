@@ -23,7 +23,7 @@ async function main() {
         name: "storeCity",
         description: "Save information about the city",
         // structure supports escape hatch:
-        schema: new ZodSchema(
+        parameters: new ZodSchema(
           z.object({
             city: z
               .object({
@@ -35,7 +35,7 @@ async function main() {
           })
         ),
       },
-      OpenAIChatFunctionPrompt.forSchemaCurried([
+      OpenAIChatFunctionPrompt.forFunctionCurried([
         OpenAIChatMessage.system(
           [
             "Extract the name and the population of the city.",

@@ -175,7 +175,7 @@ const sentiment = await generateJson(
         .describe("Sentiment."),
     }),
   },
-  OpenAIChatFunctionPrompt.forSchemaCurried([
+  OpenAIChatFunctionPrompt.forFunctionCurried([
     OpenAIChatMessage.system(
       "You are a sentiment evaluator. " +
         "Analyze the sentiment of the following product review:"
@@ -219,7 +219,7 @@ const { schema, value, text } = await generateJsonOrText(
       }),
     },
   ],
-  OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
+  OpenAIChatFunctionPrompt.forFunctionsCurried([OpenAIChatMessage.user(query)])
 );
 ```
 

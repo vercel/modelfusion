@@ -36,7 +36,7 @@ const extractNameAndPopulation = async (text: string) =>
           .describe("information about the city"),
       }),
     },
-    OpenAIChatFunctionPrompt.forSchemaCurried([
+    OpenAIChatFunctionPrompt.forFunctionCurried([
       OpenAIChatMessage.system(
         [
           "Extract the name and the population of the city.",
