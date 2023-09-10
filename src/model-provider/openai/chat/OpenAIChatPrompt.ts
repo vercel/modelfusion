@@ -24,29 +24,26 @@ export const OpenAIChatFunctionPrompt = {
     return new OpenAIChatSingleFunctionPrompt(options);
   },
 
-  forSchema<STRUCTURE>({
+  forStructure<STRUCTURE>({
     messages,
-    schemaDescription,
+    structure,
   }: {
     messages: OpenAIChatMessage[];
-    schemaDescription: StructureDefinition<any, STRUCTURE>;
+    structure: StructureDefinition<any, STRUCTURE>;
   }) {
     return this.forOpenAIFunctionDescription({
       messages,
       fn: {
-        name: schemaDescription.name,
-        description: schemaDescription.description,
-        parameters: schemaDescription.schema,
+        name: structure.name,
+        description: structure.description,
+        parameters: structure.schema,
       },
     });
   },
 
-  forSchemaCurried<STRUCTURE>(messages: OpenAIChatMessage[]) {
-    return (schemaDescription: StructureDefinition<any, STRUCTURE>) =>
-      this.forSchema({
-        messages,
-        schemaDescription,
-      });
+  forStructureCurried<STRUCTURE>(messages: OpenAIChatMessage[]) {
+    return (structure: StructureDefinition<any, STRUCTURE>) =>
+      this.forStructure({ messages, structure });
   },
 
   forTool<INPUT, OUTPUT>({
@@ -56,9 +53,9 @@ export const OpenAIChatFunctionPrompt = {
     messages: OpenAIChatMessage[];
     tool: Tool<any, INPUT, OUTPUT>;
   }) {
-    return this.forSchema({
+    return this.forStructure({
       messages,
-      schemaDescription: tool.inputStructureDefinition,
+      structure: tool.inputStructureDefinition,
     });
   },
 
@@ -72,28 +69,28 @@ export const OpenAIChatFunctionPrompt = {
     return new OpenAIChatAutoFunctionPrompt(options);
   },
 
-  forSchemas<SCHEMAS extends Array<StructureDefinition<any, any>>>({
+  forStructures<STRUCTURES extends Array<StructureDefinition<any, any>>>({
     messages,
-    schemaDescriptions,
+    structures,
   }: {
     messages: OpenAIChatMessage[];
-    schemaDescriptions: SCHEMAS;
+    structures: STRUCTURES;
   }) {
     return this.forOpenAIFunctionDescriptions({
       messages,
-      fns: schemaDescriptions.map((schemaDescription) => ({
-        name: schemaDescription.name,
-        description: schemaDescription.description,
-        parameters: schemaDescription.schema,
+      fns: structures.map((structure) => ({
+        name: structure.name,
+        description: structure.description,
+        parameters: structure.schema,
       })),
     });
   },
 
-  forSchemasCurried<SCHEMAS extends Array<StructureDefinition<any, any>>>(
+  forStructuresCurried<STRUCTURE extends Array<StructureDefinition<any, any>>>(
     messages: OpenAIChatMessage[]
   ) {
-    return (schemaDescriptions: SCHEMAS) =>
-      this.forSchemas({ messages, schemaDescriptions });
+    return (structures: STRUCTURE) =>
+      this.forStructures({ messages, structures });
   },
 
   forTools<TOOLS extends Array<Tool<any, any, any>>>({
@@ -103,9 +100,9 @@ export const OpenAIChatFunctionPrompt = {
     messages: OpenAIChatMessage[];
     tools: TOOLS;
   }) {
-    return this.forSchemas({
+    return this.forStructures({
       messages,
-      schemaDescriptions: tools.map((tool) => tool.inputStructureDefinition),
+      structures: tools.map((tool) => tool.inputStructureDefinition),
     });
   },
 

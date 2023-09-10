@@ -30,7 +30,7 @@ async function main() {
             .describe("Sentiment."),
         }),
       }),
-      OpenAIChatFunctionPrompt.forSchemaCurried([
+      OpenAIChatFunctionPrompt.forStructureCurried([
         OpenAIChatMessage.system(
           "You are a sentiment evaluator. " +
             "Analyze the sentiment of the following product review:"

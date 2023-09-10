@@ -36,7 +36,9 @@ async function main() {
         }),
       }),
     ],
-    OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
+    OpenAIChatFunctionPrompt.forStructuresCurried([
+      OpenAIChatMessage.user(query),
+    ])
   );
 
   switch (structure) {

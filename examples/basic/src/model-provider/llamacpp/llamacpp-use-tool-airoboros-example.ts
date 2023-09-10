@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   InstructionWithStructurePrompt,
-  JsonTextGenerationModel,
+  StructureFromTextGenerationModel,
   LlamaCppTextGenerationModel,
   StructureDefinition,
   useTool,
@@ -56,7 +56,7 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
     ].join("\n");
   }
 
-  extractJson(response: string): unknown {
+  extractStructure(response: string): unknown {
     const json = SecureJSON.parse(this.prefix + response);
     return airoborosFunctionSchema.parse(json).params;
   }
@@ -64,7 +64,7 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
 
 async function main() {
   const { tool, parameters, result } = await useTool(
-    new JsonTextGenerationModel({
+    new StructureFromTextGenerationModel({
       model: new LlamaCppTextGenerationModel({
         maxCompletionTokens: 1024,
         temperature: 0,

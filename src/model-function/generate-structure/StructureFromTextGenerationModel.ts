@@ -2,21 +2,21 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../generate-text/TextGenerationModel.js";
-import { StructureDefinition } from "../generate-structure/StructureDefinition.js";
+import { StructureDefinition } from "./StructureDefinition.js";
 import { InstructionWithStructure } from "./InstructionWithStructurePrompt.js";
-import { StructureGenerationModel } from "../generate-structure/StructureGenerationModel.js";
+import { StructureGenerationModel } from "./StructureGenerationModel.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { generateText } from "../generate-text/generateText.js";
 
-export type JsonTextPromptFormat = {
+export type StructureFromTextPromptFormat = {
   createPrompt: (prompt: {
     instruction: string;
     structure: StructureDefinition<string, unknown>;
   }) => string;
-  extractJson: (response: string) => unknown;
+  extractStructure: (response: string) => unknown;
 };
 
-export class JsonTextGenerationModel<
+export class StructureFromTextGenerationModel<
   MODEL extends TextGenerationModel<
     string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,14 +33,14 @@ export class JsonTextGenerationModel<
     >
 {
   private readonly model: MODEL;
-  private readonly format: JsonTextPromptFormat;
+  private readonly format: StructureFromTextPromptFormat;
 
   constructor({
     model,
     format,
   }: {
     model: MODEL;
-    format: JsonTextPromptFormat;
+    format: StructureFromTextPromptFormat;
   }) {
     this.model = model;
     this.format = format;
@@ -70,11 +70,11 @@ export class JsonTextGenerationModel<
   }
 
   extractStructure(response: string): unknown {
-    return this.format.extractJson(response);
+    return this.format.extractStructure(response);
   }
 
   withSettings(additionalSettings: Partial<MODEL["settings"]>): this {
-    return new JsonTextGenerationModel({
+    return new StructureFromTextGenerationModel({
       model: this.model.withSettings(additionalSettings),
       format: this.format,
     }) as this;

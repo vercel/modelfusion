@@ -1,5 +1,5 @@
 import { Tool } from "../../tool/Tool.js";
-import { StructureDefinition } from "../generate-structure/StructureDefinition.js";
+import { StructureDefinition } from "./StructureDefinition.js";
 
 export type InstructionWithStructure<NAME extends string, STRUCTURE> = {
   instruction: string;

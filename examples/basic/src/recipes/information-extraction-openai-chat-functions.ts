@@ -33,7 +33,7 @@ async function main() {
             .describe("information about the city"),
         }),
       }),
-      OpenAIChatFunctionPrompt.forSchemaCurried([
+      OpenAIChatFunctionPrompt.forStructureCurried([
         OpenAIChatMessage.system(
           [
             "Extract the name and the population of the city.",
