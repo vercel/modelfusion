@@ -2,21 +2,21 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../generate-text/TextGenerationModel.js";
-import { SchemaDefinition } from "./SchemaDefinition.js";
-import { InstructionWithSchema } from "./InstructionWithSchemaPrompt.js";
-import { JsonGenerationModel } from "./JsonGenerationModel.js";
+import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
+import { InstructionWithStructure } from "./InstructionWithStructurePrompt.js";
+import { StructureGenerationModel } from "./StructureGenerationModel.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { generateText } from "../generate-text/generateText.js";
 
-export type JsonTextPromptFormat = {
+export type StructureFromTextPromptFormat = {
   createPrompt: (prompt: {
     instruction: string;
-    schemaDefinition: SchemaDefinition<string, unknown>;
+    structure: StructureDefinition<string, unknown>;
   }) => string;
-  extractJson: (response: string) => unknown;
+  extractStructure: (response: string) => unknown;
 };
 
-export class JsonTextGenerationModel<
+export class StructureFromTextGenerationModel<
   MODEL extends TextGenerationModel<
     string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,21 +26,21 @@ export class JsonTextGenerationModel<
     TextGenerationModelSettings
   >,
 > implements
-    JsonGenerationModel<
-      InstructionWithSchema<string, unknown>,
+    StructureGenerationModel<
+      InstructionWithStructure<string, unknown>,
       string,
       MODEL["settings"]
     >
 {
   private readonly model: MODEL;
-  private readonly format: JsonTextPromptFormat;
+  private readonly format: StructureFromTextPromptFormat;
 
   constructor({
     model,
     format,
   }: {
     model: MODEL;
-    format: JsonTextPromptFormat;
+    format: StructureFromTextPromptFormat;
   }) {
     this.model = model;
     this.format = format;
@@ -58,8 +58,8 @@ export class JsonTextGenerationModel<
     return this.model.settingsForEvent;
   }
 
-  async generateJsonResponse(
-    prompt: InstructionWithSchema<string, unknown>,
+  async generateStructureResponse(
+    prompt: InstructionWithStructure<string, unknown>,
     options?: ModelFunctionOptions<MODEL["settings"]> | undefined
   ): Promise<string> {
     return await generateText(
@@ -69,12 +69,12 @@ export class JsonTextGenerationModel<
     );
   }
 
-  extractJson(response: string): unknown {
-    return this.format.extractJson(response);
+  extractStructure(response: string): unknown {
+    return this.format.extractStructure(response);
   }
 
   withSettings(additionalSettings: Partial<MODEL["settings"]>): this {
-    return new JsonTextGenerationModel({
+    return new StructureFromTextGenerationModel({
       model: this.model.withSettings(additionalSettings),
       format: this.format,
     }) as this;

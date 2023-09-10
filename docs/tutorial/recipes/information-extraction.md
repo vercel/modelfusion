@@ -4,9 +4,9 @@ sidebar_position: 6
 
 # Information Extraction
 
-## generateJson with OpenAI chat model
+## generateStructure with OpenAI chat model
 
-With generateJson and an OpenAI chat model, you can use the OpenAI function API to extract structured information from text.
+With `generateStructure` and an OpenAI chat model, you can use the OpenAI function API to extract structured information from text.
 
 Depending on the context, it can be important to provide an escape hatch when the text is not about the expected topic. In the following example, the model is informed that the text might not be about a city and what to do in this case.
 
@@ -16,13 +16,13 @@ Depending on the context, it can be important to provide an escape hatch when th
 
 ```ts
 const extractNameAndPopulation = async (text: string) =>
-  generateJson(
+  generateStructure(
     new OpenAIChatModel({
       model: "gpt-4",
       temperature: 0, // remove randomness as much as possible
       maxCompletionTokens: 200, // only a few tokens needed for the response
     }),
-    {
+    new ZodStructureDefinition({
       name: "storeCity",
       description: "Save information about the city",
       // structure supports escape hatch:
@@ -35,8 +35,8 @@ const extractNameAndPopulation = async (text: string) =>
           .nullable()
           .describe("information about the city"),
       }),
-    },
-    OpenAIChatFunctionPrompt.forSchemaCurried([
+    }),
+    OpenAIChatFunctionPrompt.forStructureCurried([
       OpenAIChatMessage.system(
         [
           "Extract the name and the population of the city.",
@@ -49,12 +49,12 @@ const extractNameAndPopulation = async (text: string) =>
     ])
   );
 
-const { value: extractedInformation1 } = await extractNameAndPopulation(
+const extractedInformation1 = await extractNameAndPopulation(
   sanFranciscoWikipedia.slice(0, 2000)
 );
 // { city: { name: 'San Francisco', population: 808437 } }
 
-const { value: extractedInformation2 } = await extractNameAndPopulation(
+const extractedInformation2 = await extractNameAndPopulation(
   "Carl was a friendly robot."
 );
 // { city: null }

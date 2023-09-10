@@ -1,24 +1,25 @@
+import dotenv from "dotenv";
 import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  generateJson,
+  ZodStructureDefinition,
+  generateStructure,
 } from "modelfusion";
-import dotenv from "dotenv";
 import { z } from "zod";
 
 dotenv.config();
 
 async function main() {
   const analyzeSentiment = async (productReview: string) =>
-    generateJson(
+    generateStructure(
       new OpenAIChatModel({
         model: "gpt-4",
         temperature: 0, // remove randomness
         maxCompletionTokens: 500, // enough tokens for reasoning and sentiment
       }),
-      {
-        name: "sentiment" as const,
+      new ZodStructureDefinition({
+        name: "sentiment",
         description: "Write the sentiment analysis",
         schema: z.object({
           // Reason first to improve results:
@@ -28,8 +29,8 @@ async function main() {
             .enum(["positive", "neutral", "negative"])
             .describe("Sentiment."),
         }),
-      },
-      OpenAIChatFunctionPrompt.forSchemaCurried([
+      }),
+      OpenAIChatFunctionPrompt.forStructureCurried([
         OpenAIChatMessage.system(
           "You are a sentiment evaluator. " +
             "Analyze the sentiment of the following product review:"

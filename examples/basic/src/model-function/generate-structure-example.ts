@@ -1,35 +1,32 @@
+import dotenv from "dotenv";
 import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  generateJson,
+  ZodStructureDefinition,
+  generateStructure,
 } from "modelfusion";
-import dotenv from "dotenv";
 import { z } from "zod";
 
 dotenv.config();
 
 async function main() {
-  const {
-    output: sentiment,
-    metadata,
-    response,
-  } = await generateJson(
+  const sentiment = await generateStructure(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
       temperature: 0,
       maxCompletionTokens: 50,
     }),
-    {
-      name: "sentiment" as const,
+    new ZodStructureDefinition({
+      name: "sentiment",
       description: "Write the sentiment analysis",
       schema: z.object({
         sentiment: z
           .enum(["positive", "neutral", "negative"])
           .describe("Sentiment."),
       }),
-    },
-    OpenAIChatFunctionPrompt.forSchemaCurried([
+    }),
+    OpenAIChatFunctionPrompt.forStructureCurried([
       OpenAIChatMessage.system(
         "You are a sentiment evaluator. " +
           "Analyze the sentiment of the following product review:"
@@ -39,7 +36,7 @@ async function main() {
           "that did not disappear even after washing. Never again!"
       ),
     ])
-  ).asFullResponse();
+  );
 
   console.log(JSON.stringify(sentiment, null, 2));
 }

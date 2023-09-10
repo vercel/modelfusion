@@ -29,12 +29,6 @@ ModelFusion is a library for building AI apps, chatbots, and agents. It provides
 npm install modelfusion
 ```
 
-You need to install `zod` and a matching version of `zod-to-json-schema` (peer dependencies):
-
-```sh
-npm install zod zod-to-json-schema
-```
-
 Or use a template: [ModelFusion terminal app starter](https://github.com/lgrammel/modelfusion-terminal-app-starter)
 
 ## Usage Examples
@@ -141,27 +135,27 @@ for (const choice of response.choices) {
 console.log(`Duration: ${metadata.durationInMs}ms`);
 ```
 
-### [Generate JSON](https://modelfusion.dev/guide/function/generate-json)
+### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure)
 
-Generate JSON value that matches a schema.
+Generate a structure that matches a schema.
 
 ```ts
-const value = await generateJson(
+const sentiment = await generateStructure(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,
     maxCompletionTokens: 50,
   }),
-  {
-    name: "sentiment" as const,
+  new ZodStructureDefinition({
+    name: "sentiment",
     description: "Write the sentiment analysis",
     schema: z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
         .describe("Sentiment."),
     }),
-  },
-  OpenAIChatFunctionPrompt.forSchemaCurried([
+  }),
+  OpenAIChatFunctionPrompt.forStructureCurried([
     OpenAIChatMessage.system(
       "You are a sentiment evaluator. " +
         "Analyze the sentiment of the following product review:"
@@ -176,19 +170,16 @@ const value = await generateJson(
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
 
-### [Generate JSON or Text](https://modelfusion.dev/guide/function/generate-json-or-text)
+### [Generate Structure or Text](https://modelfusion.dev/guide/function/generate-structure-or-text)
 
-Generate JSON (or text as a fallback) using a prompt and multiple schemas.
+Generate a structure (or text as a fallback) using a prompt and multiple schemas.
 It either matches one of the schemas or is text reponse.
 
 ```ts
-const { schema, value, text } = await generateJsonOrText(
-  new OpenAIChatModel({
-    model: "gpt-3.5-turbo",
-    maxCompletionTokens: 1000,
-  }),
+const { structure, value, text } = await generateStructureOrText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
   [
-    {
+    new ZodStructureDefinition({
       name: "getCurrentWeather" as const, // mark 'as const' for type inference
       description: "Get the current weather in a given location",
       schema: z.object({
@@ -197,16 +188,16 @@ const { schema, value, text } = await generateJsonOrText(
           .describe("The city and state, e.g. San Francisco, CA"),
         unit: z.enum(["celsius", "fahrenheit"]).optional(),
       }),
-    },
-    {
+    }),
+    new ZodStructureDefinition({
       name: "getContactInformation" as const,
       description: "Get the contact information for a given person",
       schema: z.object({
         name: z.string().describe("The name of the person"),
       }),
-    },
+    }),
   ],
-  OpenAIChatFunctionPrompt.forSchemasCurried([OpenAIChatMessage.user(query)])
+  OpenAIChatFunctionPrompt.forStructuresCurried([OpenAIChatMessage.user(query)])
 );
 ```
 
@@ -227,11 +218,15 @@ const calculator = new Tool({
   name: "calculator",
   description: "Execute a calculation",
 
-  inputSchema: z.object({
-    a: z.number().describe("The first number."),
-    b: z.number().describe("The second number."),
-    operator: z.enum(["+", "-", "*", "/"]).describe("The operator."),
-  }),
+  inputSchema: new ZodSchema(
+    z.object({
+      a: z.number().describe("The first number."),
+      b: z.number().describe("The second number."),
+      operator: z
+        .enum(["+", "-", "*", "/"])
+        .describe("The operator (+, -, *, /)."),
+    })
+  ),
 
   execute: async ({ a, b, operator }) => {
     switch (operator) {
@@ -421,8 +416,8 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
 
 - [Model Functions](https://modelfusion.dev/guide/function/)
   - [Generate and stream text](https://modelfusion.dev/guide/function/generate-text)
-  - [Generate JSON](https://modelfusion.dev/guide/function/generate-json)
-  - [Generate JSON or text](https://modelfusion.dev/guide/function/generate-json-or-text)
+  - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
+  - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
   - [Embed Text](https://modelfusion.dev/guide/function/embed-text)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)

@@ -26,12 +26,15 @@ const calculator = new Tool({
   name: "calculator",
   description: "Execute a calculation",
 
-  inputSchema: z.object({
-    a: z.number().describe("The first number."),
-    b: z.number().describe("The second number."),
-    operator: z.enum(["+", "-", "*", "/"]).describe("The operator."),
-  }),
-
+  inputSchema: new ZodSchema(
+    z.object({
+      a: z.number().describe("The first number."),
+      b: z.number().describe("The second number."),
+      operator: z
+        .enum(["+", "-", "*", "/"])
+        .describe("The operator (+, -, *, /)."),
+    })
+  ),
   execute: async ({ a, b, operator }) => {
     switch (operator) {
       case "+":
@@ -55,7 +58,7 @@ const calculator = new Tool({
 
 [useTool API](/api/modules/#useTool)
 
-`useTool` uses [generateJson](/guide/function/generate-json) to generate parameters for a tool and then executes the tool with the parameters.
+`useTool` uses [generateStructure](/guide/function/generate-structure) to generate parameters for a tool and then executes the tool with the parameters.
 
 The result contains the name of the tool (`tool` property), the parameters (`parameters` property, typed), and the result of the tool execution (`result` property, typed).
 
@@ -73,7 +76,7 @@ const { tool, parameters, result } = await useTool(
 
 [useToolOrGenerateText API](/api/modules/#useToolorgeneratetext)
 
-`useToolOrGenerateText` uses [generateJsonOrText](/guide/function/generate-json-or-text)
+`useToolOrGenerateText` uses [generateStructureOrText](/guide/function/generate-structure-or-text)
 to select a tool, generate parameters for it and execute it.
 It can be configured with several tools.
 
@@ -170,3 +173,9 @@ The following tools are available as a separate packages:
 > _terminal app_, _agent_, _tools_, _GPT-4_
 
 Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.
+
+### [Wikipedia Agent](https://github.com/lgrammel/modelfusion/tree/main/examples/wikipedia-agent)
+
+> _terminal app_, _ReAct agent_, _GPT-4_, _OpenAI functions_, _tools_
+
+Get answers to questions from Wikipedia, e.g. "Who was born first, Einstein or Picasso?"

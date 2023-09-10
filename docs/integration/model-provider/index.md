@@ -14,7 +14,7 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 | [Stream text](/guide/function/generate-text)   | ✅                                           | ✅                                           | ✅                                                |                                                         |
 | [Tokenize text](/guide/function/tokenize-text) | full                                         | full                                         | basic                                             |                                                         |
 
-### [Generate JSON](/guide/function/generate-json) and [Generate JSON or Text](/guide/function/generate-json-or-text)
+### [Generate Structure](/guide/function/generate-structure) and [Generate Structure or Text](/guide/function/generate-structure-or-text)
 
 - [OpenAI](/integration/model-provider/openai) chat models
 

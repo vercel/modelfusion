@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.30.0 - 2023-09-10
+
+### Added
+
+- You can now directly pass JSON schemas into `generateStructure` and `generateStructureOrText` calls without validation using `UncheckedJsonSchemaStructureDefinition`. This is useful when you need more flexility and don't require type inference. See `examples/basic/src/util/schema/generate-structure-unchecked-json-schema-example.ts`.
+
+### Changed
+
+- **BREAKING CHANGE**: renamed `generateJson` and `generateJsonOrText` to `generateStructure` and `generateStructureOrText`.
+- **BREAKING CHANGE**: introduced `ZodSchema` and `ZodStructureDefinition`. These are required for `generateStructure` and `generateStructureOrText` calls and in tools.
+- **BREAKING CHANGE**: renamed the corresponding methods and objects.
+
+Why this breaking change?
+
+ModelFusion is currently tied to Zod, but there are many other type checking libraries out there, and Zod does not map perfectly to JSON Schema (which is used in OpenAI function calling).
+Enabling you to use JSON Schema directly in ModelFusion is a first step towards decoupling ModelFusion from Zod.
+You can also configure your own schema adapters that e.g. use Ajv or another library.
+Since this change already affected all JSON generation calls and tools, I included other changes that I had planned in the same area (e.g., renaming to generateStructure and making it more consistent).
+
 ## v0.29.0 - 2023-09-09
 
 ### Added

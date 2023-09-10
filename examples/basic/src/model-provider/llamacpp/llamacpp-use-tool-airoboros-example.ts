@@ -1,14 +1,13 @@
 import dotenv from "dotenv";
 import {
-  InstructionWithSchemaPrompt,
-  JsonTextGenerationModel,
+  InstructionWithStructurePrompt,
+  StructureFromTextGenerationModel,
   LlamaCppTextGenerationModel,
-  SchemaDefinition,
+  StructureDefinition,
   useTool,
 } from "modelfusion";
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
-import zodToJsonSchema from "zod-to-json-schema";
 import { calculator } from "../../tool/calculator-tool";
 
 dotenv.config();
@@ -16,7 +15,7 @@ dotenv.config();
 // schema is specific to airoboros prompt
 const airoborosFunctionSchema = z.object({
   function: z.string(),
-  params: calculator.inputSchema,
+  params: z.any(),
 });
 
 // Prompt for Airoboros L2 13B GPT4 2.0:
@@ -25,15 +24,15 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
   readonly prefix = `{`;
 
   createPrompt({
-    schemaDefinition,
+    structure,
     instruction,
   }: {
-    schemaDefinition: SchemaDefinition<any, STRUCTURE>;
+    structure: StructureDefinition<any, STRUCTURE>;
     instruction: string;
   }): string {
-    // map schema definition
+    // map parameters JSON schema
     const properties: Record<string, { type: string; description: string }> = (
-      zodToJsonSchema(schemaDefinition.schema) as any
+      structure.schema.getJsonSchema() as any
     ).properties;
 
     return [
@@ -42,8 +41,8 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
         `Provide your response in JSON format.`,
       ``,
       `Available functions:`,
-      `${schemaDefinition.name}:`,
-      `  description: ${schemaDefinition.description ?? ""}`,
+      `${structure.name}:`,
+      `  description: ${structure.description ?? ""}`,
       `  params:`,
       // Note: Does support nested schemas yet
       ...Object.entries(properties).map(
@@ -57,7 +56,7 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
     ].join("\n");
   }
 
-  extractJson(response: string): unknown {
+  extractStructure(response: string): unknown {
     const json = SecureJSON.parse(this.prefix + response);
     return airoborosFunctionSchema.parse(json).params;
   }
@@ -65,7 +64,7 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
 
 async function main() {
   const { tool, parameters, result } = await useTool(
-    new JsonTextGenerationModel({
+    new StructureFromTextGenerationModel({
       model: new LlamaCppTextGenerationModel({
         maxCompletionTokens: 1024,
         temperature: 0,
@@ -74,7 +73,9 @@ async function main() {
       format: new AiroborosFunctionPromptFormat(),
     }),
     calculator,
-    InstructionWithSchemaPrompt.forToolCurried("What's fourteen times twelve?")
+    InstructionWithStructurePrompt.forToolCurried(
+      "What's fourteen times twelve?"
+    )
   );
 
   console.log(`Tool: ${tool}`);

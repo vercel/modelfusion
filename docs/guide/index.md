@@ -24,12 +24,6 @@ ModelFusion is in its initial development phase. Until version 1.0 there may be 
 npm install modelfusion
 ```
 
-You need to install `zod` and a matching version of `zod-to-json-schema` (peer dependencies):
-
-```sh
-npm install zod zod-to-json-schema
-```
-
 Or use a template: [ModelFusion terminal app starter](https://github.com/lgrammel/modelfusion-terminal-app-starter)
 
 ## API Keys

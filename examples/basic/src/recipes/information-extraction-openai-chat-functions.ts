@@ -1,10 +1,11 @@
+import dotenv from "dotenv";
 import {
   OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
-  generateJson,
+  ZodStructureDefinition,
+  generateStructure,
 } from "modelfusion";
-import dotenv from "dotenv";
 import fs from "node:fs";
 import { z } from "zod";
 
@@ -12,13 +13,13 @@ dotenv.config();
 
 async function main() {
   const extractNameAndPopulation = async (text: string) =>
-    generateJson(
+    generateStructure(
       new OpenAIChatModel({
         model: "gpt-4",
         temperature: 0, // remove randomness as much as possible
         maxCompletionTokens: 200, // only a few tokens needed for the response
       }),
-      {
+      new ZodStructureDefinition({
         name: "storeCity",
         description: "Save information about the city",
         // structure supports escape hatch:
@@ -31,8 +32,8 @@ async function main() {
             .nullable()
             .describe("information about the city"),
         }),
-      },
-      OpenAIChatFunctionPrompt.forSchemaCurried([
+      }),
+      OpenAIChatFunctionPrompt.forStructureCurried([
         OpenAIChatMessage.system(
           [
             "Extract the name and the population of the city.",

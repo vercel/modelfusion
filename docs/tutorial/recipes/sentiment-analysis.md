@@ -8,7 +8,7 @@ Sentiment analysis is a natural language processing technique used to determine 
 It is often implemented using models that are specifically trained for this task, but can also be done with language models.
 This is helpful to quickly develop initial product versions and prototypes.
 
-### Using generateJson and OpenAI Chat Model
+### Using generateStructure and OpenAI Chat Model
 
 [Example](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/recipes/sentiment-analysis.ts)
 
@@ -16,14 +16,14 @@ This is helpful to quickly develop initial product versions and prototypes.
 
 ```ts
 const analyzeSentiment = async (productReview: string) =>
-  generateJson(
+  generateStructure(
     new OpenAIChatModel({
       model: "gpt-4",
       temperature: 0, // remove randomness
       maxCompletionTokens: 500, // enough tokens for reasoning and sentiment
     }),
-    {
-      name: "sentiment" as const,
+    new ZodStructureDefinition({
+      name: "sentiment",
       description: "Write the sentiment analysis",
       schema: z.object({
         // Reason first to improve results:
@@ -33,8 +33,8 @@ const analyzeSentiment = async (productReview: string) =>
           .enum(["positive", "neutral", "negative"])
           .describe("Sentiment."),
       }),
-    },
-    OpenAIChatFunctionPrompt.forSchemaCurried([
+    }),
+    OpenAIChatFunctionPrompt.forStructureCurried([
       OpenAIChatMessage.system(
         "You are a sentiment evaluator. " +
           "Analyze the sentiment of the following product review:"
@@ -48,9 +48,7 @@ const analyzeSentiment = async (productReview: string) =>
 
 ```ts
 // negative sentiment example:
-const {
-  value: { sentiment },
-} = await analyzeSentiment(
+const { sentiment } = await analyzeSentiment(
   "After I opened the package, I was met by a very unpleasant smell " +
     "that did not disappear even after washing. The towel also stained " +
     "extremely well and also turned the seal of my washing machine red. " +
@@ -64,14 +62,14 @@ console.log(sentiment);
 #### Get the full reasoning and the sentiment:
 
 ```ts
-const { value: result1 } = await analyzeSentiment(
+const result = await analyzeSentiment(
   "After I opened the package, I was met by a very unpleasant smell " +
     "that did not disappear even after washing. The towel also stained " +
     "extremely well and also turned the seal of my washing machine red. " +
     "Never again!"
 );
 
-console.log(JSON.stringify(result1, null, 2));
+console.log(JSON.stringify(result, null, 2));
 // {
 //   "reasoning": "The reviewer is expressing dissatisfaction with the product.
 //      They mention an unpleasant smell, staining, and damage to their washing machine,

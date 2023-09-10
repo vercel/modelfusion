@@ -1,23 +1,28 @@
 import { z } from "zod";
 import { FunctionOptions } from "../core/FunctionOptions.js";
+import { ZodSchema } from "../core/structure/ZodSchema.js";
 import { Tool } from "./Tool.js";
 
-const OUTPUT_SCHEMA = z.object({
-  results: z.array(
-    z.object({
-      title: z.string(),
-      link: z.string().url(),
-      snippet: z.string(),
-    })
-  ),
-});
+const OUTPUT_SCHEMA = new ZodSchema(
+  z.object({
+    results: z.array(
+      z.object({
+        title: z.string(),
+        link: z.string().url(),
+        snippet: z.string(),
+      })
+    ),
+  })
+);
 
 // expose the schemas to library consumers:
 const createInputSchema = (description: string) =>
   // same structure, but with description:
-  z.object({
-    query: z.string().describe(description),
-  });
+  new ZodSchema(
+    z.object({
+      query: z.string().describe(description),
+    })
+  );
 
 export type WebSearchToolInput = {
   query: string;

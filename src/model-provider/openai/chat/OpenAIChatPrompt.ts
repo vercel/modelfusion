@@ -1,8 +1,7 @@
 import SecureJSON from "secure-json-parse";
-import z from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
-import { JsonOrTextGenerationPrompt } from "../../../model-function/generate-json/JsonOrTextGenerationModel.js";
-import { SchemaDefinition } from "../../../model-function/generate-json/SchemaDefinition.js";
+import { Schema } from "../../../core/structure/Schema.js";
+import { StructureDefinition } from "../../../core/structure/StructureDefinition.js";
+import { StructureOrTextGenerationPrompt } from "../../../model-function/generate-structure/StructureOrTextGenerationModel.js";
 import { Tool } from "../../../tool/Tool.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { OpenAIChatResponse } from "./OpenAIChatModel.js";
@@ -14,7 +13,7 @@ import { OpenAIChatResponse } from "./OpenAIChatModel.js";
 export type OpenAIFunctionDescription<T> = {
   name: string;
   description?: string;
-  parameters: z.Schema<T>;
+  parameters: Schema<T>;
 };
 
 export const OpenAIChatFunctionPrompt = {
@@ -25,29 +24,26 @@ export const OpenAIChatFunctionPrompt = {
     return new OpenAIChatSingleFunctionPrompt(options);
   },
 
-  forSchema<STRUCTURE>({
+  forStructure<STRUCTURE>({
     messages,
-    schemaDefinition,
+    structure,
   }: {
     messages: OpenAIChatMessage[];
-    schemaDefinition: SchemaDefinition<any, STRUCTURE>;
+    structure: StructureDefinition<any, STRUCTURE>;
   }) {
     return this.forOpenAIFunctionDescription({
       messages,
       fn: {
-        name: schemaDefinition.name,
-        description: schemaDefinition.description,
-        parameters: schemaDefinition.schema,
+        name: structure.name,
+        description: structure.description,
+        parameters: structure.schema,
       },
     });
   },
 
-  forSchemaCurried<STRUCTURE>(messages: OpenAIChatMessage[]) {
-    return (schemaDefinition: SchemaDefinition<any, STRUCTURE>) =>
-      this.forSchema({
-        messages,
-        schemaDefinition,
-      });
+  forStructureCurried<STRUCTURE>(messages: OpenAIChatMessage[]) {
+    return (structure: StructureDefinition<any, STRUCTURE>) =>
+      this.forStructure({ messages, structure });
   },
 
   forTool<INPUT, OUTPUT>({
@@ -57,9 +53,9 @@ export const OpenAIChatFunctionPrompt = {
     messages: OpenAIChatMessage[];
     tool: Tool<any, INPUT, OUTPUT>;
   }) {
-    return this.forSchema({
+    return this.forStructure({
       messages,
-      schemaDefinition: tool.inputSchemaDefinition,
+      structure: tool.inputStructureDefinition,
     });
   },
 
@@ -73,28 +69,28 @@ export const OpenAIChatFunctionPrompt = {
     return new OpenAIChatAutoFunctionPrompt(options);
   },
 
-  forSchemas<SCHEMAS extends Array<SchemaDefinition<any, any>>>({
+  forStructures<STRUCTURES extends Array<StructureDefinition<any, any>>>({
     messages,
-    schemaDefinitions,
+    structures,
   }: {
     messages: OpenAIChatMessage[];
-    schemaDefinitions: SCHEMAS;
+    structures: STRUCTURES;
   }) {
     return this.forOpenAIFunctionDescriptions({
       messages,
-      fns: schemaDefinitions.map((schemaDefinition) => ({
-        name: schemaDefinition.name,
-        description: schemaDefinition.description,
-        parameters: schemaDefinition.schema,
+      fns: structures.map((structure) => ({
+        name: structure.name,
+        description: structure.description,
+        parameters: structure.schema,
       })),
     });
   },
 
-  forSchemasCurried<SCHEMAS extends Array<SchemaDefinition<any, any>>>(
+  forStructuresCurried<STRUCTURE extends Array<StructureDefinition<any, any>>>(
     messages: OpenAIChatMessage[]
   ) {
-    return (schemaDefinitions: SCHEMAS) =>
-      this.forSchemas({ messages, schemaDefinitions });
+    return (structures: STRUCTURE) =>
+      this.forStructures({ messages, structures });
   },
 
   forTools<TOOLS extends Array<Tool<any, any, any>>>({
@@ -104,9 +100,9 @@ export const OpenAIChatFunctionPrompt = {
     messages: OpenAIChatMessage[];
     tools: TOOLS;
   }) {
-    return this.forSchemas({
+    return this.forStructures({
       messages,
-      schemaDefinitions: tools.map((tool) => tool.inputSchemaDefinition),
+      structures: tools.map((tool) => tool.inputStructureDefinition),
     });
   },
 
@@ -141,7 +137,7 @@ export class OpenAIChatSingleFunctionPrompt<FUNCTION> {
       {
         name: this.fn.name,
         description: this.fn.description,
-        parameters: zodToJsonSchema(this.fn.parameters),
+        parameters: this.fn.parameters.getJsonSchema(),
       },
     ];
   }
@@ -149,7 +145,7 @@ export class OpenAIChatSingleFunctionPrompt<FUNCTION> {
 
 export class OpenAIChatAutoFunctionPrompt<
   FUNCTIONS extends Array<OpenAIFunctionDescription<any>>,
-> implements JsonOrTextGenerationPrompt<OpenAIChatResponse>
+> implements StructureOrTextGenerationPrompt<OpenAIChatResponse>
 {
   readonly messages: OpenAIChatMessage[];
 
@@ -166,19 +162,19 @@ export class OpenAIChatAutoFunctionPrompt<
     this.fns = fns;
   }
 
-  extractJsonAndText(response: OpenAIChatResponse) {
+  extractStructureAndText(response: OpenAIChatResponse) {
     const message = response.choices[0]!.message;
     const content = message.content;
     const functionCall = message.function_call;
 
     return functionCall == null
       ? {
-          schema: null,
+          structure: null,
           value: null,
           text: content ?? "",
         }
       : {
-          schema: functionCall.name,
+          structure: functionCall.name,
           value: SecureJSON.parse(functionCall.arguments),
           text: content,
         };
@@ -192,7 +188,7 @@ export class OpenAIChatAutoFunctionPrompt<
     return this.fns.map((fn) => ({
       name: fn.name,
       description: fn.description,
-      parameters: zodToJsonSchema(fn.parameters),
+      parameters: fn.parameters.getJsonSchema(),
     }));
   }
 }

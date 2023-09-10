@@ -1,12 +1,11 @@
 import { nanoid as createId } from "nanoid";
-import { z } from "zod";
 import { FunctionEventSource } from "../core/FunctionEventSource.js";
 import { FunctionOptions } from "../core/FunctionOptions.js";
 import { getGlobalFunctionLogging } from "../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
+import { AbortError } from "../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
-import { AbortError } from "../core/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
 import { Tool } from "./Tool.js";
 import { ToolExecutionError } from "./ToolExecutionError.js";
@@ -81,7 +80,7 @@ export class ExecuteToolPromise<OUTPUT> extends Promise<OUTPUT> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function executeTool<TOOL extends Tool<any, any, any>>(
   tool: TOOL,
-  input: z.infer<TOOL["inputSchema"]>,
+  input: TOOL["inputSchema"]["_type"],
   options?: FunctionOptions
 ): ExecuteToolPromise<ReturnType<TOOL["execute"]>> {
   return new ExecuteToolPromise(doExecuteTool(tool, input, options));
@@ -90,7 +89,7 @@ export function executeTool<TOOL extends Tool<any, any, any>>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   tool: TOOL,
-  input: z.infer<TOOL["inputSchema"]>,
+  input: TOOL["inputSchema"]["_type"],
   options?: FunctionOptions
 ): Promise<{
   output: Awaited<ReturnType<TOOL["execute"]>>;
