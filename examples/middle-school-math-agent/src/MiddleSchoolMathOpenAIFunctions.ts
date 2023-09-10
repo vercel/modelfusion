@@ -3,6 +3,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   Tool,
+  ZodSchema,
   useToolOrGenerateText,
 } from "modelfusion";
 import dotenv from "dotenv";
@@ -19,10 +20,12 @@ async function main() {
     name: "answer",
     description: "Provide the final answer to the question",
 
-    inputSchema: z.object({
-      explanation: z.string().describe("The explanation of the answer."),
-      answer: z.string().describe("The answer to the question"),
-    }),
+    inputSchema: new ZodSchema(
+      z.object({
+        explanation: z.string().describe("The explanation of the answer."),
+        answer: z.string().describe("The answer to the question"),
+      })
+    ),
 
     execute: async (result) => result,
   });

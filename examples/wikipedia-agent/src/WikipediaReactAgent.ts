@@ -8,6 +8,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   Tool,
+  ZodSchema,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
   useToolOrGenerateText,
 } from "modelfusion";
@@ -28,16 +29,19 @@ const answer = new Tool({
   name: "answer",
   description: "Provide the final answer to the question",
 
-  inputSchema: z.object({
-    explanation: z.string().describe("The explanation of the answer."),
-    answer: z.string().describe("The answer to the question"),
-  }),
+  inputSchema: new ZodSchema(
+    z.object({
+      explanation: z.string().describe("The explanation of the answer."),
+      answer: z.string().describe("The answer to the question"),
+    })
+  ),
 
   execute: async (result) => result,
 });
 
 const searchWikipedia = new GoogleCustomSearchTool({
   name: "search_wikipedia",
+  searchEngineId: "76fe2b5e95a3e4215",
   description: "Search Wikipedia pages using a query",
   maxResults: 5,
 });
@@ -46,10 +50,12 @@ const readWikipediaArticle = new Tool({
   name: "read_wikipedia_article",
   description:
     "Read a Wikipedia article and scan it for information on a topic",
-  inputSchema: z.object({
-    url: z.string().url().describe("The URL of the Wikipedia article."),
-    topic: z.string().describe("The topic to look for in the article."),
-  }),
+  inputSchema: new ZodSchema(
+    z.object({
+      url: z.string().url().describe("The URL of the Wikipedia article."),
+      topic: z.string().describe("The topic to look for in the article."),
+    })
+  ),
   execute: async ({ url, topic }) => {
     // fetch the article html:
     const response = await fetch(url);
