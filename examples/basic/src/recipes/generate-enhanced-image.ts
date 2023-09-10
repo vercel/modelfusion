@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   HuggingFaceImageDescriptionModel,
-  OpenAIChatMessage,
+  OpenAIChatInstructionPromptFormat,
   OpenAIChatModel,
   StabilityImageGenerationModel,
   describeImage,
@@ -29,14 +29,15 @@ async function main() {
   console.log(`Image description:\n${imageDescription}`);
 
   const imageGenerationPrompt = await generateText(
-    new OpenAIChatModel({ model: "gpt-4" }),
-    [
-      OpenAIChatMessage.system(
+    new OpenAIChatModel({ model: "gpt-4" }).withPromptFormat(
+      OpenAIChatInstructionPromptFormat()
+    ),
+    {
+      instruction:
         "You generate Stable Diffusion prompts for images." +
-          "Generate a prompt for a high resolution, cyberpunk version of the following image description:"
-      ),
-      OpenAIChatMessage.user(imageDescription),
-    ]
+        "Generate a prompt for a high resolution, cyberpunk version of the following image description:",
+      input: imageDescription,
+    }
   );
 
   console.log();
@@ -55,9 +56,6 @@ async function main() {
 
   const path = `./enhanced-image-example.png`;
   fs.writeFileSync(path, Buffer.from(image, "base64"));
-
-  console.log();
-  console.log(`Image saved to ${path}`);
 }
 
 main().catch(console.error);
