@@ -26,12 +26,15 @@ const calculator = new Tool({
   name: "calculator",
   description: "Execute a calculation",
 
-  inputSchema: z.object({
-    a: z.number().describe("The first number."),
-    b: z.number().describe("The second number."),
-    operator: z.enum(["+", "-", "*", "/"]).describe("The operator."),
-  }),
-
+  inputSchema: new ZodSchema(
+    z.object({
+      a: z.number().describe("The first number."),
+      b: z.number().describe("The second number."),
+      operator: z
+        .enum(["+", "-", "*", "/"])
+        .describe("The operator (+, -, *, /)."),
+    })
+  ),
   execute: async ({ a, b, operator }) => {
     switch (operator) {
       case "+":
@@ -170,3 +173,9 @@ The following tools are available as a separate packages:
 > _terminal app_, _agent_, _tools_, _GPT-4_
 
 Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.
+
+### [Wikipedia Agent](https://github.com/lgrammel/modelfusion/tree/main/examples/wikipedia-agent)
+
+> _terminal app_, _ReAct agent_, _GPT-4_, _OpenAI functions_, _tools_
+
+Get answers to questions from Wikipedia, e.g. "Who was born first, Einstein or Picasso?"
