@@ -19,8 +19,6 @@ export * from "./generate-structure/StructureOrTextGenerationModel.js";
 export * from "./generate-structure/StructureFromTextGenerationModel.js";
 export * from "./generate-structure/NoSuchStructureError.js";
 export * from "./generate-structure/StructureValidationError.js";
-export * from "./generate-structure/ZodSchema.js";
-export * from "./generate-structure/ZodStructureDefinition.js";
 export * from "./generate-structure/generateStructure.js";
 export * from "./generate-structure/generateStructureOrText.js";
 export * from "./generate-text/DeltaEvent.js";

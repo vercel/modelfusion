@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
-import { Schema } from "../../core/structure/Schema.js";
+import { Schema } from "./Schema.js";
+import { StructureDefinition } from "./StructureDefinition.js";
 import { ZodSchema } from "./ZodSchema.js";
 
 export class ZodStructureDefinition<NAME extends string, STRUCTURE>
