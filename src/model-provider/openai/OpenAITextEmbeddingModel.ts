@@ -154,7 +154,7 @@ export class OpenAITextEmbeddingModel
   }
 
   extractEmbeddings(response: OpenAITextEmbeddingResponse) {
-    return [response.data[0]!.embedding];
+    return response.data.map((data) => data.embedding);
   }
 
   withSettings(additionalSettings: OpenAITextEmbeddingModelSettings) {
