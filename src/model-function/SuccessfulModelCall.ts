@@ -32,10 +32,10 @@ export function extractSuccessfulModelCalls(
     )
     .map(
       (event): SuccessfulModelCall => ({
+        type: event.functionType,
         model: event.model,
         settings: event.settings,
         response: event.result.response,
-        type: event.functionType,
       })
     );
 }
