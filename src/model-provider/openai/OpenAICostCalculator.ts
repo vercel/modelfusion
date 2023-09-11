@@ -31,7 +31,7 @@ export class OpenAICostCalculator implements CostCalculator {
   async calculateCostInMillicents(
     call: SuccessfulModelCall
   ): Promise<number | null> {
-    const type = call.type;
+    const type = call.functionType;
     const model = call.model.modelName;
 
     switch (type) {
@@ -49,7 +49,7 @@ export class OpenAICostCalculator implements CostCalculator {
         if (isOpenAIEmbeddingModel(model)) {
           return calculateOpenAIEmbeddingCostInMillicents({
             model,
-            responses: call.response as OpenAITextEmbeddingResponse[],
+            responses: call.result.response as OpenAITextEmbeddingResponse[],
           });
         }
         break;
@@ -64,14 +64,14 @@ export class OpenAICostCalculator implements CostCalculator {
         if (isOpenAIChatModel(model)) {
           return calculateOpenAIChatCostInMillicents({
             model,
-            response: call.response as OpenAIChatResponse,
+            response: call.result.response as OpenAIChatResponse,
           });
         }
 
         if (isOpenAITextGenerationModel(model)) {
           return calculateOpenAITextGenerationCostInMillicents({
             model,
-            response: call.response as OpenAITextGenerationResponse,
+            response: call.result.response as OpenAITextGenerationResponse,
           });
         }
 
@@ -85,7 +85,8 @@ export class OpenAICostCalculator implements CostCalculator {
 
         return calculateOpenAITranscriptionCostInMillicents({
           model: model as OpenAITranscriptionModelType,
-          response: call.response as OpenAITranscriptionVerboseJsonResponse,
+          response: call.result
+            .response as OpenAITranscriptionVerboseJsonResponse,
         });
       }
     }
