@@ -76,14 +76,15 @@ export function embedText<
   model: TextEmbeddingModel<RESPONSE, SETTINGS>,
   text: string,
   options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<Vector, RESPONSE> {
+): ModelFunctionPromise<Vector, RESPONSE[]> {
   return executeCall({
     functionType: "text-embedding",
     input: text,
     model,
     options,
-    generateResponse: (options) =>
-      model.generateEmbeddingResponse([text], options),
-    extractOutputValue: (result) => model.extractEmbeddings(result)[0],
+    generateResponse: async (options) => [
+      await model.generateEmbeddingResponse([text], options),
+    ],
+    extractOutputValue: (result) => model.extractEmbeddings(result[0])[0],
   });
 }
