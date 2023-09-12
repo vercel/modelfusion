@@ -3,7 +3,6 @@ import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   StructureOrTextGenerationModel,
   StructureOrTextGenerationModelSettings,
-  StructureOrTextGenerationPrompt,
 } from "./StructureOrTextGenerationModel.js";
 import { NoSuchStructureError } from "./NoSuchStructureError.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
@@ -41,16 +40,18 @@ export function generateStructureOrText<
   SETTINGS extends StructureOrTextGenerationModelSettings,
 >(
   model: StructureOrTextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
-  structures: STRUCTURES,
-  prompt: (
-    structures: STRUCTURES
-  ) => PROMPT & StructureOrTextGenerationPrompt<RESPONSE>,
+  structureDefinitions: STRUCTURES,
+  prompt: PROMPT | ((structureDefinitions: STRUCTURES) => PROMPT),
   options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<
   { structure: null; value: null; text: string } | ToOutputValue<STRUCTURES>,
   RESPONSE
 > {
-  const expandedPrompt = prompt(structures);
+  // Note: PROMPT must not be a function.
+  const expandedPrompt =
+    typeof prompt === "function"
+      ? (prompt as (structures: STRUCTURES) => PROMPT)(structureDefinitions)
+      : prompt;
 
   return executeCall({
     functionType: "structure-or-text-generation",
@@ -58,21 +59,25 @@ export function generateStructureOrText<
     model,
     options,
     generateResponse: (options) =>
-      model.generateStructureResponse(expandedPrompt, options),
+      model.generateStructureOrTextResponse(
+        structureDefinitions,
+        expandedPrompt,
+        options
+      ),
     extractOutputValue: (
       response
     ):
       | { structure: null; value: null; text: string }
       | ToOutputValue<STRUCTURES> => {
       const { structure, value, text } =
-        expandedPrompt.extractStructureAndText(response);
+        model.extractStructureAndText(response);
 
       // text generation:
       if (structure == null) {
         return { structure, value, text };
       }
 
-      const definition = structures.find((d) => d.name === structure);
+      const definition = structureDefinitions.find((d) => d.name === structure);
 
       if (definition == undefined) {
         throw new NoSuchStructureError(structure);

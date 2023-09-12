@@ -26,13 +26,19 @@ export async function useTool<
 >(
   model: StructureGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   tool: TOOL,
-  prompt: (tool: TOOL) => PROMPT,
+  prompt: PROMPT | ((tool: TOOL) => PROMPT),
   options?: ModelFunctionOptions<SETTINGS>
 ): Promise<{
   tool: TOOL["name"];
   parameters: TOOL["inputSchema"];
   result: Awaited<ReturnType<TOOL["execute"]>>;
 }> {
+  // Note: PROMPT must not be a function.
+  const expandedPrompt =
+    typeof prompt === "function"
+      ? (prompt as (tool: TOOL) => PROMPT)(tool)
+      : prompt;
+
   const { output: value } = await generateStructure<
     TOOL["inputSchema"],
     PROMPT,
@@ -46,7 +52,7 @@ export async function useTool<
       description: tool.description,
       schema: tool.inputSchema,
     },
-    () => prompt(tool),
+    expandedPrompt,
     options
   ).asFullResponse();
 

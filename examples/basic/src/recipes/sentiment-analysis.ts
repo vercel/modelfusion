@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
   ZodStructureDefinition,
@@ -30,13 +29,13 @@ async function main() {
             .describe("Sentiment."),
         }),
       }),
-      OpenAIChatFunctionPrompt.forStructureCurried([
+      [
         OpenAIChatMessage.system(
           "You are a sentiment evaluator. " +
             "Analyze the sentiment of the following product review:"
         ),
         OpenAIChatMessage.user(productReview),
-      ])
+      ]
     );
 
   const result1 = await analyzeSentiment(

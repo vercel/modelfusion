@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
   ZodStructureDefinition,
@@ -33,7 +32,7 @@ async function main() {
             .describe("information about the city"),
         }),
       }),
-      OpenAIChatFunctionPrompt.forStructureCurried([
+      [
         OpenAIChatMessage.system(
           [
             "Extract the name and the population of the city.",
@@ -43,7 +42,7 @@ async function main() {
           ].join("\n")
         ),
         OpenAIChatMessage.user(text),
-      ])
+      ]
     );
 
   const sanFranciscoWikipedia = JSON.parse(

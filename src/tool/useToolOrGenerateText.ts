@@ -2,7 +2,6 @@ import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js"
 import {
   StructureOrTextGenerationModel,
   StructureOrTextGenerationModelSettings,
-  StructureOrTextGenerationPrompt,
 } from "../model-function/generate-structure/StructureOrTextGenerationModel.js";
 import { generateStructureOrText } from "../model-function/generate-structure/generateStructureOrText.js";
 import { NoSuchToolError } from "./NoSuchToolError.js";
@@ -39,13 +38,17 @@ export async function useToolOrGenerateText<
 >(
   model: StructureOrTextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   tools: TOOLS,
-  prompt: (tools: TOOLS) => PROMPT & StructureOrTextGenerationPrompt<RESPONSE>,
+  prompt: PROMPT | ((tools: TOOLS) => PROMPT),
   options?: ModelFunctionOptions<SETTINGS>
 ): Promise<
   | { tool: null; parameters: null; result: null; text: string }
   | ToOutputValue<TOOLS>
 > {
-  const expandedPrompt = prompt(tools);
+  // Note: PROMPT must not be a function.
+  const expandedPrompt =
+    typeof prompt === "function"
+      ? (prompt as (tools: TOOLS) => PROMPT)(tools)
+      : prompt;
 
   const modelResponse = await generateStructureOrText(
     model,
@@ -54,7 +57,7 @@ export async function useToolOrGenerateText<
       description: tool.description,
       schema: tool.inputSchema,
     })),
-    () => expandedPrompt,
+    expandedPrompt,
     options
   );
 

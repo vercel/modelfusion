@@ -16,10 +16,20 @@ export function generateStructure<
 >(
   model: StructureGenerationModel<PROMPT, RESPONSE, SETTINGS>,
   structureDefinition: StructureDefinition<NAME, STRUCTURE>,
-  prompt: (structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT,
+  prompt:
+    | PROMPT
+    | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
   options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<STRUCTURE, RESPONSE> {
-  const expandedPrompt = prompt(structureDefinition);
+  // Note: PROMPT must not be a function.
+  const expandedPrompt =
+    typeof prompt === "function"
+      ? (
+          prompt as (
+            structureDefinition: StructureDefinition<NAME, STRUCTURE>
+          ) => PROMPT
+        )(structureDefinition)
+      : prompt;
 
   return executeCall({
     functionType: "structure-generation",
@@ -27,7 +37,11 @@ export function generateStructure<
     model,
     options,
     generateResponse: (options) =>
-      model.generateStructureResponse(expandedPrompt, options),
+      model.generateStructureResponse(
+        structureDefinition,
+        expandedPrompt,
+        options
+      ),
     extractOutputValue: (response): STRUCTURE => {
       const structure = model.extractStructure(response);
 

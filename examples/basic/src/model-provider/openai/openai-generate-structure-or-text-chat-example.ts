@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
   ZodStructureDefinition,
@@ -36,9 +35,7 @@ async function main() {
         }),
       }),
     ],
-    OpenAIChatFunctionPrompt.forStructuresCurried([
-      OpenAIChatMessage.user(query),
-    ])
+    [OpenAIChatMessage.user(query)]
   );
 
   switch (structure) {
