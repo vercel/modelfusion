@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.31.0 - UNRELEASED
+## v0.31.0 - 2023-09-13
 
 ### Changed
 
@@ -8,7 +8,7 @@
 
 ### Removed
 
-- The prompts for `generateStructure` and `generateStructureOrText` have been simplified. You can remove the `OpenAIChatPrompt.forStructureCurried` (and similar) parts.
+- **breaking change**: The prompts for `generateStructure` and `generateStructureOrText` have been simplified. You can remove the `OpenAIChatPrompt.forStructureCurried` (and similar) parts.
 
 ## v0.30.0 - 2023-09-10
 
