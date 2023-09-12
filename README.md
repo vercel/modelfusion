@@ -155,7 +155,7 @@ const sentiment = await generateStructure(
         .describe("Sentiment."),
     }),
   }),
-  OpenAIChatFunctionPrompt.forStructureCurried([
+  [
     OpenAIChatMessage.system(
       "You are a sentiment evaluator. " +
         "Analyze the sentiment of the following product review:"
@@ -164,7 +164,7 @@ const sentiment = await generateStructure(
       "After I opened the package, I was met by a very unpleasant smell " +
         "that did not disappear even after washing. Never again!"
     ),
-  ])
+  ]
 );
 ```
 
@@ -197,7 +197,7 @@ const { structure, value, text } = await generateStructureOrText(
       }),
     }),
   ],
-  OpenAIChatFunctionPrompt.forStructuresCurried([OpenAIChatMessage.user(query)])
+  [OpenAIChatMessage.user(query)]
 );
 ```
 
@@ -253,9 +253,7 @@ The model determines the parameters for the tool from the prompt and then execut
 const { tool, parameters, result } = await useTool(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   calculator,
-  OpenAIChatFunctionPrompt.forToolCurried([
-    OpenAIChatMessage.user("What's fourteen times twelve?"),
-  ])
+  [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
 ```
 
@@ -268,9 +266,7 @@ Text is generated as a fallback.
 const { tool, parameters, result, text } = await useToolOrGenerateText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   [calculator /* and other tools... */],
-  OpenAIChatFunctionPrompt.forToolsCurried([
-    OpenAIChatMessage.user("What's fourteen times twelve?"),
-  ])
+  [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
 ```
 

@@ -149,11 +149,9 @@ for await (const textFragment of textStream) {
 Structure generation uses the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides a single function specification and instructs the model to provide parameters for calling the function. The result is returned as parsed JSON.
 
 [OpenAIChatModel API](/api/classes/OpenAIChatModel) |
-[OpenAIChatFunctionPrompt API](/api/modules/#openaichatfunctionprompt)
 
 ```ts
 import {
-  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
   ZodStructureDefinition,
@@ -176,7 +174,7 @@ const sentiment = await generateStructure(
         .describe("Sentiment."),
     }),
   }),
-  OpenAIChatFunctionPrompt.forStructureCurried([
+  [
     OpenAIChatMessage.system(
       "You are a sentiment evaluator. " +
         "Analyze the sentiment of the following product review:"
@@ -185,7 +183,7 @@ const sentiment = await generateStructure(
       "After I opened the package, I was met by a very unpleasant smell " +
         "that did not disappear even after washing. Never again!"
     ),
-  ])
+  ]
 );
 ```
 
@@ -196,7 +194,6 @@ const sentiment = await generateStructure(
 Structure generation uses the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides multiple function specifications and instructs the model to provide parameters for calling one of the functions, or to just return text (`auto`). The result is returned as parsed JSON.
 
 [OpenAIChatModel API](/api/classes/OpenAIChatModel) |
-[OpenAIChatFunctionPrompt API](/api/modules/#openaichatfunctionprompt)
 
 ```ts
 const { structure, value, text } = await generateStructureOrText(
@@ -220,7 +217,7 @@ const { structure, value, text } = await generateStructureOrText(
       }),
     }),
   ],
-  OpenAIChatFunctionPrompt.forStructuresCurried([OpenAIChatMessage.user(query)])
+  [OpenAIChatMessage.user(query)]
 );
 ```
 

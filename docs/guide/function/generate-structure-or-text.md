@@ -38,7 +38,7 @@ const { structure, value, text } = await generateStructureOrText(
       }),
     }),
   ],
-  OpenAIChatFunctionPrompt.forStructuresCurried([OpenAIChatMessage.user(query)])
+  [OpenAIChatMessage.user(query)]
 );
 ```
 

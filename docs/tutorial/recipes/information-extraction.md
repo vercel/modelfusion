@@ -36,7 +36,7 @@ const extractNameAndPopulation = async (text: string) =>
           .describe("information about the city"),
       }),
     }),
-    OpenAIChatFunctionPrompt.forStructureCurried([
+    [
       OpenAIChatMessage.system(
         [
           "Extract the name and the population of the city.",
@@ -46,7 +46,7 @@ const extractNameAndPopulation = async (text: string) =>
         ].join("\n")
       ),
       OpenAIChatMessage.user(text),
-    ])
+    ]
   );
 
 const extractedInformation1 = await extractNameAndPopulation(
