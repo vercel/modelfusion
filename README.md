@@ -82,7 +82,7 @@ const text = await generateText(
   new LlamaCppTextGenerationModel({
     contextWindowSize: 4096, // Llama 2 context window size
     maxCompletionTokens: 1000,
-  }).withPromptFormat(Llama2InstructionPromptFormat()),
+  }).withPromptFormat(mapInstructionPromptToLlama2Format()),
   {
     system: "You are a story writer.",
     instruction: "Write a short story about a robot learning to love.",
@@ -94,7 +94,7 @@ const text = await generateText(
 const textStream = await streamText(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
-  }).withPromptFormat(OpenAIChatChatPromptFormat()),
+  }).withPromptFormat(mapChatPromptToOpenAIChatFormat()),
   [
     { system: "You are a celebrated poet." },
     { user: "Write a short story about a robot learning to love." },

@@ -1,7 +1,6 @@
 export * from "./AlpacaPromptFormat.js";
 export * from "./InstructionPrompt.js";
 export * from "./Llama2PromptFormat.js";
-export * from "./OpenAIChatPromptFormat.js";
 export * from "./PromptFormat.js";
 export * from "./PromptFormatTextGenerationModel.js";
 export * from "./TextPromptFormat.js";

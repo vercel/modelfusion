@@ -1,11 +1,11 @@
 import {
   CohereTextGenerationModel,
-  Llama2ChatPromptFormat,
   LlamaCppTextGenerationModel,
-  OpenAIChatChatPromptFormat,
   OpenAIChatModel,
-  TextChatPromptFormat,
   createTextDeltaEventSource,
+  mapChatPromptToLlama2Format,
+  mapChatPromptToOpenAIChatFormat,
+  mapChatPromptToTextFormat,
   streamText,
   trimChatPrompt,
 } from "modelfusion";
@@ -23,22 +23,26 @@ const requestSchema = z.array(messageSchame);
 const gpt35turboModel = new OpenAIChatModel({
   model: "gpt-3.5-turbo",
   maxCompletionTokens: 512,
-}).withPromptFormat(OpenAIChatChatPromptFormat());
+}).withPromptFormat(mapChatPromptToOpenAIChatFormat());
 
 const llama2Model = new LlamaCppTextGenerationModel({
   contextWindowSize: 4096, // Llama 2 context window size
   maxCompletionTokens: 512,
-}).withPromptFormat(Llama2ChatPromptFormat());
+}).withPromptFormat(mapChatPromptToLlama2Format());
 
 const otherLlamaCppModel = new LlamaCppTextGenerationModel({
   contextWindowSize: 2048, // set to your models context window size
   maxCompletionTokens: 512,
-}).withPromptFormat(TextChatPromptFormat({ user: "user", ai: "assistant" }));
+}).withPromptFormat(
+  mapChatPromptToTextFormat({ user: "user", ai: "assistant" })
+);
 
 const cohereModel = new CohereTextGenerationModel({
   model: "command",
   maxCompletionTokens: 512,
-}).withPromptFormat(TextChatPromptFormat({ user: "user", ai: "assistant" }));
+}).withPromptFormat(
+  mapChatPromptToTextFormat({ user: "user", ai: "assistant" })
+);
 
 const sendMessage = async (request: Request): Promise<Response> => {
   if (request.method !== "POST") {

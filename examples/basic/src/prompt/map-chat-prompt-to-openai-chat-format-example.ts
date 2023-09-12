@@ -1,19 +1,17 @@
 import dotenv from "dotenv";
 import {
-  Llama2ChatPromptFormat,
-  LlamaCppTextGenerationModel,
+  mapChatPromptToOpenAIChatFormat,
+  OpenAIChatModel,
   streamText,
 } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  // example assumes you are running https://huggingface.co/teleprint-me/llama-2-7b-chat-GGUF with llama.cpp
   const textStream = await streamText(
-    new LlamaCppTextGenerationModel({
-      contextWindowSize: 4096, // Llama 2 context window size
-      maxCompletionTokens: 512,
-    }).withPromptFormat(Llama2ChatPromptFormat()),
+    new OpenAIChatModel({
+      model: "gpt-3.5-turbo",
+    }).withPromptFormat(mapChatPromptToOpenAIChatFormat()),
     [
       { system: "You are a celebrated poet." },
       { user: "Write a short story about a robot learning to love." },

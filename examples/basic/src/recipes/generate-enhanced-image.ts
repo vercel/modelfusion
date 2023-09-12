@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   HuggingFaceImageDescriptionModel,
-  OpenAIChatInstructionPromptFormat,
+  mapInstructionPromptToOpenAIChatFormat,
   OpenAIChatModel,
   StabilityImageGenerationModel,
   describeImage,
@@ -30,7 +30,7 @@ async function main() {
 
   const imageGenerationPrompt = await generateText(
     new OpenAIChatModel({ model: "gpt-4" }).withPromptFormat(
-      OpenAIChatInstructionPromptFormat()
+      mapInstructionPromptToOpenAIChatFormat()
     ),
     {
       instruction:

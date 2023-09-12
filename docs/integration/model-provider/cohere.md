@@ -10,9 +10,7 @@ title: Cohere
 1. You can get an API key from [Cohere](https://cohere.com/).
 1. The API key can be configured as an environment variable (`COHERE_API_KEY`) or passed in as an option into the model constructor.
 
-## Usage
-
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/cohere)
+## Configuration
 
 ### API Configuration
 
@@ -28,6 +26,10 @@ const model = new CohereTextGenerationModel({
   // ...
 });
 ```
+
+## Model Functions
+
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/cohere)
 
 ### Generate Text
 

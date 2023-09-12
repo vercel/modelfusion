@@ -10,9 +10,7 @@ title: OpenAI
 1. You can sign up for a developer account at [OpenAI](https://platform.openai.com/overview). You can then [create an API key](https://platform.openai.com/account/api-keys) for accessing the OpenAI API.
 1. The API key can be configured as an environment variable (`OPENAI_API_KEY`) or passed in as an option into the model constructor.
 
-## Usage
-
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/openai)
+## Configuration
 
 ### API Configuration (OpenAI)
 
@@ -49,6 +47,10 @@ new OpenAIChatModel({
   // ...
 });
 ```
+
+## Model Functions
+
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/openai)
 
 ### Generate Text
 
@@ -311,5 +313,43 @@ import { OpenAIImageGenerationModel, generateImage } from "modelfusion";
 const image = await generateImage(
   new OpenAIImageGenerationModel({ size: "512x512" }),
   "the wicked witch of the west in the style of early 19th century painting"
+);
+```
+
+## Prompt Formats
+
+### OpenAI Chat Prompt format
+
+#### Instruction prompt
+
+You an use [mapInstructionPromptToOpenAIChatFormat()](/api/modules#mapinstructionprompttoopenaichatformat) to use [instruction prompts](/api/modules#instructionprompt) with OpenAI chat models:
+
+```ts
+const textStream = await streamText(
+  new OpenAIChatModel({
+    // ...
+  }).withPromptFormat(mapInstructionPromptToOpenAIChatFormat()),
+  {
+    system: "You are a celebrated poet.",
+    instruction: "Write a short story about a robot learning to love.",
+  }
+);
+```
+
+#### Chat prompt
+
+You an use [mapChatPromptToOpenAIChatFormat()](/api/modules#mapchatprompttoopenaichatformat) to use [chat prompts](/api/modules#chatprompt) with OpenAI chat models:
+
+```ts
+const textStream = await streamText(
+  new OpenAIChatModel({
+    // ...
+  }).withPromptFormat(mapChatPromptToOpenAIChatFormat()),
+  [
+    { system: "You are a celebrated poet." },
+    { user: "Write a short story about a robot learning to love." },
+    { ai: "Once upon a time, there was a robot who learned to love." },
+    { user: "That's a great start!" },
+  ]
 );
 ```

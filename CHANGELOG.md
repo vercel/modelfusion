@@ -2,6 +2,10 @@
 
 ## v0.31.0 - UNRELEASED
 
+### Changed
+
+- **breaking change**: Renamed chat format construction functions to follow the pattern `map[Chat|Instruction]PromptTo[FORMAT]Format()`, e.g. `mapInstructionPromptToAlpacaFormat()`, for easy auto-completion.
+
 ### Removed
 
 - The prompts for `generateStructure` and `generateStructureOrText` have been simplified. You can remove the `OpenAIChatPrompt.forStructureCurried` (and similar) parts.
