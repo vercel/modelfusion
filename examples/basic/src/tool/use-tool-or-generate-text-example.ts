@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
   useToolOrGenerateText,
@@ -13,9 +12,7 @@ async function main() {
   const { tool, parameters, result, text } = await useToolOrGenerateText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     [calculator /* ... */],
-    OpenAIChatFunctionPrompt.forToolsCurried([
-      OpenAIChatMessage.user("What's fourteen times twelve?"),
-    ])
+    [OpenAIChatMessage.user("What's fourteen times twelve?")]
   );
 
   console.log(tool != null ? `TOOL: ${tool}` : "TEXT");

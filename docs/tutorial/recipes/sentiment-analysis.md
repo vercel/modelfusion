@@ -34,13 +34,13 @@ const analyzeSentiment = async (productReview: string) =>
           .describe("Sentiment."),
       }),
     }),
-    OpenAIChatFunctionPrompt.forStructureCurried([
+    [
       OpenAIChatMessage.system(
         "You are a sentiment evaluator. " +
           "Analyze the sentiment of the following product review:"
       ),
       OpenAIChatMessage.user(productReview),
-    ])
+    ]
   );
 ```
 

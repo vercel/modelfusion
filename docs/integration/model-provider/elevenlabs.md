@@ -9,9 +9,7 @@ sidebar_position: 20
 1. You can get an API key from [ElevenLabs](https://elevenlabs.io/).
 1. The API key can be configured as an environment variable (`ELEVENLABS_API_KEY`) or passed in as an option into the model constructor.
 
-## Usage
-
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/elevenlabs)
+## Configuration
 
 ### API Configuration
 
@@ -27,6 +25,10 @@ const model = new ElevenLabsSpeechSynthesisModel({
   // ...
 });
 ```
+
+## Model Functions
+
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/elevenlabs)
 
 ### Synthesize Speech
 

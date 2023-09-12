@@ -6,7 +6,7 @@ import { validateChatPrompt } from "./chat/validateChatPrompt.js";
 /**
  * Formats an instruction prompt as a basic text prompt.
  */
-export const TextInstructionPromptFormat: () => PromptFormat<
+export const mapInstructionPromptToTextFormat: () => PromptFormat<
   InstructionPrompt,
   string
 > = () => ({
@@ -34,7 +34,7 @@ export const TextInstructionPromptFormat: () => PromptFormat<
  * @param user The label of the user in the chat.
  * @param ai The name of the AI in the chat.
  */
-export const TextChatPromptFormat: ({
+export const mapChatPromptToTextFormat: ({
   user,
   ai,
 }: {

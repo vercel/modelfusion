@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import {
-  InstructionWithStructurePrompt,
   StructureFromTextGenerationModel,
   LlamaCppTextGenerationModel,
   StructureDefinition,
@@ -23,13 +22,10 @@ const airoborosFunctionSchema = z.object({
 class AiroborosFunctionPromptFormat<STRUCTURE> {
   readonly prefix = `{`;
 
-  createPrompt({
-    structure,
-    instruction,
-  }: {
-    structure: StructureDefinition<any, STRUCTURE>;
-    instruction: string;
-  }): string {
+  createPrompt(
+    instruction: string,
+    structure: StructureDefinition<any, STRUCTURE>
+  ): string {
     // map parameters JSON schema
     const properties: Record<string, { type: string; description: string }> = (
       structure.schema.getJsonSchema() as any
@@ -73,9 +69,7 @@ async function main() {
       format: new AiroborosFunctionPromptFormat(),
     }),
     calculator,
-    InstructionWithStructurePrompt.forToolCurried(
-      "What's fourteen times twelve?"
-    )
+    "What's fourteen times twelve?"
   );
 
   console.log(`Tool: ${tool}`);

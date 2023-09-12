@@ -14,32 +14,34 @@ const DEFAULT_SYSTEM_PROMPT_NO_INPUT =
  *
  * @see https://github.com/tatsu-lab/stanford_alpaca#data-release
  */
-export const AlpacaInstructionPromptFormat: () => PromptFormat<
+export function mapInstructionPromptToAlpacaFormat(): PromptFormat<
   InstructionPrompt,
   string
-> = () => ({
-  stopSequences: [],
-  format: (instruction) => {
-    let text =
-      instruction.system ??
-      (instruction.input != null
-        ? DEFAULT_SYSTEM_PROMPT_INPUT
-        : DEFAULT_SYSTEM_PROMPT_NO_INPUT);
+> {
+  return {
+    stopSequences: [],
+    format: (instruction) => {
+      let text =
+        instruction.system ??
+        (instruction.input != null
+          ? DEFAULT_SYSTEM_PROMPT_INPUT
+          : DEFAULT_SYSTEM_PROMPT_NO_INPUT);
 
-    text += "\n\n### Instruction:\n";
+      text += "\n\n### Instruction:\n";
 
-    if (instruction.system != null) {
-      text += `${instruction.system}\n`;
-    }
+      if (instruction.system != null) {
+        text += `${instruction.system}\n`;
+      }
 
-    text += instruction.instruction;
+      text += instruction.instruction;
 
-    if (instruction.input != null) {
-      text += `\n\n### Input:\n${instruction.input}`;
-    }
+      if (instruction.input != null) {
+        text += `\n\n### Input:\n${instruction.input}`;
+      }
 
-    text += "\n\n### Response:\n";
+      text += "\n\n### Response:\n";
 
-    return text;
-  },
-});
+      return text;
+    },
+  };
+}

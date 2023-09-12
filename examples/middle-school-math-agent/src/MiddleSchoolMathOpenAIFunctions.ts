@@ -1,5 +1,4 @@
 import {
-  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
   Tool,
@@ -51,7 +50,7 @@ async function main() {
         maxCompletionTokens: 500,
       }),
       [calculator, answer],
-      OpenAIChatFunctionPrompt.forToolsCurried(messages)
+      messages
     );
 
     switch (tool) {

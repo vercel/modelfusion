@@ -4,7 +4,6 @@ import { Command } from "commander";
 import dotenv from "dotenv";
 import { convert as convertHtmlToText } from "html-to-text";
 import {
-  OpenAIChatFunctionPrompt,
   OpenAIChatMessage,
   OpenAIChatModel,
   Tool,
@@ -105,7 +104,7 @@ async function main() {
     const { tool, parameters, result, text } = await useToolOrGenerateText(
       new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
       [searchWikipedia, readWikipediaArticle, answer],
-      OpenAIChatFunctionPrompt.forToolsCurried(messages)
+      messages
     );
 
     switch (tool) {

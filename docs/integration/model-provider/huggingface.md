@@ -10,13 +10,7 @@ title: Hugging Face
 1. You can get an API key from [Hugging Face](https://huggingface.co/).
 1. The API key can be configured as an environment variable (`HUGGINGFACE_API_KEY`) or passed in as an option into the model constructor.
 
-## Usage
-
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/huggingface)
-
-If the model is not loaded on Hugging Face, ModelFusion will wait by default.
-This can take a minute and longer for the first call.
-You can override this behavior by setting `waitForModel` to `false` in the model settings.
+## Configuration
 
 ### API Configuration
 
@@ -32,6 +26,14 @@ const model = new HuggingFaceTextGenerationModel({
   // ...
 });
 ```
+
+## Model Functions
+
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/huggingface)
+
+If the model is not loaded on Hugging Face, ModelFusion will wait by default.
+This can take a minute and longer for the first call.
+You can override this behavior by setting `waitForModel` to `false` in the model settings.
 
 ### Generate Text
 

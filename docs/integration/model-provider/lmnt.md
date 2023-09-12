@@ -9,9 +9,7 @@ sidebar_position: 21
 1. You can get an API key from [LMNT](https://lmnt.com/).
 1. The API key can be configured as an environment variable (`LMNT_API_KEY`) or passed in as an option into the model constructor.
 
-## Usage
-
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/lmnt)
+## Configuration
 
 ### API Configuration
 
@@ -27,6 +25,10 @@ const model = new LmntSpeechSynthesisModel({
   // ...
 });
 ```
+
+## Model Functions
+
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/lmnt)
 
 ### Synthesize Speech
 

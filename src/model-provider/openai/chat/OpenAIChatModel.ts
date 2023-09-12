@@ -1,8 +1,15 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
+import { ApiConfiguration } from "../../../core/api/ApiConfiguration.js";
+import { callWithRetryAndThrottle } from "../../../core/api/callWithRetryAndThrottle.js";
+import {
+  ResponseHandler,
+  createJsonResponseHandler,
+  postJsonToApi,
+} from "../../../core/api/postToApi.js";
+import { StructureDefinition } from "../../../core/structure/StructureDefinition.js";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../../model-function/ModelFunctionOptions.js";
-import { ApiConfiguration } from "../../../core/api/ApiConfiguration.js";
 import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
 import { StructureOrTextGenerationModel } from "../../../model-function/generate-structure/StructureOrTextGenerationModel.js";
 import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
@@ -12,21 +19,10 @@ import {
 } from "../../../model-function/generate-text/TextGenerationModel.js";
 import { PromptFormat } from "../../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../../prompt/PromptFormatTextGenerationModel.js";
-import { callWithRetryAndThrottle } from "../../../core/api/callWithRetryAndThrottle.js";
-import {
-  ResponseHandler,
-  createJsonResponseHandler,
-  postJsonToApi,
-} from "../../../core/api/postToApi.js";
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import {
-  OpenAIChatAutoFunctionPrompt,
-  OpenAIChatSingleFunctionPrompt,
-  OpenAIFunctionDescription,
-} from "./OpenAIChatPrompt.js";
 import {
   OpenAIChatDelta,
   createOpenAIChatFullDeltaIterableQueue,
@@ -239,12 +235,12 @@ export class OpenAIChatModel
       OpenAIChatSettings
     >,
     StructureGenerationModel<
-      OpenAIChatSingleFunctionPrompt<unknown>,
+      OpenAIChatMessage[],
       OpenAIChatResponse,
       OpenAIChatSettings
     >,
     StructureOrTextGenerationModel<
-      OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
+      OpenAIChatMessage[],
       OpenAIChatResponse,
       OpenAIChatSettings
     >
@@ -375,20 +371,25 @@ export class OpenAIChatModel
    * @see https://platform.openai.com/docs/guides/gpt/function-calling
    */
   generateStructureResponse(
-    prompt:
-      | OpenAIChatSingleFunctionPrompt<unknown>
-      | OpenAIChatAutoFunctionPrompt<Array<OpenAIFunctionDescription<unknown>>>,
+    structureDefinition: StructureDefinition<string, unknown>,
+    prompt: OpenAIChatMessage[],
     options?: ModelFunctionOptions<OpenAIChatSettings> | undefined
   ): PromiseLike<OpenAIChatResponse> {
-    const settingsWithFunctionCall = Object.assign({}, options, {
-      functionCall: prompt.functionCall,
-      functions: prompt.functions,
-    });
-
-    return this.callAPI(prompt.messages, {
+    return this.callAPI(prompt, {
       responseFormat: OpenAIChatResponseFormat.json,
       functionId: options?.functionId,
-      settings: settingsWithFunctionCall,
+      settings: {
+        ...options,
+
+        functionCall: { name: structureDefinition.name },
+        functions: [
+          {
+            name: structureDefinition.name,
+            description: structureDefinition.description,
+            parameters: structureDefinition.schema.getJsonSchema(),
+          },
+        ],
+      },
       run: options?.run,
     });
   }
@@ -396,6 +397,46 @@ export class OpenAIChatModel
   extractStructure(response: OpenAIChatResponse): unknown {
     const jsonText = response.choices[0]!.message.function_call!.arguments;
     return SecureJSON.parse(jsonText);
+  }
+
+  generateStructureOrTextResponse(
+    structureDefinitions: Array<StructureDefinition<string, unknown>>,
+    prompt: OpenAIChatMessage[],
+    options?: ModelFunctionOptions<OpenAIChatSettings> | undefined
+  ): PromiseLike<OpenAIChatResponse> {
+    return this.callAPI(prompt, {
+      responseFormat: OpenAIChatResponseFormat.json,
+      functionId: options?.functionId,
+      settings: {
+        ...options,
+
+        functionCall: "auto",
+        functions: structureDefinitions.map((structureDefinition) => ({
+          name: structureDefinition.name,
+          description: structureDefinition.description,
+          parameters: structureDefinition.schema.getJsonSchema(),
+        })),
+      },
+      run: options?.run,
+    });
+  }
+
+  extractStructureAndText(response: OpenAIChatResponse) {
+    const message = response.choices[0]!.message;
+    const content = message.content;
+    const functionCall = message.function_call;
+
+    return functionCall == null
+      ? {
+          structure: null,
+          value: null,
+          text: content ?? "",
+        }
+      : {
+          structure: functionCall.name,
+          value: SecureJSON.parse(functionCall.arguments),
+          text: content,
+        };
   }
 
   extractUsage(response: OpenAIChatResponse) {

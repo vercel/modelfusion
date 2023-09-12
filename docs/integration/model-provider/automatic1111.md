@@ -12,9 +12,7 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 1. Install [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) using the instructions in the `stable-diffusion-webui` repository.
 2. Start the web UI with the API enabled: `./webui.sh --api` (Mac)
 
-## Usage
-
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/a1111)
+## Configuration
 
 ### API Configuration
 
@@ -30,6 +28,10 @@ const model = new Automatic1111ImageGenerationModel({
   // ...
 });
 ```
+
+## Model Functions
+
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/a1111)
 
 ### Generate Image
 

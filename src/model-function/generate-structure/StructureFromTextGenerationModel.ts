@@ -3,20 +3,20 @@ import {
   TextGenerationModelSettings,
 } from "../generate-text/TextGenerationModel.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
-import { InstructionWithStructure } from "./InstructionWithStructurePrompt.js";
 import { StructureGenerationModel } from "./StructureGenerationModel.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { generateText } from "../generate-text/generateText.js";
 
-export type StructureFromTextPromptFormat = {
-  createPrompt: (prompt: {
-    instruction: string;
-    structure: StructureDefinition<string, unknown>;
-  }) => string;
+export type StructureFromTextPromptFormat<PROMPT> = {
+  createPrompt: (
+    prompt: PROMPT,
+    structure: StructureDefinition<string, unknown>
+  ) => string;
   extractStructure: (response: string) => unknown;
 };
 
 export class StructureFromTextGenerationModel<
+  PROMPT,
   MODEL extends TextGenerationModel<
     string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,22 +25,17 @@ export class StructureFromTextGenerationModel<
     any,
     TextGenerationModelSettings
   >,
-> implements
-    StructureGenerationModel<
-      InstructionWithStructure<string, unknown>,
-      string,
-      MODEL["settings"]
-    >
+> implements StructureGenerationModel<PROMPT, string, MODEL["settings"]>
 {
   private readonly model: MODEL;
-  private readonly format: StructureFromTextPromptFormat;
+  private readonly format: StructureFromTextPromptFormat<PROMPT>;
 
   constructor({
     model,
     format,
   }: {
     model: MODEL;
-    format: StructureFromTextPromptFormat;
+    format: StructureFromTextPromptFormat<PROMPT>;
   }) {
     this.model = model;
     this.format = format;
@@ -59,12 +54,13 @@ export class StructureFromTextGenerationModel<
   }
 
   async generateStructureResponse(
-    prompt: InstructionWithStructure<string, unknown>,
+    structure: StructureDefinition<string, unknown>,
+    prompt: PROMPT,
     options?: ModelFunctionOptions<MODEL["settings"]> | undefined
   ): Promise<string> {
     return await generateText(
       this.model,
-      this.format.createPrompt(prompt),
+      this.format.createPrompt(prompt, structure),
       options
     );
   }

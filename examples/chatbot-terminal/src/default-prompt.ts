@@ -1,6 +1,6 @@
 import {
   LlamaCppTextGenerationModel,
-  TextChatPromptFormat,
+  mapChatPromptToTextFormat,
   streamText,
   trimChatPrompt,
 } from "modelfusion";
@@ -25,7 +25,7 @@ async function main() {
       contextWindowSize: 4096, // Llama 2 context window size, adjust for other models
       maxCompletionTokens: 512,
     }).withPromptFormat(
-      TextChatPromptFormat({ user: "user", ai: "assistant" })
+      mapChatPromptToTextFormat({ user: "user", ai: "assistant" })
     );
 
     const textStream = await streamText(

@@ -66,9 +66,7 @@ The result contains the name of the tool (`tool` property), the parameters (`par
 const { tool, parameters, result } = await useTool(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   calculator,
-  OpenAIChatFunctionPrompt.forToolCurried([
-    OpenAIChatMessage.user("What's fourteen times twelve?"),
-  ])
+  [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
 ```
 
@@ -84,9 +82,7 @@ It can be configured with several tools.
 const { tool, parameters, result, text } = await useToolOrGenerateText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   [calculator /* ... */],
-  OpenAIChatFunctionPrompt.forToolsCurried([
-    OpenAIChatMessage.user("What's fourteen times twelve?"),
-  ])
+  [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
 ```
 
@@ -98,22 +94,18 @@ const { tool, parameters, result, text } = await useToolOrGenerateText(
   [calculator /* ... */],
   // Instead of using a curried function,
   // you can also work with the tools directly:
-  (tools) =>
-    OpenAIChatFunctionPrompt.forTools({
-      tools,
-      messages: [
-        OpenAIChatMessage.system(
-          // Here the available tools are used to create
-          // a more precise prompt that reduces errors:
-          `You have ${tools.length} tools available (${tools
-            .map((tool) => tool.name)
-            .join(", ")}).`
-        ),
-        OpenAIChatMessage.user("What's fourteen times twelve?"),
-        // OpenAIChatMessage.user("What's twelwe plus 1234?"),
-        // OpenAIChatMessage.user("Tell me about Berlin"),
-      ],
-    })
+  (tools) => [
+    OpenAIChatMessage.system(
+      // Here the available tools are used to create
+      // a more precise prompt that reduces errors:
+      `You have ${tools.length} tools available (${tools
+        .map((tool) => tool.name)
+        .join(", ")}).`
+    ),
+    OpenAIChatMessage.user("What's fourteen times twelve?"),
+    // OpenAIChatMessage.user("What's twelwe plus 1234?"),
+    // OpenAIChatMessage.user("Tell me about Berlin"),
+  ]
 );
 ```
 

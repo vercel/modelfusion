@@ -16,9 +16,7 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
    - For generating embeddings, you need to start the server with the `--embedding` flag.
    - [llama.cpp server docs](https://github.com/ggerganov/llama.cpp/tree/master/examples/server)
 
-## Usage
-
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/llamacpp)
+## Configuration
 
 ### API Configuration
 
@@ -34,6 +32,10 @@ const model = new LlamaCppTextGenerationModel({
   // ...
 });
 ```
+
+## Model Functions
+
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/llamacpp)
 
 ### Generate Text
 
@@ -141,13 +143,13 @@ ${ system prompt }
 { instruction } [/INST]
 ```
 
-You can use the [Llama2InstructionPromptFormat](/api/modules#llama2instructionpromptformat) to create instruction prompts:
+You can use the [Llama 2 format for instruction prompts](/api/modules#mapinstructionprompttollama2format):
 
 ```ts
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  }).withPromptFormat(Llama2InstructionPromptFormat()),
+  }).withPromptFormat(mapInstructionPromptToLlama2Format()),
   {
     system: "You are a celebrated poet.",
     instruction: "Write a short story about a robot learning to love.",
@@ -165,13 +167,13 @@ ${ system prompt }
 ${ user msg 1 } [/INST] ${ model response 1 } </s><s>[INST] ${ user msg 2 } [/INST] ${ model response 2 } </s><s>[INST] ${ user msg 3 } [/INST]
 ```
 
-You can use the [Llama2ChatPromptFormat](/api/modules#llama2chatpromptformat) to create instruction prompts:
+You can use the [Llama 2 format for chat prompts](/api/modules#mapchatprompttollama2format):
 
 ```ts
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  }).withPromptFormat(Llama2ChatPromptFormat()),
+  }).withPromptFormat(mapChatPromptToLlama2Format()),
   [
     { system: "You are a celebrated poet." },
     { user: "Write a short story about a robot learning to love." },
@@ -212,7 +214,7 @@ Below is an instruction that describes a task. Write a response that appropriate
 ### Response:
 ```
 
-You can use the [AlpacaInstructionPromptFormat](/api/modules#alpacainstructionpromptformat) to create instruction prompts.
+You can use [mapInstructionPromptToAlpacaFormat()](/api/modules#mapinstructionprompttoalpacaformat) to create instruction prompts.
 
 > ℹ️ Setting the system property overrides the Alpaca system prompt and can impact the model responses.
 
@@ -220,7 +222,7 @@ You can use the [AlpacaInstructionPromptFormat](/api/modules#alpacainstructionpr
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  }).withPromptFormat(AlpacaInstructionPromptFormat()),
+  }).withPromptFormat(mapInstructionPromptToAlpacaFormat()),
   {
     instruction: "You are a celebrated poet. Write a short story about:",
     input: "a robot learning to love.",
@@ -241,7 +243,7 @@ USER: {prompt}
 ASSISTANT:
 ```
 
-You can use the [VicunaChatPromptFormat](/api/modules#vicunachatpromptformat) to create chat prompts.
+You can use [mapChatPromptToVicunaFormat()](/api/modules#mapchatprompttovicunaformat) to create chat prompts.
 
 > ℹ️ Setting the system property overrides the Vicuna system prompt and can impact the model responses.
 
@@ -249,7 +251,7 @@ You can use the [VicunaChatPromptFormat](/api/modules#vicunachatpromptformat) to
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  }).withPromptFormat(VicunaChatPromptFormat()),
+  }).withPromptFormat(mapChatPromptToVicunaFormat()),
   [
     { user: "Write a short story about a robot learning to love." },
     { ai: "Once upon a time, there was a robot who learned to love." },
