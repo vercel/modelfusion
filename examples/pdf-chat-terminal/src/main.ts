@@ -140,16 +140,18 @@ async function loadPdfPages(path: string) {
   for (let i = 0; i < pdf.numPages; i++) {
     const page = await pdf.getPage(i + 1);
     const pageContent = await page.getTextContent();
+    const text = pageContent.items
+      // limit to TextItem, extract str:
+      .filter((item) => (item as any).str != null)
+      .map((item) => (item as any).str as string)
+      .join(" ")
+      .replace(/\s+/g, " ") // reduce multiple whitespaces to single space
 
-    pageTexts.push({
-      pageNumber: i + 1,
-      text: pageContent.items
-        // limit to TextItem, extract str:
-        .filter((item) => (item as any).str != null)
-        .map((item) => (item as any).str as string)
-        .join(" ")
-        .replace(/\s+/g, " "), // reduce multiple whitespaces to single space
-    });
+    if (text.trim().length > 0)
+      pageTexts.push({
+        pageNumber: i + 1,
+        text
+      });
   }
 
   return pageTexts;
