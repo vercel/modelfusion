@@ -146,11 +146,12 @@ async function loadPdfPages(path: string) {
       .map((item) => (item as any).str as string)
       .join(" ")
       .replace(/\s+/g, " ") // reduce multiple whitespaces to single space
+      .trim();
 
-    if (text.trim().length > 0)
+    if (text.length > 0)
       pageTexts.push({
         pageNumber: i + 1,
-        text
+        text,
       });
   }
 
