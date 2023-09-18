@@ -21,7 +21,7 @@ Retrieval augmented generation consists of two steps:
 #### Retrieve related information from a vector index:
 
 ```ts
-const { chunks } = await retrieveTextChunks(
+const { chunks } = await retrieveObjects(
   new SimilarTextChunksFromVectorIndexRetriever({
     // some vector index that contains the information:
     vectorIndex,

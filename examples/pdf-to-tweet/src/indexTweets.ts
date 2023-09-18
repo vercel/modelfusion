@@ -4,7 +4,7 @@ import {
   MemoryVectorIndex,
   OpenAITextEmbeddingModel,
   TextChunk,
-  upsertTextChunks,
+  upsertIntoVectorIndex,
 } from "modelfusion";
 import fs from "node:fs";
 
@@ -27,7 +27,7 @@ async function main() {
 
   const vectorIndex = new MemoryVectorIndex<TextChunk>();
 
-  await upsertTextChunks({
+  await upsertIntoVectorIndex({
     vectorIndex,
     embeddingModel: new OpenAITextEmbeddingModel({
       model: "text-embedding-ada-002",

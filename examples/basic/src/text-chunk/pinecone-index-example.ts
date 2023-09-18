@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 import {
   CohereTextEmbeddingModel,
   PineconeVectorIndex,
-  SimilarTextChunksFromVectorIndexRetriever,
-  retrieveTextChunks,
-  upsertTextChunks,
+  VectorIndexRetriever,
+  retrieve,
+  upsertIntoVectorIndex,
 } from "modelfusion";
 import { z } from "zod";
 
@@ -52,14 +52,15 @@ async function main() {
 
   // Note: if this script is run several times, the same texts will be inserted and there will be duplicates.
   // Note: Pinecone might need some time to index the data.
-  await upsertTextChunks({
+  await upsertIntoVectorIndex({
     vectorIndex,
     embeddingModel,
-    chunks: texts.map((text) => ({ text })),
+    objects: texts.map((text) => ({ text })),
+    getText: (object) => object.text,
   });
 
-  const { chunks } = await retrieveTextChunks(
-    new SimilarTextChunksFromVectorIndexRetriever({
+  const chunks = await retrieve(
+    new VectorIndexRetriever({
       vectorIndex,
       embeddingModel,
       maxResults: 3,

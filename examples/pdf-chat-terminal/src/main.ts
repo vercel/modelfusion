@@ -8,11 +8,11 @@ import {
   OpenAITextEmbeddingModel,
   SimilarTextChunksFromVectorIndexRetriever,
   generateText,
-  retrieveTextChunks,
+  retrieveObjects,
   splitAtToken,
   splitTextChunks,
   streamText,
-  upsertTextChunks,
+  upsertIntoVectorIndex,
 } from "modelfusion";
 import * as readline from "node:readline/promises";
 import * as PdfJs from "pdfjs-dist/legacy/build/pdf";
@@ -50,7 +50,7 @@ async function main() {
     text: string;
   }>();
 
-  await upsertTextChunks({ vectorIndex, embeddingModel, chunks });
+  await upsertIntoVectorIndex({ vectorIndex, embeddingModel, chunks });
 
   console.log("Ready.");
   console.log();
@@ -75,7 +75,7 @@ async function main() {
     );
 
     // search for text chunks that are similar to the hypothetical answer:
-    const { chunks: information } = await retrieveTextChunks(
+    const { chunks: information } = await retrieveObjects(
       new SimilarTextChunksFromVectorIndexRetriever({
         vectorIndex,
         embeddingModel,

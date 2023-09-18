@@ -6,9 +6,9 @@ sidebar_position: 50
 
 ### Retrieving text chunks
 
-[retrieveTextChunks API](/api/modules/#retrievetextchunks)
+[retrieveObjects API](/api/modules/#retrieveObjects)
 
-The `retrieveTextChunks` function uses a retriever and a query to retrieve a list of text chunks.
+The `retrieveObjects` function uses a retriever and a query to retrieve a list of text chunks.
 The retriever determines the type of the query.
 
 Currently only the [SimilarTextChunksFromVectorIndexRetriever](/api/classes/SimilarTextChunksFromVectorIndexRetriever) is available.
@@ -17,7 +17,7 @@ It uses a vector index and an embedding model to retrieve text chunks that are s
 #### Example
 
 ```ts
-const { chunks } = await retrieveTextChunks(
+const { chunks } = await retrieveObjects(
   new SimilarTextChunksFromVectorIndexRetriever({
     vectorIndex,
     embeddingModel: new OpenAITextEmbeddingModel({

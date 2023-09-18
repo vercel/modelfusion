@@ -8,9 +8,9 @@ You can store text chunks by upserting them into a vector index.
 
 ### Upserting text chunks
 
-[upsertTextChunks API](/api/modules/#upserttextchunks)
+[upsertIntoVectorIndex API](/api/modules/#upsertIntoVectorIndex)
 
-With `upsertTextChunks`, you can insert and update text chunks in a vector index.
+With `upsertIntoVectorIndex`, you can insert and update text chunks in a vector index.
 It uses a vector index and an embedding model.
 
 #### Example
@@ -24,7 +24,7 @@ const texts = [
 
 const chunks = texts.map((text) => ({ text }))
 
-await upsertTextChunks({
+await upsertIntoVectorIndex({
   vectorIndex,
   embeddingModel: new OpenAITextEmbeddingModel({
     model: "text-embedding-ada-002",

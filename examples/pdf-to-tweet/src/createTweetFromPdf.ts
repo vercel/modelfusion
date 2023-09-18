@@ -6,7 +6,7 @@ import {
   Run,
   SimilarTextChunksFromVectorIndexRetriever,
   generateText,
-  retrieveTextChunks,
+  retrieveObjects,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "modelfusion";
 import fs from "node:fs";
@@ -79,7 +79,7 @@ export async function createTweetFromPdf({
   );
 
   // search for similar tweets:
-  const { chunks: similarTweets } = await retrieveTextChunks(
+  const { chunks: similarTweets } = await retrieveObjects(
     new SimilarTextChunksFromVectorIndexRetriever({
       vectorIndex: await MemoryVectorIndex.deserialize({
         serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),

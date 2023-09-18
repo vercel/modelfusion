@@ -2,10 +2,9 @@ import dotenv from "dotenv";
 import {
   MemoryVectorIndex,
   OpenAITextEmbeddingModel,
-  SimilarTextChunksFromVectorIndexRetriever,
-  TextChunk,
-  retrieveTextChunks,
-  upsertTextChunks,
+  VectorIndexRetriever,
+  retrieve,
+  upsertIntoVectorIndex,
 } from "modelfusion";
 
 dotenv.config();
@@ -24,19 +23,20 @@ async function main() {
     "This is caused by the light being reflected twice on the inside of the droplet before leaving it.`",
   ];
 
-  const vectorIndex = new MemoryVectorIndex<TextChunk>();
+  const vectorIndex = new MemoryVectorIndex<string>();
   const embeddingModel = new OpenAITextEmbeddingModel({
     model: "text-embedding-ada-002",
   });
 
-  await upsertTextChunks({
+  await upsertIntoVectorIndex({
     vectorIndex,
     embeddingModel,
-    chunks: texts.map((text) => ({ text })),
+    objects: texts,
+    getText: (text) => text,
   });
 
-  const { chunks } = await retrieveTextChunks(
-    new SimilarTextChunksFromVectorIndexRetriever({
+  const retrievedTexts = await retrieve(
+    new VectorIndexRetriever({
       vectorIndex,
       embeddingModel,
       maxResults: 3,
@@ -45,7 +45,7 @@ async function main() {
     "rainbow and water droplets"
   );
 
-  console.log(chunks);
+  console.log(retrievedTexts);
 }
 
 main().catch(console.error);
