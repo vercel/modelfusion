@@ -18,7 +18,7 @@ async function main() {
 
   const text = await generateText(
     new OpenAITextGenerationModel({
-      model: "text-davinci-003",
+      model: "gpt-3.5-turbo-instruct",
       api,
     }),
     "Write a short story about a robot learning to love:\n\n"

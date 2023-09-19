@@ -8,7 +8,7 @@ async function main() {
   // the response type is specific to the model that's being used
   const { response, metadata } = await generateText(
     new OpenAITextGenerationModel({
-      model: "text-davinci-003",
+      model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 1000,
       n: 2, // generate 2 completions
     }),

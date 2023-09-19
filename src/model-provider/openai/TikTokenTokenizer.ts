@@ -75,8 +75,7 @@ function getEncodingNameForModel(
     case "text-davinci-003": {
       return "p50k_base";
     }
-    case "babbage-002":
-    case "davinci-002":
+
     case "ada":
     case "babbage":
     case "curie":
@@ -86,11 +85,15 @@ function getEncodingNameForModel(
     case "text-curie-001": {
       return "r50k_base";
     }
+
+    case "babbage-002":
+    case "davinci-002":
     case "gpt-3.5-turbo":
     case "gpt-3.5-turbo-0301":
     case "gpt-3.5-turbo-0613":
     case "gpt-3.5-turbo-16k":
     case "gpt-3.5-turbo-16k-0613":
+    case "gpt-3.5-turbo-instruct":
     case "gpt-4":
     case "gpt-4-0314":
     case "gpt-4-0613":

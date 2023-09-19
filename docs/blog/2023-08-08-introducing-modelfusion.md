@@ -26,7 +26,7 @@ Here's a simple example demonstrating how you might use ModelFusion to generate 
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "text-davinci-003" }),
+  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```

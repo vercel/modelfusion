@@ -11,7 +11,7 @@ You can call these functions with a model, a prompt, and additional options.
 ```ts
 const text = await generateText(
   // model:
-  new OpenAITextGenerationModel({ model: "text-davinci-003" }),
+  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
 
   // prompt (type depends on model):
   "Write a short story about a robot learning to love:\n\n",
@@ -36,7 +36,7 @@ Model functions return rich results that include the original response and metad
 // the response type is specific to the model that's being used
 const { output, response, metadata } = await generateText(
   new OpenAITextGenerationModel({
-    model: "text-davinci-003",
+    model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
     n: 2, // generate 2 completions
   }),
@@ -67,7 +67,7 @@ Models are created using a constructor call. The constructors take a single conf
 
 ```ts
 const model = new OpenAITextGenerationModel({
-  model: "text-davinci-003",
+  model: "gpt-3.5-turbo-instruct",
   maxCompletionTokens: 500,
 });
 ```
@@ -76,7 +76,7 @@ You can pass API configuration objects to the model constructors to configure th
 
 ```ts
 new OpenAITextGenerationModel({
-  model: "text-davinci-003",
+  model: "gpt-3.5-turbo-instruct",
   api: new OpenAIApiConfiguration({
     // all parameters are optional:
     apiKey: "my-api-key",

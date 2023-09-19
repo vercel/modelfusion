@@ -14,7 +14,7 @@ async function main() {
 
   const text = await generateText(
     new OpenAITextGenerationModel({
-      model: "text-davinci-003",
+      model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,
       maxCompletionTokens: 500,
     }),
@@ -29,6 +29,7 @@ async function main() {
     costCalculators: [new OpenAICostCalculator()],
   });
 
+  console.log();
   console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
 }
 

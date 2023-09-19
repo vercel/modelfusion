@@ -88,7 +88,7 @@ setGlobalFunctionObservers([observer]);
 
 const text = await generateText(
   new OpenAITextGenerationModel({
-    model: "text-davinci-003",
+    model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 50,
   }),
   "Write a short story about a robot name Evo:\n\n"
@@ -104,7 +104,7 @@ You can set function observers for specific functions in the function options.
 ```ts
 const text = await generateText(
   new OpenAITextGenerationModel({
-    model: "text-davinci-003",
+    model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 50,
   }),
   "Write a short story about a robot named Nox:\n\n",
@@ -125,7 +125,7 @@ const run = new DefaultRun({
 
 const text = await generateText(
   new OpenAITextGenerationModel({
-    model: "text-davinci-003",
+    model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 50,
   }),
   "Write a short story about a robot named Pam:\n\n",
@@ -142,7 +142,7 @@ You can set function observers for all functions calls that use a model instance
 ```ts
 const text = await generateText(
   new OpenAITextGenerationModel({
-    model: "text-davinci-003",
+    model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 50,
     observers: [observer],
   }),

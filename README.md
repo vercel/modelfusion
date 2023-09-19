@@ -45,7 +45,7 @@ You can use [prompt formats](https://modelfusion.dev/guide/function/generate-tex
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "text-davinci-003" }),
+  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -121,7 +121,7 @@ ModelFusion model functions return rich results that include the original respon
 // the response type is specific to the model that's being used
 const { output, response, metadata } = await generateText(
   new OpenAITextGenerationModel({
-    model: "text-davinci-003",
+    model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
     n: 2, // generate 2 completions
   }),

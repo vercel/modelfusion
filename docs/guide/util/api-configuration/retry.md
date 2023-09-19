@@ -33,7 +33,7 @@ const api = new OpenAIApiConfiguration({
 });
 
 const model = new OpenAITextGenerationModel({
-  model: "text-davinci-003",
+  model: "gpt-3.5-turbo-instruct",
   api,
 });
 ```
@@ -54,7 +54,7 @@ const api = new OpenAIApiConfiguration({
 });
 
 const model = new OpenAITextGenerationModel({
-  model: "text-davinci-003",
+  model: "gpt-3.5-turbo-instruct",
   api,
 });
 ```

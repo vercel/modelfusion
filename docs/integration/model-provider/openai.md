@@ -63,7 +63,7 @@ import { OpenAITextGenerationModel, generateText } from "modelfusion";
 
 const text = await generateText(
   new OpenAITextGenerationModel({
-    model: "text-davinci-003",
+    model: "gpt-3.5-turbo-instruct",
     temperature: 0.7,
     maxCompletionTokens: 500,
   }),
@@ -113,7 +113,7 @@ import { OpenAITextGenerationModel, streamText } from "modelfusion";
 
 const textStream = await streamText(
   new OpenAITextGenerationModel({
-    model: "text-davinci-003",
+    model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
   }),
   "You are a story writer. Write a story about a robot learning to love"
