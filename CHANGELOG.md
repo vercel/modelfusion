@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.33.0 - 2023-09-19
+
+### Changed
+
+**breaking change**: Generalized vector store upsert/retrieve beyond text chunks:
+
+- `upsertTextChunks` renamed to `upsertIntoVectorStore`. Syntax has changed.
+- `retrieveTextChunks` renamed to `retrieve`
+- `SimilarTextChunksFromVectorIndexRetriever` renamed to `VectorIndexRetriever`
+
 ## v0.32.0 - 2023-09-19
 
 ### Added
