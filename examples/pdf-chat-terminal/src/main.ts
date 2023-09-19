@@ -54,7 +54,7 @@ async function main() {
     vectorIndex,
     embeddingModel,
     objects: chunks,
-    getText: (chunk) => chunk.text,
+    getValueToEmbed: (chunk) => chunk.text,
   });
 
   console.log("Ready.");

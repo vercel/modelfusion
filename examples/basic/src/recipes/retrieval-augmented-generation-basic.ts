@@ -87,7 +87,7 @@ async function ingestInformation() {
     vectorIndex,
     embeddingModel,
     objects: texts,
-    getText: (text) => text,
+    getValueToEmbed: (text) => text,
   });
 
   return vectorIndex;

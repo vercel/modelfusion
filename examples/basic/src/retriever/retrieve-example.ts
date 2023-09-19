@@ -31,7 +31,7 @@ async function main() {
       model: "text-embedding-ada-002",
     }),
     objects: texts,
-    getText: (text) => text,
+    getValueToEmbed: (text) => text,
   });
 
   const chunks = await retrieve(

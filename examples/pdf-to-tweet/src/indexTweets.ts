@@ -32,7 +32,7 @@ async function main() {
       model: "text-embedding-ada-002",
     }),
     objects: exampleTweets,
-    getText: (text) => text,
+    getValueToEmbed: (tweet) => tweet,
   });
 
   fs.writeFileSync(outputFile, vectorIndex.serialize());

@@ -56,7 +56,7 @@ async function main() {
     vectorIndex,
     embeddingModel,
     objects: texts.map((text) => ({ text })),
-    getText: (object) => object.text,
+    getValueToEmbed: (object) => object.text,
   });
 
   const chunks = await retrieve(

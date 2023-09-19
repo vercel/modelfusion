@@ -16,14 +16,14 @@ export async function upsertIntoVectorIndex<
     embeddingModel,
     generateId = createId,
     objects,
-    getText,
+    getValueToEmbed,
     getId,
   }: {
     vectorIndex: VectorIndex<OBJECT, unknown>;
     embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
     generateId?: () => string;
     objects: OBJECT[];
-    getText: (object: OBJECT, index: number) => string;
+    getValueToEmbed: (object: OBJECT, index: number) => string;
     getId?: (object: OBJECT, index: number) => string | undefined;
   },
   options?: ModelFunctionOptions<SETTINGS>
@@ -31,7 +31,7 @@ export async function upsertIntoVectorIndex<
   // many embedding models support bulk embedding, so we first embed all texts:
   const embeddings = await embedTexts(
     embeddingModel,
-    objects.map(getText),
+    objects.map(getValueToEmbed),
     options
   );
 

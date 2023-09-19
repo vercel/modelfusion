@@ -32,7 +32,7 @@ async function main() {
     vectorIndex,
     embeddingModel,
     objects: texts,
-    getText: (text) => text,
+    getValueToEmbed: (text) => text,
   });
 
   const retrievedTexts = await retrieve(
