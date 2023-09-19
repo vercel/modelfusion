@@ -1,6 +1,6 @@
 {
-  "name": "@modelfusion/serpapi-tools",
-  "description": "SerpAPI tools for ModelFusion",
+  "name": "@modelfusion/google-custom-search-tool",
+  "description": "Google Custom Search tool for ModelFusion",
   "version": "0.5.0",
   "author": "Lars Grammel",
   "license": "MIT",
@@ -44,9 +44,7 @@
     "dist:copy-files": "copyfiles package.json README.md LICENSE dist",
     "dist": "npm run clean && npm run lint && npm run build && npm run dist:copy-files"
   },
-  "dependencies": {
-    "serpapi": "^2.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@tsconfig/recommended": "1.0.2",
     "@types/node": "18.11.9",
@@ -59,7 +57,7 @@
     "prettier": "3.0.1",
     "rimraf": "5.0.1",
     "typescript": "5.1.6",
-    "zod": "3.22.2"
+    "zod": "3.21.4"
   },
   "peerDependencies": {
     "zod": "^3",
