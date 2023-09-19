@@ -6,9 +6,9 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
-  SimilarTextChunksFromVectorIndexRetriever,
+  VectorIndexRetriever,
   generateText,
-  retrieveObjects,
+  retrieve,
   splitAtToken,
   splitTextChunks,
   streamText,
@@ -50,7 +50,12 @@ async function main() {
     text: string;
   }>();
 
-  await upsertIntoVectorIndex({ vectorIndex, embeddingModel, chunks });
+  await upsertIntoVectorIndex({
+    vectorIndex,
+    embeddingModel,
+    objects: chunks,
+    getText: (chunk) => chunk.text,
+  });
 
   console.log("Ready.");
   console.log();
@@ -75,8 +80,8 @@ async function main() {
     );
 
     // search for text chunks that are similar to the hypothetical answer:
-    const { chunks: information } = await retrieveObjects(
-      new SimilarTextChunksFromVectorIndexRetriever({
+    const information = await retrieve(
+      new VectorIndexRetriever({
         vectorIndex,
         embeddingModel,
         maxResults: 5,
