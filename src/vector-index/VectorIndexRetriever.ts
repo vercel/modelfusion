@@ -12,14 +12,14 @@ export interface VectorIndexRetrieverSettings {
   similarityThreshold?: number;
 }
 
-export class VectorIndexRetriever<
-  OBJECT,
-  INDEX,
-  SETTINGS extends TextEmbeddingModelSettings,
-> implements Retriever<OBJECT, string, VectorIndexRetrieverSettings>
+export class VectorIndexRetriever<OBJECT, INDEX>
+  implements Retriever<OBJECT, string, VectorIndexRetrieverSettings>
 {
   private readonly vectorIndex: VectorIndex<OBJECT, INDEX>;
-  private readonly embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
+  private readonly embeddingModel: TextEmbeddingModel<
+    unknown,
+    TextEmbeddingModelSettings
+  >;
   private readonly settings: VectorIndexRetrieverSettings;
 
   constructor({
@@ -29,7 +29,7 @@ export class VectorIndexRetriever<
     similarityThreshold,
   }: {
     vectorIndex: VectorIndex<OBJECT, INDEX>;
-    embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
+    embeddingModel: TextEmbeddingModel<unknown, TextEmbeddingModelSettings>;
   } & VectorIndexRetrieverSettings) {
     this.vectorIndex = vectorIndex;
     this.embeddingModel = embeddingModel;
