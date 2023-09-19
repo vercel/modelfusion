@@ -214,7 +214,7 @@ await upsertIntoVectorIndex({
 });
 ```
 
-The function `upsertTextChunks` performs the following:
+The function `upsertIntoVectorIndex` performs the following:
 
 - It uses the `embeddingModel` to convert the text of each text chunk into a vector.
 - It then inserts this vector into `vectorIndex`, along with the metadata (page number and text).
