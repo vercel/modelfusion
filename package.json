@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@pinecone-database/pinecone": "^0.1.6",
-    "@tsconfig/recommended": "1.0.2",
+    "@tsconfig/recommended": "1.0.3",
     "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
