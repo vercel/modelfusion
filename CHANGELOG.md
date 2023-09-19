@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.32.0 - 2023-09-19
+
+### Added
+
+- OpenAI gpt-3.5-turbo-instruct model support.
+- Autocomplete for Stability AI models (thanks [@Danielwinkelmann](https://github.com/Danielwinkelmann)!)
+
+### Changed
+
+- Downgrade Zod version to 3.21.4 because of https://github.com/colinhacks/zod/issues/2697
+
 ## v0.31.0 - 2023-09-13
 
 ### Changed
