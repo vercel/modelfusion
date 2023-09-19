@@ -7,7 +7,7 @@ dotenv.config();
 async function main() {
   const image = await generateImage(
     new StabilityImageGenerationModel({
-      model: "stable-diffusion-512-v2-1",
+      model: "stable-diffusion-v1-5",
       cfgScale: 7,
       clipGuidancePreset: "FAST_BLUE",
       height: 512,

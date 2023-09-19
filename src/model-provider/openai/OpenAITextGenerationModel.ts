@@ -30,55 +30,72 @@ import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
  * @see https://openai.com/pricing
  */
 export const OPENAI_TEXT_GENERATION_MODELS = {
+  "gpt-3.5-turbo-instruct": {
+    contextWindowSize: 4097,
+    promptTokenCostInMillicents: 0.15,
+    completionTokenCostInMillicents: 0.2,
+  },
   "davinci-002": {
     contextWindowSize: 16_384,
-    tokenCostInMillicents: 0.2,
+    promptTokenCostInMillicents: 0.2,
+    completionTokenCostInMillicents: 0.2,
     fineTunedTokenCostInMillicents: 1.2,
   },
   "babbage-002": {
     contextWindowSize: 16_384,
-    tokenCostInMillicents: 0.04,
+    promptTokenCostInMillicents: 0.04,
+    completionTokenCostInMillicents: 0.04,
     fineTunedTokenCostInMillicents: 0.16,
   },
   "text-davinci-003": {
     contextWindowSize: 4096,
-    tokenCostInMillicents: 2,
+    promptTokenCostInMillicents: 2,
+    completionTokenCostInMillicents: 2,
   },
   "text-davinci-002": {
     contextWindowSize: 4096,
-    tokenCostInMillicents: 2,
+    promptTokenCostInMillicents: 2,
+    completionTokenCostInMillicents: 2,
   },
   "code-davinci-002": {
     contextWindowSize: 8000,
-    tokenCostInMillicents: 2,
+    promptTokenCostInMillicents: 2,
+    completionTokenCostInMillicents: 2,
   },
   davinci: {
     contextWindowSize: 2048,
-    tokenCostInMillicents: 2,
+    promptTokenCostInMillicents: 2,
+    completionTokenCostInMillicents: 2,
   },
   "text-curie-001": {
     contextWindowSize: 2048,
-    tokenCostInMillicents: 0.2,
+    promptTokenCostInMillicents: 0.2,
+    completionTokenCostInMillicents: 0.2,
   },
   curie: {
     contextWindowSize: 2048,
-    tokenCostInMillicents: 0.2,
+    promptTokenCostInMillicents: 0.2,
+    completionTokenCostInMillicents: 0.2,
   },
   "text-babbage-001": {
     contextWindowSize: 2048,
-    tokenCostInMillicents: 0.05,
+    promptTokenCostInMillicents: 0.05,
+    completionTokenCostInMillicents: 0.05,
   },
   babbage: {
     contextWindowSize: 2048,
-    tokenCostInMillicents: 0.05,
+    promptTokenCostInMillicents: 0.05,
+    completionTokenCostInMillicents: 0.05,
   },
   "text-ada-001": {
     contextWindowSize: 2048,
-    tokenCostInMillicents: 0.04,
+    promptTokenCostInMillicents: 0.04,
+    completionTokenCostInMillicents: 0.04,
   },
   ada: {
     contextWindowSize: 2048,
-    tokenCostInMillicents: 0.04,
+    promptTokenCostInMillicents: 0.04,
+    completionTokenCostInMillicents: 0.04,
   },
 };
 
@@ -88,7 +105,8 @@ export function getOpenAITextGenerationModelInformation(
   baseModel: OpenAITextGenerationBaseModelType;
   isFineTuned: boolean;
   contextWindowSize: number;
-  tokenCostInMillicents: number;
+  promptTokenCostInMillicents: number;
+  completionTokenCostInMillicents: number;
 } {
   // Model is already a base model:
   if (model in OPENAI_TEXT_GENERATION_MODELS) {
@@ -99,7 +117,10 @@ export function getOpenAITextGenerationModelInformation(
       baseModel: model as OpenAITextGenerationBaseModelType,
       isFineTuned: false,
       contextWindowSize: baseModelInformation.contextWindowSize,
-      tokenCostInMillicents: baseModelInformation.tokenCostInMillicents,
+      promptTokenCostInMillicents:
+        baseModelInformation.promptTokenCostInMillicents,
+      completionTokenCostInMillicents:
+        baseModelInformation.completionTokenCostInMillicents,
     };
   }
 
@@ -117,7 +138,9 @@ export function getOpenAITextGenerationModelInformation(
       baseModel: baseModel as FineTuneableOpenAITextGenerationModelType,
       isFineTuned: true,
       contextWindowSize: baseModelInformation.contextWindowSize,
-      tokenCostInMillicents:
+      promptTokenCostInMillicents:
+        baseModelInformation.fineTunedTokenCostInMillicents,
+      completionTokenCostInMillicents:
         baseModelInformation.fineTunedTokenCostInMillicents,
     };
   }
@@ -150,9 +173,16 @@ export const calculateOpenAITextGenerationCostInMillicents = ({
 }: {
   model: OpenAITextGenerationModelType;
   response: OpenAITextGenerationResponse;
-}) =>
-  response.usage.total_tokens *
-  getOpenAITextGenerationModelInformation(model).tokenCostInMillicents;
+}) => {
+  const modelInformation = getOpenAITextGenerationModelInformation(model);
+
+  return (
+    response.usage.prompt_tokens *
+      modelInformation.promptTokenCostInMillicents +
+    response.usage.completion_tokens *
+      modelInformation.completionTokenCostInMillicents
+  );
+};
 
 export interface OpenAITextGenerationCallSettings {
   api?: ApiConfiguration;
@@ -186,7 +216,7 @@ export interface OpenAITextGenerationModelSettings
  *
  * @example
  * const model = new OpenAITextGenerationModel({
- *   model: "text-davinci-003",
+ *   model: "gpt-3.5-turbo-instruct",
  *   temperature: 0.7,
  *   maxCompletionTokens: 500,
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),

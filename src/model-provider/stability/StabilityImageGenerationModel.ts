@@ -119,11 +119,25 @@ export class StabilityImageGenerationModel
   }
 }
 
+const stabilityImageGenerationModels = [
+  "stable-diffusion-v1-5",
+  "stable-diffusion-512-v2-1",
+  "stable-diffusion-xl-1024-v0-9",
+  "stable-diffusion-xl-1024-v1-0",
+] as const;
+
+export type StabilityImageGenerationModelType =
+  | (typeof stabilityImageGenerationModels)[number]
+  // string & {} is used to enable auto-completion of literals
+  // while also allowing strings:
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | (string & {});
+
 export interface StabilityImageGenerationModelSettings
   extends ImageGenerationModelSettings {
   api?: ApiConfiguration;
 
-  model: string;
+  model: StabilityImageGenerationModelType;
 
   height?: number;
   width?: number;

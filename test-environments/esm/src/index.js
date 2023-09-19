@@ -8,7 +8,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 (async () => {
   const textGenerationModel = new OpenAITextGenerationModel({
     apiKey: OPENAI_API_KEY,
-    model: "text-davinci-003",
+    model: "gpt-3.5-turbo-instruct",
     settings: { temperature: 0.7 },
   });
 

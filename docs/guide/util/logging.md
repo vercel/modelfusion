@@ -25,7 +25,7 @@ You can configure the logging mode globally by calling [setGlobalFunctionLogging
 setGlobalFunctionLogging("basic-text");
 
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "text-davinci-003" }),
+  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -38,7 +38,7 @@ You can configure the logging mode per function by setting the `logging` propert
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "text-davinci-003" }),
+  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n",
   { logging: "basic-text" }
 );
@@ -52,7 +52,7 @@ The per function logging mode takes precedence over the global function logging 
 setGlobalFunctionLogging("basic-text");
 
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "text-davinci-003" }),
+  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n",
   { logging: "off" } // overrides global logging
 );
@@ -69,7 +69,7 @@ This mode is useful to see the overall progress and to setup basic logging of th
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "text-davinci-003" }),
+  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n",
   { logging: "basic-text" }
 );
@@ -89,7 +89,7 @@ The console output is colored and indented for better readability, but some deta
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "text-davinci-003" }),
+  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n",
   { logging: "detailed-object" }
 );
@@ -98,7 +98,7 @@ const text = await generateText(
 //   eventType: 'started',
 //   functionType: 'text-generation',
 //   callId: 'call-ediZCZG0-vu0WcjYvkEF8',
-//   model: { provider: 'openai', modelName: 'text-davinci-003' },
+//   model: { provider: 'openai', modelName: 'gpt-3.5-turbo-instruct' },
 //   settings: { maxCompletionTokens: 50 },
 //   input: 'Write a short story about a robot learning to love:\n\n',
 //   timestamp: 2023-08-31T13:29:20.000Z,
@@ -108,7 +108,7 @@ const text = await generateText(
 //   eventType: 'finished',
 //   functionType: 'text-generation',
 //   callId: 'call-ediZCZG0-vu0WcjYvkEF8',
-//   model: { provider: 'openai', modelName: 'text-davinci-003' },
+//   model: { provider: 'openai', modelName: 'gpt-3.5-turbo-instruct' },
 //   settings: { maxCompletionTokens: 50 },
 //   input: 'Write a short story about a robot learning to love:\n\n',
 //   timestamp: 2023-08-31T13:29:20.000Z,
@@ -131,13 +131,13 @@ The mode is intended for production systems with a logging and observability inf
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "text-davinci-003" }),
+  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n",
   { logging: "detailed-json" }
 );
 
-// {"eventType":"started","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"text-davinci-003"},"settings":{"maxCompletionTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z"}
-// {"eventType":"finished","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"text-davinci-003"},"settings":{"maxCompletionTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z","finishTimestamp":"2023-08-31T13:31:56.373Z","durationInMs":1890,"result":{"status":"success","usage":{"promptTokens":12,"completionTokens":50,"totalTokens":62},"output":"The robot lay in the corner of the bedroom, alone with its thoughts for the first time in what felt like an eternity. It had been activated years ago, given an array of instructions to follow, and it had done so diligently and efficiently until"}}
+// {"eventType":"started","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"gpt-3.5-turbo-instruct"},"settings":{"maxCompletionTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z"}
+// {"eventType":"finished","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"gpt-3.5-turbo-instruct"},"settings":{"maxCompletionTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z","finishTimestamp":"2023-08-31T13:31:56.373Z","durationInMs":1890,"result":{"status":"success","usage":{"promptTokens":12,"completionTokens":50,"totalTokens":62},"output":"The robot lay in the corner of the bedroom, alone with its thoughts for the first time in what felt like an eternity. It had been activated years ago, given an array of instructions to follow, and it had done so diligently and efficiently until"}}
 ```
 
 ### off

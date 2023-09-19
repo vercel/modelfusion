@@ -6,7 +6,7 @@ dotenv.config();
 async function main() {
   const textStream = await streamText(
     new OpenAITextGenerationModel({
-      model: "text-davinci-003",
+      model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 1000,
       logitBias: {
         1169: -100, // 'the'
