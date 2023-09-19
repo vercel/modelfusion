@@ -21,8 +21,8 @@ Retrieval augmented generation consists of two steps:
 #### Retrieve related information from a vector index:
 
 ```ts
-const { chunks } = await retrieveObjects(
-  new SimilarTextChunksFromVectorIndexRetriever({
+const chunks = await retrieve(
+  new VectorIndexRetriever({
     // some vector index that contains the information:
     vectorIndex,
     // use the same embedding model that was used when adding information:
@@ -58,7 +58,7 @@ const answer = await generateText(
       ].join("\n")
     ),
     OpenAIChatMessage.user(`## QUESTION\n${question}`),
-    OpenAIChatMessage.user(`## INFORMATION\n${JSON.stringify(textChunks)}`),
+    OpenAIChatMessage.user(`## INFORMATION\n${JSON.stringify(chunks)}`),
   ]
 );
 ```
