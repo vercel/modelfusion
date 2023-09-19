@@ -39,11 +39,11 @@ import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 export class StabilityImageGenerationModel
   extends AbstractModel<StabilityImageGenerationModelSettings>
   implements
-  ImageGenerationModel<
-    StabilityImageGenerationPrompt,
-    StabilityImageGenerationResponse,
-    StabilityImageGenerationModelSettings
-  >
+    ImageGenerationModel<
+      StabilityImageGenerationPrompt,
+      StabilityImageGenerationResponse,
+      StabilityImageGenerationModelSettings
+    >
 {
   constructor(settings: StabilityImageGenerationModelSettings) {
     super({ settings });
@@ -119,10 +119,19 @@ export class StabilityImageGenerationModel
   }
 }
 
-const stabilityImageGenerationModels = ['stable-diffusion-v1-5', 'stable-diffusion-512-v2-1', 'stable-diffusion-xl-1024-v0-9', 'stable-diffusion-xl-1024-v1-0'] as const
+const stabilityImageGenerationModels = [
+  "stable-diffusion-v1-5",
+  "stable-diffusion-512-v2-1",
+  "stable-diffusion-xl-1024-v0-9",
+  "stable-diffusion-xl-1024-v1-0",
+] as const;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type StabilityImageGenerationModelType = typeof stabilityImageGenerationModels[number] | string & {}
+export type StabilityImageGenerationModelType =
+  | (typeof stabilityImageGenerationModels)[number]
+  // string & {} is used to enable auto-completion of literals
+  // while also allowing strings:
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | (string & {});
 
 export interface StabilityImageGenerationModelSettings
   extends ImageGenerationModelSettings {
