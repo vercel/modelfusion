@@ -45,7 +45,9 @@ You can use [prompt formats](https://modelfusion.dev/guide/function/generate-tex
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
+  new OpenAITextGenerationModel({
+    model: "gpt-3.5-turbo-instruct",
+  }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -56,14 +58,10 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({
-    model: "gpt-3.5-turbo",
-    maxCompletionTokens: 1000,
+  new OpenAITextGenerationModel({
+    model: "gpt-3.5-turbo-instruct",
   }),
-  [
-    OpenAIChatMessage.system("You are a story writer."),
-    OpenAIChatMessage.user("Write a story about a robot learning to love"),
-  ]
+  "Write a short story about a robot learning to love:\n\n"
 );
 
 for await (const textFragment of textStream) {
