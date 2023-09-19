@@ -39,12 +39,12 @@ export class VectorIndexRetriever<OBJECT, INDEX>
     };
   }
 
-  async retrieveObjects(
+  async retrieve(
     query: string,
     options?: ModelFunctionOptions<RetrieverSettings>
   ): Promise<OBJECT[]> {
     if (options?.settings != null) {
-      return this.withSettings(options.settings).retrieveObjects(query, {
+      return this.withSettings(options.settings).retrieve(query, {
         functionId: options.functionId,
         observers: options.observers,
         run: options.run,

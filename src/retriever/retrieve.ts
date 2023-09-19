@@ -12,5 +12,5 @@ export async function retrieve<
 ): Promise<OBJECT[]> {
   // TODO add error handling, events, duration tracking, etc.
   // TODO metadata handling
-  return retriever.retrieveObjects(query, options);
+  return retriever.retrieve(query, options);
 }

@@ -4,7 +4,7 @@ export interface RetrieverSettings {}
 
 export interface Retriever<OBJECT, QUERY, SETTINGS extends RetrieverSettings> {
   // TODO add metadata to return value
-  retrieveObjects(
+  retrieve(
     query: QUERY,
     options?: ModelFunctionOptions<RetrieverSettings>
   ): Promise<OBJECT[]>;
