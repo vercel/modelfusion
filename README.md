@@ -365,7 +365,7 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
 
-### [Upserting and Retrieving Text Chunks from Vector Indices](https://modelfusion.dev/guide/text-chunks)
+### [Upserting and Retrieving Objects from Vector Indices](https://modelfusion.dev/guide/vector-index)
 
 ```ts
 const texts = [
@@ -374,21 +374,22 @@ const texts = [
   // ...
 ];
 
-const vectorIndex = new MemoryVectorIndex<TextChunk>();
+const vectorIndex = new MemoryVectorIndex<string>();
 const embeddingModel = new OpenAITextEmbeddingModel({
   model: "text-embedding-ada-002",
 });
 
 // update an index - usually done as part of an ingestion process:
-await upsertTextChunks({
+await upsertIntoVectorIndex({
   vectorIndex,
   embeddingModel,
-  chunks: texts.map((text) => ({ text })),
+  objects: texts,
+  getValueToEmbed: (text) => text,
 });
 
 // retrieve text chunks from the vector index - usually done at query time:
-const { chunks } = await retrieveTextChunks(
-  new SimilarTextChunksFromVectorIndexRetriever({
+const retrievedTexts = await retrieve(
+  new VectorIndexRetriever({
     vectorIndex,
     embeddingModel,
     maxResults: 3,

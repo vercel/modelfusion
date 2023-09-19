@@ -4,9 +4,9 @@ import {
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
   Run,
-  SimilarTextChunksFromVectorIndexRetriever,
+  VectorIndexRetriever,
   generateText,
-  retrieveTextChunks,
+  retrieve,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "modelfusion";
 import fs from "node:fs";
@@ -79,11 +79,11 @@ export async function createTweetFromPdf({
   );
 
   // search for similar tweets:
-  const { chunks: similarTweets } = await retrieveTextChunks(
-    new SimilarTextChunksFromVectorIndexRetriever({
+  const similarTweets = await retrieve(
+    new VectorIndexRetriever({
       vectorIndex: await MemoryVectorIndex.deserialize({
         serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
-        schema: z.object({ text: z.string() }),
+        schema: z.string(),
       }),
       embeddingModel: new OpenAITextEmbeddingModel({
         model: "text-embedding-ada-002",
@@ -107,7 +107,7 @@ export async function createTweetFromPdf({
         `## TASK\nRewrite the draft tweet on ${topic} using the style from the example tweet.`
       ),
       OpenAIChatMessage.user(`## DRAFT TWEET\n${draftTweet}`),
-      OpenAIChatMessage.user(`## STYLE EXAMPLE\n${similarTweets[0].text}`),
+      OpenAIChatMessage.user(`## STYLE EXAMPLE\n${similarTweets[0]}`),
     ],
     {
       functionId: "rewrite-tweet",

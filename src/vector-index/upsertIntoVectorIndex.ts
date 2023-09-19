@@ -5,40 +5,41 @@ import {
   TextEmbeddingModelSettings,
 } from "../model-function/embed-text/TextEmbeddingModel.js";
 import { embedTexts } from "../model-function/embed-text/embedText.js";
-import { TextChunk } from "./TextChunk.js";
-import { VectorIndex } from "../vector-index/VectorIndex.js";
+import { VectorIndex } from "./VectorIndex.js";
 
-export async function upsertTextChunks<
-  CHUNK extends TextChunk,
+export async function upsertIntoVectorIndex<
+  OBJECT,
   SETTINGS extends TextEmbeddingModelSettings,
 >(
   {
     vectorIndex,
     embeddingModel,
     generateId = createId,
-    chunks,
-    ids,
+    objects,
+    getValueToEmbed,
+    getId,
   }: {
-    vectorIndex: VectorIndex<CHUNK, unknown>;
+    vectorIndex: VectorIndex<OBJECT, unknown>;
     embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
     generateId?: () => string;
-    chunks: CHUNK[];
-    ids?: Array<string | undefined>;
+    objects: OBJECT[];
+    getValueToEmbed: (object: OBJECT, index: number) => string;
+    getId?: (object: OBJECT, index: number) => string | undefined;
   },
   options?: ModelFunctionOptions<SETTINGS>
 ) {
   // many embedding models support bulk embedding, so we first embed all texts:
   const embeddings = await embedTexts(
     embeddingModel,
-    chunks.map((chunk) => chunk.text),
+    objects.map(getValueToEmbed),
     options
   );
 
   await vectorIndex.upsertMany(
-    chunks.map((chunk, i) => ({
-      id: ids?.[i] ?? generateId(),
+    objects.map((object, i) => ({
+      id: getId?.(object, i) ?? generateId(),
       vector: embeddings[i],
-      data: chunk,
+      data: object,
     }))
   );
 }

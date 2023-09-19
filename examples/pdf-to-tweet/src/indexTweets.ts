@@ -3,8 +3,7 @@ import dotenv from "dotenv";
 import {
   MemoryVectorIndex,
   OpenAITextEmbeddingModel,
-  TextChunk,
-  upsertTextChunks,
+  upsertIntoVectorIndex,
 } from "modelfusion";
 import fs from "node:fs";
 
@@ -25,14 +24,15 @@ async function main() {
 
   const exampleTweets = inputText.split("\n-----\n");
 
-  const vectorIndex = new MemoryVectorIndex<TextChunk>();
+  const vectorIndex = new MemoryVectorIndex<string>();
 
-  await upsertTextChunks({
+  await upsertIntoVectorIndex({
     vectorIndex,
     embeddingModel: new OpenAITextEmbeddingModel({
       model: "text-embedding-ada-002",
     }),
-    chunks: exampleTweets.map((text) => ({ text })),
+    objects: exampleTweets,
+    getValueToEmbed: (tweet) => tweet,
   });
 
   fs.writeFileSync(outputFile, vectorIndex.serialize());

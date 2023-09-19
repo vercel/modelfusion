@@ -6,13 +6,13 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
-  SimilarTextChunksFromVectorIndexRetriever,
+  VectorIndexRetriever,
   generateText,
-  retrieveTextChunks,
+  retrieve,
   splitAtToken,
   splitTextChunks,
   streamText,
-  upsertTextChunks,
+  upsertIntoVectorIndex,
 } from "modelfusion";
 import * as readline from "node:readline/promises";
 import * as PdfJs from "pdfjs-dist/legacy/build/pdf";
@@ -50,7 +50,12 @@ async function main() {
     text: string;
   }>();
 
-  await upsertTextChunks({ vectorIndex, embeddingModel, chunks });
+  await upsertIntoVectorIndex({
+    vectorIndex,
+    embeddingModel,
+    objects: chunks,
+    getValueToEmbed: (chunk) => chunk.text,
+  });
 
   console.log("Ready.");
   console.log();
@@ -75,8 +80,8 @@ async function main() {
     );
 
     // search for text chunks that are similar to the hypothetical answer:
-    const { chunks: information } = await retrieveTextChunks(
-      new SimilarTextChunksFromVectorIndexRetriever({
+    const information = await retrieve(
+      new VectorIndexRetriever({
         vectorIndex,
         embeddingModel,
         maxResults: 5,

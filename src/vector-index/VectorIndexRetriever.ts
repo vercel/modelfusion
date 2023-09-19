@@ -4,32 +4,23 @@ import {
   TextEmbeddingModelSettings,
 } from "../model-function/embed-text/TextEmbeddingModel.js";
 import { embedText } from "../model-function/embed-text/embedText.js";
-import { TextChunk } from "./TextChunk.js";
-import {
-  TextChunkRetriever,
-  TextChunkRetrieverSettings,
-} from "./retrieve-text-chunks/TextChunkRetriever.js";
-import { VectorIndex } from "../vector-index/VectorIndex.js";
+import { Retriever, RetrieverSettings } from "../retriever/Retriever.js";
+import { VectorIndex } from "./VectorIndex.js";
 
-export interface SimilarTextChunksFromVectorIndexRetrieverSettings {
+export interface VectorIndexRetrieverSettings {
   maxResults?: number;
   similarityThreshold?: number;
 }
 
-export class SimilarTextChunksFromVectorIndexRetriever<
-  CHUNK extends TextChunk,
-  INDEX,
-  SETTINGS extends TextEmbeddingModelSettings,
-> implements
-    TextChunkRetriever<
-      CHUNK,
-      string,
-      SimilarTextChunksFromVectorIndexRetrieverSettings
-    >
+export class VectorIndexRetriever<OBJECT, INDEX>
+  implements Retriever<OBJECT, string, VectorIndexRetrieverSettings>
 {
-  private readonly vectorIndex: VectorIndex<CHUNK, INDEX>;
-  private readonly embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
-  private readonly settings: SimilarTextChunksFromVectorIndexRetrieverSettings;
+  private readonly vectorIndex: VectorIndex<OBJECT, INDEX>;
+  private readonly embeddingModel: TextEmbeddingModel<
+    unknown,
+    TextEmbeddingModelSettings
+  >;
+  private readonly settings: VectorIndexRetrieverSettings;
 
   constructor({
     vectorIndex,
@@ -37,9 +28,9 @@ export class SimilarTextChunksFromVectorIndexRetriever<
     maxResults,
     similarityThreshold,
   }: {
-    vectorIndex: VectorIndex<CHUNK, INDEX>;
-    embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
-  } & SimilarTextChunksFromVectorIndexRetrieverSettings) {
+    vectorIndex: VectorIndex<OBJECT, INDEX>;
+    embeddingModel: TextEmbeddingModel<unknown, TextEmbeddingModelSettings>;
+  } & VectorIndexRetrieverSettings) {
     this.vectorIndex = vectorIndex;
     this.embeddingModel = embeddingModel;
     this.settings = {
@@ -48,12 +39,12 @@ export class SimilarTextChunksFromVectorIndexRetriever<
     };
   }
 
-  async retrieveTextChunks(
+  async retrieve(
     query: string,
-    options?: ModelFunctionOptions<TextChunkRetrieverSettings>
-  ): Promise<CHUNK[]> {
+    options?: ModelFunctionOptions<RetrieverSettings>
+  ): Promise<OBJECT[]> {
     if (options?.settings != null) {
-      return this.withSettings(options.settings).retrieveTextChunks(query, {
+      return this.withSettings(options.settings).retrieve(query, {
         functionId: options.functionId,
         observers: options.observers,
         run: options.run,
@@ -75,9 +66,9 @@ export class SimilarTextChunksFromVectorIndexRetriever<
   }
 
   withSettings(
-    additionalSettings: Partial<SimilarTextChunksFromVectorIndexRetrieverSettings>
+    additionalSettings: Partial<VectorIndexRetrieverSettings>
   ): this {
-    return new SimilarTextChunksFromVectorIndexRetriever(
+    return new VectorIndexRetriever(
       Object.assign({}, this.settings, additionalSettings, {
         vectorIndex: this.vectorIndex,
         embeddingModel: this.embeddingModel,

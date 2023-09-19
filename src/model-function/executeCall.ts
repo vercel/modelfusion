@@ -26,11 +26,7 @@ export type ModelCallMetadata = {
   model: ModelInformation;
 };
 
-export class ModelFunctionPromise<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  OUTPUT,
-  RESPONSE,
-> extends Promise<OUTPUT> {
+export class ModelFunctionPromise<OUTPUT, RESPONSE> extends Promise<OUTPUT> {
   private outputPromise: Promise<OUTPUT>;
 
   constructor(

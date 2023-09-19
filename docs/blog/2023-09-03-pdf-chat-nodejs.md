@@ -140,7 +140,12 @@ const vectorIndex = new MemoryVectorIndex<{
   text: string;
 }>();
 
-await upsertTextChunks({ vectorIndex, embeddingModel, chunks });
+await upsertIntoVectorIndex({
+  vectorIndex,
+  embeddingModel,
+  objects: chunks,
+  getValueToEmbed: (chunk) => chunk.text,
+});
 ```
 
 Let's look at each step:
@@ -201,12 +206,17 @@ The ModelFusion `MemoryVectorIndex` is a simple in-memory implementation of a ve
 Finally, we populate our memory vector index with the text vectors generated from our chunks.
 
 ```typescript
-await upsertTextChunks({ vectorIndex, embeddingModel, chunks });
+await upsertIntoVectorIndex({
+  vectorIndex,
+  embeddingModel,
+  objects: chunks,
+  getValueToEmbed: (chunk) => chunk.text,
+});
 ```
 
-The function `upsertTextChunks` performs the following:
+The function `upsertIntoVectorIndex` performs the following:
 
-- It uses the `embeddingModel` to convert each text chunk into a vector.
+- It uses the `embeddingModel` to convert the text of each text chunk into a vector.
 - It then inserts this vector into `vectorIndex`, along with the metadata (page number and text).
 
 At this point, our vector index is fully populated and ready for fast, semantic-based searches. This is essential for our chatbot to provide relevant and accurate answers.
@@ -234,8 +244,8 @@ while (true) {
     ]
   );
 
-  const { chunks: information } = await retrieveTextChunks(
-    new SimilarTextChunksFromVectorIndexRetriever({
+  const information = await retrieve(
+    new VectorIndexRetriever({
       vectorIndex,
       embeddingModel,
       maxResults: 5,
@@ -308,8 +318,8 @@ This approach will help us to find better results when searching for similar tex
 ### Retrieve relevant text chunks
 
 ```typescript
-const { chunks: information } = await retrieveTextChunks(
-  new SimilarTextChunksFromVectorIndexRetriever({
+const information = await retrieve(
+  new VectorIndexRetriever({
     vectorIndex,
     embeddingModel,
     maxResults: 5,
@@ -319,7 +329,7 @@ const { chunks: information } = await retrieveTextChunks(
 );
 ```
 
-The `retrieveTextChunks()` function searches for text chunks similar to the hypothetical answer from the pre-processed PDF.
+The `retrieve()` function searches for text chunks similar to the hypothetical answer from the pre-processed PDF.
 
 We limit the results to 5 and set a similarity threshold of 0.75. You can play with these parameters (in combination with the earlier chunk size setting) to see how they affect the results. When you e.g., make the chunks smaller, you might want to increase the number of results to get more information.
 

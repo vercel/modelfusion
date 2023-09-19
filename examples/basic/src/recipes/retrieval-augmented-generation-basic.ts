@@ -4,11 +4,10 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   OpenAITextEmbeddingModel,
-  SimilarTextChunksFromVectorIndexRetriever,
-  TextChunk,
+  VectorIndexRetriever,
   generateText,
-  retrieveTextChunks,
-  upsertTextChunks,
+  retrieve,
+  upsertIntoVectorIndex,
 } from "modelfusion";
 
 dotenv.config();
@@ -21,8 +20,8 @@ async function main() {
   const vectorIndex = await ingestInformation();
 
   // Retrieve related information from a vector index:
-  const { chunks } = await retrieveTextChunks(
-    new SimilarTextChunksFromVectorIndexRetriever({
+  const chunks = await retrieve(
+    new VectorIndexRetriever({
       // some vector index that contains the information:
       vectorIndex,
       // use the same embedding model that was used when adding information:
@@ -79,15 +78,16 @@ async function ingestInformation() {
     "This is caused by the light being reflected twice on the inside of the droplet before leaving it.`",
   ];
 
-  const vectorIndex = new MemoryVectorIndex<TextChunk>();
+  const vectorIndex = new MemoryVectorIndex<string>();
   const embeddingModel = new OpenAITextEmbeddingModel({
     model: "text-embedding-ada-002",
   });
 
-  await upsertTextChunks({
+  await upsertIntoVectorIndex({
     vectorIndex,
     embeddingModel,
-    chunks: texts.map((text) => ({ text })),
+    objects: texts,
+    getValueToEmbed: (text) => text,
   });
 
   return vectorIndex;
