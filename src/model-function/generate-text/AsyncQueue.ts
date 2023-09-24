@@ -1,17 +1,10 @@
 /**
  * @internal
  */
-export class AsyncQueue<T> implements AsyncIterable<T | undefined> {
-  queue: T[];
-  resolvers: Array<(options: { value: T | undefined; done: boolean }) => void> =
-    [];
-  closed: boolean;
-
-  constructor() {
-    this.queue = [];
-    this.resolvers = [];
-    this.closed = false;
-  }
+export class AsyncQueue<T> implements AsyncIterable<T> {
+  private queue: T[] = [];
+  private resolvers: Array<(result: IteratorResult<T>) => void> = [];
+  private closed: boolean = false;
 
   push(value: T) {
     if (this.closed) {
@@ -29,20 +22,27 @@ export class AsyncQueue<T> implements AsyncIterable<T | undefined> {
   close() {
     while (this.resolvers.length) {
       const resolve = this.resolvers.shift();
-      resolve?.({ value: undefined, done: true });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      resolve?.({ value: undefined as any, done: true });
     }
     this.closed = true;
   }
 
-  [Symbol.asyncIterator]() {
+  [Symbol.asyncIterator](): AsyncIterator<T> {
     return {
-      next: (): Promise<IteratorResult<T | undefined, T | undefined>> => {
+      next: (): Promise<IteratorResult<T>> => {
         if (this.queue.length > 0) {
-          return Promise.resolve({ value: this.queue.shift(), done: false });
+          return Promise.resolve({
+            value: this.queue.shift() as T,
+            done: false,
+          });
         } else if (this.closed) {
-          return Promise.resolve({ value: undefined, done: true });
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return Promise.resolve({ value: undefined as any, done: true });
         } else {
-          return new Promise((resolve) => this.resolvers.push(resolve));
+          return new Promise((resolve) => {
+            this.resolvers.push(resolve);
+          });
         }
       },
     };
