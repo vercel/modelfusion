@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.33.1 - 2023-09-24
+
+### Fixed
+
+- Remove resolution part from type definitions.
+
 ## v0.33.0 - 2023-09-19
 
 ### Changed
