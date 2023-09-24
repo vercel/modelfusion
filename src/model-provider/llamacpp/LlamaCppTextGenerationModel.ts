@@ -3,13 +3,13 @@ import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
+import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
+import { parseEventSourceReadableStream } from "../../event-source/parseEventSourceReadableStream.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
