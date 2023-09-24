@@ -1,4 +1,4 @@
-import { OpenAITextGenerationModel } from "modelfusion";
+import { OpenAITextGenerationModel, generateText } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -12,11 +12,10 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
     settings: { temperature: 0.7 },
   });
 
-  const response = await textGenerationModel
-    .withSettings({ maxCompletionTokens: 500 })
-    .generate("Write a short story about a robot learning to love:\n\n");
-
-  const text = await textGenerationModel.extractText(response);
+  const text = await generateText(
+    textGenerationModel.withSettings({ maxCompletionTokens: 500 }),
+    "Write a short story about a robot learning to love:\n\n"
+  );
 
   console.log(text);
 })();
