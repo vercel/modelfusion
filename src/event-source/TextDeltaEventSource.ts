@@ -1,8 +1,8 @@
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
-import { ErrorHandler } from "../../util/ErrorHandler.js";
-import { AsyncQueue } from "../../event-source/AsyncQueue.js";
-import { parseEventSourceReadableStream } from "../../event-source/parseEventSourceReadableStream.js";
+import { ErrorHandler } from "../util/ErrorHandler.js";
+import { AsyncQueue } from "./AsyncQueue.js";
+import { parseEventSourceReadableStream } from "./parseEventSourceReadableStream.js";
 
 const textEncoder = new TextEncoder();
 

@@ -21,7 +21,6 @@ export * from "./generate-structure/StructureValidationError.js";
 export * from "./generate-structure/generateStructure.js";
 export * from "./generate-structure/generateStructureOrText.js";
 export * from "./generate-text/DeltaEvent.js";
-export * from "./generate-text/TextDeltaEventSource.js";
 export * from "./generate-text/TextGenerationEvent.js";
 export * from "./generate-text/TextGenerationModel.js";
 export * from "./generate-text/TextStreamingEvent.js";
