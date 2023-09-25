@@ -516,73 +516,74 @@ async function createOpenAITextFullDeltaIterableQueue(
   const streamDelta: OpenAITextGenerationDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
-  parseEventSourceReadableStream({
-    stream,
-    callback: (event) => {
-      if (event.type !== "event") {
-        return;
-      }
-
-      const data = event.data;
-
-      if (data === "[DONE]") {
-        queue.close();
-        return;
-      }
-
+  parseEventSourceReadableStream({ stream })
+    .then(async (events) => {
       try {
-        const json = SecureJSON.parse(data);
-        const parseResult = textResponseStreamEventSchema.safeParse(json);
+        for await (const event of events) {
+          const data = event.data;
 
-        if (!parseResult.success) {
+          if (data === "[DONE]") {
+            queue.close();
+            return;
+          }
+
+          const json = SecureJSON.parse(data);
+          const parseResult = textResponseStreamEventSchema.safeParse(json);
+
+          if (!parseResult.success) {
+            queue.push({
+              type: "error",
+              error: parseResult.error,
+            });
+            queue.close();
+            return;
+          }
+
+          const eventData = parseResult.data;
+
+          for (let i = 0; i < eventData.choices.length; i++) {
+            const eventChoice = eventData.choices[i];
+            const delta = eventChoice.text;
+
+            if (streamDelta[i] == null) {
+              streamDelta[i] = {
+                content: "",
+                isComplete: false,
+                delta: "",
+              };
+            }
+
+            const choice = streamDelta[i];
+
+            choice.delta = delta;
+
+            if (eventChoice.finish_reason != null) {
+              choice.isComplete = true;
+            }
+
+            choice.content += delta;
+          }
+
+          // Since we're mutating the choices array in an async scenario,
+          // we need to make a deep copy:
+          const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
+
           queue.push({
-            type: "error",
-            error: parseResult.error,
+            type: "delta",
+            fullDelta: streamDeltaDeepCopy,
           });
-          queue.close();
-          return;
         }
-
-        const event = parseResult.data;
-
-        for (let i = 0; i < event.choices.length; i++) {
-          const eventChoice = event.choices[i];
-          const delta = eventChoice.text;
-
-          if (streamDelta[i] == null) {
-            streamDelta[i] = {
-              content: "",
-              isComplete: false,
-              delta: "",
-            };
-          }
-
-          const choice = streamDelta[i];
-
-          choice.delta = delta;
-
-          if (eventChoice.finish_reason != null) {
-            choice.isComplete = true;
-          }
-
-          choice.content += delta;
-        }
-
-        // Since we're mutating the choices array in an async scenario,
-        // we need to make a deep copy:
-        const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
-
-        queue.push({
-          type: "delta",
-          fullDelta: streamDeltaDeepCopy,
-        });
       } catch (error) {
         queue.push({ type: "error", error });
         queue.close();
         return;
       }
-    },
-  });
+    })
+    .catch((error) => {
+      queue.push({ type: "error", error });
+      queue.close();
+      return;
+    });
 
   return queue;
 }

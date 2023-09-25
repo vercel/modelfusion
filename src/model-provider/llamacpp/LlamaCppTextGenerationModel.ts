@@ -374,51 +374,51 @@ async function createLlamaCppFullDeltaIterableQueue(
   let content = "";
 
   // process the stream asynchonously (no 'await' on purpose):
-  parseEventSourceReadableStream({
-    stream,
-    callback: (event) => {
-      if (event.type !== "event") {
-        return;
-      }
-
-      const data = event.data;
-
+  parseEventSourceReadableStream({ stream })
+    .then(async (events) => {
       try {
-        const json = SecureJSON.parse(data);
-        const parseResult = llamaCppTextStreamingResponseSchema.safeParse(json);
+        for await (const event of events) {
+          const data = event.data;
 
-        if (!parseResult.success) {
+          const json = SecureJSON.parse(data);
+          const parseResult =
+            llamaCppTextStreamingResponseSchema.safeParse(json);
+
+          if (!parseResult.success) {
+            queue.push({
+              type: "error",
+              error: parseResult.error,
+            });
+            queue.close();
+            return;
+          }
+
+          const eventData = parseResult.data;
+
+          content += eventData.content;
+
           queue.push({
-            type: "error",
-            error: parseResult.error,
+            type: "delta",
+            fullDelta: {
+              content,
+              isComplete: eventData.stop,
+              delta: eventData.content,
+            },
           });
-          queue.close();
-          return;
-        }
 
-        const event = parseResult.data;
-
-        content += event.content;
-
-        queue.push({
-          type: "delta",
-          fullDelta: {
-            content,
-            isComplete: event.stop,
-            delta: event.content,
-          },
-        });
-
-        if (event.stop) {
-          queue.close();
+          if (eventData.stop) {
+            queue.close();
+          }
         }
       } catch (error) {
         queue.push({ type: "error", error });
         queue.close();
-        return;
       }
-    },
-  });
+    })
+    .catch((error) => {
+      queue.push({ type: "error", error });
+      queue.close();
+    });
 
   return queue;
 }

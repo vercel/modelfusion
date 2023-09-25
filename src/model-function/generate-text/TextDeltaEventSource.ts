@@ -41,29 +41,29 @@ export function parseTextDeltaEventSource(
   const queue = new AsyncQueue<string | undefined>();
 
   // run async (no await on purpose):
-  parseEventSourceReadableStream({
-    stream,
-    callback: (event) => {
-      if (event.type !== "event") {
-        return;
-      }
-
+  parseEventSourceReadableStream({ stream })
+    .then(async (events) => {
       try {
-        const data = textDeltaEventDataSchema.parse(
-          SecureJSON.parse(event.data)
-        );
+        for await (const event of events) {
+          const data = textDeltaEventDataSchema.parse(
+            SecureJSON.parse(event.data)
+          );
 
-        queue.push(data.textDelta);
+          queue.push(data.textDelta);
 
-        if (data.isFinished) {
-          queue.close();
+          if (data.isFinished) {
+            queue.close();
+          }
         }
       } catch (error) {
         options?.errorHandler(error);
         queue.close();
       }
-    },
-  });
+    })
+    .catch((error) => {
+      options?.errorHandler(error);
+      queue.close();
+    });
 
   return queue;
 }

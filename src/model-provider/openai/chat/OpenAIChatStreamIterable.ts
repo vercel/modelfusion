@@ -52,97 +52,99 @@ export async function createOpenAIChatFullDeltaIterableQueue(
   const streamDelta: OpenAIChatDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
-  parseEventSourceReadableStream({
-    stream,
-    callback: (event) => {
-      if (event.type !== "event") {
-        return;
-      }
-
-      const data = event.data;
-
-      if (data === "[DONE]") {
-        queue.close();
-        return;
-      }
-
+  parseEventSourceReadableStream({ stream })
+    .then(async (events) => {
       try {
-        const json = SecureJSON.parse(data);
-        const parseResult = chatResponseStreamEventSchema.safeParse(json);
+        for await (const event of events) {
+          const data = event.data;
 
-        if (!parseResult.success) {
-          queue.push({
-            type: "error",
-            error: parseResult.error,
-          });
-          queue.close();
-          return;
-        }
-
-        const event = parseResult.data;
-
-        for (let i = 0; i < event.choices.length; i++) {
-          const eventChoice = event.choices[i];
-          const delta = eventChoice.delta;
-
-          if (streamDelta[i] == null) {
-            streamDelta[i] = {
-              role: undefined,
-              content: "",
-              isComplete: false,
-              delta,
-            };
+          if (data === "[DONE]") {
+            queue.close();
+            return;
           }
 
-          const choice = streamDelta[i];
+          const json = SecureJSON.parse(data);
+          const parseResult = chatResponseStreamEventSchema.safeParse(json);
 
-          choice.delta = delta;
-
-          if (eventChoice.finish_reason != null) {
-            choice.isComplete = true;
+          if (!parseResult.success) {
+            queue.push({
+              type: "error",
+              error: parseResult.error,
+            });
+            queue.close();
+            return;
           }
 
-          if (delta.content != undefined) {
-            choice.content += delta.content;
-          }
+          const eventData = parseResult.data;
 
-          if (delta.function_call != undefined) {
-            if (choice.function_call == undefined) {
-              choice.function_call = {
-                name: "",
-                arguments: "",
+          for (let i = 0; i < eventData.choices.length; i++) {
+            const eventChoice = eventData.choices[i];
+            const delta = eventChoice.delta;
+
+            if (streamDelta[i] == null) {
+              streamDelta[i] = {
+                role: undefined,
+                content: "",
+                isComplete: false,
+                delta,
               };
             }
 
-            if (delta.function_call.name != undefined) {
-              choice.function_call!.name += delta.function_call.name;
+            const choice = streamDelta[i];
+
+            choice.delta = delta;
+
+            if (eventChoice.finish_reason != null) {
+              choice.isComplete = true;
             }
 
-            if (delta.function_call.arguments != undefined) {
-              choice.function_call!.arguments += delta.function_call.arguments;
+            if (delta.content != undefined) {
+              choice.content += delta.content;
+            }
+
+            if (delta.function_call != undefined) {
+              if (choice.function_call == undefined) {
+                choice.function_call = {
+                  name: "",
+                  arguments: "",
+                };
+              }
+
+              if (delta.function_call.name != undefined) {
+                choice.function_call!.name += delta.function_call.name;
+              }
+
+              if (delta.function_call.arguments != undefined) {
+                choice.function_call!.arguments +=
+                  delta.function_call.arguments;
+              }
+            }
+
+            if (delta.role != undefined) {
+              choice.role = delta.role;
             }
           }
 
-          if (delta.role != undefined) {
-            choice.role = delta.role;
-          }
+          // Since we're mutating the choices array in an async scenario,
+          // we need to make a deep copy:
+          const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
+
+          queue.push({
+            type: "delta",
+            fullDelta: streamDeltaDeepCopy,
+          });
         }
-
-        // Since we're mutating the choices array in an async scenario,
-        // we need to make a deep copy:
-        const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
-
-        queue.push({
-          type: "delta",
-          fullDelta: streamDeltaDeepCopy,
-        });
       } catch (error) {
         queue.push({ type: "error", error });
         queue.close();
         return;
       }
-    },
-  });
+    })
+    .catch((error) => {
+      queue.push({ type: "error", error });
+      queue.close();
+      return;
+    });
 
   return queue;
 }
