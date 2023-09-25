@@ -1,6 +1,3 @@
-/**
- * @internal
- */
 export class AsyncQueue<T> implements AsyncIterable<T> {
   private queue: T[] = [];
   private resolvers: Array<(result: IteratorResult<T>) => void> = [];
