@@ -1,13 +1,16 @@
 export async function* convertReadableStreamToAsyncIterable<T>(
-  reader: ReadableStreamDefaultReader<T>
+  stream: ReadableStream<T>
 ): AsyncIterable<T> {
-  while (true) {
-    const result = await reader.read();
-
-    if (result.done) {
-      break;
+  const reader = stream.getReader();
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        return; // This will close the generator
+      }
+      yield value;
     }
-
-    yield result.value;
+  } finally {
+    reader.releaseLock();
   }
 }
