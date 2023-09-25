@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.34.0 - 2023-09-25
+
+### Added
+
+- First version of event source utilities: `AsyncQueue`, `createEventSourceStream`, `readEventSourceStream`.
+
 ## v0.33.1 - 2023-09-24
 
 ### Fixed
