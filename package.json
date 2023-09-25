@@ -51,7 +51,7 @@
     "dist": "npm run clean && npm run lint && npm run build && npm run dist:copy-files"
   },
   "dependencies": {
-    "eventsource-parser": "1.0.0",
+    "eventsource-parser": "1.1.1",
     "js-tiktoken": "1.0.7",
     "nanoid": "3.3.6",
     "secure-json-parse": "2.7.0",
