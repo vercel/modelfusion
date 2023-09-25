@@ -3,7 +3,7 @@ import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
+import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,

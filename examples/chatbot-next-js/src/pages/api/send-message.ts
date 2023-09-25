@@ -1,8 +1,9 @@
 import {
   CohereTextGenerationModel,
   LlamaCppTextGenerationModel,
+  OpenAIApiConfiguration,
   OpenAIChatModel,
-  createTextDeltaEventSource,
+  createEventSourceStream,
   mapChatPromptToLlama2Format,
   mapChatPromptToOpenAIChatFormat,
   mapChatPromptToTextFormat,
@@ -21,6 +22,11 @@ const messageSchame = z.object({
 const requestSchema = z.array(messageSchame);
 
 const gpt35turboModel = new OpenAIChatModel({
+  // explicit API configuration needed for NextJS environment
+  // (otherwise env variables are not available):
+  api: new OpenAIApiConfiguration({
+    apiKey: process.env.OPENAI_API_KEY,
+  }),
   model: "gpt-3.5-turbo",
   maxCompletionTokens: 512,
 }).withPromptFormat(mapChatPromptToOpenAIChatFormat());
@@ -38,6 +44,11 @@ const otherLlamaCppModel = new LlamaCppTextGenerationModel({
 );
 
 const cohereModel = new CohereTextGenerationModel({
+  // explicit API configuration needed for NextJS environment
+  // (otherwise env variables are not available):
+  // api: new CohereApiConfiguration({
+  //   apiKey: process.env.COHERE_API_KEY,
+  // }),
   model: "command",
   maxCompletionTokens: 512,
 }).withPromptFormat(
@@ -71,7 +82,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
 
   const messages = parsedData.data;
 
-  const model = llama2Model; // change this to your preferred model
+  const model = gpt35turboModel; // change this to your preferred model
 
   const textStream = await streamText(
     model,
@@ -96,7 +107,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
     { run: { abortSignal: controller.signal } }
   );
 
-  return new Response(createTextDeltaEventSource(textStream), {
+  return new Response(createEventSourceStream(textStream), {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",

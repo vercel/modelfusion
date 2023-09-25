@@ -1,6 +1,10 @@
 import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
-import { OpenAITranscriptionModel, transcribe } from "modelfusion";
+import {
+  OpenAIApiConfiguration,
+  OpenAITranscriptionModel,
+  transcribe,
+} from "modelfusion";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {
@@ -42,7 +46,14 @@ export default async function handler(
     const fileData = fs.readFileSync(audioFile.filepath);
 
     const transcription = await transcribe(
-      new OpenAITranscriptionModel({ model: "whisper-1" }),
+      new OpenAITranscriptionModel({
+        // explicit API configuration needed for NextJS environment
+        // (otherwise env variables are not available):
+        api: new OpenAIApiConfiguration({
+          apiKey: process.env.OPENAI_API_KEY,
+        }),
+        model: "whisper-1",
+      }),
       {
         type: "mp3",
         data: fileData,

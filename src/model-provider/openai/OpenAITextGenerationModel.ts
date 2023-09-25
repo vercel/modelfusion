@@ -3,14 +3,14 @@ import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { AsyncQueue } from "../../model-function/generate-text/AsyncQueue.js";
+import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { DeltaEvent } from "../../model-function/generate-text/DeltaEvent.js";
 
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { parseEventSourceReadableStream } from "../../model-function/generate-text/parseEventSourceReadableStream.js";
+import { parseEventSourceStream } from "../../event-source/parseEventSourceStream.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
@@ -516,73 +516,74 @@ async function createOpenAITextFullDeltaIterableQueue(
   const streamDelta: OpenAITextGenerationDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
-  parseEventSourceReadableStream({
-    stream,
-    callback: (event) => {
-      if (event.type !== "event") {
-        return;
-      }
-
-      const data = event.data;
-
-      if (data === "[DONE]") {
-        queue.close();
-        return;
-      }
-
+  parseEventSourceStream({ stream })
+    .then(async (events) => {
       try {
-        const json = SecureJSON.parse(data);
-        const parseResult = textResponseStreamEventSchema.safeParse(json);
+        for await (const event of events) {
+          const data = event.data;
 
-        if (!parseResult.success) {
+          if (data === "[DONE]") {
+            queue.close();
+            return;
+          }
+
+          const json = SecureJSON.parse(data);
+          const parseResult = textResponseStreamEventSchema.safeParse(json);
+
+          if (!parseResult.success) {
+            queue.push({
+              type: "error",
+              error: parseResult.error,
+            });
+            queue.close();
+            return;
+          }
+
+          const eventData = parseResult.data;
+
+          for (let i = 0; i < eventData.choices.length; i++) {
+            const eventChoice = eventData.choices[i];
+            const delta = eventChoice.text;
+
+            if (streamDelta[i] == null) {
+              streamDelta[i] = {
+                content: "",
+                isComplete: false,
+                delta: "",
+              };
+            }
+
+            const choice = streamDelta[i];
+
+            choice.delta = delta;
+
+            if (eventChoice.finish_reason != null) {
+              choice.isComplete = true;
+            }
+
+            choice.content += delta;
+          }
+
+          // Since we're mutating the choices array in an async scenario,
+          // we need to make a deep copy:
+          const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
+
           queue.push({
-            type: "error",
-            error: parseResult.error,
+            type: "delta",
+            fullDelta: streamDeltaDeepCopy,
           });
-          queue.close();
-          return;
         }
-
-        const event = parseResult.data;
-
-        for (let i = 0; i < event.choices.length; i++) {
-          const eventChoice = event.choices[i];
-          const delta = eventChoice.text;
-
-          if (streamDelta[i] == null) {
-            streamDelta[i] = {
-              content: "",
-              isComplete: false,
-              delta: "",
-            };
-          }
-
-          const choice = streamDelta[i];
-
-          choice.delta = delta;
-
-          if (eventChoice.finish_reason != null) {
-            choice.isComplete = true;
-          }
-
-          choice.content += delta;
-        }
-
-        // Since we're mutating the choices array in an async scenario,
-        // we need to make a deep copy:
-        const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
-
-        queue.push({
-          type: "delta",
-          fullDelta: streamDeltaDeepCopy,
-        });
       } catch (error) {
         queue.push({ type: "error", error });
         queue.close();
         return;
       }
-    },
-  });
+    })
+    .catch((error) => {
+      queue.push({ type: "error", error });
+      queue.close();
+      return;
+    });
 
   return queue;
 }

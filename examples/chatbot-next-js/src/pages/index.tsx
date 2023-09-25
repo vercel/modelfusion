@@ -2,9 +2,10 @@ import { ChatInputArea } from "@/component/ChatInputArea";
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
-import { parseTextDeltaEventSource } from "modelfusion";
+import { readEventSourceStream } from "modelfusion";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
+import { z } from "zod";
 
 export default function Home() {
   const [messages, setMessages] = useState<
@@ -34,10 +35,14 @@ export default function Home() {
         signal: abortController.current.signal,
       });
 
-      const textDeltas = parseTextDeltaEventSource(response.body!);
+      const textDeltas = readEventSourceStream({
+        stream: response.body!,
+        schema: z.string(),
+      });
+
       let accumulatedContent = "";
       for await (const textDelta of textDeltas) {
-        accumulatedContent += textDelta ?? "";
+        accumulatedContent += textDelta;
 
         setMessages((currentMessages) => [
           ...currentMessages.slice(0, currentMessages.length - 1),

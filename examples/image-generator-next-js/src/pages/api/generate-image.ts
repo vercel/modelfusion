@@ -1,4 +1,8 @@
-import { StabilityImageGenerationModel, generateImage } from "modelfusion";
+import {
+  StabilityApiConfiguration,
+  StabilityImageGenerationModel,
+  generateImage,
+} from "modelfusion";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {
@@ -18,6 +22,11 @@ export default async function handler(
 
   const image = await generateImage(
     new StabilityImageGenerationModel({
+      // explicit API configuration needed for NextJS environment
+      // (otherwise env variables are not available):
+      api: new StabilityApiConfiguration({
+        apiKey: process.env.STABILITY_API_KEY,
+      }),
       model: "stable-diffusion-512-v2-1",
       clipGuidancePreset: "FAST_BLUE",
       cfgScale: 10,
