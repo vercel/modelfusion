@@ -1,6 +1,8 @@
 import {
+  CohereApiConfiguration,
   CohereTextGenerationModel,
   LlamaCppTextGenerationModel,
+  OpenAIApiConfiguration,
   OpenAIChatModel,
   createTextDeltaEventSource,
   mapChatPromptToLlama2Format,
@@ -21,6 +23,11 @@ const messageSchame = z.object({
 const requestSchema = z.array(messageSchame);
 
 const gpt35turboModel = new OpenAIChatModel({
+  // explicit API configuration needed for NextJS environment
+  // (otherwise env variables are not available):
+  api: new OpenAIApiConfiguration({
+    apiKey: process.env.OPENAI_API_KEY,
+  }),
   model: "gpt-3.5-turbo",
   maxCompletionTokens: 512,
 }).withPromptFormat(mapChatPromptToOpenAIChatFormat());
@@ -38,6 +45,11 @@ const otherLlamaCppModel = new LlamaCppTextGenerationModel({
 );
 
 const cohereModel = new CohereTextGenerationModel({
+  // explicit API configuration needed for NextJS environment
+  // (otherwise env variables are not available):
+  // api: new CohereApiConfiguration({
+  //   apiKey: process.env.COHERE_API_KEY,
+  // }),
   model: "command",
   maxCompletionTokens: 512,
 }).withPromptFormat(
