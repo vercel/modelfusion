@@ -71,7 +71,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
 
   const messages = parsedData.data;
 
-  const model = llama2Model; // change this to your preferred model
+  const model = gpt35turboModel; // change this to your preferred model
 
   const textStream = await streamText(
     model,
