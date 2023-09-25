@@ -9,7 +9,7 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { parseEventSourceReadableStream } from "../../event-source/parseEventSourceReadableStream.js";
+import { parseEventSourceStream } from "../../event-source/parseEventSourceStream.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
@@ -374,7 +374,7 @@ async function createLlamaCppFullDeltaIterableQueue(
   let content = "";
 
   // process the stream asynchonously (no 'await' on purpose):
-  parseEventSourceReadableStream({ stream })
+  parseEventSourceStream({ stream })
     .then(async (events) => {
       try {
         for await (const event of events) {

@@ -1,10 +1,9 @@
 import {
-  CohereApiConfiguration,
   CohereTextGenerationModel,
   LlamaCppTextGenerationModel,
   OpenAIApiConfiguration,
   OpenAIChatModel,
-  createTextDeltaEventSource,
+  createEventSourceStream,
   mapChatPromptToLlama2Format,
   mapChatPromptToOpenAIChatFormat,
   mapChatPromptToTextFormat,
@@ -108,7 +107,7 @@ const sendMessage = async (request: Request): Promise<Response> => {
     { run: { abortSignal: controller.signal } }
   );
 
-  return new Response(createTextDeltaEventSource(textStream), {
+  return new Response(createEventSourceStream(textStream), {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",

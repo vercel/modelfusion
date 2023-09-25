@@ -2,7 +2,7 @@ import { ParsedEvent } from "eventsource-parser";
 import { convertReadableStreamToAsyncIterable } from "./convertReadableStreamToAsyncIterable.js";
 import { EventSourceParserStream } from "./EventSourceParserStream.js";
 
-export async function parseEventSourceReadableStream({
+export async function parseEventSourceStream({
   stream,
 }: {
   stream: ReadableStream<Uint8Array>;

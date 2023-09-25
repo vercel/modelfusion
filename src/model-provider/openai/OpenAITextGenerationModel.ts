@@ -10,7 +10,7 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { parseEventSourceReadableStream } from "../../event-source/parseEventSourceReadableStream.js";
+import { parseEventSourceStream } from "../../event-source/parseEventSourceStream.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
@@ -516,7 +516,7 @@ async function createOpenAITextFullDeltaIterableQueue(
   const streamDelta: OpenAITextGenerationDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
-  parseEventSourceReadableStream({ stream })
+  parseEventSourceStream({ stream })
     .then(async (events) => {
       try {
         for await (const event of events) {

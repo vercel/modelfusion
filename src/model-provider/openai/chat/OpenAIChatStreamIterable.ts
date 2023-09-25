@@ -2,7 +2,7 @@ import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AsyncQueue } from "../../../event-source/AsyncQueue.js";
 import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
-import { parseEventSourceReadableStream } from "../../../event-source/parseEventSourceReadableStream.js";
+import { parseEventSourceStream } from "../../../event-source/parseEventSourceStream.js";
 
 const chatResponseStreamEventSchema = z.object({
   choices: z.array(
@@ -52,7 +52,7 @@ export async function createOpenAIChatFullDeltaIterableQueue(
   const streamDelta: OpenAIChatDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
-  parseEventSourceReadableStream({ stream })
+  parseEventSourceStream({ stream })
     .then(async (events) => {
       try {
         for await (const event of events) {
