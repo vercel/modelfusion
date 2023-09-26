@@ -6,13 +6,11 @@ describe("fixJson", () => {
     expect(fixJson("")).toBe("");
   });
 
-  describe("null", () => {
+  describe("literals", () => {
     test("should handle incomplete null", () => {
       expect(fixJson("nul")).toBe("null");
     });
-  });
 
-  describe("boolean", () => {
     test("should handle incomplete true", () => {
       expect(fixJson("t")).toBe("true");
     });
@@ -52,6 +50,12 @@ describe("fixJson", () => {
       expect(fixJson("2.5E3")).toBe("2.5E3");
       expect(fixJson("-2.5E3")).toBe("-2.5E3");
     });
+
+    test("should handle incomplete numbers", () => {
+      expect(fixJson("12.e")).toBe("12");
+      expect(fixJson("12.34e")).toBe("12.34");
+      expect(fixJson("5e")).toBe("5");
+    });
   });
 
   describe("string", () => {
@@ -84,11 +88,19 @@ describe("fixJson", () => {
     test("should handle trailing comma", () => {
       expect(fixJson("[1, ")).toBe("[1]");
     });
+
+    test("should handle closing array", () => {
+      expect(fixJson('["a": [], "b": 123')).toBe('["a": [], "b": 123]');
+    });
   });
 
   describe("object", () => {
     test("should handle keys without values", () => {
       expect(fixJson('{"key":')).toBe("{}");
+    });
+
+    test("should handle closing brace in object", () => {
+      expect(fixJson('{"a": {"b": 1}')).toBe('{"a": {"b": 1}}');
     });
 
     test("should handle partial keys (first key)", () => {
@@ -153,6 +165,12 @@ describe("fixJson", () => {
       expect(fixJson('{"a": {"b": {"c": {"d":')).toBe(
         '{"a": {"b": {"c": {}}}}'
       );
+    });
+
+    test("should handle potential nested arrays or objects", () => {
+      expect(fixJson('{"a": 1, "b": [')).toBe('{"a": 1, "b": []}');
+      expect(fixJson('{"a": 1, "b": {')).toBe('{"a": 1, "b": {}}');
+      expect(fixJson('{"a": 1, "b": "')).toBe('{"a": 1, "b": ""}');
     });
   });
 });
