@@ -1,3 +1,4 @@
+import deepEqual from "deep-equal";
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../../core/FunctionEventSource.js";
 import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
@@ -171,15 +172,26 @@ async function doStreamStructure<
         }
 
         if (event?.type === "delta") {
-          lastFullDelta = event.fullDelta;
-          lastStructure = model.extractPartialStructure(lastFullDelta);
+          const latestFullDelta = event.fullDelta;
+          const latestStructure =
+            model.extractPartialStructure(latestFullDelta);
 
-          // TODO attempt validate partial structure
+          // only send a new part into the stream when the partial structure has changed:
+          if (
+            !deepEqual(lastStructure, latestStructure, {
+              strict: true,
+            })
+          ) {
+            lastFullDelta = latestFullDelta;
+            lastStructure = latestStructure;
 
-          yield {
-            isComplete: false,
-            value: lastStructure,
-          } satisfies StructureStreamPart<STRUCTURE>;
+            // TODO attempt validate partial structure
+
+            yield {
+              isComplete: false,
+              value: lastStructure,
+            } satisfies StructureStreamPart<STRUCTURE>;
+          }
         }
       }
 
