@@ -399,6 +399,30 @@ export class OpenAIChatModel
     return SecureJSON.parse(jsonText);
   }
 
+  generateStructureStreamResponse(
+    structureDefinition: StructureDefinition<string, unknown>,
+    prompt: OpenAIChatMessage[],
+    options?: ModelFunctionOptions<OpenAIChatSettings> | undefined
+  ) {
+    return this.callAPI(prompt, {
+      responseFormat: OpenAIChatResponseFormat.deltaIterable,
+      functionId: options?.functionId,
+      settings: {
+        ...options,
+
+        functionCall: { name: structureDefinition.name },
+        functions: [
+          {
+            name: structureDefinition.name,
+            description: structureDefinition.description,
+            parameters: structureDefinition.schema.getJsonSchema(),
+          },
+        ],
+      },
+      run: options?.run,
+    });
+  }
+
   generateStructureOrTextResponse(
     structureDefinitions: Array<StructureDefinition<string, unknown>>,
     prompt: OpenAIChatMessage[],
