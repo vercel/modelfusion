@@ -61,7 +61,7 @@
     "zod-to-json-schema": "3.21.4"
   },
   "devDependencies": {
-    "@pinecone-database/pinecone": "^0.1.6",
+    "@pinecone-database/pinecone": "^1.0.1",
     "@tsconfig/recommended": "1.0.3",
     "@types/deep-equal": "^1.0.2",
     "@types/node": "18.11.9",
