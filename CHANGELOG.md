@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.35.0 - 2023-09-26
+
+### Added
+
+- `streamStructure` for streaming structured responses, e.g. from OpenAI function calls. Thanks [@bjsi](https://github.com/bjsi) for the input!
+
 ## v0.34.0 - 2023-09-25
 
 ### Added
