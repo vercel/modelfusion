@@ -2,11 +2,11 @@
 sidebar_position: 5
 ---
 
-# Generate Structure
+# Generate and Stream Structure
 
 Generates a structure that matches a schema.
 This is, for example, useful for [information extraction](/tutorial/recipes/information-extraction)
-and classification tasks (e.g. [sentiment analysis](/tutorial/recipes/sentiment-analysis)).
+and classification tasks (e.g. [sentiment analysis](/tutorial/recipes/sentiment-analysis)). The structure can be generated in one pass or streamed.
 
 ## Usage
 
@@ -43,6 +43,61 @@ const sentiment = await generateStructure(
     ),
   ]
 );
+```
+
+### streamStructure
+
+[streamStructure API](/api/modules#streamstructure)
+
+`streamStructure` returns an async iterable over partial results.
+
+The `value` property of the result contains the current value.
+The `isComplete` flag of the result indicates whether result is complete.
+
+For complete results, type inference is executed and `value` will be typed.
+For partial results `value` is JSON of the type `unknown`.
+You can do your own type inference on partial results if needed.
+
+#### OpenAI chat model
+
+```ts
+const structureStream = await streamStructure(
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    temperature: 0,
+    maxCompletionTokens: 2000,
+  }),
+  new ZodStructureDefinition({
+    name: "generateCharacter" as const,
+    description: "Generate character descriptions.",
+    schema: z.object({
+      characters: z.array(
+        z.object({
+          name: z.string(),
+          class: z
+            .string()
+            .describe("Character class, e.g. warrior, mage, or thief."),
+          description: z.string(),
+        })
+      ),
+    }),
+  }),
+  [
+    OpenAIChatMessage.user(
+      "Generate 3 character descriptions for a fantasy role playing game."
+    ),
+  ]
+);
+
+for await (const part of structureStream) {
+  if (!part.isComplete) {
+    const unknownPartialStructure = part.value;
+    console.log("partial value", unknownPartialStructure);
+  } else {
+    const fullyTypedStructure = part.value;
+    console.log("final value", fullyTypedStructure);
+  }
+}
 ```
 
 ## Available Providers
