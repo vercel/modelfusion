@@ -3,19 +3,20 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   ZodStructureDefinition,
+  fixJson,
 } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
 
 async function main() {
-  const chatModel = new OpenAIChatModel({
+  const model = new OpenAIChatModel({
     model: "gpt-3.5-turbo",
     temperature: 0,
     maxCompletionTokens: 50,
   });
 
-  const stream = await chatModel.generateStructureStreamResponse(
+  const stream = await model.generateStructureStreamResponse(
     new ZodStructureDefinition({
       name: "sentiment" as const,
       description: "Write the sentiment analysis",
@@ -37,8 +38,25 @@ async function main() {
     ]
   );
 
-  for await (const part of stream) {
-    console.log(JSON.stringify(part, null, 2));
+  for await (const event of stream) {
+    if (event.type === "delta") {
+      const fullDelta = event.fullDelta;
+      const partialStructure = model.extractPartialStructure(fullDelta)!;
+
+      // TODO use just deep compare to prevent the same json to come up twice
+
+      let json = null;
+      try {
+        json = JSON.parse(partialStructure);
+      } catch (ignored) {
+        try {
+          const fixedStructure = fixJson(partialStructure);
+          json = JSON.parse(fixedStructure);
+        } catch (ignored2) {}
+      }
+
+      console.log(json);
+    }
   }
 }
 

@@ -6,5 +6,4 @@ export type DeltaEvent<FULL_DELTA> =
   | {
       type: "error";
       error: unknown;
-    }
-  | undefined;
+    };

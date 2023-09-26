@@ -423,6 +423,10 @@ export class OpenAIChatModel
     });
   }
 
+  extractPartialStructure(fullDelta: OpenAIChatDelta) {
+    return fullDelta[0]?.function_call?.arguments;
+  }
+
   generateStructureOrTextResponse(
     structureDefinitions: Array<StructureDefinition<string, unknown>>,
     prompt: OpenAIChatMessage[],
