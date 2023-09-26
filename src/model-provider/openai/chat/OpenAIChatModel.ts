@@ -9,10 +9,11 @@ import {
 } from "../../../core/api/postToApi.js";
 import { StructureDefinition } from "../../../core/structure/StructureDefinition.js";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
+import { DeltaEvent } from "../../../model-function/DeltaEvent.js";
 import { ModelFunctionOptions } from "../../../model-function/ModelFunctionOptions.js";
 import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
 import { StructureOrTextGenerationModel } from "../../../model-function/generate-structure/StructureOrTextGenerationModel.js";
-import { DeltaEvent } from "../../../model-function/generate-text/DeltaEvent.js";
+import { parsePartialJson } from "../../../model-function/generate-structure/parsePartialJson.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -237,6 +238,7 @@ export class OpenAIChatModel
     StructureGenerationModel<
       OpenAIChatMessage[],
       OpenAIChatResponse,
+      OpenAIChatDelta,
       OpenAIChatSettings
     >,
     StructureOrTextGenerationModel<
@@ -395,14 +397,15 @@ export class OpenAIChatModel
   }
 
   extractStructure(response: OpenAIChatResponse): unknown {
-    const jsonText = response.choices[0]!.message.function_call!.arguments;
-    return SecureJSON.parse(jsonText);
+    return SecureJSON.parse(
+      response.choices[0]!.message.function_call!.arguments
+    );
   }
 
   generateStructureStreamResponse(
     structureDefinition: StructureDefinition<string, unknown>,
     prompt: OpenAIChatMessage[],
-    options?: ModelFunctionOptions<OpenAIChatSettings> | undefined
+    options?: ModelFunctionOptions<OpenAIChatSettings>
   ) {
     return this.callAPI(prompt, {
       responseFormat: OpenAIChatResponseFormat.deltaIterable,
@@ -423,8 +426,8 @@ export class OpenAIChatModel
     });
   }
 
-  extractPartialStructure(fullDelta: OpenAIChatDelta) {
-    return fullDelta[0]?.function_call?.arguments;
+  extractPartialStructure(fullDelta: OpenAIChatDelta): unknown | undefined {
+    return parsePartialJson(fullDelta[0]?.function_call?.arguments);
   }
 
   generateStructureOrTextResponse(

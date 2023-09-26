@@ -25,7 +25,8 @@ export class StructureFromTextGenerationModel<
     any,
     TextGenerationModelSettings
   >,
-> implements StructureGenerationModel<PROMPT, string, MODEL["settings"]>
+> implements
+    StructureGenerationModel<PROMPT, string, undefined, MODEL["settings"]>
 {
   private readonly model: MODEL;
   private readonly format: StructureFromTextPromptFormat<PROMPT>;

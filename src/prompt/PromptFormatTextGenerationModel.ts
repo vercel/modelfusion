@@ -1,5 +1,5 @@
+import { DeltaEvent } from "../model-function/DeltaEvent.js";
 import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
-import { DeltaEvent } from "../model-function/generate-text/DeltaEvent.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,

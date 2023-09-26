@@ -1,9 +1,9 @@
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
+import { DeltaEvent } from "../DeltaEvent.js";
 import { Model, ModelSettings } from "../Model.js";
+import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
-import { DeltaEvent } from "./DeltaEvent.js";
 
 export interface TextGenerationModelSettings extends ModelSettings {
   /**
@@ -52,19 +52,15 @@ export interface TextGenerationModel<
   /**
    * Optional. Implement for streaming support.
    */
-  readonly generateDeltaStreamResponse:
-    | ((
-        prompt: PROMPT,
-        options: ModelFunctionOptions<SETTINGS>
-      ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>)
-    | undefined;
+  readonly generateDeltaStreamResponse?: (
+    prompt: PROMPT,
+    options: ModelFunctionOptions<SETTINGS>
+  ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
 
   /**
    * Optional. Implement for streaming support.
    */
-  readonly extractTextDelta:
-    | ((fullDelta: FULL_DELTA) => string | undefined)
-    | undefined;
+  readonly extractTextDelta?: (fullDelta: FULL_DELTA) => string | undefined;
 
   extractUsage?(response: RESPONSE): {
     promptTokens: number;

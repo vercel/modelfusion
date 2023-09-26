@@ -20,6 +20,10 @@ import {
   StructureGenerationStartedEvent,
 } from "./generate-structure/StructureGenerationEvent.js";
 import {
+  StructureStreamingFinishedEvent,
+  StructureStreamingStartedEvent,
+} from "./generate-structure/StructureStreamingEvent.js";
+import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
 } from "./generate-text/TextGenerationEvent.js";
@@ -87,6 +91,7 @@ export type ModelCallStartedEvent =
   | ImageDescriptionStartedEvent
   | ImageGenerationStartedEvent
   | StructureGenerationStartedEvent
+  | StructureStreamingStartedEvent
   | SpeechSynthesisStartedEvent
   | TextEmbeddingStartedEvent
   | TextGenerationStartedEvent
@@ -97,6 +102,7 @@ export type ModelCallFinishedEvent =
   | ImageDescriptionFinishedEvent
   | ImageGenerationFinishedEvent
   | StructureGenerationFinishedEvent
+  | StructureStreamingFinishedEvent
   | SpeechSynthesisFinishedEvent
   | TextEmbeddingFinishedEvent
   | TextGenerationFinishedEvent

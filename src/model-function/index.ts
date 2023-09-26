@@ -1,3 +1,4 @@
+export * from "./DeltaEvent.js";
 export * from "./Model.js";
 export * from "./ModelCallEvent.js";
 export * from "./ModelFunctionOptions.js";
@@ -17,10 +18,11 @@ export * from "./generate-structure/StructureFromTextGenerationModel.js";
 export * from "./generate-structure/StructureGenerationEvent.js";
 export * from "./generate-structure/StructureGenerationModel.js";
 export * from "./generate-structure/StructureOrTextGenerationModel.js";
+export * from "./generate-structure/StructureStreamingEvent.js";
 export * from "./generate-structure/StructureValidationError.js";
 export * from "./generate-structure/generateStructure.js";
 export * from "./generate-structure/generateStructureOrText.js";
-export * from "./generate-text/DeltaEvent.js";
+export * from "./generate-structure/streamStructure.js";
 export * from "./generate-text/TextGenerationEvent.js";
 export * from "./generate-text/TextGenerationModel.js";
 export * from "./generate-text/TextStreamingEvent.js";

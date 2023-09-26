@@ -4,6 +4,7 @@ import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
 import { AbortError } from "../../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
+import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
@@ -11,50 +12,65 @@ import { DeltaEvent } from "../DeltaEvent.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelCallMetadata } from "../executeCall.js";
 import {
-  TextGenerationModel,
-  TextGenerationModelSettings,
-} from "./TextGenerationModel.js";
+  StructureGenerationModel,
+  StructureGenerationModelSettings,
+} from "./StructureGenerationModel.js";
 import {
-  TextStreamingFinishedEvent,
-  TextStreamingStartedEvent,
-} from "./TextStreamingEvent.js";
+  StructureStreamingFinishedEvent,
+  StructureStreamingStartedEvent,
+} from "./StructureStreamingEvent.js";
 
-export function streamText<
+// type Stru = {
+//   value: unknown;
+//   isComplete: boolean;
+// };
+
+type Stru = unknown;
+
+export function streamStructure<
+  STRUCTURE,
   PROMPT,
   FULL_DELTA,
-  SETTINGS extends TextGenerationModelSettings,
+  NAME extends string,
+  SETTINGS extends StructureGenerationModelSettings,
 >(
-  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
-    generateDeltaStreamResponse: (
+  model: StructureGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
+    generateStructureStreamResponse: (
+      structureDefinition: StructureDefinition<NAME, STRUCTURE>,
       prompt: PROMPT,
       options: ModelFunctionOptions<SETTINGS>
     ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
-    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
+    extractPartialStructure: (fullDelta: FULL_DELTA) => unknown | undefined;
   },
+  structureDefinition: StructureDefinition<NAME, STRUCTURE>,
   prompt: PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
-): AsyncIterableResultPromise<string> {
-  return new AsyncIterableResultPromise<string>(
-    doStreamText(model, prompt, options)
+): AsyncIterableResultPromise<Stru> {
+  return new AsyncIterableResultPromise<Stru>(
+    doStreamStructure(model, structureDefinition, prompt, options)
   );
 }
 
-async function doStreamText<
+async function doStreamStructure<
+  STRUCTURE,
   PROMPT,
   FULL_DELTA,
-  SETTINGS extends TextGenerationModelSettings,
+  NAME extends string,
+  SETTINGS extends StructureGenerationModelSettings,
 >(
-  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
-    generateDeltaStreamResponse: (
+  model: StructureGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
+    generateStructureStreamResponse: (
+      structureDefinition: StructureDefinition<NAME, STRUCTURE>,
       prompt: PROMPT,
       options: ModelFunctionOptions<SETTINGS>
     ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
-    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
+    extractPartialStructure: (fullDelta: FULL_DELTA) => unknown | undefined;
   },
+  structureDefinition: StructureDefinition<NAME, STRUCTURE>,
   prompt: PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
 ): Promise<{
-  output: AsyncIterable<string>;
+  output: AsyncIterable<Stru>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
   if (options?.settings != null) {
@@ -83,7 +99,7 @@ async function doStreamText<
   const durationMeasurement = startDurationMeasurement();
 
   const startMetadata = {
-    functionType: "text-streaming" as const,
+    functionType: "structure-streaming" as const,
 
     callId: `call-${createId()}`,
     runId: run?.runId,
@@ -102,17 +118,21 @@ async function doStreamText<
   eventSource.notify({
     eventType: "started",
     ...startMetadata,
-  } satisfies TextStreamingStartedEvent);
+  } satisfies StructureStreamingStartedEvent);
 
   const result = await runSafe(async () => {
-    const deltaIterable = await model.generateDeltaStreamResponse(prompt, {
-      functionId: options?.functionId,
-      settings, // options.setting is null here because of the initial guard
-      run,
-    });
+    const deltaIterable = await model.generateStructureStreamResponse(
+      structureDefinition,
+      prompt,
+      {
+        functionId: options?.functionId,
+        settings, // options.setting is null here because of the initial guard
+        run,
+      }
+    );
 
     return (async function* () {
-      let accumulatedText = "";
+      let lastStructure: unknown | undefined;
       let lastFullDelta: FULL_DELTA | undefined;
 
       for await (const event of deltaIterable) {
@@ -149,12 +169,11 @@ async function doStreamText<
         if (event?.type === "delta") {
           lastFullDelta = event.fullDelta;
 
-          const delta = model.extractTextDelta(lastFullDelta);
+          lastStructure = model.extractPartialStructure(lastFullDelta);
 
-          if (delta != null && delta.length > 0) {
-            accumulatedText += delta;
-            yield delta;
-          }
+          // TODO attempt to get structure etc
+
+          yield lastStructure;
         }
       }
 
@@ -170,9 +189,9 @@ async function doStreamText<
         result: {
           status: "success",
           response: lastFullDelta,
-          output: accumulatedText,
+          output: lastStructure,
         },
-      } satisfies TextStreamingFinishedEvent);
+      } satisfies StructureStreamingFinishedEvent);
     })();
   });
 
