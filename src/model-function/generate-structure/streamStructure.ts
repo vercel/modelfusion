@@ -20,12 +20,15 @@ import {
   StructureStreamingStartedEvent,
 } from "./StructureStreamingEvent.js";
 
-// type Stru = {
-//   value: unknown;
-//   isComplete: boolean;
-// };
-
-type Stru = unknown;
+type StructureStreamPart<STRUCTURE> =
+  | {
+      isComplete: false;
+      value: unknown;
+    }
+  | {
+      isComplete: true;
+      value: STRUCTURE;
+    };
 
 export function streamStructure<
   STRUCTURE,
@@ -45,8 +48,8 @@ export function streamStructure<
   structureDefinition: StructureDefinition<NAME, STRUCTURE>,
   prompt: PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
-): AsyncIterableResultPromise<Stru> {
-  return new AsyncIterableResultPromise<Stru>(
+): AsyncIterableResultPromise<StructureStreamPart<STRUCTURE>> {
+  return new AsyncIterableResultPromise<StructureStreamPart<STRUCTURE>>(
     doStreamStructure(model, structureDefinition, prompt, options)
   );
 }
@@ -70,7 +73,7 @@ async function doStreamStructure<
   prompt: PROMPT,
   options?: ModelFunctionOptions<SETTINGS>
 ): Promise<{
-  output: AsyncIterable<Stru>;
+  output: AsyncIterable<StructureStreamPart<STRUCTURE>>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
   if (options?.settings != null) {
@@ -132,50 +135,66 @@ async function doStreamStructure<
     );
 
     return (async function* () {
+      function reportError(error: unknown) {
+        const finishMetadata = {
+          eventType: "finished" as const,
+          ...startMetadata,
+          finishTimestamp: new Date(),
+          durationInMs: durationMeasurement.durationInMs,
+        };
+
+        eventSource.notify(
+          error instanceof AbortError
+            ? {
+                ...finishMetadata,
+                result: {
+                  status: "abort",
+                },
+              }
+            : {
+                ...finishMetadata,
+                result: {
+                  status: "error",
+                  error,
+                },
+              }
+        );
+      }
+
       let lastStructure: unknown | undefined;
       let lastFullDelta: FULL_DELTA | undefined;
 
       for await (const event of deltaIterable) {
         if (event?.type === "error") {
-          const error = event.error;
-
-          const finishMetadata = {
-            eventType: "finished" as const,
-            ...startMetadata,
-            finishTimestamp: new Date(),
-            durationInMs: durationMeasurement.durationInMs,
-          };
-
-          eventSource.notify(
-            error instanceof AbortError
-              ? {
-                  ...finishMetadata,
-                  result: {
-                    status: "abort",
-                  },
-                }
-              : {
-                  ...finishMetadata,
-                  result: {
-                    status: "error",
-                    error,
-                  },
-                }
-          );
-
-          throw error;
+          reportError(event.error);
+          throw event.error;
         }
 
         if (event?.type === "delta") {
           lastFullDelta = event.fullDelta;
-
           lastStructure = model.extractPartialStructure(lastFullDelta);
 
-          // TODO attempt to get structure etc
+          // TODO attempt validate partial structure
 
-          yield lastStructure;
+          yield {
+            isComplete: false,
+            value: lastStructure,
+          } satisfies StructureStreamPart<STRUCTURE>;
         }
       }
+
+      // process the final result (full type validation):
+      const parseResult = structureDefinition.schema.validate(lastStructure);
+
+      if (!parseResult.success) {
+        reportError(parseResult.error);
+        throw parseResult.error;
+      }
+
+      yield {
+        isComplete: true,
+        value: parseResult.value,
+      };
 
       const finishMetadata = {
         eventType: "finished" as const,

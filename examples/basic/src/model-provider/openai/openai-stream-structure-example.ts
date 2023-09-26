@@ -37,8 +37,14 @@ async function main() {
     ]
   );
 
-  for await (const partialStructure of stream) {
-    console.log(partialStructure);
+  for await (const part of stream) {
+    if (!part.isComplete) {
+      const unknownPartialStructure = part.value;
+      console.log("partial value", unknownPartialStructure);
+    } else {
+      const fullyTypedStructure = part.value;
+      console.log("final value", fullyTypedStructure);
+    }
   }
 }
 
