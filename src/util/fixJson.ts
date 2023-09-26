@@ -9,7 +9,8 @@ type State =
   | "AFTER_OBJECT_KEY"
   | "INSIDE_ARRAY";
 
-// Implemented as a scanner that requires a single linear time pass over the partial JSON (and constant memory):
+// Implemented as a scanner with additional fixing
+// that performs a single linear time scan pass over the partial JSON:
 export function fixJson(input: string): string {
   const stack: State[] = ["BEFORE_VALUE"];
   let lastValidIndex = -1;
