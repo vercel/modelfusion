@@ -133,7 +133,7 @@ for (const choice of response.choices) {
 console.log(`Duration: ${metadata.durationInMs}ms`);
 ```
 
-### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure)
+### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure#generatestructure)
 
 Generate a structure that matches a schema.
 
@@ -164,6 +164,52 @@ const sentiment = await generateStructure(
     ),
   ]
 );
+```
+
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
+
+### [Stream Structure](https://modelfusion.dev/guide/function/generate-structure#streamstructure)
+
+Stream a structure that matches a schema. Partial structures before the final part are untyped JSON.
+
+```ts
+const structureStream = await streamStructure(
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+    temperature: 0,
+    maxCompletionTokens: 2000,
+  }),
+  new ZodStructureDefinition({
+    name: "generateCharacter" as const,
+    description: "Generate character descriptions.",
+    schema: z.object({
+      characters: z.array(
+        z.object({
+          name: z.string(),
+          class: z
+            .string()
+            .describe("Character class, e.g. warrior, mage, or thief."),
+          description: z.string(),
+        })
+      ),
+    }),
+  }),
+  [
+    OpenAIChatMessage.user(
+      "Generate 3 character descriptions for a fantasy role playing game."
+    ),
+  ]
+);
+
+for await (const part of structureStream) {
+  if (!part.isComplete) {
+    const unknownPartialStructure = part.value;
+    console.log("partial value", unknownPartialStructure);
+  } else {
+    const fullyTypedStructure = part.value;
+    console.log("final value", fullyTypedStructure);
+  }
+}
 ```
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)

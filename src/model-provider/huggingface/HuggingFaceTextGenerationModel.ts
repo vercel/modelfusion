@@ -141,9 +141,6 @@ export class HuggingFaceTextGenerationModel
     return response[0].generated_text;
   }
 
-  generateDeltaStreamResponse = undefined;
-  extractTextDelta = undefined;
-
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, string>
   ): PromptFormatTextGenerationModel<

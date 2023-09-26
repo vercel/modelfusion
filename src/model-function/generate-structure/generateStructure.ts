@@ -14,7 +14,8 @@ export function generateStructure<
   NAME extends string,
   SETTINGS extends StructureGenerationModelSettings,
 >(
-  model: StructureGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  model: StructureGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
   structureDefinition: StructureDefinition<NAME, STRUCTURE>,
   prompt:
     | PROMPT

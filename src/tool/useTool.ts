@@ -7,10 +7,6 @@ import { generateStructure } from "../model-function/generate-structure/generate
 import { Tool } from "./Tool.js";
 import { executeTool } from "./executeTool.js";
 
-// In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
-// retrieved through lookups such as TOOL["name"], such that any does not affect any client.
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * `useTool` uses `generateStructure` to generate parameters for a tool and then executes the tool with the parameters.
  *
@@ -22,9 +18,13 @@ export async function useTool<
   PROMPT,
   RESPONSE,
   SETTINGS extends StructureGenerationModelSettings,
+  // Using 'any' is required to allow for flexibility in the inputs. The actual types are
+  // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TOOL extends Tool<any, any, any>,
 >(
-  model: StructureGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  model: StructureGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
   tool: TOOL,
   prompt: PROMPT | ((tool: TOOL) => PROMPT),
   options?: ModelFunctionOptions<SETTINGS>

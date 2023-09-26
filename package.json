@@ -47,10 +47,12 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
-    "dist:copy-files": "copyfiles package.json README.md LICENSE dist",
-    "dist": "npm run clean && npm run lint && npm run build && npm run dist:copy-files"
+    "test": "vitest",
+    "dist": "npm run clean && npm run lint && npm run build && npm run dist:copy-files",
+    "dist:copy-files": "copyfiles package.json README.md LICENSE dist"
   },
   "dependencies": {
+    "deep-equal": "2.2.2",
     "eventsource-parser": "1.1.1",
     "js-tiktoken": "1.0.7",
     "nanoid": "3.3.6",
@@ -61,6 +63,7 @@
   "devDependencies": {
     "@pinecone-database/pinecone": "^0.1.6",
     "@tsconfig/recommended": "1.0.3",
+    "@types/deep-equal": "^1.0.2",
     "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
@@ -71,7 +74,8 @@
     "lint-staged": "14.0.1",
     "prettier": "3.0.3",
     "rimraf": "5.0.1",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "vitest": "^0.34.5"
   },
   "peerDependencies": {
     "@pinecone-database/pinecone": "0.1.6"
