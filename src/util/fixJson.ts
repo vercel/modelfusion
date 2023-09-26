@@ -1,18 +1,18 @@
 type State =
-  | "BEFORE_VALUE_VALID"
-  | "BEFORE_VALUE_INVALID"
+  | "BEFORE_VALUE"
   | "INSIDE_STRING"
   | "INSIDE_STRING_ESCAPE"
-  | "INSIDE_BOOLEAN"
+  | "INSIDE_LITERAL"
   | "INSIDE_NUMBER"
   | "INSIDE_OBJECT"
   | "INSIDE_OBJECT_KEY"
   | "AFTER_OBJECT_KEY"
   | "INSIDE_ARRAY";
 
+// Implemented as a scanner that requires a single linear time pass over the partial JSON (and constant memory):
 export function fixJson(input: string): string {
-  const stack: State[] = ["BEFORE_VALUE_VALID"];
-  let lastValidIndex = 0;
+  const stack: State[] = ["BEFORE_VALUE"];
+  let lastValidIndex = -1;
   let literalStart: number | null = null;
 
   for (let i = 0; i < input.length; i++) {
@@ -20,8 +20,7 @@ export function fixJson(input: string): string {
     const currentState = stack[stack.length - 1];
 
     switch (currentState) {
-      case "BEFORE_VALUE_INVALID":
-      case "BEFORE_VALUE_VALID": {
+      case "BEFORE_VALUE": {
         switch (char) {
           case '"': {
             lastValidIndex = i;
@@ -31,14 +30,20 @@ export function fixJson(input: string): string {
           }
 
           case "f":
-          case "t": {
+          case "t":
+          case "n": {
             lastValidIndex = i;
             literalStart = i;
             stack.pop();
-            stack.push("INSIDE_BOOLEAN");
+            stack.push("INSIDE_LITERAL");
             break;
           }
 
+          case "-": {
+            stack.pop();
+            stack.push("INSIDE_NUMBER");
+            break;
+          }
           case "0":
           case "1":
           case "2":
@@ -66,7 +71,7 @@ export function fixJson(input: string): string {
             lastValidIndex = i;
             stack.pop();
             stack.push("INSIDE_ARRAY");
-            stack.push("BEFORE_VALUE_VALID");
+            stack.push("BEFORE_VALUE");
             break;
           }
         }
@@ -99,7 +104,7 @@ export function fixJson(input: string): string {
         switch (char) {
           case ":": {
             stack.pop();
-            stack.push("BEFORE_VALUE_INVALID");
+            stack.push("BEFORE_VALUE");
             break;
           }
         }
@@ -130,7 +135,12 @@ export function fixJson(input: string): string {
       case "INSIDE_ARRAY": {
         switch (char) {
           case ",": {
-            stack.push("BEFORE_VALUE_INVALID");
+            stack.push("BEFORE_VALUE");
+            break;
+          }
+
+          default: {
+            lastValidIndex = i;
             break;
           }
         }
@@ -161,7 +171,20 @@ export function fixJson(input: string): string {
             break;
           }
 
+          case "e":
+          case "E":
+          case "-":
           case ".": {
+            break;
+          }
+
+          case ",": {
+            stack.pop();
+
+            if (stack[stack.length - 1] === "INSIDE_ARRAY") {
+              stack.push("BEFORE_VALUE");
+            }
+
             break;
           }
 
@@ -174,17 +197,23 @@ export function fixJson(input: string): string {
         break;
       }
 
-      case "INSIDE_BOOLEAN": {
-        const partialBoolean = input.substring(literalStart!, i);
+      case "INSIDE_LITERAL": {
+        const partialLiteral = input.substring(literalStart!, i);
 
         if (
-          !"false".startsWith(partialBoolean) &&
-          !"true".startsWith(partialBoolean)
+          !"false".startsWith(partialLiteral) &&
+          !"true".startsWith(partialLiteral) &&
+          !"null".startsWith(partialLiteral)
         ) {
           stack.pop();
+
+          if (stack[stack.length - 1] === "INSIDE_ARRAY") {
+            stack.push("BEFORE_VALUE");
+          }
+        } else {
+          lastValidIndex = i;
         }
 
-        lastValidIndex = i;
         break;
       }
     }
@@ -211,13 +240,15 @@ export function fixJson(input: string): string {
         break;
       }
 
-      case "INSIDE_BOOLEAN": {
-        const partialBoolean = input.substring(literalStart!, input.length);
+      case "INSIDE_LITERAL": {
+        const partialLiteral = input.substring(literalStart!, input.length);
 
-        if ("true".startsWith(partialBoolean)) {
-          result += "true".slice(partialBoolean.length);
-        } else if ("false".startsWith(partialBoolean)) {
-          result += "false".slice(partialBoolean.length);
+        if ("true".startsWith(partialLiteral)) {
+          result += "true".slice(partialLiteral.length);
+        } else if ("false".startsWith(partialLiteral)) {
+          result += "false".slice(partialLiteral.length);
+        } else if ("null".startsWith(partialLiteral)) {
+          result += "null".slice(partialLiteral.length);
         }
       }
     }

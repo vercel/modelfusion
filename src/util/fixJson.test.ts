@@ -6,6 +6,12 @@ describe("fixJson", () => {
     expect(fixJson("")).toBe("");
   });
 
+  describe("null", () => {
+    test("should handle incomplete null", () => {
+      expect(fixJson("nul")).toBe("null");
+    });
+  });
+
   describe("boolean", () => {
     test("should handle incomplete true", () => {
       expect(fixJson("t")).toBe("true");
@@ -25,7 +31,27 @@ describe("fixJson", () => {
       expect(fixJson("12.2")).toBe("12.2");
     });
 
-    // TODO e-notation
+    test("should handle negative numbers", () => {
+      expect(fixJson("-12")).toBe("-12");
+    });
+
+    test("should handle incomplete negative numbers", () => {
+      expect(fixJson("-")).toBe("");
+    });
+
+    test("should handle e-notation numbers", () => {
+      expect(fixJson("2.5e")).toBe("2.5");
+      expect(fixJson("2.5e-")).toBe("2.5");
+      expect(fixJson("2.5e3")).toBe("2.5e3");
+      expect(fixJson("-2.5e3")).toBe("-2.5e3");
+    });
+
+    test("should handle uppercase e-notation numbers", () => {
+      expect(fixJson("2.5E")).toBe("2.5");
+      expect(fixJson("2.5E-")).toBe("2.5");
+      expect(fixJson("2.5E3")).toBe("2.5E3");
+      expect(fixJson("-2.5E3")).toBe("-2.5E3");
+    });
   });
 
   describe("string", () => {
@@ -82,13 +108,51 @@ describe("fixJson", () => {
     });
   });
 
-  test("should handle nested arrays and objects", () => {
-    expect(fixJson('{"a": {"b": ["c", {"d": "e",')).toBe(
-      '{"a": {"b": ["c", {"d": "e"}]}}'
-    );
-  });
+  describe("nesting", () => {
+    test("should handle nested arrays with numbers", () => {
+      expect(fixJson("[1, [2, 3, [")).toBe("[1, [2, 3, []]]");
+    });
 
-  test("should handle deeply nested structures", () => {
-    expect(fixJson('{"a": {"b": {"c": {"d":')).toBe('{"a": {"b": {"c": {}}}}');
+    test("should handle nested arrays with literals", () => {
+      expect(fixJson("[false, [true, [")).toBe("[false, [true, []]]");
+    });
+
+    test("should handle nested objects", () => {
+      expect(fixJson('{"key": {"subKey":')).toBe('{"key": {}}');
+    });
+
+    test("should handle nested objects with numbers", () => {
+      expect(fixJson('{"key": 123, "key2": {"subKey":')).toBe(
+        '{"key": 123, "key2": {}}'
+      );
+    });
+
+    test("should handle nested objects with literals", () => {
+      expect(fixJson('{"key": null, "key2": {"subKey":')).toBe(
+        '{"key": null, "key2": {}}'
+      );
+    });
+
+    test("should handle arrays within objects", () => {
+      expect(fixJson('{"key": [1, 2, {')).toBe('{"key": [1, 2, {}]}');
+    });
+
+    test("should handle objects within arrays", () => {
+      expect(fixJson('[1, 2, {"key": "value",')).toBe(
+        '[1, 2, {"key": "value"}]'
+      );
+    });
+
+    test("should handle nested arrays and objects", () => {
+      expect(fixJson('{"a": {"b": ["c", {"d": "e",')).toBe(
+        '{"a": {"b": ["c", {"d": "e"}]}}'
+      );
+    });
+
+    test("should handle deeply nested structures", () => {
+      expect(fixJson('{"a": {"b": {"c": {"d":')).toBe(
+        '{"a": {"b": {"c": {}}}}'
+      );
+    });
   });
 });
