@@ -185,8 +185,6 @@ async function doStreamStructure<
             lastFullDelta = latestFullDelta;
             lastStructure = latestStructure;
 
-            // TODO attempt validate partial structure
-
             yield {
               isComplete: false,
               value: lastStructure,
