@@ -47,8 +47,9 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
-    "dist:copy-files": "copyfiles package.json README.md LICENSE dist",
-    "dist": "npm run clean && npm run lint && npm run build && npm run dist:copy-files"
+    "test": "vitest",
+    "dist": "npm run clean && npm run lint && npm run build && npm run dist:copy-files",
+    "dist:copy-files": "copyfiles package.json README.md LICENSE dist"
   },
   "dependencies": {
     "eventsource-parser": "1.1.1",
@@ -71,7 +72,8 @@
     "lint-staged": "14.0.1",
     "prettier": "3.0.3",
     "rimraf": "5.0.1",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "vitest": "^0.34.5"
   },
   "peerDependencies": {
     "@pinecone-database/pinecone": "0.1.6"
