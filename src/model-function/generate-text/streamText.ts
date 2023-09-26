@@ -17,7 +17,6 @@ import {
   TextStreamingFinishedEvent,
   TextStreamingStartedEvent,
 } from "./TextStreamingEvent.js";
-import { extractTextDeltas } from "./extractTextDeltas.js";
 
 export class StreamTextPromise extends Promise<AsyncIterable<string>> {
   private outputPromise: Promise<AsyncIterable<string>>;
@@ -155,58 +154,77 @@ async function doStreamText<
     ...startMetadata,
   } satisfies TextStreamingStartedEvent);
 
-  const result = await runSafe(async () =>
-    extractTextDeltas({
-      deltaIterable: await model.generateDeltaStreamResponse(prompt, {
-        functionId: options?.functionId,
-        settings, // options.setting is null here because of the initial guard
-        run,
-      }),
-      extractDelta: (fullDelta) => model.extractTextDelta(fullDelta),
-      onDone: (fullText, lastFullDelta) => {
-        const finishMetadata = {
-          eventType: "finished" as const,
-          ...startMetadata,
-          finishTimestamp: new Date(),
-          durationInMs: durationMeasurement.durationInMs,
-        };
+  const result = await runSafe(async () => {
+    const deltaIterable = await model.generateDeltaStreamResponse(prompt, {
+      functionId: options?.functionId,
+      settings, // options.setting is null here because of the initial guard
+      run,
+    });
 
-        eventSource.notify({
-          ...finishMetadata,
-          result: {
-            status: "success",
-            response: lastFullDelta,
-            output: fullText,
-          },
-        } satisfies TextStreamingFinishedEvent);
-      },
-      onError: (error) => {
-        const finishMetadata = {
-          eventType: "finished" as const,
-          ...startMetadata,
-          finishTimestamp: new Date(),
-          durationInMs: durationMeasurement.durationInMs,
-        };
+    return (async function* () {
+      let accumulatedText = "";
+      let lastFullDelta: FULL_DELTA | undefined;
 
-        eventSource.notify(
-          error instanceof AbortError
-            ? {
-                ...finishMetadata,
-                result: {
-                  status: "abort",
-                },
-              }
-            : {
-                ...finishMetadata,
-                result: {
-                  status: "error",
-                  error,
-                },
-              }
-        );
-      },
-    })
-  );
+      for await (const event of deltaIterable) {
+        if (event?.type === "error") {
+          const error = event.error;
+
+          const finishMetadata = {
+            eventType: "finished" as const,
+            ...startMetadata,
+            finishTimestamp: new Date(),
+            durationInMs: durationMeasurement.durationInMs,
+          };
+
+          eventSource.notify(
+            error instanceof AbortError
+              ? {
+                  ...finishMetadata,
+                  result: {
+                    status: "abort",
+                  },
+                }
+              : {
+                  ...finishMetadata,
+                  result: {
+                    status: "error",
+                    error,
+                  },
+                }
+          );
+
+          throw error;
+        }
+
+        if (event?.type === "delta") {
+          lastFullDelta = event.fullDelta;
+
+          const delta = model.extractTextDelta(lastFullDelta);
+
+          if (delta != null && delta.length > 0) {
+            accumulatedText += delta;
+            yield delta;
+          }
+        }
+      }
+
+      const finishMetadata = {
+        eventType: "finished" as const,
+        ...startMetadata,
+        finishTimestamp: new Date(),
+        durationInMs: durationMeasurement.durationInMs,
+      };
+
+      eventSource.notify({
+        ...finishMetadata,
+        result: {
+          status: "success",
+          response: lastFullDelta,
+          output: accumulatedText,
+        },
+      } satisfies TextStreamingFinishedEvent);
+    })();
+  });
 
   if (!result.ok) {
     const finishMetadata = {
