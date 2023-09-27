@@ -21,7 +21,7 @@ import {
   StructureStreamingStartedEvent,
 } from "./StructureStreamingEvent.js";
 
-type StructureStreamPart<STRUCTURE> =
+export type StructureStreamPart<STRUCTURE> =
   | {
       isComplete: false;
       value: unknown;
