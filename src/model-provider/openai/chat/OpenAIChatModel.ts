@@ -556,6 +556,11 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
   messages: Array<OpenAIChatMessage>;
   user?: string;
 }): Promise<RESPONSE> {
+  // empty arrays are not allowed for stop:
+  if (stop != null && Array.isArray(stop) && stop.length === 0) {
+    stop = undefined;
+  }
+
   return postJsonToApi({
     url: api.assembleUrl("/chat/completions"),
     headers: api.headers,

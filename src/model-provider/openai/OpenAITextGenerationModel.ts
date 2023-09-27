@@ -430,6 +430,11 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
   prompt: string;
   user?: string;
 }): Promise<RESPONSE> {
+  // empty arrays are not allowed for stop:
+  if (stop != null && Array.isArray(stop) && stop.length === 0) {
+    stop = undefined;
+  }
+
   return postJsonToApi({
     url: api.assembleUrl("/completions"),
     headers: api.headers,
