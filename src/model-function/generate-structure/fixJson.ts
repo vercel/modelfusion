@@ -16,7 +16,14 @@ type State =
   | "INSIDE_ARRAY_AFTER_COMMA";
 
 // Implemented as a scanner with additional fixing
-// that performs a single linear time scan pass over the partial JSON:
+// that performs a single linear time scan pass over the partial JSON.
+//
+// The states should ideally match relevant states from the JSON spec:
+// https://www.json.org/json-en.html
+//
+// Please note that invalid JSON is not considered/covered, because it
+// is assumed that the resulting JSON will be processed by a standard
+// JSON parser that will detect any invalid JSON.
 export function fixJson(input: string): string {
   const stack: State[] = ["ROOT"];
   let lastValidIndex = -1;
