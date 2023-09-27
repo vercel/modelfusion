@@ -85,12 +85,32 @@ describe("fixJson", () => {
       expect(fixJson("[")).toBe("[]");
     });
 
+    test("should handle closing bracket after number in array", () => {
+      expect(fixJson("[[1], [2")).toBe("[[1], [2]]");
+    });
+
+    test("should handle closing bracket after string in array", () => {
+      expect(fixJson(`[["1"], ["2`)).toBe(`[["1"], ["2"]]`);
+    });
+
+    test("should handle closing bracket after literal in array", () => {
+      expect(fixJson("[[false], [nu")).toBe("[[false], [null]]");
+    });
+
+    test("should handle closing bracket after array in array", () => {
+      expect(fixJson("[[[]], [[]")).toBe("[[[]], [[]]]");
+    });
+
+    test("should handle closing bracket after object in array", () => {
+      expect(fixJson("[[{}], [{")).toBe("[[{}], [{}]]");
+    });
+
     test("should handle trailing comma", () => {
       expect(fixJson("[1, ")).toBe("[1]");
     });
 
     test("should handle closing array", () => {
-      expect(fixJson('["a": [], "b": 123')).toBe('["a": [], "b": 123]');
+      expect(fixJson("[[], 123")).toBe("[[], 123]");
     });
   });
 
@@ -99,8 +119,34 @@ describe("fixJson", () => {
       expect(fixJson('{"key":')).toBe("{}");
     });
 
-    test("should handle closing brace in object", () => {
-      expect(fixJson('{"a": {"b": 1}')).toBe('{"a": {"b": 1}}');
+    test("should handle closing brace after number in object", () => {
+      expect(fixJson('{"a": {"b": 1}, "c": {"d": 2')).toBe(
+        '{"a": {"b": 1}, "c": {"d": 2}}'
+      );
+    });
+
+    test("should handle closing brace after string in object", () => {
+      expect(fixJson('{"a": {"b": "1"}, "c": {"d": 2')).toBe(
+        '{"a": {"b": "1"}, "c": {"d": 2}}'
+      );
+    });
+
+    test("should handle closing brace after literal in object", () => {
+      expect(fixJson('{"a": {"b": false}, "c": {"d": 2')).toBe(
+        '{"a": {"b": false}, "c": {"d": 2}}'
+      );
+    });
+
+    test("should handle closing brace after array in object", () => {
+      expect(fixJson('{"a": {"b": []}, "c": {"d": 2')).toBe(
+        '{"a": {"b": []}, "c": {"d": 2}}'
+      );
+    });
+
+    test("should handle closing brace after object in object", () => {
+      expect(fixJson('{"a": {"b": {}}, "c": {"d": 2')).toBe(
+        '{"a": {"b": {}}, "c": {"d": 2}}'
+      );
     });
 
     test("should handle partial keys (first key)", () => {
@@ -171,6 +217,42 @@ describe("fixJson", () => {
       expect(fixJson('{"a": 1, "b": [')).toBe('{"a": 1, "b": []}');
       expect(fixJson('{"a": 1, "b": {')).toBe('{"a": 1, "b": {}}');
       expect(fixJson('{"a": 1, "b": "')).toBe('{"a": 1, "b": ""}');
+    });
+  });
+
+  describe("regression", () => {
+    test("should handle complex nesting 1", () => {
+      expect(
+        fixJson(
+          [
+            "{",
+            '  "a": [',
+            "    {",
+            '      "a1": "v1",',
+            '      "a2": "v2",',
+            `      "a3": "v3"`,
+            "    }",
+            "  ],",
+            '  "b": [',
+            "    {",
+            '      "b1": "n',
+          ].join("\n")
+        )
+      ).toBe(
+        [
+          "{",
+          '  "a": [',
+          "    {",
+          '      "a1": "v1",',
+          '      "a2": "v2",',
+          `      "a3": "v3"`,
+          "    }",
+          "  ],",
+          '  "b": [',
+          "    {",
+          '      "b1": "n"}]}',
+        ].join("\n")
+      );
     });
   });
 });
