@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.35.2 - 2023-09-27
+
+### Fixed
+
+- Support empty stop sequences when calling OpenAI text and chat models.
+
 ## v0.35.1 - 2023-09-27
 
 ### Fixed
