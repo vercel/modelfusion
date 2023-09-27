@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.35.1 - 2023-09-27
+
+### Fixed
+
+- Fixed bugs in `streamStructure` partial JSON parsing.
+
 ## v0.35.0 - 2023-09-26
 
 ### Added
