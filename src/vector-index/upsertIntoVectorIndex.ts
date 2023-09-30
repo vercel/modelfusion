@@ -19,7 +19,7 @@ export async function upsertIntoVectorIndex<
     getValueToEmbed,
     getId,
   }: {
-    vectorIndex: VectorIndex<OBJECT, unknown>;
+    vectorIndex: VectorIndex<OBJECT, unknown, unknown>;
     embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
     generateId?: () => string;
     objects: OBJECT[];

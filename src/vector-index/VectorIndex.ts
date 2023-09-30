@@ -1,6 +1,6 @@
 import { Vector } from "../core/Vector.js";
 
-export interface VectorIndex<DATA, INDEX> {
+export interface VectorIndex<DATA, INDEX, FILTER> {
   upsertMany(
     data: Array<{
       id: string;
@@ -13,6 +13,7 @@ export interface VectorIndex<DATA, INDEX> {
     queryVector: Vector;
     maxResults: number;
     similarityThreshold?: number;
+    filter?: FILTER;
   }): Promise<Array<{ id: string; data: DATA; similarity?: number }>>;
 
   asIndex(): INDEX;

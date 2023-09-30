@@ -4,7 +4,7 @@ import { Vector } from "../../core/Vector.js";
 import { VectorIndex } from "../VectorIndex.js";
 
 export class PineconeVectorIndex<DATA extends object | undefined>
-  implements VectorIndex<DATA, PineconeVectorIndex<DATA>>
+  implements VectorIndex<DATA, PineconeVectorIndex<DATA>, null>
 {
   readonly index: VectorOperationsApi;
   readonly namespace?: string;
