@@ -28,6 +28,7 @@ export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
     embeddingModel,
     maxResults,
     similarityThreshold,
+    filter,
   }: {
     vectorIndex: VectorIndex<OBJECT, INDEX, FILTER>;
     embeddingModel: TextEmbeddingModel<unknown, TextEmbeddingModelSettings>;
@@ -37,6 +38,7 @@ export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
     this.settings = {
       maxResults,
       similarityThreshold,
+      filter,
     };
   }
 
