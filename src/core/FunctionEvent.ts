@@ -1,11 +1,15 @@
 import {
-  ExecuteToolFinishedEvent,
-  ExecuteToolStartedEvent,
-} from "../tool/ExecuteToolEvent.js";
-import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
 } from "../model-function/ModelCallEvent.js";
+import {
+  RetrieveFinishedEvent,
+  RetrieveStartedEvent,
+} from "../retriever/RetrieveEvent.js";
+import {
+  ExecuteToolFinishedEvent,
+  ExecuteToolStartedEvent,
+} from "../tool/ExecuteToolEvent.js";
 
 export interface BaseFunctionEvent {
   /**
@@ -96,5 +100,7 @@ export interface BaseFunctionFinishedEvent extends BaseFunctionEvent {
 export type FunctionEvent =
   | ModelCallStartedEvent
   | ExecuteToolStartedEvent
+  | RetrieveStartedEvent
   | ModelCallFinishedEvent
-  | ExecuteToolFinishedEvent;
+  | ExecuteToolFinishedEvent
+  | RetrieveFinishedEvent;
