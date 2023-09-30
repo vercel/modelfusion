@@ -11,6 +11,8 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 1. Install [llama.cpp](https://github.com/ggerganov/llama.cpp) following the instructions in the `llama.cpp` repository.
 1. Download the models that you want to use and try it out with llama.cpp.
    - [Search for GGUF models on Hugging Face](https://huggingface.co/models?sort=trending&search=gguf)
+   - [Llama 2 7b Chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
+   - [Llama 2 7b](https://huggingface.co/TheBloke/Llama-2-7B-GGML)
 1. Start the llama.cpp server with the model that you want to serve:
    - e.g., `./server -m models/llama-2-7b-chat.GGUF.q4_0.bin -c 4096` (Mac)
    - For generating embeddings, you need to start the server with the `--embedding` flag.
