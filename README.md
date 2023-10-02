@@ -377,12 +377,12 @@ const image = await generateImage(
 
 Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider/openai), [Stability AI](https://modelfusion.dev/integration/model-provider/stability), [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111)
 
-### [Embed Text](https://modelfusion.dev/guide/function/embed-text)
+### [Embed Value](https://modelfusion.dev/guide/function/embed)
 
-Create embeddings for text. Embeddings are vectors that represent the meaning of the text.
+Create embeddings for text and other values. Embeddings are vectors that represent e.g. the meaning of the text in the context of the model.
 
 ```ts
-const embeddings = await embedTexts(
+const embeddings = await embedMany(
   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
   [
     "At first, Nox didn't know what to do with the pup.",
@@ -459,7 +459,7 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
   - [Generate and stream text](https://modelfusion.dev/guide/function/generate-text)
   - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
   - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
-  - [Embed Text](https://modelfusion.dev/guide/function/embed-text)
+  - [Embed Text](https://modelfusion.dev/guide/function/embed)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
   - [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)

@@ -1,10 +1,10 @@
-import { OpenAITextEmbeddingModel, embedTexts } from "modelfusion";
+import { OpenAITextEmbeddingModel, embedMany } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 async function main() {
-  const { output: embeddings, metadata } = await embedTexts(
+  const { output: embeddings, metadata } = await embedMany(
     new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
     [
       "At first, Nox didn't know what to do with the pup.",

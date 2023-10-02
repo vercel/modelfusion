@@ -1,22 +1,22 @@
 import z from "zod";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import {
-  TextEmbeddingModel,
-  TextEmbeddingModelSettings,
-} from "../../model-function/embed-text/TextEmbeddingModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import {
+  EmbeddingModel,
+  EmbeddingModelSettings,
+} from "../../model-function/embed/EmbeddingModel.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
 export interface LlamaCppTextEmbeddingModelSettings
-  extends TextEmbeddingModelSettings {
+  extends EmbeddingModelSettings {
   api?: ApiConfiguration;
   embeddingDimensions?: number;
 }
@@ -24,7 +24,8 @@ export interface LlamaCppTextEmbeddingModelSettings
 export class LlamaCppTextEmbeddingModel
   extends AbstractModel<LlamaCppTextEmbeddingModelSettings>
   implements
-    TextEmbeddingModel<
+    EmbeddingModel<
+      string,
       LlamaCppTextEmbeddingResponse,
       LlamaCppTextEmbeddingModelSettings
     >
@@ -41,7 +42,7 @@ export class LlamaCppTextEmbeddingModel
     return null;
   }
 
-  readonly maxTextsPerCall = 1;
+  readonly maxValuesPerCall = 1;
 
   readonly contextWindowSize = undefined;
   readonly embeddingDimensions;
@@ -56,9 +57,9 @@ export class LlamaCppTextEmbeddingModel
     texts: Array<string>,
     options?: ModelFunctionOptions<LlamaCppTextEmbeddingModelSettings>
   ): Promise<LlamaCppTextEmbeddingResponse> {
-    if (texts.length > this.maxTextsPerCall) {
+    if (texts.length > this.maxValuesPerCall) {
       throw new Error(
-        `The Llama.cpp embedding API only supports ${this.maxTextsPerCall} texts per API call.`
+        `The Llama.cpp embedding API only supports ${this.maxValuesPerCall} texts per API call.`
       );
     }
 

@@ -81,15 +81,17 @@ async function main() {
       embeddingModel: new OpenAITextEmbeddingModel({
         model: "text-embedding-ada-002",
       }),
-      // alternative
-      // filter: (object) => object.page === 3, // <--- filter
+      filter: (object) => object.page === 3, // <--- filter
       maxResults: 1,
       similarityThreshold: 0.8,
     }),
-    {
-      text: "rainbow and water droplets",
-      filter: (object) => object.page === 3, // <--- filter
-    }
+    "rainbow and water droplets"
+    // alternative:
+    // {
+    //   settings: {
+    //     filter: (object) => object.page === 3, // <--- filter
+    //   },
+    // }
   );
 
   console.log(result);

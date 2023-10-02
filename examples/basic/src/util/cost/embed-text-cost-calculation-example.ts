@@ -4,7 +4,7 @@ import {
   OpenAICostCalculator,
   OpenAITextEmbeddingModel,
   calculateCost,
-  embedTexts,
+  embedMany,
 } from "modelfusion";
 
 dotenv.config();
@@ -12,7 +12,7 @@ dotenv.config();
 async function main() {
   const run = new DefaultRun();
 
-  const embeddings = await embedTexts(
+  const embeddings = await embedMany(
     new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
     [
       "At first, Nox didn't know what to do with the pup.",

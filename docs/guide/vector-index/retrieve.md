@@ -74,11 +74,9 @@ const retrievedObjects = await retrieve(
     }),
     maxResults: 2,
     similarityThreshold: 0.7,
-  }),
-  {
-    text: "rainbow and water droplets",
     filter: (object) => object.page === 3,
-  }
+  }),
+  "rainbow and water droplets"
 );
 
 // retrievedObjects contains the 2 objects with a page property of 3

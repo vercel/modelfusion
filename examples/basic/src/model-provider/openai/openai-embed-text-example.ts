@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
-import { OpenAITextEmbeddingModel, embedTexts } from "modelfusion";
+import { OpenAITextEmbeddingModel, embedMany } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const embeddings = await embedTexts(
+  const embeddings = await embedMany(
     new OpenAITextEmbeddingModel({
       model: "text-embedding-ada-002",
     }),

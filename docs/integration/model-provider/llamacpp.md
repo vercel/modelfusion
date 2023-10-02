@@ -81,9 +81,9 @@ for await (const textFragment of textStream) {
 [LlamaCppTextEmbeddingModel API](/api/classes/LlamaCppTextEmbeddingModel)
 
 ```ts
-import { LlamaCppTextEmbeddingModel, embedTexts } from "modelfusion";
+import { LlamaCppTextEmbeddingModel, embedMany } from "modelfusion";
 
-const embeddings = await embedTexts(new LlamaCppTextEmbeddingModel(), [
+const embeddings = await embedMany(new LlamaCppTextEmbeddingModel(), [
   "At first, Nox didn't know what to do with the pup.",
   "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
 ]);

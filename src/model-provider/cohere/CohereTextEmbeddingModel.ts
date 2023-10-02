@@ -1,17 +1,17 @@
 import z from "zod";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import {
-  TextEmbeddingModel,
-  TextEmbeddingModelSettings,
-} from "../../model-function/embed-text/TextEmbeddingModel.js";
-import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import {
+  EmbeddingModel,
+  EmbeddingModelSettings,
+} from "../../model-function/embed/EmbeddingModel.js";
+import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
@@ -35,7 +35,7 @@ export type CohereTextEmbeddingModelType =
   keyof typeof COHERE_TEXT_EMBEDDING_MODELS;
 
 export interface CohereTextEmbeddingModelSettings
-  extends TextEmbeddingModelSettings {
+  extends EmbeddingModelSettings {
   api?: ApiConfiguration;
   model: CohereTextEmbeddingModelType;
   truncate?: "NONE" | "START" | "END";
@@ -47,7 +47,7 @@ export interface CohereTextEmbeddingModelSettings
  * @see https://docs.cohere.com/reference/embed
  *
  * @example
- * const embeddings = await embedTexts(
+ * const embeddings = await embedMany(
  *   new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
  *   [
  *     "At first, Nox didn't know what to do with the pup.",
@@ -58,7 +58,8 @@ export interface CohereTextEmbeddingModelSettings
 export class CohereTextEmbeddingModel
   extends AbstractModel<CohereTextEmbeddingModelSettings>
   implements
-    TextEmbeddingModel<
+    EmbeddingModel<
+      string,
       CohereTextEmbeddingResponse,
       CohereTextEmbeddingModelSettings
     >,
@@ -84,7 +85,7 @@ export class CohereTextEmbeddingModel
     return this.settings.model;
   }
 
-  readonly maxTextsPerCall = 96;
+  readonly maxValuesPerCall = 96;
   readonly embeddingDimensions: number;
 
   readonly contextWindowSize: number;
@@ -106,9 +107,9 @@ export class CohereTextEmbeddingModel
     texts: Array<string>,
     options?: ModelFunctionOptions<CohereTextEmbeddingModelSettings>
   ): Promise<CohereTextEmbeddingResponse> {
-    if (texts.length > this.maxTextsPerCall) {
+    if (texts.length > this.maxValuesPerCall) {
       throw new Error(
-        `The Cohere embedding API only supports ${this.maxTextsPerCall} texts per API call.`
+        `The Cohere embedding API only supports ${this.maxValuesPerCall} texts per API call.`
       );
     }
 

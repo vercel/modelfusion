@@ -74,9 +74,9 @@ for await (const textFragment of textStream) {
 [CohereTextEmbeddingModel API](/api/classes/CohereTextEmbeddingModel)
 
 ```ts
-import { CohereTextEmbeddingModel, embedTexts } from "modelfusion";
+import { CohereTextEmbeddingModel, embedMany } from "modelfusion";
 
-const embeddings = await embedTexts(
+const embeddings = await embedMany(
   new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
   [
     "At first, Nox didn't know what to do with the pup.",
