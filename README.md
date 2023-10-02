@@ -358,7 +358,7 @@ const text = await describeImage(
   new HuggingFaceImageDescriptionModel({
     model: "nlpconnect/vit-gpt2-image-captioning",
   }),
-  data: buffer
+  data // buffer with image data
 );
 ```
 
