@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.36.0 - 2023-10-02
+
+### Added
+
+- `basic-text` logger logs function ids when available.
+- `retrieve` produces events for logging and observability.
+
 ## v0.35.2 - 2023-09-27
 
 ### Fixed
