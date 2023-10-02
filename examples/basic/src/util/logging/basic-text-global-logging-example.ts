@@ -20,6 +20,7 @@ async function main() {
       maxCompletionTokens: 50,
     }),
     "Write a short story about a robot learning to love:\n\n"
+    // { functionId: "example" } // optional function identifier
   );
 }
 

@@ -23,22 +23,18 @@ export function getFunctionCallLogger(
 
 const basicTextObserver: FunctionObserver = {
   onFunctionEvent(event: FunctionEvent) {
+    const text = `[${event.timestamp.toISOString()}] ${event.callId}${
+      event.functionId != null ? ` (${event.functionId})` : ""
+    } - ${event.functionType} ${event.eventType}`;
+
     // log based on event type:
     switch (event.eventType) {
       case "started": {
-        console.log(
-          `[${event.timestamp.toISOString()}] ${event.callId} - ${
-            event.functionType
-          } ${event.eventType}`
-        );
+        console.log(text);
         break;
       }
       case "finished": {
-        console.log(
-          `[${event.timestamp.toISOString()}] ${event.callId} - ${
-            event.functionType
-          } ${event.eventType} in ${event.durationInMs}ms`
-        );
+        console.log(`${text} in ${event.durationInMs}ms`);
         break;
       }
     }
