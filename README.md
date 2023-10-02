@@ -379,7 +379,7 @@ Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider
 
 ### [Embed Value](https://modelfusion.dev/guide/function/embed)
 
-Create embeddings for text and other values. Embeddings are vectors that represent e.g. the meaning of the text in the context of the model.
+Create embeddings for text and other values. Embeddings are vectors that represent the essence of the values in the context of the model.
 
 ```ts
 const embeddings = await embedMany(
@@ -459,7 +459,7 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
   - [Generate and stream text](https://modelfusion.dev/guide/function/generate-text)
   - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
   - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
-  - [Embed Text](https://modelfusion.dev/guide/function/embed)
+  - [Embed Value](https://modelfusion.dev/guide/function/embed)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
   - [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)

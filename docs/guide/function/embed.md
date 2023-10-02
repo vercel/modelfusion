@@ -1,8 +1,10 @@
 ---
-sidebar_position: 15
+sidebar_position: 18
 ---
 
 # Embed Value
+
+Embeddings convert data, like text, into compact vector representations, capturing their essence in a way that's useful for AI tasks.
 
 ## Usage
 
