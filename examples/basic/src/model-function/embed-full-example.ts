@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function main() {
-  const { output: embeddings, metadata } = await embedMany(
+  const output = await embedMany(
     new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
     [
       "At first, Nox didn't know what to do with the pup.",
@@ -12,7 +12,7 @@ async function main() {
     ]
   ).asFullResponse();
 
-  console.log(embeddings);
+  console.log(output);
 }
 
 main().catch(console.error);
