@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.38.0 - 2023-10-02
+
+### Changed
+
+**breaking change**: Generalized embeddings beyond text embedding.
+
+- `embedText` renamed to `embed`.
+- `embedTexts` renamed to `embedMany`
+- Removed filtering from `VectorIndexRetriever` query (still available as a setting).
+
 ## v0.37.0 - 2023-10-02
 
 ### Added
