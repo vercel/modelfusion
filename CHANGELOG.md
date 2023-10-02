@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.37.0 - 2023-10-02
+
+### Added
+
+- `VectorIndexRetriever` supports a filter option that is passed to the vector index.
+- `MemoryVectorIndex` supports filter functions that are applied to the objects before calculating the embeddings.
+
 ## v0.36.0 - 2023-10-02
 
 ### Added
