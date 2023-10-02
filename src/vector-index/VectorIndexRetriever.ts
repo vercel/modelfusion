@@ -13,8 +13,17 @@ export interface VectorIndexRetrieverSettings<FILTER> {
   filter?: FILTER;
 }
 
+type VectorIndexRetrieverQuery<FILTER> =
+  | string
+  | { text: string; filter?: FILTER };
+
 export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
-  implements Retriever<OBJECT, string, VectorIndexRetrieverSettings<FILTER>>
+  implements
+    Retriever<
+      OBJECT,
+      VectorIndexRetrieverQuery<FILTER>,
+      VectorIndexRetrieverSettings<FILTER>
+    >
 {
   private readonly vectorIndex: VectorIndex<OBJECT, INDEX, FILTER>;
   private readonly embeddingModel: TextEmbeddingModel<
@@ -43,7 +52,7 @@ export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
   }
 
   async retrieve(
-    query: string,
+    query: VectorIndexRetrieverQuery<FILTER>,
     options?: ModelFunctionOptions<RetrieverSettings>
   ): Promise<OBJECT[]> {
     if (options?.settings != null) {
@@ -52,6 +61,13 @@ export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
         observers: options.observers,
         run: options.run,
       });
+    }
+
+    let filter = this.settings?.filter;
+
+    if (typeof query === "object") {
+      filter = query.filter ?? filter; // use filter from query if available
+      query = query.text;
     }
 
     const embedding = await embedText(this.embeddingModel, query, {
@@ -63,7 +79,7 @@ export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
       queryVector: embedding,
       maxResults: this.settings.maxResults ?? 1,
       similarityThreshold: this.settings.similarityThreshold,
-      filter: this.settings?.filter,
+      filter,
     });
 
     return queryResult.map((item) => item.data);
