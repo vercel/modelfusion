@@ -34,7 +34,7 @@ async function main() {
     getValueToEmbed: (text) => text,
   });
 
-  const chunks = await retrieve(
+  const result = await retrieve(
     new VectorIndexRetriever({
       vectorIndex,
       embeddingModel: new OpenAITextEmbeddingModel({
@@ -46,7 +46,7 @@ async function main() {
     "rainbow and water droplets"
   );
 
-  console.log(chunks);
+  console.log(result);
 }
 
 main().catch(console.error);
