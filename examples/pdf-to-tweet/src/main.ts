@@ -29,7 +29,7 @@ const run = new DefaultRun({
             );
             break;
           }
-          case "text-embedding": {
+          case "embedding": {
             console.log(
               `Embed text ${event.functionId ?? "unknown"} ${
                 event.functionType
