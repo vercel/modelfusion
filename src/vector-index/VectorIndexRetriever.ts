@@ -7,35 +7,38 @@ import { embedText } from "../model-function/embed-text/embedText.js";
 import { Retriever, RetrieverSettings } from "../retriever/Retriever.js";
 import { VectorIndex } from "./VectorIndex.js";
 
-export interface VectorIndexRetrieverSettings {
+export interface VectorIndexRetrieverSettings<FILTER> {
   maxResults?: number;
   similarityThreshold?: number;
+  filter?: FILTER;
 }
 
-export class VectorIndexRetriever<OBJECT, INDEX>
-  implements Retriever<OBJECT, string, VectorIndexRetrieverSettings>
+export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
+  implements Retriever<OBJECT, string, VectorIndexRetrieverSettings<FILTER>>
 {
-  private readonly vectorIndex: VectorIndex<OBJECT, INDEX>;
+  private readonly vectorIndex: VectorIndex<OBJECT, INDEX, FILTER>;
   private readonly embeddingModel: TextEmbeddingModel<
     unknown,
     TextEmbeddingModelSettings
   >;
-  private readonly settings: VectorIndexRetrieverSettings;
+  private readonly settings: VectorIndexRetrieverSettings<FILTER>;
 
   constructor({
     vectorIndex,
     embeddingModel,
     maxResults,
     similarityThreshold,
+    filter,
   }: {
-    vectorIndex: VectorIndex<OBJECT, INDEX>;
+    vectorIndex: VectorIndex<OBJECT, INDEX, FILTER>;
     embeddingModel: TextEmbeddingModel<unknown, TextEmbeddingModelSettings>;
-  } & VectorIndexRetrieverSettings) {
+  } & VectorIndexRetrieverSettings<FILTER>) {
     this.vectorIndex = vectorIndex;
     this.embeddingModel = embeddingModel;
     this.settings = {
       maxResults,
       similarityThreshold,
+      filter,
     };
   }
 
@@ -60,13 +63,14 @@ export class VectorIndexRetriever<OBJECT, INDEX>
       queryVector: embedding,
       maxResults: this.settings.maxResults ?? 1,
       similarityThreshold: this.settings.similarityThreshold,
+      filter: this.settings?.filter,
     });
 
     return queryResult.map((item) => item.data);
   }
 
   withSettings(
-    additionalSettings: Partial<VectorIndexRetrieverSettings>
+    additionalSettings: Partial<VectorIndexRetrieverSettings<FILTER>>
   ): this {
     return new VectorIndexRetriever(
       Object.assign({}, this.settings, additionalSettings, {

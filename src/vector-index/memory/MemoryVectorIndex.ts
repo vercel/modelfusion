@@ -15,7 +15,8 @@ type Entry<DATA> = {
  * that does not need to be persisted.
  */
 export class MemoryVectorIndex<DATA>
-  implements VectorIndex<DATA, MemoryVectorIndex<DATA>>
+  implements
+    VectorIndex<DATA, MemoryVectorIndex<DATA>, (value: DATA) => boolean>
 {
   static async deserialize<DATA>({
     serializedData,
@@ -69,12 +70,15 @@ export class MemoryVectorIndex<DATA>
     queryVector,
     similarityThreshold,
     maxResults,
+    filter,
   }: {
     queryVector: Vector;
     maxResults: number;
     similarityThreshold?: number;
+    filter?: (value: DATA) => boolean;
   }): Promise<Array<{ id: string; data: DATA; similarity?: number }>> {
     const results = [...this.entries.values()]
+      .filter((value) => filter?.(value.data) ?? true)
       .map((entry) => ({
         id: entry.id,
         similarity: cosineSimilarity(entry.vector, queryVector),
