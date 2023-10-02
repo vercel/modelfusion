@@ -3,9 +3,9 @@ import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
-  TextEmbeddingModel,
-  TextEmbeddingModelSettings,
-} from "../../model-function/embed-text/TextEmbeddingModel.js";
+  EmbeddingModel,
+  EmbeddingModelSettings,
+} from "../../model-function/embed/EmbeddingModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
@@ -15,12 +15,12 @@ import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
 import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
 
 export interface HuggingFaceTextEmbeddingModelSettings
-  extends TextEmbeddingModelSettings {
+  extends EmbeddingModelSettings {
   api?: ApiConfiguration;
 
   model: string;
 
-  maxTextsPerCall?: number;
+  maxValuesPerCall?: number;
   embeddingDimensions?: number;
 
   options?: {
@@ -41,7 +41,7 @@ export interface HuggingFaceTextEmbeddingModelSettings
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
- * const embeddings = await embedTexts(
+ * const embeddings = await embedMany(
  *   model,
  *   [
  *     "At first, Nox didn't know what to do with the pup.",
@@ -52,7 +52,8 @@ export interface HuggingFaceTextEmbeddingModelSettings
 export class HuggingFaceTextEmbeddingModel
   extends AbstractModel<HuggingFaceTextEmbeddingModelSettings>
   implements
-    TextEmbeddingModel<
+    EmbeddingModel<
+      string,
       HuggingFaceTextEmbeddingResponse,
       HuggingFaceTextEmbeddingModelSettings
     >
@@ -61,7 +62,7 @@ export class HuggingFaceTextEmbeddingModel
     super({ settings });
 
     // There is no limit documented in the HuggingFace API. Use 1024 as a reasonable default.
-    this.maxTextsPerCall = settings.maxTextsPerCall ?? 1024;
+    this.maxValuesPerCall = settings.maxValuesPerCall ?? 1024;
     this.embeddingDimensions = settings.embeddingDimensions;
   }
 
@@ -70,7 +71,7 @@ export class HuggingFaceTextEmbeddingModel
     return this.settings.model;
   }
 
-  readonly maxTextsPerCall;
+  readonly maxValuesPerCall;
 
   readonly contextWindowSize = undefined;
   readonly embeddingDimensions;
@@ -81,9 +82,9 @@ export class HuggingFaceTextEmbeddingModel
     texts: Array<string>,
     options?: ModelFunctionOptions<HuggingFaceTextEmbeddingModelSettings>
   ): Promise<HuggingFaceTextEmbeddingResponse> {
-    if (texts.length > this.maxTextsPerCall) {
+    if (texts.length > this.maxValuesPerCall) {
       throw new Error(
-        `The HuggingFace feature extraction API is configured to only support ${this.maxTextsPerCall} texts per API call.`
+        `The HuggingFace feature extraction API is configured to only support ${this.maxValuesPerCall} texts per API call.`
       );
     }
 

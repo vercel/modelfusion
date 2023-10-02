@@ -1,16 +1,13 @@
 import { Vector } from "../../core/Vector.js";
 import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
-import {
-  TextEmbeddingModel,
-  TextEmbeddingModelSettings,
-} from "./TextEmbeddingModel.js";
+import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel.js";
 
 /**
- * Generate embeddings for multiple texts.
+ * Generate embeddings for multiple values.
  *
  * @example
- * const embeddings = await embedTexts(
+ * const embeddings = await embedMany(
  *   new OpenAITextEmbeddingModel(...),
  *   [
  *     "At first, Nox didn't know what to do with the pup.",
@@ -18,35 +15,36 @@ import {
  *   ]
  * );
  */
-export function embedTexts<
+export function embedMany<
+  VALUE,
   RESPONSE,
-  SETTINGS extends TextEmbeddingModelSettings,
+  SETTINGS extends EmbeddingModelSettings,
 >(
-  model: TextEmbeddingModel<RESPONSE, SETTINGS>,
-  texts: string[],
+  model: EmbeddingModel<VALUE, RESPONSE, SETTINGS>,
+  values: VALUE[],
   options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<Vector[], RESPONSE[]> {
   return executeCall({
-    functionType: "text-embedding",
-    input: texts,
+    functionType: "embedding",
+    input: values,
     model,
     options,
     generateResponse: (options) => {
-      // split the texts into groups that are small enough to be sent in one call:
-      const maxTextsPerCall = model.maxTextsPerCall;
-      const textGroups: string[][] = [];
+      // split the values into groups that are small enough to be sent in one call:
+      const maxValuesPerCall = model.maxValuesPerCall;
+      const valueGroups: VALUE[][] = [];
 
-      if (maxTextsPerCall == null) {
-        textGroups.push(texts);
+      if (maxValuesPerCall == null) {
+        valueGroups.push(values);
       } else {
-        for (let i = 0; i < texts.length; i += maxTextsPerCall) {
-          textGroups.push(texts.slice(i, i + maxTextsPerCall));
+        for (let i = 0; i < values.length; i += maxValuesPerCall) {
+          valueGroups.push(values.slice(i, i + maxValuesPerCall));
         }
       }
 
       return Promise.all(
-        textGroups.map((textGroup) =>
-          model.generateEmbeddingResponse(textGroup, options)
+        valueGroups.map((valueGroup) =>
+          model.generateEmbeddingResponse(valueGroup, options)
         )
       );
     },
@@ -61,29 +59,26 @@ export function embedTexts<
 }
 
 /**
- * Generate an embedding for a single text.
+ * Generate an embedding for a single value.
  *
  * @example
- * const embedding = await embedText(
+ * const embedding = await embed(
  *   new OpenAITextEmbeddingModel(...),
  *   "At first, Nox didn't know what to do with the pup."
  * );
  */
-export function embedText<
-  RESPONSE,
-  SETTINGS extends TextEmbeddingModelSettings,
->(
-  model: TextEmbeddingModel<RESPONSE, SETTINGS>,
-  text: string,
+export function embed<VALUE, RESPONSE, SETTINGS extends EmbeddingModelSettings>(
+  model: EmbeddingModel<VALUE, RESPONSE, SETTINGS>,
+  value: VALUE,
   options?: ModelFunctionOptions<SETTINGS>
 ): ModelFunctionPromise<Vector, RESPONSE[]> {
   return executeCall({
-    functionType: "text-embedding",
-    input: text,
+    functionType: "embedding",
+    input: value,
     model,
     options,
     generateResponse: async (options) => [
-      await model.generateEmbeddingResponse([text], options),
+      await model.generateEmbeddingResponse([value], options),
     ],
     extractOutputValue: (result) => model.extractEmbeddings(result[0])[0],
   });

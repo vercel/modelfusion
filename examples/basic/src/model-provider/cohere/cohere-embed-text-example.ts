@@ -1,10 +1,10 @@
-import { CohereTextEmbeddingModel, embedTexts } from "modelfusion";
+import { CohereTextEmbeddingModel, embedMany } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 async function main() {
-  const embeddings = await embedTexts(
+  const embeddings = await embedMany(
     new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
     [
       "At first, Nox didn't know what to do with the pup.",

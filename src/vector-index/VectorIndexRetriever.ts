@@ -1,9 +1,9 @@
-import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
+import { embed } from "../model-function/embed/embed.js";
 import {
-  TextEmbeddingModel,
-  TextEmbeddingModelSettings,
-} from "../model-function/embed-text/TextEmbeddingModel.js";
-import { embedText } from "../model-function/embed-text/embedText.js";
+  EmbeddingModel,
+  EmbeddingModelSettings,
+} from "../model-function/embed/EmbeddingModel.js";
+import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import { Retriever, RetrieverSettings } from "../retriever/Retriever.js";
 import { VectorIndex } from "./VectorIndex.js";
 
@@ -13,22 +13,14 @@ export interface VectorIndexRetrieverSettings<FILTER> {
   filter?: FILTER;
 }
 
-type VectorIndexRetrieverQuery<FILTER> =
-  | string
-  | { text: string; filter?: FILTER };
-
-export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
-  implements
-    Retriever<
-      OBJECT,
-      VectorIndexRetrieverQuery<FILTER>,
-      VectorIndexRetrieverSettings<FILTER>
-    >
+export class VectorIndexRetriever<OBJECT, VALUE, INDEX, FILTER>
+  implements Retriever<OBJECT, VALUE, VectorIndexRetrieverSettings<FILTER>>
 {
   private readonly vectorIndex: VectorIndex<OBJECT, INDEX, FILTER>;
-  private readonly embeddingModel: TextEmbeddingModel<
+  private readonly embeddingModel: EmbeddingModel<
+    VALUE,
     unknown,
-    TextEmbeddingModelSettings
+    EmbeddingModelSettings
   >;
   private readonly settings: VectorIndexRetrieverSettings<FILTER>;
 
@@ -40,7 +32,7 @@ export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
     filter,
   }: {
     vectorIndex: VectorIndex<OBJECT, INDEX, FILTER>;
-    embeddingModel: TextEmbeddingModel<unknown, TextEmbeddingModelSettings>;
+    embeddingModel: EmbeddingModel<VALUE, unknown, EmbeddingModelSettings>;
   } & VectorIndexRetrieverSettings<FILTER>) {
     this.vectorIndex = vectorIndex;
     this.embeddingModel = embeddingModel;
@@ -52,7 +44,7 @@ export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
   }
 
   async retrieve(
-    query: VectorIndexRetrieverQuery<FILTER>,
+    query: VALUE,
     options?: ModelFunctionOptions<RetrieverSettings>
   ): Promise<OBJECT[]> {
     if (options?.settings != null) {
@@ -63,14 +55,7 @@ export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
       });
     }
 
-    let filter = this.settings?.filter;
-
-    if (typeof query === "object") {
-      filter = query.filter ?? filter; // use filter from query if available
-      query = query.text;
-    }
-
-    const embedding = await embedText(this.embeddingModel, query, {
+    const embedding = await embed(this.embeddingModel, query, {
       functionId: options?.functionId,
       run: options?.run,
     });
@@ -79,7 +64,7 @@ export class VectorIndexRetriever<OBJECT, INDEX, FILTER>
       queryVector: embedding,
       maxResults: this.settings.maxResults ?? 1,
       similarityThreshold: this.settings.similarityThreshold,
-      filter,
+      filter: this.settings?.filter,
     });
 
     return queryResult.map((item) => item.data);

@@ -18,7 +18,7 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 
 - [OpenAI](/integration/model-provider/openai) chat models
 
-### [Embed Text](/guide/function/embed-text)
+### [Embed Text](/guide/function/embed)
 
 - [OpenAI](/integration/model-provider/openai)
 - [Cohere](/integration/model-provider/cohere)

@@ -1,15 +1,16 @@
 import { nanoid as createId } from "nanoid";
 import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import {
-  TextEmbeddingModel,
-  TextEmbeddingModelSettings,
-} from "../model-function/embed-text/TextEmbeddingModel.js";
-import { embedTexts } from "../model-function/embed-text/embedText.js";
+  EmbeddingModel,
+  EmbeddingModelSettings,
+} from "../model-function/embed/EmbeddingModel.js";
+import { embedMany } from "../model-function/embed/embed.js";
 import { VectorIndex } from "./VectorIndex.js";
 
 export async function upsertIntoVectorIndex<
+  VALUE,
   OBJECT,
-  SETTINGS extends TextEmbeddingModelSettings,
+  SETTINGS extends EmbeddingModelSettings,
 >(
   {
     vectorIndex,
@@ -20,16 +21,16 @@ export async function upsertIntoVectorIndex<
     getId,
   }: {
     vectorIndex: VectorIndex<OBJECT, unknown, unknown>;
-    embeddingModel: TextEmbeddingModel<unknown, SETTINGS>;
+    embeddingModel: EmbeddingModel<VALUE, unknown, SETTINGS>;
     generateId?: () => string;
     objects: OBJECT[];
-    getValueToEmbed: (object: OBJECT, index: number) => string;
+    getValueToEmbed: (object: OBJECT, index: number) => VALUE;
     getId?: (object: OBJECT, index: number) => string | undefined;
   },
   options?: ModelFunctionOptions<SETTINGS>
 ) {
   // many embedding models support bulk embedding, so we first embed all texts:
-  const embeddings = await embedTexts(
+  const embeddings = await embedMany(
     embeddingModel,
     objects.map(getValueToEmbed),
     options

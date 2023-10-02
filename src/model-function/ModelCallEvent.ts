@@ -8,9 +8,9 @@ import {
   ImageDescriptionStartedEvent,
 } from "./describe-image/ImageDescriptionEvent.js";
 import {
-  TextEmbeddingFinishedEvent,
-  TextEmbeddingStartedEvent,
-} from "./embed-text/TextEmbeddingEvent.js";
+  EmbeddingFinishedEvent,
+  EmbeddingStartedEvent,
+} from "./embed/EmbeddingEvent.js";
 import {
   ImageGenerationFinishedEvent,
   ImageGenerationStartedEvent,
@@ -88,23 +88,23 @@ export interface BaseModelCallFinishedEvent extends BaseFunctionFinishedEvent {
 }
 
 export type ModelCallStartedEvent =
+  | EmbeddingStartedEvent
   | ImageDescriptionStartedEvent
   | ImageGenerationStartedEvent
   | StructureGenerationStartedEvent
   | StructureStreamingStartedEvent
   | SpeechSynthesisStartedEvent
-  | TextEmbeddingStartedEvent
   | TextGenerationStartedEvent
   | TextStreamingStartedEvent
   | TranscriptionStartedEvent;
 
 export type ModelCallFinishedEvent =
+  | EmbeddingFinishedEvent
   | ImageDescriptionFinishedEvent
   | ImageGenerationFinishedEvent
   | StructureGenerationFinishedEvent
   | StructureStreamingFinishedEvent
   | SpeechSynthesisFinishedEvent
-  | TextEmbeddingFinishedEvent
   | TextGenerationFinishedEvent
   | TextStreamingFinishedEvent
   | TranscriptionFinishedEvent;

@@ -11,7 +11,7 @@ Throttling strategies determine how many parallel API calls are allowed.
 By default, API calls are not throttled.
 You can configure different throttling strategies on API configurations.
 
-Throttling can be particularly useful for [text embedding](/guide/function/embed-text), where each `embedText` call can result in multiple API calls.
+Throttling can be particularly useful for [text embedding](/guide/function/embed), where each `embed` call can result in multiple API calls.
 
 ### throttleMaxConcurrency
 

@@ -1,7 +1,7 @@
 import {
   OpenAIApiConfiguration,
   OpenAITextEmbeddingModel,
-  embedTexts,
+  embedMany,
   throttleMaxConcurrency,
 } from "modelfusion";
 import dotenv from "dotenv";
@@ -13,7 +13,7 @@ async function main() {
     throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
   });
 
-  const embeddings = await embedTexts(
+  const embeddings = await embedMany(
     new OpenAITextEmbeddingModel({
       api,
       model: "text-embedding-ada-002",

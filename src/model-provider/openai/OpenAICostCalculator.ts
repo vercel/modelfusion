@@ -41,7 +41,7 @@ export class OpenAICostCalculator implements CostCalculator {
         });
       }
 
-      case "text-embedding": {
+      case "embedding": {
         if (model == null) {
           return null;
         }

@@ -254,9 +254,9 @@ switch (structure) {
 [OpenAITextEmbeddingModel API](/api/classes/OpenAITextEmbeddingModel)
 
 ```ts
-import { OpenAITextEmbeddingModel, embedTexts } from "modelfusion";
+import { OpenAITextEmbeddingModel, embedMany } from "modelfusion";
 
-const embeddings = await embedTexts(
+const embeddings = await embedMany(
   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
   [
     "At first, Nox didn't know what to do with the pup.",

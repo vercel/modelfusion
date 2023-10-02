@@ -3,9 +3,9 @@ import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import {
-  TextEmbeddingModel,
-  TextEmbeddingModelSettings,
-} from "../../model-function/embed-text/TextEmbeddingModel.js";
+  EmbeddingModel,
+  EmbeddingModelSettings,
+} from "../../model-function/embed/EmbeddingModel.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -51,7 +51,7 @@ export const calculateOpenAIEmbeddingCostInMillicents = ({
 };
 
 export interface OpenAITextEmbeddingModelSettings
-  extends TextEmbeddingModelSettings {
+  extends EmbeddingModelSettings {
   api?: ApiConfiguration;
   model: OpenAITextEmbeddingModelType;
   isUserIdForwardingEnabled?: boolean;
@@ -63,7 +63,7 @@ export interface OpenAITextEmbeddingModelSettings
  * @see https://platform.openai.com/docs/api-reference/embeddings
  *
  * @example
- * const embeddings = await embedTexts(
+ * const embeddings = await embedMany(
  *   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
  *   [
  *     "At first, Nox didn't know what to do with the pup.",
@@ -74,7 +74,8 @@ export interface OpenAITextEmbeddingModelSettings
 export class OpenAITextEmbeddingModel
   extends AbstractModel<OpenAITextEmbeddingModelSettings>
   implements
-    TextEmbeddingModel<
+    EmbeddingModel<
+      string,
       OpenAITextEmbeddingResponse,
       OpenAITextEmbeddingModelSettings
     >
@@ -95,7 +96,7 @@ export class OpenAITextEmbeddingModel
     return this.settings.model;
   }
 
-  readonly maxTextsPerCall = 2048;
+  readonly maxValuesPerCall = 2048;
 
   readonly embeddingDimensions: number;
 
@@ -144,9 +145,9 @@ export class OpenAITextEmbeddingModel
     texts: string[],
     options?: ModelFunctionOptions<OpenAITextEmbeddingModelSettings>
   ) {
-    if (texts.length > this.maxTextsPerCall) {
+    if (texts.length > this.maxValuesPerCall) {
       throw new Error(
-        `The OpenAI embedding API only supports ${this.maxTextsPerCall} texts per API call.`
+        `The OpenAI embedding API only supports ${this.maxValuesPerCall} texts per API call.`
       );
     }
 

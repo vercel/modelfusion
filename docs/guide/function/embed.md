@@ -1,36 +1,38 @@
 ---
-sidebar_position: 15
+sidebar_position: 18
 ---
 
-# Embed Text
+# Embed Value
+
+Embeddings convert data, like text, into compact vector representations, capturing their essence in a way that's useful for AI tasks.
 
 ## Usage
 
-### embedText
+### embed
 
-[embedText API](/api/modules#embedtext)
+[embed API](/api/modules#embed)
 
-Generate an embedding for a single text.
+Generate an embedding for a single value.
 
-#### With OpenAI embedding model
+#### With OpenAI text embeddings
 
 ```ts
-const embedding = await embedText(
+const embedding = await embed(
   new OpenAITextEmbeddingModel(/* ... */),
   "At first, Nox didn't know what to do with the pup."
 );
 ```
 
-### embedTexts
+### embedMany
 
-[embedTexts API](/api/modules#embedtexts)
+[embedMany API](/api/modules#embedmany)
 
-Generate embeddings for multiple texts.
+Generate embeddings for multiple values.
 
-#### With OpenAI embedding model
+#### With OpenAI text embeddings
 
 ```ts
-const embeddings = await embedTexts(
+const embeddings = await embedMany(
   new OpenAITextEmbeddingModel({
     /* ... */
   }),
