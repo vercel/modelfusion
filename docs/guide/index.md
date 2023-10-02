@@ -6,10 +6,9 @@ sidebar_position: 0
 
 ModelFusion is a library for building AI apps, chatbots, and agents. It provides abstractions for AI models, vector indices, and tools.
 
-- **Type inference and validation**: ModelFusion uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types wherever possible and to validate model responses.
-- **Flexibility and control**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts and model settings, and you can access the raw responses from the models quickly to build what you need.
-- **No chains and predefined prompts**: Use the concepts provided by JavaScript (variables, functions, etc.) and explicit prompts to build applications you can easily understand and control. Not hidden prompts and logic.
 - **Multimodal Support**: Beyond just LLMs, ModelFusion encompasses a diverse array of models including text generation, text-to-speech, speech-to-text, and image generation, allowing you to build multifaceted AI applications with ease.
+- **Flexibility and control**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts and model settings, and you can access the raw responses from the models quickly to build what you need.
+- **Type inference and validation**: ModelFusion uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types wherever possible and to validate model responses.
 - **Integrated support features**: Essential features like logging, retries, throttling, tracing, and error handling are built-in, helping you focus more on building your application.
 
 :::note
