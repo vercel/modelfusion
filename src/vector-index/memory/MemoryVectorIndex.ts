@@ -1,5 +1,7 @@
+import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { Vector } from "../../core/Vector.js";
+import { Schema } from "../../core/structure/Schema.js";
 import { cosineSimilarity } from "../../util/cosineSimilarity.js";
 import { VectorIndex } from "../VectorIndex.js";
 
@@ -8,6 +10,14 @@ type Entry<DATA> = {
   vector: Vector;
   data: DATA;
 };
+
+const jsonDataSchema = z.array(
+  z.object({
+    id: z.string(),
+    vector: z.array(z.number()),
+    data: z.unknown(),
+  })
+);
 
 /**
  * A very simple vector index that stores all entries in memory. Useful when you only have
@@ -23,20 +33,19 @@ export class MemoryVectorIndex<DATA>
     schema,
   }: {
     serializedData: string;
-    schema?: z.ZodSchema<DATA>;
+    schema?: Schema<DATA>;
   }) {
-    let json = JSON.parse(serializedData);
+    // validate the outer structure:
+    const json = jsonDataSchema.parse(SecureJSON.parse(serializedData));
 
     if (schema != null) {
-      json = z
-        .array(
-          z.object({
-            id: z.string(),
-            vector: z.array(z.number()),
-            data: schema,
-          })
-        )
-        .parse(json);
+      // when a schema is provided, validate all entries:
+      for (const entry of json) {
+        const validationResult = schema.validate(entry.data);
+        if (!validationResult.success) {
+          throw validationResult.error;
+        }
+      }
     }
 
     const vectorIndex = new MemoryVectorIndex<DATA>();

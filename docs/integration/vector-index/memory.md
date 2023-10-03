@@ -16,7 +16,7 @@ The memory vector index is a simple implementation of the [VectorIndex](/api/int
 ### Create a Vector Index
 
 ```ts
-import { MemoryVectorIndex } from "modelfusion";
+import { MemoryVectorIndex, ZodSchema } from "modelfusion";
 
 const vectorIndex = new MemoryVectorIndex<TextChunk>();
 ```
@@ -34,6 +34,6 @@ Deserialization can optionally take a Zod schema for type validation:
 ```ts
 const deserializedIndex = await MemoryVectorIndex.deserialize({
   serializedData,
-  schema: z.object({ text: z.string() }),
+  schema: new ZodSchema(z.object({ text: z.string() })),
 });
 ```
