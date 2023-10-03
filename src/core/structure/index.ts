@@ -1,6 +1,6 @@
+export * from "./JsonSchemaProducer.js";
 export * from "./Schema.js";
 export * from "./StructureDefinition.js";
-export * from "./TypeCheck.js";
 export * from "./UncheckedSchema.js";
 export * from "./UncheckedStructureDefinition.js";
 export * from "./ZodSchema.js";

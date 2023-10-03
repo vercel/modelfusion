@@ -1,4 +1,3 @@
-import { Schema } from "./Schema.js";
 import { StructureDefinition } from "./StructureDefinition.js";
 import { UncheckedSchema } from "./UncheckedSchema.js";
 
@@ -7,7 +6,7 @@ export class UncheckedStructureDefinition<NAME extends string, STRUCTURE>
 {
   name: NAME;
   description?: string;
-  schema: Schema<STRUCTURE>;
+  schema: UncheckedSchema<STRUCTURE>;
 
   constructor({
     name,
