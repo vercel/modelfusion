@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.39.0 - 2023-10-03
+
+### Added
+
+- `readEventSource` for parsing a server-sent event stream using the JavaScript EventSource.
+
+### Changed
+
+**breaking change**: generalization to use Schema instead of Zod.
+
+- `MemoryVectorIndex.deserialize` requires a `Schema`, e.g. `new ZodSchema` (from ModelFusion).
+- `readEventSourceStream` requires a `Schema`.
+- `UncheckedJsonSchema[Schema/StructureDefinition]` renamed to `Unchecked[Schema/StructureDefinition]`.
+
 ## v0.38.0 - 2023-10-02
 
 ### Changed
