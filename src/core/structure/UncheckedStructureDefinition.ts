@@ -1,11 +1,9 @@
 import { Schema } from "./Schema.js";
 import { StructureDefinition } from "./StructureDefinition.js";
-import { UncheckedJsonSchemaSchema } from "./UncheckedJsonSchemaSchema.js";
+import { UncheckedSchema } from "./UncheckedSchema.js";
 
-export class UncheckedJsonSchemaStructureDefinition<
-  NAME extends string,
-  STRUCTURE,
-> implements StructureDefinition<NAME, STRUCTURE>
+export class UncheckedStructureDefinition<NAME extends string, STRUCTURE>
+  implements StructureDefinition<NAME, STRUCTURE>
 {
   name: NAME;
   description?: string;
@@ -22,6 +20,6 @@ export class UncheckedJsonSchemaStructureDefinition<
   }) {
     this.name = name;
     this.description = description;
-    this.schema = new UncheckedJsonSchemaSchema(jsonSchema);
+    this.schema = new UncheckedSchema(jsonSchema);
   }
 }
