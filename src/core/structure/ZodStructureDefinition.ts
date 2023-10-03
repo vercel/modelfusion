@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Schema } from "./Schema.js";
 import { StructureDefinition } from "./StructureDefinition.js";
 import { ZodSchema } from "./ZodSchema.js";
 
@@ -8,7 +7,7 @@ export class ZodStructureDefinition<NAME extends string, STRUCTURE>
 {
   name: NAME;
   description?: string;
-  schema: Schema<STRUCTURE>;
+  schema: ZodSchema<STRUCTURE>;
 
   constructor({
     name,
