@@ -1,5 +1,5 @@
-import { JsonSchemaProducer } from "index.js";
 import { FunctionOptions } from "../core/FunctionOptions.js";
+import { JsonSchemaProducer } from "../core/structure/JsonSchemaProducer.js";
 import { Schema } from "../core/structure/Schema.js";
 import { StructureDefinition } from "../core/structure/StructureDefinition.js";
 import { InvalidToolNameError } from "./InvalidToolNameError.js";
