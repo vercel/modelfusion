@@ -1,4 +1,5 @@
 import { FunctionOptions } from "../core/FunctionOptions.js";
+import { JsonSchemaProducer } from "../core/structure/JsonSchemaProducer.js";
 import { Schema } from "../core/structure/Schema.js";
 import { StructureDefinition } from "../core/structure/StructureDefinition.js";
 import { InvalidToolNameError } from "./InvalidToolNameError.js";
@@ -26,7 +27,7 @@ export class Tool<NAME extends string, INPUT, OUTPUT> {
    * The schema of the input that the tool expects. The language model will use this to generate the input.
    * Use descriptions to make the input understandable for the language model.
    */
-  readonly inputSchema: Schema<INPUT>;
+  readonly inputSchema: Schema<INPUT> & JsonSchemaProducer;
 
   /**
    * An optional schema of the output that the tool produces. This will be used to validate the output.
@@ -50,7 +51,7 @@ export class Tool<NAME extends string, INPUT, OUTPUT> {
   }: {
     name: NAME;
     description: string;
-    inputSchema: Schema<INPUT>;
+    inputSchema: Schema<INPUT> & JsonSchemaProducer;
     outputSchema?: Schema<OUTPUT>;
     execute(input: INPUT, options?: FunctionOptions): PromiseLike<OUTPUT>;
   }) {

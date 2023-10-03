@@ -1,25 +1,24 @@
-import { z } from "zod";
 import { StructureDefinition } from "./StructureDefinition.js";
-import { ZodSchema } from "./ZodSchema.js";
+import { UncheckedSchema } from "./UncheckedSchema.js";
 
-export class ZodStructureDefinition<NAME extends string, STRUCTURE>
+export class UncheckedStructureDefinition<NAME extends string, STRUCTURE>
   implements StructureDefinition<NAME, STRUCTURE>
 {
   name: NAME;
   description?: string;
-  schema: ZodSchema<STRUCTURE>;
+  schema: UncheckedSchema<STRUCTURE>;
 
   constructor({
     name,
     description,
-    schema,
+    jsonSchema,
   }: {
     name: NAME;
     description?: string;
-    schema: z.Schema<STRUCTURE>;
+    jsonSchema: unknown;
   }) {
     this.name = name;
     this.description = description;
-    this.schema = new ZodSchema(schema);
+    this.schema = new UncheckedSchema(jsonSchema);
   }
 }

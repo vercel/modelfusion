@@ -5,6 +5,7 @@ import {
   OpenAITextEmbeddingModel,
   Run,
   VectorIndexRetriever,
+  ZodSchema,
   generateText,
   retrieve,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
@@ -83,7 +84,7 @@ export async function createTweetFromPdf({
     new VectorIndexRetriever({
       vectorIndex: await MemoryVectorIndex.deserialize({
         serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
-        schema: z.string(),
+        schema: new ZodSchema(z.string()),
       }),
       embeddingModel: new OpenAITextEmbeddingModel({
         model: "text-embedding-ada-002",

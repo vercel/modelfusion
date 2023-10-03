@@ -2,7 +2,7 @@ import { ChatInputArea } from "@/component/ChatInputArea";
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
-import { readEventSourceStream } from "modelfusion";
+import { ZodSchema, readEventSourceStream } from "modelfusion";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
@@ -37,7 +37,7 @@ export default function Home() {
 
       const textDeltas = readEventSourceStream({
         stream: response.body!,
-        schema: z.string(),
+        schema: new ZodSchema(z.string()),
       });
 
       let accumulatedContent = "";

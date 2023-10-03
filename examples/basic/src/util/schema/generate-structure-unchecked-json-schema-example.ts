@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
   OpenAIChatModel,
-  UncheckedJsonSchemaStructureDefinition,
+  UncheckedStructureDefinition,
   generateStructure,
 } from "modelfusion";
 
@@ -15,7 +15,7 @@ async function main() {
       temperature: 0,
       maxCompletionTokens: 50,
     }),
-    new UncheckedJsonSchemaStructureDefinition({
+    new UncheckedStructureDefinition({
       name: "sentiment",
       description: "Write the sentiment analysis",
       jsonSchema: {
