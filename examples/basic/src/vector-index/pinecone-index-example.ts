@@ -1,9 +1,10 @@
+import { PineconeVectorIndex } from "@modelfusion/pinecone";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import dotenv from "dotenv";
 import {
   CohereTextEmbeddingModel,
-  PineconeVectorIndex,
   VectorIndexRetriever,
+  ZodSchema,
   retrieve,
   upsertIntoVectorIndex,
 } from "modelfusion";
@@ -18,7 +19,7 @@ async function main() {
 
   if (!PINECONE_API_KEY || !PINECONE_ENVIRONMENT || !PINECONE_INDEX_NAME) {
     throw new Error(
-      "COHERE_API_KEY, PINECONE_API_KEY, PINECONE_ENVIRONMENT and PINECONE_INDEX_NAME must be set"
+      "PINECONE_API_KEY, PINECONE_ENVIRONMENT and PINECONE_INDEX_NAME must be set"
     );
   }
 
@@ -44,7 +45,7 @@ async function main() {
 
   const vectorIndex = new PineconeVectorIndex({
     index,
-    schema: z.object({ text: z.string() }),
+    schema: new ZodSchema(z.object({ text: z.string() })),
   });
   const embeddingModel = new CohereTextEmbeddingModel({
     model: "embed-english-light-v2.0",

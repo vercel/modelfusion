@@ -8,6 +8,7 @@
     "modelfusion": "*",
     "@modelfusion/serpapi-tools": "*",
     "@modelfusion/google-custom-search-tool": "*",
+    "@modelfusion/pinecone": "*",
     "dotenv": "16.0.3",
     "secure-json-parse": "2.7.0"
   },

@@ -1,20 +1,13 @@
 {
-  "name": "modelfusion",
-  "description": "Build multimodal applications, chatbots, and agents with JavaScript and TypeScript.",
-  "version": "0.40.0",
+  "name": "@modelfusion/pinecone",
+  "description": "Pinecone vector DB for ModelFusion",
+  "version": "0.1.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
-    "llm",
-    "embedding",
-    "openai",
-    "huggingface",
-    "gpt-3",
-    "gpt-4",
-    "whisper",
-    "chatbot",
-    "ai",
-    "multimodal"
+    "pinecone",
+    "modelfusion",
+    "vectordb"
   ],
   "homepage": "https://modelfusion.dev/",
   "repository": {
@@ -41,39 +34,31 @@
     }
   },
   "scripts": {
-    "setup": "husky install",
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist",
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
-    "test": "vitest",
-    "dist": "npm run clean && npm run lint && npm run build && npm run dist:copy-files",
-    "dist:copy-files": "copyfiles package.json README.md LICENSE dist"
+    "dist:copy-files": "copyfiles package.json README.md LICENSE dist",
+    "dist": "npm run clean && npm run lint && npm run build && npm run dist:copy-files"
   },
-  "dependencies": {
-    "deep-equal": "2.2.2",
-    "eventsource-parser": "1.1.1",
-    "js-tiktoken": "1.0.7",
-    "nanoid": "3.3.6",
-    "secure-json-parse": "2.7.0",
-    "zod": "3.21.4",
-    "zod-to-json-schema": "3.21.4"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@tsconfig/recommended": "1.0.3",
-    "@types/deep-equal": "^1.0.2",
+    "@pinecone-database/pinecone": "^0.1.6",
+    "@tsconfig/recommended": "1.0.2",
     "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
     "copyfiles": "2.4.1",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.0.0",
-    "husky": "^8.0.3",
-    "lint-staged": "14.0.1",
-    "prettier": "3.0.3",
-    "rimraf": "5.0.5",
-    "typescript": "5.2.2",
-    "vitest": "^0.34.5"
+    "modelfusion": "^0.40.0",
+    "prettier": "3.0.1",
+    "rimraf": "5.0.1",
+    "typescript": "5.2.2"
+  },
+  "peerDependencies": {
+    "modelfusion": "^0.40.0",
+    "@pinecone-database/pinecone": "0.1.6"
   }
 }
