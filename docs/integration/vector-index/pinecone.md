@@ -11,23 +11,22 @@ You can get an API key from [Pinecone](https://www.pinecone.io/). You also need 
 
 ### Pinecone Client
 
-You need to install the Pinecone JS client separately:
+You need to install the Pinecone JS client and the ModelFusion Pinecone extension:
 
 ```bash
-npm install @pinecone-database/pinecone
+npm install @modelfusion/pinecone @pinecone-database/pinecone
 ```
 
 ## Usage
 
-[API](/api/classes/PineconeVectorIndex)
-|
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/text-chunk/)
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/vector-index/)
 
 ### Create a Vector Index
 
 ```ts
+import { PineconeVectorIndex } from "@modelfusion/pinecone";
 import { PineconeClient } from "@pinecone-database/pinecone";
-import { PineconeVectorIndex } from "modelfusion";
+import { ZodSchema } from "modelfusion";
 
 // Initialize the Pinecone index:
 const client = new PineconeClient();
@@ -40,6 +39,6 @@ const index = client.Index(PINECONE_INDEX_NAME);
 // assuming zod schema for data and an embedding model are defined:
 const vectorIndex = new PineconeVectorIndex({
   index,
-  schema: zodSchema,
+  schema: new ZodSchema(zodSchema),
 });
 ```
