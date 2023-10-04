@@ -489,7 +489,12 @@ export class OpenAIChatModel
     this
   > {
     return new PromptFormatTextGenerationModel({
-      model: this.withSettings({ stopSequences: promptFormat.stopSequences }),
+      model: this.withSettings({
+        stopSequences: [
+          ...(this.settings.stopSequences ?? []),
+          ...promptFormat.stopSequences,
+        ],
+      }),
       promptFormat,
     });
   }

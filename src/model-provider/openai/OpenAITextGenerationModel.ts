@@ -363,7 +363,10 @@ export class OpenAITextGenerationModel
   > {
     return new PromptFormatTextGenerationModel({
       model: this.withSettings({
-        stopSequences: promptFormat.stopSequences,
+        stopSequences: [
+          ...(this.settings.stopSequences ?? []),
+          ...promptFormat.stopSequences,
+        ],
       }),
       promptFormat,
     });

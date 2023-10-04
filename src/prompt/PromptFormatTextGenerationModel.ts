@@ -135,7 +135,10 @@ export class PromptFormatTextGenerationModel<
       this
     >({
       model: this.withSettings({
-        stopSequences: promptFormat.stopSequences,
+        stopSequences: [
+          ...(this.settings.stopSequences ?? []),
+          ...promptFormat.stopSequences,
+        ],
       } as Partial<SETTINGS>),
       promptFormat,
     });
