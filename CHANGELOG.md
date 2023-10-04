@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.40.0 - 2023-10-04
+
+### Changed
+
+**breaking change**: moved Pinecone integration into `@modelfusion/pinecone` module.
+
 ## v0.39.0 - 2023-10-03
 
 ### Added
