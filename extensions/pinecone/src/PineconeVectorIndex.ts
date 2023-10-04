@@ -1,14 +1,12 @@
 import { VectorOperationsApi } from "@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch/index.js";
-import { z } from "zod";
-import { Vector } from "../../core/Vector.js";
-import { VectorIndex } from "../VectorIndex.js";
+import { Schema, Vector, VectorIndex } from "modelfusion";
 
 export class PineconeVectorIndex<DATA extends object | undefined>
   implements VectorIndex<DATA, PineconeVectorIndex<DATA>, null>
 {
   readonly index: VectorOperationsApi;
   readonly namespace?: string;
-  readonly schema: z.ZodSchema<DATA>;
+  readonly schema: Schema<DATA>;
 
   constructor({
     index,
@@ -17,7 +15,7 @@ export class PineconeVectorIndex<DATA extends object | undefined>
   }: {
     index: VectorOperationsApi;
     namespace?: string;
-    schema: z.ZodSchema<DATA>;
+    schema: Schema<DATA>;
   }) {
     this.index = index;
     this.namespace = namespace;
@@ -72,11 +70,19 @@ export class PineconeVectorIndex<DATA extends object | undefined>
           match.score == undefined ||
           match.score > similarityThreshold
       )
-      .map((match) => ({
-        id: match.id,
-        data: this.schema.parse(match.metadata),
-        similarity: match.score,
-      }));
+      .map((match) => {
+        const validationResult = this.schema.validate(match.metadata);
+
+        if (!validationResult.success) {
+          throw validationResult.error;
+        }
+
+        return {
+          id: match.id,
+          data: validationResult.value,
+          similarity: match.score,
+        };
+      });
   }
 
   asIndex(): PineconeVectorIndex<DATA> {
