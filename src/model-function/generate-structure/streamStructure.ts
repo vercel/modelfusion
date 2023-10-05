@@ -11,11 +11,7 @@ import { StructureDefinition } from "../../core/structure/StructureDefinition.js
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
-import { Delta } from "../Delta.js";
-import {
-  StructureGenerationModel,
-  StructureGenerationModelSettings,
-} from "./StructureGenerationModel.js";
+import { StructureStreamingModel } from "./StructureGenerationModel.js";
 import {
   StructureStreamingFinishedEvent,
   StructureStreamingStartedEvent,
@@ -30,17 +26,6 @@ export type StructureStreamPart<STRUCTURE> =
       isComplete: true;
       value: STRUCTURE;
     };
-
-type StructureStreamingModel<PROMPT> = StructureGenerationModel<
-  PROMPT,
-  StructureGenerationModelSettings
-> & {
-  readonly doStreamStructure: (
-    structureDefinition: StructureDefinition<string, unknown>,
-    prompt: PROMPT,
-    options?: FunctionOptions
-  ) => PromiseLike<AsyncIterable<Delta<unknown>>>;
-};
 
 export function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
   model: StructureStreamingModel<PROMPT>,

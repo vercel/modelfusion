@@ -1,8 +1,5 @@
 import { Run } from "../../core/Run.js";
-import {
-  TextGenerationModel,
-  TextGenerationModelSettings,
-} from "../../model-function/generate-text/TextGenerationModel.js";
+import { TextGenerationModel } from "../../model-function/generate-text/TextGenerationModel.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { splitAtToken } from "../../text-chunk/split/splitRecursively.js";
@@ -25,7 +22,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     join,
   }: {
     text: string;
-    model: TextGenerationModel<PROMPT, TextGenerationModelSettings> & {
+    model: TextGenerationModel<PROMPT> & {
       contextWindowSize: number;
       tokenizer: FullTokenizer;
       countPromptTokens: (prompt: PROMPT) => PromiseLike<number>;

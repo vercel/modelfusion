@@ -32,7 +32,6 @@ export class ModelFunctionPromise<VALUE> extends Promise<VALUE> {
     this.valuePromise = fullPromise.then((result) => result.value);
   }
 
-  // TODO rename to returnEverything() or returnAll()?
   asFullResponse(): Promise<{
     value: VALUE;
     response: unknown;

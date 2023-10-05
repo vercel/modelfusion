@@ -7,7 +7,8 @@ export interface StructureGenerationModelSettings extends ModelSettings {}
 
 export interface StructureGenerationModel<
   PROMPT,
-  SETTINGS extends StructureGenerationModelSettings,
+  SETTINGS extends
+    StructureGenerationModelSettings = StructureGenerationModelSettings,
 > extends Model<SETTINGS> {
   doGenerateStructure(
     structure: StructureDefinition<string, unknown>,
@@ -22,13 +23,16 @@ export interface StructureGenerationModel<
       totalTokens: number;
     };
   }>;
+}
 
-  /**
-   * Optional. Implement for streaming support.
-   */
-  readonly doStreamStructure?: (
+export interface StructureStreamingModel<
+  PROMPT,
+  SETTINGS extends
+    StructureGenerationModelSettings = StructureGenerationModelSettings,
+> extends StructureGenerationModel<PROMPT, SETTINGS> {
+  doStreamStructure(
     structureDefinition: StructureDefinition<string, unknown>,
     prompt: PROMPT,
     options?: FunctionOptions
-  ) => PromiseLike<AsyncIterable<Delta<unknown>>>;
+  ): PromiseLike<AsyncIterable<Delta<unknown>>>;
 }
