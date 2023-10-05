@@ -13,11 +13,11 @@ import { parseEventSourceStream } from "../../event-source/parseEventSourceStrea
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import {
-  TextGenerationModel,
   TextGenerationModelSettings,
+  TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
-import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
+import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
@@ -57,7 +57,7 @@ export class LlamaCppTextGenerationModel<
     LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
   >
   implements
-    TextGenerationModel<
+    TextStreamingModel<
       string,
       LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
     >
@@ -172,13 +172,13 @@ export class LlamaCppTextGenerationModel<
 
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatTextGenerationModel<
+  ): PromptFormatTextStreamingModel<
     INPUT_PROMPT,
     string,
     LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
-    return new PromptFormatTextGenerationModel({
+    return new PromptFormatTextStreamingModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),

@@ -9,25 +9,11 @@ import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
-import { Delta } from "../Delta.js";
-import {
-  TextGenerationModel,
-  TextGenerationModelSettings,
-} from "./TextGenerationModel.js";
+import { TextStreamingModel } from "./TextGenerationModel.js";
 import {
   TextStreamingFinishedEvent,
   TextStreamingStartedEvent,
 } from "./TextStreamingEvent.js";
-
-type TextStreamingModel<PROMPT> = TextGenerationModel<
-  PROMPT,
-  TextGenerationModelSettings
-> & {
-  doStreamText: (
-    prompt: PROMPT,
-    options: FunctionOptions
-  ) => PromiseLike<AsyncIterable<Delta<string>>>;
-};
 
 export function streamText<PROMPT>(
   model: TextStreamingModel<PROMPT>,

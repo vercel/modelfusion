@@ -3,6 +3,7 @@ export * from "./InstructionPrompt.js";
 export * from "./Llama2PromptFormat.js";
 export * from "./PromptFormat.js";
 export * from "./PromptFormatTextGenerationModel.js";
+export * from "./PromptFormatTextStreamingModel.js";
 export * from "./TextPromptFormat.js";
 export * from "./VicunaPromptFormat.js";
 export * from "./chat/ChatPrompt.js";

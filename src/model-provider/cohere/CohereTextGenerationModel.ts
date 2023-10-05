@@ -12,12 +12,12 @@ import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import {
-  TextGenerationModel,
   TextGenerationModelSettings,
+  TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
-import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
+import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
@@ -78,7 +78,7 @@ export interface CohereTextGenerationModelSettings
  */
 export class CohereTextGenerationModel
   extends AbstractModel<CohereTextGenerationModelSettings>
-  implements TextGenerationModel<string, CohereTextGenerationModelSettings>
+  implements TextStreamingModel<string, CohereTextGenerationModelSettings>
 {
   constructor(settings: CohereTextGenerationModelSettings) {
     super({ settings });
@@ -181,13 +181,13 @@ export class CohereTextGenerationModel
 
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatTextGenerationModel<
+  ): PromptFormatTextStreamingModel<
     INPUT_PROMPT,
     string,
     CohereTextGenerationModelSettings,
     this
   > {
-    return new PromptFormatTextGenerationModel({
+    return new PromptFormatTextStreamingModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),

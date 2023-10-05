@@ -13,12 +13,12 @@ import { parseEventSourceStream } from "../../event-source/parseEventSourceStrea
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import {
-  TextGenerationModel,
   TextGenerationModelSettings,
+  TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
-import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
+import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
@@ -227,7 +227,7 @@ export interface OpenAITextGenerationModelSettings
  */
 export class OpenAITextGenerationModel
   extends AbstractModel<OpenAITextGenerationModelSettings>
-  implements TextGenerationModel<string, OpenAITextGenerationModelSettings>
+  implements TextStreamingModel<string, OpenAITextGenerationModelSettings>
 {
   constructor(settings: OpenAITextGenerationModelSettings) {
     super({ settings });
@@ -335,13 +335,13 @@ export class OpenAITextGenerationModel
 
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatTextGenerationModel<
+  ): PromptFormatTextStreamingModel<
     INPUT_PROMPT,
     string,
     OpenAITextGenerationModelSettings,
     this
   > {
-    return new PromptFormatTextGenerationModel({
+    return new PromptFormatTextStreamingModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),

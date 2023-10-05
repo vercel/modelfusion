@@ -4,6 +4,7 @@ import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGe
 import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
 import { Delta } from "../Delta.js";
+import { PromptFormatTextStreamingModel } from "index.js";
 
 export interface TextGenerationModelSettings extends ModelSettings {
   /**
@@ -53,15 +54,21 @@ export interface TextGenerationModel<
     };
   }>;
 
-  /**
-   * Optional. Implement for streaming support.
-   */
-  readonly doStreamText?: (
-    prompt: PROMPT,
-    options?: FunctionOptions
-  ) => PromiseLike<AsyncIterable<Delta<string>>>;
-
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
   ): PromptFormatTextGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this>;
+}
+
+export interface TextStreamingModel<
+  PROMPT,
+  SETTINGS extends TextGenerationModelSettings = TextGenerationModelSettings,
+> extends TextGenerationModel<PROMPT, SETTINGS> {
+  doStreamText(
+    prompt: PROMPT,
+    options?: FunctionOptions
+  ): PromiseLike<AsyncIterable<Delta<string>>>;
+
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
+  ): PromptFormatTextStreamingModel<INPUT_PROMPT, PROMPT, SETTINGS, this>;
 }

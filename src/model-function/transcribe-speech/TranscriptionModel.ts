@@ -5,7 +5,7 @@ export interface TranscriptionModelSettings extends ModelSettings {}
 
 export interface TranscriptionModel<
   DATA,
-  SETTINGS extends TranscriptionModelSettings,
+  SETTINGS extends TranscriptionModelSettings = TranscriptionModelSettings,
 > extends Model<SETTINGS> {
   doTranscribe: (
     data: DATA,
