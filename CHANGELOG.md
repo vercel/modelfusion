@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.41.0 - 2023-10-05
+
+### Changed
+
+**breaking change**: generics simplification to enable dynamic model usage. Models can be used more easily as function parameters.
+
+- `output` renamed to `value` in `asFullResponse()`
+- model settings can no longer be configured as a model options parameter. Use `.withSettings()` instead.
+
 ## v0.40.0 - 2023-10-04
 
 ### Changed

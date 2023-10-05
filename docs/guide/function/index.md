@@ -33,7 +33,7 @@ Model functions return rich results that include the original response and metad
 
 ```ts
 // access the full response (needs to be typed) and the metadata:
-const { output, response, metadata } = await generateText(
+const { value, response, metadata } = await generateText(
   new OpenAITextGenerationModel({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
