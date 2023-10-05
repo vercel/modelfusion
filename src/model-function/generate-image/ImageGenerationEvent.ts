@@ -11,7 +11,7 @@ export type ImageGenerationFinishedEventResult =
   | {
       status: "success";
       response: unknown;
-      output: string;
+      value: string;
     }
   | { status: "error"; error: unknown }
   | { status: "abort" };

@@ -1,5 +1,5 @@
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   StructureGenerationModel,
@@ -10,18 +10,16 @@ import { StructureValidationError } from "./StructureValidationError.js";
 export function generateStructure<
   STRUCTURE,
   PROMPT,
-  RESPONSE,
   NAME extends string,
   SETTINGS extends StructureGenerationModelSettings,
 >(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  model: StructureGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
+  model: StructureGenerationModel<PROMPT, SETTINGS>,
   structureDefinition: StructureDefinition<NAME, STRUCTURE>,
   prompt:
     | PROMPT
     | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
-  options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<STRUCTURE, RESPONSE> {
+  options?: FunctionOptions
+): ModelFunctionPromise<STRUCTURE> {
   // Note: PROMPT must not be a function.
   const expandedPrompt =
     typeof prompt === "function"
@@ -37,15 +35,14 @@ export function generateStructure<
     input: expandedPrompt,
     model,
     options,
-    generateResponse: (options) =>
-      model.generateStructureResponse(
+    generateResponse: async (options) => {
+      const result = await model.doGenerateStructure(
         structureDefinition,
         expandedPrompt,
         options
-      ),
-    extractOutputValue: (response): STRUCTURE => {
-      const structure = model.extractStructure(response);
+      );
 
+      const structure = result.structure;
       const parseResult = structureDefinition.schema.validate(structure);
 
       if (!parseResult.success) {
@@ -56,8 +53,13 @@ export function generateStructure<
         });
       }
 
-      return parseResult.value;
+      const value = parseResult.value;
+
+      return {
+        response: result.response,
+        extractedValue: value,
+        usage: result.usage,
+      };
     },
-    extractUsage: (result) => model.extractUsage?.(result),
   });
 }

@@ -1,4 +1,4 @@
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   ImageDescriptionModel,
@@ -10,22 +10,22 @@ import {
  *
  * Depending on the model, this can be used for image captioning, for describing the contents of an image, or for OCR.
  */
-export function describeImage<
-  DATA,
-  RESPONSE,
-  SETTINGS extends ImageDescriptionModelSettings,
->(
-  model: ImageDescriptionModel<DATA, RESPONSE, SETTINGS>,
+export function describeImage<DATA>(
+  model: ImageDescriptionModel<DATA, ImageDescriptionModelSettings>,
   data: DATA,
-  options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<string, RESPONSE> {
+  options?: FunctionOptions
+): ModelFunctionPromise<string> {
   return executeCall({
     functionType: "image-description",
     input: data,
     model,
     options,
-    generateResponse: (options) =>
-      model.generateImageDescriptionResponse(data, options),
-    extractOutputValue: model.extractImageDescription,
+    generateResponse: async (options) => {
+      const result = await model.doDescribeImage(data, options);
+      return {
+        response: result.response,
+        extractedValue: result.description,
+      };
+    },
   });
 }

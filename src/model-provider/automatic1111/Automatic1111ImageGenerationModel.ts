@@ -1,16 +1,16 @@
 import { z } from "zod";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import {
-  ImageGenerationModel,
-  ImageGenerationModelSettings,
-} from "../../model-function/generate-image/ImageGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import {
+  ImageGenerationModel,
+  ImageGenerationModelSettings,
+} from "../../model-function/generate-image/ImageGenerationModel.js";
 import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration.js";
 import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js";
 
@@ -24,7 +24,6 @@ export class Automatic1111ImageGenerationModel
   implements
     ImageGenerationModel<
       A111ImageGenerationPrompt,
-      Automatic1111ImageGenerationResponse,
       Automatic1111ImageGenerationModelSettings
     >
 {
@@ -40,24 +39,18 @@ export class Automatic1111ImageGenerationModel
 
   async callAPI(
     input: A111ImageGenerationPrompt,
-    options?: ModelFunctionOptions<Automatic1111ImageGenerationModelSettings>
+    options?: FunctionOptions
   ): Promise<Automatic1111ImageGenerationResponse> {
-    const run = options?.run;
-    const settings = options?.settings;
-
-    const callSettings = {
-      ...this.settings,
-      ...settings,
-
-      abortSignal: run?.abortSignal,
-      engineId: this.settings.model,
-      prompt: input.prompt,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callAutomatic1111ImageGenerationAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callAutomatic1111ImageGenerationAPI({
+          ...this.settings,
+
+          abortSignal: options?.run?.abortSignal,
+          prompt: input.prompt,
+        }),
     });
   }
 
@@ -70,15 +63,16 @@ export class Automatic1111ImageGenerationModel
     };
   }
 
-  generateImageResponse(
+  async doGenerateImage(
     prompt: A111ImageGenerationPrompt,
-    options?: ModelFunctionOptions<Automatic1111ImageGenerationModelSettings>
+    options?: FunctionOptions
   ) {
-    return this.callAPI(prompt, options);
-  }
+    const response = await this.callAPI(prompt, options);
 
-  extractBase64Image(response: Automatic1111ImageGenerationResponse): string {
-    return response.images[0];
+    return {
+      response,
+      base64Image: response.images[0],
+    };
   }
 
   withSettings(additionalSettings: Automatic1111ImageGenerationModelSettings) {

@@ -1,5 +1,7 @@
+import { ModelCallMetadata } from "model-function/ModelCallMetadata.js";
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../../core/FunctionEventSource.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
 import { AbortError } from "../../core/api/AbortError.js";
@@ -7,9 +9,7 @@ import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
-import { DeltaEvent } from "../DeltaEvent.js";
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
-import { ModelCallMetadata } from "../executeCall.js";
+import { Delta } from "../Delta.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -19,61 +19,41 @@ import {
   TextStreamingStartedEvent,
 } from "./TextStreamingEvent.js";
 
-export function streamText<
+type TextStreamingModel<PROMPT> = TextGenerationModel<
   PROMPT,
-  FULL_DELTA,
-  SETTINGS extends TextGenerationModelSettings,
->(
-  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
-    generateDeltaStreamResponse: (
-      prompt: PROMPT,
-      options: ModelFunctionOptions<SETTINGS>
-    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
-    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
-  },
+  TextGenerationModelSettings
+> & {
+  doStreamText: (
+    prompt: PROMPT,
+    options: FunctionOptions
+  ) => PromiseLike<AsyncIterable<Delta<string>>>;
+};
+
+export function streamText<PROMPT>(
+  model: TextStreamingModel<PROMPT>,
   prompt: PROMPT,
-  options?: ModelFunctionOptions<SETTINGS>
+  options?: FunctionOptions
 ): AsyncIterableResultPromise<string> {
   return new AsyncIterableResultPromise<string>(
     doStreamText(model, prompt, options)
   );
 }
 
-async function doStreamText<
-  PROMPT,
-  FULL_DELTA,
-  SETTINGS extends TextGenerationModelSettings,
->(
-  model: TextGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
-    generateDeltaStreamResponse: (
-      prompt: PROMPT,
-      options: ModelFunctionOptions<SETTINGS>
-    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
-    extractTextDelta: (fullDelta: FULL_DELTA) => string | undefined;
-  },
+async function doStreamText<PROMPT>(
+  model: TextStreamingModel<PROMPT>,
   prompt: PROMPT,
-  options?: ModelFunctionOptions<SETTINGS>
+  options?: FunctionOptions
 ): Promise<{
   output: AsyncIterable<string>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
-  if (options?.settings != null) {
-    model = model.withSettings(options.settings);
-    options = {
-      functionId: options.functionId,
-      observers: options.observers,
-      run: options.run,
-    };
-  }
-
   const run = options?.run;
-  const settings = model.settings;
 
   const eventSource = new FunctionEventSource({
     observers: [
       ...getFunctionCallLogger(options?.logging ?? getGlobalFunctionLogging()),
       ...getGlobalFunctionObservers(),
-      ...(settings.observers ?? []),
+      ...(model.settings.observers ?? []),
       ...(run?.functionObserver != null ? [run.functionObserver] : []),
       ...(options?.observers ?? []),
     ],
@@ -105,15 +85,11 @@ async function doStreamText<
   } satisfies TextStreamingStartedEvent);
 
   const result = await runSafe(async () => {
-    const deltaIterable = await model.generateDeltaStreamResponse(prompt, {
-      functionId: options?.functionId,
-      settings, // options.setting is null here because of the initial guard
-      run,
-    });
+    const deltaIterable = await model.doStreamText(prompt, options);
 
     return (async function* () {
       let accumulatedText = "";
-      let lastFullDelta: FULL_DELTA | undefined;
+      let lastFullDelta: unknown | undefined;
 
       for await (const event of deltaIterable) {
         if (event?.type === "error") {
@@ -149,11 +125,11 @@ async function doStreamText<
         if (event?.type === "delta") {
           lastFullDelta = event.fullDelta;
 
-          const delta = model.extractTextDelta(lastFullDelta);
+          const textDelta = event.valueDelta;
 
-          if (delta != null && delta.length > 0) {
-            accumulatedText += delta;
-            yield delta;
+          if (textDelta != null && textDelta.length > 0) {
+            accumulatedText += textDelta;
+            yield textDelta;
           }
         }
       }
@@ -170,7 +146,7 @@ async function doStreamText<
         result: {
           status: "success",
           response: lastFullDelta,
-          output: accumulatedText,
+          value: accumulatedText,
         },
       } satisfies TextStreamingFinishedEvent);
     })();
@@ -205,7 +181,7 @@ async function doStreamText<
   }
 
   return {
-    output: result.output,
+    output: result.value,
     metadata: startMetadata,
   };
 }

@@ -12,7 +12,7 @@ export type SpeechSynthesisFinishedEventResult =
   | {
       status: "success";
       response: unknown;
-      output: Buffer;
+      value: Buffer;
     }
   | { status: "error"; error: unknown }
   | { status: "abort" };

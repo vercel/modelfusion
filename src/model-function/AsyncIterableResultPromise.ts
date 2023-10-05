@@ -1,4 +1,4 @@
-import { ModelCallMetadata } from "./executeCall.js";
+import { ModelCallMetadata } from "./ModelCallMetadata.js";
 
 export class AsyncIterableResultPromise<T> extends Promise<AsyncIterable<T>> {
   private outputPromise: Promise<AsyncIterable<T>>;

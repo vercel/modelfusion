@@ -19,7 +19,7 @@ async function main() {
       OpenAIChatMessage.system("You are a story writer. Write a story about:"),
       OpenAIChatMessage.user("A robot learning to love"),
     ],
-    { responseFormat: OpenAIChatResponseFormat.deltaIterable }
+    { responseFormat: OpenAIChatResponseFormat.textDeltaIterable }
   );
 
   for await (const delta of deltas) {
@@ -27,7 +27,7 @@ async function main() {
       throw delta.error;
     }
 
-    process.stdout.write(delta?.fullDelta[0].delta.content ?? "");
+    process.stdout.write(delta.valueDelta);
   }
 }
 

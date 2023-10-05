@@ -11,7 +11,7 @@ export type TextGenerationFinishedEventResult =
   | {
       status: "success";
       response: unknown;
-      output: string;
+      value: string;
 
       usage?: {
         promptTokens: number;

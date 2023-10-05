@@ -1,4 +1,4 @@
-import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
+import { FunctionOptions } from "../core/FunctionOptions.js";
 import {
   StructureOrTextGenerationModel,
   StructureOrTextGenerationModelSettings,
@@ -32,14 +32,13 @@ type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
 
 export async function useToolOrGenerateText<
   PROMPT,
-  RESPONSE,
   SETTINGS extends StructureOrTextGenerationModelSettings,
   TOOLS extends Array<Tool<any, any, any>>,
 >(
-  model: StructureOrTextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  model: StructureOrTextGenerationModel<PROMPT, SETTINGS>,
   tools: TOOLS,
   prompt: PROMPT | ((tools: TOOLS) => PROMPT),
-  options?: ModelFunctionOptions<SETTINGS>
+  options?: FunctionOptions
 ): Promise<
   | { tool: null; parameters: null; result: null; text: string }
   | ToOutputValue<TOOLS>

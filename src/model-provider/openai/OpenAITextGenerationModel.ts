@@ -1,5 +1,6 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -10,8 +11,7 @@ import {
 import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { parseEventSourceStream } from "../../event-source/parseEventSourceStream.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { DeltaEvent } from "../../model-function/DeltaEvent.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { Delta } from "../../model-function/Delta.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -21,7 +21,6 @@ import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
-import { OpenAIImageGenerationCallSettings } from "./OpenAIImageGenerationModel.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 
 /**
@@ -228,13 +227,7 @@ export interface OpenAITextGenerationModelSettings
  */
 export class OpenAITextGenerationModel
   extends AbstractModel<OpenAITextGenerationModelSettings>
-  implements
-    TextGenerationModel<
-      string,
-      OpenAITextGenerationResponse,
-      OpenAITextGenerationDelta,
-      OpenAITextGenerationModelSettings
-    >
+  implements TextGenerationModel<string, OpenAITextGenerationModelSettings>
 {
   constructor(settings: OpenAITextGenerationModelSettings) {
     super({ settings });
@@ -265,26 +258,19 @@ export class OpenAITextGenerationModel
     prompt: string,
     options: {
       responseFormat: OpenAITextResponseFormatType<RESULT>;
-    } & ModelFunctionOptions<
-      Partial<OpenAIImageGenerationCallSettings & { user?: string }>
-    >
+    } & FunctionOptions
   ): Promise<RESULT> {
-    const { run, settings, responseFormat } = options;
-
-    const combinedSettings = {
-      ...this.settings,
-      ...settings,
-    };
+    const { run, responseFormat } = options;
 
     const callSettings = {
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
 
       // Copied settings:
-      ...combinedSettings,
+      ...this.settings,
 
       // map to OpenAI API names:
-      stop: combinedSettings.stopSequences,
-      maxTokens: combinedSettings.maxCompletionTokens,
+      stop: this.settings.stopSequences,
+      maxTokens: this.settings.maxCompletionTokens,
 
       // other settings:
       abortSignal: run?.abortSignal,
@@ -323,32 +309,28 @@ export class OpenAITextGenerationModel
     );
   }
 
-  generateTextResponse(
-    prompt: string,
-    options?: ModelFunctionOptions<OpenAITextGenerationModelSettings>
-  ) {
-    return this.callAPI(prompt, {
+  async doGenerateText(prompt: string, options?: FunctionOptions) {
+    const response = await this.callAPI(prompt, {
       ...options,
       responseFormat: OpenAITextResponseFormat.json,
     });
+
+    return {
+      response,
+      text: response.choices[0]!.text,
+      usage: {
+        promptTokens: response.usage.prompt_tokens,
+        completionTokens: response.usage.completion_tokens,
+        totalTokens: response.usage.total_tokens,
+      },
+    };
   }
 
-  extractText(response: OpenAITextGenerationResponse): string {
-    return response.choices[0]!.text;
-  }
-
-  generateDeltaStreamResponse(
-    prompt: string,
-    options?: ModelFunctionOptions<OpenAITextGenerationModelSettings>
-  ) {
+  doStreamText(prompt: string, options?: FunctionOptions) {
     return this.callAPI(prompt, {
       ...options,
       responseFormat: OpenAITextResponseFormat.deltaIterable,
     });
-  }
-
-  extractTextDelta(fullDelta: OpenAITextGenerationDelta): string | undefined {
-    return fullDelta[0].delta;
   }
 
   withPromptFormat<INPUT_PROMPT>(
@@ -356,8 +338,6 @@ export class OpenAITextGenerationModel
   ): PromptFormatTextGenerationModel<
     INPUT_PROMPT,
     string,
-    OpenAITextGenerationResponse,
-    OpenAITextGenerationDelta,
     OpenAITextGenerationModelSettings,
     this
   > {
@@ -370,14 +350,6 @@ export class OpenAITextGenerationModel
       }),
       promptFormat,
     });
-  }
-
-  extractUsage(response: OpenAITextGenerationResponse) {
-    return {
-      promptTokens: response.usage.prompt_tokens,
-      completionTokens: response.usage.completion_tokens,
-      totalTokens: response.usage.total_tokens,
-    };
   }
 
   withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {
@@ -491,9 +463,7 @@ export const OpenAITextResponseFormat = {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
       createOpenAITextFullDeltaIterableQueue(response.body!),
-  } satisfies OpenAITextResponseFormatType<
-    AsyncIterable<DeltaEvent<OpenAITextGenerationDelta>>
-  >,
+  } satisfies OpenAITextResponseFormatType<AsyncIterable<Delta<string>>>,
 };
 
 const textResponseStreamEventSchema = z.object({
@@ -518,8 +488,8 @@ export type OpenAITextGenerationDelta = Array<{
 
 async function createOpenAITextFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<DeltaEvent<OpenAITextGenerationDelta>>> {
-  const queue = new AsyncQueue<DeltaEvent<OpenAITextGenerationDelta>>();
+): Promise<AsyncIterable<Delta<string>>> {
+  const queue = new AsyncQueue<Delta<string>>();
   const streamDelta: OpenAITextGenerationDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
@@ -578,6 +548,7 @@ async function createOpenAITextFullDeltaIterableQueue(
           queue.push({
             type: "delta",
             fullDelta: streamDeltaDeepCopy,
+            valueDelta: streamDeltaDeepCopy[0].delta,
           });
         }
       } catch (error) {

@@ -1,4 +1,4 @@
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   TextGenerationModel,
@@ -17,28 +17,25 @@ import {
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  */
-export function generateText<
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends TextGenerationModelSettings,
->(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  model: TextGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
+export function generateText<PROMPT>(
+  model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
   prompt: PROMPT,
-  options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<string, RESPONSE> {
+  options?: FunctionOptions
+): ModelFunctionPromise<string> {
   return executeCall({
     functionType: "text-generation",
     input: prompt,
     model,
     options,
-    generateResponse: (options) => model.generateTextResponse(prompt, options),
-    extractOutputValue: (result) => {
+    generateResponse: async (options) => {
+      const result = await model.doGenerateText(prompt, options);
       const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
-      return shouldTrimWhitespace
-        ? model.extractText(result).trim()
-        : model.extractText(result);
+
+      return {
+        response: result.response,
+        extractedValue: shouldTrimWhitespace ? result.text.trim() : result.text,
+        usage: result.usage,
+      };
     },
-    extractUsage: (result) => model.extractUsage?.(result),
   });
 }

@@ -1,6 +1,8 @@
 import deepEqual from "deep-equal";
+import { ModelCallMetadata } from "model-function/ModelCallMetadata.js";
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../../core/FunctionEventSource.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
 import { AbortError } from "../../core/api/AbortError.js";
@@ -9,9 +11,7 @@ import { StructureDefinition } from "../../core/structure/StructureDefinition.js
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
-import { DeltaEvent } from "../DeltaEvent.js";
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
-import { ModelCallMetadata } from "../executeCall.js";
+import { Delta } from "../Delta.js";
 import {
   StructureGenerationModel,
   StructureGenerationModelSettings,
@@ -31,61 +31,37 @@ export type StructureStreamPart<STRUCTURE> =
       value: STRUCTURE;
     };
 
-export function streamStructure<
-  STRUCTURE,
+type StructureStreamingModel<PROMPT> = StructureGenerationModel<
   PROMPT,
-  FULL_DELTA,
-  NAME extends string,
-  SETTINGS extends StructureGenerationModelSettings,
->(
-  model: StructureGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
-    generateStructureStreamResponse: (
-      structureDefinition: StructureDefinition<NAME, STRUCTURE>,
-      prompt: PROMPT,
-      options: ModelFunctionOptions<SETTINGS>
-    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
-    extractPartialStructure: (fullDelta: FULL_DELTA) => unknown | undefined;
-  },
+  StructureGenerationModelSettings
+> & {
+  readonly doStreamStructure: (
+    structureDefinition: StructureDefinition<string, unknown>,
+    prompt: PROMPT,
+    options?: FunctionOptions
+  ) => PromiseLike<AsyncIterable<Delta<unknown>>>;
+};
+
+export function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
+  model: StructureStreamingModel<PROMPT>,
   structureDefinition: StructureDefinition<NAME, STRUCTURE>,
   prompt: PROMPT,
-  options?: ModelFunctionOptions<SETTINGS>
+  options?: FunctionOptions
 ): AsyncIterableResultPromise<StructureStreamPart<STRUCTURE>> {
   return new AsyncIterableResultPromise<StructureStreamPart<STRUCTURE>>(
     doStreamStructure(model, structureDefinition, prompt, options)
   );
 }
 
-async function doStreamStructure<
-  STRUCTURE,
-  PROMPT,
-  FULL_DELTA,
-  NAME extends string,
-  SETTINGS extends StructureGenerationModelSettings,
->(
-  model: StructureGenerationModel<PROMPT, unknown, FULL_DELTA, SETTINGS> & {
-    generateStructureStreamResponse: (
-      structureDefinition: StructureDefinition<NAME, STRUCTURE>,
-      prompt: PROMPT,
-      options: ModelFunctionOptions<SETTINGS>
-    ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
-    extractPartialStructure: (fullDelta: FULL_DELTA) => unknown | undefined;
-  },
+async function doStreamStructure<STRUCTURE, PROMPT, NAME extends string>(
+  model: StructureStreamingModel<PROMPT>,
   structureDefinition: StructureDefinition<NAME, STRUCTURE>,
   prompt: PROMPT,
-  options?: ModelFunctionOptions<SETTINGS>
+  options?: FunctionOptions
 ): Promise<{
   output: AsyncIterable<StructureStreamPart<STRUCTURE>>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
-  if (options?.settings != null) {
-    model = model.withSettings(options.settings);
-    options = {
-      functionId: options.functionId,
-      observers: options.observers,
-      run: options.run,
-    };
-  }
-
   const run = options?.run;
   const settings = model.settings;
 
@@ -125,14 +101,10 @@ async function doStreamStructure<
   } satisfies StructureStreamingStartedEvent);
 
   const result = await runSafe(async () => {
-    const deltaIterable = await model.generateStructureStreamResponse(
+    const deltaIterable = await model.doStreamStructure(
       structureDefinition,
       prompt,
-      {
-        functionId: options?.functionId,
-        settings, // options.setting is null here because of the initial guard
-        run,
-      }
+      options
     );
 
     return (async function* () {
@@ -163,7 +135,7 @@ async function doStreamStructure<
       }
 
       let lastStructure: unknown | undefined;
-      let lastFullDelta: FULL_DELTA | undefined;
+      let lastFullDelta: unknown | undefined;
 
       for await (const event of deltaIterable) {
         if (event?.type === "error") {
@@ -173,8 +145,7 @@ async function doStreamStructure<
 
         if (event?.type === "delta") {
           const latestFullDelta = event.fullDelta;
-          const latestStructure =
-            model.extractPartialStructure(latestFullDelta);
+          const latestStructure = event.valueDelta;
 
           // only send a new part into the stream when the partial structure has changed:
           if (
@@ -218,7 +189,7 @@ async function doStreamStructure<
         result: {
           status: "success",
           response: lastFullDelta,
-          output: lastStructure,
+          value: lastStructure,
         },
       } satisfies StructureStreamingFinishedEvent);
     })();
@@ -253,7 +224,7 @@ async function doStreamStructure<
   }
 
   return {
-    output: result.output,
+    output: result.value,
     metadata: startMetadata,
   };
 }

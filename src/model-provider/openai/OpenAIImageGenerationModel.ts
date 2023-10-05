@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import {
   ImageGenerationModel,
@@ -14,6 +13,7 @@ import {
 } from "../../core/api/postToApi.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 
 export interface OpenAIImageGenerationCallSettings {
   n?: number;
@@ -56,12 +56,7 @@ export interface OpenAIImageGenerationSettings
  */
 export class OpenAIImageGenerationModel
   extends AbstractModel<OpenAIImageGenerationSettings>
-  implements
-    ImageGenerationModel<
-      string,
-      OpenAIImageGenerationBase64JsonResponse,
-      OpenAIImageGenerationSettings
-    >
+  implements ImageGenerationModel<string, OpenAIImageGenerationSettings>
 {
   constructor(settings: OpenAIImageGenerationSettings) {
     super({ settings });
@@ -74,26 +69,14 @@ export class OpenAIImageGenerationModel
     prompt: string,
     options: {
       responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
-    } & ModelFunctionOptions<
-      Partial<OpenAIImageGenerationCallSettings & { user?: string }>
-    >
+    } & FunctionOptions
   ): Promise<RESULT> {
     const run = options?.run;
-    const settings = options?.settings;
     const responseFormat = options?.responseFormat;
 
-    const combinedSettings = {
-      ...this.settings,
-      ...settings,
-    };
-
     const callSettings = {
+      ...this.settings,
       user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
-
-      // Copied settings:
-      ...combinedSettings,
-
-      // other settings:
       abortSignal: run?.abortSignal,
       responseFormat,
       prompt,
@@ -119,22 +102,16 @@ export class OpenAIImageGenerationModel
     );
   }
 
-  generateImageResponse(
-    prompt: string,
-    options?: ModelFunctionOptions<OpenAIImageGenerationSettings>
-  ) {
-    return this.callAPI(prompt, {
+  async doGenerateImage(prompt: string, options?: FunctionOptions) {
+    const response = await this.callAPI(prompt, {
       responseFormat: OpenAIImageGenerationResponseFormat.base64Json,
-      functionId: options?.functionId,
-      settings: options?.settings,
-      run: options?.run,
+      ...options,
     });
-  }
 
-  extractBase64Image(
-    response: OpenAIImageGenerationBase64JsonResponse
-  ): string {
-    return response.data[0].b64_json;
+    return {
+      response,
+      base64Image: response.data[0].b64_json,
+    };
   }
 
   withSettings(additionalSettings: Partial<OpenAIImageGenerationSettings>) {

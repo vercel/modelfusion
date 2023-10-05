@@ -1,5 +1,6 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -10,8 +11,7 @@ import {
 import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { parseEventSourceStream } from "../../event-source/parseEventSourceStream.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { DeltaEvent } from "../../model-function/DeltaEvent.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { Delta } from "../../model-function/Delta.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -59,8 +59,6 @@ export class LlamaCppTextGenerationModel<
   implements
     TextGenerationModel<
       string,
-      LlamaCppTextGenerationResponse,
-      LlamaCppTextGenerationDelta,
       LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
     >
 {
@@ -86,34 +84,24 @@ export class LlamaCppTextGenerationModel<
     prompt: string,
     options: {
       responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
-    } & ModelFunctionOptions<
-      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
-    >
+    } & FunctionOptions
   ): Promise<RESPONSE> {
-    const { run, settings, responseFormat } = options;
-
-    const combinedSettings = {
-      ...this.settings,
-      ...settings,
-    };
-
-    const callSettings = {
-      ...combinedSettings,
-
-      // mapping
-      nPredict: combinedSettings.maxCompletionTokens,
-      stop: combinedSettings.stopSequences,
-
-      // other
-      abortSignal: run?.abortSignal,
-      prompt,
-      responseFormat,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callLlamaCppTextGenerationAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callLlamaCppTextGenerationAPI({
+          ...this.settings,
+
+          // mapping
+          nPredict: this.settings.maxCompletionTokens,
+          stop: this.settings.stopSequences,
+
+          // other
+          abortSignal: options.run?.abortSignal,
+          prompt,
+          responseFormat: options.responseFormat,
+        }),
     });
   }
 
@@ -154,28 +142,24 @@ export class LlamaCppTextGenerationModel<
     return tokens.length;
   }
 
-  generateTextResponse(
-    prompt: string,
-    options?: ModelFunctionOptions<
-      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
-    >
-  ) {
-    return this.callAPI(prompt, {
+  async doGenerateText(prompt: string, options?: FunctionOptions) {
+    const response = await this.callAPI(prompt, {
       ...options,
       responseFormat: LlamaCppTextGenerationResponseFormat.json,
     });
+
+    return {
+      response,
+      text: response.content,
+      usage: {
+        promptTokens: response.tokens_evaluated,
+        completionTokens: response.tokens_predicted,
+        totalTokens: response.tokens_evaluated + response.tokens_predicted,
+      },
+    };
   }
 
-  extractText(response: LlamaCppTextGenerationResponse): string {
-    return response.content;
-  }
-
-  generateDeltaStreamResponse(
-    prompt: string,
-    options?: ModelFunctionOptions<
-      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
-    >
-  ) {
+  doStreamText(prompt: string, options?: FunctionOptions) {
     return this.callAPI(prompt, {
       ...options,
       responseFormat: LlamaCppTextGenerationResponseFormat.deltaIterable,
@@ -191,8 +175,6 @@ export class LlamaCppTextGenerationModel<
   ): PromptFormatTextGenerationModel<
     INPUT_PROMPT,
     string,
-    LlamaCppTextGenerationResponse,
-    LlamaCppTextGenerationDelta,
     LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
@@ -205,14 +187,6 @@ export class LlamaCppTextGenerationModel<
       }),
       promptFormat,
     });
-  }
-
-  extractUsage(response: LlamaCppTextGenerationResponse) {
-    return {
-      promptTokens: response.tokens_evaluated,
-      completionTokens: response.tokens_predicted,
-      totalTokens: response.tokens_evaluated + response.tokens_predicted,
-    };
   }
 
   withSettings(
@@ -371,8 +345,8 @@ export type LlamaCppTextGenerationDelta = {
 
 async function createLlamaCppFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<DeltaEvent<LlamaCppTextGenerationDelta>>> {
-  const queue = new AsyncQueue<DeltaEvent<LlamaCppTextGenerationDelta>>();
+): Promise<AsyncIterable<Delta<string>>> {
+  const queue = new AsyncQueue<Delta<string>>();
 
   let content = "";
 
@@ -407,6 +381,7 @@ async function createLlamaCppFullDeltaIterableQueue(
               isComplete: eventData.stop,
               delta: eventData.content,
             },
+            valueDelta: eventData.content,
           });
 
           if (eventData.stop) {
@@ -449,6 +424,6 @@ export const LlamaCppTextGenerationResponseFormat = {
     handler: async ({ response }: { response: Response }) =>
       createLlamaCppFullDeltaIterableQueue(response.body!),
   } satisfies LlamaCppTextGenerationResponseFormatType<
-    AsyncIterable<DeltaEvent<LlamaCppTextGenerationDelta>>
+    AsyncIterable<Delta<string>>
   >,
 };

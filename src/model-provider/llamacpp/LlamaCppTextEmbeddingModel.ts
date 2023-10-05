@@ -1,4 +1,5 @@
 import z from "zod";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -6,7 +7,6 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   EmbeddingModel,
   EmbeddingModelSettings,
@@ -23,12 +23,7 @@ export interface LlamaCppTextEmbeddingModelSettings
 
 export class LlamaCppTextEmbeddingModel
   extends AbstractModel<LlamaCppTextEmbeddingModelSettings>
-  implements
-    EmbeddingModel<
-      string,
-      LlamaCppTextEmbeddingResponse,
-      LlamaCppTextEmbeddingModelSettings
-    >
+  implements EmbeddingModel<string, LlamaCppTextEmbeddingModelSettings>
 {
   constructor(settings: LlamaCppTextEmbeddingModelSettings = {}) {
     super({ settings });
@@ -55,7 +50,7 @@ export class LlamaCppTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: ModelFunctionOptions<LlamaCppTextEmbeddingModelSettings>
+    options?: FunctionOptions
   ): Promise<LlamaCppTextEmbeddingResponse> {
     if (texts.length > this.maxValuesPerCall) {
       throw new Error(
@@ -63,21 +58,15 @@ export class LlamaCppTextEmbeddingModel
       );
     }
 
-    const run = options?.run;
-    const settings = options?.settings;
-
-    const callSettings = {
-      ...this.settings,
-      ...settings,
-
-      abortSignal: run?.abortSignal,
-      content: texts[0],
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callLlamaCppEmbeddingAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callLlamaCppEmbeddingAPI({
+          ...this.settings,
+          abortSignal: options?.run?.abortSignal,
+          content: texts[0],
+        }),
     });
   }
 
@@ -87,15 +76,13 @@ export class LlamaCppTextEmbeddingModel
     };
   }
 
-  generateEmbeddingResponse(
-    texts: string[],
-    options?: ModelFunctionOptions<LlamaCppTextEmbeddingModelSettings>
-  ) {
-    return this.callAPI(texts, options);
-  }
+  async doEmbedValues(texts: string[], options?: FunctionOptions) {
+    const response = await this.callAPI(texts, options);
 
-  extractEmbeddings(response: LlamaCppTextEmbeddingResponse) {
-    return [response.embedding];
+    return {
+      response,
+      embeddings: [response.embedding],
+    };
   }
 
   withSettings(

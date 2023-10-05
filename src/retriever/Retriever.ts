@@ -1,13 +1,6 @@
-import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
+import { FunctionOptions } from "core";
 
-export interface RetrieverSettings {}
-
-export interface Retriever<OBJECT, QUERY, SETTINGS extends RetrieverSettings> {
+export interface Retriever<OBJECT, QUERY> {
   // TODO add metadata to return value
-  retrieve(
-    query: QUERY,
-    options?: ModelFunctionOptions<RetrieverSettings>
-  ): Promise<OBJECT[]>;
-
-  withSettings(additionalSettings: Partial<SETTINGS>): this;
+  retrieve(query: QUERY, options?: FunctionOptions): Promise<OBJECT[]>;
 }

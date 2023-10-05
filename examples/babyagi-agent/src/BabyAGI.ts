@@ -41,12 +41,11 @@ async function runBabyAGI({
     task: string;
   }) {
     return await generateText(
-      model,
+      model.withSettings({ temperature: 0.7, maxCompletionTokens: 2000 }),
       [
         `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}`,
         `Response:`,
-      ].join("\n"),
-      { settings: { temperature: 0.7, maxCompletionTokens: 2000 } }
+      ].join("\n")
     );
   }
 
@@ -62,7 +61,7 @@ async function runBabyAGI({
     existingTasks: string[];
   }) {
     const newTasksText = await generateText(
-      model,
+      model.withSettings({ temperature: 0.5, maxCompletionTokens: 100 }),
       [
         `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.`,
         `The last completed task has the result: ${completedTaskResult}.`,
@@ -70,8 +69,7 @@ async function runBabyAGI({
         `These are the incomplete tasks: ${existingTasks.join(", ")}.`,
         `Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.`,
         `Return the tasks as an array.`,
-      ].join("\n"),
-      { settings: { temperature: 0.5, maxCompletionTokens: 100 } }
+      ].join("\n")
     );
 
     return newTasksText.split("\n");
@@ -87,7 +85,7 @@ async function runBabyAGI({
     nextTaskId: number;
   }) {
     const prioritizedTasksText = await generateText(
-      model,
+      model.withSettings({ temperature: 0.5, maxCompletionTokens: 1000 }),
       [
         `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:`,
         tasks.join(", "),
@@ -97,8 +95,7 @@ async function runBabyAGI({
         `#. First task`,
         `#. Second task`,
         `Start the task list with number ${nextTaskId}.`,
-      ].join("\n"),
-      { settings: { temperature: 0.5, maxCompletionTokens: 1000 } }
+      ].join("\n")
     );
 
     return prioritizedTasksText.split("\n").map((task) => {

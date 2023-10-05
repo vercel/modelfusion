@@ -1,38 +1,26 @@
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../core/FunctionEventSource.js";
+import { FunctionOptions } from "../core/FunctionOptions.js";
 import { getGlobalFunctionLogging } from "../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
+import { AbortError } from "../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
-import { AbortError } from "../core/api/AbortError.js";
 import { runSafe } from "../util/runSafe.js";
 import { Model, ModelSettings } from "./Model.js";
 import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
 } from "./ModelCallEvent.js";
-import { ModelFunctionOptions } from "./ModelFunctionOptions.js";
-import { ModelInformation } from "./ModelInformation.js";
+import { ModelCallMetadata } from "./ModelCallMetadata.js";
 
-export type ModelCallMetadata = {
-  callId: string;
-  runId?: string;
-  sessionId?: string;
-  userId?: string;
-  functionId?: string;
-  startTimestamp: Date;
-  finishTimestamp: Date;
-  durationInMs: number;
-  model: ModelInformation;
-};
-
-export class ModelFunctionPromise<OUTPUT, RESPONSE> extends Promise<OUTPUT> {
-  private outputPromise: Promise<OUTPUT>;
+export class ModelFunctionPromise<VALUE> extends Promise<VALUE> {
+  private valuePromise: Promise<VALUE>;
 
   constructor(
     private fullPromise: Promise<{
-      output: OUTPUT;
-      response: RESPONSE;
+      value: VALUE;
+      response: unknown;
       metadata: ModelCallMetadata;
     }>
   ) {
@@ -41,20 +29,21 @@ export class ModelFunctionPromise<OUTPUT, RESPONSE> extends Promise<OUTPUT> {
       resolve(null as any); // we override the resolve function
     });
 
-    this.outputPromise = fullPromise.then((result) => result.output);
+    this.valuePromise = fullPromise.then((result) => result.value);
   }
 
+  // TODO rename to returnEverything() or returnAll()?
   asFullResponse(): Promise<{
-    output: OUTPUT;
-    response: RESPONSE;
+    value: VALUE;
+    response: unknown;
     metadata: ModelCallMetadata;
   }> {
     return this.fullPromise;
   }
 
-  override then<TResult1 = OUTPUT, TResult2 = never>(
+  override then<TResult1 = VALUE, TResult2 = never>(
     onfulfilled?:
-      | ((value: OUTPUT) => TResult1 | PromiseLike<TResult1>)
+      | ((value: VALUE) => TResult1 | PromiseLike<TResult1>)
       | undefined
       | null,
     onrejected?:
@@ -62,7 +51,7 @@ export class ModelFunctionPromise<OUTPUT, RESPONSE> extends Promise<OUTPUT> {
       | undefined
       | null
   ): Promise<TResult1 | TResult2> {
-    return this.outputPromise.then(onfulfilled, onrejected);
+    return this.valuePromise.then(onfulfilled, onrejected);
   }
 
   override catch<TResult = never>(
@@ -70,41 +59,34 @@ export class ModelFunctionPromise<OUTPUT, RESPONSE> extends Promise<OUTPUT> {
       | ((reason: unknown) => TResult | PromiseLike<TResult>)
       | undefined
       | null
-  ): Promise<OUTPUT | TResult> {
-    return this.outputPromise.catch(onrejected);
+  ): Promise<VALUE | TResult> {
+    return this.valuePromise.catch(onrejected);
   }
 
   override finally(
     onfinally?: (() => void) | undefined | null
-  ): Promise<OUTPUT> {
-    return this.outputPromise.finally(onfinally);
+  ): Promise<VALUE> {
+    return this.valuePromise.finally(onfinally);
   }
 }
 
-export function executeCall<
-  SETTINGS extends ModelSettings,
-  MODEL extends Model<SETTINGS>,
-  OUTPUT,
-  RESPONSE,
->({
+export function executeCall<VALUE, MODEL extends Model<ModelSettings>>({
   model,
   options,
   input,
   functionType,
   generateResponse,
-  extractOutputValue,
-  extractUsage,
 }: {
   model: MODEL;
-  options?: ModelFunctionOptions<SETTINGS>;
+  options?: FunctionOptions;
   input: unknown;
   functionType: ModelCallStartedEvent["functionType"];
-  generateResponse: (
-    options: ModelFunctionOptions<SETTINGS>
-  ) => PromiseLike<RESPONSE>;
-  extractOutputValue: (response: RESPONSE) => OUTPUT;
-  extractUsage?: (response: RESPONSE) => unknown;
-}): ModelFunctionPromise<OUTPUT, RESPONSE> {
+  generateResponse: (options?: FunctionOptions) => PromiseLike<{
+    response: unknown;
+    extractedValue: VALUE;
+    usage?: unknown;
+  }>;
+}): ModelFunctionPromise<VALUE> {
   return new ModelFunctionPromise(
     doExecuteCall({
       model,
@@ -112,50 +94,31 @@ export function executeCall<
       input,
       functionType,
       generateResponse,
-      extractOutputValue,
-      extractUsage,
     })
   );
 }
 
-async function doExecuteCall<
-  SETTINGS extends ModelSettings,
-  MODEL extends Model<SETTINGS>,
-  OUTPUT,
-  RESPONSE,
->({
+async function doExecuteCall<VALUE, MODEL extends Model<ModelSettings>>({
   model,
   options,
   input,
   functionType,
   generateResponse,
-  extractOutputValue,
-  extractUsage,
 }: {
   model: MODEL;
-  options?: ModelFunctionOptions<SETTINGS>;
+  options?: FunctionOptions;
   input: unknown;
   functionType: ModelCallStartedEvent["functionType"];
-  generateResponse: (
-    options: ModelFunctionOptions<SETTINGS>
-  ) => PromiseLike<RESPONSE>;
-  extractOutputValue: (response: RESPONSE) => OUTPUT;
-  extractUsage?: (response: RESPONSE) => unknown;
+  generateResponse: (options?: FunctionOptions) => PromiseLike<{
+    response: unknown;
+    extractedValue: VALUE;
+    usage?: unknown;
+  }>;
 }): Promise<{
-  output: OUTPUT;
-  response: RESPONSE;
+  value: VALUE;
+  response: unknown;
   metadata: ModelCallMetadata;
 }> {
-  if (options?.settings != null) {
-    model = model.withSettings(options.settings);
-    options = {
-      functionId: options.functionId,
-      logging: options.logging,
-      observers: options.observers,
-      run: options.run,
-    };
-  }
-
   const run = options?.run;
   const settings = model.settings;
 
@@ -194,13 +157,7 @@ async function doExecuteCall<
     ...startMetadata,
   } as ModelCallStartedEvent);
 
-  const result = await runSafe(() =>
-    generateResponse({
-      functionId: options?.functionId,
-      settings, // options.setting is null here because of the initial guard
-      run,
-    })
-  );
+  const result = await runSafe(() => generateResponse(options));
 
   const finishMetadata = {
     eventType: "finished" as const,
@@ -233,9 +190,9 @@ async function doExecuteCall<
     throw result.error;
   }
 
-  const response = result.output;
-  const output = extractOutputValue(response);
-  const usage = extractUsage?.(response);
+  const response = result.value.response;
+  const value = result.value.extractedValue;
+  const usage = result.value.usage;
 
   eventSource.notify({
     ...finishMetadata,
@@ -244,13 +201,27 @@ async function doExecuteCall<
       status: "success",
       usage,
       response,
-      output,
+      value,
     },
   } as ModelCallFinishedEvent);
 
   return {
-    output,
+    value,
     response,
-    metadata: finishMetadata,
+    metadata: {
+      model: model.modelInformation,
+
+      callId: finishMetadata.callId,
+      runId: finishMetadata.runId,
+      sessionId: finishMetadata.sessionId,
+      userId: finishMetadata.userId,
+      functionId: finishMetadata.functionId,
+
+      startTimestamp: startMetadata.startTimestamp,
+      finishTimestamp: finishMetadata.finishTimestamp,
+      durationInMs: finishMetadata.durationInMs,
+
+      usage,
+    },
   };
 }

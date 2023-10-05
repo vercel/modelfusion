@@ -1,18 +1,18 @@
 import z from "zod";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
-import {
-  EmbeddingModel,
-  EmbeddingModelSettings,
-} from "../../model-function/embed/EmbeddingModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import {
+  EmbeddingModel,
+  EmbeddingModelSettings,
+} from "../../model-function/embed/EmbeddingModel.js";
 import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
+import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
 
 export interface HuggingFaceTextEmbeddingModelSettings
   extends EmbeddingModelSettings {
@@ -51,12 +51,7 @@ export interface HuggingFaceTextEmbeddingModelSettings
  */
 export class HuggingFaceTextEmbeddingModel
   extends AbstractModel<HuggingFaceTextEmbeddingModelSettings>
-  implements
-    EmbeddingModel<
-      string,
-      HuggingFaceTextEmbeddingResponse,
-      HuggingFaceTextEmbeddingModelSettings
-    >
+  implements EmbeddingModel<string, HuggingFaceTextEmbeddingModelSettings>
 {
   constructor(settings: HuggingFaceTextEmbeddingModelSettings) {
     super({ settings });
@@ -80,7 +75,7 @@ export class HuggingFaceTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: ModelFunctionOptions<HuggingFaceTextEmbeddingModelSettings>
+    options?: FunctionOptions
   ): Promise<HuggingFaceTextEmbeddingResponse> {
     if (texts.length > this.maxValuesPerCall) {
       throw new Error(
@@ -88,28 +83,19 @@ export class HuggingFaceTextEmbeddingModel
       );
     }
 
-    const run = options?.run;
-    const settings = options?.settings;
-
-    const combinedSettings = {
-      ...this.settings,
-      ...settings,
-    };
-
-    const callSettings = {
-      options: {
-        useCache: true,
-        waitForModel: true,
-      },
-      ...combinedSettings,
-      abortSignal: run?.abortSignal,
-      inputs: texts,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callHuggingFaceTextGenerationAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callHuggingFaceTextGenerationAPI({
+          options: {
+            useCache: true,
+            waitForModel: true,
+          },
+          ...this.settings,
+          abortSignal: options?.run?.abortSignal,
+          inputs: texts,
+        }),
     });
   }
 
@@ -122,15 +108,13 @@ export class HuggingFaceTextEmbeddingModel
 
   readonly countPromptTokens = undefined;
 
-  generateEmbeddingResponse(
-    texts: string[],
-    options?: ModelFunctionOptions<HuggingFaceTextEmbeddingModelSettings>
-  ) {
-    return this.callAPI(texts, options);
-  }
+  async doEmbedValues(texts: string[], options?: FunctionOptions) {
+    const response = await this.callAPI(texts, options);
 
-  extractEmbeddings(response: HuggingFaceTextEmbeddingResponse) {
-    return response;
+    return {
+      response,
+      embeddings: response,
+    };
   }
 
   withSettings(

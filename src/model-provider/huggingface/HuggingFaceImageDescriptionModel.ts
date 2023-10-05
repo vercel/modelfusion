@@ -6,7 +6,7 @@ import {
   postToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import {
   ImageDescriptionModel,
   ImageDescriptionModelSettings,
@@ -29,11 +29,7 @@ export interface HuggingFaceImageDescriptionModelSettings
 export class HuggingFaceImageDescriptionModel
   extends AbstractModel<HuggingFaceImageDescriptionModelSettings>
   implements
-    ImageDescriptionModel<
-      Buffer,
-      HuggingFaceImageDescriptionResponse,
-      HuggingFaceImageDescriptionModelSettings
-    >
+    ImageDescriptionModel<Buffer, HuggingFaceImageDescriptionModelSettings>
 {
   constructor(settings: HuggingFaceImageDescriptionModelSettings) {
     super({ settings });
@@ -46,22 +42,17 @@ export class HuggingFaceImageDescriptionModel
 
   async callAPI(
     data: Buffer,
-    options?: ModelFunctionOptions<HuggingFaceImageDescriptionModelSettings>
+    options?: FunctionOptions
   ): Promise<HuggingFaceImageDescriptionResponse> {
-    const run = options?.run;
-    const settings = options?.settings;
-
-    const callSettings = {
-      ...this.settings,
-      ...settings,
-      abortSignal: run?.abortSignal,
-      data,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callHuggingFaceImageDescriptionAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callHuggingFaceImageDescriptionAPI({
+          ...this.settings,
+          abortSignal: options?.run?.abortSignal,
+          data,
+        }),
     });
   }
 
@@ -71,17 +62,12 @@ export class HuggingFaceImageDescriptionModel
 
   readonly countPromptTokens = undefined;
 
-  generateImageDescriptionResponse(
-    data: Buffer,
-    options?: ModelFunctionOptions<HuggingFaceImageDescriptionModelSettings>
-  ) {
-    return this.callAPI(data, options);
-  }
-
-  extractImageDescription(
-    response: HuggingFaceImageDescriptionResponse
-  ): string {
-    return response[0].generated_text;
+  async doDescribeImage(data: Buffer, options?: FunctionOptions) {
+    const response = await this.callAPI(data, options);
+    return {
+      response,
+      description: response[0].generated_text,
+    };
   }
 
   withSettings(

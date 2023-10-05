@@ -1,17 +1,17 @@
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
 export interface TranscriptionModelSettings extends ModelSettings {}
 
 export interface TranscriptionModel<
   DATA,
-  RESPONSE,
   SETTINGS extends TranscriptionModelSettings,
 > extends Model<SETTINGS> {
-  generateTranscriptionResponse: (
+  doTranscribe: (
     data: DATA,
-    options?: ModelFunctionOptions<SETTINGS>
-  ) => PromiseLike<RESPONSE>;
-
-  extractTranscriptionText: (response: RESPONSE) => string;
+    options?: FunctionOptions
+  ) => PromiseLike<{
+    response: unknown;
+    transcription: string;
+  }>;
 }

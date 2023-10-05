@@ -68,7 +68,7 @@ export interface BaseFunctionStartedEvent extends BaseFunctionEvent {
 export type BaseFunctionFinishedEventResult =
   | {
       status: "success";
-      output: unknown;
+      value: unknown;
     }
   | { status: "error"; error: unknown }
   | { status: "abort" };

@@ -1,18 +1,18 @@
 import { z } from "zod";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import {
-  ImageGenerationModel,
-  ImageGenerationModelSettings,
-} from "../../model-function/generate-image/ImageGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { failedStabilityCallResponseHandler } from "./StabilityError.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import {
+  ImageGenerationModel,
+  ImageGenerationModelSettings,
+} from "../../model-function/generate-image/ImageGenerationModel.js";
 import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
+import { failedStabilityCallResponseHandler } from "./StabilityError.js";
 
 /**
  * Create an image generation model that calls the Stability AI image generation API.
@@ -41,7 +41,6 @@ export class StabilityImageGenerationModel
   implements
     ImageGenerationModel<
       StabilityImageGenerationPrompt,
-      StabilityImageGenerationResponse,
       StabilityImageGenerationModelSettings
     >
 {
@@ -57,26 +56,18 @@ export class StabilityImageGenerationModel
 
   async callAPI(
     input: StabilityImageGenerationPrompt,
-    options?: ModelFunctionOptions<StabilityImageGenerationModelSettings>
+    options?: FunctionOptions
   ): Promise<StabilityImageGenerationResponse> {
-    const run = options?.run;
-    const settings = options?.settings;
-
-    const callSettings = {
-      // copied settings:
-      ...this.settings,
-      ...settings,
-
-      // other settings:
-      abortSignal: run?.abortSignal,
-      engineId: this.settings.model,
-      textPrompts: input,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callStabilityImageGenerationAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callStabilityImageGenerationAPI({
+          ...this.settings,
+          abortSignal: options?.run?.abortSignal,
+          engineId: this.settings.model,
+          textPrompts: input,
+        }),
     });
   }
 
@@ -101,15 +92,16 @@ export class StabilityImageGenerationModel
     );
   }
 
-  generateImageResponse(
+  async doGenerateImage(
     prompt: StabilityImageGenerationPrompt,
-    options?: ModelFunctionOptions<StabilityImageGenerationModelSettings>
+    options?: FunctionOptions
   ) {
-    return this.callAPI(prompt, options);
-  }
+    const response = await this.callAPI(prompt, options);
 
-  extractBase64Image(response: StabilityImageGenerationResponse): string {
-    return response.artifacts[0].base64;
+    return {
+      response,
+      base64Image: response.artifacts[0].base64,
+    };
   }
 
   withSettings(additionalSettings: StabilityImageGenerationModelSettings) {

@@ -1,4 +1,5 @@
 import z from "zod";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -6,7 +7,6 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   EmbeddingModel,
   EmbeddingModelSettings,
@@ -58,11 +58,7 @@ export interface CohereTextEmbeddingModelSettings
 export class CohereTextEmbeddingModel
   extends AbstractModel<CohereTextEmbeddingModelSettings>
   implements
-    EmbeddingModel<
-      string,
-      CohereTextEmbeddingResponse,
-      CohereTextEmbeddingModelSettings
-    >,
+    EmbeddingModel<string, CohereTextEmbeddingModelSettings>,
     FullTokenizer
 {
   constructor(settings: CohereTextEmbeddingModelSettings) {
@@ -105,7 +101,7 @@ export class CohereTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: ModelFunctionOptions<CohereTextEmbeddingModelSettings>
+    options?: FunctionOptions
   ): Promise<CohereTextEmbeddingResponse> {
     if (texts.length > this.maxValuesPerCall) {
       throw new Error(
@@ -113,20 +109,15 @@ export class CohereTextEmbeddingModel
       );
     }
 
-    const run = options?.run;
-    const settings = options?.settings;
-
-    const callSettings = {
-      ...this.settings,
-      ...settings,
-      abortSignal: run?.abortSignal,
-      texts,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callCohereEmbeddingAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callCohereEmbeddingAPI({
+          ...this.settings,
+          abortSignal: options?.run?.abortSignal,
+          texts,
+        }),
     });
   }
 
@@ -136,15 +127,12 @@ export class CohereTextEmbeddingModel
     };
   }
 
-  generateEmbeddingResponse(
-    texts: string[],
-    options?: ModelFunctionOptions<CohereTextEmbeddingModelSettings>
-  ) {
-    return this.callAPI(texts, options);
-  }
-
-  extractEmbeddings(response: CohereTextEmbeddingResponse) {
-    return response.embeddings;
+  async doEmbedValues(texts: string[], options?: FunctionOptions) {
+    const response = await this.callAPI(texts, options);
+    return {
+      response,
+      embeddings: response.embeddings,
+    };
   }
 
   withSettings(additionalSettings: Partial<CohereTextEmbeddingModelSettings>) {

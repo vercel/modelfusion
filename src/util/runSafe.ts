@@ -4,7 +4,7 @@ export const runSafe = async <OUTPUT>(
   f: () => PromiseLike<OUTPUT>
 ): Promise<SafeResult<OUTPUT>> => {
   try {
-    return { ok: true, output: await f() };
+    return { ok: true, value: await f() };
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
       return { ok: false, isAborted: true };

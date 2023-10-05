@@ -1,4 +1,7 @@
-import { TextGenerationModel } from "../../model-function/generate-text/TextGenerationModel.js";
+import {
+  TextGenerationModel,
+  TextGenerationModelSettings,
+} from "../../model-function/generate-text/TextGenerationModel.js";
 import { ChatPrompt } from "./ChatPrompt.js";
 import { validateChatPrompt } from "./validateChatPrompt.js";
 
@@ -19,8 +22,7 @@ export async function trimChatPrompt({
     (model.settings.maxCompletionTokens ?? model.contextWindowSize / 4),
 }: {
   prompt: ChatPrompt;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  model: TextGenerationModel<ChatPrompt, any, any, any> & {
+  model: TextGenerationModel<ChatPrompt, TextGenerationModelSettings> & {
     contextWindowSize: number;
     countPromptTokens: (prompt: ChatPrompt) => PromiseLike<number>;
   };

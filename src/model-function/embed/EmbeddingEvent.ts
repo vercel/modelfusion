@@ -13,7 +13,7 @@ export type EmbeddingFinishedEventResult =
   | {
       status: "success";
       response: unknown;
-      output: Vector | Array<Vector>;
+      value: Vector | Array<Vector>;
     }
   | { status: "error"; error: unknown }
   | { status: "abort" };

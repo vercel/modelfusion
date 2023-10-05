@@ -1,5 +1,6 @@
 import SecureJSON from "secure-json-parse";
 import z from "zod";
+import { FunctionOptions } from "../../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -9,8 +10,7 @@ import {
 } from "../../../core/api/postToApi.js";
 import { StructureDefinition } from "../../../core/structure/StructureDefinition.js";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
-import { DeltaEvent } from "../../../model-function/DeltaEvent.js";
-import { ModelFunctionOptions } from "../../../model-function/ModelFunctionOptions.js";
+import { Delta } from "../../../model-function/Delta.js";
 import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
 import { StructureOrTextGenerationModel } from "../../../model-function/generate-structure/StructureOrTextGenerationModel.js";
 import { parsePartialJson } from "../../../model-function/generate-structure/parsePartialJson.js";
@@ -24,10 +24,7 @@ import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import {
-  OpenAIChatDelta,
-  createOpenAIChatFullDeltaIterableQueue,
-} from "./OpenAIChatStreamIterable.js";
+import { createOpenAIChatDeltaIterableQueue } from "./OpenAIChatStreamIterable.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 
 /*
@@ -229,23 +226,9 @@ export interface OpenAIChatSettings
 export class OpenAIChatModel
   extends AbstractModel<OpenAIChatSettings>
   implements
-    TextGenerationModel<
-      OpenAIChatMessage[],
-      OpenAIChatResponse,
-      OpenAIChatDelta,
-      OpenAIChatSettings
-    >,
-    StructureGenerationModel<
-      OpenAIChatMessage[],
-      OpenAIChatResponse,
-      OpenAIChatDelta,
-      OpenAIChatSettings
-    >,
-    StructureOrTextGenerationModel<
-      OpenAIChatMessage[],
-      OpenAIChatResponse,
-      OpenAIChatSettings
-    >
+    TextGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
+    StructureGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
+    StructureOrTextGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
 {
   constructor(settings: OpenAIChatSettings) {
     super({ settings });
@@ -281,37 +264,39 @@ export class OpenAIChatModel
     messages: Array<OpenAIChatMessage>,
     options: {
       responseFormat: OpenAIChatResponseFormatType<RESULT>;
-    } & ModelFunctionOptions<
-      Partial<OpenAIChatCallSettings & { user?: string }>
-    >
+    } & FunctionOptions & {
+        functions?: Array<{
+          name: string;
+          description?: string;
+          parameters: unknown;
+        }>;
+        functionCall?: "none" | "auto" | { name: string };
+      }
   ): Promise<RESULT> {
-    const { run, settings, responseFormat } = options;
-
-    const combinedSettings = {
-      ...this.settings,
-      ...settings,
-    };
-
-    const callSettings = {
-      user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
-
-      // Copied settings:
-      ...combinedSettings,
-
-      // map to OpenAI API names:
-      stop: combinedSettings.stopSequences,
-      maxTokens: combinedSettings.maxCompletionTokens,
-
-      // other settings:
-      abortSignal: run?.abortSignal,
-      messages,
-      responseFormat,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callOpenAIChatCompletionAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callOpenAIChatCompletionAPI({
+          ...this.settings,
+
+          // function calling:
+          functions: options.functions ?? this.settings.functions,
+          functionCall: options.functionCall ?? this.settings.functionCall,
+
+          // map to OpenAI API names:
+          stop: this.settings.stopSequences,
+          maxTokens: this.settings.maxCompletionTokens,
+
+          // other settings:
+          user: this.settings.isUserIdForwardingEnabled
+            ? options.run?.userId
+            : undefined,
+          abortSignal: options.run?.abortSignal,
+
+          responseFormat: options.responseFormat,
+          messages,
+        }),
     });
   }
 
@@ -337,32 +322,24 @@ export class OpenAIChatModel
     );
   }
 
-  generateTextResponse(
-    prompt: OpenAIChatMessage[],
-    options?: ModelFunctionOptions<OpenAIChatSettings>
-  ) {
-    return this.callAPI(prompt, {
+  async doGenerateText(prompt: OpenAIChatMessage[], options?: FunctionOptions) {
+    const response = await this.callAPI(prompt, {
       ...options,
       responseFormat: OpenAIChatResponseFormat.json,
     });
+
+    return {
+      response,
+      text: response.choices[0]!.message.content!,
+      usage: this.extractUsage(response),
+    };
   }
 
-  extractText(response: OpenAIChatResponse): string {
-    return response.choices[0]!.message.content!;
-  }
-
-  generateDeltaStreamResponse(
-    prompt: OpenAIChatMessage[],
-    options?: ModelFunctionOptions<OpenAIChatSettings>
-  ) {
+  doStreamText(prompt: OpenAIChatMessage[], options?: FunctionOptions) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: OpenAIChatResponseFormat.deltaIterable,
+      responseFormat: OpenAIChatResponseFormat.textDeltaIterable,
     });
-  }
-
-  extractTextDelta(fullDelta: OpenAIChatDelta): string | undefined {
-    return fullDelta[0]?.delta.content ?? undefined;
   }
 
   /**
@@ -372,102 +349,90 @@ export class OpenAIChatModel
    *
    * @see https://platform.openai.com/docs/guides/gpt/function-calling
    */
-  generateStructureResponse(
+  async doGenerateStructure(
     structureDefinition: StructureDefinition<string, unknown>,
     prompt: OpenAIChatMessage[],
-    options?: ModelFunctionOptions<OpenAIChatSettings> | undefined
-  ): PromiseLike<OpenAIChatResponse> {
-    return this.callAPI(prompt, {
-      responseFormat: OpenAIChatResponseFormat.json,
-      functionId: options?.functionId,
-      settings: {
-        ...options,
-
-        functionCall: { name: structureDefinition.name },
-        functions: [
-          {
-            name: structureDefinition.name,
-            description: structureDefinition.description,
-            parameters: structureDefinition.schema.getJsonSchema(),
-          },
-        ],
-      },
-      run: options?.run,
-    });
-  }
-
-  extractStructure(response: OpenAIChatResponse): unknown {
-    return SecureJSON.parse(
-      response.choices[0]!.message.function_call!.arguments
-    );
-  }
-
-  generateStructureStreamResponse(
-    structureDefinition: StructureDefinition<string, unknown>,
-    prompt: OpenAIChatMessage[],
-    options?: ModelFunctionOptions<OpenAIChatSettings>
+    options?: FunctionOptions
   ) {
-    return this.callAPI(prompt, {
-      responseFormat: OpenAIChatResponseFormat.deltaIterable,
-      functionId: options?.functionId,
-      settings: {
-        ...options,
-
-        functionCall: { name: structureDefinition.name },
-        functions: [
-          {
-            name: structureDefinition.name,
-            description: structureDefinition.description,
-            parameters: structureDefinition.schema.getJsonSchema(),
-          },
-        ],
-      },
-      run: options?.run,
-    });
-  }
-
-  extractPartialStructure(fullDelta: OpenAIChatDelta): unknown | undefined {
-    return parsePartialJson(fullDelta[0]?.function_call?.arguments);
-  }
-
-  generateStructureOrTextResponse(
-    structureDefinitions: Array<StructureDefinition<string, unknown>>,
-    prompt: OpenAIChatMessage[],
-    options?: ModelFunctionOptions<OpenAIChatSettings> | undefined
-  ): PromiseLike<OpenAIChatResponse> {
-    return this.callAPI(prompt, {
+    const response = await this.callAPI(prompt, {
+      ...options,
       responseFormat: OpenAIChatResponseFormat.json,
-      functionId: options?.functionId,
-      settings: {
-        ...options,
-
-        functionCall: "auto",
-        functions: structureDefinitions.map((structureDefinition) => ({
+      functionCall: { name: structureDefinition.name },
+      functions: [
+        {
           name: structureDefinition.name,
           description: structureDefinition.description,
           parameters: structureDefinition.schema.getJsonSchema(),
-        })),
-      },
-      run: options?.run,
+        },
+      ],
+    });
+
+    return {
+      response,
+      structure: SecureJSON.parse(
+        response.choices[0]!.message.function_call!.arguments
+      ),
+      usage: this.extractUsage(response),
+    };
+  }
+
+  async doStreamStructure(
+    structureDefinition: StructureDefinition<string, unknown>,
+    prompt: OpenAIChatMessage[],
+    options?: FunctionOptions
+  ) {
+    return this.callAPI(prompt, {
+      ...options,
+      responseFormat: OpenAIChatResponseFormat.structureDeltaIterable,
+      functionCall: { name: structureDefinition.name },
+      functions: [
+        {
+          name: structureDefinition.name,
+          description: structureDefinition.description,
+          parameters: structureDefinition.schema.getJsonSchema(),
+        },
+      ],
     });
   }
 
-  extractStructureAndText(response: OpenAIChatResponse) {
+  async doGenerateStructureOrText(
+    structureDefinitions: Array<StructureDefinition<string, unknown>>,
+    prompt: OpenAIChatMessage[],
+    options?: FunctionOptions
+  ) {
+    const response = await this.callAPI(prompt, {
+      ...options,
+      responseFormat: OpenAIChatResponseFormat.json,
+      functionCall: "auto",
+      functions: structureDefinitions.map((structureDefinition) => ({
+        name: structureDefinition.name,
+        description: structureDefinition.description,
+        parameters: structureDefinition.schema.getJsonSchema(),
+      })),
+    });
+
     const message = response.choices[0]!.message;
     const content = message.content;
     const functionCall = message.function_call;
 
-    return functionCall == null
-      ? {
-          structure: null,
-          value: null,
-          text: content ?? "",
-        }
-      : {
-          structure: functionCall.name,
-          value: SecureJSON.parse(functionCall.arguments),
-          text: content,
-        };
+    const structureAndText =
+      functionCall == null
+        ? {
+            structure: null,
+            value: null,
+            text: content ?? "",
+          }
+        : {
+            structure: functionCall.name,
+            value: SecureJSON.parse(functionCall.arguments),
+            text: content,
+          };
+
+    return {
+      response,
+      structureAndText,
+      usage: this.extractUsage(response),
+    };
   }
 
   extractUsage(response: OpenAIChatResponse) {
@@ -483,8 +448,6 @@ export class OpenAIChatModel
   ): PromptFormatTextGenerationModel<
     INPUT_PROMPT,
     OpenAIChatMessage[],
-    OpenAIChatResponse,
-    OpenAIChatDelta,
     OpenAIChatSettings,
     this
   > {
@@ -608,11 +571,20 @@ export const OpenAIChatResponseFormat = {
   /**
    * Returns an async iterable over the text deltas (only the tex different of the first choice).
    */
-  deltaIterable: {
+  textDeltaIterable: {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
-      createOpenAIChatFullDeltaIterableQueue(response.body!),
-  } satisfies OpenAIChatResponseFormatType<
-    AsyncIterable<DeltaEvent<OpenAIChatDelta>>
-  >,
+      createOpenAIChatDeltaIterableQueue(
+        response.body!,
+        (delta) => delta[0]?.delta.content ?? ""
+      ),
+  } satisfies OpenAIChatResponseFormatType<AsyncIterable<Delta<string>>>,
+
+  structureDeltaIterable: {
+    stream: true,
+    handler: async ({ response }: { response: Response }) =>
+      createOpenAIChatDeltaIterableQueue(response.body!, (delta) =>
+        parsePartialJson(delta[0]?.function_call?.arguments)
+      ),
+  } satisfies OpenAIChatResponseFormatType<AsyncIterable<Delta<unknown>>>,
 };
