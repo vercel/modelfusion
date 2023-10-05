@@ -1,17 +1,17 @@
 import z from "zod";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import {
-  EmbeddingModel,
-  EmbeddingModelSettings,
-} from "../../model-function/embed/EmbeddingModel.js";
-import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import {
+  EmbeddingModel,
+  EmbeddingModelSettings,
+} from "../../model-function/embed/EmbeddingModel.js";
+import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
@@ -73,12 +73,7 @@ export interface OpenAITextEmbeddingModelSettings
  */
 export class OpenAITextEmbeddingModel
   extends AbstractModel<OpenAITextEmbeddingModelSettings>
-  implements
-    EmbeddingModel<
-      string,
-      OpenAITextEmbeddingResponse,
-      OpenAITextEmbeddingModelSettings
-    >
+  implements EmbeddingModel<string, OpenAITextEmbeddingModelSettings>
 {
   constructor(settings: OpenAITextEmbeddingModelSettings) {
     super({ settings });
@@ -109,31 +104,20 @@ export class OpenAITextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: ModelFunctionOptions<OpenAITextEmbeddingModelSettings>
+    options?: FunctionOptions
   ): Promise<OpenAITextEmbeddingResponse> {
-    const run = options?.run;
-    const settings = options?.settings;
-
-    const combinedSettings = {
-      ...this.settings,
-      ...settings,
-    };
-
-    const callSettings = {
-      user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
-
-      // Copied settings:
-      ...combinedSettings,
-
-      // other settings:
-      abortSignal: run?.abortSignal,
-      input: texts,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callOpenAITextEmbeddingAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callOpenAITextEmbeddingAPI({
+          ...this.settings,
+          user: this.settings.isUserIdForwardingEnabled
+            ? options?.run?.userId
+            : undefined,
+          abortSignal: options?.run?.abortSignal,
+          input: texts,
+        }),
     });
   }
 
@@ -141,21 +125,19 @@ export class OpenAITextEmbeddingModel
     return {};
   }
 
-  generateEmbeddingResponse(
-    texts: string[],
-    options?: ModelFunctionOptions<OpenAITextEmbeddingModelSettings>
-  ) {
+  async doEmbedValues(texts: string[], options?: FunctionOptions) {
     if (texts.length > this.maxValuesPerCall) {
       throw new Error(
         `The OpenAI embedding API only supports ${this.maxValuesPerCall} texts per API call.`
       );
     }
 
-    return this.callAPI(texts, options);
-  }
+    const response = await this.callAPI(texts, options);
 
-  extractEmbeddings(response: OpenAITextEmbeddingResponse) {
-    return response.data.map((data) => data.embedding);
+    return {
+      response,
+      embeddings: response.data.map((data) => data.embedding),
+    };
   }
 
   withSettings(additionalSettings: OpenAITextEmbeddingModelSettings) {

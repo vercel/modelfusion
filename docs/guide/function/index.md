@@ -6,7 +6,7 @@ title: Model Functions
 # Model Functions
 
 ModelFusion provides model functions for tasks such as [text generation](/guide/function/generate-text) that are executed using machine learning models (e.g., LLMs).
-You can call these functions with a model, a prompt, and additional options.
+You can call these functions with a model, a prompt, and additional [FunctionOptions](/api/modules#functionoptions).
 
 ```ts
 const text = await generateText(
@@ -32,8 +32,7 @@ For more advanced use cases, you might want to access the full response from the
 Model functions return rich results that include the original response and metadata when you call `.asFullResponse()` before resolving the promise.
 
 ```ts
-// access the full response and the metadata:
-// the response type is specific to the model that's being used
+// access the full response (needs to be typed) and the metadata:
 const { output, response, metadata } = await generateText(
   new OpenAITextGenerationModel({
     model: "gpt-3.5-turbo-instruct",
@@ -43,11 +42,12 @@ const { output, response, metadata } = await generateText(
   "Write a short story about a robot learning to love:\n\n"
 ).asFullResponse();
 
-for (const choice of response.choices) {
+console.log(metadata);
+
+// cast to the response type:
+for (const choice of (response as OpenAITextGenerationResponse).choices) {
   console.log(choice.text);
 }
-
-console.log(`Duration: ${metadata.durationInMs}ms`);
 ```
 
 ## Models

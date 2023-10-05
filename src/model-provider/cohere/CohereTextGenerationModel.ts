@@ -1,5 +1,6 @@
 import SecureJSON from "secure-json-parse";
 import { z } from "zod";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -9,15 +10,14 @@ import {
 } from "../../core/api/postToApi.js";
 import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { DeltaEvent } from "../../model-function/DeltaEvent.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { Delta } from "../../model-function/Delta.js";
 import {
-  TextGenerationModel,
   TextGenerationModelSettings,
+  TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
-import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
+import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
@@ -78,13 +78,7 @@ export interface CohereTextGenerationModelSettings
  */
 export class CohereTextGenerationModel
   extends AbstractModel<CohereTextGenerationModelSettings>
-  implements
-    TextGenerationModel<
-      string,
-      CohereTextGenerationResponse,
-      CohereTextGenerationDelta,
-      CohereTextGenerationModelSettings
-    >
+  implements TextStreamingModel<string, CohereTextGenerationModelSettings>
 {
   constructor(settings: CohereTextGenerationModelSettings) {
     super({ settings });
@@ -114,35 +108,27 @@ export class CohereTextGenerationModel
     prompt: string,
     options: {
       responseFormat: CohereTextGenerationResponseFormatType<RESPONSE>;
-    } & ModelFunctionOptions<CohereTextGenerationModelSettings>
+    } & FunctionOptions
   ): Promise<RESPONSE> {
-    const { run, settings, responseFormat } = options;
-
-    const combinedSettings = {
-      ...this.settings,
-      settings,
-    };
-
-    const callSettings = {
-      ...combinedSettings,
-
-      // use endSequences instead of stopSequences
-      // to exclude stop tokens from the generated text
-      endSequences: combinedSettings.stopSequences,
-      maxTokens: combinedSettings.maxCompletionTokens,
-
-      // mapped name because of conflict with stopSequences:
-      stopSequences: combinedSettings.cohereStopSequences,
-
-      abortSignal: run?.abortSignal,
-      prompt,
-      responseFormat,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callCohereTextGenerationAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callCohereTextGenerationAPI({
+          ...this.settings,
+
+          // use endSequences instead of stopSequences
+          // to exclude stop tokens from the generated text
+          endSequences: this.settings.stopSequences,
+          maxTokens: this.settings.maxCompletionTokens,
+
+          // mapped name because of conflict with stopSequences:
+          stopSequences: this.settings.cohereStopSequences,
+
+          abortSignal: options.run?.abortSignal,
+          responseFormat: options.responseFormat,
+          prompt,
+        }),
     });
   }
 
@@ -170,24 +156,19 @@ export class CohereTextGenerationModel
     );
   }
 
-  generateTextResponse(
-    prompt: string,
-    options?: ModelFunctionOptions<CohereTextGenerationModelSettings>
-  ) {
-    return this.callAPI(prompt, {
+  async doGenerateText(prompt: string, options?: FunctionOptions) {
+    const response = await this.callAPI(prompt, {
       ...options,
       responseFormat: CohereTextGenerationResponseFormat.json,
     });
+
+    return {
+      response,
+      text: response.generations[0].text,
+    };
   }
 
-  extractText(response: CohereTextGenerationResponse): string {
-    return response.generations[0].text;
-  }
-
-  generateDeltaStreamResponse(
-    prompt: string,
-    options?: ModelFunctionOptions<CohereTextGenerationModelSettings>
-  ) {
+  doStreamText(prompt: string, options?: FunctionOptions) {
     return this.callAPI(prompt, {
       ...options,
       responseFormat: CohereTextGenerationResponseFormat.deltaIterable,
@@ -200,15 +181,13 @@ export class CohereTextGenerationModel
 
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatTextGenerationModel<
+  ): PromptFormatTextStreamingModel<
     INPUT_PROMPT,
     string,
-    CohereTextGenerationResponse,
-    CohereTextGenerationDelta,
     CohereTextGenerationModelSettings,
     this
   > {
-    return new PromptFormatTextGenerationModel({
+    return new PromptFormatTextStreamingModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
@@ -332,8 +311,8 @@ const cohereTextStreamingResponseSchema = z.discriminatedUnion("is_finished", [
 
 async function createCohereTextGenerationFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<DeltaEvent<CohereTextGenerationDelta>>> {
-  const queue = new AsyncQueue<DeltaEvent<CohereTextGenerationDelta>>();
+): Promise<AsyncIterable<Delta<string>>> {
+  const queue = new AsyncQueue<Delta<string>>();
 
   let accumulatedText = "";
 
@@ -350,6 +329,7 @@ async function createCohereTextGenerationFullDeltaIterableQueue(
           isComplete: true,
           delta: "",
         },
+        valueDelta: "",
       });
     } else {
       accumulatedText += event.text;
@@ -361,6 +341,7 @@ async function createCohereTextGenerationFullDeltaIterableQueue(
           isComplete: false,
           delta: event.text,
         },
+        valueDelta: event.text,
       });
     }
   }
@@ -422,6 +403,6 @@ export const CohereTextGenerationResponseFormat = {
     handler: async ({ response }: { response: Response }) =>
       createCohereTextGenerationFullDeltaIterableQueue(response.body!),
   } satisfies CohereTextGenerationResponseFormatType<
-    AsyncIterable<DeltaEvent<CohereTextGenerationDelta>>
+    AsyncIterable<Delta<string>>
   >,
 };

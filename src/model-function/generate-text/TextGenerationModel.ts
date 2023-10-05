@@ -1,9 +1,10 @@
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { DeltaEvent } from "../DeltaEvent.js";
 import { Model, ModelSettings } from "../Model.js";
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
+import { Delta } from "../Delta.js";
+import { PromptFormatTextStreamingModel } from "index.js";
 
 export interface TextGenerationModelSettings extends ModelSettings {
   /**
@@ -27,9 +28,7 @@ export interface TextGenerationModelSettings extends ModelSettings {
 
 export interface TextGenerationModel<
   PROMPT,
-  RESPONSE,
-  FULL_DELTA,
-  SETTINGS extends TextGenerationModelSettings,
+  SETTINGS extends TextGenerationModelSettings = TextGenerationModelSettings,
 > extends Model<SETTINGS> {
   readonly contextWindowSize: number | undefined;
 
@@ -42,40 +41,34 @@ export interface TextGenerationModel<
     | ((prompt: PROMPT) => PromiseLike<number>)
     | undefined;
 
-  generateTextResponse(
+  doGenerateText(
     prompt: PROMPT,
-    options?: ModelFunctionOptions<SETTINGS>
-  ): PromiseLike<RESPONSE>;
-
-  extractText(response: RESPONSE): string;
-
-  /**
-   * Optional. Implement for streaming support.
-   */
-  readonly generateDeltaStreamResponse?: (
-    prompt: PROMPT,
-    options: ModelFunctionOptions<SETTINGS>
-  ) => PromiseLike<AsyncIterable<DeltaEvent<FULL_DELTA>>>;
-
-  /**
-   * Optional. Implement for streaming support.
-   */
-  readonly extractTextDelta?: (fullDelta: FULL_DELTA) => string | undefined;
-
-  extractUsage?(response: RESPONSE): {
-    promptTokens: number;
-    completionTokens: number;
-    totalTokens: number;
-  };
+    options?: FunctionOptions
+  ): PromiseLike<{
+    response: unknown;
+    text: string;
+    usage?: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+  }>;
 
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
-  ): PromptFormatTextGenerationModel<
-    INPUT_PROMPT,
-    PROMPT,
-    RESPONSE,
-    FULL_DELTA,
-    SETTINGS,
-    this
-  >;
+  ): PromptFormatTextGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this>;
+}
+
+export interface TextStreamingModel<
+  PROMPT,
+  SETTINGS extends TextGenerationModelSettings = TextGenerationModelSettings,
+> extends TextGenerationModel<PROMPT, SETTINGS> {
+  doStreamText(
+    prompt: PROMPT,
+    options?: FunctionOptions
+  ): PromiseLike<AsyncIterable<Delta<string>>>;
+
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
+  ): PromptFormatTextStreamingModel<INPUT_PROMPT, PROMPT, SETTINGS, this>;
 }

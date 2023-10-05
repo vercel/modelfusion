@@ -1,13 +1,12 @@
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Vector } from "../../core/Vector.js";
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
 export interface EmbeddingModelSettings extends ModelSettings {}
 
 export interface EmbeddingModel<
   VALUE,
-  RESPONSE,
-  SETTINGS extends EmbeddingModelSettings,
+  SETTINGS extends EmbeddingModelSettings = EmbeddingModelSettings,
 > extends Model<SETTINGS> {
   /**
    * The size of the embedding vector.
@@ -19,10 +18,11 @@ export interface EmbeddingModel<
    */
   readonly maxValuesPerCall: number | undefined;
 
-  generateEmbeddingResponse(
+  doEmbedValues(
     values: VALUE[],
-    options?: ModelFunctionOptions<SETTINGS>
-  ): PromiseLike<RESPONSE>;
-
-  extractEmbeddings(response: RESPONSE): Vector[];
+    options?: FunctionOptions
+  ): PromiseLike<{
+    response: unknown;
+    embeddings: Vector[];
+  }>;
 }

@@ -1,6 +1,6 @@
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import {
   SpeechSynthesisModel,
   SpeechSynthesisModelSettings,
@@ -45,24 +45,17 @@ export class LmntSpeechSynthesisModel
 
   private async callAPI(
     text: string,
-    options?: ModelFunctionOptions<LmntSpeechSynthesisModelSettings>
+    options?: FunctionOptions
   ): Promise<Buffer> {
-    const run = options?.run;
-    const settings = options?.settings;
-
-    const callSettings = {
-      // copied settings:
-      ...this.settings,
-      ...settings,
-
-      abortSignal: run?.abortSignal,
-      text,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callLmntTextToSpeechAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callLmntTextToSpeechAPI({
+          ...this.settings,
+          abortSignal: options?.run?.abortSignal,
+          text,
+        }),
     });
   }
 
@@ -75,10 +68,7 @@ export class LmntSpeechSynthesisModel
     };
   }
 
-  generateSpeechResponse(
-    text: string,
-    options?: ModelFunctionOptions<LmntSpeechSynthesisModelSettings> | undefined
-  ) {
+  generateSpeechResponse(text: string, options?: FunctionOptions) {
     return this.callAPI(text, options);
   }
 

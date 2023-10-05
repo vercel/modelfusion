@@ -1,5 +1,5 @@
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Vector } from "../../core/Vector.js";
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel.js";
 
@@ -15,21 +15,17 @@ import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel.js";
  *   ]
  * );
  */
-export function embedMany<
-  VALUE,
-  RESPONSE,
-  SETTINGS extends EmbeddingModelSettings,
->(
-  model: EmbeddingModel<VALUE, RESPONSE, SETTINGS>,
+export function embedMany<VALUE>(
+  model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   values: VALUE[],
-  options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<Vector[], RESPONSE[]> {
+  options?: FunctionOptions
+): ModelFunctionPromise<Vector[]> {
   return executeCall({
     functionType: "embedding",
     input: values,
     model,
     options,
-    generateResponse: (options) => {
+    generateResponse: async (options) => {
       // split the values into groups that are small enough to be sent in one call:
       const maxValuesPerCall = model.maxValuesPerCall;
       const valueGroups: VALUE[][] = [];
@@ -42,18 +38,22 @@ export function embedMany<
         }
       }
 
-      return Promise.all(
+      const responses = await Promise.all(
         valueGroups.map((valueGroup) =>
-          model.generateEmbeddingResponse(valueGroup, options)
+          model.doEmbedValues(valueGroup, options)
         )
       );
-    },
-    extractOutputValue: (result) => {
+
+      const rawResponses = responses.map((response) => response.response);
       const embeddings: Array<Vector> = [];
-      for (const response of result) {
-        embeddings.push(...model.extractEmbeddings(response));
+      for (const response of responses) {
+        embeddings.push(...response.embeddings);
       }
-      return embeddings;
+
+      return {
+        response: rawResponses,
+        extractedValue: embeddings,
+      };
     },
   });
 }
@@ -67,19 +67,22 @@ export function embedMany<
  *   "At first, Nox didn't know what to do with the pup."
  * );
  */
-export function embed<VALUE, RESPONSE, SETTINGS extends EmbeddingModelSettings>(
-  model: EmbeddingModel<VALUE, RESPONSE, SETTINGS>,
+export function embed<VALUE>(
+  model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   value: VALUE,
-  options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<Vector, RESPONSE[]> {
+  options?: FunctionOptions
+): ModelFunctionPromise<Vector> {
   return executeCall({
     functionType: "embedding",
     input: value,
     model,
     options,
-    generateResponse: async (options) => [
-      await model.generateEmbeddingResponse([value], options),
-    ],
-    extractOutputValue: (result) => model.extractEmbeddings(result[0])[0],
+    generateResponse: async (options) => {
+      const result = await model.doEmbedValues([value], options);
+      return {
+        response: result.response,
+        extractedValue: result.embeddings[0],
+      };
+    },
   });
 }

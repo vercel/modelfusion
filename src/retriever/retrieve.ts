@@ -1,26 +1,22 @@
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../core/FunctionEventSource.js";
+import { FunctionOptions } from "../core/FunctionOptions.js";
 import { getGlobalFunctionLogging } from "../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
 import { AbortError } from "../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
-import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { runSafe } from "../util/runSafe.js";
 import {
   RetrieveFinishedEvent,
   RetrieveStartedEvent,
 } from "./RetrieveEvent.js";
-import { Retriever, RetrieverSettings } from "./Retriever.js";
+import { Retriever } from "./Retriever.js";
 
-export async function retrieve<
-  OBJECT,
-  QUERY,
-  SETTINGS extends RetrieverSettings,
->(
-  retriever: Retriever<OBJECT, QUERY, SETTINGS>,
+export async function retrieve<OBJECT, QUERY>(
+  retriever: Retriever<OBJECT, QUERY>,
   query: QUERY,
-  options?: ModelFunctionOptions<SETTINGS>
+  options?: FunctionOptions
 ): Promise<OBJECT[]> {
   const run = options?.run;
 
@@ -94,9 +90,9 @@ export async function retrieve<
     eventType: "finished",
     result: {
       status: "success",
-      output: result.output,
+      value: result.value,
     },
   } as RetrieveFinishedEvent);
 
-  return result.output;
+  return result.value;
 }

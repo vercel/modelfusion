@@ -1,3 +1,4 @@
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -5,7 +6,6 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
 import {
   SpeechSynthesisModel,
   SpeechSynthesisModelSettings,
@@ -49,29 +49,20 @@ export class ElevenLabsSpeechSynthesisModel
 
   private async callAPI(
     text: string,
-    options?: ModelFunctionOptions<ElevenLabsSpeechSynthesisModelSettings>
+    options?: FunctionOptions
   ): Promise<Buffer> {
-    const run = options?.run;
-    const settings = options?.settings;
-
-    const combinedSettings = {
-      ...this.settings,
-      ...settings,
-    };
-
-    const callSettings = {
-      api: combinedSettings.api,
-      abortSignal: run?.abortSignal,
-      text,
-      voiceId: combinedSettings.voice,
-      modelId: combinedSettings.model,
-      voiceSettings: combinedSettings.voiceSettings,
-    };
-
     return callWithRetryAndThrottle({
-      retry: combinedSettings.api?.retry,
-      throttle: combinedSettings.api?.throttle,
-      call: async () => callElevenLabsTextToSpeechAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callElevenLabsTextToSpeechAPI({
+          api: this.settings.api,
+          abortSignal: options?.run?.abortSignal,
+          text,
+          voiceId: this.settings.voice,
+          modelId: this.settings.model,
+          voiceSettings: this.settings.voiceSettings,
+        }),
     });
   }
 
@@ -83,12 +74,7 @@ export class ElevenLabsSpeechSynthesisModel
     };
   }
 
-  generateSpeechResponse(
-    text: string,
-    options?:
-      | ModelFunctionOptions<ElevenLabsSpeechSynthesisModelSettings>
-      | undefined
-  ) {
+  generateSpeechResponse(text: string, options?: FunctionOptions) {
     return this.callAPI(text, options);
   }
 

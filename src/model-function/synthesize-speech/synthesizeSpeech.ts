@@ -1,4 +1,4 @@
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   SpeechSynthesisModel,
@@ -8,17 +8,22 @@ import {
 /**
  * Synthesizes speech from text.
  */
-export function synthesizeSpeech<SETTINGS extends SpeechSynthesisModelSettings>(
-  model: SpeechSynthesisModel<SETTINGS>,
+export function synthesizeSpeech(
+  model: SpeechSynthesisModel<SpeechSynthesisModelSettings>,
   text: string,
-  options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<Buffer, Buffer> {
+  options?: FunctionOptions
+): ModelFunctionPromise<Buffer> {
   return executeCall({
     functionType: "speech-synthesis",
     input: text,
     model,
     options,
-    generateResponse: (options) => model.generateSpeechResponse(text, options),
-    extractOutputValue: (buffer) => buffer,
+    generateResponse: async (options) => {
+      const response = await model.generateSpeechResponse(text, options);
+      return {
+        response,
+        extractedValue: response,
+      };
+    },
   });
 }

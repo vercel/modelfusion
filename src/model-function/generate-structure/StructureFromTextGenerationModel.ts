@@ -1,11 +1,11 @@
+import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../generate-text/TextGenerationModel.js";
-import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
-import { StructureGenerationModel } from "./StructureGenerationModel.js";
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
 import { generateText } from "../generate-text/generateText.js";
+import { StructureGenerationModel } from "./StructureGenerationModel.js";
 
 export type StructureFromTextPromptFormat<PROMPT> = {
   createPrompt: (
@@ -17,16 +17,8 @@ export type StructureFromTextPromptFormat<PROMPT> = {
 
 export class StructureFromTextGenerationModel<
   PROMPT,
-  MODEL extends TextGenerationModel<
-    string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any,
-    TextGenerationModelSettings
-  >,
-> implements
-    StructureGenerationModel<PROMPT, string, undefined, MODEL["settings"]>
+  MODEL extends TextGenerationModel<string, TextGenerationModelSettings>,
+> implements StructureGenerationModel<PROMPT, MODEL["settings"]>
 {
   private readonly model: MODEL;
   private readonly format: StructureFromTextPromptFormat<PROMPT>;
@@ -54,20 +46,21 @@ export class StructureFromTextGenerationModel<
     return this.model.settingsForEvent;
   }
 
-  async generateStructureResponse(
+  async doGenerateStructure(
     structure: StructureDefinition<string, unknown>,
     prompt: PROMPT,
-    options?: ModelFunctionOptions<MODEL["settings"]> | undefined
-  ): Promise<string> {
-    return await generateText(
+    options?: FunctionOptions
+  ) {
+    const { response, value } = await generateText(
       this.model,
       this.format.createPrompt(prompt, structure),
       options
-    );
-  }
+    ).asFullResponse();
 
-  extractStructure(response: string): unknown {
-    return this.format.extractStructure(response);
+    return {
+      response,
+      structure: this.format.extractStructure(value),
+    };
   }
 
   withSettings(additionalSettings: Partial<MODEL["settings"]>): this {

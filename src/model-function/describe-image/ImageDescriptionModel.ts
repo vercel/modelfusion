@@ -1,17 +1,18 @@
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
 export interface ImageDescriptionModelSettings extends ModelSettings {}
 
 export interface ImageDescriptionModel<
   DATA,
-  RESPONSE,
-  SETTINGS extends ImageDescriptionModelSettings,
+  SETTINGS extends
+    ImageDescriptionModelSettings = ImageDescriptionModelSettings,
 > extends Model<SETTINGS> {
-  generateImageDescriptionResponse: (
+  doDescribeImage: (
     data: DATA,
-    options?: ModelFunctionOptions<SETTINGS>
-  ) => PromiseLike<RESPONSE>;
-
-  extractImageDescription: (response: RESPONSE) => string;
+    options?: FunctionOptions
+  ) => PromiseLike<{
+    response: unknown;
+    description: string;
+  }>;
 }

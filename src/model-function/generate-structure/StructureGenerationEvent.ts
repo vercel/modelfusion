@@ -12,7 +12,7 @@ export type StructureGenerationFinishedEventResult =
   | {
       status: "success";
       response: unknown;
-      output: unknown;
+      value: unknown;
 
       usage?: {
         promptTokens: number;

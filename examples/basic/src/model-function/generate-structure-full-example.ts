@@ -11,7 +11,7 @@ dotenv.config();
 
 async function main() {
   const {
-    output: sentiment,
+    value: sentiment,
     metadata,
     response,
   } = await generateStructure(

@@ -58,7 +58,7 @@ export type BaseModelCallFinishedEventResult =
   | {
       status: "success";
       response: unknown;
-      output: unknown;
+      value: unknown;
 
       /**
        * Optional usage information for the model call. The type depends on the call type.

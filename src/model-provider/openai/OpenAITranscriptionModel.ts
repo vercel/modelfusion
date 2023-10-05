@@ -1,11 +1,6 @@
 import z from "zod";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import {
-  TranscriptionModel,
-  TranscriptionModelSettings,
-} from "../../model-function/transcribe-speech/TranscriptionModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
@@ -13,6 +8,11 @@ import {
   createTextResponseHandler,
   postToApi,
 } from "../../core/api/postToApi.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import {
+  TranscriptionModel,
+  TranscriptionModelSettings,
+} from "../../model-function/transcribe-speech/TranscriptionModel.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 
@@ -79,7 +79,6 @@ export class OpenAITranscriptionModel
   implements
     TranscriptionModel<
       OpenAITranscriptionInput,
-      OpenAITranscriptionVerboseJsonResponse,
       OpenAITranscriptionModelSettings
     >
 {
@@ -92,56 +91,43 @@ export class OpenAITranscriptionModel
     return this.settings.model;
   }
 
-  generateTranscriptionResponse(
+  async doTranscribe(
     data: OpenAITranscriptionInput,
-    options?: ModelFunctionOptions<Partial<OpenAITranscriptionModelSettings>>
-  ): PromiseLike<OpenAITranscriptionVerboseJsonResponse> {
-    return this.callAPI(data, {
+    options?: FunctionOptions
+  ) {
+    const response = await this.callAPI(data, {
       responseFormat: OpenAITranscriptionResponseFormat.verboseJson,
       functionId: options?.functionId,
-      settings: options?.settings,
       run: options?.run,
     });
-  }
 
-  extractTranscriptionText(
-    response: OpenAITranscriptionVerboseJsonResponse
-  ): string {
-    return response.text;
+    return {
+      response,
+      transcription: response.text,
+    };
   }
 
   async callAPI<RESULT>(
     data: OpenAITranscriptionInput,
     options: {
       responseFormat: OpenAITranscriptionResponseFormatType<RESULT>;
-    } & ModelFunctionOptions<Partial<OpenAITranscriptionModelSettings>>
+    } & FunctionOptions
   ): Promise<RESULT> {
-    const run = options?.run;
-    const settings = options?.settings;
-    const responseFormat = options?.responseFormat;
-
-    const combinedSettings = {
-      ...this.settings,
-      ...settings,
-    };
-
-    const callSettings = {
-      // Copied settings:
-      ...combinedSettings,
-
-      // other settings:
-      abortSignal: run?.abortSignal,
-      file: {
-        name: `audio.${data.type}`,
-        data: data.data,
-      },
-      responseFormat,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callOpenAITranscriptionAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callOpenAITranscriptionAPI({
+          ...this.settings,
+
+          // other settings:
+          abortSignal: options?.run?.abortSignal,
+          file: {
+            name: `audio.${data.type}`,
+            data: data.data,
+          },
+          responseFormat: options?.responseFormat,
+        }),
     });
   }
 

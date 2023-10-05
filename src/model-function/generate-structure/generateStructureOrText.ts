@@ -1,11 +1,11 @@
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
+import { NoSuchStructureError } from "./NoSuchStructureError.js";
 import {
   StructureOrTextGenerationModel,
   StructureOrTextGenerationModelSettings,
 } from "./StructureOrTextGenerationModel.js";
-import { NoSuchStructureError } from "./NoSuchStructureError.js";
-import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import { StructureValidationError } from "./StructureValidationError.js";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
@@ -36,16 +36,16 @@ type ToOutputValue<
 export function generateStructureOrText<
   STRUCTURES extends StructureDefinition<any, any>[],
   PROMPT,
-  RESPONSE,
-  SETTINGS extends StructureOrTextGenerationModelSettings,
 >(
-  model: StructureOrTextGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+  model: StructureOrTextGenerationModel<
+    PROMPT,
+    StructureOrTextGenerationModelSettings
+  >,
   structureDefinitions: STRUCTURES,
   prompt: PROMPT | ((structureDefinitions: STRUCTURES) => PROMPT),
-  options?: ModelFunctionOptions<SETTINGS>
+  options?: FunctionOptions
 ): ModelFunctionPromise<
-  { structure: null; value: null; text: string } | ToOutputValue<STRUCTURES>,
-  RESPONSE
+  { structure: null; value: null; text: string } | ToOutputValue<STRUCTURES>
 > {
   // Note: PROMPT must not be a function.
   const expandedPrompt =
@@ -58,23 +58,22 @@ export function generateStructureOrText<
     input: expandedPrompt,
     model,
     options,
-    generateResponse: (options) =>
-      model.generateStructureOrTextResponse(
+    generateResponse: async (options) => {
+      const result = await model.doGenerateStructureOrText(
         structureDefinitions,
         expandedPrompt,
         options
-      ),
-    extractOutputValue: (
-      response
-    ):
-      | { structure: null; value: null; text: string }
-      | ToOutputValue<STRUCTURES> => {
-      const { structure, value, text } =
-        model.extractStructureAndText(response);
+      );
+
+      const { structure, value, text } = result.structureAndText;
 
       // text generation:
       if (structure == null) {
-        return { structure, value, text };
+        return {
+          response: result.response,
+          extractedValue: { structure, value, text },
+          usage: result.usage,
+        };
       }
 
       const definition = structureDefinitions.find((d) => d.name === structure);
@@ -94,11 +93,14 @@ export function generateStructureOrText<
       }
 
       return {
-        structure: structure as ToOutputValue<STRUCTURES>["structure"],
-        value: parseResult.value,
-        text: text as any, // text is string | null, which is part of the response for schema values
+        response: result.response,
+        extractedValue: {
+          structure: structure as ToOutputValue<STRUCTURES>["structure"],
+          value: parseResult.value,
+          text: text as any, // text is string | null, which is part of the response for schema values
+        },
+        usage: result.usage,
       };
     },
-    extractUsage: (result) => model.extractUsage?.(result),
   });
 }

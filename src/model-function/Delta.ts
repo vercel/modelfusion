@@ -1,7 +1,8 @@
-export type DeltaEvent<FULL_DELTA> =
+export type Delta<T> =
   | {
       type: "delta";
-      fullDelta: FULL_DELTA;
+      fullDelta: unknown;
+      valueDelta: T;
     }
   | {
       type: "error";

@@ -1,7 +1,7 @@
 import z from "zod";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { ModelFunctionOptions } from "../../model-function/ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -57,12 +57,7 @@ export interface HuggingFaceTextGenerationModelSettings
 export class HuggingFaceTextGenerationModel
   extends AbstractModel<HuggingFaceTextGenerationModelSettings>
   implements
-    TextGenerationModel<
-      string,
-      HuggingFaceTextGenerationResponse,
-      undefined,
-      HuggingFaceTextGenerationModelSettings
-    >
+    TextGenerationModel<string, HuggingFaceTextGenerationModelSettings>
 {
   constructor(settings: HuggingFaceTextGenerationModelSettings) {
     super({ settings });
@@ -78,31 +73,22 @@ export class HuggingFaceTextGenerationModel
 
   async callAPI(
     prompt: string,
-    options?: ModelFunctionOptions<HuggingFaceTextGenerationModelSettings>
+    options?: FunctionOptions
   ): Promise<HuggingFaceTextGenerationResponse> {
-    const run = options?.run;
-    const settings = options?.settings;
-
-    const combinedSettings = {
-      ...this.settings,
-      ...settings,
-    };
-
-    const callSettings = {
-      options: {
-        useCache: true,
-        waitForModel: true,
-      },
-      ...combinedSettings,
-      maxNewTokens: combinedSettings.maxCompletionTokens,
-      abortSignal: run?.abortSignal,
-      inputs: prompt,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callHuggingFaceTextGenerationAPI(callSettings),
+      retry: this.settings.api?.retry,
+      throttle: this.settings.api?.throttle,
+      call: async () =>
+        callHuggingFaceTextGenerationAPI({
+          options: {
+            useCache: true,
+            waitForModel: true,
+          },
+          ...this.settings,
+          maxNewTokens: this.settings.maxCompletionTokens,
+          abortSignal: options?.run?.abortSignal,
+          inputs: prompt,
+        }),
     });
   }
 
@@ -130,15 +116,13 @@ export class HuggingFaceTextGenerationModel
 
   readonly countPromptTokens = undefined;
 
-  generateTextResponse(
-    prompt: string,
-    options?: ModelFunctionOptions<HuggingFaceTextGenerationModelSettings>
-  ) {
-    return this.callAPI(prompt, options);
-  }
+  async doGenerateText(prompt: string, options?: FunctionOptions) {
+    const response = await this.callAPI(prompt, options);
 
-  extractText(response: HuggingFaceTextGenerationResponse): string {
-    return response[0].generated_text;
+    return {
+      response,
+      text: response[0].generated_text,
+    };
   }
 
   withPromptFormat<INPUT_PROMPT>(
@@ -146,8 +130,6 @@ export class HuggingFaceTextGenerationModel
   ): PromptFormatTextGenerationModel<
     INPUT_PROMPT,
     string,
-    HuggingFaceTextGenerationResponse,
-    undefined,
     HuggingFaceTextGenerationModelSettings,
     this
   > {

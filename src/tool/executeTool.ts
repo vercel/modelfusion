@@ -169,13 +169,13 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     });
   }
 
-  const output = result.output;
+  const output = result.value;
 
   eventSource.notify({
     ...finishMetadata,
     result: {
       status: "success",
-      output,
+      value: output,
     },
   });
 

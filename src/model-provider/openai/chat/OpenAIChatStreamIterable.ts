@@ -2,7 +2,7 @@ import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AsyncQueue } from "../../../event-source/AsyncQueue.js";
 import { parseEventSourceStream } from "../../../event-source/parseEventSourceStream.js";
-import { DeltaEvent } from "../../../model-function/DeltaEvent.js";
+import { Delta } from "../../../model-function/Delta.js";
 
 const chatResponseStreamEventSchema = z.object({
   choices: z.array(
@@ -45,10 +45,11 @@ export type OpenAIChatDelta = Array<{
   };
 }>;
 
-export async function createOpenAIChatFullDeltaIterableQueue(
-  stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<DeltaEvent<OpenAIChatDelta>>> {
-  const queue = new AsyncQueue<DeltaEvent<OpenAIChatDelta>>();
+export async function createOpenAIChatDeltaIterableQueue<VALUE>(
+  stream: ReadableStream<Uint8Array>,
+  extractDeltaValue: (delta: OpenAIChatDelta) => VALUE
+): Promise<AsyncIterable<Delta<VALUE>>> {
+  const queue = new AsyncQueue<Delta<VALUE>>();
   const streamDelta: OpenAIChatDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
@@ -127,11 +128,14 @@ export async function createOpenAIChatFullDeltaIterableQueue(
 
           // Since we're mutating the choices array in an async scenario,
           // we need to make a deep copy:
-          const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
+          const streamDeltaDeepCopy: OpenAIChatDelta = JSON.parse(
+            JSON.stringify(streamDelta)
+          );
 
           queue.push({
             type: "delta",
             fullDelta: streamDeltaDeepCopy,
+            valueDelta: extractDeltaValue(streamDeltaDeepCopy),
           });
         }
       } catch (error) {

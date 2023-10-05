@@ -20,28 +20,26 @@ async function main() {
       OpenAIChatMessage.user("A robot learning to love"),
     ],
     {
-      responseFormat: OpenAIChatResponseFormat.deltaIterable,
-      settings: {
-        functionCall: {
-          name: "exampleFunction",
-        },
-        functions: [
-          {
-            name: "exampleFunction",
-            description: "An example function",
-            parameters: {
-              type: "object",
-              properties: {
-                exampleParameter: {
-                  type: "string",
-                  description: "An example parameter",
-                },
-              },
-              required: ["exampleParameter"],
-            },
-          },
-        ],
+      responseFormat: OpenAIChatResponseFormat.structureDeltaIterable,
+      functionCall: {
+        name: "exampleFunction",
       },
+      functions: [
+        {
+          name: "exampleFunction",
+          description: "An example function",
+          parameters: {
+            type: "object",
+            properties: {
+              exampleParameter: {
+                type: "string",
+                description: "An example parameter",
+              },
+            },
+            required: ["exampleParameter"],
+          },
+        },
+      ],
     }
   );
 
@@ -50,7 +48,7 @@ async function main() {
       throw delta.error;
     }
 
-    console.log(JSON.stringify(delta?.fullDelta[0].function_call ?? {}));
+    console.log(delta.valueDelta);
   }
 }
 

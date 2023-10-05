@@ -1,4 +1,4 @@
-import { ModelFunctionOptions } from "../model-function/ModelFunctionOptions.js";
+import { FunctionOptions } from "../core/FunctionOptions.js";
 import {
   StructureGenerationModel,
   StructureGenerationModelSettings,
@@ -16,18 +16,15 @@ import { executeTool } from "./executeTool.js";
  */
 export async function useTool<
   PROMPT,
-  RESPONSE,
-  SETTINGS extends StructureGenerationModelSettings,
   // Using 'any' is required to allow for flexibility in the inputs. The actual types are
   // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TOOL extends Tool<any, any, any>,
 >(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  model: StructureGenerationModel<PROMPT, RESPONSE, any, SETTINGS>,
+  model: StructureGenerationModel<PROMPT, StructureGenerationModelSettings>,
   tool: TOOL,
   prompt: PROMPT | ((tool: TOOL) => PROMPT),
-  options?: ModelFunctionOptions<SETTINGS>
+  options?: FunctionOptions
 ): Promise<{
   tool: TOOL["name"];
   parameters: TOOL["inputSchema"];
@@ -39,12 +36,11 @@ export async function useTool<
       ? (prompt as (tool: TOOL) => PROMPT)(tool)
       : prompt;
 
-  const { output: value } = await generateStructure<
+  const { value } = await generateStructure<
     TOOL["inputSchema"],
     PROMPT,
-    RESPONSE,
     TOOL["name"],
-    SETTINGS
+    StructureGenerationModelSettings
   >(
     model,
     {

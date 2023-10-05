@@ -6,7 +6,7 @@ dotenv.config();
 
 async function main() {
   const {
-    output: image,
+    value: image,
     metadata,
     response,
   } = await generateImage(

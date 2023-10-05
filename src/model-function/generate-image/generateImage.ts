@@ -1,4 +1,4 @@
-import { ModelFunctionOptions } from "../ModelFunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ModelFunctionPromise, executeCall } from "../executeCall.js";
 import {
   ImageGenerationModel,
@@ -20,21 +20,22 @@ import {
  *   ]
  * );
  */
-export function generateImage<
-  PROMPT,
-  RESPONSE,
-  SETTINGS extends ImageGenerationModelSettings,
->(
-  model: ImageGenerationModel<PROMPT, RESPONSE, SETTINGS>,
+export function generateImage<PROMPT>(
+  model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>,
   prompt: PROMPT,
-  options?: ModelFunctionOptions<SETTINGS>
-): ModelFunctionPromise<string, RESPONSE> {
+  options?: FunctionOptions
+): ModelFunctionPromise<string> {
   return executeCall({
     functionType: "image-generation",
     input: prompt,
     model,
     options,
-    generateResponse: (options) => model.generateImageResponse(prompt, options),
-    extractOutputValue: model.extractBase64Image,
+    generateResponse: async (options) => {
+      const result = await model.doGenerateImage(prompt, options);
+      return {
+        response: result.response,
+        extractedValue: result.base64Image,
+      };
+    },
   });
 }
