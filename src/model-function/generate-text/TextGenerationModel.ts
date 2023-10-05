@@ -1,10 +1,10 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
+import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
+import { Delta } from "../Delta.js";
 import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
-import { Delta } from "../Delta.js";
-import { PromptFormatTextStreamingModel } from "index.js";
 
 export interface TextGenerationModelSettings extends ModelSettings {
   /**

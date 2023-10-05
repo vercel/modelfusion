@@ -1,4 +1,4 @@
-import { FunctionOptions } from "core";
+import { FunctionOptions } from "../core/FunctionOptions";
 
 export interface Retriever<OBJECT, QUERY> {
   // TODO add metadata to return value
