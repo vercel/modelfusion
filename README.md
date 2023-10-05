@@ -115,7 +115,7 @@ ModelFusion model functions return rich results that include the original respon
 
 ```ts
 // access the full response (needs to be typed) and the metadata:
-const { output, response, metadata } = await generateText(
+const { value, response, metadata } = await generateText(
   new OpenAITextGenerationModel({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
@@ -381,6 +381,13 @@ Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider
 Create embeddings for text and other values. Embeddings are vectors that represent the essence of the values in the context of the model.
 
 ```ts
+// embed single value:
+const embedding = await embed(
+  new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
+  "At first, Nox didn't know what to do with the pup."
+);
+
+// embed many values:
 const embeddings = await embedMany(
   new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
   [
@@ -456,7 +463,7 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
 
 - [Model Functions](https://modelfusion.dev/guide/function/)
   - [Generate and stream text](https://modelfusion.dev/guide/function/generate-text)
-  - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
+  - [Generate and stream structure](https://modelfusion.dev/guide/function/generate-structure)
   - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
