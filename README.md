@@ -494,9 +494,17 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
 
 Examples for almost all of the individual functions and objects. Highly recommended to get started.
 
+### [StoryTeller](https://github.com/lgrammel/storyteller)
+
+> _multi-modal_, _structure streaming_, _image generation_, _text to speech_, _speech to text_, _text generation_, _structure generation_, _embeddings_
+
+StoryTeller is an exploratory web application that creates short audio stories for pre-school kids.
+
 ### [Chatbot (Terminal)](https://github.com/lgrammel/modelfusion/tree/main/examples/chatbot-terminal)
 
 > _Terminal app_, _chat_, _llama.cpp_
+
+A chat with an AI assistant, implemented as a terminal app.
 
 ### [Chatbot (Next.JS)](https://github.com/lgrammel/modelfusion/tree/main/examples/chatbot-next-js)
 
