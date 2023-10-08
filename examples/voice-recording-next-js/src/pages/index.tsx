@@ -1,6 +1,7 @@
-import { Box, IconButton, Typography } from "@mui/material";
-import Head from "next/head";
 import MicIcon from "@mui/icons-material/Mic";
+import { Box, IconButton, Typography } from "@mui/material";
+import { getAudioFileExtension } from "modelfusion";
+import Head from "next/head";
 import { useRef, useState } from "react";
 
 export default function Home() {
@@ -10,7 +11,7 @@ export default function Home() {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcriptions, setTranscriptions] = useState<string[]>([]);
 
-  const handleButtonPress = () => {
+  const startRecording = () => {
     if (isRecording) return;
 
     navigator.mediaDevices
@@ -23,7 +24,10 @@ export default function Home() {
           audioChunksRef.current.push(e.data);
         };
 
-        mediaRecorder.start();
+        // .start(1000): workaround for Safari/iphone
+        // see https://community.openai.com/t/whisper-api-completely-wrong-for-mp4/289256/12
+        mediaRecorder.start(1000);
+
         setIsRecording(true);
       })
       .catch((error) => {
@@ -31,7 +35,7 @@ export default function Home() {
       });
   };
 
-  const handleButtonRelease = () => {
+  const finishRecording = () => {
     const mediaRecorder = mediaRecorderRef.current;
 
     if (mediaRecorder && isRecording) {
@@ -39,11 +43,14 @@ export default function Home() {
         setIsTranscribing(true);
 
         try {
-          const audioBlob = new Blob(audioChunksRef.current, {
-            type: "audio/mp3",
-          });
           const formData = new FormData();
-          formData.append("audio", audioBlob, "audio.mp3");
+          formData.append(
+            "audio",
+            new Blob(audioChunksRef.current, {
+              type: mediaRecorder.mimeType,
+            }),
+            `audio.${getAudioFileExtension(mediaRecorder.mimeType)}`
+          );
 
           const response = await fetch("/api/transcribe", {
             method: "POST",
@@ -72,8 +79,8 @@ export default function Home() {
   const buttonStatus = isTranscribing
     ? "Transcribing..."
     : isRecording
-    ? "Recording..."
-    : "Push to record";
+    ? "Recording... Click to stop"
+    : "Click to record";
 
   return (
     <>
@@ -153,11 +160,7 @@ export default function Home() {
                 height: "64px",
                 borderRadius: "50%",
               }}
-              onTouchStart={handleButtonPress}
-              onTouchEnd={handleButtonRelease}
-              onMouseDown={handleButtonPress}
-              onMouseUp={handleButtonRelease}
-              onMouseLeave={handleButtonRelease}
+              onClick={isRecording ? finishRecording : startRecording}
               onContextMenu={(e) => e.preventDefault()}
               disabled={isTranscribing}
             >

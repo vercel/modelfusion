@@ -3,6 +3,7 @@ import fs from "fs";
 import {
   OpenAIApiConfiguration,
   OpenAITranscriptionModel,
+  getAudioFileExtension,
   transcribe,
 } from "modelfusion";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -43,7 +44,13 @@ export default async function handler(
     }
 
     const audioFile = files.audio as File;
+    const mimeType = audioFile.mimetype;
     const fileData = fs.readFileSync(audioFile.filepath);
+
+    if (!mimeType || !fileData) {
+      res.status(400).json({ message: "No file data provided" });
+      return;
+    }
 
     const transcription = await transcribe(
       new OpenAITranscriptionModel({
@@ -55,7 +62,7 @@ export default async function handler(
         model: "whisper-1",
       }),
       {
-        type: "mp3",
+        type: getAudioFileExtension(mimeType),
         data: fileData,
       }
     );
