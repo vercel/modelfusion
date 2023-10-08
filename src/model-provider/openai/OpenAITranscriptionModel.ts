@@ -54,7 +54,16 @@ export interface OpenAITranscriptionModelSettings
 }
 
 export type OpenAITranscriptionInput = {
-  type: "mp3" | "mp4" | "mpeg" | "mpga" | "m3a" | "wav" | "webm";
+  type:
+    | "flac"
+    | "m4a"
+    | "mp3"
+    | "mp4"
+    | "mpeg"
+    | "mpga"
+    | "ogg"
+    | "wav"
+    | "webm";
   data: Buffer;
 };
 
