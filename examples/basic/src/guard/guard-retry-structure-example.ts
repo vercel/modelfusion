@@ -2,9 +2,8 @@ import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
   OpenAIChatModel,
-  StructureParseError,
-  StructureValidationError,
   ZodStructureDefinition,
+  fixStructure,
   generateStructure,
   guard,
   setGlobalFunctionLogging,
@@ -46,30 +45,17 @@ async function main() {
       ),
     ],
     [
-      {
-        isValid: async (result) =>
-          result.type !== "error" ||
-          !(
-            result.error instanceof StructureValidationError ||
-            result.error instanceof StructureParseError
-          ),
-        whenInvalid: "retry",
-        modifyInputForRetry: async (result) => {
-          const error = result.error as
-            | StructureValidationError
-            | StructureParseError;
-
-          return [
-            ...result.input,
-            OpenAIChatMessage.functionCall(null, {
-              name: error.structureName,
-              arguments: error.valueText,
-            }),
-            OpenAIChatMessage.user(error.message),
-            OpenAIChatMessage.user("Please fix the error and try again."),
-          ];
-        },
-      },
+      fixStructure({
+        modifyInputForRetry: async ({ input, error }) => [
+          ...input,
+          OpenAIChatMessage.functionCall(null, {
+            name: error.structureName,
+            arguments: error.valueText,
+          }),
+          OpenAIChatMessage.user(error.message),
+          OpenAIChatMessage.user("Please fix the error and try again."),
+        ],
+      }),
     ]
   );
 
