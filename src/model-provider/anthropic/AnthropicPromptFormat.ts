@@ -23,7 +23,9 @@ export function mapInstructionPromptToAnthropicFormat(): PromptFormat<
       text += instruction.instruction;
 
       if (instruction.input != null) {
-        text += `\n\n${instruction.input}`;
+        // use tags per Anthropic instruction:
+        // https://docs.anthropic.com/claude/docs/constructing-a-prompt
+        text += `\n\n<data>${instruction.input}</data>`;
       }
 
       text += "\n\nAssistant:";
