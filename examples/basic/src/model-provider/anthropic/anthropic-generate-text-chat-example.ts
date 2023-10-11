@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import {
   AnthropicTextGenerationModel,
   generateText,
-  mapInstructionPromptToAnthropicFormat,
+  mapChatPromptToAnthropicFormat,
 } from "modelfusion";
 
 dotenv.config();
@@ -13,8 +13,12 @@ async function main() {
       model: "claude-instant-1",
       temperature: 0.7,
       maxCompletionTokens: 500,
-    }).withPromptFormat(mapInstructionPromptToAnthropicFormat()),
-    { instruction: "Write a short story about a robot learning to love" }
+    }).withPromptFormat(mapChatPromptToAnthropicFormat()),
+    [
+      { user: "Suggest a name for a robot" },
+      { ai: "I suggest the name Robbie" },
+      { user: "Write a short story about a robot learning to love" },
+    ]
   );
 
   console.log(text);
