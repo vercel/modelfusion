@@ -1,6 +1,6 @@
 import { StructureParseError } from "../model-function/generate-structure/StructureParseError.js";
 import { StructureValidationError } from "../model-function/generate-structure/StructureValidationError.js";
-import { Guard } from "./guard";
+import { Guard } from "./guard.js";
 
 export const fixStructure: <INPUT, OUTPUT>(options: {
   modifyInputForRetry: (options: {
