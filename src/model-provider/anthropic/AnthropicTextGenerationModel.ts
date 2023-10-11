@@ -1,3 +1,4 @@
+import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
@@ -7,13 +8,16 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { AsyncQueue } from "../../event-source/AsyncQueue.js";
+import { parseEventSourceStream } from "../../event-source/parseEventSourceStream.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { Delta } from "../../model-function/Delta.js";
 import {
-  TextGenerationModel,
   TextGenerationModelSettings,
+  TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
-import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
+import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
 import { AnthropicApiConfiguration } from "./AnthropicApiConfiguration.js";
 import { failedAnthropicCallResponseHandler } from "./AnthropicError.js";
 
@@ -54,7 +58,7 @@ export interface AnthropicTextGenerationModelSettings
  */
 export class AnthropicTextGenerationModel
   extends AbstractModel<AnthropicTextGenerationModelSettings>
-  implements TextGenerationModel<string, AnthropicTextGenerationModelSettings>
+  implements TextStreamingModel<string, AnthropicTextGenerationModelSettings>
 {
   constructor(settings: AnthropicTextGenerationModelSettings) {
     super({ settings });
@@ -126,15 +130,22 @@ export class AnthropicTextGenerationModel
     };
   }
 
+  doStreamText(prompt: string, options?: FunctionOptions) {
+    return this.callAPI(prompt, {
+      ...options,
+      responseFormat: AnthropicTextGenerationResponseFormat.deltaIterable,
+    });
+  }
+
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatTextGenerationModel<
+  ): PromptFormatTextStreamingModel<
     INPUT_PROMPT,
     string,
     AnthropicTextGenerationModelSettings,
     this
   > {
-    return new PromptFormatTextGenerationModel({
+    return new PromptFormatTextStreamingModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
@@ -195,6 +206,7 @@ async function callAnthropicTextGenerationAPI<RESPONSE>({
     body: {
       model,
       prompt,
+      stream: responseFormat.stream,
       max_tokens_to_sample: maxTokens,
       temperature,
       top_k: topK,
@@ -206,6 +218,80 @@ async function callAnthropicTextGenerationAPI<RESPONSE>({
     successfulResponseHandler: responseFormat.handler,
     abortSignal,
   });
+}
+
+const anthropicTextStreamingResponseSchema = z.object({
+  completion: z.string(),
+  stop_reason: z.string().nullable(),
+  model: z.string(),
+});
+
+async function createAnthropicFullDeltaIterableQueue(
+  stream: ReadableStream<Uint8Array>
+): Promise<AsyncIterable<Delta<string>>> {
+  const queue = new AsyncQueue<Delta<string>>();
+
+  let content = "";
+
+  // process the stream asynchonously (no 'await' on purpose):
+  parseEventSourceStream({ stream })
+    .then(async (events) => {
+      try {
+        for await (const event of events) {
+          if (event.event === "error") {
+            queue.push({ type: "error", error: event.data });
+            queue.close();
+            return;
+          }
+
+          if (event.event !== "completion") {
+            continue;
+          }
+
+          const data = event.data;
+
+          const json = SecureJSON.parse(data);
+          const parseResult =
+            anthropicTextStreamingResponseSchema.safeParse(json);
+
+          if (!parseResult.success) {
+            queue.push({
+              type: "error",
+              error: parseResult.error,
+            });
+            queue.close();
+            return;
+          }
+
+          const eventData = parseResult.data;
+
+          content += eventData.completion;
+
+          queue.push({
+            type: "delta",
+            fullDelta: {
+              content,
+              isComplete: eventData.stop_reason != null,
+              delta: eventData.completion,
+            },
+            valueDelta: eventData.completion,
+          });
+
+          if (eventData.stop_reason != null) {
+            queue.close();
+          }
+        }
+      } catch (error) {
+        queue.push({ type: "error", error });
+        queue.close();
+      }
+    })
+    .catch((error) => {
+      queue.push({ type: "error", error });
+      queue.close();
+    });
+
+  return queue;
 }
 
 export type AnthropicTextGenerationResponseFormatType<T> = {
@@ -221,4 +307,16 @@ export const AnthropicTextGenerationResponseFormat = {
     stream: false,
     handler: createJsonResponseHandler(anthropicTextGenerationResponseSchema),
   } satisfies AnthropicTextGenerationResponseFormatType<AnthropicTextGenerationResponse>,
+
+  /**
+   * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
+   * of the response stream.
+   */
+  deltaIterable: {
+    stream: true,
+    handler: async ({ response }: { response: Response }) =>
+      createAnthropicFullDeltaIterableQueue(response.body!),
+  } satisfies AnthropicTextGenerationResponseFormatType<
+    AsyncIterable<Delta<string>>
+  >,
 };
