@@ -23,11 +23,13 @@ async function main() {
       ),
     "Write a short story about a robot called Nox:\n\n", // without including the word Nox
     [
-      {
-        isValid: async (result) =>
-          result.type === "error" || !result.output.includes("Nox"),
-        whenInvalid: "throwError",
-        createError: async () => new Error("story must not contain word 'Nox'"),
+      async (result) => {
+        if (result.type !== "error" && result.output.includes("Nox")) {
+          return {
+            action: "throwError",
+            error: new Error("story must not contain word 'Nox'"),
+          };
+        }
       },
     ]
   );

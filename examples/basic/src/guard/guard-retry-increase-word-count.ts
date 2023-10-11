@@ -23,28 +23,22 @@ async function main() {
       ),
     "Write a short story about a robot called Nox:\n\n",
     [
-      {
-        isValid: async (result) => {
-          if (result.type === "value") {
-            // count the number of times the word "Nox" appears
-            const count = (result.output.match(/Nox/g) ?? []).length;
+      async (result) => {
+        if (result.type === "value") {
+          // count the number of times the word "Nox" appears:
+          const count = (result.output.match(/Nox/g) ?? []).length;
 
-            console.log("count", count);
-
-            // if the word "Nox" appears less than 12 times, reask
-            if (count < 12) {
-              return false;
-            }
+          // if the word "Nox" appears less than 12 times, retry
+          if (count < 12) {
+            return {
+              action: "retry",
+              input: [
+                result.output,
+                "Rewrite the story such that the word 'Nox' appears at least 12 times.",
+              ].join("\n\n"),
+            };
           }
-
-          return true;
-        },
-        whenInvalid: "retry",
-        modifyInputForRetry: async (result) =>
-          [
-            result.output,
-            "Rewrite the story such that the word 'Nox' appears at least 12 times.",
-          ].join("\n\n"),
+        }
       },
     ]
   );

@@ -19,28 +19,29 @@ export type OutputValidator<INPUT, OUTPUT> = ({
   error,
 }: OutputResult<INPUT, OUTPUT>) => PromiseLike<boolean>;
 
-export type Guard<INPUT, OUTPUT> = {
-  isValid: OutputValidator<INPUT, OUTPUT>;
-} & (
+export type Guard<INPUT, OUTPUT> = ({
+  type,
+  input,
+  output,
+  error,
+}: OutputResult<INPUT, OUTPUT>) => PromiseLike<
   | {
-      whenInvalid: "retry";
-      modifyInputForRetry: (
-        result: OutputResult<INPUT, OUTPUT>
-      ) => PromiseLike<INPUT>;
+      action: "retry";
+      input: INPUT;
     }
   | {
-      whenInvalid: "modifyOutput";
-      modifyOutput: (
-        result: OutputResult<INPUT, OUTPUT>
-      ) => PromiseLike<OUTPUT>;
+      action: "return";
+      output: OUTPUT;
     }
   | {
-      whenInvalid: "throwError";
-      createError: (
-        result: OutputResult<INPUT, OUTPUT>
-      ) => PromiseLike<unknown>;
+      action: "throwError";
+      error: unknown;
     }
-);
+  | {
+      action: "passThrough";
+    }
+  | undefined
+>;
 
 export async function guard<INPUT, OUTPUT>(
   execute: (input: INPUT) => PromiseLike<OUTPUT>,
@@ -70,30 +71,36 @@ export async function guard<INPUT, OUTPUT>(
 
     let isValid = true;
     for (const guard of guards) {
-      const validationResult = await guard.isValid(result);
+      const guardResult = await guard(result);
 
-      if (!validationResult) {
-        switch (guard.whenInvalid) {
-          case "retry": {
-            input = await guard.modifyInputForRetry(result);
-            isValid = false;
-            break;
-          }
-          case "modifyOutput": {
-            result = {
-              type: "value" as const,
-              input,
-              output: await guard.modifyOutput(result),
-            };
-            break;
-          }
-          case "throwError": {
-            result = {
-              type: "error" as const,
-              input,
-              error: await guard.createError(result),
-            };
-          }
+      if (guardResult === undefined) {
+        continue;
+      }
+
+      switch (guardResult.action) {
+        case "passThrough": {
+          break;
+        }
+        case "retry": {
+          input = guardResult.input;
+          isValid = false;
+          break;
+        }
+        case "return": {
+          result = {
+            type: "value" as const,
+            input,
+            output: guardResult.output,
+          };
+          break;
+        }
+        case "throwError": {
+          result = {
+            type: "error" as const,
+            input,
+            error: guardResult.error,
+          };
+          break;
         }
       }
     }

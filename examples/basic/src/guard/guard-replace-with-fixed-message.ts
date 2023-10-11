@@ -23,11 +23,13 @@ async function main() {
       ),
     "Write a short story about a robot called Nox:\n\n", // without including the word Nox
     [
-      {
-        isValid: async (result) =>
-          result.type === "error" || !result.output.includes("Nox"),
-        whenInvalid: "modifyOutput",
-        modifyOutput: async () => "I cannot generate the requested story.",
+      async (result) => {
+        if (result.type === "value" && result.output.includes("Nox")) {
+          return {
+            action: "return",
+            output: "I cannot generate the requested story.",
+          };
+        }
       },
     ]
   );

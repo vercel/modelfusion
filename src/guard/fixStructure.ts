@@ -8,18 +8,23 @@ export const fixStructure: <INPUT, OUTPUT>(options: {
     input: INPUT;
     error: StructureValidationError | StructureParseError;
   }) => PromiseLike<INPUT>;
-}) => Guard<INPUT, OUTPUT> = ({ modifyInputForRetry }) => ({
-  isValid: async (result) =>
-    result.type !== "error" ||
-    !(
-      result.error instanceof StructureValidationError ||
-      result.error instanceof StructureParseError
-    ),
-  whenInvalid: "retry",
-  modifyInputForRetry: async (result) =>
-    modifyInputForRetry({
-      type: "error",
-      input: result.input,
-      error: result.error as StructureValidationError | StructureParseError,
-    }),
-});
+}) => Guard<INPUT, OUTPUT> =
+  ({ modifyInputForRetry }) =>
+  async (result) => {
+    if (
+      result.type === "error" &&
+      (result.error instanceof StructureValidationError ||
+        result.error instanceof StructureParseError)
+    ) {
+      return {
+        action: "retry",
+        input: await modifyInputForRetry({
+          type: "error",
+          input: result.input,
+          error: result.error,
+        }),
+      };
+    }
+
+    return undefined;
+  };
