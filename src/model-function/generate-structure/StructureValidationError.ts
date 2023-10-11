@@ -18,7 +18,7 @@ export class StructureValidationError extends Error {
     cause: unknown;
   }) {
     super(
-      `Structure validation error for '${structureName}'. ` +
+      `Structure validation failed for '${structureName}'. ` +
         `Value: ${valueText}.\n` +
         `Error message: ${getErrorMessage(cause)}`
     );

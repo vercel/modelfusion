@@ -15,12 +15,12 @@ export class StructureParseError extends Error {
     cause: unknown;
   }) {
     super(
-      `Structure parsing error for '${structureName}'. ` +
+      `Structure parsing failed for '${structureName}'. ` +
         `Value: ${valueText}.\n` +
         `Error message: ${getErrorMessage(cause)}`
     );
 
-    this.name = "StructureParsingError";
+    this.name = "StructureParseError";
 
     this.structureName = structureName;
     this.cause = cause;
