@@ -18,7 +18,7 @@ export function mapInstructionPromptToAnthropicFormat(): PromptFormat<
         text += `${instruction.system}`;
       }
 
-      text += "\n\nHuman:";
+      text += "\n\nHuman: ";
 
       text += instruction.instruction;
 
@@ -28,7 +28,7 @@ export function mapInstructionPromptToAnthropicFormat(): PromptFormat<
         text += `\n\n<data>${instruction.input}</data>`;
       }
 
-      text += "\n\nAssistant:";
+      text += "\n\nAssistant: ";
 
       return text;
     },
@@ -64,13 +64,13 @@ export function mapChatPromptToAnthropicFormat(): PromptFormat<
 
         // user message
         if ("user" in message) {
-          text += `\n\nHuman:${message.user}`;
+          text += `\n\nHuman: ${message.user}`;
           continue;
         }
 
         // ai message:
         if ("ai" in message) {
-          text += `\n\nAssistant:${message.ai}`;
+          text += `\n\nAssistant: ${message.ai}`;
           continue;
         }
 
@@ -79,7 +79,7 @@ export function mapChatPromptToAnthropicFormat(): PromptFormat<
       }
 
       // AI message prefix:
-      text += `\n\nAssistant:`;
+      text += `\n\nAssistant: `;
 
       return text;
     },
