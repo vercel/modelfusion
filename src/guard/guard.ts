@@ -50,7 +50,8 @@ export async function guard<INPUT, OUTPUT>(
 ): Promise<OUTPUT | undefined> {
   const maxRetries = options?.maxRetries ?? 1;
 
-  for (let attempts = 0; attempts <= maxRetries; attempts++) {
+  let attempts = 0;
+  while (attempts <= maxRetries) {
     let result: OutputResult<INPUT, OUTPUT>;
 
     try {
@@ -104,9 +105,12 @@ export async function guard<INPUT, OUTPUT>(
         throw result.error;
       }
     }
+
+    attempts++;
   }
 
   throw new Error(
-    "Maximum reasks reached without a valid output or unhandled error"
+    `Maximum retry attempts of ${maxRetries} reached ` +
+      `without producing a valid output or handling an error after ${attempts} attempts.`
   );
 }
