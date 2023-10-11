@@ -6,6 +6,7 @@ import {
 } from "../generate-text/TextGenerationModel.js";
 import { generateText } from "../generate-text/generateText.js";
 import { StructureGenerationModel } from "./StructureGenerationModel.js";
+import { StructureParseError } from "./StructureParseError.js";
 
 export type StructureFromTextPromptFormat<PROMPT> = {
   createPrompt: (
@@ -57,10 +58,19 @@ export class StructureFromTextGenerationModel<
       options
     ).asFullResponse();
 
-    return {
-      response,
-      structure: this.format.extractStructure(value),
-    };
+    try {
+      return {
+        response,
+        value: this.format.extractStructure(value),
+        valueText: value,
+      };
+    } catch (error) {
+      throw new StructureParseError({
+        structureName: structure.name,
+        valueText: value,
+        cause: error,
+      });
+    }
   }
 
   withSettings(additionalSettings: Partial<MODEL["settings"]>): this {

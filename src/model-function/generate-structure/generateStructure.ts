@@ -42,12 +42,13 @@ export function generateStructure<
         options
       );
 
-      const structure = result.structure;
+      const structure = result.value;
       const parseResult = structureDefinition.schema.validate(structure);
 
       if (!parseResult.success) {
         throw new StructureValidationError({
           structureName: structureDefinition.name,
+          valueText: result.valueText,
           value: structure,
           cause: parseResult.error,
         });
