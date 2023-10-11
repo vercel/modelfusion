@@ -21,8 +21,10 @@ export type OutputValidator<INPUT, OUTPUT> = ({
 
 export type Guard<INPUT, OUTPUT> = {
   isValid: OutputValidator<INPUT, OUTPUT>;
-  action: "retry";
-  modifyInput: (result: OutputResult<INPUT, OUTPUT>) => PromiseLike<INPUT>;
+  whenInvalid: "retry";
+  modifyInputForRetry: (
+    result: OutputResult<INPUT, OUTPUT>
+  ) => PromiseLike<INPUT>;
 };
 
 export async function guard<INPUT, OUTPUT>(
@@ -54,8 +56,8 @@ export async function guard<INPUT, OUTPUT>(
     for (const guard of guards) {
       const validationResult = await guard.isValid(result);
 
-      if (!validationResult && guard.action === "retry") {
-        input = await guard.modifyInput(result);
+      if (!validationResult && guard.whenInvalid === "retry") {
+        input = await guard.modifyInputForRetry(result);
         isValid = false;
         break;
       }

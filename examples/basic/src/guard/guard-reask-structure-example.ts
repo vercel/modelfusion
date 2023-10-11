@@ -43,8 +43,8 @@ async function main() {
     [
       {
         isValid: async (result) => result.type === "value",
-        action: "retry",
-        modifyInput: async (result) => [
+        whenInvalid: "retry",
+        modifyInputForRetry: async (result) => [
           ...result.input,
           OpenAIChatMessage.functionResult(
             "error",

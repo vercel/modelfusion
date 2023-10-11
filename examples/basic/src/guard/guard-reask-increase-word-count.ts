@@ -39,8 +39,8 @@ async function main() {
 
           return true;
         },
-        action: "retry",
-        modifyInput: async (result) =>
+        whenInvalid: "retry",
+        modifyInputForRetry: async (result) =>
           [
             result.output,
             "Rewrite the story such that the word 'Nox' appears at least 12 times.",
