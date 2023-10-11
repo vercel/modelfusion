@@ -2,13 +2,18 @@ import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
   OpenAIChatModel,
+  StructureParseError,
+  StructureValidationError,
   ZodStructureDefinition,
   generateStructure,
   guard,
+  setGlobalFunctionLogging,
 } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
+
+setGlobalFunctionLogging("detailed-object");
 
 async function main() {
   const sentiment = await guard(
@@ -24,7 +29,7 @@ async function main() {
           description: "Write the sentiment analysis",
           schema: z.object({
             sentiment: z
-              .enum(["positive", "neutral", "negative"])
+              .enum(["positivee", "neutra", "negaaa"])
               .describe("Sentiment."),
           }),
         }),
@@ -42,15 +47,28 @@ async function main() {
     ],
     [
       {
-        isValid: async (result) => result.type === "value",
-        whenInvalid: "retry",
-        modifyInputForRetry: async (result) => [
-          ...result.input,
-          OpenAIChatMessage.functionResult(
-            "error",
-            JSON.stringify(result.error)
+        isValid: async (result) =>
+          result.type !== "error" ||
+          !(
+            result.error instanceof StructureValidationError ||
+            result.error instanceof StructureParseError
           ),
-        ],
+        whenInvalid: "retry",
+        modifyInputForRetry: async (result) => {
+          const error = result.error as
+            | StructureValidationError
+            | StructureParseError;
+
+          return [
+            ...result.input,
+            OpenAIChatMessage.functionCall(null, {
+              name: error.structureName,
+              arguments: error.valueText,
+            }),
+            OpenAIChatMessage.user(error.message),
+            OpenAIChatMessage.user("Please fix the error and try again."),
+          ];
+        },
       },
     ]
   );
