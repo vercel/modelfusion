@@ -166,10 +166,6 @@ export class LlamaCppTextGenerationModel<
     });
   }
 
-  extractTextDelta(fullDelta: LlamaCppTextGenerationDelta): string | undefined {
-    return fullDelta.delta;
-  }
-
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, string>
   ): PromptFormatTextStreamingModel<
