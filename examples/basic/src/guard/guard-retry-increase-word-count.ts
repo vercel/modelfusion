@@ -11,7 +11,7 @@ dotenv.config();
 setGlobalFunctionLogging("detailed-object");
 
 async function main() {
-  const sentiment = await guard(
+  const story = await guard(
     (input) =>
       generateText(
         new OpenAITextGenerationModel({
@@ -49,7 +49,7 @@ async function main() {
     ]
   );
 
-  console.log(JSON.stringify(sentiment, null, 2));
+  console.log(story);
 }
 
 main().catch(console.error);

@@ -19,13 +19,21 @@ export type OutputValidator<INPUT, OUTPUT> = ({
   error,
 }: OutputResult<INPUT, OUTPUT>) => PromiseLike<boolean>;
 
-export type Guard<INPUT, OUTPUT> = {
-  isValid: OutputValidator<INPUT, OUTPUT>;
-  whenInvalid: "retry";
-  modifyInputForRetry: (
-    result: OutputResult<INPUT, OUTPUT>
-  ) => PromiseLike<INPUT>;
-};
+export type Guard<INPUT, OUTPUT> =
+  | {
+      isValid: OutputValidator<INPUT, OUTPUT>;
+      whenInvalid: "retry";
+      modifyInputForRetry: (
+        result: OutputResult<INPUT, OUTPUT>
+      ) => PromiseLike<INPUT>;
+    }
+  | {
+      isValid: OutputValidator<INPUT, OUTPUT>;
+      whenInvalid: "modifyOutput";
+      modifyOutput: (
+        result: OutputResult<INPUT, OUTPUT>
+      ) => PromiseLike<OUTPUT>;
+    };
 
 export async function guard<INPUT, OUTPUT>(
   execute: (input: INPUT) => PromiseLike<OUTPUT>,
@@ -36,7 +44,7 @@ export async function guard<INPUT, OUTPUT>(
   const maxRetries = options?.maxRetries ?? 1;
 
   for (let attempts = 0; attempts <= maxRetries; attempts++) {
-    let result;
+    let result: OutputResult<INPUT, OUTPUT>;
 
     try {
       result = {
@@ -56,10 +64,20 @@ export async function guard<INPUT, OUTPUT>(
     for (const guard of guards) {
       const validationResult = await guard.isValid(result);
 
-      if (!validationResult && guard.whenInvalid === "retry") {
-        input = await guard.modifyInputForRetry(result);
-        isValid = false;
-        break;
+      if (!validationResult) {
+        switch (guard.whenInvalid) {
+          case "retry":
+            input = await guard.modifyInputForRetry(result);
+            isValid = false;
+            break;
+          case "modifyOutput":
+            result = {
+              type: "value" as const,
+              input,
+              output: await guard.modifyOutput(result),
+            };
+            break;
+        }
       }
     }
 
