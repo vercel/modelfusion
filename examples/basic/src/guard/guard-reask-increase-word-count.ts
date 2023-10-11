@@ -39,7 +39,7 @@ async function main() {
 
           return true;
         },
-        action: "reask",
+        action: "retry",
         modifyInput: async (result) =>
           [
             result.output,

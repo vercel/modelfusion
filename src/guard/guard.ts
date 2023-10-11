@@ -21,7 +21,7 @@ export type OutputValidator<INPUT, OUTPUT> = ({
 
 export type Guard<INPUT, OUTPUT> = {
   isValid: OutputValidator<INPUT, OUTPUT>;
-  action: "reask";
+  action: "retry";
   modifyInput: (result: OutputResult<INPUT, OUTPUT>) => PromiseLike<INPUT>;
 };
 
@@ -29,11 +29,11 @@ export async function guard<INPUT, OUTPUT>(
   execute: (input: INPUT) => PromiseLike<OUTPUT>,
   input: INPUT,
   guards: Array<Guard<INPUT, OUTPUT>>,
-  options?: { maxReasks: number }
+  options?: { maxRetries: number }
 ): Promise<OUTPUT | undefined> {
-  const maxReasks = options?.maxReasks ?? 1;
+  const maxRetries = options?.maxRetries ?? 1;
 
-  for (let attempts = 0; attempts <= maxReasks; attempts++) {
+  for (let attempts = 0; attempts <= maxRetries; attempts++) {
     let result;
 
     try {
@@ -54,7 +54,7 @@ export async function guard<INPUT, OUTPUT>(
     for (const guard of guards) {
       const validationResult = await guard.isValid(result);
 
-      if (!validationResult && guard.action === "reask") {
+      if (!validationResult && guard.action === "retry") {
         input = await guard.modifyInput(result);
         isValid = false;
         break;
