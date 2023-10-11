@@ -19,21 +19,28 @@ export type OutputValidator<INPUT, OUTPUT> = ({
   error,
 }: OutputResult<INPUT, OUTPUT>) => PromiseLike<boolean>;
 
-export type Guard<INPUT, OUTPUT> =
+export type Guard<INPUT, OUTPUT> = {
+  isValid: OutputValidator<INPUT, OUTPUT>;
+} & (
   | {
-      isValid: OutputValidator<INPUT, OUTPUT>;
       whenInvalid: "retry";
       modifyInputForRetry: (
         result: OutputResult<INPUT, OUTPUT>
       ) => PromiseLike<INPUT>;
     }
   | {
-      isValid: OutputValidator<INPUT, OUTPUT>;
       whenInvalid: "modifyOutput";
       modifyOutput: (
         result: OutputResult<INPUT, OUTPUT>
       ) => PromiseLike<OUTPUT>;
-    };
+    }
+  | {
+      whenInvalid: "throwError";
+      createError: (
+        result: OutputResult<INPUT, OUTPUT>
+      ) => PromiseLike<unknown>;
+    }
+);
 
 export async function guard<INPUT, OUTPUT>(
   execute: (input: INPUT) => PromiseLike<OUTPUT>,
@@ -66,17 +73,26 @@ export async function guard<INPUT, OUTPUT>(
 
       if (!validationResult) {
         switch (guard.whenInvalid) {
-          case "retry":
+          case "retry": {
             input = await guard.modifyInputForRetry(result);
             isValid = false;
             break;
-          case "modifyOutput":
+          }
+          case "modifyOutput": {
             result = {
               type: "value" as const,
               input,
               output: await guard.modifyOutput(result),
             };
             break;
+          }
+          case "throwError": {
+            result = {
+              type: "error" as const,
+              input,
+              error: await guard.createError(result),
+            };
+          }
         }
       }
     }
