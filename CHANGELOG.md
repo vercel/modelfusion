@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.42.0 - 2023-10-11
+
+### Added
+
+- Anthropic model support (Claude 2, Claude instant).
+
 ## v0.41.0 - 2023-10-05
 
 ### Changed
