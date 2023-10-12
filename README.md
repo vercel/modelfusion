@@ -51,7 +51,7 @@ const text = await generateText(
 );
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface)
 
 #### streamText
 
@@ -68,7 +68,7 @@ for await (const textFragment of textStream) {
 }
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
 
 #### Prompt Format
 
@@ -104,6 +104,7 @@ const textStream = await streamText(
 | Prompt Format | Instruction Prompt | Chat Prompt |
 | ------------- | ------------------ | ----------- |
 | OpenAI Chat   | ✅                 | ✅          |
+| Anthropic     | ✅                 | ✅          |
 | Llama 2       | ✅                 | ✅          |
 | Alpaca        | ✅                 | ❌          |
 | Vicuna        | ❌                 | ✅          |

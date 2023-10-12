@@ -1,7 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
-import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
-import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
 import { Delta } from "../Delta.js";
 import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
@@ -56,7 +54,7 @@ export interface TextGenerationModel<
 
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
-  ): PromptFormatTextGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this>;
+  ): TextGenerationModel<INPUT_PROMPT, SETTINGS>;
 }
 
 export interface TextStreamingModel<
@@ -70,5 +68,5 @@ export interface TextStreamingModel<
 
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
-  ): PromptFormatTextStreamingModel<INPUT_PROMPT, PROMPT, SETTINGS, this>;
+  ): TextStreamingModel<INPUT_PROMPT, SETTINGS>;
 }
