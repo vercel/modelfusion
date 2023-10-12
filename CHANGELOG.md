@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.43.0 - 2023-10-12s
+
+### Added
+
+- Guard function.
+
 ## v0.42.0 - 2023-10-11
 
 ### Added
