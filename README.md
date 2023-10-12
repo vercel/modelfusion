@@ -19,8 +19,9 @@ ModelFusion is a library for building AI apps, chatbots, and agents. It provides
 
 - **Multimodal Support**: Beyond just LLMs, ModelFusion encompasses a diverse array of models including text generation, text-to-speech, speech-to-text, and image generation, allowing you to build multifaceted AI applications with ease.
 - **Flexibility and control**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts and model settings, and you can access the raw responses from the models quickly to build what you need.
-- **Type inference and validation**: ModelFusion uses TypeScript and [Zod](https://github.com/colinhacks/zod) to infer types wherever possible and to validate model responses.
-- **Integrated support features**: Essential features like logging, retries, throttling, tracing, and error handling are built-in, helping you focus more on building your application.
+- **Type inference and validation**: ModelFusion uses TypeScript to infer types wherever possible and to validate model responses. By default, [Zod](https://github.com/colinhacks/zod) is used for type validation, but you can also use other libraries.
+- **Guards**: ModelFusion provides a guard function that you can use to implement retry on error, redacting and changing reponses, etc.
+- **Integrated support features**: Essential features like **observability**, logging, retries, throttling, tracing, and error handling are built-in, helping you focus more on building your application.
 
 ## Quick Install
 
@@ -454,6 +455,43 @@ const retrievedTexts = await retrieve(
 
 Available Vector Stores: [Memory](https://modelfusion.dev/integration/vector-index/memory), [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
 
+### Guards
+
+[Guards](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/guard) can be used to implement retry on error, redacting and changing reponses, etc.
+
+#### Retry structure parsing on error:
+
+```ts
+const result = await guard(
+  (input) =>
+    generateStructure(
+      new OpenAIChatModel({
+        // ...
+      }),
+      new ZodStructureDefinition({
+        // ...
+      }),
+      input
+    ),
+  [
+    // ...
+  ],
+  [
+    fixStructure({
+      modifyInputForRetry: async ({ input, error }) => [
+        ...input,
+        OpenAIChatMessage.functionCall(null, {
+          name: error.structureName,
+          arguments: error.valueText,
+        }),
+        OpenAIChatMessage.user(error.message),
+        OpenAIChatMessage.user("Please fix the error and try again."),
+      ],
+    }),
+  ]
+);
+```
+
 ### Observability
 
 Integrations: [Helicone](https://modelfusion.dev/integration/observability/helicone)
@@ -560,3 +598,7 @@ Extracts information about a topic from a PDF and writes a tweet in your own sty
 ### [Contributing Guide](https://github.com/lgrammel/modelfusion/blob/main/CONTRIBUTING.md)
 
 Read the [ModelFusion contributing guide](https://github.com/lgrammel/modelfusion/blob/main/CONTRIBUTING.md) to learn about the development process, how to propose bugfixes and improvements, and how to build and test your changes.
+
+```
+
+```
