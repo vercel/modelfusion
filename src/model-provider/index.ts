@@ -1,3 +1,4 @@
+export * from "./anthropic/index.js";
 export * from "./automatic1111/index.js";
 export * from "./cohere/index.js";
 export * from "./elevenlabs/index.js";
