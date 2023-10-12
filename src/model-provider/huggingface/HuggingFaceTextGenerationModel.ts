@@ -70,6 +70,7 @@ export class HuggingFaceTextGenerationModel
 
   readonly contextWindowSize = undefined;
   readonly tokenizer = undefined;
+  readonly countPromptTokens = undefined;
 
   async callAPI(
     prompt: string,
@@ -113,8 +114,6 @@ export class HuggingFaceTextGenerationModel
       )
     );
   }
-
-  readonly countPromptTokens = undefined;
 
   async doGenerateText(prompt: string, options?: FunctionOptions) {
     const response = await this.callAPI(prompt, options);

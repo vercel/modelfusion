@@ -73,7 +73,6 @@ export class AnthropicTextGenerationModel
   }
 
   readonly contextWindowSize: number;
-
   readonly tokenizer = undefined;
   readonly countPromptTokens = undefined;
 
