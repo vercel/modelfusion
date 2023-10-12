@@ -13,6 +13,7 @@ import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { Delta } from "../../../model-function/Delta.js";
 import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
 import { StructureOrTextGenerationModel } from "../../../model-function/generate-structure/StructureOrTextGenerationModel.js";
+import { StructureParseError } from "../../../model-function/generate-structure/StructureParseError.js";
 import { parsePartialJson } from "../../../model-function/generate-structure/parsePartialJson.js";
 import {
   TextGenerationModelSettings,
@@ -367,13 +368,22 @@ export class OpenAIChatModel
       ],
     });
 
-    return {
-      response,
-      structure: SecureJSON.parse(
-        response.choices[0]!.message.function_call!.arguments
-      ),
-      usage: this.extractUsage(response),
-    };
+    const valueText = response.choices[0]!.message.function_call!.arguments;
+
+    try {
+      return {
+        response,
+        valueText,
+        value: SecureJSON.parse(valueText),
+        usage: this.extractUsage(response),
+      };
+    } catch (error) {
+      throw new StructureParseError({
+        structureName: structureDefinition.name,
+        valueText: valueText,
+        cause: error,
+      });
+    }
   }
 
   async doStreamStructure(
@@ -415,24 +425,37 @@ export class OpenAIChatModel
     const content = message.content;
     const functionCall = message.function_call;
 
-    const structureAndText =
-      functionCall == null
-        ? {
-            structure: null,
-            value: null,
-            text: content ?? "",
-          }
-        : {
-            structure: functionCall.name,
-            value: SecureJSON.parse(functionCall.arguments),
-            text: content,
-          };
+    if (functionCall == null) {
+      return {
+        response,
+        structureAndText: {
+          structure: null,
+          value: null,
+          valueText: null,
+          text: content ?? "",
+        },
+        usage: this.extractUsage(response),
+      };
+    }
 
-    return {
-      response,
-      structureAndText,
-      usage: this.extractUsage(response),
-    };
+    try {
+      return {
+        response,
+        structureAndText: {
+          structure: functionCall.name,
+          value: SecureJSON.parse(functionCall.arguments),
+          valueText: functionCall.arguments,
+          text: content,
+        },
+        usage: this.extractUsage(response),
+      };
+    } catch (error) {
+      throw new StructureParseError({
+        structureName: functionCall.name,
+        valueText: functionCall.arguments,
+        cause: error,
+      });
+    }
   }
 
   extractUsage(response: OpenAIChatResponse) {

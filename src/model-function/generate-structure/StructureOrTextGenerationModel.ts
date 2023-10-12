@@ -18,11 +18,13 @@ export interface StructureOrTextGenerationModel<
       | {
           structure: null;
           value: null;
+          valueText: null;
           text: string;
         }
       | {
           structure: string;
           value: unknown;
+          valueText: string;
           text: string | null;
         };
     usage?: {

@@ -88,6 +88,7 @@ export function generateStructureOrText<
         throw new StructureValidationError({
           structureName: structure,
           value,
+          valueText: result.structureAndText.valueText,
           cause: parseResult.error,
         });
       }

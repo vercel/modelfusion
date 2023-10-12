@@ -18,6 +18,7 @@ export * from "./generate-structure/StructureFromTextGenerationModel.js";
 export * from "./generate-structure/StructureGenerationEvent.js";
 export * from "./generate-structure/StructureGenerationModel.js";
 export * from "./generate-structure/StructureOrTextGenerationModel.js";
+export * from "./generate-structure/StructureParseError.js";
 export * from "./generate-structure/StructureStreamingEvent.js";
 export * from "./generate-structure/StructureValidationError.js";
 export * from "./generate-structure/generateStructure.js";

@@ -16,7 +16,8 @@ export interface StructureGenerationModel<
     options?: FunctionOptions
   ): PromiseLike<{
     response: unknown;
-    structure: unknown;
+    valueText: string;
+    value: unknown;
     usage?: {
       promptTokens: number;
       completionTokens: number;
