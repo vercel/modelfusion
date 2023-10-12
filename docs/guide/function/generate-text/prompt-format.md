@@ -39,6 +39,8 @@ The following prompt formats are available for instruction prompts:
 
 - **OpenAI chat**: [mapInstructionPromptToOpenAIChatFormat()](/api/modules#mapinstructionprompttoopenaichatformat)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
+- **Anthropic**: [mapInstructionPromptToAnthropicFormat()](/api/modules#mapinstructionprompttoanthropicformat)
+  for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
 - **Llama 2**: [mapInstructionPromptToLlama2Format()](/api/modules#mapinstructionprompttollama2format)
   for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
 - **Alpaca**: [mapInstructionPromptToAlpacaFormat()](/api/modules#mapinstructionprompttoalpacaformat)
@@ -110,6 +112,8 @@ The following prompt formats are available for chat prompts:
 
 - **OpenAI chat**: [mapChatPromptToOpenAIChatFormat()](/api/modules#mapchatprompttoopenaichatformat)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
+- **Anthropic**: [mapChatPromptToAnthropicFormat()](/api/modules#mapchatprompttoanthropicformat)
+  for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
 - **Llama 2**: [mapChatPromptToLlama2Format()](/api/modules#mapchatprompttollama2format)
   for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
 - **Vicuna** [mapChatPromptToVicunaFormat()](/api/modules#mapchatprompttovicunaformat)
