@@ -68,6 +68,10 @@ export class PromptFormatTextGenerationModel<
     return this.model.doGenerateText(mappedPrompt, options);
   }
 
+  get settingsForEvent(): Partial<SETTINGS> {
+    return this.model.settingsForEvent;
+  }
+
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
   ): PromptFormatTextGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this> {
@@ -85,10 +89,6 @@ export class PromptFormatTextGenerationModel<
       } as Partial<SETTINGS>),
       promptFormat,
     });
-  }
-
-  get settingsForEvent(): Partial<SETTINGS> {
-    return this.model.settingsForEvent;
   }
 
   withSettings(additionalSettings: Partial<SETTINGS>): this {
