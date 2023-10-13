@@ -1,5 +1,4 @@
 import deepEqual from "deep-equal";
-import { ModelCallMetadata } from "model-function/ModelCallMetadata.js";
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../../core/FunctionEventSource.js";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
@@ -12,6 +11,7 @@ import { StructureDefinition } from "../../core/structure/StructureDefinition.js
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
+import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { StructureStreamingModel } from "./StructureGenerationModel.js";
 import {
   StructureStreamingFinishedEvent,
