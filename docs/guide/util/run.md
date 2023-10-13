@@ -41,6 +41,7 @@ const run = new DefaultRun({
   // ...
 });
 
+// stores the run in the AsyncLocalStorage:
 withRun(run, async () => {
   // this code could be somewhere deep in your application:
 
