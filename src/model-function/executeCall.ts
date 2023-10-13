@@ -5,6 +5,7 @@ import { getGlobalFunctionLogging } from "../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
 import { AbortError } from "../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
+import { getRun } from "../core/getRun.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { runSafe } from "../util/runSafe.js";
 import { Model, ModelSettings } from "./Model.js";
@@ -118,7 +119,7 @@ async function doExecuteCall<VALUE, MODEL extends Model<ModelSettings>>({
   response: unknown;
   metadata: ModelCallMetadata;
 }> {
-  const run = options?.run;
+  const run = getRun(options?.run);
   const settings = model.settings;
 
   const eventSource = new FunctionEventSource({
@@ -156,7 +157,14 @@ async function doExecuteCall<VALUE, MODEL extends Model<ModelSettings>>({
     ...startMetadata,
   } as ModelCallStartedEvent);
 
-  const result = await runSafe(() => generateResponse(options));
+  const result = await runSafe(() =>
+    generateResponse({
+      functionId: options?.functionId,
+      logging: options?.logging,
+      observers: options?.observers,
+      run,
+    })
+  );
 
   const finishMetadata = {
     eventType: "finished" as const,

@@ -5,6 +5,7 @@ import { getGlobalFunctionLogging } from "../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
 import { AbortError } from "../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
+import { getRun } from "../core/getRun.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { runSafe } from "../util/runSafe.js";
 import {
@@ -18,7 +19,7 @@ export async function retrieve<OBJECT, QUERY>(
   query: QUERY,
   options?: FunctionOptions
 ): Promise<OBJECT[]> {
-  const run = options?.run;
+  const run = getRun(options?.run);
 
   const eventSource = new FunctionEventSource({
     observers: [
@@ -52,7 +53,14 @@ export async function retrieve<OBJECT, QUERY>(
     ...startMetadata,
   } as RetrieveStartedEvent);
 
-  const result = await runSafe(() => retriever.retrieve(query, options));
+  const result = await runSafe(() =>
+    retriever.retrieve(query, {
+      functionId: options?.functionId,
+      logging: options?.logging,
+      observers: options?.observers,
+      run,
+    })
+  );
 
   const finishMetadata = {
     eventType: "finished" as const,
