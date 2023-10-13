@@ -7,6 +7,7 @@ import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
 import { AbortError } from "../../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
+import { getRun } from "../../core/getRun.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { runSafe } from "../../util/runSafe.js";
@@ -47,7 +48,7 @@ async function doStreamStructure<STRUCTURE, PROMPT, NAME extends string>(
   output: AsyncIterable<StructureStreamPart<STRUCTURE>>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
-  const run = options?.run;
+  const run = await getRun(options?.run);
   const settings = model.settings;
 
   const eventSource = new FunctionEventSource({
@@ -89,7 +90,12 @@ async function doStreamStructure<STRUCTURE, PROMPT, NAME extends string>(
     const deltaIterable = await model.doStreamStructure(
       structureDefinition,
       prompt,
-      options
+      {
+        functionId: options?.functionId,
+        logging: options?.logging,
+        observers: options?.observers,
+        run,
+      }
     );
 
     return (async function* () {

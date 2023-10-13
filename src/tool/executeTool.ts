@@ -5,6 +5,7 @@ import { getGlobalFunctionLogging } from "../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
 import { AbortError } from "../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
+import { getRun } from "../core/getRun.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { runSafe } from "../util/runSafe.js";
 import { Tool } from "./Tool.js";
@@ -95,7 +96,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   output: Awaited<ReturnType<TOOL["execute"]>>;
   metadata: ExecuteToolMetadata;
 }> {
-  const run = options?.run;
+  const run = await getRun(options?.run);
 
   const eventSource = new FunctionEventSource({
     observers: [
@@ -129,7 +130,14 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     startTimestamp: durationMeasurement.startDate,
   });
 
-  const result = await runSafe(() => tool.execute(input, options));
+  const result = await runSafe(() =>
+    tool.execute(input, {
+      functionId: options?.functionId,
+      logging: options?.logging,
+      observers: options?.observers,
+      run,
+    })
+  );
 
   const finishMetadata = {
     ...metadata,

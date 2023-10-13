@@ -48,14 +48,12 @@ async function main() {
         ),
       ],
     },
-    [
-      fixStructure({
-        modifyInputForRetry: async ({ input, error }) => ({
-          model: "gpt-4" as const,
-          messages: input.messages,
-        }),
+    fixStructure({
+      modifyInputForRetry: async ({ input, error }) => ({
+        model: "gpt-4" as const,
+        messages: input.messages,
       }),
-    ]
+    })
   );
 
   console.log(JSON.stringify(sentiment, null, 2));

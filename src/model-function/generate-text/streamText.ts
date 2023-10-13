@@ -6,6 +6,7 @@ import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
 import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
 import { AbortError } from "../../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
+import { getRun } from "../../core/getRun.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
@@ -33,7 +34,7 @@ async function doStreamText<PROMPT>(
   output: AsyncIterable<string>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
-  const run = options?.run;
+  const run = await getRun(options?.run);
 
   const eventSource = new FunctionEventSource({
     observers: [
@@ -71,7 +72,12 @@ async function doStreamText<PROMPT>(
   } satisfies TextStreamingStartedEvent);
 
   const result = await runSafe(async () => {
-    const deltaIterable = await model.doStreamText(prompt, options);
+    const deltaIterable = await model.doStreamText(prompt, {
+      functionId: options?.functionId,
+      logging: options?.logging,
+      observers: options?.observers,
+      run,
+    });
 
     return (async function* () {
       let accumulatedText = "";
