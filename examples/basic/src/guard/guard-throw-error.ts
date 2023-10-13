@@ -22,16 +22,14 @@ async function main() {
         input
       ),
     "Write a short story about a robot called Nox:\n\n", // without including the word Nox
-    [
-      async (result) => {
-        if (result.type !== "error" && result.output.includes("Nox")) {
-          return {
-            action: "throwError",
-            error: new Error("story must not contain word 'Nox'"),
-          };
-        }
-      },
-    ]
+    async (result) => {
+      if (result.type !== "error" && result.output.includes("Nox")) {
+        return {
+          action: "throwError",
+          error: new Error("story must not contain word 'Nox'"),
+        };
+      }
+    }
   );
 
   console.log(story);

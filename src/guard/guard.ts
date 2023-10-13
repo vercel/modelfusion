@@ -46,9 +46,13 @@ export type Guard<INPUT, OUTPUT> = ({
 export async function guard<INPUT, OUTPUT>(
   execute: (input: INPUT) => PromiseLike<OUTPUT>,
   input: INPUT,
-  guards: Array<Guard<INPUT, OUTPUT>>,
+  guards: Array<Guard<INPUT, OUTPUT>> | Guard<INPUT, OUTPUT>,
   options?: { maxRetries: number }
 ): Promise<OUTPUT | undefined> {
+  if (typeof guards === "function") {
+    guards = [guards];
+  }
+
   const maxRetries = options?.maxRetries ?? 1;
 
   let attempts = 0;

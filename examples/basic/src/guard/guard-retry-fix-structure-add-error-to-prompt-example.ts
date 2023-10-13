@@ -44,19 +44,17 @@ async function main() {
           "that did not disappear even after washing. Never again!"
       ),
     ],
-    [
-      fixStructure({
-        modifyInputForRetry: async ({ input, error }) => [
-          ...input,
-          OpenAIChatMessage.functionCall(null, {
-            name: error.structureName,
-            arguments: error.valueText,
-          }),
-          OpenAIChatMessage.user(error.message),
-          OpenAIChatMessage.user("Please fix the error and try again."),
-        ],
-      }),
-    ]
+    fixStructure({
+      modifyInputForRetry: async ({ input, error }) => [
+        ...input,
+        OpenAIChatMessage.functionCall(null, {
+          name: error.structureName,
+          arguments: error.valueText,
+        }),
+        OpenAIChatMessage.user(error.message),
+        OpenAIChatMessage.user("Please fix the error and try again."),
+      ],
+    })
   );
 
   console.log(JSON.stringify(sentiment, null, 2));
