@@ -34,7 +34,7 @@ async function doStreamText<PROMPT>(
   output: AsyncIterable<string>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
-  const run = getRun(options?.run);
+  const run = await getRun(options?.run);
 
   const eventSource = new FunctionEventSource({
     observers: [

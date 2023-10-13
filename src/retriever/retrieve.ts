@@ -19,7 +19,7 @@ export async function retrieve<OBJECT, QUERY>(
   query: QUERY,
   options?: FunctionOptions
 ): Promise<OBJECT[]> {
-  const run = getRun(options?.run);
+  const run = await getRun(options?.run);
 
   const eventSource = new FunctionEventSource({
     observers: [

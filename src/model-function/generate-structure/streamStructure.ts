@@ -48,7 +48,7 @@ async function doStreamStructure<STRUCTURE, PROMPT, NAME extends string>(
   output: AsyncIterable<StructureStreamPart<STRUCTURE>>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
-  const run = getRun(options?.run);
+  const run = await getRun(options?.run);
   const settings = model.settings;
 
   const eventSource = new FunctionEventSource({

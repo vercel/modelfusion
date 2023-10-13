@@ -96,7 +96,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   output: Awaited<ReturnType<TOOL["execute"]>>;
   metadata: ExecuteToolMetadata;
 }> {
-  const run = getRun(options?.run);
+  const run = await getRun(options?.run);
 
   const eventSource = new FunctionEventSource({
     observers: [

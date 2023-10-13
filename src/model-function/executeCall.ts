@@ -119,7 +119,7 @@ async function doExecuteCall<VALUE, MODEL extends Model<ModelSettings>>({
   response: unknown;
   metadata: ModelCallMetadata;
 }> {
-  const run = getRun(options?.run);
+  const run = await getRun(options?.run);
   const settings = model.settings;
 
   const eventSource = new FunctionEventSource({
