@@ -8,7 +8,11 @@ In systems that leverage language or other models, you may often find yourself m
 
 For instance, in a chatbot application, a process might start by searching for the most relevant document fragments using embeddings, and then proceed to generate a response based on the found fragments.
 
-The [Run interface](/api/interfaces/Run) provides a structured way to share information with model calls and log their executions. You can use the [DefaultRun](/api/classes/DefaultRun) implementation or create your own. To link a model call with a run, pass the run as the second parameter to the model call.
+The [Run interface](/api/interfaces/Run) provides a structured way to share information with model calls and log their executions. You can use the [DefaultRun](/api/classes/DefaultRun) implementation or create your own.
+
+## Passing a run directly to a model function
+
+To link a model call with a run, you can pass the run as the second parameter to the model call.
 
 ### Example
 
@@ -22,4 +26,35 @@ const text = await generateText(
 );
 
 console.log(run.successfulModelCalls);
+```
+
+## Storing the run using AsyncLocalStorage (Node.js)
+
+When ModelFusion runs in a Node.js context, you can use the [AsyncLocalStorage](https://nodejs.org/api/async_context.html) to store the run in a global context.
+
+ModelFusion provides [withRun()](/api/modules/#withrun) and [getRun()](/api/modules/#getrun) functions to make this easy. The model functions automatically use the run stored in the AsyncLocalStorage when you don't pass a run to them.
+
+### Example
+
+```ts
+const run = new DefaultRun({
+  // ...
+});
+
+withRun(run, async () => {
+  // this code could be somewhere deep in your application:
+
+  // automatically uses the run stored in the AsyncLocalStorage:
+  const text = await generateText(
+    new OpenAITextGenerationModel({
+      model: "gpt-3.5-turbo-instruct",
+      temperature: 0.7,
+      maxCompletionTokens: 500,
+    }),
+    "Write a short story about a robot learning to love:\n\n"
+  );
+
+  const run = getRun();
+  // do something with the run...
+});
 ```

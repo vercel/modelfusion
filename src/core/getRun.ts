@@ -21,11 +21,17 @@ async function ensureLoaded() {
   return Promise.resolve();
 }
 
+/**
+ * Returns the run stored in an AsyncLocalStorage if running in Node.js. It can be set with `withRun()`.
+ */
 export async function getRun(run?: Run): Promise<Run | undefined> {
   await ensureLoaded();
   return run ?? runStorage?.getStore();
 }
 
+/**
+ * Stores the run in an AsyncLocalStorage if running in Node.js. It can be retrieved with `getRun()`.
+ */
 export async function withRun(run: Run, callback: () => PromiseLike<void>) {
   await ensureLoaded();
   if (runStorage != null) {
