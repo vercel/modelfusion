@@ -1,6 +1,12 @@
 # Changelog
 
-## v0.43.0 - 2023-10-12s
+## v0.44.0 - 2023-10-13
+
+### Added
+
+- Store runs in AsyncLocalStorage for convienience (Node.js only).
+
+## v0.43.0 - 2023-10-12
 
 ### Added
 
