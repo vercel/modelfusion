@@ -25,7 +25,7 @@ async function main() {
       ),
     [
       {
-        user: "How do I use OpenAI's Completion API? show me the curl command",
+        user: "Show me how to use OpenAI's completion API in JavaScript, including authentication.",
       },
     ],
     async (result) => {
