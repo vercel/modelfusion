@@ -31,11 +31,13 @@ const gpt35turboModel = new OpenAIChatModel({
   maxCompletionTokens: 512,
 }).withPromptFormat(mapChatPromptToOpenAIChatFormat());
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const llama2Model = new LlamaCppTextGenerationModel({
   contextWindowSize: 4096, // Llama 2 context window size
   maxCompletionTokens: 512,
 }).withPromptFormat(mapChatPromptToLlama2Format());
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const otherLlamaCppModel = new LlamaCppTextGenerationModel({
   contextWindowSize: 2048, // set to your models context window size
   maxCompletionTokens: 512,
@@ -43,6 +45,7 @@ const otherLlamaCppModel = new LlamaCppTextGenerationModel({
   mapChatPromptToTextFormat({ user: "user", ai: "assistant" })
 );
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const cohereModel = new CohereTextGenerationModel({
   // explicit API configuration needed for NextJS environment
   // (otherwise env variables are not available):
