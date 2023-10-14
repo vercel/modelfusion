@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Prompt Format
 
-[Prompt formats](/api/interfaces/PromptFormat) change the prompt format that a model accepts.
+[Text generation prompt formats](/api/interfaces/TextGenerationPromptFormat) change the prompt format that a text generation model accepts.
 This enables the use of abstracted prompts such as [instruction](/api/modules#instructionprompt) or [chat](/api/modules#chatprompt) prompts.
 
 You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `withPromptFormat()` method. The built-in prompt formats are functions that follow the pattern `map[Chat|Instruction]PromptTo[FORMAT]Format()`, e.g. `mapInstructionPromptToAlpacaFormat()`.
@@ -148,11 +148,11 @@ For this, you need to:
 1. create an interface/type for your prompt format, and
 2. create prompt formats that map your prompt format to the prompt formats of the models that you want to use.
 
-The interface for [prompt format](/api/interfaces/PromptFormat) consists of a map function
+The interface for [prompt format](/api/interfaces/TextGenerationPromptFormat) consists of a map function
 and a list of stop tokens.
 
 ```ts
-interface PromptFormat<SOURCE_PROMPT, TARGET_PROMPT> {
+interface TextGenerationPromptFormat<SOURCE_PROMPT, TARGET_PROMPT> {
   map(sourcePrompt: SOURCE_PROMPT): TARGET_PROMPT;
   stopSequences: string[];
 }

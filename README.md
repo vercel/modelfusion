@@ -308,7 +308,7 @@ Providers: [HuggingFace](/integration/model-provider/huggingface)
 
 ### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 
-Generate a base64-encoded image from a prompt.
+Generate an image from a prompt.
 
 ```ts
 const image = await generateImage(
@@ -431,9 +431,11 @@ const result = await guard(
 );
 ```
 
-### [Prompt Formats](https://modelfusion.dev/guide/function/generate-text/prompt-format)
+### Prompt Formats
 
 Prompt formats let you use higher level prompt structures (such as instruction or chat prompts) for different models.
+
+#### [Text Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-text/prompt-format)
 
 ```ts
 const text = await generateText(
@@ -472,6 +474,24 @@ const textStream = await streamText(
 | Alpaca        | ✅                 | ❌          |
 | Vicuna        | ❌                 | ✅          |
 | Generic Text  | ✅                 | ✅          |
+
+#### [Image Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-image/prompt-format)
+
+You an use prompt formats with image models as well, e.g. to use a basic text prompt. It is available as a shorthand method:
+
+```ts
+const image = await generateImage(
+  new StabilityImageGenerationModel({
+    //...
+  }).withBasicPrompt(),
+  "the wicked witch of the west in the style of early 19th century painting"
+);
+```
+
+| Prompt Format | Basic Text Prompt |
+| ------------- | ----------------- |
+| Automatic1111 | ✅                |
+| Stability     | ✅                |
 
 ### Metadata and original responses
 
@@ -515,6 +535,7 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
   - [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
   - [Describe Image](https://modelfusion.dev/guide/function/describe-image)
   - [Generate Image](https://modelfusion.dev/guide/function/generate-image)
+    - [Prompt Format](https://modelfusion.dev/guide/function/generate-image/prompt-format)
 - [Tools](https://modelfusion.dev/guide/tools)
 - [Vector Indices](https://modelfusion.dev/guide/vector-index)
   - [Upsert](https://modelfusion.dev/guide/vector-index/upsert)

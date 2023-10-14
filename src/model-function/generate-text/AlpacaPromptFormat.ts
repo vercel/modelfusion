@@ -1,5 +1,5 @@
 import { InstructionPrompt } from "./InstructionPrompt.js";
-import { PromptFormat } from "./PromptFormat.js";
+import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
 
 const DEFAULT_SYSTEM_PROMPT_INPUT =
   "Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.";
@@ -14,7 +14,7 @@ const DEFAULT_SYSTEM_PROMPT_NO_INPUT =
  *
  * @see https://github.com/tatsu-lab/stanford_alpaca#data-release
  */
-export function mapInstructionPromptToAlpacaFormat(): PromptFormat<
+export function mapInstructionPromptToAlpacaFormat(): TextGenerationPromptFormat<
   InstructionPrompt,
   string
 > {

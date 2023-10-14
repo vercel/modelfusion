@@ -1,18 +1,18 @@
 import z from "zod";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import {
-  TextGenerationModel,
-  TextGenerationModelSettings,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { PromptFormat } from "../../prompt/PromptFormat.js";
-import { PromptFormatTextGenerationModel } from "../../prompt/PromptFormatTextGenerationModel.js";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { PromptFormatTextGenerationModel } from "../../model-function/generate-text/PromptFormatTextGenerationModel.js";
+import {
+  TextGenerationModel,
+  TextGenerationModelSettings,
+} from "../../model-function/generate-text/TextGenerationModel.js";
+import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
 import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
 
@@ -125,7 +125,7 @@ export class HuggingFaceTextGenerationModel
   }
 
   withPromptFormat<INPUT_PROMPT>(
-    promptFormat: PromptFormat<INPUT_PROMPT, string>
+    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, string>
   ): PromptFormatTextGenerationModel<
     INPUT_PROMPT,
     string,

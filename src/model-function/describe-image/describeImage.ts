@@ -1,5 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ModelFunctionPromise, executeCall } from "../executeCall.js";
+import { executeCall } from "../executeCall.js";
+import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   ImageDescriptionModel,
   ImageDescriptionModelSettings,
@@ -15,17 +16,19 @@ export function describeImage<DATA>(
   data: DATA,
   options?: FunctionOptions
 ): ModelFunctionPromise<string> {
-  return executeCall({
-    functionType: "image-description",
-    input: data,
-    model,
-    options,
-    generateResponse: async (options) => {
-      const result = await model.doDescribeImage(data, options);
-      return {
-        response: result.response,
-        extractedValue: result.description,
-      };
-    },
-  });
+  return new ModelFunctionPromise(
+    executeCall({
+      functionType: "image-description",
+      input: data,
+      model,
+      options,
+      generateResponse: async (options) => {
+        const result = await model.doDescribeImage(data, options);
+        return {
+          response: result.response,
+          extractedValue: result.description,
+        };
+      },
+    })
+  );
 }

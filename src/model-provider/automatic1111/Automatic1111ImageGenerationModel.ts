@@ -7,12 +7,18 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { PromptFormat } from "../../model-function/PromptFormat.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
+import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
 import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration.js";
 import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js";
+import {
+  Automatic1111ImageGenerationPrompt,
+  mapBasicPromptToAutomatic1111Format,
+} from "./Automatic1111ImageGenerationPrompt.js";
 
 /**
  * Create an image generation model that calls the AUTOMATIC1111 Stable Diffusion Web UI API.
@@ -20,14 +26,14 @@ import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js"
  * @see https://github.com/AUTOMATIC1111/stable-diffusion-webui
  */
 export class Automatic1111ImageGenerationModel
-  extends AbstractModel<Automatic1111ImageGenerationModelSettings>
+  extends AbstractModel<Automatic1111ImageGenerationSettings>
   implements
     ImageGenerationModel<
-      A111ImageGenerationPrompt,
-      Automatic1111ImageGenerationModelSettings
+      Automatic1111ImageGenerationPrompt,
+      Automatic1111ImageGenerationSettings
     >
 {
-  constructor(settings: Automatic1111ImageGenerationModelSettings) {
+  constructor(settings: Automatic1111ImageGenerationSettings) {
     super({ settings });
   }
 
@@ -38,7 +44,7 @@ export class Automatic1111ImageGenerationModel
   }
 
   async callAPI(
-    input: A111ImageGenerationPrompt,
+    input: Automatic1111ImageGenerationPrompt,
     options?: FunctionOptions
   ): Promise<Automatic1111ImageGenerationResponse> {
     return callWithRetryAndThrottle({
@@ -54,7 +60,7 @@ export class Automatic1111ImageGenerationModel
     });
   }
 
-  get settingsForEvent(): Partial<Automatic1111ImageGenerationModelSettings> {
+  get settingsForEvent(): Partial<Automatic1111ImageGenerationSettings> {
     return {
       height: this.settings.height,
       width: this.settings.width,
@@ -64,7 +70,7 @@ export class Automatic1111ImageGenerationModel
   }
 
   async doGenerateImage(
-    prompt: A111ImageGenerationPrompt,
+    prompt: Automatic1111ImageGenerationPrompt,
     options?: FunctionOptions
   ) {
     const response = await this.callAPI(prompt, options);
@@ -75,14 +81,32 @@ export class Automatic1111ImageGenerationModel
     };
   }
 
-  withSettings(additionalSettings: Automatic1111ImageGenerationModelSettings) {
+  withBasicPrompt() {
+    return this.withPromptFormat(mapBasicPromptToAutomatic1111Format());
+  }
+
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: PromptFormat<INPUT_PROMPT, Automatic1111ImageGenerationPrompt>
+  ): PromptFormatImageGenerationModel<
+    INPUT_PROMPT,
+    Automatic1111ImageGenerationPrompt,
+    Automatic1111ImageGenerationSettings,
+    this
+  > {
+    return new PromptFormatImageGenerationModel({
+      model: this,
+      promptFormat,
+    });
+  }
+
+  withSettings(additionalSettings: Automatic1111ImageGenerationSettings) {
     return new Automatic1111ImageGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
 }
 
-export interface Automatic1111ImageGenerationModelSettings
+export interface Automatic1111ImageGenerationSettings
   extends ImageGenerationModelSettings {
   api?: ApiConfiguration;
 
@@ -103,12 +127,6 @@ const Automatic1111ImageGenerationResponseSchema = z.object({
 export type Automatic1111ImageGenerationResponse = z.infer<
   typeof Automatic1111ImageGenerationResponseSchema
 >;
-
-export type A111ImageGenerationPrompt = {
-  prompt: string;
-  negativePrompt?: string;
-  seed?: number;
-};
 
 async function callAutomatic1111ImageGenerationAPI({
   api = new Automatic1111ApiConfiguration(),

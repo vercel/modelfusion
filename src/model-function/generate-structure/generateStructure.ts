@@ -1,6 +1,7 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
-import { ModelFunctionPromise, executeCall } from "../executeCall.js";
+import { executeCall } from "../executeCall.js";
+import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   StructureGenerationModel,
   StructureGenerationModelSettings,
@@ -30,37 +31,39 @@ export function generateStructure<
         )(structureDefinition)
       : prompt;
 
-  return executeCall({
-    functionType: "structure-generation",
-    input: expandedPrompt,
-    model,
-    options,
-    generateResponse: async (options) => {
-      const result = await model.doGenerateStructure(
-        structureDefinition,
-        expandedPrompt,
-        options
-      );
+  return new ModelFunctionPromise(
+    executeCall({
+      functionType: "structure-generation",
+      input: expandedPrompt,
+      model,
+      options,
+      generateResponse: async (options) => {
+        const result = await model.doGenerateStructure(
+          structureDefinition,
+          expandedPrompt,
+          options
+        );
 
-      const structure = result.value;
-      const parseResult = structureDefinition.schema.validate(structure);
+        const structure = result.value;
+        const parseResult = structureDefinition.schema.validate(structure);
 
-      if (!parseResult.success) {
-        throw new StructureValidationError({
-          structureName: structureDefinition.name,
-          valueText: result.valueText,
-          value: structure,
-          cause: parseResult.error,
-        });
-      }
+        if (!parseResult.success) {
+          throw new StructureValidationError({
+            structureName: structureDefinition.name,
+            valueText: result.valueText,
+            value: structure,
+            cause: parseResult.error,
+          });
+        }
 
-      const value = parseResult.value;
+        const value = parseResult.value;
 
-      return {
-        response: result.response,
-        extractedValue: value,
-        usage: result.usage,
-      };
-    },
-  });
+        return {
+          response: result.response,
+          extractedValue: value,
+          usage: result.usage,
+        };
+      },
+    })
+  );
 }

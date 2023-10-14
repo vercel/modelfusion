@@ -1,6 +1,6 @@
-import { PromptFormat } from "./PromptFormat.js";
-import { ChatPrompt } from "./chat/ChatPrompt.js";
-import { validateChatPrompt } from "./chat/validateChatPrompt.js";
+import { ChatPrompt } from "./ChatPrompt.js";
+import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
+import { validateChatPrompt } from "./validateChatPrompt.js";
 
 const DEFAULT_SYSTEM_PROMPT =
   "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.";
@@ -18,7 +18,7 @@ const DEFAULT_SYSTEM_PROMPT =
  * ASSISTANT:
  * ```
  */
-export function mapChatPromptToVicunaFormat(): PromptFormat<
+export function mapChatPromptToVicunaFormat(): TextGenerationPromptFormat<
   ChatPrompt,
   string
 > {

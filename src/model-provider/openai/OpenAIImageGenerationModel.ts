@@ -1,19 +1,21 @@
 import { z } from "zod";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import {
-  ImageGenerationModel,
-  ImageGenerationModelSettings,
-} from "../../model-function/generate-image/ImageGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { PromptFormat } from "../../model-function/PromptFormat.js";
+import {
+  ImageGenerationModel,
+  ImageGenerationModelSettings,
+} from "../../model-function/generate-image/ImageGenerationModel.js";
+import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
 
 export interface OpenAIImageGenerationCallSettings {
   n?: number;
@@ -112,6 +114,19 @@ export class OpenAIImageGenerationModel
       response,
       base64Image: response.data[0].b64_json,
     };
+  }
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: PromptFormat<INPUT_PROMPT, string>
+  ): PromptFormatImageGenerationModel<
+    INPUT_PROMPT,
+    string,
+    OpenAIImageGenerationSettings,
+    this
+  > {
+    return new PromptFormatImageGenerationModel({
+      model: this,
+      promptFormat,
+    });
   }
 
   withSettings(additionalSettings: Partial<OpenAIImageGenerationSettings>) {

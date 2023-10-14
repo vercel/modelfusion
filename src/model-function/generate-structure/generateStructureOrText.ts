@@ -1,6 +1,7 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
-import { ModelFunctionPromise, executeCall } from "../executeCall.js";
+import { executeCall } from "../executeCall.js";
+import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import { NoSuchStructureError } from "./NoSuchStructureError.js";
 import {
   StructureOrTextGenerationModel,
@@ -53,55 +54,59 @@ export function generateStructureOrText<
       ? (prompt as (structures: STRUCTURES) => PROMPT)(structureDefinitions)
       : prompt;
 
-  return executeCall({
-    functionType: "structure-or-text-generation",
-    input: expandedPrompt,
-    model,
-    options,
-    generateResponse: async (options) => {
-      const result = await model.doGenerateStructureOrText(
-        structureDefinitions,
-        expandedPrompt,
-        options
-      );
+  return new ModelFunctionPromise(
+    executeCall({
+      functionType: "structure-or-text-generation",
+      input: expandedPrompt,
+      model,
+      options,
+      generateResponse: async (options) => {
+        const result = await model.doGenerateStructureOrText(
+          structureDefinitions,
+          expandedPrompt,
+          options
+        );
 
-      const { structure, value, text } = result.structureAndText;
+        const { structure, value, text } = result.structureAndText;
 
-      // text generation:
-      if (structure == null) {
+        // text generation:
+        if (structure == null) {
+          return {
+            response: result.response,
+            extractedValue: { structure, value, text },
+            usage: result.usage,
+          };
+        }
+
+        const definition = structureDefinitions.find(
+          (d) => d.name === structure
+        );
+
+        if (definition == undefined) {
+          throw new NoSuchStructureError(structure);
+        }
+
+        const parseResult = definition.schema.validate(value);
+
+        if (!parseResult.success) {
+          throw new StructureValidationError({
+            structureName: structure,
+            value,
+            valueText: result.structureAndText.valueText,
+            cause: parseResult.error,
+          });
+        }
+
         return {
           response: result.response,
-          extractedValue: { structure, value, text },
+          extractedValue: {
+            structure: structure as ToOutputValue<STRUCTURES>["structure"],
+            value: parseResult.value,
+            text: text as any, // text is string | null, which is part of the response for schema values
+          },
           usage: result.usage,
         };
-      }
-
-      const definition = structureDefinitions.find((d) => d.name === structure);
-
-      if (definition == undefined) {
-        throw new NoSuchStructureError(structure);
-      }
-
-      const parseResult = definition.schema.validate(value);
-
-      if (!parseResult.success) {
-        throw new StructureValidationError({
-          structureName: structure,
-          value,
-          valueText: result.structureAndText.valueText,
-          cause: parseResult.error,
-        });
-      }
-
-      return {
-        response: result.response,
-        extractedValue: {
-          structure: structure as ToOutputValue<STRUCTURES>["structure"],
-          value: parseResult.value,
-          text: text as any, // text is string | null, which is part of the response for schema values
-        },
-        usage: result.usage,
-      };
-    },
-  });
+      },
+    })
+  );
 }

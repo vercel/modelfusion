@@ -54,3 +54,18 @@ const imageBase64 = await generateImage(
   ]
 );
 ```
+
+## Prompt Format
+
+### Basic text prompt
+
+You an use [mapBasicPromptToStabilityFormat()](/api/modules#mapbasicprompttostabilityformat) to use text prompts with Stability models. It is available as a shorthand method:
+
+```ts
+const image = await generateImage(
+  new StabilityImageGenerationModel({
+    //...
+  }).withBasicPrompt(),
+  "the wicked witch of the west in the style of early 19th century painting"
+);
+```

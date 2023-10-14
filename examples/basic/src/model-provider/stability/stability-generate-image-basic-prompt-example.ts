@@ -14,11 +14,8 @@ async function main() {
       width: 512,
       samples: 1,
       steps: 30,
-    }),
-    [
-      { text: "the wicked witch of the west" },
-      { text: "style of early 19th century painting", weight: 0.5 },
-    ]
+    }).withBasicPrompt(),
+    "the wicked witch of the west in the style of early 19th century painting"
   );
 
   const path = `./stability-image-example.png`;

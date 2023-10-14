@@ -7,12 +7,18 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { PromptFormat } from "../../model-function/PromptFormat.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
+import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
 import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 import { failedStabilityCallResponseHandler } from "./StabilityError.js";
+import {
+  StabilityImageGenerationPrompt,
+  mapBasicPromptToStabilityFormat,
+} from "./StabilityImageGenerationPrompt.js";
 
 /**
  * Create an image generation model that calls the Stability AI image generation API.
@@ -37,14 +43,14 @@ import { failedStabilityCallResponseHandler } from "./StabilityError.js";
  * );
  */
 export class StabilityImageGenerationModel
-  extends AbstractModel<StabilityImageGenerationModelSettings>
+  extends AbstractModel<StabilityImageGenerationSettings>
   implements
     ImageGenerationModel<
       StabilityImageGenerationPrompt,
-      StabilityImageGenerationModelSettings
+      StabilityImageGenerationSettings
     >
 {
-  constructor(settings: StabilityImageGenerationModelSettings) {
+  constructor(settings: StabilityImageGenerationSettings) {
     super({ settings });
   }
 
@@ -71,7 +77,7 @@ export class StabilityImageGenerationModel
     });
   }
 
-  get settingsForEvent(): Partial<StabilityImageGenerationModelSettings> {
+  get settingsForEvent(): Partial<StabilityImageGenerationSettings> {
     const eventSettingProperties = [
       "baseUrl",
       "height",
@@ -104,7 +110,25 @@ export class StabilityImageGenerationModel
     };
   }
 
-  withSettings(additionalSettings: StabilityImageGenerationModelSettings) {
+  withBasicPrompt() {
+    return this.withPromptFormat(mapBasicPromptToStabilityFormat());
+  }
+
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: PromptFormat<INPUT_PROMPT, StabilityImageGenerationPrompt>
+  ): PromptFormatImageGenerationModel<
+    INPUT_PROMPT,
+    StabilityImageGenerationPrompt,
+    StabilityImageGenerationSettings,
+    this
+  > {
+    return new PromptFormatImageGenerationModel({
+      model: this,
+      promptFormat,
+    });
+  }
+
+  withSettings(additionalSettings: StabilityImageGenerationSettings) {
     return new StabilityImageGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
@@ -125,7 +149,7 @@ export type StabilityImageGenerationModelType =
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
-export interface StabilityImageGenerationModelSettings
+export interface StabilityImageGenerationSettings
   extends ImageGenerationModelSettings {
   api?: ApiConfiguration;
 
@@ -186,11 +210,6 @@ export type StabilityImageGenerationSampler =
   | "K_EULER_ANCESTRAL"
   | "K_HEUN"
   | "K_LMS";
-
-export type StabilityImageGenerationPrompt = Array<{
-  text: string;
-  weight?: number;
-}>;
 
 async function callStabilityImageGenerationAPI({
   api = new StabilityApiConfiguration(),

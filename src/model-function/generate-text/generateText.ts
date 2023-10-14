@@ -1,5 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ModelFunctionPromise, executeCall } from "../executeCall.js";
+import { executeCall } from "../executeCall.js";
+import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -23,20 +24,24 @@ export function generateText<PROMPT>(
   prompt: PROMPT,
   options?: FunctionOptions
 ): ModelFunctionPromise<string> {
-  return executeCall({
-    functionType: "text-generation",
-    input: prompt,
-    model,
-    options,
-    generateResponse: async (options) => {
-      const result = await model.doGenerateText(prompt, options);
-      const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
+  return new ModelFunctionPromise(
+    executeCall({
+      functionType: "text-generation",
+      input: prompt,
+      model,
+      options,
+      generateResponse: async (options) => {
+        const result = await model.doGenerateText(prompt, options);
+        const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
 
-      return {
-        response: result.response,
-        extractedValue: shouldTrimWhitespace ? result.text.trim() : result.text,
-        usage: result.usage,
-      };
-    },
-  });
+        return {
+          response: result.response,
+          extractedValue: shouldTrimWhitespace
+            ? result.text.trim()
+            : result.text,
+          usage: result.usage,
+        };
+      },
+    })
+  );
 }

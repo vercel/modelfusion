@@ -1,6 +1,7 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Vector } from "../../core/Vector.js";
-import { ModelFunctionPromise, executeCall } from "../executeCall.js";
+import { executeCall } from "../executeCall.js";
+import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel.js";
 
 /**
@@ -20,42 +21,44 @@ export function embedMany<VALUE>(
   values: VALUE[],
   options?: FunctionOptions
 ): ModelFunctionPromise<Vector[]> {
-  return executeCall({
-    functionType: "embedding",
-    input: values,
-    model,
-    options,
-    generateResponse: async (options) => {
-      // split the values into groups that are small enough to be sent in one call:
-      const maxValuesPerCall = model.maxValuesPerCall;
-      const valueGroups: VALUE[][] = [];
+  return new ModelFunctionPromise(
+    executeCall({
+      functionType: "embedding",
+      input: values,
+      model,
+      options,
+      generateResponse: async (options) => {
+        // split the values into groups that are small enough to be sent in one call:
+        const maxValuesPerCall = model.maxValuesPerCall;
+        const valueGroups: VALUE[][] = [];
 
-      if (maxValuesPerCall == null) {
-        valueGroups.push(values);
-      } else {
-        for (let i = 0; i < values.length; i += maxValuesPerCall) {
-          valueGroups.push(values.slice(i, i + maxValuesPerCall));
+        if (maxValuesPerCall == null) {
+          valueGroups.push(values);
+        } else {
+          for (let i = 0; i < values.length; i += maxValuesPerCall) {
+            valueGroups.push(values.slice(i, i + maxValuesPerCall));
+          }
         }
-      }
 
-      const responses = await Promise.all(
-        valueGroups.map((valueGroup) =>
-          model.doEmbedValues(valueGroup, options)
-        )
-      );
+        const responses = await Promise.all(
+          valueGroups.map((valueGroup) =>
+            model.doEmbedValues(valueGroup, options)
+          )
+        );
 
-      const rawResponses = responses.map((response) => response.response);
-      const embeddings: Array<Vector> = [];
-      for (const response of responses) {
-        embeddings.push(...response.embeddings);
-      }
+        const rawResponses = responses.map((response) => response.response);
+        const embeddings: Array<Vector> = [];
+        for (const response of responses) {
+          embeddings.push(...response.embeddings);
+        }
 
-      return {
-        response: rawResponses,
-        extractedValue: embeddings,
-      };
-    },
-  });
+        return {
+          response: rawResponses,
+          extractedValue: embeddings,
+        };
+      },
+    })
+  );
 }
 
 /**
@@ -72,17 +75,19 @@ export function embed<VALUE>(
   value: VALUE,
   options?: FunctionOptions
 ): ModelFunctionPromise<Vector> {
-  return executeCall({
-    functionType: "embedding",
-    input: value,
-    model,
-    options,
-    generateResponse: async (options) => {
-      const result = await model.doEmbedValues([value], options);
-      return {
-        response: result.response,
-        extractedValue: result.embeddings[0],
-      };
-    },
-  });
+  return new ModelFunctionPromise(
+    executeCall({
+      functionType: "embedding",
+      input: value,
+      model,
+      options,
+      generateResponse: async (options) => {
+        const result = await model.doEmbedValues([value], options);
+        return {
+          response: result.response,
+          extractedValue: result.embeddings[0],
+        };
+      },
+    })
+  );
 }

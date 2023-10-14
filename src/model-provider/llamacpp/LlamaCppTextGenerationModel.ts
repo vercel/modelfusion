@@ -12,12 +12,12 @@ import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { parseEventSourceStream } from "../../event-source/parseEventSourceStream.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
+import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { PromptFormat } from "../../prompt/PromptFormat.js";
-import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
+import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
@@ -167,7 +167,7 @@ export class LlamaCppTextGenerationModel<
   }
 
   withPromptFormat<INPUT_PROMPT>(
-    promptFormat: PromptFormat<INPUT_PROMPT, string>
+    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, string>
   ): PromptFormatTextStreamingModel<
     INPUT_PROMPT,
     string,

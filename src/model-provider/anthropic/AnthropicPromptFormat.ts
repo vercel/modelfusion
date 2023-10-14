@@ -1,12 +1,12 @@
-import { ChatPrompt } from "../../prompt/chat/ChatPrompt.js";
-import { validateChatPrompt } from "../../prompt/chat/validateChatPrompt.js";
-import { InstructionPrompt } from "../../prompt/InstructionPrompt.js";
-import { PromptFormat } from "../../prompt/PromptFormat.js";
+import { ChatPrompt } from "../../model-function/generate-text/ChatPrompt.js";
+import { InstructionPrompt } from "../../model-function/generate-text/InstructionPrompt.js";
+import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { validateChatPrompt } from "../../model-function/generate-text/validateChatPrompt.js";
 
 /**
  * Formats an instruction prompt as an Anthropic prompt.
  */
-export function mapInstructionPromptToAnthropicFormat(): PromptFormat<
+export function mapInstructionPromptToAnthropicFormat(): TextGenerationPromptFormat<
   InstructionPrompt,
   string
 > {
@@ -39,7 +39,7 @@ export function mapInstructionPromptToAnthropicFormat(): PromptFormat<
 /**
  * Formats a chat prompt as an Anthropic prompt.
  */
-export function mapChatPromptToAnthropicFormat(): PromptFormat<
+export function mapChatPromptToAnthropicFormat(): TextGenerationPromptFormat<
   ChatPrompt,
   string
 > {

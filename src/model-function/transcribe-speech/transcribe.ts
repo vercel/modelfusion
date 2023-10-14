@@ -1,5 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ModelFunctionPromise, executeCall } from "../executeCall.js";
+import { executeCall } from "../executeCall.js";
+import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
@@ -24,18 +25,20 @@ export function transcribe<DATA>(
   data: DATA,
   options?: FunctionOptions
 ): ModelFunctionPromise<string> {
-  return executeCall({
-    functionType: "transcription",
-    input: data,
-    model,
-    options,
-    generateResponse: async (options) => {
-      const result = await model.doTranscribe(data, options);
+  return new ModelFunctionPromise(
+    executeCall({
+      functionType: "transcription",
+      input: data,
+      model,
+      options,
+      generateResponse: async (options) => {
+        const result = await model.doTranscribe(data, options);
 
-      return {
-        response: result.response,
-        extractedValue: result.transcription,
-      };
-    },
-  });
+        return {
+          response: result.response,
+          extractedValue: result.transcription,
+        };
+      },
+    })
+  );
 }

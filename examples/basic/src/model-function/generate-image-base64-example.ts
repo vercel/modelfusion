@@ -5,9 +5,9 @@ import fs from "node:fs";
 dotenv.config();
 
 async function main() {
-  const image = await generateImage(
+  const imageBase64 = await generateImage(
     new StabilityImageGenerationModel({
-      model: "stable-diffusion-v1-5",
+      model: "stable-diffusion-512-v2-1",
       cfgScale: 7,
       clipGuidancePreset: "FAST_BLUE",
       height: 512,
@@ -19,10 +19,10 @@ async function main() {
       { text: "the wicked witch of the west" },
       { text: "style of early 19th century painting", weight: 0.5 },
     ]
-  );
+  ).asBase64Text();
 
   const path = `./stability-image-example.png`;
-  fs.writeFileSync(path, Buffer.from(image, "base64"));
+  fs.writeFileSync(path, Buffer.from(imageBase64, "base64"));
   console.log(`Image saved to ${path}`);
 }
 
