@@ -500,15 +500,19 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
 
 - [Model Functions](https://modelfusion.dev/guide/function/)
   - [Generate and stream text](https://modelfusion.dev/guide/function/generate-text)
+    - [Prompt Format](https://modelfusion.dev/guide/function/generate-text/prompt-format)
   - [Generate and stream structure](https://modelfusion.dev/guide/function/generate-structure)
   - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
-  - [Embed Value](https://modelfusion.dev/guide/function/embed)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
+  - [Embed Value](https://modelfusion.dev/guide/function/embed)
   - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
   - [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
   - [Describe Image](https://modelfusion.dev/guide/function/describe-image)
   - [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 - [Tools](https://modelfusion.dev/guide/tools)
+- [Vector Indices](https://modelfusion.dev/guide/vector-index)
+  - [Upsert](https://modelfusion.dev/guide/vector-index/upsert)
+  - [Retrieve](https://modelfusion.dev/guide/vector-index/retrieve)
 - [Text Chunks](https://modelfusion.dev/guide/text-chunk/)
   - [Split Text](https://modelfusion.dev/guide/text-chunk/split)
 - [Utilities](https://modelfusion.dev/guide/util/)
@@ -520,6 +524,10 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
   - [Runs](https://modelfusion.dev/guide/util/run)
   - [Abort signals](https://modelfusion.dev/guide/util/abort)
   - [Cost calculation](https://modelfusion.dev/guide/util/cost-calculation)
+- [Troubleshooting](https://modelfusion.dev/guide/troubleshooting)
+  - [Bundling](https://modelfusion.dev/guide/troubleshooting/bundling)
+
+### [Examples & Tutorials](https://modelfusion.dev/tutorial)
 
 ### [Integrations](https://modelfusion.dev/integration/model-provider)
 

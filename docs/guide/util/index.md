@@ -1,3 +1,7 @@
+---
+sidebar_position: 50
+---
+
 # Utilities
 
 - [API configuration](/guide/util/api-configuration)
