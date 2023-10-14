@@ -431,7 +431,7 @@ const result = await guard(
 );
 ```
 
-### [Prompt Formats](<(https://modelfusion.dev/guide/function/generate-text/prompt-format)>)
+### [Prompt Formats](https://modelfusion.dev/guide/function/generate-text/prompt-format)
 
 Prompt formats let you use higher level prompt structures (such as instruction or chat prompts) for different models.
 
