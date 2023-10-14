@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.47.0 - 2023-10-14
+
+### Added
+
+- Prompt formats for image generation. You can use `.withPromptFormat()` or `.withBasicPrompt()` to apply a prompt format to an image generation model.
+
+### Changed
+
+- **breaking change**: `generateImage` returns a Buffer with the binary image data instead of a base-64 encoded string. You can call `.asBase64Text()` on the response to get a base64 encoded string.
+
 ## v0.46.0 - 2023-10-14
 
 ### Added
