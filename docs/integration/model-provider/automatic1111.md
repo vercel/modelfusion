@@ -54,3 +54,18 @@ const image = await generateImage(
   }
 );
 ```
+
+## Prompt Format
+
+### Basic text prompt
+
+You an use [mapBasicPromptToAutomatic1111Format()](/api/modules#mapbasicprompttoautomatic1111format) to use text prompts with Automatic1111 models. It is available as a shorthand method:
+
+```ts
+const image = await generateImage(
+  new Automatic1111ImageGenerationModel({
+    //...
+  }).withBasicPrompt(),
+  "the wicked witch of the west in the style of early 19th century painting"
+);
+```

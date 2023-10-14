@@ -8,7 +8,7 @@ async function main() {
       steps: 30,
       sampler: "DPM++ 2M Karras",
     }).withBasicPrompt(),
-    "(lonely inn at the edge of a forest and at the side of a lake) (late spring evening before sunset) (clear sky) (plains) (nordic climate) (german early medieval architecture) (rpg) (fantasy) (Best quality) (masterpiece) (highly intricate details) (ultra realistic)"
+    "the wicked witch of the west in the style of early 19th century painting"
   );
 
   const path = `./a1111-image-example.png`;

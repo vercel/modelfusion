@@ -70,7 +70,7 @@ for await (const textFragment of textStream) {
 }
 ```
 
-## Anthropic Prompt Format
+## Prompt Format
 
 Anthropic requires a very specific prompt format with "Human: " and "Assistant: " sections.
 Using a prompt mapping can make the interaction with Anthropic models easier.
@@ -90,7 +90,7 @@ const textStream = await streamText(
 
 ### Chat prompt
 
-You an use [mapChatPromptToAnthropicFormat()](/api/modules#mapchatprompttoanthropicformat) to use [chat prompts](/api/modules#chatprompt) with OpenAI chat models. It is avaialble as a shorthand method:
+You an use [mapChatPromptToAnthropicFormat()](/api/modules#mapchatprompttoanthropicformat) to use [chat prompts](/api/modules#chatprompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
