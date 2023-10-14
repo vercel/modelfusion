@@ -35,7 +35,7 @@ Or use a template: [ModelFusion terminal app starter](https://github.com/lgramme
 
 You can provide API keys for the different [integrations](https://modelfusion.dev/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or pass them into the model constructors as options.
 
-### [Generate Text](https://modelfusion.dev/guide/function/generate-text)
+### [Generate and Stream Text](https://modelfusion.dev/guide/function/generate-text)
 
 Generate text using a language model and a prompt.
 You can stream the text if it is supported by the model.
@@ -71,72 +71,11 @@ for await (const textFragment of textStream) {
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
 
-#### Prompt Format
+### [Generate and Stream Structure](https://modelfusion.dev/guide/function/generate-structure#generatestructure)
 
-[Prompt format](https://modelfusion.dev/guide/function/generate-text/prompt-format) lets you use higher level prompt structures (such as instruction or chat prompts) for different models.
+Generate typed objects using a language model and a schema.
 
-```ts
-const text = await generateText(
-  new LlamaCppTextGenerationModel({
-    contextWindowSize: 4096, // Llama 2 context window size
-    maxCompletionTokens: 1000,
-  }).withPromptFormat(mapInstructionPromptToLlama2Format()),
-  {
-    system: "You are a story writer.",
-    instruction: "Write a short story about a robot learning to love.",
-  }
-);
-```
-
-They can also be accessed through the shorthand methods `.withChatPrompt()` and `.withInstructionPrompt()` for many models:
-
-```ts
-const textStream = await streamText(
-  new OpenAIChatModel({
-    model: "gpt-3.5-turbo",
-  }).withChatPrompt(),
-  [
-    { system: "You are a celebrated poet." },
-    { user: "Write a short story about a robot learning to love." },
-    { ai: "Once upon a time, there was a robot who learned to love." },
-    { user: "That's a great start!" },
-  ]
-);
-```
-
-| Prompt Format | Instruction Prompt | Chat Prompt |
-| ------------- | ------------------ | ----------- |
-| OpenAI Chat   | ✅                 | ✅          |
-| Anthropic     | ✅                 | ✅          |
-| Llama 2       | ✅                 | ✅          |
-| Alpaca        | ✅                 | ❌          |
-| Vicuna        | ❌                 | ✅          |
-| Generic Text  | ✅                 | ✅          |
-
-#### Metadata and original responses
-
-ModelFusion model functions return rich results that include the original response and metadata when you call `.asFullResponse()` before resolving the promise.
-
-```ts
-// access the full response (needs to be typed) and the metadata:
-const { value, response, metadata } = await generateText(
-  new OpenAITextGenerationModel({
-    model: "gpt-3.5-turbo-instruct",
-    maxCompletionTokens: 1000,
-    n: 2, // generate 2 completions
-  }),
-  "Write a short story about a robot learning to love:\n\n"
-).asFullResponse();
-
-console.log(metadata);
-
-// cast to the response type:
-for (const choice of (response as OpenAITextGenerationResponse).choices) {
-  console.log(choice.text);
-}
-```
-
-### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure#generatestructure)
+#### generateStructure
 
 Generate a structure that matches a schema.
 
@@ -171,7 +110,7 @@ const sentiment = await generateStructure(
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
 
-### [Stream Structure](https://modelfusion.dev/guide/function/generate-structure#streamstructure)
+#### streamStructure
 
 Stream a structure that matches a schema. Partial structures before the final part are untyped JSON.
 
@@ -490,6 +429,71 @@ const result = await guard(
     ],
   })
 );
+```
+
+### [Prompt Formats](<(https://modelfusion.dev/guide/function/generate-text/prompt-format)>)
+
+Prompt formats let you use higher level prompt structures (such as instruction or chat prompts) for different models.
+
+```ts
+const text = await generateText(
+  new LlamaCppTextGenerationModel({
+    contextWindowSize: 4096, // Llama 2 context window size
+    maxCompletionTokens: 1000,
+  }).withPromptFormat(mapInstructionPromptToLlama2Format()),
+  {
+    system: "You are a story writer.",
+    instruction: "Write a short story about a robot learning to love.",
+  }
+);
+```
+
+They can also be accessed through the shorthand methods `.withChatPrompt()` and `.withInstructionPrompt()` for many models:
+
+```ts
+const textStream = await streamText(
+  new OpenAIChatModel({
+    model: "gpt-3.5-turbo",
+  }).withChatPrompt(),
+  [
+    { system: "You are a celebrated poet." },
+    { user: "Write a short story about a robot learning to love." },
+    { ai: "Once upon a time, there was a robot who learned to love." },
+    { user: "That's a great start!" },
+  ]
+);
+```
+
+| Prompt Format | Instruction Prompt | Chat Prompt |
+| ------------- | ------------------ | ----------- |
+| OpenAI Chat   | ✅                 | ✅          |
+| Anthropic     | ✅                 | ✅          |
+| Llama 2       | ✅                 | ✅          |
+| Alpaca        | ✅                 | ❌          |
+| Vicuna        | ❌                 | ✅          |
+| Generic Text  | ✅                 | ✅          |
+
+### Metadata and original responses
+
+ModelFusion model functions return rich results that include the original response and metadata when you call `.asFullResponse()` before resolving the promise.
+
+```ts
+// access the full response (needs to be typed) and the metadata:
+const { value, response, metadata } = await generateText(
+  new OpenAITextGenerationModel({
+    model: "gpt-3.5-turbo-instruct",
+    maxCompletionTokens: 1000,
+    n: 2, // generate 2 completions
+  }),
+  "Write a short story about a robot learning to love:\n\n"
+).asFullResponse();
+
+console.log(metadata);
+
+// cast to the response type:
+for (const choice of (response as OpenAITextGenerationResponse).choices) {
+  console.log(choice.text);
+}
 ```
 
 ### Observability
