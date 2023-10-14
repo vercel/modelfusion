@@ -47,9 +47,13 @@ export class OpenAICostCalculator implements CostCalculator {
         }
 
         if (isOpenAIEmbeddingModel(model)) {
+          const responses = Array.isArray(call.result.response)
+            ? (call.result.response as OpenAITextEmbeddingResponse[])
+            : [call.result.response as OpenAITextEmbeddingResponse];
+
           return calculateOpenAIEmbeddingCostInMillicents({
             model,
-            responses: call.result.response as OpenAITextEmbeddingResponse[],
+            responses,
           });
         }
         break;
