@@ -1,9 +1,10 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ModelFunctionPromise, executeCall } from "../executeCall.js";
+import { executeCall } from "../executeCall.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "./ImageGenerationModel.js";
+import { ImageGenerationPromise } from "./ImageGenerationPromise.js";
 
 /**
  * Generates a base64-encoded image using a prompt.
@@ -24,18 +25,20 @@ export function generateImage<PROMPT>(
   model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>,
   prompt: PROMPT,
   options?: FunctionOptions
-): ModelFunctionPromise<string> {
-  return executeCall({
-    functionType: "image-generation",
-    input: prompt,
-    model,
-    options,
-    generateResponse: async (options) => {
-      const result = await model.doGenerateImage(prompt, options);
-      return {
-        response: result.response,
-        extractedValue: result.base64Image,
-      };
-    },
-  });
+): ImageGenerationPromise {
+  return new ImageGenerationPromise(
+    executeCall({
+      functionType: "image-generation",
+      input: prompt,
+      model,
+      options,
+      generateResponse: async (options) => {
+        const result = await model.doGenerateImage(prompt, options);
+        return {
+          response: result.response,
+          extractedValue: result.base64Image,
+        };
+      },
+    })
+  );
 }

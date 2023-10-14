@@ -308,7 +308,7 @@ Providers: [HuggingFace](/integration/model-provider/huggingface)
 
 ### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 
-Generate a base64-encoded image from a prompt.
+Generate an image from a prompt.
 
 ```ts
 const image = await generateImage(
