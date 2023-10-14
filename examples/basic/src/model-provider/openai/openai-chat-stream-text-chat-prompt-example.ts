@@ -1,9 +1,5 @@
 import dotenv from "dotenv";
-import {
-  mapChatPromptToOpenAIChatFormat,
-  OpenAIChatModel,
-  streamText,
-} from "modelfusion";
+import { OpenAIChatModel, streamText } from "modelfusion";
 
 dotenv.config();
 
@@ -11,7 +7,7 @@ async function main() {
   const textStream = await streamText(
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
-    }).withPromptFormat(mapChatPromptToOpenAIChatFormat()),
+    }).withChatPrompt(),
     [
       { system: "You are a celebrated poet." },
       { user: "Write a short story about a robot learning to love." },

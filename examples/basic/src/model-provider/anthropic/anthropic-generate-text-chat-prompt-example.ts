@@ -1,9 +1,5 @@
 import dotenv from "dotenv";
-import {
-  AnthropicTextGenerationModel,
-  generateText,
-  mapChatPromptToAnthropicFormat,
-} from "modelfusion";
+import { AnthropicTextGenerationModel, generateText } from "modelfusion";
 
 dotenv.config();
 
@@ -13,7 +9,7 @@ async function main() {
       model: "claude-instant-1",
       temperature: 0.7,
       maxCompletionTokens: 500,
-    }).withPromptFormat(mapChatPromptToAnthropicFormat()),
+    }).withChatPrompt(),
     [
       { user: "Suggest a name for a robot" },
       { ai: "I suggest the name Robbie" },

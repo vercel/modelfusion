@@ -20,6 +20,10 @@ import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
 import { AnthropicApiConfiguration } from "./AnthropicApiConfiguration.js";
 import { failedAnthropicCallResponseHandler } from "./AnthropicError.js";
+import {
+  mapChatPromptToAnthropicFormat,
+  mapInstructionPromptToAnthropicFormat,
+} from "./AnthropicPromptFormat.js";
 
 export const ANTHROPIC_TEXT_GENERATION_MODELS = {
   "claude-instant-1": {
@@ -134,6 +138,20 @@ export class AnthropicTextGenerationModel
       ...options,
       responseFormat: AnthropicTextGenerationResponseFormat.deltaIterable,
     });
+  }
+
+  /**
+   * Returns this model with an instruction prompt format.
+   */
+  withInstructionPrompt() {
+    return this.withPromptFormat(mapInstructionPromptToAnthropicFormat());
+  }
+
+  /**
+   * Returns this model with a chat prompt format.
+   */
+  withChatPrompt() {
+    return this.withPromptFormat(mapChatPromptToAnthropicFormat());
   }
 
   withPromptFormat<INPUT_PROMPT>(

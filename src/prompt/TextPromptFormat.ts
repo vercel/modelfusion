@@ -34,13 +34,13 @@ export const mapInstructionPromptToTextFormat: () => PromptFormat<
  * @param user The label of the user in the chat.
  * @param ai The name of the AI in the chat.
  */
-export const mapChatPromptToTextFormat: ({
-  user,
-  ai,
-}: {
-  user: string;
-  ai: string;
-}) => PromptFormat<ChatPrompt, string> = ({ user, ai }) => ({
+export const mapChatPromptToTextFormat: (options?: {
+  user?: string;
+  ai?: string;
+}) => PromptFormat<ChatPrompt, string> = ({
+  user = "user",
+  ai = "ai",
+} = {}) => ({
   format: (chatPrompt) => {
     validateChatPrompt(chatPrompt);
 

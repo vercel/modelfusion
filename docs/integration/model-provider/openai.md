@@ -322,13 +322,13 @@ const image = await generateImage(
 
 #### Instruction prompt
 
-You an use [mapInstructionPromptToOpenAIChatFormat()](/api/modules#mapinstructionprompttoopenaichatformat) to use [instruction prompts](/api/modules#instructionprompt) with OpenAI chat models:
+You an use [mapInstructionPromptToOpenAIChatFormat()](/api/modules#mapinstructionprompttoopenaichatformat) to use [instruction prompts](/api/modules#instructionprompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
   new OpenAIChatModel({
     // ...
-  }).withPromptFormat(mapInstructionPromptToOpenAIChatFormat()),
+  }).withInstructionPrompt(),
   {
     system: "You are a celebrated poet.",
     instruction: "Write a short story about a robot learning to love.",
@@ -338,13 +338,13 @@ const textStream = await streamText(
 
 #### Chat prompt
 
-You an use [mapChatPromptToOpenAIChatFormat()](/api/modules#mapchatprompttoopenaichatformat) to use [chat prompts](/api/modules#chatprompt) with OpenAI chat models:
+You an use [mapChatPromptToOpenAIChatFormat()](/api/modules#mapchatprompttoopenaichatformat) to use [chat prompts](/api/modules#chatprompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
   new OpenAIChatModel({
     // ...
-  }).withPromptFormat(mapChatPromptToOpenAIChatFormat()),
+  }).withChatPrompt(),
   [
     { system: "You are a celebrated poet." },
     { user: "Write a short story about a robot learning to love." },

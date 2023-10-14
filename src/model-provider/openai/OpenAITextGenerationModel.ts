@@ -19,6 +19,10 @@ import {
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
+import {
+  mapChatPromptToTextFormat,
+  mapInstructionPromptToTextFormat,
+} from "../../prompt/TextPromptFormat.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
@@ -331,6 +335,20 @@ export class OpenAITextGenerationModel
       ...options,
       responseFormat: OpenAITextResponseFormat.deltaIterable,
     });
+  }
+
+  /**
+   * Returns this model with an instruction prompt format.
+   */
+  withInstructionPrompt() {
+    return this.withPromptFormat(mapInstructionPromptToTextFormat());
+  }
+
+  /**
+   * Returns this model with a chat prompt format.
+   */
+  withChatPrompt(options?: { user?: string; ai?: string }) {
+    return this.withPromptFormat(mapChatPromptToTextFormat(options));
   }
 
   withPromptFormat<INPUT_PROMPT>(

@@ -1,4 +1,6 @@
 import {
+  HasContextWindowSize,
+  HasTokenizer,
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
@@ -22,10 +24,9 @@ export async function trimChatPrompt({
     (model.settings.maxCompletionTokens ?? model.contextWindowSize / 4),
 }: {
   prompt: ChatPrompt;
-  model: TextGenerationModel<ChatPrompt, TextGenerationModelSettings> & {
-    contextWindowSize: number;
-    countPromptTokens: (prompt: ChatPrompt) => PromiseLike<number>;
-  };
+  model: TextGenerationModel<ChatPrompt, TextGenerationModelSettings> &
+    HasTokenizer<ChatPrompt> &
+    HasContextWindowSize;
   tokenLimit?: number;
 }): Promise<ChatPrompt> {
   validateChatPrompt(prompt);

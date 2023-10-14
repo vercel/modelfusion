@@ -18,6 +18,10 @@ import {
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { PromptFormat } from "../../prompt/PromptFormat.js";
 import { PromptFormatTextStreamingModel } from "../../prompt/PromptFormatTextStreamingModel.js";
+import {
+  mapChatPromptToTextFormat,
+  mapInstructionPromptToTextFormat,
+} from "../../prompt/TextPromptFormat.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
@@ -177,6 +181,20 @@ export class CohereTextGenerationModel
 
   extractTextDelta(fullDelta: CohereTextGenerationDelta): string | undefined {
     return fullDelta.delta;
+  }
+
+  /**
+   * Returns this model with an instruction prompt format.
+   */
+  withInstructionPrompt() {
+    return this.withPromptFormat(mapInstructionPromptToTextFormat());
+  }
+
+  /**
+   * Returns this model with a chat prompt format.
+   */
+  withChatPrompt(options?: { user?: string; ai?: string }) {
+    return this.withPromptFormat(mapChatPromptToTextFormat(options));
   }
 
   withPromptFormat<INPUT_PROMPT>(

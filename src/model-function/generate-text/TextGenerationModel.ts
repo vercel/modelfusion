@@ -24,6 +24,16 @@ export interface TextGenerationModelSettings extends ModelSettings {
   trimWhitespace?: boolean;
 }
 
+export interface HasContextWindowSize {
+  contextWindowSize: number;
+}
+
+export interface HasTokenizer<PROMPT> {
+  tokenizer: BasicTokenizer | FullTokenizer;
+
+  countPromptTokens(prompt: PROMPT): PromiseLike<number>;
+}
+
 export interface TextGenerationModel<
   PROMPT,
   SETTINGS extends TextGenerationModelSettings = TextGenerationModelSettings,
