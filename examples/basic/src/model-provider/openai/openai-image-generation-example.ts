@@ -11,7 +11,7 @@ async function main() {
   );
 
   const path = `./openai-image-example.png`;
-  fs.writeFileSync(path, Buffer.from(image, "base64"));
+  fs.writeFileSync(path, image);
   console.log(`Image saved to ${path}`);
 }
 

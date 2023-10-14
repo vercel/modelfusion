@@ -39,7 +39,7 @@ export default async function handler(
       { text: description },
       { text: "style of early 19th century painting", weight: 0.5 },
     ]
-  );
+  ).asBase64Text();
 
   try {
     res.status(200).json(image);

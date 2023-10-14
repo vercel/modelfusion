@@ -54,7 +54,7 @@ async function main() {
   console.log(`Prompt: ${prompt}`);
 
   const path = `./a1111-image-example.png`;
-  fs.writeFileSync(path, Buffer.from(image, "base64"));
+  fs.writeFileSync(path, image);
   console.log(`Image saved to ${path}`);
 }
 

@@ -1,6 +1,6 @@
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 
-export class ImageGenerationPromise extends Promise<string> {
+export class ImageGenerationPromise extends Promise<Buffer> {
   private imageBase64Promise: Promise<string>;
   private imageBufferPromise: Promise<Buffer>;
 
@@ -17,8 +17,8 @@ export class ImageGenerationPromise extends Promise<string> {
     });
 
     this.imageBase64Promise = fullPromise.then((result) => result.value);
-    this.imageBufferPromise = this.imageBase64Promise.then((base64) =>
-      Buffer.from(base64, "base64")
+    this.imageBufferPromise = this.imageBase64Promise.then((base64Text) =>
+      Buffer.from(base64Text, "base64")
     );
   }
 
@@ -38,9 +38,9 @@ export class ImageGenerationPromise extends Promise<string> {
     return this.imageBufferPromise;
   }
 
-  override then<TResult1 = string, TResult2 = never>(
+  override then<TResult1 = Buffer, TResult2 = never>(
     onfulfilled?:
-      | ((value: string) => TResult1 | PromiseLike<TResult1>)
+      | ((value: Buffer) => TResult1 | PromiseLike<TResult1>)
       | undefined
       | null,
     onrejected?:
@@ -48,7 +48,7 @@ export class ImageGenerationPromise extends Promise<string> {
       | undefined
       | null
   ): Promise<TResult1 | TResult2> {
-    return this.imageBase64Promise.then(onfulfilled, onrejected);
+    return this.imageBufferPromise.then(onfulfilled, onrejected);
   }
 
   override catch<TResult = never>(
@@ -56,13 +56,13 @@ export class ImageGenerationPromise extends Promise<string> {
       | ((reason: unknown) => TResult | PromiseLike<TResult>)
       | undefined
       | null
-  ): Promise<string | TResult> {
-    return this.imageBase64Promise.catch(onrejected);
+  ): Promise<Buffer | TResult> {
+    return this.imageBufferPromise.catch(onrejected);
   }
 
   override finally(
     onfinally?: (() => void) | undefined | null
-  ): Promise<string> {
-    return this.imageBase64Promise.finally(onfinally);
+  ): Promise<Buffer> {
+    return this.imageBufferPromise.finally(onfinally);
   }
 }

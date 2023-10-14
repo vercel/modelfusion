@@ -55,7 +55,7 @@ async function main() {
   );
 
   const path = `./enhanced-image-example.png`;
-  fs.writeFileSync(path, Buffer.from(image, "base64"));
+  fs.writeFileSync(path, image);
 }
 
 main().catch(console.error);
