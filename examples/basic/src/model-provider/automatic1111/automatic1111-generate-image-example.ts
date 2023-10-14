@@ -14,7 +14,7 @@ async function main() {
       negativePrompt:
         "(worst quality, low quality, bad_pictures) (deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected limbs, mutation, mutated, ugly, blurry, amputation, (watermark) (label) (signature) (text) (cropped) (castle) (mountain) (monastery)",
     }
-  ).asBuffer();
+  );
 
   const path = `./a1111-image-example.png`;
   fs.writeFileSync(path, image);

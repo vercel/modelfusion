@@ -15,6 +15,10 @@ import { ImageGenerationPromptFormat } from "../../model-function/generate-image
 import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
 import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 import { failedStabilityCallResponseHandler } from "./StabilityError.js";
+import {
+  StabilityImageGenerationPrompt,
+  mapBasicPromptToStabilityFormat,
+} from "./StabilityImageGenerationPrompt.js";
 
 /**
  * Create an image generation model that calls the Stability AI image generation API.
@@ -104,6 +108,10 @@ export class StabilityImageGenerationModel
       response,
       base64Image: response.artifacts[0].base64,
     };
+  }
+
+  withBasicPrompt() {
+    return this.withPromptFormat(mapBasicPromptToStabilityFormat());
   }
 
   withPromptFormat<INPUT_PROMPT>(
@@ -205,11 +213,6 @@ export type StabilityImageGenerationSampler =
   | "K_EULER_ANCESTRAL"
   | "K_HEUN"
   | "K_LMS";
-
-export type StabilityImageGenerationPrompt = Array<{
-  text: string;
-  weight?: number;
-}>;
 
 async function callStabilityImageGenerationAPI({
   api = new StabilityApiConfiguration(),

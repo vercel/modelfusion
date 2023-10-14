@@ -9,7 +9,7 @@ export type Automatic1111ImageGenerationPrompt = {
 /**
  * Formats a basic text prompt as an Automatic1111 prompt.
  */
-export function mapBasicPromptToAutomatic1111Prompt(): ImageGenerationPromptFormat<
+export function mapBasicPromptToAutomatic1111Format(): ImageGenerationPromptFormat<
   string,
   Automatic1111ImageGenerationPrompt
 > {

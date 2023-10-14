@@ -17,8 +17,8 @@ import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration.j
 import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js";
 import {
   Automatic1111ImageGenerationPrompt,
-  mapBasicPromptToAutomatic1111Prompt,
-} from "./Automatic1111PromptFormat.js";
+  mapBasicPromptToAutomatic1111Format,
+} from "./Automatic1111ImageGenerationPrompt.js";
 
 /**
  * Create an image generation model that calls the AUTOMATIC1111 Stable Diffusion Web UI API.
@@ -82,7 +82,7 @@ export class Automatic1111ImageGenerationModel
   }
 
   withBasicPrompt() {
-    return this.withPromptFormat(mapBasicPromptToAutomatic1111Prompt());
+    return this.withPromptFormat(mapBasicPromptToAutomatic1111Format());
   }
 
   withPromptFormat<INPUT_PROMPT>(
