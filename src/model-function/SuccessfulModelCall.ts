@@ -12,6 +12,7 @@ export function extractSuccessfulModelCalls(
     (
       event
     ): event is ModelCallFinishedEvent & { result: { status: "success" } } =>
+      "model" in event &&
       "result" in event &&
       "status" in event.result &&
       event.result.status === "success"
