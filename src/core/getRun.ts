@@ -32,11 +32,14 @@ export async function getRun(run?: Run): Promise<Run | undefined> {
 /**
  * Stores the run in an AsyncLocalStorage if running in Node.js. It can be retrieved with `getRun()`.
  */
-export async function withRun(run: Run, callback: () => PromiseLike<void>) {
+export async function withRun(
+  run: Run,
+  callback: (run: Run) => PromiseLike<void>
+) {
   await ensureLoaded();
   if (runStorage != null) {
-    await runStorage.run(run, callback);
+    await runStorage.run(run, () => callback(run));
   } else {
-    await callback();
+    await callback(run);
   }
 }
