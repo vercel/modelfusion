@@ -18,12 +18,10 @@ export async function createTweetFromPdf({
   topic,
   pdfPath,
   exampleTweetIndexPath,
-  run,
 }: {
   topic: string;
   pdfPath: string;
   exampleTweetIndexPath: string;
-  run: Run;
 }) {
   const model = new OpenAIChatModel({ model: "gpt-4" });
 
@@ -51,10 +49,7 @@ export async function createTweetFromPdf({
           OpenAIChatMessage.user(`## TEXT\n${text}`),
         ],
       },
-      {
-        functionId: "extract-information",
-        run,
-      }
+      { functionId: "extract-information" }
     );
 
   // generate a draft tweet:
@@ -72,7 +67,7 @@ export async function createTweetFromPdf({
       ),
       OpenAIChatMessage.user(`## CONTENT\n${informationOnTopic}`),
     ],
-    { functionId: "draft-tweet", run }
+    { functionId: "draft-tweet" }
   );
 
   // search for similar tweets:
@@ -89,7 +84,7 @@ export async function createTweetFromPdf({
       similarityThreshold: 0.5,
     }),
     draftTweet,
-    { functionId: "embed-draft-tweet", run }
+    { functionId: "embed-draft-tweet" }
   );
 
   if (similarTweets.length === 0) {
@@ -106,6 +101,6 @@ export async function createTweetFromPdf({
       OpenAIChatMessage.user(`## DRAFT TWEET\n${draftTweet}`),
       OpenAIChatMessage.user(`## STYLE EXAMPLE\n${similarTweets[0]}`),
     ],
-    { functionId: "rewrite-tweet", run }
+    { functionId: "rewrite-tweet" }
   );
 }

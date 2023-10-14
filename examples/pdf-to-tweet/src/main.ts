@@ -1,6 +1,11 @@
 import { Command } from "commander";
 import dotenv from "dotenv";
-import { DefaultRun, OpenAICostCalculator, calculateCost } from "modelfusion";
+import {
+  DefaultRun,
+  OpenAICostCalculator,
+  calculateCost,
+  withRun,
+} from "modelfusion";
 import { createTweetFromPdf } from "./createTweetFromPdf";
 
 dotenv.config();
@@ -43,23 +48,24 @@ const run = new DefaultRun({
   ],
 });
 
-createTweetFromPdf({
-  topic,
-  pdfPath: file,
-  exampleTweetIndexPath: examples,
-  run,
-})
-  .then(async (result) => {
-    const cost = await calculateCost({
-      calls: run.successfulModelCalls,
-      costCalculators: [new OpenAICostCalculator()],
-    });
-
-    console.log();
-    console.log(result);
-    console.log();
-    console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
+withRun(run, async () => {
+  createTweetFromPdf({
+    topic,
+    pdfPath: file,
+    exampleTweetIndexPath: examples,
   })
-  .catch((error) => {
-    console.error(error);
-  });
+    .then(async (result) => {
+      const cost = await calculateCost({
+        calls: run.successfulModelCalls,
+        costCalculators: [new OpenAICostCalculator()],
+      });
+
+      console.log();
+      console.log(result);
+      console.log();
+      console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});

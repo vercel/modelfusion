@@ -4,6 +4,7 @@ import {
   OpenAICostCalculator,
   OpenAITextEmbeddingModel,
   calculateCost,
+  embed,
   embedMany,
 } from "modelfusion";
 
@@ -21,14 +22,18 @@ async function main() {
     { run }
   );
 
-  console.log(embeddings);
+  const embeddings2 = await embed(
+    new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
+    "At first, Nox didn't know what to do with the pup.",
+    { run }
+  );
 
   const cost = await calculateCost({
     calls: run.successfulModelCalls,
     costCalculators: [new OpenAICostCalculator()],
   });
 
-  console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
+  console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 6 })}`);
 }
 
 main().catch(console.error);
