@@ -15,6 +15,10 @@ import { ImageGenerationPromptFormat } from "../../model-function/generate-image
 import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
 import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration.js";
 import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js";
+import {
+  Automatic1111ImageGenerationPrompt,
+  mapBasicPromptToAutomatic1111Prompt,
+} from "./Automatic1111PromptFormat.js";
 
 /**
  * Create an image generation model that calls the AUTOMATIC1111 Stable Diffusion Web UI API.
@@ -77,6 +81,10 @@ export class Automatic1111ImageGenerationModel
     };
   }
 
+  withBasicPrompt() {
+    return this.withPromptFormat(mapBasicPromptToAutomatic1111Prompt());
+  }
+
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: ImageGenerationPromptFormat<
       INPUT_PROMPT,
@@ -122,12 +130,6 @@ const Automatic1111ImageGenerationResponseSchema = z.object({
 export type Automatic1111ImageGenerationResponse = z.infer<
   typeof Automatic1111ImageGenerationResponseSchema
 >;
-
-export type Automatic1111ImageGenerationPrompt = {
-  prompt: string;
-  negativePrompt?: string;
-  seed?: number;
-};
 
 async function callAutomatic1111ImageGenerationAPI({
   api = new Automatic1111ApiConfiguration(),
