@@ -5,10 +5,10 @@
   "private": true,
   "dependencies": {
     "@pinecone-database/pinecone": "^0.1.6",
-    "modelfusion": "*",
-    "@modelfusion/serpapi-tools": "*",
-    "@modelfusion/google-custom-search-tool": "*",
-    "@modelfusion/pinecone": "*",
+    "modelfusion": "^0.45.0",
+    "@modelfusion/serpapi-tools": "^0.6.0",
+    "@modelfusion/google-custom-search-tool": "^0.6.0",
+    "@modelfusion/pinecone": "^0.2.0",
     "dotenv": "16.0.3",
     "secure-json-parse": "2.7.0"
   },

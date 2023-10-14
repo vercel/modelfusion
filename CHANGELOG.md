@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.45.0 - 2023-10-14
+
+### Changed
+
+- Updated Zod to 3.22.4. You need to use Zod 3.22.4 or higher in your project.
+
 ## v0.44.0 - 2023-10-13
 
 ### Added
