@@ -8,11 +8,11 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { PromptFormat } from "../../model-function/PromptFormat.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
-import { ImageGenerationPromptFormat } from "../../model-function/generate-image/ImageGenerationPromptFormat.js";
 import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
@@ -116,7 +116,7 @@ export class OpenAIImageGenerationModel
     };
   }
   withPromptFormat<INPUT_PROMPT>(
-    promptFormat: ImageGenerationPromptFormat<INPUT_PROMPT, string>
+    promptFormat: PromptFormat<INPUT_PROMPT, string>
   ): PromptFormatImageGenerationModel<
     INPUT_PROMPT,
     string,

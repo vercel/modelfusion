@@ -7,11 +7,11 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { PromptFormat } from "../../model-function/PromptFormat.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
-import { ImageGenerationPromptFormat } from "../../model-function/generate-image/ImageGenerationPromptFormat.js";
 import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
 import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 import { failedStabilityCallResponseHandler } from "./StabilityError.js";
@@ -115,10 +115,7 @@ export class StabilityImageGenerationModel
   }
 
   withPromptFormat<INPUT_PROMPT>(
-    promptFormat: ImageGenerationPromptFormat<
-      INPUT_PROMPT,
-      StabilityImageGenerationPrompt
-    >
+    promptFormat: PromptFormat<INPUT_PROMPT, StabilityImageGenerationPrompt>
   ): PromptFormatImageGenerationModel<
     INPUT_PROMPT,
     StabilityImageGenerationPrompt,

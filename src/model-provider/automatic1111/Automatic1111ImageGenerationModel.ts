@@ -7,11 +7,11 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { PromptFormat } from "../../model-function/PromptFormat.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
-import { ImageGenerationPromptFormat } from "../../model-function/generate-image/ImageGenerationPromptFormat.js";
 import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
 import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration.js";
 import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js";
@@ -86,10 +86,7 @@ export class Automatic1111ImageGenerationModel
   }
 
   withPromptFormat<INPUT_PROMPT>(
-    promptFormat: ImageGenerationPromptFormat<
-      INPUT_PROMPT,
-      Automatic1111ImageGenerationPrompt
-    >
+    promptFormat: PromptFormat<INPUT_PROMPT, Automatic1111ImageGenerationPrompt>
   ): PromptFormatImageGenerationModel<
     INPUT_PROMPT,
     Automatic1111ImageGenerationPrompt,

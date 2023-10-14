@@ -1,4 +1,4 @@
-import { ImageGenerationPromptFormat } from "../../model-function/generate-image/ImageGenerationPromptFormat.js";
+import { PromptFormat } from "../../model-function/PromptFormat.js";
 
 export type StabilityImageGenerationPrompt = Array<{
   text: string;
@@ -8,7 +8,7 @@ export type StabilityImageGenerationPrompt = Array<{
 /**
  * Formats a basic text prompt as a Stability prompt.
  */
-export function mapBasicPromptToStabilityFormat(): ImageGenerationPromptFormat<
+export function mapBasicPromptToStabilityFormat(): PromptFormat<
   string,
   StabilityImageGenerationPrompt
 > {

@@ -1,9 +1,9 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { PromptFormat } from "../PromptFormat.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "./ImageGenerationModel.js";
-import { ImageGenerationPromptFormat } from "./ImageGenerationPromptFormat.js";
 
 export class PromptFormatImageGenerationModel<
   PROMPT,
@@ -13,14 +13,14 @@ export class PromptFormatImageGenerationModel<
 > implements ImageGenerationModel<PROMPT, SETTINGS>
 {
   readonly model: MODEL;
-  readonly promptFormat: ImageGenerationPromptFormat<PROMPT, MODEL_PROMPT>;
+  readonly promptFormat: PromptFormat<PROMPT, MODEL_PROMPT>;
 
   constructor({
     model,
     promptFormat,
   }: {
     model: MODEL;
-    promptFormat: ImageGenerationPromptFormat<PROMPT, MODEL_PROMPT>;
+    promptFormat: PromptFormat<PROMPT, MODEL_PROMPT>;
   }) {
     this.model = model;
     this.promptFormat = promptFormat;
@@ -50,7 +50,7 @@ export class PromptFormatImageGenerationModel<
   }
 
   withPromptFormat<INPUT_PROMPT>(
-    promptFormat: ImageGenerationPromptFormat<INPUT_PROMPT, PROMPT>
+    promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
   ): PromptFormatImageGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this> {
     return new PromptFormatImageGenerationModel<
       INPUT_PROMPT,

@@ -1,4 +1,4 @@
-import { ImageGenerationPromptFormat } from "../../model-function/generate-image/ImageGenerationPromptFormat.js";
+import { PromptFormat } from "../../model-function/PromptFormat.js";
 
 export type Automatic1111ImageGenerationPrompt = {
   prompt: string;
@@ -9,7 +9,7 @@ export type Automatic1111ImageGenerationPrompt = {
 /**
  * Formats a basic text prompt as an Automatic1111 prompt.
  */
-export function mapBasicPromptToAutomatic1111Format(): ImageGenerationPromptFormat<
+export function mapBasicPromptToAutomatic1111Format(): PromptFormat<
   string,
   Automatic1111ImageGenerationPrompt
 > {
