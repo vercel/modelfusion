@@ -1,7 +1,7 @@
-import { PromptFormat } from "./PromptFormat.js";
+import { ChatPrompt } from "./ChatPrompt.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
-import { ChatPrompt } from "./chat/ChatPrompt.js";
-import { validateChatPrompt } from "./chat/validateChatPrompt.js";
+import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
+import { validateChatPrompt } from "./validateChatPrompt.js";
 
 // see https://github.com/facebookresearch/llama/blob/6c7fe276574e78057f917549435a2554000a876d/llama/generation.py#L44
 const BEGIN_SEGMENT = "<s>";
@@ -16,7 +16,7 @@ const END_SYSTEM = "\n<</SYS>>\n\n";
  *
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
  */
-export function mapInstructionPromptToLlama2Format(): PromptFormat<
+export function mapInstructionPromptToLlama2Format(): TextGenerationPromptFormat<
   InstructionPrompt,
   string
 > {
@@ -36,7 +36,7 @@ export function mapInstructionPromptToLlama2Format(): PromptFormat<
 /**
  * Formats a chat prompt as a Llama 2 prompt.
  */
-export function mapChatPromptToLlama2Format(): PromptFormat<
+export function mapChatPromptToLlama2Format(): TextGenerationPromptFormat<
   ChatPrompt,
   string
 > {

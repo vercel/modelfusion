@@ -15,12 +15,12 @@ import { StructureGenerationModel } from "../../../model-function/generate-struc
 import { StructureOrTextGenerationModel } from "../../../model-function/generate-structure/StructureOrTextGenerationModel.js";
 import { StructureParseError } from "../../../model-function/generate-structure/StructureParseError.js";
 import { parsePartialJson } from "../../../model-function/generate-structure/parsePartialJson.js";
+import { PromptFormatTextStreamingModel } from "../../../model-function/generate-text/PromptFormatTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
 } from "../../../model-function/generate-text/TextGenerationModel.js";
-import { PromptFormat } from "../../../prompt/PromptFormat.js";
-import { PromptFormatTextStreamingModel } from "../../../prompt/PromptFormatTextStreamingModel.js";
+import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
@@ -485,7 +485,7 @@ export class OpenAIChatModel
   }
 
   withPromptFormat<INPUT_PROMPT>(
-    promptFormat: PromptFormat<INPUT_PROMPT, OpenAIChatMessage[]>
+    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, OpenAIChatMessage[]>
   ): PromptFormatTextStreamingModel<
     INPUT_PROMPT,
     OpenAIChatMessage[],

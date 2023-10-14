@@ -1,12 +1,12 @@
-import { PromptFormat } from "./PromptFormat.js";
+import { ChatPrompt } from "./ChatPrompt.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
-import { ChatPrompt } from "./chat/ChatPrompt.js";
-import { validateChatPrompt } from "./chat/validateChatPrompt.js";
+import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
+import { validateChatPrompt } from "./validateChatPrompt.js";
 
 /**
  * Formats an instruction prompt as a basic text prompt.
  */
-export const mapInstructionPromptToTextFormat: () => PromptFormat<
+export const mapInstructionPromptToTextFormat: () => TextGenerationPromptFormat<
   InstructionPrompt,
   string
 > = () => ({
@@ -37,7 +37,7 @@ export const mapInstructionPromptToTextFormat: () => PromptFormat<
 export const mapChatPromptToTextFormat: (options?: {
   user?: string;
   ai?: string;
-}) => PromptFormat<ChatPrompt, string> = ({
+}) => TextGenerationPromptFormat<ChatPrompt, string> = ({
   user = "user",
   ai = "ai",
 } = {}) => ({

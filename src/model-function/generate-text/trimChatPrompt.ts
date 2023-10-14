@@ -1,10 +1,10 @@
+import { ChatPrompt } from "./ChatPrompt.js";
 import {
   HasContextWindowSize,
   HasTokenizer,
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { ChatPrompt } from "./ChatPrompt.js";
+} from "./TextGenerationModel.js";
 import { validateChatPrompt } from "./validateChatPrompt.js";
 
 /**

@@ -1,13 +1,13 @@
+import { ChatPrompt } from "../../../model-function/generate-text/ChatPrompt.js";
+import { InstructionPrompt } from "../../../model-function/generate-text/InstructionPrompt.js";
+import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { validateChatPrompt } from "../../../model-function/generate-text/validateChatPrompt.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import { ChatPrompt } from "../../../prompt/chat/ChatPrompt.js";
-import { validateChatPrompt } from "../../../prompt/chat/validateChatPrompt.js";
-import { InstructionPrompt } from "../../../prompt/InstructionPrompt.js";
-import { PromptFormat } from "../../../prompt/PromptFormat.js";
 
 /**
  * Formats an instruction prompt as an OpenAI chat prompt.
  */
-export function mapInstructionPromptToOpenAIChatFormat(): PromptFormat<
+export function mapInstructionPromptToOpenAIChatFormat(): TextGenerationPromptFormat<
   InstructionPrompt,
   Array<OpenAIChatMessage>
 > {
@@ -43,7 +43,7 @@ export function mapInstructionPromptToOpenAIChatFormat(): PromptFormat<
 /**
  * Formats a chat prompt as an OpenAI chat prompt.
  */
-export function mapChatPromptToOpenAIChatFormat(): PromptFormat<
+export function mapChatPromptToOpenAIChatFormat(): TextGenerationPromptFormat<
   ChatPrompt,
   Array<OpenAIChatMessage>
 > {

@@ -1,10 +1,10 @@
-import { FunctionOptions } from "../core/FunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { PromptFormatTextGenerationModel } from "./PromptFormatTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
-} from "../model-function/generate-text/TextGenerationModel.js";
-import { PromptFormat } from "./PromptFormat.js";
-import { PromptFormatTextGenerationModel } from "./PromptFormatTextGenerationModel.js";
+} from "./TextGenerationModel.js";
+import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
 
 export class PromptFormatTextStreamingModel<
     PROMPT,
@@ -17,7 +17,7 @@ export class PromptFormatTextStreamingModel<
 {
   constructor(options: {
     model: MODEL;
-    promptFormat: PromptFormat<PROMPT, MODEL_PROMPT>;
+    promptFormat: TextGenerationPromptFormat<PROMPT, MODEL_PROMPT>;
   }) {
     super(options);
   }
@@ -28,7 +28,7 @@ export class PromptFormatTextStreamingModel<
   }
 
   withPromptFormat<INPUT_PROMPT>(
-    promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
+    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, PROMPT>
   ): PromptFormatTextStreamingModel<INPUT_PROMPT, PROMPT, SETTINGS, this> {
     return new PromptFormatTextStreamingModel<
       INPUT_PROMPT,

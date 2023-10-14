@@ -1,9 +1,9 @@
-import { FunctionOptions } from "../core/FunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "../model-function/generate-text/TextGenerationModel.js";
-import { PromptFormat } from "./PromptFormat.js";
+} from "./TextGenerationModel.js";
+import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
 
 export class PromptFormatTextGenerationModel<
   PROMPT,
@@ -13,14 +13,14 @@ export class PromptFormatTextGenerationModel<
 > implements TextGenerationModel<PROMPT, SETTINGS>
 {
   readonly model: MODEL;
-  readonly promptFormat: PromptFormat<PROMPT, MODEL_PROMPT>;
+  readonly promptFormat: TextGenerationPromptFormat<PROMPT, MODEL_PROMPT>;
 
   constructor({
     model,
     promptFormat,
   }: {
     model: MODEL;
-    promptFormat: PromptFormat<PROMPT, MODEL_PROMPT>;
+    promptFormat: TextGenerationPromptFormat<PROMPT, MODEL_PROMPT>;
   }) {
     this.model = model;
     this.promptFormat = promptFormat;
@@ -73,7 +73,7 @@ export class PromptFormatTextGenerationModel<
   }
 
   withPromptFormat<INPUT_PROMPT>(
-    promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
+    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, PROMPT>
   ): PromptFormatTextGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this> {
     return new PromptFormatTextGenerationModel<
       INPUT_PROMPT,
