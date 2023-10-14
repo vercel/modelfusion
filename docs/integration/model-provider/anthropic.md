@@ -77,26 +77,26 @@ Using a prompt mapping can make the interaction with Anthropic models easier.
 
 ### Instruction prompt
 
-You an use [mapInstructionPromptToAnthropicFormat()](/api/modules#mapinstructionprompttoanthropicformat) to use [instruction prompts](/api/modules#instructionprompt) with Anthropic models:
+You an use [mapInstructionPromptToAnthropicFormat()](/api/modules#mapinstructionprompttoanthropicformat) to use [instruction prompts](/api/modules#instructionprompt) with Anthropic models. It is avaialble as a shorthand method:
 
 ```ts
 const textStream = await streamText(
   new AnthropicTextGenerationModel({
     // ...
-  }).withPromptFormat(mapInstructionPromptToAnthropicFormat()),
+  }).withInstructionPrompt(),
   { instruction: "Write a short story about a robot learning to love" }
 );
 ```
 
 ### Chat prompt
 
-You an use [mapChatPromptToAnthropicFormat()](/api/modules#mapchatprompttoanthropicformat) to use [chat prompts](/api/modules#chatprompt) with OpenAI chat models:
+You an use [mapChatPromptToAnthropicFormat()](/api/modules#mapchatprompttoanthropicformat) to use [chat prompts](/api/modules#chatprompt) with OpenAI chat models. It is avaialble as a shorthand method:
 
 ```ts
 const textStream = await streamText(
   new AnthropicTextGenerationModel({
     // ...
-  }).withPromptFormat(mapChatPromptToAnthropicFormat()),
+  }).withChatPrompt(),
   [
     { system: "You are a celebrated poet." },
     { user: "Write a short story about a robot learning to love." },

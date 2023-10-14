@@ -88,11 +88,13 @@ const text = await generateText(
 );
 ```
 
+They can also be accessed through the shorthand methods `.withChatPrompt()` and `.withInstructionPrompt()` for many models:
+
 ```ts
 const textStream = await streamText(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
-  }).withPromptFormat(mapChatPromptToOpenAIChatFormat()),
+  }).withChatPrompt(),
   [
     { system: "You are a celebrated poet." },
     { user: "Write a short story about a robot learning to love." },

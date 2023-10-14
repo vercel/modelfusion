@@ -1,23 +1,21 @@
 import dotenv from "dotenv";
-import {
-  AnthropicTextGenerationModel,
-  generateText,
-  mapInstructionPromptToAnthropicFormat,
-} from "modelfusion";
+import { AnthropicTextGenerationModel, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const text = await generateText(
+  const textStream = await streamText(
     new AnthropicTextGenerationModel({
       model: "claude-instant-1",
       temperature: 0.7,
       maxCompletionTokens: 500,
-    }).withPromptFormat(mapInstructionPromptToAnthropicFormat()),
+    }).withInstructionPrompt(),
     { instruction: "Write a short story about a robot learning to love" }
   );
 
-  console.log(text);
+  for await (const textFragment of textStream) {
+    process.stdout.write(textFragment);
+  }
 }
 
 main().catch(console.error);

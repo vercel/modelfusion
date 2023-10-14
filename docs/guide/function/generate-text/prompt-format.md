@@ -9,6 +9,8 @@ This enables the use of abstracted prompts such as [instruction](/api/modules#in
 
 You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `withPromptFormat()` method. The built-in prompt formats are functions that follow the pattern `map[Chat|Instruction]PromptTo[FORMAT]Format()`, e.g. `mapInstructionPromptToAlpacaFormat()`.
 
+For convience, models with clear prompt formats have a `withChatPrompt()` or `withInstructionPrompt()` method that automatically applies the correct prompt format.
+
 ## Instruction Prompts
 
 [Instruction prompts](/api/modules#instructionprompt) are a higher-level prompt format that contains an instruction, an optional input, and an optional system message. For some models, changing the system message can affect the results, so consider how your model works before setting it.
@@ -22,6 +24,14 @@ const model = new CohereTextGenerationModel({
 ```
 
 [mapInstructionPromptToTextFormat()](/api/modules#mapinstructionprompttotextformat) formats the instruction prompt as a basic text prompt, which is expected by the [CohereTextGenerationModel](/api/classes/CohereTextGenerationModel).
+
+Alternatively you can use the shorthand method:
+
+```ts
+const model = new CohereTextGenerationModel({
+  // ...
+}).withInstructionPrompt();
+```
 
 You can now generate text using an instruction prompt:
 
@@ -68,6 +78,14 @@ const model = new OpenAIChatModel({
 ```
 
 The [mapChatPromptToOpenAIChatFormat](/api/modules#mapchatprompttoopenaichatformat) maps the chat prompt to an OpenAI chat prompt (that is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel)).
+
+Alternatively you can use the shorthand method:
+
+```ts
+const model = new OpenAIChatModel({
+  model: "gpt-3.5-turbo",
+}).withChatPrompt();
+```
 
 You can now generate text using a chat prompt:
 

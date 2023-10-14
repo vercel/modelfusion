@@ -25,6 +25,10 @@ import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
+import {
+  mapChatPromptToOpenAIChatFormat,
+  mapInstructionPromptToOpenAIChatFormat,
+} from "./OpenAIChatPromptFormat.js";
 import { createOpenAIChatDeltaIterableQueue } from "./OpenAIChatStreamIterable.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 
@@ -464,6 +468,20 @@ export class OpenAIChatModel
       completionTokens: response.usage.completion_tokens,
       totalTokens: response.usage.total_tokens,
     };
+  }
+
+  /**
+   * Returns this model with an instruction prompt format.
+   */
+  withInstructionPrompt() {
+    return this.withPromptFormat(mapInstructionPromptToOpenAIChatFormat());
+  }
+
+  /**
+   * Returns this model with a chat prompt format.
+   */
+  withChatPrompt() {
+    return this.withPromptFormat(mapChatPromptToOpenAIChatFormat());
   }
 
   withPromptFormat<INPUT_PROMPT>(
