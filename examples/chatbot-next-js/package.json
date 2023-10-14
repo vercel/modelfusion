@@ -25,6 +25,6 @@
     "react-markdown": "8.0.7",
     "react-syntax-highlighter": "15.5.0",
     "remark-gfm": "^3.0.1",
-    "zod": "3.21.4"
+    "zod": "3.22.4"
   }
 }

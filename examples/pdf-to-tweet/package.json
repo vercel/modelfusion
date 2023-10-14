@@ -11,7 +11,7 @@
     "commander": "10.0.1",
     "dotenv": "16.0.3",
     "pdfjs-dist": "3.6.172",
-    "zod": "3.21.4"
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@types/node": "20.2.3",
