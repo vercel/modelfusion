@@ -25,7 +25,7 @@ export class Automatic1111ImageGenerationModel
   extends AbstractModel<Automatic1111ImageGenerationSettings>
   implements
     ImageGenerationModel<
-      A111ImageGenerationPrompt,
+      Automatic1111ImageGenerationPrompt,
       Automatic1111ImageGenerationSettings
     >
 {
@@ -40,7 +40,7 @@ export class Automatic1111ImageGenerationModel
   }
 
   async callAPI(
-    input: A111ImageGenerationPrompt,
+    input: Automatic1111ImageGenerationPrompt,
     options?: FunctionOptions
   ): Promise<Automatic1111ImageGenerationResponse> {
     return callWithRetryAndThrottle({
@@ -66,7 +66,7 @@ export class Automatic1111ImageGenerationModel
   }
 
   async doGenerateImage(
-    prompt: A111ImageGenerationPrompt,
+    prompt: Automatic1111ImageGenerationPrompt,
     options?: FunctionOptions
   ) {
     const response = await this.callAPI(prompt, options);
@@ -80,11 +80,11 @@ export class Automatic1111ImageGenerationModel
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: ImageGenerationPromptFormat<
       INPUT_PROMPT,
-      A111ImageGenerationPrompt
+      Automatic1111ImageGenerationPrompt
     >
   ): PromptFormatImageGenerationModel<
     INPUT_PROMPT,
-    A111ImageGenerationPrompt,
+    Automatic1111ImageGenerationPrompt,
     Automatic1111ImageGenerationSettings,
     this
   > {
@@ -123,7 +123,7 @@ export type Automatic1111ImageGenerationResponse = z.infer<
   typeof Automatic1111ImageGenerationResponseSchema
 >;
 
-export type A111ImageGenerationPrompt = {
+export type Automatic1111ImageGenerationPrompt = {
   prompt: string;
   negativePrompt?: string;
   seed?: number;
