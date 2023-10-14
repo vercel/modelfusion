@@ -11,6 +11,8 @@ import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
+import { ImageGenerationPromptFormat } from "../../model-function/generate-image/ImageGenerationPromptFormat.js";
+import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
 import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration.js";
 import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js";
 
@@ -20,14 +22,14 @@ import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js"
  * @see https://github.com/AUTOMATIC1111/stable-diffusion-webui
  */
 export class Automatic1111ImageGenerationModel
-  extends AbstractModel<Automatic1111ImageGenerationModelSettings>
+  extends AbstractModel<Automatic1111ImageGenerationSettings>
   implements
     ImageGenerationModel<
       A111ImageGenerationPrompt,
-      Automatic1111ImageGenerationModelSettings
+      Automatic1111ImageGenerationSettings
     >
 {
-  constructor(settings: Automatic1111ImageGenerationModelSettings) {
+  constructor(settings: Automatic1111ImageGenerationSettings) {
     super({ settings });
   }
 
@@ -54,7 +56,7 @@ export class Automatic1111ImageGenerationModel
     });
   }
 
-  get settingsForEvent(): Partial<Automatic1111ImageGenerationModelSettings> {
+  get settingsForEvent(): Partial<Automatic1111ImageGenerationSettings> {
     return {
       height: this.settings.height,
       width: this.settings.width,
@@ -75,14 +77,31 @@ export class Automatic1111ImageGenerationModel
     };
   }
 
-  withSettings(additionalSettings: Automatic1111ImageGenerationModelSettings) {
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: ImageGenerationPromptFormat<
+      INPUT_PROMPT,
+      A111ImageGenerationPrompt
+    >
+  ): PromptFormatImageGenerationModel<
+    INPUT_PROMPT,
+    A111ImageGenerationPrompt,
+    Automatic1111ImageGenerationSettings,
+    this
+  > {
+    return new PromptFormatImageGenerationModel({
+      model: this,
+      promptFormat,
+    });
+  }
+
+  withSettings(additionalSettings: Automatic1111ImageGenerationSettings) {
     return new Automatic1111ImageGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
 }
 
-export interface Automatic1111ImageGenerationModelSettings
+export interface Automatic1111ImageGenerationSettings
   extends ImageGenerationModelSettings {
   api?: ApiConfiguration;
 

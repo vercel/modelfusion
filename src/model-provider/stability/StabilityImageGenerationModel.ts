@@ -11,6 +11,8 @@ import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
+import { ImageGenerationPromptFormat } from "../../model-function/generate-image/ImageGenerationPromptFormat.js";
+import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
 import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 import { failedStabilityCallResponseHandler } from "./StabilityError.js";
 
@@ -37,14 +39,14 @@ import { failedStabilityCallResponseHandler } from "./StabilityError.js";
  * );
  */
 export class StabilityImageGenerationModel
-  extends AbstractModel<StabilityImageGenerationModelSettings>
+  extends AbstractModel<StabilityImageGenerationSettings>
   implements
     ImageGenerationModel<
       StabilityImageGenerationPrompt,
-      StabilityImageGenerationModelSettings
+      StabilityImageGenerationSettings
     >
 {
-  constructor(settings: StabilityImageGenerationModelSettings) {
+  constructor(settings: StabilityImageGenerationSettings) {
     super({ settings });
   }
 
@@ -71,7 +73,7 @@ export class StabilityImageGenerationModel
     });
   }
 
-  get settingsForEvent(): Partial<StabilityImageGenerationModelSettings> {
+  get settingsForEvent(): Partial<StabilityImageGenerationSettings> {
     const eventSettingProperties = [
       "baseUrl",
       "height",
@@ -104,7 +106,24 @@ export class StabilityImageGenerationModel
     };
   }
 
-  withSettings(additionalSettings: StabilityImageGenerationModelSettings) {
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: ImageGenerationPromptFormat<
+      INPUT_PROMPT,
+      StabilityImageGenerationPrompt
+    >
+  ): PromptFormatImageGenerationModel<
+    INPUT_PROMPT,
+    StabilityImageGenerationPrompt,
+    StabilityImageGenerationSettings,
+    this
+  > {
+    return new PromptFormatImageGenerationModel({
+      model: this,
+      promptFormat,
+    });
+  }
+
+  withSettings(additionalSettings: StabilityImageGenerationSettings) {
     return new StabilityImageGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
@@ -125,7 +144,7 @@ export type StabilityImageGenerationModelType =
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
-export interface StabilityImageGenerationModelSettings
+export interface StabilityImageGenerationSettings
   extends ImageGenerationModelSettings {
   api?: ApiConfiguration;
 

@@ -12,6 +12,8 @@ export * from "./embed/EmbeddingModel.js";
 export * from "./embed/embed.js";
 export * from "./generate-image/ImageGenerationEvent.js";
 export * from "./generate-image/ImageGenerationModel.js";
+export * from "./generate-image/ImageGenerationPromptFormat.js";
+export * from "./generate-image/PromptFormatImageGenerationModel.js";
 export * from "./generate-image/generateImage.js";
 export * from "./generate-structure/NoSuchStructureError.js";
 export * from "./generate-structure/StructureFromTextGenerationModel.js";
