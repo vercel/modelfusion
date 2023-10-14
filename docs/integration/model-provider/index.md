@@ -8,13 +8,15 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 
 ### [Generate and Stream Text](/guide/function/generate-text)
 
-|                                                | [OpenAI](/integration/model-provider/openai) | [Cohere](/integration/model-provider/cohere) | [Llama.cpp](/integration/model-provider/llamacpp) | [Hugging Face](/integration/model-provider/huggingface) |
-| ---------------------------------------------- | -------------------------------------------- | -------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------- |
-| [Generate text](/guide/function/generate-text) | ✅                                           | ✅                                           | ✅                                                | ✅                                                      |
-| [Stream text](/guide/function/generate-text)   | ✅                                           | ✅                                           | ✅                                                |                                                         |
-| [Tokenize text](/guide/function/tokenize-text) | full                                         | full                                         | basic                                             |                                                         |
+|                                                         | [Generate text](/guide/function/generate-text) | [Stream text](/guide/function/generate-text) | [Tokenize text](/guide/function/tokenize-text) |
+| ------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
+| [OpenAI](/integration/model-provider/openai)            | ✅                                             | ✅                                           | full                                           |
+| [Cohere](/integration/model-provider/cohere)            | ✅                                             | ✅                                           | full                                           |
+| [Llama.cpp](/integration/model-provider/llamacpp)       | ✅                                             | ✅                                           | basic                                          |
+| [Anthropic](/integration/model-provider/anthropic)      | ✅                                             | ✅                                           |                                                |
+| [Hugging Face](/integration/model-provider/huggingface) | ✅                                             |                                              |                                                |
 
-### [Generate Structure](/guide/function/generate-structure) and [Generate Structure or Text](/guide/function/generate-structure-or-text)
+### [Generate and Stream Structure](/guide/function/generate-structure) and [Generate Structure or Text](/guide/function/generate-structure-or-text)
 
 - [OpenAI](/integration/model-provider/openai) chat models
 
