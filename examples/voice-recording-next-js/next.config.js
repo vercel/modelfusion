@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-};
+const webpack = require("webpack");
 
-module.exports = nextConfig;
+module.exports = {
+  reactStrictMode: true,
+
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.plugins.push(
+        new webpack.IgnorePlugin({ resourceRegExp: /^node:async_hooks$/ })
+      );
+    }
+    return config;
+  },
+};
