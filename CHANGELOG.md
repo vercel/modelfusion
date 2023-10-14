@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.46.0 - 2023-10-15
+
+### Added
+
+- `.withChatPrompt()` and `.withInstructionPrompt()` shorthand methods.
+
 ## v0.45.0 - 2023-10-14
 
 ### Changed
