@@ -1,4 +1,3 @@
-import deepEqual from "deep-equal";
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../../core/FunctionEventSource.js";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
@@ -9,6 +8,7 @@ import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
 import { getRun } from "../../core/getRun.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
+import { isDeepEqualData } from "../../util/isDeepEqualData.js";
 import { runSafe } from "../../util/runSafe.js";
 import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
@@ -139,11 +139,7 @@ async function doStreamStructure<STRUCTURE, PROMPT, NAME extends string>(
           const latestStructure = event.valueDelta;
 
           // only send a new part into the stream when the partial structure has changed:
-          if (
-            !deepEqual(lastStructure, latestStructure, {
-              strict: true,
-            })
-          ) {
+          if (!isDeepEqualData(lastStructure, latestStructure)) {
             lastFullDelta = latestFullDelta;
             lastStructure = latestStructure;
 

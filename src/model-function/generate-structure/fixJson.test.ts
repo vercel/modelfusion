@@ -1,5 +1,5 @@
 import { expect, test, describe } from "vitest";
-import { fixJson } from "./fixJson";
+import { fixJson } from "./fixJson.js";
 
 describe("fixJson", () => {
   test("should handle empty input", () => {

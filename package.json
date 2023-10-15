@@ -47,12 +47,11 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
-    "test": "vitest",
+    "test": "vitest src",
     "dist": "npm run clean && npm run lint && npm run build && npm run dist:copy-files",
     "dist:copy-files": "copyfiles package.json README.md LICENSE dist"
   },
   "dependencies": {
-    "deep-equal": "2.2.2",
     "eventsource-parser": "1.1.1",
     "js-tiktoken": "1.0.7",
     "nanoid": "3.3.6",
