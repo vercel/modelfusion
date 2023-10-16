@@ -10,7 +10,7 @@ Guards can be used to implement retry on error, redacting and changing reponses,
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/guard)
 
-### Retry structure parsing on error
+### Retry structure parsing with error message
 
 During structure generation, models may occasionally produce outputs that either cannot be parsed or do not pass certain validation checks.
 With the [`fixStructure`](/api/modules/#fixstructure) guard, you can retry generating the structure with a modified input that includes the error message.
@@ -44,7 +44,7 @@ const result = await guard(
 );
 ```
 
-### Use stronger model when structure parsing fails
+### Retry structure parsing with stronger model
 
 When structure parsing fails, you can use a stronger model to generate the structure.
 
