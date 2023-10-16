@@ -52,7 +52,7 @@ The guard can return one of the following actions:
 - `throwError`: Throw an error. This allows you to throw a custom error.
 - `passThrough`: Pass through the result. This allows you to skip the guard. `undefined` is treated as `passThrough`.
 
-## Usage
+## Usage Examples
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/guard)
 
@@ -86,6 +86,40 @@ const result = await guard(
       };
     }
     // pass through errors by doing nothing
+  }
+);
+```
+
+### Throw error when content is moderated
+
+When using a model that may produce inappropriate content, you can use a guard to throw an error when the content is moderated.
+
+```ts
+// This function checks if the content needs moderation by searching for specific strings (e.g., "Nox").
+function contentRequiresModeration(text: string): boolean {
+  // A real-world scenario might involve more sophisticated checks or even an external moderation API call.
+  return text.includes("Nox");
+}
+
+const story = await guard(
+  (input) =>
+    generateText(
+      new OpenAITextGenerationModel({
+        model: "gpt-3.5-turbo-instruct",
+        temperature: 0.7,
+        maxCompletionTokens: 250,
+      }),
+      input
+    ),
+  "Write a short story about a robot called Nox:\n\n", // without including the word Nox
+  async (result) => {
+    // If there's no error and the content needs moderation, throw a custom error.
+    if (result.type === "value" && contentRequiresModeration(result.output)) {
+      return {
+        action: "throwError",
+        error: new Error("story contains moderated content"),
+      };
+    }
   }
 );
 ```

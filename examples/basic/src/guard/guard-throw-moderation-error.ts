@@ -10,6 +10,12 @@ dotenv.config();
 
 setGlobalFunctionLogging("detailed-object");
 
+// This function checks if the content needs moderation by searching for specific strings (e.g., "Nox").
+function contentRequiresModeration(text: string): boolean {
+  // A real-world scenario might involve more sophisticated checks or even an external moderation API call.
+  return text.includes("Nox");
+}
+
 async function main() {
   const story = await guard(
     (input) =>
@@ -23,10 +29,11 @@ async function main() {
       ),
     "Write a short story about a robot called Nox:\n\n", // without including the word Nox
     async (result) => {
-      if (result.type !== "error" && result.output.includes("Nox")) {
+      // If there's no error and the content needs moderation, throw a custom error.
+      if (result.type === "value" && contentRequiresModeration(result.output)) {
         return {
           action: "throwError",
-          error: new Error("story must not contain word 'Nox'"),
+          error: new Error("story contains moderated content"),
         };
       }
     }
