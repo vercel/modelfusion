@@ -358,6 +358,41 @@ const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
 const reconstructedText = await tokenizer.detokenize(tokens);
 ```
 
+### [Guards](https://modelfusion.dev/guide/guard)
+
+Guard functions can be used to implement retry on error, redacting and changing reponses, etc.
+
+#### Retry structure parsing on error
+
+```ts
+const result = await guard(
+  (input) =>
+    generateStructure(
+      new OpenAIChatModel({
+        // ...
+      }),
+      new ZodStructureDefinition({
+        // ...
+      }),
+      input
+    ),
+  [
+    // ...
+  ],
+  fixStructure({
+    modifyInputForRetry: async ({ input, error }) => [
+      ...input,
+      OpenAIChatMessage.functionCall(null, {
+        name: error.structureName,
+        arguments: error.valueText,
+      }),
+      OpenAIChatMessage.user(error.message),
+      OpenAIChatMessage.user("Please fix the error and try again."),
+    ],
+  })
+);
+```
+
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
 
 ### [Upserting and Retrieving Objects from Vector Indices](https://modelfusion.dev/guide/vector-index)
@@ -395,41 +430,6 @@ const retrievedTexts = await retrieve(
 ```
 
 Available Vector Stores: [Memory](https://modelfusion.dev/integration/vector-index/memory), [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
-
-### Guards
-
-[Guards](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/guard) can be used to implement retry on error, redacting and changing reponses, etc.
-
-#### Retry structure parsing on error:
-
-```ts
-const result = await guard(
-  (input) =>
-    generateStructure(
-      new OpenAIChatModel({
-        // ...
-      }),
-      new ZodStructureDefinition({
-        // ...
-      }),
-      input
-    ),
-  [
-    // ...
-  ],
-  fixStructure({
-    modifyInputForRetry: async ({ input, error }) => [
-      ...input,
-      OpenAIChatMessage.functionCall(null, {
-        name: error.structureName,
-        arguments: error.valueText,
-      }),
-      OpenAIChatMessage.user(error.message),
-      OpenAIChatMessage.user("Please fix the error and try again."),
-    ],
-  })
-);
-```
 
 ### Prompt Formats
 
