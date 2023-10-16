@@ -56,6 +56,40 @@ The guard can return one of the following actions:
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/guard)
 
+### Redact sensitive information
+
+Handling sensitive data, like API keys, requires careful attention to prevent unintended exposure. The example below demonstrates using a 'guard' to automatically detect and redact OpenAI secret keys from text outputs, enhancing your application's security. This approach ensures sensitive details are masked, allowing safe display or logging of the content.
+
+```ts
+const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
+
+const result = await guard(
+  (input) =>
+    generateText(
+      new LlamaCppTextGenerationModel({
+        // ...
+      }).withPromptFormat(mapInstructionPromptToLlama2Format()),
+      input
+    ),
+  {
+    instruction:
+      "Show me how to use OpenAI's completion API in JavaScript, " +
+      "including authentication.",
+  },
+
+  // guard:
+  async (result) => {
+    if (result.type === "value") {
+      return {
+        action: "return",
+        output: result.output.replaceAll(OPENAI_KEY_REGEXP, "sk-xxx"),
+      };
+    }
+    // pass through errors by doing nothing
+  }
+);
+```
+
 ### Retry structure parsing with error message
 
 During structure generation, models may occasionally produce outputs that either cannot be parsed or do not pass certain validation checks.

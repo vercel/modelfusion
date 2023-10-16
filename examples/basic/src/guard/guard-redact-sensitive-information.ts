@@ -3,7 +3,7 @@ import {
   LlamaCppTextGenerationModel,
   generateText,
   guard,
-  mapChatPromptToLlama2Format,
+  mapInstructionPromptToLlama2Format,
   setGlobalFunctionLogging,
 } from "modelfusion";
 
@@ -14,20 +14,19 @@ setGlobalFunctionLogging("detailed-object");
 const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
 
 async function main() {
-  const story = await guard(
+  const result = await guard(
     (input) =>
       generateText(
         new LlamaCppTextGenerationModel({
           temperature: 0.7,
           maxCompletionTokens: 500,
-        }).withPromptFormat(mapChatPromptToLlama2Format()),
+        }).withPromptFormat(mapInstructionPromptToLlama2Format()),
         input
       ),
-    [
-      {
-        user: "Show me how to use OpenAI's completion API in JavaScript, including authentication.",
-      },
-    ],
+    {
+      instruction:
+        "Show me how to use OpenAI's completion API in JavaScript, including authentication.",
+    },
     async (result) => {
       if (result.type === "value") {
         return {
@@ -38,7 +37,7 @@ async function main() {
     }
   );
 
-  console.log(story);
+  console.log(result);
 }
 
 main().catch(console.error);
