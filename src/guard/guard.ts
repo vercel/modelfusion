@@ -25,28 +25,17 @@ export type Guard<INPUT, OUTPUT> = ({
   output,
   error,
 }: OutputResult<INPUT, OUTPUT>) => PromiseLike<
-  | {
-      action: "retry";
-      input: INPUT;
-    }
-  | {
-      action: "return";
-      output: OUTPUT;
-    }
-  | {
-      action: "throwError";
-      error: unknown;
-    }
-  | {
-      action: "passThrough";
-    }
+  | { action: "retry"; input: INPUT }
+  | { action: "return"; output: OUTPUT }
+  | { action: "throwError"; error: unknown }
+  | { action: "passThrough" }
   | undefined
 >;
 
 export async function guard<INPUT, OUTPUT>(
   execute: (input: INPUT) => PromiseLike<OUTPUT>,
   input: INPUT,
-  guards: Array<Guard<INPUT, OUTPUT>> | Guard<INPUT, OUTPUT>,
+  guards: Guard<INPUT, OUTPUT> | Array<Guard<INPUT, OUTPUT>>,
   options?: { maxRetries: number }
 ): Promise<OUTPUT | undefined> {
   if (typeof guards === "function") {
