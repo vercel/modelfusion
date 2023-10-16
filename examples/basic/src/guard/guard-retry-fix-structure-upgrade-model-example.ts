@@ -17,7 +17,7 @@ setGlobalFunctionLogging("detailed-object");
 
 async function main() {
   const sentiment = await guard(
-    (input: { model: OpenAIChatModelType; messages: OpenAIChatMessage[] }) =>
+    (input: { model: OpenAIChatModelType; prompt: OpenAIChatMessage[] }) =>
       generateStructure(
         new OpenAIChatModel({
           model: input.model,
@@ -33,11 +33,11 @@ async function main() {
               .describe("Sentiment."),
           }),
         }),
-        input.messages
+        input.prompt
       ),
     {
       model: "gpt-3.5-turbo",
-      messages: [
+      prompt: [
         OpenAIChatMessage.system(
           "You are a sentiment evaluator. " +
             "Analyze the sentiment of the following product review:"
@@ -51,7 +51,7 @@ async function main() {
     fixStructure({
       modifyInputForRetry: async ({ input, error }) => ({
         model: "gpt-4" as const,
-        messages: input.messages,
+        prompt: input.prompt,
       }),
     })
   );

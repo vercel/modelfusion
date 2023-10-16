@@ -43,3 +43,36 @@ const result = await guard(
   })
 );
 ```
+
+### Use stronger model when structure parsing fails
+
+When structure parsing fails, you can use a stronger model to generate the structure.
+
+In this example, `gpt-3.5-turbo` is used initially. If structure parsing fails, `gpt-4` is used instead.
+
+```ts
+const result = await guard(
+  (input: { model: OpenAIChatModelType; prompt: OpenAIChatMessage[] }) =>
+    generateStructure(
+      new OpenAIChatModel({
+        model: input.model,
+      }),
+      new ZodStructureDefinition({
+        //...
+      }),
+      input.prompt
+    ),
+  {
+    model: "gpt-3.5-turbo",
+    prompt: [
+      // ...
+    ],
+  },
+  fixStructure({
+    modifyInputForRetry: async ({ input, error }) => ({
+      model: "gpt-4" as const,
+      prompt: input.prompt,
+    }),
+  })
+);
+```
