@@ -1,6 +1,6 @@
 # ModelFusion
 
-> ### Build AI applications, chatbots, and agents with JavaScript and TypeScript.
+> ### Build multi-modal AI apps, chatbots, and agents with JavaScript and TypeScript.
 
 [![NPM Version](https://img.shields.io/npm/v/modelfusion?color=33cd56&logo=npm)](https://www.npmjs.com/package/modelfusion)
 [![MIT License](https://img.shields.io/github/license/lgrammel/modelfusion)](https://opensource.org/licenses/MIT)
