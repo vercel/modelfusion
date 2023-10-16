@@ -68,7 +68,7 @@ export class LmntSpeechSynthesisModel
     };
   }
 
-  generateSpeechResponse(text: string, options?: FunctionOptions) {
+  doSynthesizeSpeechStandard(text: string, options?: FunctionOptions) {
     return this.callAPI(text, options);
   }
 

@@ -5,7 +5,9 @@ import {
   createAudioMpegResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { Delta } from "../../model-function/Delta.js";
 import {
   SpeechSynthesisModel,
   SpeechSynthesisModelSettings,
@@ -15,7 +17,9 @@ import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 
 export interface ElevenLabsSpeechSynthesisModelSettings
   extends SpeechSynthesisModelSettings {
-  api?: ApiConfiguration;
+  api?: ApiConfiguration & {
+    apiKey: string;
+  };
 
   voice: string;
 
@@ -74,8 +78,92 @@ export class ElevenLabsSpeechSynthesisModel
     };
   }
 
-  generateSpeechResponse(text: string, options?: FunctionOptions) {
+  doSynthesizeSpeechStandard(text: string, options?: FunctionOptions) {
     return this.callAPI(text, options);
+  }
+
+  async doSynthesizeSpeechStreamDuplex(
+    textStream: AsyncIterable<string>
+    // options?: FunctionOptions | undefined
+  ): Promise<AsyncIterable<Delta<Buffer>>> {
+    const queue = new AsyncQueue<Delta<Buffer>>();
+
+    const voiceId = this.settings.voice;
+    const model = "eleven_monolingual_v1";
+    const wsUrl = `wss://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream-input?model_id=${model}`;
+    const socket = new global.WebSocket(wsUrl);
+
+    socket.onopen = async () => {
+      // TODO check api key (or throw)
+
+      const bosMessage = {
+        text: " ",
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: true,
+        },
+        xi_api_key: this.settings.api?.apiKey,
+      };
+
+      socket.send(JSON.stringify(bosMessage));
+
+      // send text in chunks:
+      let textBuffer = "";
+      for await (const textDelta of textStream) {
+        textBuffer += textDelta;
+
+        const lastSpace = textBuffer.lastIndexOf(" ");
+
+        if (lastSpace === -1) {
+          continue;
+        }
+
+        const textToProcess = textBuffer.slice(0, lastSpace);
+        textBuffer = textBuffer.slice(lastSpace + 1);
+
+        socket.send(
+          JSON.stringify({
+            text: textToProcess,
+            try_trigger_generation: true,
+          })
+        );
+      }
+
+      // send remaining text:
+      if (textBuffer.length > 0) {
+        socket.send(
+          JSON.stringify({
+            text: `${textBuffer} `, // append space
+            try_trigger_generation: true,
+          })
+        );
+      }
+
+      // send end of stream message:
+      socket.send(JSON.stringify({ text: "" }));
+    };
+
+    socket.onmessage = (event) => {
+      const response = JSON.parse(event.data); // TODO Secure JSON & structure validation
+
+      if (response.audio) {
+        queue.push({
+          type: "delta",
+          fullDelta: event,
+          valueDelta: Buffer.from(response.audio, "base64"),
+        });
+      }
+    };
+
+    socket.onerror = (error) => {
+      queue.push({ type: "error", error });
+    };
+
+    socket.onclose = () => {
+      queue.close();
+    };
+
+    return queue;
   }
 
   withSettings(
