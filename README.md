@@ -358,6 +358,8 @@ const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
 const reconstructedText = await tokenizer.detokenize(tokens);
 ```
 
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
+
 ### [Guards](https://modelfusion.dev/guide/guard)
 
 Guard functions can be used to implement retry on error, redacting and changing reponses, etc.
@@ -392,8 +394,6 @@ const result = await guard(
   })
 );
 ```
-
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
 
 ### [Upserting and Retrieving Objects from Vector Indices](https://modelfusion.dev/guide/vector-index)
 
