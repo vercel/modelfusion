@@ -27,6 +27,11 @@ async function main() {
     { mode: "stream-duplex" }
   );
 
+  // delete output file if it already exists:
+  if (fs.existsSync("./stream-text-example.mp3")) {
+    fs.rmSync("./stream-text-example.mp3");
+  }
+
   let counter = 0;
   for await (const speechFragment of speechStream) {
     counter++;

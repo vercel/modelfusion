@@ -128,10 +128,10 @@ export class ElevenLabsSpeechSynthesisModel
           // See https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
           xi_api_key: api.apiKey,
           text: " ",
-          // voice_settings: {
-          //   stability: 0.5,
-          //   similarity_boost: true,
-          // },
+          voice_settings: {
+            stability: 0.5,
+            similarity_boost: true,
+          },
         })
       );
 
@@ -140,14 +140,16 @@ export class ElevenLabsSpeechSynthesisModel
       for await (const textDelta of textStream) {
         textBuffer += textDelta;
 
-        const lastSpace = textBuffer.lastIndexOf(" ");
+        // using ". " as separator: sending in full sentences improves the quality
+        // of the audio output significantly.
+        const separator = textBuffer.lastIndexOf(". ");
 
-        if (lastSpace === -1) {
+        if (separator === -1) {
           continue;
         }
 
-        const textToProcess = textBuffer.slice(0, lastSpace);
-        textBuffer = textBuffer.slice(lastSpace + 1);
+        const textToProcess = textBuffer.slice(0, separator);
+        textBuffer = textBuffer.slice(separator + 1);
 
         socket.send(
           JSON.stringify({
