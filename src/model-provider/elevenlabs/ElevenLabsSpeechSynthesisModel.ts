@@ -242,12 +242,7 @@ async function callElevenLabsTextToSpeechAPI({
   text: string;
   voiceId: string;
   modelId?: string;
-  voiceSettings?: {
-    stability: number;
-    similarityBoost: number;
-    style?: number;
-    useSpeakerBoost?: boolean;
-  };
+  voiceSettings?: ElevenLabsSpeechSynthesisModelSettings["voiceSettings"];
 }): Promise<Buffer> {
   return postJsonToApi({
     url: api.assembleUrl(`/text-to-speech/${voiceId}`),
@@ -263,12 +258,9 @@ async function callElevenLabsTextToSpeechAPI({
   });
 }
 
-function toApiVoiceSettings(voiceSettings?: {
-  stability: number;
-  similarityBoost: number;
-  style?: number | undefined;
-  useSpeakerBoost?: boolean | undefined;
-}) {
+function toApiVoiceSettings(
+  voiceSettings?: ElevenLabsSpeechSynthesisModelSettings["voiceSettings"]
+) {
   return voiceSettings != null
     ? {
         stability: voiceSettings.stability,
