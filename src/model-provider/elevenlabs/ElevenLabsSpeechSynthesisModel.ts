@@ -14,9 +14,9 @@ import {
   SpeechSynthesisModelSettings,
 } from "../../model-function/synthesize-speech/SpeechSynthesisModel.js";
 import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
+import { safeParseJsonWithZod } from "../../util/parseJSON.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
-import SecureJSON from "secure-json-parse";
 
 const elevenLabsModels = [
   "eleven_multilingual_v2",
@@ -185,12 +185,9 @@ export class ElevenLabsSpeechSynthesisModel
     };
 
     socket.onmessage = (event) => {
-      const parseResult = responseSchema.safeParse(
-        SecureJSON.parse(event.data)
-      );
+      const parseResult = safeParseJsonWithZod(event.data, responseSchema);
 
       if (!parseResult.success) {
-        console.log(JSON.parse(event.data));
         queue.push({ type: "error", error: parseResult.error });
         return;
       }

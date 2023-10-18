@@ -384,7 +384,7 @@ export class OpenAIChatModel
     } catch (error) {
       throw new StructureParseError({
         structureName: structureDefinition.name,
-        valueText: valueText,
+        valueText,
         cause: error,
       });
     }

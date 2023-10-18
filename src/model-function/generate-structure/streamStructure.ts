@@ -161,7 +161,7 @@ async function doStreamStructure<STRUCTURE, PROMPT, NAME extends string>(
 
       yield {
         isComplete: true,
-        value: parseResult.value,
+        value: parseResult.data,
       };
 
       const finishMetadata = {

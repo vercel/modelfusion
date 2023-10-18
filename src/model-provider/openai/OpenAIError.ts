@@ -1,7 +1,7 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
+import { parseJsonWithZod } from "../../util/parseJSON.js";
 
 export const openAIErrorDataSchema = z.object({
   error: z.object({
@@ -53,9 +53,7 @@ export const failedOpenAICallResponseHandler: ResponseHandler<
 
   // resilient parsing in case the response is not JSON or does not match the schema:
   try {
-    const parsedError = openAIErrorDataSchema.parse(
-      SecureJSON.parse(responseBody)
-    );
+    const parsedError = parseJsonWithZod(responseBody, openAIErrorDataSchema);
 
     return new OpenAIError({
       url,

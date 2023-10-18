@@ -1,4 +1,3 @@
-import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
@@ -18,6 +17,7 @@ import {
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { parseJsonWithZod } from "../../util/parseJSON.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
@@ -353,20 +353,10 @@ async function createLlamaCppFullDeltaIterableQueue(
         for await (const event of events) {
           const data = event.data;
 
-          const json = SecureJSON.parse(data);
-          const parseResult =
-            llamaCppTextStreamingResponseSchema.safeParse(json);
-
-          if (!parseResult.success) {
-            queue.push({
-              type: "error",
-              error: parseResult.error,
-            });
-            queue.close();
-            return;
-          }
-
-          const eventData = parseResult.data;
+          const eventData = parseJsonWithZod(
+            data,
+            llamaCppTextStreamingResponseSchema
+          );
 
           content += eventData.content;
 

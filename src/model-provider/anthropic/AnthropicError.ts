@@ -1,7 +1,7 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
+import { parseJsonWithZod } from "../../util/parseJSON.js";
 
 export const anthropicErrorDataSchema = z.object({
   error: z.object({
@@ -36,17 +36,10 @@ export class AnthropicError extends ApiCallError {
 
 export const failedAnthropicCallResponseHandler: ResponseHandler<
   ApiCallError
-> = async ({ response, url, requestBodyValues }) => {
-  const responseBody = await response.text();
-
-  const parsedError = anthropicErrorDataSchema.parse(
-    SecureJSON.parse(responseBody)
-  );
-
-  return new AnthropicError({
+> = async ({ response, url, requestBodyValues }) =>
+  new AnthropicError({
     url,
     requestBodyValues,
     statusCode: response.status,
-    data: parsedError,
+    data: parseJsonWithZod(await response.text(), anthropicErrorDataSchema),
   });
-};

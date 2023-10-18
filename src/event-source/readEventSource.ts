@@ -1,5 +1,5 @@
-import SecureJSON from "secure-json-parse";
-import { Schema } from "../core/structure/Schema";
+import { Schema } from "../core/structure/Schema.js";
+import { safeParseJsonWithSchema } from "../util/parseJSON.js";
 
 export function readEventSource<T>({
   url,
@@ -16,14 +16,14 @@ export function readEventSource<T>({
 
   eventSource.onmessage = (e) => {
     try {
-      const validationResult = schema.validate(SecureJSON.parse(e.data));
+      const parseResult = safeParseJsonWithSchema(e.data, schema);
 
-      if (!validationResult.success) {
-        onError(validationResult.error, eventSource);
+      if (!parseResult.success) {
+        onError(parseResult.error, eventSource);
         return;
       }
 
-      onEvent(validationResult.value, eventSource);
+      onEvent(parseResult.data, eventSource);
     } catch (error) {
       onError(error, eventSource);
     }

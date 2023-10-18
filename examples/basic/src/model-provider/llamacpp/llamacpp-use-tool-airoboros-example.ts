@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 import {
-  StructureFromTextGenerationModel,
   LlamaCppTextGenerationModel,
   StructureDefinition,
+  StructureFromTextGenerationModel,
+  parseJsonWithZod,
   useTool,
 } from "modelfusion";
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { calculator } from "../../tool/calculator-tool";
 
@@ -53,8 +53,12 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
   }
 
   extractStructure(response: string): unknown {
-    const json = SecureJSON.parse(this.prefix + response);
-    return airoborosFunctionSchema.parse(json).params;
+    const json = parseJsonWithZod(
+      this.prefix + response,
+      airoborosFunctionSchema
+    );
+
+    return json.params;
   }
 }
 

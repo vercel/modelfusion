@@ -10,12 +10,9 @@ export class ZodSchema<STRUCTURE> implements Schema<STRUCTURE> {
   }
 
   validate(
-    value: unknown
-  ): { success: true; value: STRUCTURE } | { success: false; error: unknown } {
-    const parseResult = this.zodSchema.safeParse(value);
-    return parseResult.success
-      ? { success: true, value: parseResult.data }
-      : parseResult;
+    data: unknown
+  ): { success: true; data: STRUCTURE } | { success: false; error: unknown } {
+    return this.zodSchema.safeParse(data);
   }
 
   getJsonSchema(): unknown {

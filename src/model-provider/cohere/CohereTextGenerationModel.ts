@@ -1,4 +1,3 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
@@ -22,6 +21,7 @@ import {
   mapInstructionPromptToTextFormat,
 } from "../../model-function/generate-text/TextPromptFormat.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
+import { parseJsonWithZod } from "../../util/parseJSON.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
@@ -335,9 +335,7 @@ async function createCohereTextGenerationFullDeltaIterableQueue(
   let accumulatedText = "";
 
   function processLine(line: string) {
-    const event = cohereTextStreamingResponseSchema.parse(
-      SecureJSON.parse(line)
-    );
+    const event = parseJsonWithZod(line, cohereTextStreamingResponseSchema);
 
     if (event.is_finished === true) {
       queue.push({
@@ -366,33 +364,35 @@ async function createCohereTextGenerationFullDeltaIterableQueue(
 
   // process the stream asynchonously (no 'await' on purpose):
   (async () => {
-    let unprocessedText = "";
-    const reader = new ReadableStreamDefaultReader(stream);
-    const utf8Decoder = new TextDecoder("utf-8");
+    try {
+      let unprocessedText = "";
+      const reader = new ReadableStreamDefaultReader(stream);
+      const utf8Decoder = new TextDecoder("utf-8");
 
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const { value: chunk, done } = await reader.read();
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { value: chunk, done } = await reader.read();
 
-      if (done) {
-        break;
+        if (done) {
+          break;
+        }
+
+        unprocessedText += utf8Decoder.decode(chunk, { stream: true });
+
+        const processableLines = unprocessedText.split(/\r\n|\n|\r/g);
+
+        unprocessedText = processableLines.pop() || "";
+
+        processableLines.forEach(processLine);
       }
 
-      unprocessedText += utf8Decoder.decode(chunk, { stream: true });
-
-      const processableLines = unprocessedText.split(/\r\n|\n|\r/g);
-
-      unprocessedText = processableLines.pop() || "";
-
-      processableLines.forEach(processLine);
+      // processing remaining text:
+      if (unprocessedText) {
+        processLine(unprocessedText);
+      }
+    } finally {
+      queue.close();
     }
-
-    // processing remaining text:
-    if (unprocessedText) {
-      processLine(unprocessedText);
-    }
-
-    queue.close();
   })();
 
   return queue;

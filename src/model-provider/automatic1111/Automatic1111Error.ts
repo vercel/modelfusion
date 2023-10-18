@@ -1,7 +1,7 @@
 import { z } from "zod";
-import SecureJSON from "secure-json-parse";
-import { ResponseHandler } from "../../core/api/postToApi.js";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
+import { ResponseHandler } from "../../core/api/postToApi.js";
+import { parseJsonWithZod } from "../../util/parseJSON.js";
 
 export const automatic1111ErrorDataSchema = z.object({
   error: z.string(),
@@ -41,8 +41,9 @@ export const failedAutomatic1111CallResponseHandler: ResponseHandler<
 > = async ({ response, url, requestBodyValues }) => {
   const responseBody = await response.text();
 
-  const parsedError = automatic1111ErrorDataSchema.parse(
-    SecureJSON.parse(responseBody)
+  const parsedError = parseJsonWithZod(
+    responseBody,
+    automatic1111ErrorDataSchema
   );
 
   return new Automatic1111Error({

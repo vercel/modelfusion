@@ -1,4 +1,3 @@
-import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
@@ -23,6 +22,7 @@ import {
   mapInstructionPromptToTextFormat,
 } from "../../model-function/generate-text/TextPromptFormat.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
+import { parseJsonWithZod } from "../../util/parseJSON.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
@@ -522,19 +522,10 @@ async function createOpenAITextFullDeltaIterableQueue(
             return;
           }
 
-          const json = SecureJSON.parse(data);
-          const parseResult = textResponseStreamEventSchema.safeParse(json);
-
-          if (!parseResult.success) {
-            queue.push({
-              type: "error",
-              error: parseResult.error,
-            });
-            queue.close();
-            return;
-          }
-
-          const eventData = parseResult.data;
+          const eventData = parseJsonWithZod(
+            data,
+            textResponseStreamEventSchema
+          );
 
           for (let i = 0; i < eventData.choices.length; i++) {
             const eventChoice = eventData.choices[i];

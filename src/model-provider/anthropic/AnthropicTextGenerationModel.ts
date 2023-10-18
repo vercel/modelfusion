@@ -1,4 +1,3 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
@@ -18,6 +17,7 @@ import {
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { parseJsonWithZod } from "../../util/parseJSON.js";
 import { AnthropicApiConfiguration } from "./AnthropicApiConfiguration.js";
 import { failedAnthropicCallResponseHandler } from "./AnthropicError.js";
 import {
@@ -267,20 +267,10 @@ async function createAnthropicFullDeltaIterableQueue(
 
           const data = event.data;
 
-          const json = SecureJSON.parse(data);
-          const parseResult =
-            anthropicTextStreamingResponseSchema.safeParse(json);
-
-          if (!parseResult.success) {
-            queue.push({
-              type: "error",
-              error: parseResult.error,
-            });
-            queue.close();
-            return;
-          }
-
-          const eventData = parseResult.data;
+          const eventData = parseJsonWithZod(
+            data,
+            anthropicTextStreamingResponseSchema
+          );
 
           content += eventData.completion;
 

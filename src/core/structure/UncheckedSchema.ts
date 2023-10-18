@@ -4,9 +4,9 @@ export class UncheckedSchema<STRUCTURE> implements Schema<STRUCTURE> {
   constructor(private readonly jsonSchema?: unknown) {}
 
   validate(
-    value: unknown
-  ): { success: true; value: STRUCTURE } | { success: false; error: unknown } {
-    return { success: true, value: value as STRUCTURE };
+    data: unknown
+  ): { success: true; data: STRUCTURE } | { success: false; error: unknown } {
+    return { success: true, data: data as STRUCTURE };
   }
 
   getJsonSchema(): unknown {
