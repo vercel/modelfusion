@@ -16,6 +16,7 @@ import {
 import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
+import SecureJSON from "secure-json-parse";
 
 const elevenLabsModels = [
   "eleven_multilingual_v2",
@@ -184,7 +185,9 @@ export class ElevenLabsSpeechSynthesisModel
     };
 
     socket.onmessage = (event) => {
-      const parseResult = responseSchema.safeParse(JSON.parse(event.data)); // TODO Secure JSON
+      const parseResult = responseSchema.safeParse(
+        SecureJSON.parse(event.data)
+      );
 
       if (!parseResult.success) {
         console.log(JSON.parse(event.data));
