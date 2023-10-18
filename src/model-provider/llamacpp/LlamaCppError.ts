@@ -1,7 +1,7 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
+import { parseJsonWithZod } from "../../util/parseJSON.js";
 
 export const llamaCppErrorDataSchema = z.object({
   error: z.string(),
@@ -33,33 +33,10 @@ export class LlamaCppError extends ApiCallError {
 
 export const failedLlamaCppCallResponseHandler: ResponseHandler<
   ApiCallError
-> = async ({ response, url, requestBodyValues }) => {
-  const responseBody = await response.text();
-
-  try {
-    const parsedError = llamaCppErrorDataSchema.parse(
-      SecureJSON.parse(responseBody)
-    );
-
-    return new LlamaCppError({
-      url,
-      requestBodyValues,
-      statusCode: response.status,
-      data: parsedError,
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      if (error.name === "AbortError" || error instanceof ApiCallError) {
-        throw error;
-      }
-    }
-
-    throw new ApiCallError({
-      message: responseBody,
-      cause: error,
-      statusCode: response.status,
-      url,
-      requestBodyValues,
-    });
-  }
-};
+> = async ({ response, url, requestBodyValues }) =>
+  new LlamaCppError({
+    url,
+    requestBodyValues,
+    statusCode: response.status,
+    data: parseJsonWithZod(await response.text(), llamaCppErrorDataSchema),
+  });

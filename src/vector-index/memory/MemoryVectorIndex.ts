@@ -1,8 +1,8 @@
-import SecureJSON from "secure-json-parse";
 import z from "zod";
 import { Vector } from "../../core/Vector.js";
 import { Schema } from "../../core/structure/Schema.js";
 import { cosineSimilarity } from "../../util/cosineSimilarity.js";
+import { parseJsonWithZod } from "../../util/parseJSON.js";
 import { VectorIndex } from "../VectorIndex.js";
 
 type Entry<DATA> = {
@@ -36,7 +36,7 @@ export class MemoryVectorIndex<DATA>
     schema?: Schema<DATA>;
   }) {
     // validate the outer structure:
-    const json = jsonDataSchema.parse(SecureJSON.parse(serializedData));
+    const json = parseJsonWithZod(serializedData, jsonDataSchema);
 
     if (schema != null) {
       // when a schema is provided, validate all entries:

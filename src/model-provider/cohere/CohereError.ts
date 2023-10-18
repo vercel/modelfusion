@@ -1,7 +1,7 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
+import { parseJsonWithZod } from "../../util/parseJSON.js";
 
 export const cohereErrorDataSchema = z.object({
   message: z.string(),
@@ -48,9 +48,7 @@ export const failedCohereCallResponseHandler: ResponseHandler<
     });
   }
 
-  const parsedError = cohereErrorDataSchema.parse(
-    SecureJSON.parse(responseBody)
-  );
+  const parsedError = parseJsonWithZod(responseBody, cohereErrorDataSchema);
 
   return new CohereError({
     url,

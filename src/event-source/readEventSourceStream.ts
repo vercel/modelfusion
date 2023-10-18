@@ -1,6 +1,6 @@
-import SecureJSON from "secure-json-parse";
 import { Schema } from "../core/structure/Schema.js";
 import { ErrorHandler } from "../util/ErrorHandler.js";
+import { safeParseJsonWithSchema } from "../util/parseJSON.js";
 import { AsyncQueue } from "./AsyncQueue.js";
 import { parseEventSourceStream } from "./parseEventSourceStream.js";
 
@@ -20,16 +20,14 @@ export function readEventSourceStream<T>({
     .then(async (events) => {
       try {
         for await (const event of events) {
-          const validationResult = schema.validate(
-            SecureJSON.parse(event.data)
-          );
+          const validationResult = safeParseJsonWithSchema(event.data, schema);
 
           if (!validationResult.success) {
             errorHandler?.(validationResult.error);
             continue;
           }
 
-          queue.push(validationResult.value);
+          queue.push(validationResult.data);
         }
       } catch (error) {
         errorHandler?.(error);

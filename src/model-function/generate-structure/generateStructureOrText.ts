@@ -101,7 +101,7 @@ export function generateStructureOrText<
           response: result.response,
           extractedValue: {
             structure: structure as ToOutputValue<STRUCTURES>["structure"],
-            value: parseResult.value,
+            value: parseResult.data,
             text: text as any, // text is string | null, which is part of the response for schema values
           },
           usage: result.usage,

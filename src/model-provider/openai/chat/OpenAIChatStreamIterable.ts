@@ -1,8 +1,8 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { AsyncQueue } from "../../../event-source/AsyncQueue.js";
 import { parseEventSourceStream } from "../../../event-source/parseEventSourceStream.js";
 import { Delta } from "../../../model-function/Delta.js";
+import { safeParseJsonWithZod } from "../../../util/parseJSON.js";
 
 const chatResponseStreamEventSchema = z.object({
   choices: z.array(
@@ -64,8 +64,10 @@ export async function createOpenAIChatDeltaIterableQueue<VALUE>(
             return;
           }
 
-          const json = SecureJSON.parse(data);
-          const parseResult = chatResponseStreamEventSchema.safeParse(json);
+          const parseResult = safeParseJsonWithZod(
+            data,
+            chatResponseStreamEventSchema
+          );
 
           if (!parseResult.success) {
             queue.push({

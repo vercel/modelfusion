@@ -56,7 +56,7 @@ export function generateStructure<
           });
         }
 
-        const value = parseResult.value;
+        const value = parseResult.data;
 
         return {
           response: result.response,
