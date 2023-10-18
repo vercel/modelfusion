@@ -22,6 +22,10 @@ async function main() {
   const speechStream = await synthesizeSpeech(
     new ElevenLabsSpeechSynthesisModel({
       voice: "pNInz6obpgDQGcFmaJgB", // Adam
+      voiceSettings: {
+        stability: 1,
+        similarityBoost: 0.35,
+      },
     }),
     textStream,
     { mode: "stream-duplex" }

@@ -112,11 +112,9 @@ export class ElevenLabsSpeechSynthesisModel
 
     const queue = new AsyncQueue<Delta<Buffer>>();
 
-    const voiceId = this.settings.voice;
-    const model = "eleven_monolingual_v1";
-    const wsUrl = `wss://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream-input?model_id=${model}`;
-
-    const socket = await createSimpleWebSocket(wsUrl);
+    const socket = await createSimpleWebSocket(
+      `wss://api.elevenlabs.io/v1/text-to-speech/${this.settings.voice}/stream-input?model_id=${this.settings.model}`
+    );
 
     socket.onopen = async () => {
       const api = this.settings.api ?? new ElevenLabsApiConfiguration();
@@ -128,10 +126,7 @@ export class ElevenLabsSpeechSynthesisModel
           // See https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
           xi_api_key: api.apiKey,
           text: " ",
-          voice_settings: {
-            stability: 0.5,
-            similarity_boost: true,
-          },
+          voice_settings: toApiVoiceSettings(this.settings.voiceSettings),
         })
       );
 
@@ -245,18 +240,26 @@ async function callElevenLabsTextToSpeechAPI({
     body: {
       text,
       model_id: modelId,
-      voice_settings:
-        voiceSettings != null
-          ? {
-              stability: voiceSettings.stability,
-              similarity_boost: voiceSettings.similarityBoost,
-              style: voiceSettings.style,
-              use_speaker_boost: voiceSettings.useSpeakerBoost,
-            }
-          : undefined,
+      voice_settings: toApiVoiceSettings(voiceSettings),
     },
     failedResponseHandler: failedElevenLabsCallResponseHandler,
     successfulResponseHandler: createAudioMpegResponseHandler(),
     abortSignal,
   });
+}
+
+function toApiVoiceSettings(voiceSettings?: {
+  stability: number;
+  similarityBoost: number;
+  style?: number | undefined;
+  useSpeakerBoost?: boolean | undefined;
+}) {
+  return voiceSettings != null
+    ? {
+        stability: voiceSettings.stability,
+        similarity_boost: voiceSettings.similarityBoost,
+        style: voiceSettings.style,
+        use_speaker_boost: voiceSettings.useSpeakerBoost,
+      }
+    : undefined;
 }
