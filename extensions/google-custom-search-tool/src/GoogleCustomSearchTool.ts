@@ -50,7 +50,7 @@ export class GoogleCustomSearchTool<
           throw validationResult.error;
         }
 
-        return validationResult.value;
+        return validationResult.data;
       },
     });
 
