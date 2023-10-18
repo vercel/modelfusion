@@ -17,6 +17,14 @@ import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 
+const elevenLabsModels = [
+  "eleven_multilingual_v2",
+  "eleven_multilingual_v1",
+  "eleven_monolingual_v1",
+] as const;
+
+const defaultModel = "eleven_multilingual_v2";
+
 export interface ElevenLabsSpeechSynthesisModelSettings
   extends SpeechSynthesisModelSettings {
   api?: ApiConfiguration & {
@@ -25,7 +33,13 @@ export interface ElevenLabsSpeechSynthesisModelSettings
 
   voice: string;
 
-  model?: string;
+  model?:
+    | (typeof elevenLabsModels)[number]
+    // string & {} is used to enable auto-completion of literals
+    // while also allowing strings:
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    | (string & {});
+
   voiceSettings?: {
     stability: number;
     similarityBoost: number;
@@ -112,8 +126,9 @@ export class ElevenLabsSpeechSynthesisModel
 
     const queue = new AsyncQueue<Delta<Buffer>>();
 
+    const model = this.settings.model ?? defaultModel;
     const socket = await createSimpleWebSocket(
-      `wss://api.elevenlabs.io/v1/text-to-speech/${this.settings.voice}/stream-input?model_id=${this.settings.model}`
+      `wss://api.elevenlabs.io/v1/text-to-speech/${this.settings.voice}/stream-input?model_id=${model}`
     );
 
     socket.onopen = async () => {
@@ -239,7 +254,7 @@ async function callElevenLabsTextToSpeechAPI({
     headers: api.headers,
     body: {
       text,
-      model_id: modelId,
+      model_id: modelId ?? defaultModel,
       voice_settings: toApiVoiceSettings(voiceSettings),
     },
     failedResponseHandler: failedElevenLabsCallResponseHandler,
