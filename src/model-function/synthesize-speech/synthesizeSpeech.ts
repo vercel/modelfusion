@@ -126,8 +126,11 @@ async function* convertDeltasToBuffers(
   deltas: AsyncIterable<Delta<Buffer>>
 ): AsyncIterable<Buffer> {
   for await (const delta of deltas) {
-    if (delta.type === "delta") {
-      yield delta.valueDelta;
+    switch (delta.type) {
+      case "error":
+        throw delta.error;
+      case "delta":
+        yield delta.valueDelta;
     }
   }
 }

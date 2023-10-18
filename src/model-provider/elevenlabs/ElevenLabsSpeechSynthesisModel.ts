@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
@@ -12,6 +13,7 @@ import {
   SpeechSynthesisModel,
   SpeechSynthesisModelSettings,
 } from "../../model-function/synthesize-speech/SpeechSynthesisModel.js";
+import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 
@@ -86,26 +88,52 @@ export class ElevenLabsSpeechSynthesisModel
     textStream: AsyncIterable<string>
     // options?: FunctionOptions | undefined
   ): Promise<AsyncIterable<Delta<Buffer>>> {
+    const responseSchema = z.union([
+      z.object({
+        audio: z.string(),
+        isFinal: z.literal(false).nullable(),
+        normalizedAlignment: z
+          .object({
+            chars: z.array(z.string()),
+            charStartTimesMs: z.array(z.number()),
+            charDurationsMs: z.array(z.number()),
+          })
+          .nullable(),
+      }),
+      z.object({
+        isFinal: z.literal(true),
+      }),
+      z.object({
+        message: z.string(),
+        error: z.string(),
+        code: z.number(),
+      }),
+    ]);
+
     const queue = new AsyncQueue<Delta<Buffer>>();
 
     const voiceId = this.settings.voice;
     const model = "eleven_monolingual_v1";
     const wsUrl = `wss://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream-input?model_id=${model}`;
-    const socket = new global.WebSocket(wsUrl);
+
+    const socket = await createSimpleWebSocket(wsUrl);
 
     socket.onopen = async () => {
-      // TODO check api key (or throw)
+      const api = this.settings.api ?? new ElevenLabsApiConfiguration();
 
-      const bosMessage = {
-        text: " ",
-        voice_settings: {
-          stability: 0.5,
-          similarity_boost: true,
-        },
-        xi_api_key: this.settings.api?.apiKey,
-      };
-
-      socket.send(JSON.stringify(bosMessage));
+      // send begin-of-stream (BOS) message:
+      socket.send(
+        JSON.stringify({
+          // The JS WebSocket API does not support authorization headers, so we send the API key in the BOS message.
+          // See https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
+          xi_api_key: api.apiKey,
+          text: " ",
+          // voice_settings: {
+          //   stability: 0.5,
+          //   similarity_boost: true,
+          // },
+        })
+      );
 
       // send text in chunks:
       let textBuffer = "";
@@ -144,9 +172,22 @@ export class ElevenLabsSpeechSynthesisModel
     };
 
     socket.onmessage = (event) => {
-      const response = JSON.parse(event.data); // TODO Secure JSON & structure validation
+      const parseResult = responseSchema.safeParse(JSON.parse(event.data)); // TODO Secure JSON
 
-      if (response.audio) {
+      if (!parseResult.success) {
+        console.log(JSON.parse(event.data));
+        queue.push({ type: "error", error: parseResult.error });
+        return;
+      }
+
+      const response = parseResult.data;
+
+      if ("error" in response) {
+        queue.push({ type: "error", error: response });
+        return;
+      }
+
+      if (!response.isFinal) {
         queue.push({
           type: "delta",
           fullDelta: event,
