@@ -179,7 +179,7 @@ export class ElevenLabsSpeechSynthesisModel
         );
       }
 
-      // send end of stream message:
+      // send end-of-stream (EOS) message:
       socket.send(JSON.stringify({ text: "" }));
     };
 
