@@ -536,6 +536,7 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
   - [Describe Image](https://modelfusion.dev/guide/function/describe-image)
   - [Generate Image](https://modelfusion.dev/guide/function/generate-image)
     - [Prompt Format](https://modelfusion.dev/guide/function/generate-image/prompt-format)
+- [Guards](https://modelfusion.dev/guide/guard)
 - [Tools](https://modelfusion.dev/guide/tools)
 - [Vector Indices](https://modelfusion.dev/guide/vector-index)
   - [Upsert](https://modelfusion.dev/guide/vector-index/upsert)
