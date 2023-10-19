@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 import { Vector } from "../../core/Vector.js";
 import { Schema } from "../../core/structure/Schema.js";
 import { cosineSimilarity } from "../../util/cosineSimilarity.js";

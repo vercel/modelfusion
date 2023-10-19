@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
