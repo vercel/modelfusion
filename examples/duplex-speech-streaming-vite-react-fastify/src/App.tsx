@@ -1,7 +1,7 @@
-import { AsyncQueue, ZodSchema, readEventSource } from "modelfusion";
+import { ZodSchema, readEventSource } from "modelfusion";
 import { useState } from "react";
 import "./App.css";
-import { convertBase64ToArrayBuffer } from "./convertBase64ToArrayBuffer";
+import { AudioSource } from "./AudioSource";
 import { eventSchema } from "./endpoint/eventSchema";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -16,35 +16,8 @@ function App() {
 
     setText("");
 
-    const queue = new AsyncQueue<ArrayBuffer>();
-
-    const mediaSource = new MediaSource();
-    setAudioUrl(URL.createObjectURL(mediaSource));
-
-    mediaSource.addEventListener("sourceopen", async () => {
-      const sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg");
-
-      const audioChunkQueue: ArrayBuffer[] = [];
-      let isAppending = false;
-
-      function processAppendQueue() {
-        if (!isAppending && audioChunkQueue.length > 0) {
-          isAppending = true;
-          const chunk = audioChunkQueue.shift();
-          if (chunk != null) sourceBuffer.appendBuffer(chunk);
-        }
-      }
-
-      sourceBuffer.addEventListener("updateend", () => {
-        isAppending = false;
-        processAppendQueue();
-      });
-
-      for await (const chunk of queue) {
-        audioChunkQueue.push(chunk);
-        processAppendQueue();
-      }
-    });
+    const audioSource = new AudioSource();
+    setAudioUrl(audioSource.audioUrl);
 
     const response = await fetch(`${baseUrl}/answer`, {
       method: "POST",
@@ -65,12 +38,12 @@ function App() {
           }
 
           case "speech-chunk": {
-            queue.push(convertBase64ToArrayBuffer(event.base64Audio));
+            audioSource.addBase64Audio(event.base64Audio);
             return;
           }
 
           case "finish": {
-            mediaSource.endOfStream();
+            audioSource.close();
             eventSource.close();
             return;
           }
