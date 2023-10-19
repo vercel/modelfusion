@@ -5,6 +5,10 @@ export const eventSchema = z.discriminatedUnion("type", [
     type: z.literal("start-llm"),
   }),
   z.object({
+    type: z.literal("text-chunk"),
+    delta: z.string(),
+  }),
+  z.object({
     type: z.literal("start-tts"),
   }),
   z.object({
