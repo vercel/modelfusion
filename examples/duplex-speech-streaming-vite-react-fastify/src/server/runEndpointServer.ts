@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import cors from "@fastify/cors";
 import { withRun } from "modelfusion";
 import { Endpoint } from "./Endpoint";
 import { EndpointRun } from "./EndpointRun";
@@ -14,6 +15,8 @@ export async function runEndpointServer<INPUT, EVENT>({
   port?: number;
 }) {
   const server = Fastify();
+
+  await server.register(cors, {});
 
   const runs: Record<string, EndpointRun<EVENT>> = {};
 
