@@ -23,8 +23,8 @@
     /* Zod etc. */
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "outDir": "./.build/js"
+    "outDir": "./build"
   },
-  "include": ["src"],
+  "include": ["src/**/*.ts", "src/**/*.mts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
