@@ -8,38 +8,80 @@ import { Textarea } from "./ui/textarea";
 function App() {
   const [prompt, setPrompt] = useState("");
   const [text, setText] = useState("");
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const handleClick = async () => {
     const baseUrl = "http://localhost:3001";
 
+    const mediaSource = new MediaSource();
+
     setText("");
+    setAudioUrl(URL.createObjectURL(mediaSource));
 
-    const response = await fetch(`${baseUrl}/answer`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
-    });
+    let isAppending = false;
+    let appendQueue: ArrayBuffer[] = [];
 
-    const path: string = (await response.json()).path;
+    mediaSource.addEventListener("sourceopen", async () => {
+      const sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg");
 
-    readEventSource({
-      url: `${baseUrl}${path}`,
-      schema: new ZodSchema(eventSchema),
-      onEvent(event, eventSource) {
-        console.log(event);
+      function processAppendQueue() {
+        if (!isAppending && appendQueue.length > 0) {
+          isAppending = true;
+          const chunk = appendQueue.shift();
 
-        switch (event.type) {
-          case "finish": {
-            eventSource.close();
-            return;
-          }
-
-          case "text-chunk": {
-            setText((currentText) => currentText + event.delta);
-            return;
-          }
+          chunk && sourceBuffer.appendBuffer(chunk);
         }
-      },
+      }
+
+      sourceBuffer.addEventListener("updateend", () => {
+        isAppending = false;
+        processAppendQueue();
+      });
+
+      function appendChunk(chunk: ArrayBuffer) {
+        console.log("appendChunk", chunk.byteLength);
+        appendQueue.push(chunk);
+        processAppendQueue();
+      }
+
+      const response = await fetch(`${baseUrl}/answer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const path: string = (await response.json()).path;
+
+      readEventSource({
+        url: `${baseUrl}${path}`,
+        schema: new ZodSchema(eventSchema),
+        onEvent(event, eventSource) {
+          switch (event.type) {
+            case "finish": {
+              mediaSource.endOfStream();
+              eventSource.close();
+              return;
+            }
+
+            case "text-chunk": {
+              setText((currentText) => currentText + event.delta);
+              return;
+            }
+
+            case "speech-chunk": {
+              const binary = atob(event.base64Audio);
+              const length = binary.length;
+              const buffer = new ArrayBuffer(length);
+              const view = new Uint8Array(buffer);
+              for (let i = 0; i < length; i++) {
+                view[i] = binary.charCodeAt(i);
+              }
+              appendChunk(buffer);
+              return;
+            }
+          }
+        },
+      });
     });
   };
 
@@ -55,6 +97,15 @@ function App() {
       />
       <Button onClick={handleClick}>Send</Button>
       <div className="mt-4">{text}</div>
+
+      {audioUrl != null && (
+        <audio
+          controls
+          controlsList="nodownload nofullscreen noremoteplayback"
+          autoPlay={true}
+          src={audioUrl}
+        />
+      )}
     </>
   );
 }

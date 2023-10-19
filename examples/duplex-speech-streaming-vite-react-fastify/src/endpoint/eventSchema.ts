@@ -6,7 +6,7 @@ export const eventSchema = z.discriminatedUnion("type", [
     delta: z.string(),
   }),
   z.object({
-    type: z.literal("tts-chunk"),
+    type: z.literal("speech-chunk"),
     base64Audio: z.string(),
   }),
   z.object({

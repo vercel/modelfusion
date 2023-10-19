@@ -31,7 +31,7 @@ runEndpointServer({
         new OpenAITextGenerationModel({
           model: "gpt-3.5-turbo-instruct",
           temperature: 0.7,
-          maxCompletionTokens: 100,
+          maxCompletionTokens: 50,
         }),
         input.prompt
       );
@@ -46,7 +46,7 @@ runEndpointServer({
             similarityBoost: 0.35,
           },
         }),
-        textStream,
+        speechStreamInput,
         { mode: "stream-duplex" }
       );
 
@@ -56,8 +56,8 @@ runEndpointServer({
         (async () => {
           try {
             for await (const textFragment of textStream) {
-              run.publishEvent({ type: "text-chunk", delta: textFragment });
               speechStreamInput.push(textFragment);
+              run.publishEvent({ type: "text-chunk", delta: textFragment });
             }
           } finally {
             speechStreamInput.close();
@@ -68,7 +68,7 @@ runEndpointServer({
         (async () => {
           for await (const speechFragment of speechStream) {
             run.publishEvent({
-              type: "tts-chunk",
+              type: "speech-chunk",
               base64Audio: speechFragment.toString("base64"),
             });
           }
