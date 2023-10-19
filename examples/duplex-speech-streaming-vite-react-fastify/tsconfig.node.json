@@ -1,4 +1,8 @@
 {
+  "baseUrl": ".",
+  "paths": {
+    "@/*": ["./src/*"]
+  },
   "compilerOptions": {
     "composite": true,
     "skipLibCheck": true,
