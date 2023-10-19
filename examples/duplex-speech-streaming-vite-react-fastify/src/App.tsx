@@ -86,7 +86,7 @@ function App() {
 
   return (
     <>
-      <h3 className="mb-4">Generate Voice Answer</h3>
+      <h1 className="text-4xl mb-4">Voice synthesis duplex streaming demo</h1>
       <Textarea
         className="mb-4"
         placeholder="Enter prompt."
@@ -94,16 +94,18 @@ function App() {
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
       />
-      <Button onClick={handleClick}>Send</Button>
-      <div className="mt-4">{text}</div>
+      <Button onClick={handleClick}>Generate response (text & speech)</Button>
+      <pre className="mt-4 whitespace-pre-wrap">{text}</pre>
 
       {audioUrl != null && (
-        <audio
-          controls
-          controlsList="nodownload nofullscreen noremoteplayback"
-          autoPlay={true}
-          src={audioUrl}
-        />
+        <div className="flex justify-center mt-4">
+          <audio
+            controls
+            controlsList="nodownload nofullscreen noremoteplayback"
+            autoPlay={true}
+            src={audioUrl}
+          />
+        </div>
       )}
     </>
   );
