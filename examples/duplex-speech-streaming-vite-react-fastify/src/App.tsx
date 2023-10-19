@@ -39,7 +39,6 @@ function App() {
       });
 
       function appendChunk(chunk: ArrayBuffer) {
-        console.log("appendChunk", chunk.byteLength);
         appendQueue.push(chunk);
         processAppendQueue();
       }
