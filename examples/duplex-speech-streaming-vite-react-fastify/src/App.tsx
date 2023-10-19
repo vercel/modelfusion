@@ -26,7 +26,7 @@ function App() {
         console.log(event);
 
         switch (event.type) {
-          case "finish-tts": {
+          case "finish": {
             eventSource.close();
             return;
           }

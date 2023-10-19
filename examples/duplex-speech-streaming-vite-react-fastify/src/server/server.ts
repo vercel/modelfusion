@@ -1,8 +1,11 @@
 import * as dotenv from "dotenv";
 import {
+  AsyncQueue,
+  ElevenLabsSpeechSynthesisModel,
   OpenAITextGenerationModel,
   setGlobalFunctionLogging,
   streamText,
+  synthesizeSpeech,
 } from "modelfusion";
 import { runEndpointServer } from "./runEndpointServer";
 import { z } from "zod";
@@ -21,12 +24,9 @@ runEndpointServer({
       prompt: z.string(),
     }),
 
-    eventSchema: eventSchema,
+    eventSchema,
 
     async processRequest({ input, run }) {
-      console.log(input);
-      run.publishEvent({ type: "start-llm" });
-
       const textStream = await streamText(
         new OpenAITextGenerationModel({
           model: "gpt-3.5-turbo-instruct",
@@ -36,15 +36,46 @@ runEndpointServer({
         input.prompt
       );
 
-      for await (const textFragment of textStream) {
-        run.publishEvent({ type: "text-chunk", delta: textFragment });
-      }
+      const speechStreamInput = new AsyncQueue<string>();
 
-      run.publishEvent({ type: "start-tts" });
+      const speechStream = await synthesizeSpeech(
+        new ElevenLabsSpeechSynthesisModel({
+          voice: "pNInz6obpgDQGcFmaJgB", // Adam
+          voiceSettings: {
+            stability: 1,
+            similarityBoost: 0.35,
+          },
+        }),
+        textStream,
+        { mode: "stream-duplex" }
+      );
 
-      run.publishEvent({ type: "tts-chunk", base64Audio: "base64Audio" });
+      // Run in parallel:
+      await Promise.all([
+        // stream text to client and to tts model:
+        (async () => {
+          try {
+            for await (const textFragment of textStream) {
+              run.publishEvent({ type: "text-chunk", delta: textFragment });
+              speechStreamInput.push(textFragment);
+            }
+          } finally {
+            speechStreamInput.close();
+          }
+        })(),
 
-      run.publishEvent({ type: "finish-tts" });
+        // stream tts audio to client:
+        (async () => {
+          for await (const speechFragment of speechStream) {
+            run.publishEvent({
+              type: "tts-chunk",
+              base64Audio: speechFragment.toString("base64"),
+            });
+          }
+        })(),
+      ]);
+
+      run.publishEvent({ type: "finish" });
     },
   },
 }).catch((err) => {
