@@ -18,7 +18,12 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Zod etc. */
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "outDir": "./.build/js"
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
