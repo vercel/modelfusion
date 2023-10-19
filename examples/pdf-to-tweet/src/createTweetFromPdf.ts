@@ -11,7 +11,7 @@ import {
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "modelfusion";
 import fs from "node:fs";
-import z from "zod";
+import { z } from "zod";
 import { loadPdfAsText } from "./loadPdfAsText";
 
 export async function createTweetFromPdf({

@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 import { Run } from "../../core/Run.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";

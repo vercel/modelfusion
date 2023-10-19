@@ -1,5 +1,5 @@
 import SecureJSON from "secure-json-parse";
-import z from "zod";
+import { z } from "zod";
 import { FunctionOptions } from "../../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../../core/api/callWithRetryAndThrottle.js";
