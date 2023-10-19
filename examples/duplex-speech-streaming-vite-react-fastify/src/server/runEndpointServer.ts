@@ -1,9 +1,8 @@
-import Fastify from "fastify";
 import cors from "@fastify/cors";
+import Fastify from "fastify";
 import { withRun } from "modelfusion";
 import { Endpoint } from "./Endpoint";
 import { EndpointRun } from "./EndpointRun";
-import { saveEndpointRunAssets } from "./saveEndpointRunAssets";
 
 export async function runEndpointServer<INPUT, EVENT>({
   endpoint,
@@ -36,14 +35,6 @@ export async function runEndpointServer<INPUT, EVENT>({
         })
         .finally(async () => {
           run.finish();
-          try {
-            await saveEndpointRunAssets({
-              basePath: "stories",
-              run,
-            });
-          } catch (err) {
-            console.error(err);
-          }
         });
     });
 
@@ -52,28 +43,6 @@ export async function runEndpointServer<INPUT, EVENT>({
       path: `/${endpoint.name}/${run.runId}/events`,
     };
   });
-
-  server.get(
-    `/${endpoint.name}/:runId/assets/:assetName`,
-    async (request, reply) => {
-      const runId = (request.params as any).runId;
-      const assetName = (request.params as any).assetName;
-
-      const asset = runs[runId]?.assets[assetName];
-
-      const headers = {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Length": asset.data.length,
-        "Content-Type": asset.contentType,
-        "Cache-Control": "no-cache",
-      };
-
-      reply.raw.writeHead(200, headers);
-
-      reply.raw.write(asset.data);
-      reply.raw.end();
-    }
-  );
 
   server.get(`/${endpoint.name}/:id/events`, async (request, reply) => {
     const runId = (request.params as any).id;
