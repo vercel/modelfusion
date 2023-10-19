@@ -9,18 +9,14 @@ export class AudioSource {
       const sourceBuffer = this.mediaSource.addSourceBuffer("audio/mpeg");
 
       const queue: ArrayBuffer[] = [];
-      let isAppending = false;
 
       function processAppendQueue() {
-        if (!isAppending && queue.length > 0) {
-          isAppending = true;
-          const chunk = queue.shift();
-          if (chunk != null) sourceBuffer.appendBuffer(chunk);
+        if (!sourceBuffer.updating && queue.length > 0) {
+          sourceBuffer.appendBuffer(queue.shift()!);
         }
       }
 
       sourceBuffer.addEventListener("updateend", () => {
-        isAppending = false;
         processAppendQueue();
       });
 
