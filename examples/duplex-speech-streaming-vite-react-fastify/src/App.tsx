@@ -7,9 +7,12 @@ import { Textarea } from "./ui/textarea";
 
 function App() {
   const [prompt, setPrompt] = useState("");
+  const [text, setText] = useState("");
 
   const handleClick = async () => {
     const baseUrl = "http://localhost:3001";
+
+    setText("");
 
     const response = await fetch(`${baseUrl}/answer`, {
       method: "POST",
@@ -30,6 +33,11 @@ function App() {
             eventSource.close();
             return;
           }
+
+          case "text-chunk": {
+            setText((currentText) => currentText + event.delta);
+            return;
+          }
         }
       },
     });
@@ -46,6 +54,7 @@ function App() {
         onChange={(e) => setPrompt(e.target.value)}
       />
       <Button onClick={handleClick}>Send</Button>
+      <div className="mt-4">{text}</div>
     </>
   );
 }
