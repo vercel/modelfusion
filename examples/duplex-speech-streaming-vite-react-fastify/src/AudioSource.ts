@@ -1,48 +1,45 @@
-import { AsyncQueue } from "modelfusion";
-
 export class AudioSource {
-  readonly mediaSource = new MediaSource();
-  readonly audioChunks = new AsyncQueue<ArrayBuffer>();
+  private readonly mediaSource = new MediaSource();
+  private readonly audioChunks: ArrayBuffer[] = [];
+
+  private sourceBuffer?: SourceBuffer;
 
   constructor() {
     this.mediaSource.addEventListener("sourceopen", async () => {
-      const sourceBuffer = this.mediaSource.addSourceBuffer("audio/mpeg");
+      this.sourceBuffer = this.mediaSource.addSourceBuffer("audio/mpeg");
 
-      const queue: ArrayBuffer[] = [];
-
-      function tryAppendNextChunk() {
-        if (!sourceBuffer.updating && queue.length > 0) {
-          sourceBuffer.appendBuffer(queue.shift()!);
-        }
-      }
-
-      sourceBuffer.addEventListener("updateend", () => {
-        tryAppendNextChunk();
+      this.sourceBuffer.addEventListener("updateend", () => {
+        this.tryAppendNextChunk();
       });
-
-      for await (const audioChunk of this.audioChunks) {
-        queue.push(audioChunk);
-        tryAppendNextChunk();
-      }
-
-      this.mediaSource.endOfStream();
     });
   }
 
-  addBase64Audio(base64Audio: string) {
-    const binaryString = atob(base64Audio);
-    const bufferArray = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bufferArray[i] = binaryString.charCodeAt(i);
+  private tryAppendNextChunk() {
+    if (
+      this.sourceBuffer != null &&
+      !this.sourceBuffer.updating &&
+      this.audioChunks.length > 0
+    ) {
+      this.sourceBuffer.appendBuffer(this.audioChunks.shift()!);
     }
+  }
+
+  public addBase64Audio(base64Audio: string) {
+    const bufferArray = Uint8Array.from(atob(base64Audio), (char) =>
+      char.charCodeAt(0)
+    );
+
     this.audioChunks.push(bufferArray.buffer);
+    this.tryAppendNextChunk();
   }
 
-  close() {
-    this.audioChunks.close();
+  public close() {
+    if (this.mediaSource.readyState === "open") {
+      this.mediaSource.endOfStream();
+    }
   }
 
-  get audioUrl() {
+  public get audioUrl() {
     return URL.createObjectURL(this.mediaSource);
   }
 }
