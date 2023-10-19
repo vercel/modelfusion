@@ -10,19 +10,19 @@ export class AudioSource {
 
       const queue: ArrayBuffer[] = [];
 
-      function processAppendQueue() {
+      function tryAppendNextChunk() {
         if (!sourceBuffer.updating && queue.length > 0) {
           sourceBuffer.appendBuffer(queue.shift()!);
         }
       }
 
       sourceBuffer.addEventListener("updateend", () => {
-        processAppendQueue();
+        tryAppendNextChunk();
       });
 
       for await (const audioChunk of this.audioChunks) {
         queue.push(audioChunk);
-        processAppendQueue();
+        tryAppendNextChunk();
       }
 
       this.mediaSource.endOfStream();
