@@ -47,6 +47,10 @@ export interface ElevenLabsSpeechSynthesisModelSettings
     style?: number;
     useSpeakerBoost?: boolean;
   };
+
+  generationConfig?: {
+    chunkLengthSchedule: number[];
+  };
 }
 
 /**
@@ -141,8 +145,9 @@ export class ElevenLabsSpeechSynthesisModel
           // The JS WebSocket API does not support authorization headers, so we send the API key in the BOS message.
           // See https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
           xi_api_key: api.apiKey,
-          text: " ",
+          text: " ", // first message
           voice_settings: toApiVoiceSettings(this.settings.voiceSettings),
+          generation_config: toGenerationConfig(this.settings.generationConfig),
         })
       );
 
@@ -267,6 +272,16 @@ function toApiVoiceSettings(
         similarity_boost: voiceSettings.similarityBoost,
         style: voiceSettings.style,
         use_speaker_boost: voiceSettings.useSpeakerBoost,
+      }
+    : undefined;
+}
+
+function toGenerationConfig(
+  generationConfig?: ElevenLabsSpeechSynthesisModelSettings["generationConfig"]
+) {
+  return generationConfig != null
+    ? {
+        chunk_length_schedule: generationConfig.chunkLengthSchedule,
       }
     : undefined;
 }

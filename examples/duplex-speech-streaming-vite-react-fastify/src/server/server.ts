@@ -2,14 +2,14 @@ import * as dotenv from "dotenv";
 import {
   AsyncQueue,
   ElevenLabsSpeechSynthesisModel,
-  OpenAITextGenerationModel,
+  OpenAIChatModel,
   setGlobalFunctionLogging,
   streamText,
   synthesizeSpeech,
 } from "modelfusion";
-import { runEndpointServer } from "./runEndpointServer";
 import { z } from "zod";
 import { eventSchema } from "../endpoint/eventSchema";
+import { runEndpointServer } from "./runEndpointServer";
 
 dotenv.config();
 
@@ -28,12 +28,12 @@ runEndpointServer({
 
     async processRequest({ input, run }) {
       const textStream = await streamText(
-        new OpenAITextGenerationModel({
-          model: "gpt-3.5-turbo-instruct",
+        new OpenAIChatModel({
+          model: "gpt-4",
           temperature: 0.7,
-          maxCompletionTokens: 50,
-        }),
-        input.prompt
+          maxCompletionTokens: 200,
+        }).withInstructionPrompt(),
+        { instruction: input.prompt }
       );
 
       const speechStreamInput = new AsyncQueue<string>();
@@ -41,9 +41,13 @@ runEndpointServer({
       const speechStream = await synthesizeSpeech(
         new ElevenLabsSpeechSynthesisModel({
           voice: "pNInz6obpgDQGcFmaJgB", // Adam
+          model: "eleven_monolingual_v1",
           voiceSettings: {
             stability: 1,
             similarityBoost: 0.35,
+          },
+          generationConfig: {
+            chunkLengthSchedule: [50, 90, 120, 150, 200],
           },
         }),
         speechStreamInput,
