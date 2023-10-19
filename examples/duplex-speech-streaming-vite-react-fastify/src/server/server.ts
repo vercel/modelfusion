@@ -31,7 +31,7 @@ runEndpointServer({
         new OpenAIChatModel({
           model: "gpt-4",
           temperature: 0.7,
-          maxCompletionTokens: 200,
+          maxCompletionTokens: 50,
         }).withInstructionPrompt(),
         { instruction: input.prompt }
       );
