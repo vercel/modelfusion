@@ -1,5 +1,6 @@
 .DS_STORE
 .env
+.dev.vars
 build
 dist
 node_modules
