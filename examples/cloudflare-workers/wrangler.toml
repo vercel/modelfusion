@@ -1,0 +1,4 @@
+name = "modelfusion-cloudflare-workers"
+main = "src/index.ts"
+compatibility_date = "2023-10-16"
+compatibility_flags = [ "nodejs_compat" ]
