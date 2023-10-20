@@ -108,7 +108,6 @@ export async function runEndpointServer({
 
     const textEncoder = new TextEncoder();
     for await (const event of events) {
-      console.log(event);
       if (reply.raw.destroyed) {
         break;
       }
