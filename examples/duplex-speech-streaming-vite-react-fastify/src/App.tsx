@@ -1,8 +1,8 @@
-import { ZodSchema, readEventSource } from "modelfusion";
+import { ZodSchema, readEventSourceStream } from "modelfusion";
 import { useState } from "react";
 import "./App.css";
 import { MediaSourceAppender } from "./MediaSourceAppender";
-import { eventSchema } from "./endpoint/eventSchema";
+import { eventSchema } from "./eventSchema";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 
@@ -25,31 +25,26 @@ function App() {
       body: JSON.stringify({ prompt }),
     });
 
-    const path: string = (await response.json()).path;
-
-    readEventSource({
-      url: `${baseUrl}${path}`,
+    const events = readEventSourceStream({
+      stream: response.body!,
       schema: new ZodSchema(eventSchema),
-      onEvent(event, eventSource) {
-        switch (event.type) {
-          case "text-chunk": {
-            setText((currentText) => currentText + event.delta);
-            return;
-          }
-
-          case "speech-chunk": {
-            audioSource.addBase64Data(event.base64Audio);
-            return;
-          }
-
-          case "finish": {
-            audioSource.close();
-            eventSource.close();
-            return;
-          }
-        }
-      },
     });
+
+    for await (const event of events) {
+      switch (event.type) {
+        case "text-chunk": {
+          setText((currentText) => currentText + event.delta);
+          break;
+        }
+
+        case "speech-chunk": {
+          audioSource.addBase64Data(event.base64Audio);
+          break;
+        }
+      }
+    }
+
+    audioSource.close();
   };
 
   return (
