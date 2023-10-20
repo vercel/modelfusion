@@ -28,4 +28,8 @@ export class ElevenLabsApiConfiguration extends BaseUrlApiConfiguration {
       throttle,
     });
   }
+
+  get apiKey() {
+    return this.headers["xi-api-key"];
+  }
 }
