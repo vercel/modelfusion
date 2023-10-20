@@ -627,7 +627,7 @@ Small agent that solves middle school math problems. It uses a calculator tool t
 
 Extracts information about a topic from a PDF and writes a tweet in your own style about it.
 
-# [Cloudflare Workers](https://github.com/lgrammel/modelfusion/tree/main/examples/cloudflare-workers)
+### [Cloudflare Workers](https://github.com/lgrammel/modelfusion/tree/main/examples/cloudflare-workers)
 
 > _Cloudflare_, _OpenAI_
 
