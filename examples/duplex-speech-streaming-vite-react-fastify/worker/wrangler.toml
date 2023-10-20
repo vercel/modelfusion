@@ -1,6 +1,7 @@
-name = "plain-silence-45f0"
+name = "modelfusion-duplex-speech-example"
 main = "src/index.ts"
 compatibility_date = "2023-10-16"
+compatibility_flags = [ "nodejs_compat" ]
 
 # Variable bindings. These are arbitrary, plaintext strings (similar to environment variables)
 # Note: Use secrets to store sensitive data.
