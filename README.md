@@ -274,7 +274,11 @@ Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider
 
 ### [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
 
-Turn text into speech (audio).
+Generate speech (audio) from text. Also called TTS (text-to-speech).
+
+Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
+
+#### Standard mode
 
 ```ts
 // `speech` is a Buffer with MP3 audio data
@@ -289,7 +293,28 @@ const speech = await synthesizeSpeech(
 );
 ```
 
-Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
+#### Duplex streaming mode
+
+```ts
+const textStream = await streamText(/* ... */);
+
+const speechStream = await synthesizeSpeech(
+  new ElevenLabsSpeechSynthesisModel({
+    voice: "pNInz6obpgDQGcFmaJgB", // Adam
+    model: "eleven_monolingual_v1",
+    voiceSettings: { stability: 1, similarityBoost: 0.35 },
+    generationConfig: {
+      chunkLengthSchedule: [50, 90, 120, 150, 200],
+    },
+  }),
+  textStream,
+  { mode: "stream-duplex" }
+);
+
+for await (const part of speechStream) {
+  // each part is a Buffer with MP3 audio data
+}
+```
 
 ### [Describe Image](https://modelfusion.dev/guide/function/describe-image)
 
