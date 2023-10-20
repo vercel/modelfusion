@@ -7,13 +7,16 @@ interface RunStorage {
 
 let runStorage: RunStorage | undefined;
 
-const isNode =
-  typeof process !== "undefined" &&
-  process.versions != null &&
-  process.versions.node != null;
-
 async function ensureLoaded() {
+  // Note: using process[versions] instead of process.versions to avoid Next.js edge runtime warnings.
+  const versions = "versions";
+  const isNode =
+    typeof process !== "undefined" &&
+    process[versions] != null &&
+    process[versions].node != null;
+
   if (!isNode) return Promise.resolve();
+
   if (!runStorage) {
     const { AsyncLocalStorage } = await import("node:async_hooks");
     runStorage = new AsyncLocalStorage<Run>();
