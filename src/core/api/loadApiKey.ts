@@ -9,7 +9,17 @@ export function loadApiKey({
   apiKeyParameterName?: string;
   description: string;
 }): string {
-  apiKey ??= process.env[environmentVariableName];
+  if (apiKey != null) {
+    return apiKey;
+  }
+
+  if (typeof process === "undefined") {
+    throw new Error(
+      `${description} API key is missing. Pass it using the '${apiKeyParameterName}' parameter. Environment variables is not supported in this environment.`
+    );
+  }
+
+  apiKey = process.env[environmentVariableName];
 
   if (apiKey == null) {
     throw new Error(
