@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.48.0 - 2023-10-20
+
+### Added
+
+- Duplex streaming for speech synthesis.
+- Elevenlabs duplex streaming support.
+
+### Changed
+
+- Schema is using data in return type (breaking change for tools).
+
 ## v0.47.0 - 2023-10-14
 
 ### Added
