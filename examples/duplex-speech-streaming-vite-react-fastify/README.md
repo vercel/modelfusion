@@ -1,33 +1,33 @@
-# React + TypeScript + Vite
+# Duplex Speech Streaming (Vite(React) + Fastify))
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> _Speech Streaming_, _OpenAI_, _Elevenlabs_ _streaming_, _Vite_, _Fastify_
 
-Currently, two official plugins are available:
+Given a prompt, the server returns both a text and a speech stream response.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Key files
 
-## Expanding the ESLint configuration
+- **Server:** `src/server/server.ts`
+- **Client:** `src/App.tsx`
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Usage
 
-- Configure the top-level `parserOptions` property like this:
+1. Create `.env.local` file with the following content:
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+   ```
+   OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
+   ELEVENLABS_API_KEY="YOUR_ELEVENLABS_API_KEY"
+   ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Start the server:
 
----
+   ```sh
+   npm run server
+   ```
 
-`compatibility_flags = [ "nodejs_compat" ]`
+3. Start the client:
 
-`npx wrangler secret put OPENAI_API_KEY`
+   ```sh
+   npm run client
+   ```
+
+4. Go to the URL from the client run
