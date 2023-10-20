@@ -9,20 +9,20 @@ import { eventSchema } from "./eventSchema";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 
+const BASE_URL = "http://localhost:3001";
+
 function App() {
   const [prompt, setPrompt] = useState("");
   const [text, setText] = useState("");
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const handleClick = async () => {
-    const baseUrl = "http://localhost:3001";
-
     setText("");
 
     const audioSource = new MediaSourceAppender("audio/mpeg");
     setAudioUrl(audioSource.mediaSourceUrl);
 
-    const response = await fetch(`${baseUrl}/answer`, {
+    const response = await fetch(`${BASE_URL}/answer`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }),
