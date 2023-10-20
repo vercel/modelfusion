@@ -1,7 +1,7 @@
 import { ZodSchema, readEventSource } from "modelfusion";
 import { useState } from "react";
 import "./App.css";
-import { AudioSource } from "./AudioSource";
+import { MediaSourceAppender } from "./MediaSourceAppender";
 import { eventSchema } from "./endpoint/eventSchema";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -16,8 +16,8 @@ function App() {
 
     setText("");
 
-    const audioSource = new AudioSource();
-    setAudioUrl(audioSource.audioUrl);
+    const audioSource = new MediaSourceAppender("audio/mpeg");
+    setAudioUrl(audioSource.mediaSourceUrl);
 
     const response = await fetch(`${baseUrl}/answer`, {
       method: "POST",
@@ -38,7 +38,7 @@ function App() {
           }
 
           case "speech-chunk": {
-            audioSource.addBase64Audio(event.base64Audio);
+            audioSource.addBase64Data(event.base64Audio);
             return;
           }
 

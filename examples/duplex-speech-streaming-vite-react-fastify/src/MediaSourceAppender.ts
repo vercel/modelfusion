@@ -1,12 +1,12 @@
-export class AudioSource {
+export class MediaSourceAppender {
   private readonly mediaSource = new MediaSource();
   private readonly audioChunks: ArrayBuffer[] = [];
 
   private sourceBuffer?: SourceBuffer;
 
-  constructor() {
+  constructor(type: string) {
     this.mediaSource.addEventListener("sourceopen", async () => {
-      this.sourceBuffer = this.mediaSource.addSourceBuffer("audio/mpeg");
+      this.sourceBuffer = this.mediaSource.addSourceBuffer(type);
 
       this.sourceBuffer.addEventListener("updateend", () => {
         this.tryAppendNextChunk();
@@ -24,12 +24,14 @@ export class AudioSource {
     }
   }
 
-  public addBase64Audio(base64Audio: string) {
-    const bufferArray = Uint8Array.from(atob(base64Audio), (char) =>
-      char.charCodeAt(0)
+  public addBase64Data(base64Data: string) {
+    this.addData(
+      Uint8Array.from(atob(base64Data), (char) => char.charCodeAt(0)).buffer
     );
+  }
 
-    this.audioChunks.push(bufferArray.buffer);
+  public addData(data: ArrayBuffer) {
+    this.audioChunks.push(data);
     this.tryAppendNextChunk();
   }
 
@@ -39,7 +41,7 @@ export class AudioSource {
     }
   }
 
-  public get audioUrl() {
+  public get mediaSourceUrl() {
     return URL.createObjectURL(this.mediaSource);
   }
 }
