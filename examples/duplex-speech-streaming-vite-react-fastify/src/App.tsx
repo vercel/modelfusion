@@ -1,7 +1,10 @@
-import { ZodSchema, readEventSourceStream } from "modelfusion";
+import {
+  MediaSourceAppender,
+  ZodSchema,
+  readEventSourceStream,
+} from "modelfusion";
 import { useState } from "react";
 import "./App.css";
-import { MediaSourceAppender } from "./MediaSourceAppender";
 import { eventSchema } from "./eventSchema";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";

@@ -8,6 +8,7 @@ Given a prompt, the server returns both a text and a speech stream response.
 
 - **Server:** `src/server/server.ts`
 - **Client:** `src/App.tsx`
+- **Event Schema:** `src/eventSchema.ts`
 
 ## Usage
 
