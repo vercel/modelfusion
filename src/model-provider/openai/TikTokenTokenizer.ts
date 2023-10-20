@@ -1,4 +1,7 @@
-import { Tiktoken, TiktokenEncoding, getEncoding } from "js-tiktoken";
+import { Tiktoken } from "js-tiktoken/lite";
+import cl100k_base from "js-tiktoken/ranks/cl100k_base";
+import p50k_base from "js-tiktoken/ranks/p50k_base";
+import r50k_base from "js-tiktoken/ranks/r50k_base";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { never } from "../../util/never.js";
 import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
@@ -24,21 +27,13 @@ export class TikTokenTokenizer implements FullTokenizer {
   /**
    * Get a TikToken tokenizer for a specific model or encoding.
    */
-  constructor(
-    options:
-      | {
-          model:
-            | OpenAIChatBaseModelType
-            | OpenAITextGenerationBaseModelType
-            | OpenAITextEmbeddingModelType;
-        }
-      | { encoding: TiktokenEncoding }
-  ) {
-    this.tiktoken = getEncoding(
-      "model" in options
-        ? getEncodingNameForModel(options.model)
-        : options.encoding
-    );
+  constructor(options: {
+    model:
+      | OpenAIChatBaseModelType
+      | OpenAITextGenerationBaseModelType
+      | OpenAITextEmbeddingModelType;
+  }) {
+    this.tiktoken = new Tiktoken(getTiktokenBPE(options.model));
   }
 
   private readonly tiktoken: Tiktoken;
@@ -63,7 +58,7 @@ export class TikTokenTokenizer implements FullTokenizer {
 
 // implemented here (instead of using js-tiktoken) to be able to quickly updated it
 // when new models are released
-function getEncodingNameForModel(
+function getTiktokenBPE(
   model:
     | OpenAIChatBaseModelType
     | OpenAITextGenerationBaseModelType
@@ -73,7 +68,7 @@ function getEncodingNameForModel(
     case "code-davinci-002":
     case "text-davinci-002":
     case "text-davinci-003": {
-      return "p50k_base";
+      return p50k_base;
     }
 
     case "ada":
@@ -83,7 +78,7 @@ function getEncodingNameForModel(
     case "text-ada-001":
     case "text-babbage-001":
     case "text-curie-001": {
-      return "r50k_base";
+      return r50k_base;
     }
 
     case "babbage-002":
@@ -101,7 +96,7 @@ function getEncodingNameForModel(
     case "gpt-4-32k-0314":
     case "gpt-4-32k-0613":
     case "text-embedding-ada-002": {
-      return "cl100k_base";
+      return cl100k_base;
     }
     default: {
       never(model);
