@@ -1,7 +1,7 @@
 {
   "name": "@modelfusion/serpapi-tools",
   "description": "SerpAPI tools for ModelFusion",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
@@ -63,6 +63,6 @@
   },
   "peerDependencies": {
     "zod": "^3.22",
-    "modelfusion": "^0.45.0"
+    "modelfusion": "^0.48.0"
   }
 }
