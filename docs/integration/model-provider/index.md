@@ -27,10 +27,6 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 - [Llama.cpp](/integration/model-provider/llamacpp)
 - [Hugging Face](/integration/model-provider/huggingface)
 
-### [Describe Image](/guide/function/describe-image)
-
-- [Hugging Face](/integration/model-provider/huggingface)
-
 ### [Generate Image](/guide/function/generate-image)
 
 - [OpenAI (Dall·E)](/integration/model-provider/openai)
@@ -43,5 +39,5 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 
 ### [Synthesize Speech](/guide/function/synthesize-speech)
 
-- [Eleven Labs](/integration/model-provider/elevenlabs)
-- [LMNT](/integration/model-provider/lmnt)
+- [Eleven Labs](/integration/model-provider/elevenlabs) (standard and duplex streaming)
+- [LMNT](/integration/model-provider/lmnt) (standard)
