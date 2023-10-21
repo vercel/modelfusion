@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { HuggingFaceImageDescriptionModel, describeImage } from "modelfusion";
+import { HuggingFaceImageDescriptionModel, generateText } from "modelfusion";
 
 dotenv.config();
 
@@ -10,7 +10,7 @@ async function main() {
   const imageResponse = await fetch(imageUrl);
   const data = Buffer.from(await imageResponse.arrayBuffer());
 
-  const text = await describeImage(
+  const text = await generateText(
     new HuggingFaceImageDescriptionModel({
       model: "nlpconnect/vit-gpt2-image-captioning",
     }),

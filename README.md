@@ -316,21 +316,6 @@ for await (const part of speechStream) {
 }
 ```
 
-### [Describe Image](https://modelfusion.dev/guide/function/describe-image)
-
-Describe an image as text, e.g. for image captioning or OCR.
-
-```ts
-const text = await describeImage(
-  new HuggingFaceImageDescriptionModel({
-    model: "nlpconnect/vit-gpt2-image-captioning",
-  }),
-  data // buffer with image data
-);
-```
-
-Providers: [HuggingFace](/integration/model-provider/huggingface)
-
 ### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 
 Generate an image from a prompt.
@@ -558,7 +543,6 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
   - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
   - [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
-  - [Describe Image](https://modelfusion.dev/guide/function/describe-image)
   - [Generate Image](https://modelfusion.dev/guide/function/generate-image)
     - [Prompt Format](https://modelfusion.dev/guide/function/generate-image/prompt-format)
 - [Guards](https://modelfusion.dev/guide/guard)

@@ -4,10 +4,6 @@ import {
 } from "../core/FunctionEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
-  ImageDescriptionFinishedEvent,
-  ImageDescriptionStartedEvent,
-} from "./describe-image/ImageDescriptionEvent.js";
-import {
   EmbeddingFinishedEvent,
   EmbeddingStartedEvent,
 } from "./embed/EmbeddingEvent.js";
@@ -89,7 +85,6 @@ export interface BaseModelCallFinishedEvent extends BaseFunctionFinishedEvent {
 
 export type ModelCallStartedEvent =
   | EmbeddingStartedEvent
-  | ImageDescriptionStartedEvent
   | ImageGenerationStartedEvent
   | StructureGenerationStartedEvent
   | StructureStreamingStartedEvent
@@ -100,7 +95,6 @@ export type ModelCallStartedEvent =
 
 export type ModelCallFinishedEvent =
   | EmbeddingFinishedEvent
-  | ImageDescriptionFinishedEvent
   | ImageGenerationFinishedEvent
   | StructureGenerationFinishedEvent
   | StructureStreamingFinishedEvent

@@ -7,6 +7,10 @@
 - Speech synthesis streaming supports string inputs.
 - Observability for speech synthesis streaming.
 
+### Removed
+
+- `describeImage` model function. Use `generateText` instead (with e.g. `HuggingFaceImageDescriptionModel`).
+
 ## v0.48.0 - 2023-10-20
 
 ### Added

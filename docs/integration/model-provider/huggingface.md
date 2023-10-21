@@ -52,6 +52,24 @@ const text = await generateText(
 );
 ```
 
+### Generate Text (Image Description Model)
+
+[HuggingFaceImageDescriptionModel API](/api/classes/HuggingFaceImageDescriptionModel)
+
+```ts
+import { HuggingFaceImageDescriptionModel, generateText } from "modelfusion";
+
+const imageResponse = await fetch(imageUrl);
+const data = Buffer.from(await imageResponse.arrayBuffer());
+
+const text = await generateText(
+  new HuggingFaceImageDescriptionModel({
+    model: "nlpconnect/vit-gpt2-image-captioning",
+  }),
+  data
+);
+```
+
 ### Embed Text
 
 [HuggingFaceTextEmbeddingModel API](/api/classes/HuggingFaceTextEmbeddingModel)
@@ -70,23 +88,5 @@ const embeddings = await embedMany(
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
   ]
-);
-```
-
-### Describe Image
-
-[HuggingFaceImageDescriptionModel API](/api/classes/HuggingFaceImageDescriptionModel)
-
-```ts
-import { HuggingFaceImageDescriptionModel, describeImage } from "modelfusion";
-
-const imageResponse = await fetch(imageUrl);
-const data = Buffer.from(await imageResponse.arrayBuffer());
-
-const text = await describeImage(
-  new HuggingFaceImageDescriptionModel({
-    model: "nlpconnect/vit-gpt2-image-captioning",
-  }),
-  data
 );
 ```
