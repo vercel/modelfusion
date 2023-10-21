@@ -1,8 +1,8 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { AsyncIterableResultPromise } from "../../model-function/AsyncIterableResultPromise.js";
-import { Delta } from "../../model-function/Delta.js";
 import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import { executeStandardCall } from "../executeStandardCall.js";
+import { executeStreamCall } from "../executeStreamCall.js";
 import {
   DuplexSpeechSynthesisModel,
   SpeechSynthesisModel,
@@ -83,54 +83,24 @@ export function synthesizeSpeech(
       }
 
       return new AsyncIterableResultPromise<Buffer>(
-        doSynthesizeSpeechStreamDuplex(model, text, options)
+        executeStreamCall({
+          functionType: "speech-synthesis",
+          input: text,
+          model,
+          options,
+          startStream: async (options) =>
+            model.doSynthesizeSpeechStreamDuplex(text, options),
+          processDelta: (delta) => {
+            return delta.valueDelta;
+          },
+          getResult: () => ({}),
+        })
       );
     }
 
     default: {
       const mode_: never = mode;
       throw new Error(`Unsupported mode: ${mode_}`);
-    }
-  }
-}
-
-async function doSynthesizeSpeechStreamDuplex(
-  model: SpeechSynthesisModel<SpeechSynthesisModelSettings> & {
-    readonly doSynthesizeSpeechStreamDuplex: (
-      text: AsyncIterable<string>,
-      options?: FunctionOptions
-    ) => PromiseLike<AsyncIterable<Delta<Buffer>>>;
-  },
-  text: AsyncIterable<string>,
-  options?: FunctionOptions
-) {
-  const speechDeltas = await model.doSynthesizeSpeechStreamDuplex(
-    text,
-    options
-  );
-
-  // Convert the speechDeltas (AsyncIterable<Delta<Buffer>>) to an AsyncIterable<Buffer>
-  const bufferStream = convertDeltasToBuffers(speechDeltas);
-
-  return {
-    value: bufferStream,
-    metadata: {
-      model: model.modelInformation,
-      callId: "test",
-      startTimestamp: new Date(),
-    },
-  };
-}
-
-async function* convertDeltasToBuffers(
-  deltas: AsyncIterable<Delta<Buffer>>
-): AsyncIterable<Buffer> {
-  for await (const delta of deltas) {
-    switch (delta.type) {
-      case "error":
-        throw delta.error;
-      case "delta":
-        yield delta.valueDelta;
     }
   }
 }
