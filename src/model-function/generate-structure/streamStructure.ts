@@ -45,7 +45,7 @@ async function doStreamStructure<STRUCTURE, PROMPT, NAME extends string>(
   prompt: PROMPT,
   options?: FunctionOptions
 ): Promise<{
-  output: AsyncIterable<StructureStreamPart<STRUCTURE>>;
+  value: AsyncIterable<StructureStreamPart<STRUCTURE>>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
   const run = await getRun(options?.run);
@@ -211,7 +211,7 @@ async function doStreamStructure<STRUCTURE, PROMPT, NAME extends string>(
   }
 
   return {
-    output: result.value,
+    value: result.value,
     metadata: startMetadata,
   };
 }

@@ -113,7 +113,7 @@ async function doSynthesizeSpeechStreamDuplex(
   const bufferStream = convertDeltasToBuffers(speechDeltas);
 
   return {
-    output: bufferStream,
+    value: bufferStream,
     metadata: {
       model: model.modelInformation,
       callId: "test",

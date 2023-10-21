@@ -1,11 +1,11 @@
 import { ModelCallMetadata } from "./ModelCallMetadata.js";
 
 export class AsyncIterableResultPromise<T> extends Promise<AsyncIterable<T>> {
-  private outputPromise: Promise<AsyncIterable<T>>;
+  private valuePromise: Promise<AsyncIterable<T>>;
 
   constructor(
     private fullPromise: Promise<{
-      output: AsyncIterable<T>;
+      value: AsyncIterable<T>;
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }>
   ) {
@@ -14,11 +14,11 @@ export class AsyncIterableResultPromise<T> extends Promise<AsyncIterable<T>> {
       resolve(null as any); // we override the resolve function
     });
 
-    this.outputPromise = fullPromise.then((result) => result.output);
+    this.valuePromise = fullPromise.then((result) => result.value);
   }
 
   asFullResponse(): Promise<{
-    output: AsyncIterable<T>;
+    value: AsyncIterable<T>;
     metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
   }> {
     return this.fullPromise;
@@ -34,7 +34,7 @@ export class AsyncIterableResultPromise<T> extends Promise<AsyncIterable<T>> {
       | undefined
       | null
   ): Promise<TResult1 | TResult2> {
-    return this.outputPromise.then(onfulfilled, onrejected);
+    return this.valuePromise.then(onfulfilled, onrejected);
   }
 
   override catch<TResult = never>(
@@ -43,12 +43,12 @@ export class AsyncIterableResultPromise<T> extends Promise<AsyncIterable<T>> {
       | undefined
       | null
   ): Promise<AsyncIterable<T> | TResult> {
-    return this.outputPromise.catch(onrejected);
+    return this.valuePromise.catch(onrejected);
   }
 
   override finally(
     onfinally?: (() => void) | undefined | null
   ): Promise<AsyncIterable<T>> {
-    return this.outputPromise.finally(onfinally);
+    return this.valuePromise.finally(onfinally);
   }
 }
