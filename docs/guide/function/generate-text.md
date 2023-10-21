@@ -9,7 +9,7 @@ You can also stream the text if it is supported by the model.
 
 The prompt format depends on the model.
 For example, OpenAI text models expect a string prompt, and OpenAI chat models expect an array of chat messages.
-You can use [prompt formats](/guide/function/generate-text/prompt-format) to change the prompt format of a model.
+You can use [prompt formats](#prompt-format) to change the prompt format of a model.
 
 ## Usage
 

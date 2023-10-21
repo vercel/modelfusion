@@ -39,7 +39,7 @@ You can provide API keys for the different [integrations](https://modelfusion.de
 
 Generate text using a language model and a prompt.
 You can stream the text if it is supported by the model.
-You can use [prompt formats](https://modelfusion.dev/guide/function/generate-text/prompt-format) to change the prompt format of a model.
+You can use [prompt formats](https://modelfusion.dev/guide/function/generate-text#prompt-format) to change the prompt format of a model.
 
 #### generateText
 
@@ -445,7 +445,7 @@ Available Vector Stores: [Memory](https://modelfusion.dev/integration/vector-ind
 
 Prompt formats let you use higher level prompt structures (such as instruction or chat prompts) for different models.
 
-#### [Text Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-text/prompt-format)
+#### [Text Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-text#prompt-format)
 
 ```ts
 const text = await generateText(
@@ -535,16 +535,14 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
 ### [Guide](https://modelfusion.dev/guide)
 
 - [Model Functions](https://modelfusion.dev/guide/function/)
-  - [Generate and stream text](https://modelfusion.dev/guide/function/generate-text)
-    - [Prompt Format](https://modelfusion.dev/guide/function/generate-text/prompt-format)
-  - [Generate and stream structure](https://modelfusion.dev/guide/function/generate-structure)
+  - [Generate text](https://modelfusion.dev/guide/function/generate-text)
+  - [Generate image](https://modelfusion.dev/guide/function/generate-image)
+  - [Generate speech](https://modelfusion.dev/guide/function/generate-speech)
+  - [Transcribe speech](https://modelfusion.dev/guide/function/transcribe-speech)
+  - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
   - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
-  - [Generate Image](https://modelfusion.dev/guide/function/generate-image)
-    - [Prompt Format](https://modelfusion.dev/guide/function/generate-image/prompt-format)
-  - [Generate Speech](https://modelfusion.dev/guide/function/generate-speech)
-  - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
 - [Guards](https://modelfusion.dev/guide/guard)
 - [Tools](https://modelfusion.dev/guide/tools)
 - [Vector Indices](https://modelfusion.dev/guide/vector-index)
