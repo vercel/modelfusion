@@ -29,12 +29,9 @@ const model = new ElevenLabsSpeechModel({
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/elevenlabs)
+| [ElevenLabsSpeechModel API](/api/classes/ElevenLabsSpeechModel)
 
 ### Generate Speech
-
-[ElevenLabsSpeechModel API](/api/classes/ElevenLabsSpeechModel)
-
-#### generateSpeech
 
 ```ts
 import { ElevenLabsSpeechModel, generateSpeech } from "modelfusion";
@@ -53,7 +50,7 @@ const path = `./elevenlabs-speech-example.mp3`;
 fs.writeFileSync(path, speech);
 ```
 
-#### streamSpeech
+### Stream Speech
 
 ```ts
 const textStream = await streamText(/* ... */);

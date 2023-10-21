@@ -29,10 +29,9 @@ const model = new LmntSpeechModel({
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/lmnt)
+| [LmntSpeechModel API](/api/classes/LmntSpeechModel)
 
 ### Generate Speech
-
-[LmntSpeechModel API](/api/classes/LmntSpeechModel)
 
 ```ts
 import { LmntSpeechModel, generateSpeech } from "modelfusion";
