@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { executeCall } from "../executeCall.js";
+import { executeStandardCall } from "../executeStandardCall.js";
 import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   ImageDescriptionModel,
@@ -17,7 +17,7 @@ export function describeImage<DATA>(
   options?: FunctionOptions
 ): ModelFunctionPromise<string> {
   return new ModelFunctionPromise(
-    executeCall({
+    executeStandardCall({
       functionType: "image-description",
       input: data,
       model,

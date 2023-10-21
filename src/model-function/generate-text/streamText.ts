@@ -35,12 +35,13 @@ async function doStreamText<PROMPT>(
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }> {
   const run = await getRun(options?.run);
+  const settings = model.settings;
 
   const eventSource = new FunctionEventSource({
     observers: [
       ...getFunctionCallLogger(options?.logging ?? getGlobalFunctionLogging()),
       ...getGlobalFunctionObservers(),
-      ...(model.settings.observers ?? []),
+      ...(settings.observers ?? []),
       ...(run?.functionObserver != null ? [run.functionObserver] : []),
       ...(options?.observers ?? []),
     ],

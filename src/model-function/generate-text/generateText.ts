@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { executeCall } from "../executeCall.js";
+import { executeStandardCall } from "../executeStandardCall.js";
 import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   TextGenerationModel,
@@ -25,7 +25,7 @@ export function generateText<PROMPT>(
   options?: FunctionOptions
 ): ModelFunctionPromise<string> {
   return new ModelFunctionPromise(
-    executeCall({
+    executeStandardCall({
       functionType: "text-generation",
       input: prompt,
       model,

@@ -15,7 +15,10 @@ import {
 } from "./ModelCallEvent.js";
 import { ModelCallMetadata } from "./ModelCallMetadata.js";
 
-export async function executeCall<VALUE, MODEL extends Model<ModelSettings>>({
+export async function executeStandardCall<
+  VALUE,
+  MODEL extends Model<ModelSettings>,
+>({
   model,
   options,
   input,

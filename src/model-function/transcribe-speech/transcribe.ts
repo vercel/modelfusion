@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { executeCall } from "../executeCall.js";
+import { executeStandardCall } from "../executeStandardCall.js";
 import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   TranscriptionModel,
@@ -26,7 +26,7 @@ export function transcribe<DATA>(
   options?: FunctionOptions
 ): ModelFunctionPromise<string> {
   return new ModelFunctionPromise(
-    executeCall({
+    executeStandardCall({
       functionType: "transcription",
       input: data,
       model,

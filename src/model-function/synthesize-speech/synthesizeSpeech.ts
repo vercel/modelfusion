@@ -2,7 +2,7 @@ import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { AsyncIterableResultPromise } from "../../model-function/AsyncIterableResultPromise.js";
 import { Delta } from "../../model-function/Delta.js";
 import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
-import { executeCall } from "../executeCall.js";
+import { executeStandardCall } from "../executeStandardCall.js";
 import {
   DuplexSpeechSynthesisModel,
   SpeechSynthesisModel,
@@ -46,7 +46,7 @@ export function synthesizeSpeech(
       }
 
       return new ModelFunctionPromise(
-        executeCall({
+        executeStandardCall({
           functionType: "speech-synthesis",
           input: text,
           model,
