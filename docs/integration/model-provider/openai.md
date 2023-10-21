@@ -56,13 +56,13 @@ new OpenAIChatModel({
 
 #### Text Model
 
-[OpenAITextGenerationModel API](/api/classes/OpenAITextGenerationModel)
+[OpenAICompletionModel API](/api/classes/OpenAICompletionModel)
 
 ```ts
-import { OpenAITextGenerationModel, generateText } from "modelfusion";
+import { OpenAICompletionModel, generateText } from "modelfusion";
 
 const text = await generateText(
-  new OpenAITextGenerationModel({
+  new OpenAICompletionModel({
     model: "gpt-3.5-turbo-instruct",
     temperature: 0.7,
     maxCompletionTokens: 500,
@@ -106,13 +106,13 @@ You can use your fine-tuned `gpt-3.5-turbo` models similarly to the base models.
 
 #### Text Model
 
-[OpenAITextGenerationModel API](/api/classes/OpenAITextGenerationModel)
+[OpenAICompletionModel API](/api/classes/OpenAICompletionModel)
 
 ```ts
-import { OpenAITextGenerationModel, streamText } from "modelfusion";
+import { OpenAICompletionModel, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  new OpenAITextGenerationModel({
+  new OpenAICompletionModel({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
   }),

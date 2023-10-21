@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import {
-  OpenAITextGenerationModel,
+  OpenAICompletionModel,
   streamText,
   generateSpeech,
   ElevenLabsSpeechModel,
@@ -11,7 +11,7 @@ dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    new OpenAITextGenerationModel({
+    new OpenAICompletionModel({
       model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,
       maxCompletionTokens: 100,

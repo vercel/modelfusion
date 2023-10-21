@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   OpenAIApiConfiguration,
-  OpenAITextGenerationModel,
+  OpenAICompletionModel,
   generateText,
 } from "modelfusion";
 import { customObserver } from "./custom-observer";
@@ -11,7 +11,7 @@ dotenv.config();
 async function main() {
   // Set the observer on the function call:
   const text = await generateText(
-    new OpenAITextGenerationModel({
+    new OpenAICompletionModel({
       api: new OpenAIApiConfiguration({
         baseUrl: "invalid-url",
       }),

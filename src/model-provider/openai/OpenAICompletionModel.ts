@@ -101,10 +101,10 @@ export const OPENAI_TEXT_GENERATION_MODELS = {
   },
 };
 
-export function getOpenAITextGenerationModelInformation(
-  model: OpenAITextGenerationModelType
+export function getOpenAICompletionModelInformation(
+  model: OpenAICompletionModelType
 ): {
-  baseModel: OpenAITextGenerationBaseModelType;
+  baseModel: OpenAICompletionBaseModelType;
   isFineTuned: boolean;
   contextWindowSize: number;
   promptTokenCostInMillicents: number;
@@ -113,10 +113,10 @@ export function getOpenAITextGenerationModelInformation(
   // Model is already a base model:
   if (model in OPENAI_TEXT_GENERATION_MODELS) {
     const baseModelInformation =
-      OPENAI_TEXT_GENERATION_MODELS[model as OpenAITextGenerationBaseModelType];
+      OPENAI_TEXT_GENERATION_MODELS[model as OpenAICompletionBaseModelType];
 
     return {
-      baseModel: model as OpenAITextGenerationBaseModelType,
+      baseModel: model as OpenAICompletionBaseModelType,
       isFineTuned: false,
       contextWindowSize: baseModelInformation.contextWindowSize,
       promptTokenCostInMillicents:
@@ -133,11 +133,11 @@ export function getOpenAITextGenerationModelInformation(
   if (["davinci-002", "babbage-002"].includes(baseModel)) {
     const baseModelInformation =
       OPENAI_TEXT_GENERATION_MODELS[
-        baseModel as FineTuneableOpenAITextGenerationModelType
+        baseModel as FineTuneableOpenAICompletionModelType
       ];
 
     return {
-      baseModel: baseModel as FineTuneableOpenAITextGenerationModelType,
+      baseModel: baseModel as FineTuneableOpenAICompletionModelType,
       isFineTuned: true,
       contextWindowSize: baseModelInformation.contextWindowSize,
       promptTokenCostInMillicents:
@@ -150,33 +150,33 @@ export function getOpenAITextGenerationModelInformation(
   throw new Error(`Unknown OpenAI chat base model ${baseModel}.`);
 }
 
-type FineTuneableOpenAITextGenerationModelType = "davinci-002" | "babbage-002";
+type FineTuneableOpenAICompletionModelType = "davinci-002" | "babbage-002";
 
-type FineTunedOpenAITextGenerationModelType =
-  `ft:${FineTuneableOpenAITextGenerationModelType}:${string}:${string}:${string}`;
+type FineTunedOpenAICompletionModelType =
+  `ft:${FineTuneableOpenAICompletionModelType}:${string}:${string}:${string}`;
 
-export type OpenAITextGenerationBaseModelType =
+export type OpenAICompletionBaseModelType =
   keyof typeof OPENAI_TEXT_GENERATION_MODELS;
 
-export type OpenAITextGenerationModelType =
-  | OpenAITextGenerationBaseModelType
-  | FineTunedOpenAITextGenerationModelType;
+export type OpenAICompletionModelType =
+  | OpenAICompletionBaseModelType
+  | FineTunedOpenAICompletionModelType;
 
-export const isOpenAITextGenerationModel = (
+export const isOpenAICompletionModel = (
   model: string
-): model is OpenAITextGenerationModelType =>
+): model is OpenAICompletionModelType =>
   model in OPENAI_TEXT_GENERATION_MODELS ||
   model.startsWith("ft:davinci-002:") ||
   model.startsWith("ft:babbage-002:");
 
-export const calculateOpenAITextGenerationCostInMillicents = ({
+export const calculateOpenAICompletionCostInMillicents = ({
   model,
   response,
 }: {
-  model: OpenAITextGenerationModelType;
-  response: OpenAITextGenerationResponse;
+  model: OpenAICompletionModelType;
+  response: OpenAICompletionResponse;
 }) => {
-  const modelInformation = getOpenAITextGenerationModelInformation(model);
+  const modelInformation = getOpenAICompletionModelInformation(model);
 
   return (
     response.usage.prompt_tokens *
@@ -186,10 +186,10 @@ export const calculateOpenAITextGenerationCostInMillicents = ({
   );
 };
 
-export interface OpenAITextGenerationCallSettings {
+export interface OpenAICompletionCallSettings {
   api?: ApiConfiguration;
 
-  model: OpenAITextGenerationModelType;
+  model: OpenAICompletionModelType;
 
   suffix?: string;
   maxTokens?: number;
@@ -205,9 +205,9 @@ export interface OpenAITextGenerationCallSettings {
   logitBias?: Record<number, number>;
 }
 
-export interface OpenAITextGenerationModelSettings
+export interface OpenAICompletionModelSettings
   extends TextGenerationModelSettings,
-    Omit<OpenAITextGenerationCallSettings, "stop" | "maxTokens"> {
+    Omit<OpenAICompletionCallSettings, "stop" | "maxTokens"> {
   isUserIdForwardingEnabled?: boolean;
 }
 
@@ -217,7 +217,7 @@ export interface OpenAITextGenerationModelSettings
  * @see https://platform.openai.com/docs/api-reference/completions/create
  *
  * @example
- * const model = new OpenAITextGenerationModel({
+ * const model = new OpenAICompletionModel({
  *   model: "gpt-3.5-turbo-instruct",
  *   temperature: 0.7,
  *   maxCompletionTokens: 500,
@@ -229,14 +229,14 @@ export interface OpenAITextGenerationModelSettings
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  */
-export class OpenAITextGenerationModel
-  extends AbstractModel<OpenAITextGenerationModelSettings>
-  implements TextStreamingModel<string, OpenAITextGenerationModelSettings>
+export class OpenAICompletionModel
+  extends AbstractModel<OpenAICompletionModelSettings>
+  implements TextStreamingModel<string, OpenAICompletionModelSettings>
 {
-  constructor(settings: OpenAITextGenerationModelSettings) {
+  constructor(settings: OpenAICompletionModelSettings) {
     super({ settings });
 
-    const modelInformation = getOpenAITextGenerationModelInformation(
+    const modelInformation = getOpenAICompletionModelInformation(
       this.settings.model
     );
 
@@ -285,11 +285,11 @@ export class OpenAITextGenerationModel
     return callWithRetryAndThrottle({
       retry: callSettings.api?.retry,
       throttle: callSettings.api?.throttle,
-      call: async () => callOpenAITextGenerationAPI(callSettings),
+      call: async () => callOpenAICompletionAPI(callSettings),
     });
   }
 
-  get settingsForEvent(): Partial<OpenAITextGenerationModelSettings> {
+  get settingsForEvent(): Partial<OpenAICompletionModelSettings> {
     const eventSettingProperties: Array<string> = [
       "maxCompletionTokens",
       "stopSequences",
@@ -304,7 +304,7 @@ export class OpenAITextGenerationModel
       "frequencyPenalty",
       "bestOf",
       "logitBias",
-    ] satisfies (keyof OpenAITextGenerationModelSettings)[];
+    ] satisfies (keyof OpenAICompletionModelSettings)[];
 
     return Object.fromEntries(
       Object.entries(this.settings).filter(([key]) =>
@@ -356,7 +356,7 @@ export class OpenAITextGenerationModel
   ): PromptFormatTextStreamingModel<
     INPUT_PROMPT,
     string,
-    OpenAITextGenerationModelSettings,
+    OpenAICompletionModelSettings,
     this
   > {
     return new PromptFormatTextStreamingModel({
@@ -370,14 +370,14 @@ export class OpenAITextGenerationModel
     });
   }
 
-  withSettings(additionalSettings: Partial<OpenAITextGenerationModelSettings>) {
-    return new OpenAITextGenerationModel(
+  withSettings(additionalSettings: Partial<OpenAICompletionModelSettings>) {
+    return new OpenAICompletionModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
 }
 
-const openAITextGenerationResponseSchema = z.object({
+const OpenAICompletionResponseSchema = z.object({
   id: z.string(),
   object: z.literal("text_completion"),
   created: z.number(),
@@ -397,7 +397,7 @@ const openAITextGenerationResponseSchema = z.object({
   }),
 });
 
-async function callOpenAITextGenerationAPI<RESPONSE>({
+async function callOpenAICompletionAPI<RESPONSE>({
   api = new OpenAIApiConfiguration(),
   abortSignal,
   responseFormat,
@@ -416,7 +416,7 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
   bestOf,
   logitBias,
   user,
-}: OpenAITextGenerationCallSettings & {
+}: OpenAICompletionCallSettings & {
   api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: OpenAITextResponseFormatType<RESPONSE>;
@@ -455,8 +455,8 @@ async function callOpenAITextGenerationAPI<RESPONSE>({
   });
 }
 
-export type OpenAITextGenerationResponse = z.infer<
-  typeof openAITextGenerationResponseSchema
+export type OpenAICompletionResponse = z.infer<
+  typeof OpenAICompletionResponseSchema
 >;
 
 export type OpenAITextResponseFormatType<T> = {
@@ -470,8 +470,8 @@ export const OpenAITextResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(openAITextGenerationResponseSchema),
-  } satisfies OpenAITextResponseFormatType<OpenAITextGenerationResponse>,
+    handler: createJsonResponseHandler(OpenAICompletionResponseSchema),
+  } satisfies OpenAITextResponseFormatType<OpenAICompletionResponse>,
 
   /**
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
@@ -498,7 +498,7 @@ const textResponseStreamEventSchema = z.object({
   object: z.string(),
 });
 
-export type OpenAITextGenerationDelta = Array<{
+export type OpenAICompletionDelta = Array<{
   content: string;
   isComplete: boolean;
   delta: string;
@@ -508,7 +508,7 @@ async function createOpenAITextFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
 ): Promise<AsyncIterable<Delta<string>>> {
   const queue = new AsyncQueue<Delta<string>>();
-  const streamDelta: OpenAITextGenerationDelta = [];
+  const streamDelta: OpenAICompletionDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
   parseEventSourceStream({ stream })

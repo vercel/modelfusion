@@ -12,6 +12,7 @@
 - **breaking change**: renamed `synthesizeSpeech` to `generateSpeech`
 - **breaking change**: renamed `LmntSpeechSynthesisModel` to `LmntSpeechModel`
 - **breaking change**: renamed `ElevenLabesSpeechSynthesisModel` to `ElevenLabsSpeechModel`
+- **breaking change**: renamed `OpenAITextGenerationModel` to `OpenAICompletionModel`
 
 ### Removed
 

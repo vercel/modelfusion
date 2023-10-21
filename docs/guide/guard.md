@@ -104,7 +104,7 @@ function contentRequiresModeration(text: string): boolean {
 const story = await guard(
   (input) =>
     generateText(
-      new OpenAITextGenerationModel({
+      new OpenAICompletionModel({
         model: "gpt-3.5-turbo-instruct",
         temperature: 0.7,
         maxCompletionTokens: 250,

@@ -32,7 +32,7 @@ The settings can be set in the constructor of the model, or in the `withSettings
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel(/* ... */),
+  new OpenAICompletionModel(/* ... */),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```

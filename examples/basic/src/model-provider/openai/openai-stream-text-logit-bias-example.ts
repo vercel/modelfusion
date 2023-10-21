@@ -1,11 +1,11 @@
-import { OpenAITextGenerationModel, streamText } from "modelfusion";
 import dotenv from "dotenv";
+import { OpenAICompletionModel, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    new OpenAITextGenerationModel({
+    new OpenAICompletionModel({
       model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 1000,
       logitBias: {

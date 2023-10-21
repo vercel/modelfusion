@@ -11,7 +11,7 @@ You can call these functions with a model, a prompt, and additional [FunctionOpt
 ```ts
 const text = await generateText(
   // model:
-  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
+  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
 
   // prompt (type depends on model):
   "Write a short story about a robot learning to love:\n\n",
@@ -34,7 +34,7 @@ Model functions return rich results that include the original response and metad
 ```ts
 // access the full response (needs to be typed) and the metadata:
 const { value, response, metadata } = await generateText(
-  new OpenAITextGenerationModel({
+  new OpenAICompletionModel({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
     n: 2, // generate 2 completions
@@ -45,7 +45,7 @@ const { value, response, metadata } = await generateText(
 console.log(metadata);
 
 // cast to the response type:
-for (const choice of (response as OpenAITextGenerationResponse).choices) {
+for (const choice of (response as OpenAICompletionResponse).choices) {
   console.log(choice.text);
 }
 ```
@@ -66,7 +66,7 @@ Models provide a unified interface to AI models from different [providers](/inte
 Models are created using a constructor call. The constructors take a single configuration object as an argument. The configuration object is specific to the model.
 
 ```ts
-const model = new OpenAITextGenerationModel({
+const model = new OpenAICompletionModel({
   model: "gpt-3.5-turbo-instruct",
   maxCompletionTokens: 500,
 });
@@ -75,7 +75,7 @@ const model = new OpenAITextGenerationModel({
 You can pass API configuration objects to the model constructors to configure the underlying API calls. There are preconfigured API configurations for each provider that you can use. The [API configuration](/api/interfaces/ApiConfiguration) contains api keys, base URLs, as well as throttling and retry functions.
 
 ```ts
-new OpenAITextGenerationModel({
+new OpenAICompletionModel({
   model: "gpt-3.5-turbo-instruct",
   api: new OpenAIApiConfiguration({
     // all parameters are optional:

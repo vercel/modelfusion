@@ -10,10 +10,10 @@ import {
   isOpenAIEmbeddingModel,
 } from "./OpenAITextEmbeddingModel.js";
 import {
-  OpenAITextGenerationResponse,
-  calculateOpenAITextGenerationCostInMillicents,
-  isOpenAITextGenerationModel,
-} from "./OpenAITextGenerationModel.js";
+  OpenAICompletionResponse,
+  calculateOpenAICompletionCostInMillicents,
+  isOpenAICompletionModel,
+} from "./OpenAICompletionModel.js";
 import {
   OpenAITranscriptionModelType,
   OpenAITranscriptionVerboseJsonResponse,
@@ -72,10 +72,10 @@ export class OpenAICostCalculator implements CostCalculator {
           });
         }
 
-        if (isOpenAITextGenerationModel(model)) {
-          return calculateOpenAITextGenerationCostInMillicents({
+        if (isOpenAICompletionModel(model)) {
+          return calculateOpenAICompletionCostInMillicents({
             model,
-            response: call.result.response as OpenAITextGenerationResponse,
+            response: call.result.response as OpenAICompletionResponse,
           });
         }
 

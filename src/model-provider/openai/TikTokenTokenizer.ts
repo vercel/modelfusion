@@ -5,7 +5,7 @@ import r50k_base from "js-tiktoken/ranks/r50k_base";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { never } from "../../util/never.js";
 import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
-import { OpenAITextGenerationBaseModelType } from "./OpenAITextGenerationModel.js";
+import { OpenAICompletionBaseModelType } from "./OpenAICompletionModel.js";
 import { OpenAIChatBaseModelType } from "./chat/OpenAIChatModel.js";
 
 /**
@@ -30,7 +30,7 @@ export class TikTokenTokenizer implements FullTokenizer {
   constructor(options: {
     model:
       | OpenAIChatBaseModelType
-      | OpenAITextGenerationBaseModelType
+      | OpenAICompletionBaseModelType
       | OpenAITextEmbeddingModelType;
   }) {
     this.tiktoken = new Tiktoken(getTiktokenBPE(options.model));
@@ -61,7 +61,7 @@ export class TikTokenTokenizer implements FullTokenizer {
 function getTiktokenBPE(
   model:
     | OpenAIChatBaseModelType
-    | OpenAITextGenerationBaseModelType
+    | OpenAICompletionBaseModelType
     | OpenAITextEmbeddingModelType
 ) {
   switch (model) {

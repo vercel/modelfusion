@@ -1,9 +1,5 @@
-import {
-  AbortError,
-  OpenAITextGenerationModel,
-  generateText,
-} from "modelfusion";
 import dotenv from "dotenv";
+import { AbortError, OpenAICompletionModel, generateText } from "modelfusion";
 
 dotenv.config();
 
@@ -11,7 +7,7 @@ async function main() {
   const abortController = new AbortController();
 
   generateText(
-    new OpenAITextGenerationModel({
+    new OpenAICompletionModel({
       model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 500,
     }),

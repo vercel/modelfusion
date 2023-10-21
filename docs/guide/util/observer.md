@@ -87,7 +87,7 @@ You can set global function observers that are called for all function events.
 setGlobalFunctionObservers([observer]);
 
 const text = await generateText(
-  new OpenAITextGenerationModel({
+  new OpenAICompletionModel({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 50,
   }),
@@ -103,7 +103,7 @@ You can set function observers for specific functions in the function options.
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({
+  new OpenAICompletionModel({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 50,
   }),
@@ -124,7 +124,7 @@ const run = new DefaultRun({
 });
 
 const text = await generateText(
-  new OpenAITextGenerationModel({
+  new OpenAICompletionModel({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 50,
   }),
@@ -141,7 +141,7 @@ You can set function observers for all functions calls that use a model instance
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({
+  new OpenAICompletionModel({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 50,
     observers: [observer],

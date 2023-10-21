@@ -12,7 +12,7 @@ import {
  * For example, OpenAI text models expect a string prompt, and OpenAI chat models expect an array of chat messages.
  *
  * @example
- * const model = new OpenAITextGenerationModel(...);
+ * const model = new OpenAICompletionModel(...);
  *
  * const text = await generateText(
  *   model,

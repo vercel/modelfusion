@@ -25,7 +25,7 @@ You can configure the logging mode globally by calling [setGlobalFunctionLogging
 setGlobalFunctionLogging("basic-text");
 
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
+  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -38,7 +38,7 @@ You can configure the logging mode per function by setting the `logging` propert
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
+  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n",
   { logging: "basic-text" }
 );
@@ -52,7 +52,7 @@ The per function logging mode takes precedence over the global function logging 
 setGlobalFunctionLogging("basic-text");
 
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
+  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n",
   { logging: "off" } // overrides global logging
 );
@@ -69,7 +69,7 @@ This mode is useful to see the overall progress and to setup basic logging of th
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
+  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n",
   { logging: "basic-text" }
 );
@@ -89,7 +89,7 @@ The console output is colored and indented for better readability, but some deta
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
+  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n",
   { logging: "detailed-object" }
 );
@@ -131,7 +131,7 @@ The mode is intended for production systems with a logging and observability inf
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({ model: "gpt-3.5-turbo-instruct" }),
+  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n",
   { logging: "detailed-json" }
 );

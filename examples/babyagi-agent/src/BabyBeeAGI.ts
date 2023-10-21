@@ -5,7 +5,7 @@ import { JSDOM } from "jsdom";
 import {
   OpenAIChatMessage,
   OpenAIChatModel,
-  OpenAITextGenerationModel,
+  OpenAICompletionModel,
   generateText,
 } from "modelfusion";
 import { getJson } from "serpapi";
@@ -71,7 +71,7 @@ async function runBabyBeeAGI({
   // ### Tool functions ##############################
   const textCompletionTool = async (prompt: string) =>
     generateText(
-      new OpenAITextGenerationModel({
+      new OpenAICompletionModel({
         model: "text-davinci-003",
         temperature: 0.5,
         maxCompletionTokens: 1500,
@@ -251,7 +251,7 @@ async function runBabyBeeAGI({
 
   async function summarizerAgent(input: string) {
     return await generateText(
-      new OpenAITextGenerationModel({
+      new OpenAICompletionModel({
         model: "text-davinci-003",
         temperature: 0.5,
         maxCompletionTokens: 100,
@@ -275,7 +275,7 @@ async function runBabyBeeAGI({
       .join("\n");
 
     return await generateText(
-      new OpenAITextGenerationModel({
+      new OpenAICompletionModel({
         model: "text-davinci-003",
         temperature: 0.5,
         maxCompletionTokens: 200,
