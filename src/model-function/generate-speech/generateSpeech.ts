@@ -16,7 +16,7 @@ export function generateSpeech(
 ): ModelFunctionPromise<Buffer> {
   return new ModelFunctionPromise(
     executeStandardCall({
-      functionType: "generate-speech",
+      functionType: "speech-generation",
       input: text,
       model,
       options,
