@@ -1,4 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { AsyncIterableResultPromise } from "../../model-function/AsyncIterableResultPromise.js";
 import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import { executeStandardCall } from "../executeStandardCall.js";
@@ -21,7 +22,7 @@ export function synthesizeSpeech(
 ): ModelFunctionPromise<Buffer>;
 export function synthesizeSpeech(
   model: DuplexSpeechSynthesisModel<SpeechSynthesisModelSettings>,
-  text: AsyncIterable<string>,
+  text: AsyncIterable<string> | string,
   options: FunctionOptions & {
     mode: "stream-duplex";
   }
@@ -67,12 +68,6 @@ export function synthesizeSpeech(
     }
 
     case "stream-duplex": {
-      if (typeof text === "string") {
-        throw new Error(
-          `The "stream-duplex" mode only supports an AsyncIterable<string> input, but received ${text}`
-        );
-      }
-
       if (
         !("doSynthesizeSpeechStreamDuplex" in model) ||
         typeof model.doSynthesizeSpeechStreamDuplex !== "function"
@@ -82,6 +77,18 @@ export function synthesizeSpeech(
         );
       }
 
+      let textStream: AsyncIterable<string>;
+
+      // simulate a stream with a single value for a string input:
+      if (typeof text === "string") {
+        const queue = new AsyncQueue<string>();
+        queue.push(text);
+        queue.close();
+        textStream = queue;
+      } else {
+        textStream = text;
+      }
+
       return new AsyncIterableResultPromise<Buffer>(
         executeStreamCall({
           functionType: "speech-synthesis",
@@ -89,7 +96,7 @@ export function synthesizeSpeech(
           model,
           options,
           startStream: async (options) =>
-            model.doSynthesizeSpeechStreamDuplex(text, options),
+            model.doSynthesizeSpeechStreamDuplex(textStream, options),
           processDelta: (delta) => {
             return delta.valueDelta;
           },
