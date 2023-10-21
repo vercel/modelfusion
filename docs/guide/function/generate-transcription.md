@@ -4,7 +4,7 @@ sidebar_position: 30
 
 # Generate Transcription
 
-Transcribe speech (audio) data into text.
+Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 
 ## Usage
 
