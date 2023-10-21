@@ -258,7 +258,7 @@ const { tool, parameters, result, text } = await useToolOrGenerateText(
 
 ### [Generate Transcription](https://modelfusion.dev/guide/function/generate-transcription)
 
-Turn speech (audio) into text.
+Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 
 ```ts
 const transcription = await generateTranscription(
