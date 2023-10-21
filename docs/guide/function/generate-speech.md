@@ -1,14 +1,14 @@
 ---
-sidebar_position: 50
+sidebar_position: 30
 ---
 
 # Generate Speech
 
+Synthesize speech (audio) from text. Also called TTS (text-to-speech).
+
 ## Usage
 
 [generateSpeech API](/api/modules#generatespeech)
-
-Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 
 ### Standard mode
 
