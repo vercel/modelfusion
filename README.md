@@ -272,9 +272,9 @@ const transcription = await transcribe(
 
 Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai)
 
-### [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
+### [Generate Speech](https://modelfusion.dev/guide/function/generate-speech)
 
-Generate speech (audio) from text. Also called TTS (text-to-speech).
+Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 
 Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
 
@@ -282,8 +282,8 @@ Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elev
 
 ```ts
 // `speech` is a Buffer with MP3 audio data
-const speech = await synthesizeSpeech(
-  new LmntSpeechSynthesisModel({
+const speech = await generateSpeech(
+  new LmntSpeechModel({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
@@ -298,8 +298,8 @@ const speech = await synthesizeSpeech(
 ```ts
 const textStream = await streamText(/* ... */);
 
-const speechStream = await synthesizeSpeech(
-  new ElevenLabsSpeechSynthesisModel({
+const speechStream = await generateSpeech(
+  new ElevenLabsSpeechModel({
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     model: "eleven_monolingual_v1",
     voiceSettings: { stability: 1, similarityBoost: 0.35 },
@@ -541,10 +541,10 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
   - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
-  - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
-  - [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
   - [Generate Image](https://modelfusion.dev/guide/function/generate-image)
     - [Prompt Format](https://modelfusion.dev/guide/function/generate-image/prompt-format)
+  - [Generate Speech](https://modelfusion.dev/guide/function/generate-speech)
+  - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
 - [Guards](https://modelfusion.dev/guide/guard)
 - [Tools](https://modelfusion.dev/guide/tools)
 - [Vector Indices](https://modelfusion.dev/guide/vector-index)

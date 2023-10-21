@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import {
-  ElevenLabsSpeechSynthesisModel,
   OpenAITextGenerationModel,
   streamText,
-  synthesizeSpeech,
+  generateSpeech,
+  ElevenLabsSpeechModel,
 } from "modelfusion";
 import fs from "node:fs";
 
@@ -19,8 +19,8 @@ async function main() {
     "Write a short story about a robot learning to love:\n\n"
   );
 
-  const speechStream = await synthesizeSpeech(
-    new ElevenLabsSpeechSynthesisModel({
+  const speechStream = await generateSpeech(
+    new ElevenLabsSpeechModel({
       voice: "pNInz6obpgDQGcFmaJgB", // Adam
       voiceSettings: {
         stability: 1,

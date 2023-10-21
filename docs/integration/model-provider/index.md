@@ -33,11 +33,11 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 - [Stability AI](/integration/model-provider/stability)
 - [Automatic1111](/integration/model-provider/automatic1111)
 
-### [Transcribe Speech](/guide/function/transcribe-speech)
-
-- [OpenAI (Whisper)](/integration/model-provider/openai)
-
-### [Synthesize Speech](/guide/function/synthesize-speech)
+### [Generate Speech](/guide/function/generate-speech)
 
 - [Eleven Labs](/integration/model-provider/elevenlabs) (standard and duplex streaming)
 - [LMNT](/integration/model-provider/lmnt) (standard)
+
+### [Transcribe Speech](/guide/function/transcribe-speech)
+
+- [OpenAI (Whisper)](/integration/model-provider/openai)

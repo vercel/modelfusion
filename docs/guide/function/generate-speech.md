@@ -1,22 +1,22 @@
 ---
-sidebar_position: 31
+sidebar_position: 50
 ---
 
-# Synthesize Speech
+# Generate Speech
 
 ## Usage
 
-[synthesizeSpeech API](/api/modules#synthesizespeech)
+[generateSpeech API](/api/modules#generatespeech)
 
-Synthesize text into speech (audio data).
+Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 
 ### Standard mode
 
-In standard mode, a text string is passed to the `synthesizeSpeech` function, along with a `SpeechSynthesisModel` instance, and an audio buffer with mpeg audio data is returned.
+In standard mode, a text string is passed to the `generateSpeech` function, along with a `SpeechSynthesisModel` instance, and an audio buffer with mpeg audio data is returned.
 
 ```ts
-const speech = await synthesizeSpeech(
-  new LmntSpeechSynthesisModel({
+const speech = await generateSpeech(
+  new LmntSpeechModel({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
@@ -28,13 +28,13 @@ const speech = await synthesizeSpeech(
 
 ### Duplex streaming mode
 
-In duplex streaming mode, an `AsyncIterable<string>` is passed to the `synthesizeSpeech` function, along with a `SpeechSynthesisModel` instance that supports duplex streaming, and an `AsyncIterable<Buffer>` is returned.
+In duplex streaming mode, an `AsyncIterable<string>` is passed to the `generateSpeech` function, along with a `SpeechSynthesisModel` instance that supports duplex streaming, and an `AsyncIterable<Buffer>` is returned.
 
 ```ts
 const textStream = await streamText(/* ... */);
 
-const speechStream = await synthesizeSpeech(
-  new ElevenLabsSpeechSynthesisModel({
+const speechStream = await generateSpeech(
+  new ElevenLabsSpeechModel({
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     model: "eleven_monolingual_v1",
     voiceSettings: { stability: 1, similarityBoost: 0.35 },
@@ -54,4 +54,4 @@ for await (const part of speechStream) {
 ## Available Providers
 
 - [ElevenLabs](/integration/model-provider/elevenlabs) - Standard mode and duplex streaming mode
-- [LMNT](/integration/model-provider/lmnt) - Standard mode only
+- [LMNT](/integration/model-provider/lmnt) - Standard mode

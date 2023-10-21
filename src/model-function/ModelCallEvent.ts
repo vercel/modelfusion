@@ -12,6 +12,10 @@ import {
   ImageGenerationStartedEvent,
 } from "./generate-image/ImageGenerationEvent.js";
 import {
+  SpeechGenerationFinishedEvent,
+  SpeechGenerationStartedEvent,
+} from "./generate-speech/SpeechGenerationEvent.js";
+import {
   StructureGenerationFinishedEvent,
   StructureGenerationStartedEvent,
 } from "./generate-structure/StructureGenerationEvent.js";
@@ -27,10 +31,6 @@ import {
   TextStreamingFinishedEvent,
   TextStreamingStartedEvent,
 } from "./generate-text/TextStreamingEvent.js";
-import {
-  SpeechSynthesisFinishedEvent,
-  SpeechSynthesisStartedEvent,
-} from "./synthesize-speech/SpeechSynthesisEvent.js";
 import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
@@ -86,9 +86,9 @@ export interface BaseModelCallFinishedEvent extends BaseFunctionFinishedEvent {
 export type ModelCallStartedEvent =
   | EmbeddingStartedEvent
   | ImageGenerationStartedEvent
+  | SpeechGenerationStartedEvent
   | StructureGenerationStartedEvent
   | StructureStreamingStartedEvent
-  | SpeechSynthesisStartedEvent
   | TextGenerationStartedEvent
   | TextStreamingStartedEvent
   | TranscriptionStartedEvent;
@@ -96,9 +96,9 @@ export type ModelCallStartedEvent =
 export type ModelCallFinishedEvent =
   | EmbeddingFinishedEvent
   | ImageGenerationFinishedEvent
+  | SpeechGenerationFinishedEvent
   | StructureGenerationFinishedEvent
   | StructureStreamingFinishedEvent
-  | SpeechSynthesisFinishedEvent
   | TextGenerationFinishedEvent
   | TextStreamingFinishedEvent
   | TranscriptionFinishedEvent;

@@ -3,12 +3,13 @@ import {
   BaseModelCallStartedEvent,
 } from "../ModelCallEvent.js";
 
-export interface SpeechSynthesisStartedEvent extends BaseModelCallStartedEvent {
-  functionType: "speech-synthesis";
+export interface SpeechGenerationStartedEvent
+  extends BaseModelCallStartedEvent {
+  functionType: "generate-speech";
   input: string;
 }
 
-export type SpeechSynthesisFinishedEventResult =
+export type SpeechGenerationFinishedEventResult =
   | {
       status: "success";
       response: unknown;
@@ -17,9 +18,9 @@ export type SpeechSynthesisFinishedEventResult =
   | { status: "error"; error: unknown }
   | { status: "abort" };
 
-export interface SpeechSynthesisFinishedEvent
+export interface SpeechGenerationFinishedEvent
   extends BaseModelCallFinishedEvent {
-  functionType: "speech-synthesis";
+  functionType: "generate-speech";
   input: string;
-  result: SpeechSynthesisFinishedEventResult;
+  result: SpeechGenerationFinishedEventResult;
 }

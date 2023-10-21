@@ -2,9 +2,9 @@ import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import {
-  SpeechSynthesisModel,
-  SpeechSynthesisModelSettings,
-} from "../../model-function/synthesize-speech/SpeechSynthesisModel.js";
+  SpeechGenerationModel,
+  SpeechGenerationModelSettings,
+} from "../../model-function/generate-speech/SpeechGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createAudioMpegResponseHandler,
@@ -13,8 +13,7 @@ import {
 import { LmntApiConfiguration } from "./LmntApiConfiguration.js";
 import { failedLmntCallResponseHandler } from "./LmntError.js";
 
-export interface LmntSpeechSynthesisModelSettings
-  extends SpeechSynthesisModelSettings {
+export interface LmntSpeechModelSettings extends SpeechGenerationModelSettings {
   api?: ApiConfiguration;
 
   voice: string;
@@ -29,11 +28,11 @@ export interface LmntSpeechSynthesisModelSettings
  *
  * @see https://www.lmnt.com/docs/rest/#synthesize-speech
  */
-export class LmntSpeechSynthesisModel
-  extends AbstractModel<LmntSpeechSynthesisModelSettings>
-  implements SpeechSynthesisModel<LmntSpeechSynthesisModelSettings>
+export class LmntSpeechModel
+  extends AbstractModel<LmntSpeechModelSettings>
+  implements SpeechGenerationModel<LmntSpeechModelSettings>
 {
-  constructor(settings: LmntSpeechSynthesisModelSettings) {
+  constructor(settings: LmntSpeechModelSettings) {
     super({ settings });
   }
 
@@ -59,7 +58,7 @@ export class LmntSpeechSynthesisModel
     });
   }
 
-  get settingsForEvent(): Partial<LmntSpeechSynthesisModelSettings> {
+  get settingsForEvent(): Partial<LmntSpeechModelSettings> {
     return {
       voice: this.settings.voice,
       speed: this.settings.speed,
@@ -68,12 +67,12 @@ export class LmntSpeechSynthesisModel
     };
   }
 
-  doSynthesizeSpeechStandard(text: string, options?: FunctionOptions) {
+  doGenerateSpeechStandard(text: string, options?: FunctionOptions) {
     return this.callAPI(text, options);
   }
 
-  withSettings(additionalSettings: Partial<LmntSpeechSynthesisModelSettings>) {
-    return new LmntSpeechSynthesisModel({
+  withSettings(additionalSettings: Partial<LmntSpeechModelSettings>) {
+    return new LmntSpeechModel({
       ...this.settings,
       ...additionalSettings,
     }) as this;

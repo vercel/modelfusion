@@ -4,11 +4,11 @@ import Fastify from "fastify";
 import {
   AsyncQueue,
   DefaultRun,
-  ElevenLabsSpeechSynthesisModel,
+  ElevenLabsSpeechModel,
   OpenAIChatModel,
   setGlobalFunctionLogging,
   streamText,
-  synthesizeSpeech,
+  generateSpeech,
   withRun,
 } from "modelfusion";
 import { z } from "zod";
@@ -53,8 +53,8 @@ export async function runEndpointServer({
 
       const speechStreamInput = new AsyncQueue<string>();
 
-      const speechStream = await synthesizeSpeech(
-        new ElevenLabsSpeechSynthesisModel({
+      const speechStream = await generateSpeech(
+        new ElevenLabsSpeechModel({
           voice: "pNInz6obpgDQGcFmaJgB", // Adam
           model: "eleven_monolingual_v1",
           voiceSettings: {

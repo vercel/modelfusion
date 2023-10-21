@@ -20,7 +20,7 @@ const api = new LmntApiConfiguration({
   // ...
 });
 
-const model = new LmntSpeechSynthesisModel({
+const model = new LmntSpeechModel({
   api,
   // ...
 });
@@ -30,15 +30,15 @@ const model = new LmntSpeechSynthesisModel({
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/lmnt)
 
-### Synthesize Speech
+### Generate Speech
 
-[LmntSpeechSynthesisModel API](/api/classes/LmntSpeechSynthesisModel)
+[LmntSpeechModel API](/api/classes/LmntSpeechModel)
 
 ```ts
-import { LmntSpeechSynthesisModel, synthesizeSpeech } from "modelfusion";
+import { LmntSpeechModel, generateSpeech } from "modelfusion";
 
-const speech = await synthesizeSpeech(
-  new LmntSpeechSynthesisModel({
+const speech = await generateSpeech(
+  new LmntSpeechModel({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +

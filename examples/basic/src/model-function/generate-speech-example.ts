@@ -1,13 +1,13 @@
 import dotenv from "dotenv";
-import { ElevenLabsSpeechSynthesisModel, synthesizeSpeech } from "modelfusion";
+import { LmntSpeechModel, generateSpeech } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
 
 async function main() {
-  const speech = await synthesizeSpeech(
-    new ElevenLabsSpeechSynthesisModel({
-      voice: "pNInz6obpgDQGcFmaJgB", // Adam
+  const speech = await generateSpeech(
+    new LmntSpeechModel({
+      voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
     }),
     "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
       "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
@@ -15,7 +15,7 @@ async function main() {
       "magical Stevie Wonder, and the final beats from the late Charlie Watts."
   );
 
-  const path = `./elevenlabs-speech-example.mp3`;
+  const path = `./lmnt-speech-example.mp3`;
   fs.writeFileSync(path, speech);
 }
 

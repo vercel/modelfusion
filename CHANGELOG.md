@@ -7,9 +7,15 @@
 - Speech synthesis streaming supports string inputs.
 - Observability for speech synthesis streaming.
 
+### Changes
+
+- **breaking change**: renamed `synthesizeSpeech` to `generateSpeech`
+- **breaking change**: renamed `LmntSpeechSynthesisModel` to `LmntSpeechModel`
+- **breaking change**: renamed `ElevenLabesSpeechSynthesisModel` to `ElevenLabsSpeechModel`
+
 ### Removed
 
-- `describeImage` model function. Use `generateText` instead (with e.g. `HuggingFaceImageDescriptionModel`).
+- **breaking change**: `describeImage` model function. Use `generateText` instead (with e.g. `HuggingFaceImageDescriptionModel`).
 
 ## v0.48.0 - 2023-10-20
 
@@ -288,7 +294,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 
 ### Added
 
-- `synthesizeSpeech` function to generate speech from text.
+- `generateSpeech` function to generate speech from text.
 - ElevenLabs support.
 
 ## v0.15.0 - 2023-08-21

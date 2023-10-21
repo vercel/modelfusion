@@ -1,36 +1,36 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { AsyncQueue } from "../../event-source/AsyncQueue.js";
-import { AsyncIterableResultPromise } from "../../model-function/AsyncIterableResultPromise.js";
+import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
 import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import { executeStandardCall } from "../executeStandardCall.js";
 import { executeStreamCall } from "../executeStreamCall.js";
 import {
-  DuplexSpeechSynthesisModel,
-  SpeechSynthesisModel,
-  SpeechSynthesisModelSettings,
-} from "./SpeechSynthesisModel.js";
+  DuplexSpeechGenerationModel,
+  SpeechGenerationModel,
+  SpeechGenerationModelSettings,
+} from "./SpeechGenerationModel.js";
 
 /**
  * Synthesizes speech from text.
  */
-export function synthesizeSpeech(
-  model: SpeechSynthesisModel<SpeechSynthesisModelSettings>,
+export function generateSpeech(
+  model: SpeechGenerationModel<SpeechGenerationModelSettings>,
   text: string,
   options?: FunctionOptions & {
     mode?: "standard";
   }
 ): ModelFunctionPromise<Buffer>;
-export function synthesizeSpeech(
-  model: DuplexSpeechSynthesisModel<SpeechSynthesisModelSettings>,
+export function generateSpeech(
+  model: DuplexSpeechGenerationModel<SpeechGenerationModelSettings>,
   text: AsyncIterable<string> | string,
   options: FunctionOptions & {
     mode: "stream-duplex";
   }
 ): AsyncIterableResultPromise<Buffer>;
-export function synthesizeSpeech(
+export function generateSpeech(
   model:
-    | SpeechSynthesisModel<SpeechSynthesisModelSettings>
-    | DuplexSpeechSynthesisModel<SpeechSynthesisModelSettings>,
+    | SpeechGenerationModel<SpeechGenerationModelSettings>
+    | DuplexSpeechGenerationModel<SpeechGenerationModelSettings>,
   text: string | AsyncIterable<string>,
   options?: FunctionOptions & {
     mode?: "standard" | "stream-duplex";
@@ -48,12 +48,12 @@ export function synthesizeSpeech(
 
       return new ModelFunctionPromise(
         executeStandardCall({
-          functionType: "speech-synthesis",
+          functionType: "generate-speech",
           input: text,
           model,
           options,
           generateResponse: async (options) => {
-            const response = await model.doSynthesizeSpeechStandard(
+            const response = await model.doGenerateSpeechStandard(
               text,
               options
             );
@@ -69,8 +69,8 @@ export function synthesizeSpeech(
 
     case "stream-duplex": {
       if (
-        !("doSynthesizeSpeechStreamDuplex" in model) ||
-        typeof model.doSynthesizeSpeechStreamDuplex !== "function"
+        !("doGenerateSpeechStreamDuplex" in model) ||
+        typeof model.doGenerateSpeechStreamDuplex !== "function"
       ) {
         throw new Error(
           `The "stream-duplex" mode is not supported by this model.`
@@ -91,12 +91,12 @@ export function synthesizeSpeech(
 
       return new AsyncIterableResultPromise<Buffer>(
         executeStreamCall({
-          functionType: "speech-synthesis",
+          functionType: "generate-speech",
           input: text,
           model,
           options,
           startStream: async (options) =>
-            model.doSynthesizeSpeechStreamDuplex(textStream, options),
+            model.doGenerateSpeechStreamDuplex(textStream, options),
           processDelta: (delta) => {
             return delta.valueDelta;
           },

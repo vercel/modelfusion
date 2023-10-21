@@ -10,9 +10,9 @@ import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import {
-  SpeechSynthesisModel,
-  SpeechSynthesisModelSettings,
-} from "../../model-function/synthesize-speech/SpeechSynthesisModel.js";
+  DuplexSpeechGenerationModel,
+  SpeechGenerationModelSettings,
+} from "../../model-function/generate-speech/SpeechGenerationModel.js";
 import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
 import { safeParseJsonWithZod } from "../../util/parseJSON.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
@@ -26,8 +26,8 @@ const elevenLabsModels = [
 
 const defaultModel = "eleven_multilingual_v2";
 
-export interface ElevenLabsSpeechSynthesisModelSettings
-  extends SpeechSynthesisModelSettings {
+export interface ElevenLabsSpeechModelSettings
+  extends SpeechGenerationModelSettings {
   api?: ApiConfiguration & {
     apiKey: string;
   };
@@ -58,11 +58,11 @@ export interface ElevenLabsSpeechSynthesisModelSettings
  *
  * @see https://api.elevenlabs.io/docs#/text-to-speech/Text_to_speech_v1_text_to_speech__voice_id__post
  */
-export class ElevenLabsSpeechSynthesisModel
-  extends AbstractModel<ElevenLabsSpeechSynthesisModelSettings>
-  implements SpeechSynthesisModel<ElevenLabsSpeechSynthesisModelSettings>
+export class ElevenLabsSpeechModel
+  extends AbstractModel<ElevenLabsSpeechModelSettings>
+  implements DuplexSpeechGenerationModel<ElevenLabsSpeechModelSettings>
 {
-  constructor(settings: ElevenLabsSpeechSynthesisModelSettings) {
+  constructor(settings: ElevenLabsSpeechModelSettings) {
     super({ settings });
   }
 
@@ -91,7 +91,7 @@ export class ElevenLabsSpeechSynthesisModel
     });
   }
 
-  get settingsForEvent(): Partial<ElevenLabsSpeechSynthesisModelSettings> {
+  get settingsForEvent(): Partial<ElevenLabsSpeechModelSettings> {
     return {
       model: this.settings.model,
       voice: this.settings.voice,
@@ -99,11 +99,11 @@ export class ElevenLabsSpeechSynthesisModel
     };
   }
 
-  doSynthesizeSpeechStandard(text: string, options?: FunctionOptions) {
+  doGenerateSpeechStandard(text: string, options?: FunctionOptions) {
     return this.callAPI(text, options);
   }
 
-  async doSynthesizeSpeechStreamDuplex(
+  async doGenerateSpeechStreamDuplex(
     textStream: AsyncIterable<string>
     // options?: FunctionOptions | undefined
   ): Promise<AsyncIterable<Delta<Buffer>>> {
@@ -224,10 +224,8 @@ export class ElevenLabsSpeechSynthesisModel
     return queue;
   }
 
-  withSettings(
-    additionalSettings: Partial<ElevenLabsSpeechSynthesisModelSettings>
-  ) {
-    return new ElevenLabsSpeechSynthesisModel({
+  withSettings(additionalSettings: Partial<ElevenLabsSpeechModelSettings>) {
+    return new ElevenLabsSpeechModel({
       ...this.settings,
       ...additionalSettings,
     }) as this;
@@ -247,7 +245,7 @@ async function callElevenLabsTextToSpeechAPI({
   text: string;
   voiceId: string;
   modelId?: string;
-  voiceSettings?: ElevenLabsSpeechSynthesisModelSettings["voiceSettings"];
+  voiceSettings?: ElevenLabsSpeechModelSettings["voiceSettings"];
 }): Promise<Buffer> {
   return postJsonToApi({
     url: api.assembleUrl(`/text-to-speech/${voiceId}`),
@@ -264,7 +262,7 @@ async function callElevenLabsTextToSpeechAPI({
 }
 
 function toApiVoiceSettings(
-  voiceSettings?: ElevenLabsSpeechSynthesisModelSettings["voiceSettings"]
+  voiceSettings?: ElevenLabsSpeechModelSettings["voiceSettings"]
 ) {
   return voiceSettings != null
     ? {
@@ -277,7 +275,7 @@ function toApiVoiceSettings(
 }
 
 function toGenerationConfig(
-  generationConfig?: ElevenLabsSpeechSynthesisModelSettings["generationConfig"]
+  generationConfig?: ElevenLabsSpeechModelSettings["generationConfig"]
 ) {
   return generationConfig != null
     ? {

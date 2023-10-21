@@ -20,7 +20,7 @@ const api = new ElevenLabsApiConfiguration({
   // ...
 });
 
-const model = new ElevenLabsSpeechSynthesisModel({
+const model = new ElevenLabsSpeechModel({
   api,
   // ...
 });
@@ -30,15 +30,17 @@ const model = new ElevenLabsSpeechSynthesisModel({
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/elevenlabs)
 
-### Synthesize Speech
+### Generate Speech
 
-[ElevenLabsSpeechSynthesisModel API](/api/classes/ElevenLabsSpeechSynthesisModel)
+[ElevenLabsSpeechModel API](/api/classes/ElevenLabsSpeechModel)
+
+#### Standard mode
 
 ```ts
-import { ElevenLabsSpeechSynthesisModel, synthesizeSpeech } from "modelfusion";
+import { ElevenLabsSpeechModel, generateSpeech } from "modelfusion";
 
-const speech = await synthesizeSpeech(
-  new ElevenLabsSpeechSynthesisModel({
+const speech = await generateSpeech(
+  new ElevenLabsSpeechModel({
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
@@ -49,4 +51,27 @@ const speech = await synthesizeSpeech(
 
 const path = `./elevenlabs-speech-example.mp3`;
 fs.writeFileSync(path, speech);
+```
+
+#### Duplex streaming mode
+
+```ts
+const textStream = await streamText(/* ... */);
+
+const speechStream = await generateSpeech(
+  new ElevenLabsSpeechModel({
+    voice: "pNInz6obpgDQGcFmaJgB", // Adam
+    model: "eleven_monolingual_v1",
+    voiceSettings: { stability: 1, similarityBoost: 0.35 },
+    generationConfig: {
+      chunkLengthSchedule: [50, 90, 120, 150, 200],
+    },
+  }),
+  textStream,
+  { mode: "stream-duplex" }
+);
+
+for await (const part of speechStream) {
+  // each part is a Buffer with MP3 audio data
+}
 ```
