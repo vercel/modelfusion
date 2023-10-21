@@ -10,6 +10,7 @@
 ### Changes
 
 - **breaking change**: split `synthesizeSpeech` into `generateSpeech` and `streamSpeech` functions
+- **breaking change**: renamed `speech-synthesis` event to `speech-generation`
 - **breaking change**: renamed `transcribe` to `generateTranscription`
 - **breaking change**: renamed `LmntSpeechSynthesisModel` to `LmntSpeechModel`
 - **breaking change**: renamed `ElevenLabesSpeechSynthesisModel` to `ElevenLabsSpeechModel`
