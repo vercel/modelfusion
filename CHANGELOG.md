@@ -1,5 +1,12 @@
 # Changelog
 
+## UNRELEASED
+
+### Added
+
+- Speech synthesis streaming supports string inputs.
+- Observability for speech synthesis streaming.
+
 ## v0.48.0 - 2023-10-20
 
 ### Added
