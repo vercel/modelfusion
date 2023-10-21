@@ -71,6 +71,82 @@ for await (const textFragment of textStream) {
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
 
+### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
+
+Generate an image from a prompt.
+
+```ts
+const image = await generateImage(
+  new OpenAIImageGenerationModel({ size: "512x512" }),
+  "the wicked witch of the west in the style of early 19th century painting"
+);
+```
+
+Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider/openai), [Stability AI](https://modelfusion.dev/integration/model-provider/stability), [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111)
+
+### [Generate Speech](https://modelfusion.dev/guide/function/generate-speech)
+
+Synthesize speech (audio) from text. Also called TTS (text-to-speech).
+
+Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
+
+#### generateSpeech
+
+`generateSpeech` synthesizes speech from text.
+
+```ts
+// `speech` is a Buffer with MP3 audio data
+const speech = await generateSpeech(
+  new LmntSpeechModel({
+    voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
+  }),
+  "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
+    "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
+    "fresh tunes in nearly twenty years, featuring the illustrious Lady Gaga, the " +
+    "magical Stevie Wonder, and the final beats from the late Charlie Watts."
+);
+```
+
+#### streamSpeech
+
+`generateSpeech` generates a stream of speech chunks from text or from a text stream. Depending on the model, this can be fully duplex.
+
+```ts
+const textStream = await streamText(/* ... */);
+
+const speechStream = await streamSpeech(
+  new ElevenLabsSpeechModel({
+    voice: "pNInz6obpgDQGcFmaJgB", // Adam
+    model: "eleven_monolingual_v1",
+    voiceSettings: { stability: 1, similarityBoost: 0.35 },
+    generationConfig: {
+      chunkLengthSchedule: [50, 90, 120, 150, 200],
+    },
+  }),
+  textStream
+);
+
+for await (const part of speechStream) {
+  // each part is a Buffer with MP3 audio data
+}
+```
+
+### [Generate Transcription](https://modelfusion.dev/guide/function/generate-transcription)
+
+Transcribe speech (audio) data into text. Also called speech-to-text (STT).
+
+```ts
+const transcription = await generateTranscription(
+  new OpenAITranscriptionModel({ model: "whisper-1" }),
+  {
+    type: "mp3",
+    data: await fs.promises.readFile("data/test.mp3"),
+  }
+);
+```
+
+Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai)
+
 ### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure#generatestructure)
 
 Generate typed objects using a language model and a schema.
@@ -189,149 +265,6 @@ const { structure, value, text } = await generateStructureOrText(
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
 
-### [Tools](https://modelfusion.dev/guide/tools)
-
-Tools are functions that can be executed by an AI model. They are useful for building chatbots and agents.
-
-Predefined tools: [SerpAPI](https://modelfusion.dev/integration/tool/serpapi), [Google Custom Search](https://modelfusion.dev/integration/tool/google-custom-search)
-
-#### Create Tool
-
-A tool is a function with a name, a description, and a schema for the input parameters.
-
-```ts
-const calculator = new Tool({
-  name: "calculator",
-  description: "Execute a calculation",
-
-  inputSchema: new ZodSchema(
-    z.object({
-      a: z.number().describe("The first number."),
-      b: z.number().describe("The second number."),
-      operator: z
-        .enum(["+", "-", "*", "/"])
-        .describe("The operator (+, -, *, /)."),
-    })
-  ),
-
-  execute: async ({ a, b, operator }) => {
-    switch (operator) {
-      case "+":
-        return a + b;
-      case "-":
-        return a - b;
-      case "*":
-        return a * b;
-      case "/":
-        return a / b;
-      default:
-        throw new Error(`Unknown operator: ${operator}`);
-    }
-  },
-});
-```
-
-#### useTool
-
-The model determines the parameters for the tool from the prompt and then executes it.
-
-```ts
-const { tool, parameters, result } = await useTool(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  calculator,
-  [OpenAIChatMessage.user("What's fourteen times twelve?")]
-);
-```
-
-#### useToolOrGenerateText
-
-The model determines which tool to use and its parameters from the prompt and then executes it.
-Text is generated as a fallback.
-
-```ts
-const { tool, parameters, result, text } = await useToolOrGenerateText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  [calculator /* and other tools... */],
-  [OpenAIChatMessage.user("What's fourteen times twelve?")]
-);
-```
-
-### [Generate Transcription](https://modelfusion.dev/guide/function/generate-transcription)
-
-Transcribe speech (audio) data into text. Also called speech-to-text (STT).
-
-```ts
-const transcription = await generateTranscription(
-  new OpenAITranscriptionModel({ model: "whisper-1" }),
-  {
-    type: "mp3",
-    data: await fs.promises.readFile("data/test.mp3"),
-  }
-);
-```
-
-Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai)
-
-### [Generate Speech](https://modelfusion.dev/guide/function/generate-speech)
-
-Synthesize speech (audio) from text. Also called TTS (text-to-speech).
-
-Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
-
-#### generateSpeech
-
-`generateSpeech` synthesizes speech from text.
-
-```ts
-// `speech` is a Buffer with MP3 audio data
-const speech = await generateSpeech(
-  new LmntSpeechModel({
-    voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
-  }),
-  "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
-    "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
-    "fresh tunes in nearly twenty years, featuring the illustrious Lady Gaga, the " +
-    "magical Stevie Wonder, and the final beats from the late Charlie Watts."
-);
-```
-
-#### streamSpeech
-
-`generateSpeech` generates a stream of speech chunks from text or from a text stream. Depending on the model, this can be fully duplex.
-
-```ts
-const textStream = await streamText(/* ... */);
-
-const speechStream = await streamSpeech(
-  new ElevenLabsSpeechModel({
-    voice: "pNInz6obpgDQGcFmaJgB", // Adam
-    model: "eleven_monolingual_v1",
-    voiceSettings: { stability: 1, similarityBoost: 0.35 },
-    generationConfig: {
-      chunkLengthSchedule: [50, 90, 120, 150, 200],
-    },
-  }),
-  textStream
-);
-
-for await (const part of speechStream) {
-  // each part is a Buffer with MP3 audio data
-}
-```
-
-### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
-
-Generate an image from a prompt.
-
-```ts
-const image = await generateImage(
-  new OpenAIImageGenerationModel({ size: "512x512" }),
-  "the wicked witch of the west in the style of early 19th century painting"
-);
-```
-
-Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider/openai), [Stability AI](https://modelfusion.dev/integration/model-provider/stability), [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111)
-
 ### [Embed Value](https://modelfusion.dev/guide/function/embed)
 
 Create embeddings for text and other values. Embeddings are vectors that represent the essence of the values in the context of the model.
@@ -408,7 +341,74 @@ const result = await guard(
 );
 ```
 
-### [Upserting and Retrieving Objects from Vector Indices](https://modelfusion.dev/guide/vector-index)
+### [Tools](https://modelfusion.dev/guide/tools)
+
+Tools are functions that can be executed by an AI model. They are useful for building chatbots and agents.
+
+Predefined tools: [SerpAPI](https://modelfusion.dev/integration/tool/serpapi), [Google Custom Search](https://modelfusion.dev/integration/tool/google-custom-search)
+
+#### Create Tool
+
+A tool is a function with a name, a description, and a schema for the input parameters.
+
+```ts
+const calculator = new Tool({
+  name: "calculator",
+  description: "Execute a calculation",
+
+  inputSchema: new ZodSchema(
+    z.object({
+      a: z.number().describe("The first number."),
+      b: z.number().describe("The second number."),
+      operator: z
+        .enum(["+", "-", "*", "/"])
+        .describe("The operator (+, -, *, /)."),
+    })
+  ),
+
+  execute: async ({ a, b, operator }) => {
+    switch (operator) {
+      case "+":
+        return a + b;
+      case "-":
+        return a - b;
+      case "*":
+        return a * b;
+      case "/":
+        return a / b;
+      default:
+        throw new Error(`Unknown operator: ${operator}`);
+    }
+  },
+});
+```
+
+#### useTool
+
+The model determines the parameters for the tool from the prompt and then executes it.
+
+```ts
+const { tool, parameters, result } = await useTool(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  calculator,
+  [OpenAIChatMessage.user("What's fourteen times twelve?")]
+);
+```
+
+#### useToolOrGenerateText
+
+The model determines which tool to use and its parameters from the prompt and then executes it.
+Text is generated as a fallback.
+
+```ts
+const { tool, parameters, result, text } = await useToolOrGenerateText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  [calculator /* and other tools... */],
+  [OpenAIChatMessage.user("What's fourteen times twelve?")]
+);
+```
+
+### [Vector Indices](https://modelfusion.dev/guide/vector-index)
 
 ```ts
 const texts = [
@@ -528,10 +528,6 @@ for (const choice of (response as OpenAICompletionResponse).choices) {
   console.log(choice.text);
 }
 ```
-
-### Observability
-
-Integrations: [Helicone](https://modelfusion.dev/integration/observability/helicone)
 
 ## Documentation
 
