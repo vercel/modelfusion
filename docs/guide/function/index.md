@@ -26,6 +26,10 @@ const text = await generateText(
 );
 ```
 
+## Streaming Functions
+
+Some model functions have a streaming variant, e.g. `streamText()` or `streamSpeech`. The streaming functions return `AsyncIterable` objects and might only work with some models.
+
 ## Rich Responses
 
 For more advanced use cases, you might want to access the full response from the model, or the metadata about the call.
