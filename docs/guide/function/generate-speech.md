@@ -8,11 +8,11 @@ Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 
 ## Usage
 
+### generateSpeech
+
 [generateSpeech API](/api/modules#generatespeech)
 
-### Standard mode
-
-In standard mode, a text string is passed to the `generateSpeech` function, along with a `SpeechSynthesisModel` instance, and an audio buffer with mpeg audio data is returned.
+In standard mode, a text string is passed to the `generateSpeech` function, along with a `SpeechGenerationModel` instance, and an audio buffer with mpeg audio data is returned.
 
 ```ts
 const speech = await generateSpeech(
@@ -26,14 +26,16 @@ const speech = await generateSpeech(
 );
 ```
 
-### Duplex streaming mode
+### streamSpeech
 
-In duplex streaming mode, an `AsyncIterable<string>` is passed to the `generateSpeech` function, along with a `SpeechSynthesisModel` instance that supports duplex streaming, and an `AsyncIterable<Buffer>` is returned.
+[streamSpeech API](/api/modules#streamspeech)
+
+In duplex streaming mode, an `AsyncIterable<string>` is passed to the `streamSpeech` function, along with a `StreamingSpeechGenerationModel`, and an `AsyncIterable<Buffer>` is returned. You can also pass in a string and get streaming audio back.
 
 ```ts
 const textStream = await streamText(/* ... */);
 
-const speechStream = await generateSpeech(
+const speechStream = await streamSpeech(
   new ElevenLabsSpeechModel({
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     model: "eleven_monolingual_v1",
@@ -42,8 +44,7 @@ const speechStream = await generateSpeech(
       chunkLengthSchedule: [50, 90, 120, 150, 200],
     },
   }),
-  textStream,
-  { mode: "stream-duplex" }
+  textStream
 );
 
 for await (const part of speechStream) {

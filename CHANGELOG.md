@@ -9,8 +9,8 @@
 
 ### Changes
 
+- **breaking change**: split `synthesizeSpeech` into `generateSpeech` and `streamSpeech` functions
 - **breaking change**: renamed `transcribe` to `generateTranscription`
-- **breaking change**: renamed `synthesizeSpeech` to `generateSpeech`
 - **breaking change**: renamed `LmntSpeechSynthesisModel` to `LmntSpeechModel`
 - **breaking change**: renamed `ElevenLabesSpeechSynthesisModel` to `ElevenLabsSpeechModel`
 - **breaking change**: renamed `OpenAITextGenerationModel` to `OpenAICompletionModel`

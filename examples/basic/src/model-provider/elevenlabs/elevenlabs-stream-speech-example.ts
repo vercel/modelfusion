@@ -2,15 +2,15 @@ import dotenv from "dotenv";
 import {
   ElevenLabsSpeechModel,
   OpenAICompletionModel,
-  generateSpeech,
-  generateText,
+  streamSpeech,
+  streamText,
 } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
 
 async function main() {
-  const text = await generateText(
+  const textStream = await streamText(
     new OpenAICompletionModel({
       model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,
@@ -19,7 +19,7 @@ async function main() {
     "Write a short story about a robot learning to love:\n\n"
   );
 
-  const speechStream = await generateSpeech(
+  const speechStream = await streamSpeech(
     new ElevenLabsSpeechModel({
       voice: "pNInz6obpgDQGcFmaJgB", // Adam
       voiceSettings: {
@@ -27,8 +27,7 @@ async function main() {
         similarityBoost: 0.35,
       },
     }),
-    text,
-    { mode: "stream-duplex" }
+    textStream
   );
 
   // delete output file if it already exists:

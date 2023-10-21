@@ -1,5 +1,5 @@
 {
-  "name": "@lgramml/modelfusion-duplex-speech-streaming-vite-react-fastify-example",
+  "name": "@lgramml/modelfusion-speech-streaming-vite-react-fastify-example",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,

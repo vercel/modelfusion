@@ -7,8 +7,8 @@ import {
   ElevenLabsSpeechModel,
   OpenAIChatModel,
   setGlobalFunctionLogging,
+  streamSpeech,
   streamText,
-  generateSpeech,
   withRun,
 } from "modelfusion";
 import { z } from "zod";
@@ -53,7 +53,7 @@ export async function runEndpointServer({
 
       const speechStreamInput = new AsyncQueue<string>();
 
-      const speechStream = await generateSpeech(
+      const speechStream = await streamSpeech(
         new ElevenLabsSpeechModel({
           voice: "pNInz6obpgDQGcFmaJgB", // Adam
           model: "eleven_monolingual_v1",
@@ -65,8 +65,7 @@ export async function runEndpointServer({
             chunkLengthSchedule: [50, 90, 120, 150, 200],
           },
         }),
-        speechStreamInput,
-        { mode: "stream-duplex" }
+        speechStreamInput
       );
 
       // Run in parallel:

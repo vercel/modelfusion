@@ -10,7 +10,7 @@ import { AsyncQueue } from "../../event-source/AsyncQueue.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import {
-  DuplexSpeechGenerationModel,
+  StreamingSpeechGenerationModel,
   SpeechGenerationModelSettings,
 } from "../../model-function/generate-speech/SpeechGenerationModel.js";
 import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
@@ -60,7 +60,7 @@ export interface ElevenLabsSpeechModelSettings
  */
 export class ElevenLabsSpeechModel
   extends AbstractModel<ElevenLabsSpeechModelSettings>
-  implements DuplexSpeechGenerationModel<ElevenLabsSpeechModelSettings>
+  implements StreamingSpeechGenerationModel<ElevenLabsSpeechModelSettings>
 {
   constructor(settings: ElevenLabsSpeechModelSettings) {
     super({ settings });

@@ -34,7 +34,7 @@ const model = new ElevenLabsSpeechModel({
 
 [ElevenLabsSpeechModel API](/api/classes/ElevenLabsSpeechModel)
 
-#### Standard mode
+#### generateSpeech
 
 ```ts
 import { ElevenLabsSpeechModel, generateSpeech } from "modelfusion";
@@ -53,12 +53,12 @@ const path = `./elevenlabs-speech-example.mp3`;
 fs.writeFileSync(path, speech);
 ```
 
-#### Duplex streaming mode
+#### streamSpeech
 
 ```ts
 const textStream = await streamText(/* ... */);
 
-const speechStream = await generateSpeech(
+const speechStream = await streamSpeech(
   new ElevenLabsSpeechModel({
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     model: "eleven_monolingual_v1",
@@ -67,8 +67,7 @@ const speechStream = await generateSpeech(
       chunkLengthSchedule: [50, 90, 120, 150, 200],
     },
   }),
-  textStream,
-  { mode: "stream-duplex" }
+  textStream
 );
 
 for await (const part of speechStream) {

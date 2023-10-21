@@ -278,7 +278,9 @@ Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 
 Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
 
-#### Standard mode
+#### generateSpeech
+
+`generateSpeech` synthesizes speech from text.
 
 ```ts
 // `speech` is a Buffer with MP3 audio data
@@ -293,12 +295,14 @@ const speech = await generateSpeech(
 );
 ```
 
-#### Duplex streaming mode
+#### streamSpeech
+
+`generateSpeech` generates a stream of speech chunks from text or from a text stream. Depending on the model, this can be fully duplex.
 
 ```ts
 const textStream = await streamText(/* ... */);
 
-const speechStream = await generateSpeech(
+const speechStream = await streamSpeech(
   new ElevenLabsSpeechModel({
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     model: "eleven_monolingual_v1",
@@ -307,8 +311,7 @@ const speechStream = await generateSpeech(
       chunkLengthSchedule: [50, 90, 120, 150, 200],
     },
   }),
-  textStream,
-  { mode: "stream-duplex" }
+  textStream
 );
 
 for await (const part of speechStream) {
@@ -610,7 +613,7 @@ Create an 19th century painting image for your input.
 
 Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
 
-### [Duplex Speech Streaming (Vite(React) + Fastify))](https://github.com/lgrammel/modelfusion/tree/main/examples/duplex-speech-streaming-vite-react-fastify)
+### [Speech Streaming (Vite(React) + Fastify))](https://github.com/lgrammel/modelfusion/tree/main/examples/speech-streaming-vite-react-fastify)
 
 > _Speech Streaming_, _OpenAI_, _Elevenlabs_ _streaming_, _Vite_, _Fastify_
 

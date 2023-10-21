@@ -17,7 +17,7 @@ export interface SpeechGenerationModel<
   ): PromiseLike<Buffer>;
 }
 
-export interface DuplexSpeechGenerationModel<
+export interface StreamingSpeechGenerationModel<
   SETTINGS extends
     SpeechGenerationModelSettings = SpeechGenerationModelSettings,
 > extends SpeechGenerationModel<SETTINGS> {
