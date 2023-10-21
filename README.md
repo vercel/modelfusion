@@ -35,7 +35,7 @@ Or use a template: [ModelFusion terminal app starter](https://github.com/lgramme
 
 You can provide API keys for the different [integrations](https://modelfusion.dev/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or pass them into the model constructors as options.
 
-### [Generate and Stream Text](https://modelfusion.dev/guide/function/generate-text)
+### [Generate Text](https://modelfusion.dev/guide/function/generate-text)
 
 Generate text using a language model and a prompt.
 You can stream the text if it is supported by the model.
@@ -71,7 +71,7 @@ for await (const textFragment of textStream) {
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
 
-### [Generate and Stream Structure](https://modelfusion.dev/guide/function/generate-structure#generatestructure)
+### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure#generatestructure)
 
 Generate typed objects using a language model and a schema.
 
