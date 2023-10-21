@@ -8,6 +8,8 @@ Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 
 ## Usage
 
+### generateTranscription
+
 [generateTranscription API](/api/modules#generatetranscription)
 
 #### With OpenAI transcription model
