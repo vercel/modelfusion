@@ -11,8 +11,6 @@ By default, the image is a binary buffer. You can use the `asBase64Text()` metho
 
 ## Usage
 
-### generateImage
-
 [generateImage API](/api/modules#generateimage)
 
 #### OpenAI DALL·E buffer

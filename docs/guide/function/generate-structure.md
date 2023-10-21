@@ -2,7 +2,7 @@
 sidebar_position: 50
 ---
 
-# Generate and Stream Structure
+# Generate Structure
 
 Generates a structure that matches a schema.
 This is, for example, useful for [information extraction](/tutorial/recipes/information-extraction)
