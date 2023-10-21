@@ -2,22 +2,20 @@
 sidebar_position: 30
 ---
 
-# Transcribe Speech
+# Generate Transcription
+
+Transcribe speech (audio) data into text.
 
 ## Usage
 
-### transcribe
-
-[transcribe API](/api/modules#transcribe)
-
-Transcribe speech (audio) data into text.
+[generateTranscription API](/api/modules#generatetranscription)
 
 #### With OpenAI transcription model
 
 ```ts
 const data = await fs.promises.readFile("data/test.mp3");
 
-const transcription = await transcribe(
+const transcription = await generateTranscription(
   new OpenAITranscriptionModel({ model: "whisper-1" }),
   {
     type: "mp3",

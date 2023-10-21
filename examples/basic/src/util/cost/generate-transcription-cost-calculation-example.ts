@@ -4,7 +4,7 @@ import {
   OpenAICostCalculator,
   OpenAITranscriptionModel,
   calculateCost,
-  transcribe,
+  generateTranscription,
 } from "modelfusion";
 import fs from "node:fs";
 
@@ -15,7 +15,7 @@ async function main() {
 
   const run = new DefaultRun();
 
-  const transcription = await transcribe(
+  const transcription = await generateTranscription(
     new OpenAITranscriptionModel({ model: "whisper-1" }),
     { type: "mp3", data },
     { run }

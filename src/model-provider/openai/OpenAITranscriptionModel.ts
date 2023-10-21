@@ -12,7 +12,7 @@ import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
-} from "../../model-function/transcribe-speech/TranscriptionModel.js";
+} from "../../model-function/generate-transcription/TranscriptionModel.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 

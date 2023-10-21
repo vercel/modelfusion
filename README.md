@@ -256,12 +256,12 @@ const { tool, parameters, result, text } = await useToolOrGenerateText(
 );
 ```
 
-### [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
+### [Generate Transcription](https://modelfusion.dev/guide/function/generate-transcription)
 
 Turn speech (audio) into text.
 
 ```ts
-const transcription = await transcribe(
+const transcription = await generateTranscription(
   new OpenAITranscriptionModel({ model: "whisper-1" }),
   {
     type: "mp3",
@@ -538,7 +538,7 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
   - [Generate text](https://modelfusion.dev/guide/function/generate-text)
   - [Generate image](https://modelfusion.dev/guide/function/generate-image)
   - [Generate speech](https://modelfusion.dev/guide/function/generate-speech)
-  - [Transcribe speech](https://modelfusion.dev/guide/function/transcribe-speech)
+  - [Generate transcription](https://modelfusion.dev/guide/function/generation-transcription)
   - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
   - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)

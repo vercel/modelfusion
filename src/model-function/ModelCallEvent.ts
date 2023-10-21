@@ -34,7 +34,7 @@ import {
 import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
-} from "./transcribe-speech/TranscriptionEvent.js";
+} from "./generate-transcription/TranscriptionEvent.js";
 
 export interface BaseModelCallStartedEvent extends BaseFunctionStartedEvent {
   model: ModelInformation;
