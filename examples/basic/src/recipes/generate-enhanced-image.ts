@@ -1,12 +1,11 @@
 import dotenv from "dotenv";
 import {
   HuggingFaceImageDescriptionModel,
-  mapInstructionPromptToOpenAIChatFormat,
   OpenAIChatModel,
   StabilityImageGenerationModel,
-  describeImage,
   generateImage,
   generateText,
+  mapInstructionPromptToOpenAIChatFormat,
 } from "modelfusion";
 import fs from "node:fs";
 
@@ -19,7 +18,7 @@ async function main() {
   const imageResponse = await fetch(imageUrl);
   const data = Buffer.from(await imageResponse.arrayBuffer());
 
-  const imageDescription = await describeImage(
+  const imageDescription = await generateText(
     new HuggingFaceImageDescriptionModel({
       model: "nlpconnect/vit-gpt2-image-captioning",
     }),

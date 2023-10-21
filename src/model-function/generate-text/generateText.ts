@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { executeCall } from "../executeCall.js";
+import { executeStandardCall } from "../executeStandardCall.js";
 import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   TextGenerationModel,
@@ -12,7 +12,7 @@ import {
  * For example, OpenAI text models expect a string prompt, and OpenAI chat models expect an array of chat messages.
  *
  * @example
- * const model = new OpenAITextGenerationModel(...);
+ * const model = new OpenAICompletionModel(...);
  *
  * const text = await generateText(
  *   model,
@@ -25,7 +25,7 @@ export function generateText<PROMPT>(
   options?: FunctionOptions
 ): ModelFunctionPromise<string> {
   return new ModelFunctionPromise(
-    executeCall({
+    executeStandardCall({
       functionType: "text-generation",
       input: prompt,
       model,

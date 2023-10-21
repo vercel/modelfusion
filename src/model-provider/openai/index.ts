@@ -4,7 +4,7 @@ export * from "./OpenAICostCalculator.js";
 export { OpenAIError, OpenAIErrorData } from "./OpenAIError.js";
 export * from "./OpenAIImageGenerationModel.js";
 export * from "./OpenAITextEmbeddingModel.js";
-export * from "./OpenAITextGenerationModel.js";
+export * from "./OpenAICompletionModel.js";
 export * from "./OpenAITranscriptionModel.js";
 export * from "./TikTokenTokenizer.js";
 export * from "./chat/OpenAIChatMessage.js";

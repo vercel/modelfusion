@@ -3,8 +3,8 @@ import fs from "fs";
 import {
   OpenAIApiConfiguration,
   OpenAITranscriptionModel,
+  generateTranscription,
   getAudioFileExtension,
-  transcribe,
 } from "modelfusion";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -52,7 +52,7 @@ export default async function handler(
       return;
     }
 
-    const transcription = await transcribe(
+    const transcription = await generateTranscription(
       new OpenAITranscriptionModel({
         // explicit API configuration needed for NextJS environment
         // (otherwise env variables are not available):

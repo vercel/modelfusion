@@ -1,5 +1,25 @@
 # Changelog
 
+## UNRELEASED
+
+### Added
+
+- Speech synthesis streaming supports string inputs.
+- Observability for speech synthesis streaming.
+
+### Changes
+
+- **breaking change**: split `synthesizeSpeech` into `generateSpeech` and `streamSpeech` functions
+- **breaking change**: renamed `speech-synthesis` event to `speech-generation`
+- **breaking change**: renamed `transcribe` to `generateTranscription`
+- **breaking change**: renamed `LmntSpeechSynthesisModel` to `LmntSpeechModel`
+- **breaking change**: renamed `ElevenLabesSpeechSynthesisModel` to `ElevenLabsSpeechModel`
+- **breaking change**: renamed `OpenAITextGenerationModel` to `OpenAICompletionModel`
+
+### Removed
+
+- **breaking change**: `describeImage` model function. Use `generateText` instead (with e.g. `HuggingFaceImageDescriptionModel`).
+
 ## v0.48.0 - 2023-10-20
 
 ### Added
@@ -277,7 +297,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 
 ### Added
 
-- `synthesizeSpeech` function to generate speech from text.
+- `generateSpeech` function to generate speech from text.
 - ElevenLabs support.
 
 ## v0.15.0 - 2023-08-21

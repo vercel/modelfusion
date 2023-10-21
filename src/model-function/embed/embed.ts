@@ -1,6 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Vector } from "../../core/Vector.js";
-import { executeCall } from "../executeCall.js";
+import { executeStandardCall } from "../executeStandardCall.js";
 import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel.js";
 
@@ -22,7 +22,7 @@ export function embedMany<VALUE>(
   options?: FunctionOptions
 ): ModelFunctionPromise<Vector[]> {
   return new ModelFunctionPromise(
-    executeCall({
+    executeStandardCall({
       functionType: "embedding",
       input: values,
       model,
@@ -76,7 +76,7 @@ export function embed<VALUE>(
   options?: FunctionOptions
 ): ModelFunctionPromise<Vector> {
   return new ModelFunctionPromise(
-    executeCall({
+    executeStandardCall({
       functionType: "embedding",
       input: value,
       model,

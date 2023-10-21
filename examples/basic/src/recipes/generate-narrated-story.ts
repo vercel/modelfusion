@@ -1,10 +1,9 @@
 import dotenv from "dotenv";
 import {
-  ElevenLabsSpeechSynthesisModel,
-  OpenAIChatMessage,
+  ElevenLabsSpeechModel,
   OpenAIChatModel,
+  generateSpeech,
   generateText,
-  synthesizeSpeech,
 } from "modelfusion";
 import fs from "node:fs";
 
@@ -16,18 +15,17 @@ async function main() {
       model: "gpt-3.5-turbo",
       temperature: 0.7,
       maxCompletionTokens: 500,
-    }),
-    [
-      OpenAIChatMessage.system(
+    }).withInstructionPrompt(),
+    {
+      system:
         "You are a great storyteller. " +
-          "You specialize in stories for children."
-      ),
-      OpenAIChatMessage.user("Tell me a story about a robot learning to love."),
-    ]
+        "You specialize in stories for children.",
+      instruction: "Tell me a story about a robot learning to love.",
+    }
   );
 
-  const narratedStory = await synthesizeSpeech(
-    new ElevenLabsSpeechSynthesisModel({
+  const narratedStory = await generateSpeech(
+    new ElevenLabsSpeechModel({
       voice: "AZnzlk1XvdvUeBnXmlld", // Domi
     }),
     story

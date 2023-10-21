@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { executeCall } from "../executeCall.js";
+import { executeStandardCall } from "../executeStandardCall.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
@@ -27,7 +27,7 @@ export function generateImage<PROMPT>(
   options?: FunctionOptions
 ): ImageGenerationPromise {
   return new ImageGenerationPromise(
-    executeCall({
+    executeStandardCall({
       functionType: "image-generation",
       input: prompt,
       model,

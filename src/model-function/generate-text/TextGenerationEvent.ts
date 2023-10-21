@@ -27,3 +27,11 @@ export interface TextGenerationFinishedEvent
   functionType: "text-generation";
   result: TextGenerationFinishedEventResult;
 }
+
+export interface TextStreamingStartedEvent extends BaseModelCallStartedEvent {
+  functionType: "text-streaming";
+}
+
+export interface TextStreamingFinishedEvent extends BaseModelCallFinishedEvent {
+  functionType: "text-streaming";
+}

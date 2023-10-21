@@ -1,11 +1,11 @@
-const { OpenAITextGenerationModel, generateText } = require("modelfusion");
+const { OpenAICompletionModel, generateText } = require("modelfusion");
 
 require("dotenv").config();
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 
 (async () => {
-  const textGenerationModel = new OpenAITextGenerationModel({
+  const textGenerationModel = new OpenAICompletionModel({
     apiKey: OPENAI_API_KEY,
     model: "gpt-3.5-turbo-instruct",
     settings: { temperature: 0.7 },

@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import {
-  OpenAITextGenerationModel,
+  OpenAICompletionModel,
   generateText,
   guard,
   setGlobalFunctionLogging,
@@ -14,7 +14,7 @@ async function main() {
   const story = await guard(
     (input) =>
       generateText(
-        new OpenAITextGenerationModel({
+        new OpenAICompletionModel({
           model: "gpt-3.5-turbo-instruct",
           temperature: 0.7,
           maxCompletionTokens: 500,

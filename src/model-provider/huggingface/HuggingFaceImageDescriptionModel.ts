@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -6,16 +7,17 @@ import {
   postToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { PromptFormatTextGenerationModel } from "../../model-function/generate-text/PromptFormatTextGenerationModel.js";
 import {
-  ImageDescriptionModel,
-  ImageDescriptionModelSettings,
-} from "../../model-function/describe-image/ImageDescriptionModel.js";
+  TextGenerationModel,
+  TextGenerationModelSettings,
+} from "../../model-function/generate-text/TextGenerationModel.js";
+import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
 import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
 
 export interface HuggingFaceImageDescriptionModelSettings
-  extends ImageDescriptionModelSettings {
+  extends TextGenerationModelSettings {
   api?: ApiConfiguration;
 
   model: string;
@@ -29,7 +31,7 @@ export interface HuggingFaceImageDescriptionModelSettings
 export class HuggingFaceImageDescriptionModel
   extends AbstractModel<HuggingFaceImageDescriptionModelSettings>
   implements
-    ImageDescriptionModel<Buffer, HuggingFaceImageDescriptionModelSettings>
+    TextGenerationModel<Buffer, HuggingFaceImageDescriptionModelSettings>
 {
   constructor(settings: HuggingFaceImageDescriptionModelSettings) {
     super({ settings });
@@ -60,14 +62,30 @@ export class HuggingFaceImageDescriptionModel
     return {};
   }
 
+  readonly contextWindowSize = undefined;
+  readonly tokenizer = undefined;
   readonly countPromptTokens = undefined;
 
-  async doDescribeImage(data: Buffer, options?: FunctionOptions) {
+  async doGenerateText(data: Buffer, options?: FunctionOptions) {
     const response = await this.callAPI(data, options);
     return {
       response,
-      description: response[0].generated_text,
+      text: response[0].generated_text,
     };
+  }
+
+  withPromptFormat<INPUT_PROMPT>(
+    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, Buffer>
+  ): PromptFormatTextGenerationModel<
+    INPUT_PROMPT,
+    Buffer,
+    HuggingFaceImageDescriptionModelSettings,
+    this
+  > {
+    return new PromptFormatTextGenerationModel({
+      model: this, // stop tokens are not supported by this model
+      promptFormat,
+    });
   }
 
   withSettings(

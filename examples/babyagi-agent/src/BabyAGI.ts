@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { Command } from "commander";
 import dotenv from "dotenv";
-import { OpenAITextGenerationModel, generateText } from "modelfusion";
+import { OpenAICompletionModel, generateText } from "modelfusion";
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ async function runBabyAGI({
   objective: string;
   firstTask: string;
 }) {
-  const model = new OpenAITextGenerationModel({
+  const model = new OpenAICompletionModel({
     model: "text-davinci-003",
   });
 

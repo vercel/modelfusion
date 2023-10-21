@@ -1,6 +1,6 @@
 import {
   OpenAIApiConfiguration,
-  OpenAITextGenerationModel,
+  OpenAICompletionModel,
   generateText,
   retryNever,
 } from "modelfusion";
@@ -14,7 +14,7 @@ async function main() {
   });
 
   const text = await generateText(
-    new OpenAITextGenerationModel({
+    new OpenAICompletionModel({
       api,
       model: "gpt-3.5-turbo-instruct",
     }),

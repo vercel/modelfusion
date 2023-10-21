@@ -1,9 +1,9 @@
+import dotenv from "dotenv";
 import {
-  OpenAITextGenerationModel,
+  OpenAICompletionModel,
   generateText,
   setGlobalFunctionLogging,
 } from "modelfusion";
-import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ async function main() {
   setGlobalFunctionLogging("basic-text");
 
   const text = await generateText(
-    new OpenAITextGenerationModel({
+    new OpenAICompletionModel({
       model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 50,
     }),

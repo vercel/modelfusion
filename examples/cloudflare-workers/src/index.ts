@@ -1,4 +1,4 @@
-import { generateText, OpenAIApiConfiguration, OpenAITextGenerationModel } from 'modelfusion';
+import { generateText, OpenAIApiConfiguration, OpenAICompletionModel } from 'modelfusion';
 
 export interface Env {
 	OPENAI_API_KEY: string;
@@ -7,7 +7,7 @@ export interface Env {
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const text = await generateText(
-			new OpenAITextGenerationModel({
+			new OpenAICompletionModel({
 				api: new OpenAIApiConfiguration({ apiKey: env.OPENAI_API_KEY }),
 				model: 'gpt-3.5-turbo-instruct',
 				temperature: 0.7,

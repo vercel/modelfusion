@@ -22,7 +22,7 @@ export interface Model<SETTINGS extends ModelSettings> {
    * The `withSettings` method creates a new model with the same configuration as the original model, but with the specified settings changed.
    *
    * @example
-   * const model = new OpenAITextGenerationModel({
+   * const model = new OpenAICompletionModel({
    *   model: "gpt-3.5-turbo-instruct",
    *   maxCompletionTokens: 500,
    * });

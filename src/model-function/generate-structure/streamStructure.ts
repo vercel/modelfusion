@@ -1,22 +1,9 @@
-import { nanoid as createId } from "nanoid";
-import { FunctionEventSource } from "../../core/FunctionEventSource.js";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
-import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
-import { AbortError } from "../../core/api/AbortError.js";
-import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
-import { getRun } from "../../core/getRun.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
-import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
 import { isDeepEqualData } from "../../util/isDeepEqualData.js";
-import { runSafe } from "../../util/runSafe.js";
 import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
+import { executeStreamCall } from "../executeStreamCall.js";
 import { StructureStreamingModel } from "./StructureGenerationModel.js";
-import {
-  StructureStreamingFinishedEvent,
-  StructureStreamingStartedEvent,
-} from "./StructureStreamingEvent.js";
 
 export type StructureStreamPart<STRUCTURE> =
   | {
@@ -34,184 +21,56 @@ export function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
   prompt: PROMPT,
   options?: FunctionOptions
 ): AsyncIterableResultPromise<StructureStreamPart<STRUCTURE>> {
+  let lastStructure: unknown | undefined;
+  let lastFullDelta: unknown | undefined;
+
   return new AsyncIterableResultPromise<StructureStreamPart<STRUCTURE>>(
-    doStreamStructure(model, structureDefinition, prompt, options)
-  );
-}
+    executeStreamCall<
+      unknown,
+      StructureStreamPart<STRUCTURE>,
+      StructureStreamingModel<PROMPT>
+    >({
+      functionType: "structure-streaming",
+      input: prompt,
+      model,
+      options,
+      startStream: async (options) =>
+        model.doStreamStructure(structureDefinition, prompt, options),
+      processDelta: (delta) => {
+        const latestFullDelta = delta.fullDelta;
+        const latestStructure = delta.valueDelta;
 
-async function doStreamStructure<STRUCTURE, PROMPT, NAME extends string>(
-  model: StructureStreamingModel<PROMPT>,
-  structureDefinition: StructureDefinition<NAME, STRUCTURE>,
-  prompt: PROMPT,
-  options?: FunctionOptions
-): Promise<{
-  output: AsyncIterable<StructureStreamPart<STRUCTURE>>;
-  metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
-}> {
-  const run = await getRun(options?.run);
-  const settings = model.settings;
+        // only send a new part into the stream when the partial structure has changed:
+        if (!isDeepEqualData(lastStructure, latestStructure)) {
+          lastFullDelta = latestFullDelta;
+          lastStructure = latestStructure;
 
-  const eventSource = new FunctionEventSource({
-    observers: [
-      ...getFunctionCallLogger(options?.logging ?? getGlobalFunctionLogging()),
-      ...getGlobalFunctionObservers(),
-      ...(settings.observers ?? []),
-      ...(run?.functionObserver != null ? [run.functionObserver] : []),
-      ...(options?.observers ?? []),
-    ],
-    errorHandler: run?.errorHandler,
-  });
-
-  const durationMeasurement = startDurationMeasurement();
-
-  const startMetadata = {
-    functionType: "structure-streaming" as const,
-
-    callId: `call-${createId()}`,
-    runId: run?.runId,
-    sessionId: run?.sessionId,
-    userId: run?.userId,
-    functionId: options?.functionId,
-
-    model: model.modelInformation,
-    settings: model.settingsForEvent,
-    input: prompt,
-
-    timestamp: durationMeasurement.startDate,
-    startTimestamp: durationMeasurement.startDate,
-  };
-
-  eventSource.notify({
-    eventType: "started",
-    ...startMetadata,
-  } satisfies StructureStreamingStartedEvent);
-
-  const result = await runSafe(async () => {
-    const deltaIterable = await model.doStreamStructure(
-      structureDefinition,
-      prompt,
-      {
-        functionId: options?.functionId,
-        logging: options?.logging,
-        observers: options?.observers,
-        run,
-      }
-    );
-
-    return (async function* () {
-      function reportError(error: unknown) {
-        const finishMetadata = {
-          eventType: "finished" as const,
-          ...startMetadata,
-          finishTimestamp: new Date(),
-          durationInMs: durationMeasurement.durationInMs,
-        };
-
-        eventSource.notify(
-          error instanceof AbortError
-            ? {
-                ...finishMetadata,
-                result: {
-                  status: "abort",
-                },
-              }
-            : {
-                ...finishMetadata,
-                result: {
-                  status: "error",
-                  error,
-                },
-              }
-        );
-      }
-
-      let lastStructure: unknown | undefined;
-      let lastFullDelta: unknown | undefined;
-
-      for await (const event of deltaIterable) {
-        if (event?.type === "error") {
-          reportError(event.error);
-          throw event.error;
+          return {
+            isComplete: false,
+            value: lastStructure,
+          } satisfies StructureStreamPart<STRUCTURE>;
         }
 
-        if (event?.type === "delta") {
-          const latestFullDelta = event.fullDelta;
-          const latestStructure = event.valueDelta;
-
-          // only send a new part into the stream when the partial structure has changed:
-          if (!isDeepEqualData(lastStructure, latestStructure)) {
-            lastFullDelta = latestFullDelta;
-            lastStructure = latestStructure;
-
-            yield {
-              isComplete: false,
-              value: lastStructure,
-            } satisfies StructureStreamPart<STRUCTURE>;
-          }
-        }
-      }
-
-      // process the final result (full type validation):
-      const parseResult = structureDefinition.schema.validate(lastStructure);
-
-      if (!parseResult.success) {
-        reportError(parseResult.error);
-        throw parseResult.error;
-      }
-
-      yield {
-        isComplete: true,
-        value: parseResult.data,
-      };
-
-      const finishMetadata = {
-        eventType: "finished" as const,
-        ...startMetadata,
-        finishTimestamp: new Date(),
-        durationInMs: durationMeasurement.durationInMs,
-      };
-
-      eventSource.notify({
-        ...finishMetadata,
-        result: {
-          status: "success",
-          response: lastFullDelta,
-          value: lastStructure,
-        },
-      } satisfies StructureStreamingFinishedEvent);
-    })();
-  });
-
-  if (!result.ok) {
-    const finishMetadata = {
-      eventType: "finished" as const,
-      ...startMetadata,
-      finishTimestamp: new Date(),
-      durationInMs: durationMeasurement.durationInMs,
-    };
-
-    if (result.isAborted) {
-      eventSource.notify({
-        ...finishMetadata,
-        result: {
-          status: "abort",
-        },
-      });
-      throw new AbortError();
-    }
-
-    eventSource.notify({
-      ...finishMetadata,
-      result: {
-        status: "error",
-        error: result.error,
+        return undefined;
       },
-    });
-    throw result.error;
-  }
+      processFinished: () => {
+        // process the final result (full type validation):
+        const parseResult = structureDefinition.schema.validate(lastStructure);
 
-  return {
-    output: result.value,
-    metadata: startMetadata,
-  };
+        if (!parseResult.success) {
+          reportError(parseResult.error);
+          throw parseResult.error;
+        }
+
+        return {
+          isComplete: true,
+          value: parseResult.data,
+        };
+      },
+      getResult: () => ({
+        response: lastFullDelta,
+        value: lastStructure,
+      }),
+    })
+  );
 }

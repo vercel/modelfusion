@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import {
   InstructionPrompt,
   OpenAIChatModel,
-  OpenAITextGenerationModel,
+  OpenAICompletionModel,
   TextGenerationModel,
   generateText,
   mapInstructionPromptToOpenAIChatFormat,
@@ -20,7 +20,7 @@ async function callModel(model: TextGenerationModel<InstructionPrompt>) {
 async function main() {
   const model =
     Math.random() < 0.5
-      ? new OpenAITextGenerationModel({
+      ? new OpenAICompletionModel({
           model: "gpt-3.5-turbo-instruct",
           temperature: 0.7,
           maxCompletionTokens: 500,

@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   OpenAIApiConfiguration,
-  OpenAITextGenerationModel,
+  OpenAICompletionModel,
   generateText,
 } from "modelfusion";
 
@@ -10,7 +10,7 @@ dotenv.config();
 async function main() {
   try {
     const text = await generateText(
-      new OpenAITextGenerationModel({
+      new OpenAICompletionModel({
         api: new OpenAIApiConfiguration({
           baseUrl: "invalid-url",
         }),

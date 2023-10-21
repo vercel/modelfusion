@@ -1,4 +1,4 @@
-import { OpenAITextGenerationModel, generateText } from "modelfusion";
+import { OpenAICompletionModel, generateText } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -9,7 +9,7 @@ async function main() {
   console.log();
 
   const text = await generateText(
-    new OpenAITextGenerationModel({
+    new OpenAICompletionModel({
       model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 50,
     }),

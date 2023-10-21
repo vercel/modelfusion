@@ -4,10 +4,6 @@ import {
 } from "../core/FunctionEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
-  ImageDescriptionFinishedEvent,
-  ImageDescriptionStartedEvent,
-} from "./describe-image/ImageDescriptionEvent.js";
-import {
   EmbeddingFinishedEvent,
   EmbeddingStartedEvent,
 } from "./embed/EmbeddingEvent.js";
@@ -15,6 +11,12 @@ import {
   ImageGenerationFinishedEvent,
   ImageGenerationStartedEvent,
 } from "./generate-image/ImageGenerationEvent.js";
+import {
+  SpeechGenerationFinishedEvent,
+  SpeechGenerationStartedEvent,
+  SpeechStreamingFinishedEvent,
+  SpeechStreamingStartedEvent,
+} from "./generate-speech/SpeechGenerationEvent.js";
 import {
   StructureGenerationFinishedEvent,
   StructureGenerationStartedEvent,
@@ -26,19 +28,13 @@ import {
 import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
-} from "./generate-text/TextGenerationEvent.js";
-import {
   TextStreamingFinishedEvent,
   TextStreamingStartedEvent,
-} from "./generate-text/TextStreamingEvent.js";
-import {
-  SpeechSynthesisFinishedEvent,
-  SpeechSynthesisStartedEvent,
-} from "./synthesize-speech/SpeechSynthesisEvent.js";
+} from "./generate-text/TextGenerationEvent.js";
 import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
-} from "./transcribe-speech/TranscriptionEvent.js";
+} from "./generate-transcription/TranscriptionEvent.js";
 
 export interface BaseModelCallStartedEvent extends BaseFunctionStartedEvent {
   model: ModelInformation;
@@ -89,22 +85,22 @@ export interface BaseModelCallFinishedEvent extends BaseFunctionFinishedEvent {
 
 export type ModelCallStartedEvent =
   | EmbeddingStartedEvent
-  | ImageDescriptionStartedEvent
   | ImageGenerationStartedEvent
+  | SpeechGenerationStartedEvent
+  | SpeechStreamingStartedEvent
   | StructureGenerationStartedEvent
   | StructureStreamingStartedEvent
-  | SpeechSynthesisStartedEvent
   | TextGenerationStartedEvent
   | TextStreamingStartedEvent
   | TranscriptionStartedEvent;
 
 export type ModelCallFinishedEvent =
   | EmbeddingFinishedEvent
-  | ImageDescriptionFinishedEvent
   | ImageGenerationFinishedEvent
+  | SpeechGenerationFinishedEvent
+  | SpeechStreamingFinishedEvent
   | StructureGenerationFinishedEvent
   | StructureStreamingFinishedEvent
-  | SpeechSynthesisFinishedEvent
   | TextGenerationFinishedEvent
   | TextStreamingFinishedEvent
   | TranscriptionFinishedEvent;

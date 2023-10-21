@@ -1,6 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
-import { executeCall } from "../executeCall.js";
+import { executeStandardCall } from "../executeStandardCall.js";
 import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   StructureGenerationModel,
@@ -32,7 +32,7 @@ export function generateStructure<
       : prompt;
 
   return new ModelFunctionPromise(
-    executeCall({
+    executeStandardCall({
       functionType: "structure-generation",
       input: expandedPrompt,
       model,

@@ -35,17 +35,17 @@ Or use a template: [ModelFusion terminal app starter](https://github.com/lgramme
 
 You can provide API keys for the different [integrations](https://modelfusion.dev/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or pass them into the model constructors as options.
 
-### [Generate and Stream Text](https://modelfusion.dev/guide/function/generate-text)
+### [Generate Text](https://modelfusion.dev/guide/function/generate-text)
 
 Generate text using a language model and a prompt.
 You can stream the text if it is supported by the model.
-You can use [prompt formats](https://modelfusion.dev/guide/function/generate-text/prompt-format) to change the prompt format of a model.
+You can use [prompt formats](https://modelfusion.dev/guide/function/generate-text#prompt-format) to change the prompt format of a model.
 
 #### generateText
 
 ```ts
 const text = await generateText(
-  new OpenAITextGenerationModel({
+  new OpenAICompletionModel({
     model: "gpt-3.5-turbo-instruct",
   }),
   "Write a short story about a robot learning to love:\n\n"
@@ -58,7 +58,7 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 
 ```ts
 const textStream = await streamText(
-  new OpenAITextGenerationModel({
+  new OpenAICompletionModel({
     model: "gpt-3.5-turbo-instruct",
   }),
   "Write a short story about a robot learning to love:\n\n"
@@ -71,7 +71,7 @@ for await (const textFragment of textStream) {
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
 
-### [Generate and Stream Structure](https://modelfusion.dev/guide/function/generate-structure#generatestructure)
+### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure#generatestructure)
 
 Generate typed objects using a language model and a schema.
 
@@ -256,12 +256,12 @@ const { tool, parameters, result, text } = await useToolOrGenerateText(
 );
 ```
 
-### [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
+### [Generate Transcription](https://modelfusion.dev/guide/function/generate-transcription)
 
-Turn speech (audio) into text.
+Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 
 ```ts
-const transcription = await transcribe(
+const transcription = await generateTranscription(
   new OpenAITranscriptionModel({ model: "whisper-1" }),
   {
     type: "mp3",
@@ -272,18 +272,20 @@ const transcription = await transcribe(
 
 Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai)
 
-### [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
+### [Generate Speech](https://modelfusion.dev/guide/function/generate-speech)
 
-Generate speech (audio) from text. Also called TTS (text-to-speech).
+Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 
 Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
 
-#### Standard mode
+#### generateSpeech
+
+`generateSpeech` synthesizes speech from text.
 
 ```ts
 // `speech` is a Buffer with MP3 audio data
-const speech = await synthesizeSpeech(
-  new LmntSpeechSynthesisModel({
+const speech = await generateSpeech(
+  new LmntSpeechModel({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
@@ -293,13 +295,15 @@ const speech = await synthesizeSpeech(
 );
 ```
 
-#### Duplex streaming mode
+#### streamSpeech
+
+`generateSpeech` generates a stream of speech chunks from text or from a text stream. Depending on the model, this can be fully duplex.
 
 ```ts
 const textStream = await streamText(/* ... */);
 
-const speechStream = await synthesizeSpeech(
-  new ElevenLabsSpeechSynthesisModel({
+const speechStream = await streamSpeech(
+  new ElevenLabsSpeechModel({
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     model: "eleven_monolingual_v1",
     voiceSettings: { stability: 1, similarityBoost: 0.35 },
@@ -307,29 +311,13 @@ const speechStream = await synthesizeSpeech(
       chunkLengthSchedule: [50, 90, 120, 150, 200],
     },
   }),
-  textStream,
-  { mode: "stream-duplex" }
+  textStream
 );
 
 for await (const part of speechStream) {
   // each part is a Buffer with MP3 audio data
 }
 ```
-
-### [Describe Image](https://modelfusion.dev/guide/function/describe-image)
-
-Describe an image as text, e.g. for image captioning or OCR.
-
-```ts
-const text = await describeImage(
-  new HuggingFaceImageDescriptionModel({
-    model: "nlpconnect/vit-gpt2-image-captioning",
-  }),
-  data // buffer with image data
-);
-```
-
-Providers: [HuggingFace](/integration/model-provider/huggingface)
 
 ### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 
@@ -460,7 +448,7 @@ Available Vector Stores: [Memory](https://modelfusion.dev/integration/vector-ind
 
 Prompt formats let you use higher level prompt structures (such as instruction or chat prompts) for different models.
 
-#### [Text Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-text/prompt-format)
+#### [Text Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-text#prompt-format)
 
 ```ts
 const text = await generateText(
@@ -525,7 +513,7 @@ ModelFusion model functions return rich results that include the original respon
 ```ts
 // access the full response (needs to be typed) and the metadata:
 const { value, response, metadata } = await generateText(
-  new OpenAITextGenerationModel({
+  new OpenAICompletionModel({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
     n: 2, // generate 2 completions
@@ -536,7 +524,7 @@ const { value, response, metadata } = await generateText(
 console.log(metadata);
 
 // cast to the response type:
-for (const choice of (response as OpenAITextGenerationResponse).choices) {
+for (const choice of (response as OpenAICompletionResponse).choices) {
   console.log(choice.text);
 }
 ```
@@ -550,17 +538,14 @@ Integrations: [Helicone](https://modelfusion.dev/integration/observability/helic
 ### [Guide](https://modelfusion.dev/guide)
 
 - [Model Functions](https://modelfusion.dev/guide/function/)
-  - [Generate and stream text](https://modelfusion.dev/guide/function/generate-text)
-    - [Prompt Format](https://modelfusion.dev/guide/function/generate-text/prompt-format)
-  - [Generate and stream structure](https://modelfusion.dev/guide/function/generate-structure)
+  - [Generate text](https://modelfusion.dev/guide/function/generate-text)
+  - [Generate image](https://modelfusion.dev/guide/function/generate-image)
+  - [Generate speech](https://modelfusion.dev/guide/function/generate-speech)
+  - [Generate transcription](https://modelfusion.dev/guide/function/generation-transcription)
+  - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
   - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
-  - [Transcribe Speech](https://modelfusion.dev/guide/function/transcribe-speech)
-  - [Synthesize Speech](https://modelfusion.dev/guide/function/synthesize-speech)
-  - [Describe Image](https://modelfusion.dev/guide/function/describe-image)
-  - [Generate Image](https://modelfusion.dev/guide/function/generate-image)
-    - [Prompt Format](https://modelfusion.dev/guide/function/generate-image/prompt-format)
 - [Guards](https://modelfusion.dev/guide/guard)
 - [Tools](https://modelfusion.dev/guide/tools)
 - [Vector Indices](https://modelfusion.dev/guide/vector-index)
@@ -628,7 +613,7 @@ Create an 19th century painting image for your input.
 
 Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
 
-### [Duplex Speech Streaming (Vite(React) + Fastify))](https://github.com/lgrammel/modelfusion/tree/main/examples/duplex-speech-streaming-vite-react-fastify)
+### [Speech Streaming (Vite(React) + Fastify))](https://github.com/lgrammel/modelfusion/tree/main/examples/speech-streaming-vite-react-fastify)
 
 > _Speech Streaming_, _OpenAI_, _Elevenlabs_ _streaming_, _Vite_, _Fastify_
 
