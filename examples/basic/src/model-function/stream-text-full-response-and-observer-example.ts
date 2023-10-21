@@ -3,7 +3,7 @@ import {
   FunctionEvent,
   FunctionObserver,
   OpenAITextGenerationModel,
-  streamText2,
+  streamText,
 } from "modelfusion";
 
 dotenv.config();
@@ -16,7 +16,7 @@ const customObserver: FunctionObserver = {
 };
 
 async function main() {
-  const { value: textStream, metadata } = await streamText2(
+  const { value: textStream, metadata } = await streamText(
     new OpenAITextGenerationModel({
       model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 500,

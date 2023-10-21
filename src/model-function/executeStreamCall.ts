@@ -17,6 +17,7 @@ import {
 import { ModelCallMetadata } from "./ModelCallMetadata.js";
 
 export async function executeStreamCall<
+  DELTA_VALUE,
   VALUE,
   MODEL extends Model<ModelSettings>,
 >({
@@ -26,6 +27,7 @@ export async function executeStreamCall<
   functionType,
   startStream,
   processDelta,
+  processFinished,
   getResult,
 }: {
   model: MODEL;
@@ -34,8 +36,11 @@ export async function executeStreamCall<
   functionType: ModelCallStartedEvent["functionType"];
   startStream: (
     options?: FunctionOptions
-  ) => PromiseLike<AsyncIterable<Delta<VALUE>>>;
-  processDelta: (delta: Delta<VALUE> & { type: "delta" }) => VALUE | undefined;
+  ) => PromiseLike<AsyncIterable<Delta<DELTA_VALUE>>>;
+  processDelta: (
+    delta: Delta<DELTA_VALUE> & { type: "delta" }
+  ) => VALUE | undefined;
+  processFinished?: () => VALUE | undefined;
   getResult: () => Record<string, unknown>;
 }): Promise<{
   value: AsyncIterable<VALUE>;
@@ -119,6 +124,14 @@ export async function executeStreamCall<
           if (value !== undefined) {
             yield value;
           }
+        }
+      }
+
+      if (processFinished != null) {
+        const value = processFinished();
+
+        if (value !== undefined) {
+          yield value;
         }
       }
 
