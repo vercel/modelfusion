@@ -8,7 +8,6 @@ export * from "./TextGenerationEvent.js";
 export * from "./TextGenerationModel.js";
 export * from "./TextGenerationPromptFormat.js";
 export * from "./TextPromptFormat.js";
-export * from "./TextStreamingEvent.js";
 export * from "./VicunaPromptFormat.js";
 export * from "./generateText.js";
 export * from "./streamText.js";

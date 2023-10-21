@@ -30,7 +30,7 @@ export function streamSpeech(
 
   return new AsyncIterableResultPromise<Buffer>(
     executeStreamCall({
-      functionType: "speech-generation",
+      functionType: "speech-streaming",
       input: text,
       model,
       options,

@@ -24,3 +24,12 @@ export interface SpeechGenerationFinishedEvent
   input: string;
   result: SpeechGenerationFinishedEventResult;
 }
+
+export interface SpeechStreamingStartedEvent extends BaseModelCallStartedEvent {
+  functionType: "speech-streaming";
+}
+
+export interface SpeechStreamingFinishedEvent
+  extends BaseModelCallFinishedEvent {
+  functionType: "speech-streaming";
+}
