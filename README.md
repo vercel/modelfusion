@@ -88,8 +88,6 @@ Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider
 
 Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 
-Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
-
 #### generateSpeech
 
 `generateSpeech` synthesizes speech from text.
@@ -106,6 +104,8 @@ const speech = await generateSpeech(
     "magical Stevie Wonder, and the final beats from the late Charlie Watts."
 );
 ```
+
+Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
 
 #### streamSpeech
 
@@ -130,6 +130,8 @@ for await (const part of speechStream) {
   // each part is a Buffer with MP3 audio data
 }
 ```
+
+Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs)
 
 ### [Generate Transcription](https://modelfusion.dev/guide/function/generate-transcription)
 
