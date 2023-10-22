@@ -1,7 +1,7 @@
 import {
   UseToolOrGenerateTextFinishedEvent,
   UseToolOrGenerateTextStartedEvent,
-} from "tool/UseToolOrGenerateTextEvent.js";
+} from "../tool/UseToolOrGenerateTextEvent.js";
 import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
