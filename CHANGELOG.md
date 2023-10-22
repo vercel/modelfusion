@@ -5,7 +5,7 @@
 ### Added
 
 - `parentCallId` event property
-- Tracing for `useTool`, `useToolOrGenerateText`
+- Tracing for `useTool`, `useToolOrGenerateText`, `upsertIntoVectorIndex`
 
 ### Changed
 

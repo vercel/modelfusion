@@ -1,8 +1,4 @@
 import {
-  UseToolOrGenerateTextFinishedEvent,
-  UseToolOrGenerateTextStartedEvent,
-} from "../tool/UseToolOrGenerateTextEvent.js";
-import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
 } from "../model-function/ModelCallEvent.js";
@@ -18,6 +14,14 @@ import {
   UseToolFinishedEvent,
   UseToolStartedEvent,
 } from "../tool/UseToolEvent.js";
+import {
+  UseToolOrGenerateTextFinishedEvent,
+  UseToolOrGenerateTextStartedEvent,
+} from "../tool/UseToolOrGenerateTextEvent.js";
+import {
+  UpsertIntoVectorIndexFinishedEvent,
+  UpsertIntoVectorIndexStartedEvent,
+} from "../vector-index/UpsertIntoVectorIndexEvent.js";
 
 export interface BaseFunctionEvent {
   /**
@@ -117,6 +121,8 @@ export type FunctionEvent =
   | ExecuteToolFinishedEvent
   | RetrieveStartedEvent
   | RetrieveFinishedEvent
+  | UpsertIntoVectorIndexStartedEvent
+  | UpsertIntoVectorIndexFinishedEvent
   | UseToolStartedEvent
   | UseToolFinishedEvent
   | UseToolOrGenerateTextStartedEvent
