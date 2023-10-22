@@ -10,6 +10,10 @@ import {
   ExecuteToolFinishedEvent,
   ExecuteToolStartedEvent,
 } from "../tool/ExecuteToolEvent.js";
+import {
+  UseToolFinishedEvent,
+  UseToolStartedEvent,
+} from "../tool/UseToolEvent.js";
 
 export interface BaseFunctionEvent {
   /**
@@ -106,6 +110,8 @@ export type FunctionEvent =
   | ModelCallStartedEvent
   | ExecuteToolStartedEvent
   | RetrieveStartedEvent
+  | UseToolStartedEvent
   | ModelCallFinishedEvent
   | ExecuteToolFinishedEvent
-  | RetrieveFinishedEvent;
+  | RetrieveFinishedEvent
+  | UseToolFinishedEvent;

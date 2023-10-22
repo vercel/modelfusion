@@ -1,4 +1,5 @@
 import { FunctionOptions } from "../core/FunctionOptions.js";
+import { executeFunctionCall } from "../core/executeFunctionCall.js";
 import {
   StructureGenerationModel,
   StructureGenerationModelSettings,
@@ -36,25 +37,32 @@ export async function useTool<
       ? (prompt as (tool: TOOL) => PROMPT)(tool)
       : prompt;
 
-  const { value } = await generateStructure<
-    TOOL["inputSchema"],
-    PROMPT,
-    TOOL["name"],
-    StructureGenerationModelSettings
-  >(
-    model,
-    {
-      name: tool.name,
-      description: tool.description,
-      schema: tool.inputSchema,
-    },
-    expandedPrompt,
-    options
-  ).asFullResponse();
+  return executeFunctionCall({
+    options,
+    input: expandedPrompt,
+    functionType: "use-tool",
+    execute: async (options) => {
+      const { value } = await generateStructure<
+        TOOL["inputSchema"],
+        PROMPT,
+        TOOL["name"],
+        StructureGenerationModelSettings
+      >(
+        model,
+        {
+          name: tool.name,
+          description: tool.description,
+          schema: tool.inputSchema,
+        },
+        expandedPrompt,
+        options
+      ).asFullResponse();
 
-  return {
-    tool: tool.name,
-    parameters: value,
-    result: await executeTool(tool, value, options),
-  };
+      return {
+        tool: tool.name,
+        parameters: value,
+        result: await executeTool(tool, value, options),
+      };
+    },
+  });
 }
