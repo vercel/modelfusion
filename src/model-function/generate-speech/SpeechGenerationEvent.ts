@@ -5,7 +5,7 @@ import {
 
 export interface SpeechGenerationStartedEvent
   extends BaseModelCallStartedEvent {
-  functionType: "speech-generation";
+  functionType: "generate-speech";
   input: string;
 }
 
@@ -20,16 +20,16 @@ export type SpeechGenerationFinishedEventResult =
 
 export interface SpeechGenerationFinishedEvent
   extends BaseModelCallFinishedEvent {
-  functionType: "speech-generation";
+  functionType: "generate-speech";
   input: string;
   result: SpeechGenerationFinishedEventResult;
 }
 
 export interface SpeechStreamingStartedEvent extends BaseModelCallStartedEvent {
-  functionType: "speech-streaming";
+  functionType: "stream-speech";
 }
 
 export interface SpeechStreamingFinishedEvent
   extends BaseModelCallFinishedEvent {
-  functionType: "speech-streaming";
+  functionType: "stream-speech";
 }
