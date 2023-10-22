@@ -4,13 +4,10 @@ import {
   OpenAITextEmbeddingModel,
   VectorIndexRetriever,
   retrieve,
-  setGlobalFunctionLogging,
   upsertIntoVectorIndex,
 } from "modelfusion";
 
 dotenv.config();
-
-setGlobalFunctionLogging("detailed-object");
 
 async function main() {
   const texts = [

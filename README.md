@@ -316,7 +316,7 @@ Guard functions can be used to implement retry on error, redacting and changing 
 
 ```ts
 const result = await guard(
-  (input) =>
+  (input, options) =>
     generateStructure(
       new OpenAIChatModel({
         // ...
@@ -324,7 +324,8 @@ const result = await guard(
       new ZodStructureDefinition({
         // ...
       }),
-      input
+      input,
+      options
     ),
   [
     // ...

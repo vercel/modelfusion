@@ -1,3 +1,4 @@
+import { GuardFinishedEvent, GuardStartedEvent } from "../guard/GuardEvent.js";
 import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
@@ -115,10 +116,12 @@ export interface BaseFunctionFinishedEvent extends BaseFunctionEvent {
 }
 
 export type FunctionEvent =
-  | ModelCallStartedEvent
-  | ModelCallFinishedEvent
   | ExecuteToolStartedEvent
   | ExecuteToolFinishedEvent
+  | GuardStartedEvent
+  | GuardFinishedEvent
+  | ModelCallStartedEvent
+  | ModelCallFinishedEvent
   | RetrieveStartedEvent
   | RetrieveFinishedEvent
   | UpsertIntoVectorIndexStartedEvent

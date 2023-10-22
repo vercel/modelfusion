@@ -17,7 +17,10 @@ setGlobalFunctionLogging("detailed-object");
 
 async function main() {
   const sentiment = await guard(
-    (input: { model: OpenAIChatModelType; prompt: OpenAIChatMessage[] }) =>
+    (
+      input: { model: OpenAIChatModelType; prompt: OpenAIChatMessage[] },
+      options
+    ) =>
       generateStructure(
         new OpenAIChatModel({
           model: input.model,
@@ -33,7 +36,8 @@ async function main() {
               .describe("Sentiment."),
           }),
         }),
-        input.prompt
+        input.prompt,
+        options
       ),
     {
       model: "gpt-3.5-turbo",

@@ -15,13 +15,14 @@ const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
 
 async function main() {
   const result = await guard(
-    (input) =>
+    (input, options) =>
       generateText(
         new LlamaCppTextGenerationModel({
           temperature: 0.7,
           maxCompletionTokens: 500,
         }).withPromptFormat(mapInstructionPromptToLlama2Format()),
-        input
+        input,
+        options
       ),
     {
       instruction:
