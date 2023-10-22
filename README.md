@@ -1,6 +1,6 @@
 # ModelFusion
 
-> ### Build multi-modal AI apps, chatbots, and agents with JavaScript and TypeScript.
+> ### The TypeScript library for building multi-modal AI applications.
 
 [![NPM Version](https://img.shields.io/npm/v/modelfusion?color=33cd56&logo=npm)](https://www.npmjs.com/package/modelfusion)
 [![MIT License](https://img.shields.io/github/license/lgrammel/modelfusion)](https://opensource.org/licenses/MIT)
@@ -10,12 +10,9 @@
 
 [Introduction](#introduction) | [Quick Install](#quick-install) | [Usage](#usage-examples) | [Documentation](#documentation) | [Examples](#more-examples) | [Contributing](#contributing) | [modelfusion.dev](https://modelfusion.dev)
 
-> [!NOTE]
-> ModelFusion is in its initial development phase. The main API is now mostly stable, but until version 1.0 there may be minor breaking changes. Feedback and suggestions are welcome.
-
 ## Introduction
 
-ModelFusion is a library for building AI applications, chatbots, and agents. Here are the main features:
+**ModelFusion** is a TypeScript library for building AI applications, chatbots, and agents.
 
 - **Multimodal**: ModelFusion supports a wide range of models including text generation, image generation, text-to-speech, speech-to-text, and embedding models.
 - **Streaming**: ModelFusion supports streaming for many generation models, e.g. text streaming, structure streaming, and full duplex speech streaming.
@@ -25,6 +22,9 @@ ModelFusion is a library for building AI applications, chatbots, and agents. Her
 - **Resilience and Robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
 
 ## Quick Install
+
+> [!NOTE]
+> ModelFusion is in its initial development phase. The main API is now mostly stable, but until version 1.0 there may be minor breaking changes. Feedback and suggestions are welcome.
 
 ```sh
 npm install modelfusion

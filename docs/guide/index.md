@@ -4,7 +4,7 @@ sidebar_position: 0
 
 # Getting Started
 
-ModelFusion is a library for building AI applications, chatbots, and agents. Here are the main features:
+**ModelFusion** is a TypeScript library for building AI applications, chatbots, and agents.
 
 - **Multimodal**: ModelFusion supports a wide range of models including text generation, image generation, text-to-speech, speech-to-text, and embedding models.
 - **Streaming**: ModelFusion supports streaming for many generation models, e.g. text streaming, structure streaming, and full duplex speech streaming.
@@ -13,13 +13,13 @@ ModelFusion is a library for building AI applications, chatbots, and agents. Her
 - **Observability and logging**: ModelFusion provides an observer framework and out-of-the-box logging support.
 - **Resilience and Robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
 
+## Installation
+
 :::note
 
 ModelFusion is in its initial development phase. The main API is now mostly stable, but until version 1.0 there may be minor breaking changes. Feedback and suggestions are welcome.
 
 :::
-
-## Installation
 
 ```sh
 npm install modelfusion
