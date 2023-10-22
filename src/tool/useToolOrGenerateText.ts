@@ -1,4 +1,5 @@
 import { FunctionOptions } from "../core/FunctionOptions.js";
+import { executeFunctionCall } from "../core/executeFunctionCall.js";
 import {
   StructureOrTextGenerationModel,
   StructureOrTextGenerationModelSettings,
@@ -49,42 +50,49 @@ export async function useToolOrGenerateText<
       ? (prompt as (tools: TOOLS) => PROMPT)(tools)
       : prompt;
 
-  const modelResponse = await generateStructureOrText(
-    model,
-    tools.map((tool) => ({
-      name: tool.name,
-      description: tool.description,
-      schema: tool.inputSchema,
-    })),
-    expandedPrompt,
-    options
-  );
+  return executeFunctionCall({
+    options,
+    input: expandedPrompt,
+    functionType: "use-tool-or-generate-text",
+    execute: async (options) => {
+      const modelResponse = await generateStructureOrText(
+        model,
+        tools.map((tool) => ({
+          name: tool.name,
+          description: tool.description,
+          schema: tool.inputSchema,
+        })),
+        expandedPrompt,
+        options
+      );
 
-  const { structure, text } = modelResponse;
+      const { structure, text } = modelResponse;
 
-  if (structure == null) {
-    return {
-      tool: null,
-      parameters: null,
-      result: null,
-      text,
-    };
-  }
+      if (structure == null) {
+        return {
+          tool: null,
+          parameters: null,
+          result: null,
+          text,
+        };
+      }
 
-  const tool = tools.find((tool) => tool.name === structure);
+      const tool = tools.find((tool) => tool.name === structure);
 
-  if (tool == null) {
-    throw new NoSuchToolError(structure.toString());
-  }
+      if (tool == null) {
+        throw new NoSuchToolError(structure.toString());
+      }
 
-  const toolParameters = modelResponse.value;
+      const toolParameters = modelResponse.value;
 
-  const result = await executeTool(tool, toolParameters, options);
+      const result = await executeTool(tool, toolParameters, options);
 
-  return {
-    tool: structure as keyof ToToolMap<TOOLS>,
-    result,
-    parameters: toolParameters,
-    text: text as any, // string | null is the expected value here
-  };
+      return {
+        tool: structure as keyof ToToolMap<TOOLS>,
+        result,
+        parameters: toolParameters,
+        text: text as any, // string | null is the expected value here
+      };
+    },
+  });
 }

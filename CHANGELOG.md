@@ -5,7 +5,7 @@
 ### Added
 
 - `parentCallId` event property
-- Tracing for `useTool``
+- Tracing for `useTool`, `useToolOrGenerateText`
 
 ## v0.49.0 - 2023-10-21
 

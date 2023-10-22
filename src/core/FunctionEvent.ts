@@ -1,4 +1,8 @@
 import {
+  UseToolOrGenerateTextFinishedEvent,
+  UseToolOrGenerateTextStartedEvent,
+} from "tool/UseToolOrGenerateTextEvent.js";
+import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
 } from "../model-function/ModelCallEvent.js";
@@ -108,10 +112,12 @@ export interface BaseFunctionFinishedEvent extends BaseFunctionEvent {
 
 export type FunctionEvent =
   | ModelCallStartedEvent
-  | ExecuteToolStartedEvent
-  | RetrieveStartedEvent
-  | UseToolStartedEvent
   | ModelCallFinishedEvent
+  | ExecuteToolStartedEvent
   | ExecuteToolFinishedEvent
+  | RetrieveStartedEvent
   | RetrieveFinishedEvent
-  | UseToolFinishedEvent;
+  | UseToolStartedEvent
+  | UseToolFinishedEvent
+  | UseToolOrGenerateTextStartedEvent
+  | UseToolOrGenerateTextFinishedEvent;
