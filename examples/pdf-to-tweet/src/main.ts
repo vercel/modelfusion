@@ -34,7 +34,7 @@ const run = new DefaultRun({
             );
             break;
           }
-          case "embedding": {
+          case "embed": {
             console.log(
               `Embed text ${event.functionId ?? "unknown"} ${
                 event.functionType

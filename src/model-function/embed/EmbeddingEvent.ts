@@ -5,7 +5,7 @@ import {
 } from "../ModelCallEvent.js";
 
 export interface EmbeddingStartedEvent extends BaseModelCallStartedEvent {
-  functionType: "embedding";
+  functionType: "embed";
   input: unknown | Array<unknown>;
 }
 
@@ -19,7 +19,7 @@ export type EmbeddingFinishedEventResult =
   | { status: "abort" };
 
 export interface EmbeddingFinishedEvent extends BaseModelCallFinishedEvent {
-  functionType: "embedding";
+  functionType: "embed";
   input: unknown | Array<unknown>;
   result: EmbeddingFinishedEventResult;
 }

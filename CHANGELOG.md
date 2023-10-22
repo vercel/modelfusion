@@ -10,6 +10,7 @@
 ### Changed
 
 - **breaking change**: rename `image-generation` event type to `generate-image`
+- **breaking change**: rename `embedding` event type to `embed`
 
 ## v0.49.0 - 2023-10-21
 
