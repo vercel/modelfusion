@@ -66,6 +66,7 @@ export async function executeStreamCall<
     functionType,
 
     callId: `call-${createId()}`,
+    parentCallId: options?.parentCallId,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
@@ -90,6 +91,7 @@ export async function executeStreamCall<
       logging: options?.logging,
       observers: options?.observers,
       run,
+      parentCallId: startMetadata.callId,
     });
 
     return (async function* () {

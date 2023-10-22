@@ -18,6 +18,11 @@ export interface BaseFunctionEvent {
   callId: string | undefined;
 
   /**
+   * Unique identifier of the call id of the parent function.
+   */
+  parentCallId?: string | undefined;
+
+  /**
    * Optional unique identifier for the function.
    */
   functionId?: string | undefined;

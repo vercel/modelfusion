@@ -25,6 +25,11 @@ export type FunctionOptions = {
    * Optional run as part of which this function is called.
    */
   run?: Run;
+
+  /**
+   * Unique identifier of the call id of the parent function.
+   */
+  parentCallId?: string | undefined;
 };
 
 /**

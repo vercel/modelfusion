@@ -59,6 +59,7 @@ export async function executeStandardCall<
     functionType,
 
     callId: `call-${createId()}`,
+    parentCallId: options?.parentCallId,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
@@ -83,6 +84,7 @@ export async function executeStandardCall<
       logging: options?.logging,
       observers: options?.observers,
       run,
+      parentCallId: startMetadata.callId,
     })
   );
 
