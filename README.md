@@ -17,7 +17,7 @@
 
 ModelFusion is a library for building AI apps, chatbots, and agents. It provides abstractions for AI models, vector indices, and tools.
 
-- **Multimodal Support**: Beyond just LLMs, ModelFusion encompasses a diverse array of models including text generation, text-to-speech, speech-to-text, and image generation, allowing you to build multi-modal AI applications with ease.
+- **Multimodal Support**: ModelFusion supports a wide range of models including text generation, image generation, text-to-speech, speech-to-text, and embedding models.
 - **Flexibility and control**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts and model settings, and you can access the raw responses from the models quickly to build what you need.
 - **Type inference and validation**: ModelFusion uses TypeScript to infer types wherever possible and to validate model responses. By default, [Zod](https://github.com/colinhacks/zod) is used for type validation, but you can also use other libraries.
 - **Guards**: ModelFusion provides a guard function that you can use to implement retry on error, redacting and changing reponses, etc.
@@ -532,6 +532,16 @@ for (const choice of (response as OpenAICompletionResponse).choices) {
 }
 ```
 
+### Logging and Observability
+
+ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/observer) and [out-of-the-box logging support](https://modelfusion.dev/guide/util/logging). You can easily trace runs and call hierarchies, and you can add your own observers.
+
+#### Global Logging Example
+
+```ts
+setGlobalFunctionLogging("detailed-object"); // log full events
+```
+
 ## Documentation
 
 ### [Guide](https://modelfusion.dev/guide)
@@ -653,3 +663,11 @@ Generate text on a Cloudflare Worker using ModelFusion and OpenAI.
 ### [Contributing Guide](https://github.com/lgrammel/modelfusion/blob/main/CONTRIBUTING.md)
 
 Read the [ModelFusion contributing guide](https://github.com/lgrammel/modelfusion/blob/main/CONTRIBUTING.md) to learn about the development process, how to propose bugfixes and improvements, and how to build and test your changes.
+
+```
+
+```
+
+```
+
+```
