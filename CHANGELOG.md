@@ -18,6 +18,7 @@
 - **breaking change**: rename `structure-streaming` event type to `stream-structure`
 - **breaking change**: rename `text-generation` event type to `generate-text`
 - **breaking change**: rename `text-streaming` event type to `stream-text`
+- **breaking change**: rename `transcription` event type to `generate-transcription`
 
 ## v0.49.0 - 2023-10-21
 

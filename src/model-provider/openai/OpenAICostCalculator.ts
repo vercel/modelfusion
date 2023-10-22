@@ -82,7 +82,7 @@ export class OpenAICostCalculator implements CostCalculator {
         break;
       }
 
-      case "transcription": {
+      case "generate-transcription": {
         if (model == null) {
           return null;
         }

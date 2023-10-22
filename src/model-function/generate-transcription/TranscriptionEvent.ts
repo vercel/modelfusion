@@ -4,7 +4,7 @@ import {
 } from "../ModelCallEvent.js";
 
 export interface TranscriptionStartedEvent extends BaseModelCallStartedEvent {
-  functionType: "transcription";
+  functionType: "generate-transcription";
 }
 
 export type TranscriptionFinishedEventResult =
@@ -17,6 +17,6 @@ export type TranscriptionFinishedEventResult =
   | { status: "abort" };
 
 export interface TranscriptionFinishedEvent extends BaseModelCallFinishedEvent {
-  functionType: "transcription";
+  functionType: "generate-transcription";
   result: TranscriptionFinishedEventResult;
 }

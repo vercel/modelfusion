@@ -27,7 +27,7 @@ export function generateTranscription<DATA>(
 ): ModelFunctionPromise<string> {
   return new ModelFunctionPromise(
     executeStandardCall({
-      functionType: "transcription",
+      functionType: "generate-transcription",
       input: data,
       model,
       options,
