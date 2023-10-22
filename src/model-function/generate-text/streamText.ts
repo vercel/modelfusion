@@ -13,7 +13,7 @@ export function streamText<PROMPT>(
 
   return new AsyncIterableResultPromise<string>(
     executeStreamCall({
-      functionType: "text-streaming",
+      functionType: "stream-text",
       input: prompt,
       model,
       options,

@@ -1,5 +1,25 @@
 # Changelog
 
+## UNRELEASED
+
+### Added
+
+- `parentCallId` event property
+- Tracing for `useTool`, `useToolOrGenerateText`, `upsertIntoVectorIndex`, and `guard`
+
+### Changed
+
+- **breaking change**: rename `embedding` event type to `embed`
+- **breaking change**: rename `image-generation` event type to `generate-image`
+- **breaking change**: rename `speech-generation` event type to `generate-speech`
+- **breaking change**: rename `speech-streaming` event type to `stream-speech`
+- **breaking change**: rename `structure-generation` event type to `generate-structure`
+- **breaking change**: rename `structure-or-text-generation` event type to `generate-structure-or-text`
+- **breaking change**: rename `structure-streaming` event type to `stream-structure`
+- **breaking change**: rename `text-generation` event type to `generate-text`
+- **breaking change**: rename `text-streaming` event type to `stream-text`
+- **breaking change**: rename `transcription` event type to `generate-transcription`
+
 ## v0.49.0 - 2023-10-21
 
 ### Added
@@ -7,7 +27,7 @@
 - Speech synthesis streaming supports string inputs.
 - Observability for speech synthesis streaming.
 
-### Changes
+### Changed
 
 - **breaking change**: split `synthesizeSpeech` into `generateSpeech` and `streamSpeech` functions
 - **breaking change**: renamed `speech-synthesis` event to `speech-generation`

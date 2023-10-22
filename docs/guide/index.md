@@ -4,13 +4,14 @@ sidebar_position: 0
 
 # Getting Started
 
-ModelFusion is a library for building AI apps, chatbots, and agents. It provides abstractions for AI models, vector indices, and tools.
+ModelFusion is a library for building AI applications, chatbots, and agents. Here are the main features:
 
-- **Multimodal Support**: Beyond just LLMs, ModelFusion encompasses a diverse array of models including text generation, text-to-speech, speech-to-text, and image generation, allowing you to build multi-modal AI applications with ease.
-- **Flexibility and control**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts and model settings, and you can access the raw responses from the models quickly to build what you need.
-- **Type inference and validation**: ModelFusion uses TypeScript to infer types wherever possible and to validate model responses. By default, [Zod](https://github.com/colinhacks/zod) is used for type validation, but you can also use other libraries.
-- **Guards**: ModelFusion provides a guard function that you can use to implement retry on error, redacting and changing reponses, etc.
-- **Integrated support features**: Essential features like **observability**, logging, retries, throttling, tracing, and error handling are built-in, helping you focus more on building your application.
+- **Multimodal**: ModelFusion supports a wide range of models including text generation, image generation, text-to-speech, speech-to-text, and embedding models.
+- **Streaming**: ModelFusion supports streaming for many generation models, e.g. text streaming, structure streaming, and full duplex speech streaming.
+- **Utility functions**: ModelFusion provides functionality for tools and tool usage, vector indices, and guards functions.
+- **Type inference and validation**: ModelFusion infers TypeScript types wherever possible and to validates model responses.
+- **Observability and logging**: ModelFusion provides an observer framework and out-of-the-box logging support.
+- **Resilience and Robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
 
 :::note
 

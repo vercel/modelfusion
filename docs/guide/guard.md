@@ -64,12 +64,13 @@ Handling sensitive data, like API keys, requires careful attention to prevent un
 const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
 
 const result = await guard(
-  (input) =>
+  (input, options) =>
     generateText(
       new LlamaCppTextGenerationModel({
         // ...
       }).withPromptFormat(mapInstructionPromptToLlama2Format()),
-      input
+      input,
+      options // pass through options (for tracing)
     ),
   {
     instruction:
@@ -131,7 +132,7 @@ With the [`fixStructure`](/api/modules/#fixstructure) guard, you can retry gener
 
 ```ts
 const result = await guard(
-  (input) =>
+  (input, options) =>
     generateStructure(
       new OpenAIChatModel({
         // ...
@@ -139,7 +140,8 @@ const result = await guard(
       new ZodStructureDefinition({
         // ...
       }),
-      input
+      input,
+      options
     ),
   [
     // ...
@@ -166,7 +168,10 @@ In this example, `gpt-3.5-turbo` is used initially. If structure parsing fails, 
 
 ```ts
 const result = await guard(
-  (input: { model: OpenAIChatModelType; prompt: OpenAIChatMessage[] }) =>
+  (
+    input: { model: OpenAIChatModelType; prompt: OpenAIChatMessage[] },
+    options
+  ) =>
     generateStructure(
       new OpenAIChatModel({
         model: input.model,
@@ -174,7 +179,8 @@ const result = await guard(
       new ZodStructureDefinition({
         //...
       }),
-      input.prompt
+      input.prompt,
+      options
     ),
   {
     model: "gpt-3.5-turbo",

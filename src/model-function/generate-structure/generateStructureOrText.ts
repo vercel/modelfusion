@@ -56,7 +56,7 @@ export function generateStructureOrText<
 
   return new ModelFunctionPromise(
     executeStandardCall({
-      functionType: "structure-or-text-generation",
+      functionType: "generate-structure-or-text",
       input: expandedPrompt,
       model,
       options,

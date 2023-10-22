@@ -1,3 +1,6 @@
+import { FunctionOptions } from "../core/FunctionOptions.js";
+import { executeFunctionCall } from "../core/executeFunctionCall.js";
+
 type OutputResult<INPUT, OUTPUT> =
   | {
       type: "value";
@@ -33,84 +36,88 @@ export type Guard<INPUT, OUTPUT> = ({
 >;
 
 export async function guard<INPUT, OUTPUT>(
-  execute: (input: INPUT) => PromiseLike<OUTPUT>,
+  execute: (input: INPUT, options?: FunctionOptions) => PromiseLike<OUTPUT>,
   input: INPUT,
   guards: Guard<INPUT, OUTPUT> | Array<Guard<INPUT, OUTPUT>>,
-  options?: { maxRetries: number }
+  options?: FunctionOptions & { maxRetries: number }
 ): Promise<OUTPUT | undefined> {
-  if (typeof guards === "function") {
-    guards = [guards];
-  }
-
+  const guardList = Array.isArray(guards) ? guards : [guards];
   const maxRetries = options?.maxRetries ?? 1;
 
-  let attempts = 0;
-  while (attempts <= maxRetries) {
-    let result: OutputResult<INPUT, OUTPUT>;
+  return executeFunctionCall({
+    options,
+    input,
+    functionType: "guard",
+    execute: async (options) => {
+      let attempts = 0;
+      while (attempts <= maxRetries) {
+        let result: OutputResult<INPUT, OUTPUT>;
 
-    try {
-      result = {
-        type: "value" as const,
-        input,
-        output: await execute(input),
-      };
-    } catch (error) {
-      result = {
-        type: "error" as const,
-        input,
-        error,
-      };
-    }
-
-    let isValid = true;
-    for (const guard of guards) {
-      const guardResult = await guard(result);
-
-      if (guardResult === undefined) {
-        continue;
-      }
-
-      switch (guardResult.action) {
-        case "passThrough": {
-          break;
-        }
-        case "retry": {
-          input = guardResult.input;
-          isValid = false;
-          break;
-        }
-        case "return": {
+        try {
           result = {
             type: "value" as const,
             input,
-            output: guardResult.output,
+            output: await execute(input, options),
           };
-          break;
-        }
-        case "throwError": {
+        } catch (error) {
           result = {
             type: "error" as const,
             input,
-            error: guardResult.error,
+            error,
           };
-          break;
         }
+
+        let isValid = true;
+        for (const guard of guardList) {
+          const guardResult = await guard(result);
+
+          if (guardResult === undefined) {
+            continue;
+          }
+
+          switch (guardResult.action) {
+            case "passThrough": {
+              break;
+            }
+            case "retry": {
+              input = guardResult.input;
+              isValid = false;
+              break;
+            }
+            case "return": {
+              result = {
+                type: "value" as const,
+                input,
+                output: guardResult.output,
+              };
+              break;
+            }
+            case "throwError": {
+              result = {
+                type: "error" as const,
+                input,
+                error: guardResult.error,
+              };
+              break;
+            }
+          }
+        }
+
+        if (isValid) {
+          if (result.type === "value") {
+            return result.output;
+          } else {
+            throw result.error;
+          }
+        }
+
+        attempts++;
       }
-    }
 
-    if (isValid) {
-      if (result.type === "value") {
-        return result.output;
-      } else {
-        throw result.error;
-      }
-    }
-
-    attempts++;
-  }
-
-  throw new Error(
-    `Maximum retry attempts of ${maxRetries} reached ` +
-      `without producing a valid output or handling an error after ${attempts} attempts.`
-  );
+      throw new Error(
+        `Maximum retry attempts of ${maxRetries} reached ` +
+          `without producing a valid output or handling an error after ${attempts} attempts.`
+      );
+    },
+  });
 }

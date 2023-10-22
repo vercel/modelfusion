@@ -1,3 +1,4 @@
+import { GuardFinishedEvent, GuardStartedEvent } from "../guard/GuardEvent.js";
 import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
@@ -10,12 +11,29 @@ import {
   ExecuteToolFinishedEvent,
   ExecuteToolStartedEvent,
 } from "../tool/ExecuteToolEvent.js";
+import {
+  UseToolFinishedEvent,
+  UseToolStartedEvent,
+} from "../tool/UseToolEvent.js";
+import {
+  UseToolOrGenerateTextFinishedEvent,
+  UseToolOrGenerateTextStartedEvent,
+} from "../tool/UseToolOrGenerateTextEvent.js";
+import {
+  UpsertIntoVectorIndexFinishedEvent,
+  UpsertIntoVectorIndexStartedEvent,
+} from "../vector-index/UpsertIntoVectorIndexEvent.js";
 
 export interface BaseFunctionEvent {
   /**
    * Unique identifier for the function call.
    */
   callId: string | undefined;
+
+  /**
+   * Unique identifier of the call id of the parent function.
+   */
+  parentCallId?: string | undefined;
 
   /**
    * Optional unique identifier for the function.
@@ -98,9 +116,17 @@ export interface BaseFunctionFinishedEvent extends BaseFunctionEvent {
 }
 
 export type FunctionEvent =
-  | ModelCallStartedEvent
   | ExecuteToolStartedEvent
-  | RetrieveStartedEvent
-  | ModelCallFinishedEvent
   | ExecuteToolFinishedEvent
-  | RetrieveFinishedEvent;
+  | GuardStartedEvent
+  | GuardFinishedEvent
+  | ModelCallStartedEvent
+  | ModelCallFinishedEvent
+  | RetrieveStartedEvent
+  | RetrieveFinishedEvent
+  | UpsertIntoVectorIndexStartedEvent
+  | UpsertIntoVectorIndexFinishedEvent
+  | UseToolStartedEvent
+  | UseToolFinishedEvent
+  | UseToolOrGenerateTextStartedEvent
+  | UseToolOrGenerateTextFinishedEvent;

@@ -23,7 +23,7 @@ export function embedMany<VALUE>(
 ): ModelFunctionPromise<Vector[]> {
   return new ModelFunctionPromise(
     executeStandardCall({
-      functionType: "embedding",
+      functionType: "embed",
       input: values,
       model,
       options,
@@ -77,7 +77,7 @@ export function embed<VALUE>(
 ): ModelFunctionPromise<Vector> {
   return new ModelFunctionPromise(
     executeStandardCall({
-      functionType: "embedding",
+      functionType: "embed",
       input: value,
       model,
       options,

@@ -28,7 +28,7 @@ export function generateImage<PROMPT>(
 ): ImageGenerationPromise {
   return new ImageGenerationPromise(
     executeStandardCall({
-      functionType: "image-generation",
+      functionType: "generate-image",
       input: prompt,
       model,
       options,

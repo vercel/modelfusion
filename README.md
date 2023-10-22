@@ -15,13 +15,14 @@
 
 ## Introduction
 
-ModelFusion is a library for building AI apps, chatbots, and agents. It provides abstractions for AI models, vector indices, and tools.
+ModelFusion is a library for building AI applications, chatbots, and agents. Here are the main features:
 
-- **Multimodal Support**: Beyond just LLMs, ModelFusion encompasses a diverse array of models including text generation, text-to-speech, speech-to-text, and image generation, allowing you to build multi-modal AI applications with ease.
-- **Flexibility and control**: AI application development can be complex and unique to each project. With ModelFusion, you have complete control over the prompts and model settings, and you can access the raw responses from the models quickly to build what you need.
-- **Type inference and validation**: ModelFusion uses TypeScript to infer types wherever possible and to validate model responses. By default, [Zod](https://github.com/colinhacks/zod) is used for type validation, but you can also use other libraries.
-- **Guards**: ModelFusion provides a guard function that you can use to implement retry on error, redacting and changing reponses, etc.
-- **Integrated support features**: Essential features like **observability**, logging, retries, throttling, tracing, and error handling are built-in, helping you focus more on building your application.
+- **Multimodal**: ModelFusion supports a wide range of models including text generation, image generation, text-to-speech, speech-to-text, and embedding models.
+- **Streaming**: ModelFusion supports streaming for many generation models, e.g. text streaming, structure streaming, and full duplex speech streaming.
+- **Utility functions**: ModelFusion provides functionality for tools and tool usage, vector indices, and guards functions.
+- **Type inference and validation**: ModelFusion infers TypeScript types wherever possible and to validates model responses.
+- **Observability and logging**: ModelFusion provides an observer framework and out-of-the-box logging support.
+- **Resilience and Robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
 
 ## Quick Install
 
@@ -88,8 +89,6 @@ Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider
 
 Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 
-Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
-
 #### generateSpeech
 
 `generateSpeech` synthesizes speech from text.
@@ -106,6 +105,8 @@ const speech = await generateSpeech(
     "magical Stevie Wonder, and the final beats from the late Charlie Watts."
 );
 ```
+
+Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt)
 
 #### streamSpeech
 
@@ -130,6 +131,8 @@ for await (const part of speechStream) {
   // each part is a Buffer with MP3 audio data
 }
 ```
+
+Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs)
 
 ### [Generate Transcription](https://modelfusion.dev/guide/function/generate-transcription)
 
@@ -314,7 +317,7 @@ Guard functions can be used to implement retry on error, redacting and changing 
 
 ```ts
 const result = await guard(
-  (input) =>
+  (input, options) =>
     generateStructure(
       new OpenAIChatModel({
         // ...
@@ -322,7 +325,8 @@ const result = await guard(
       new ZodStructureDefinition({
         // ...
       }),
-      input
+      input,
+      options
     ),
   [
     // ...
@@ -529,6 +533,16 @@ for (const choice of (response as OpenAICompletionResponse).choices) {
 }
 ```
 
+### Logging and Observability
+
+ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/observer) and [out-of-the-box logging support](https://modelfusion.dev/guide/util/logging). You can easily trace runs and call hierarchies, and you can add your own observers.
+
+#### Global Logging Example
+
+```ts
+setGlobalFunctionLogging("detailed-object"); // log full events
+```
+
 ## Documentation
 
 ### [Guide](https://modelfusion.dev/guide)
@@ -650,3 +664,11 @@ Generate text on a Cloudflare Worker using ModelFusion and OpenAI.
 ### [Contributing Guide](https://github.com/lgrammel/modelfusion/blob/main/CONTRIBUTING.md)
 
 Read the [ModelFusion contributing guide](https://github.com/lgrammel/modelfusion/blob/main/CONTRIBUTING.md) to learn about the development process, how to propose bugfixes and improvements, and how to build and test your changes.
+
+```
+
+```
+
+```
+
+```

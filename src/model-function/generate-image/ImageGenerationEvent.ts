@@ -4,7 +4,7 @@ import {
 } from "../ModelCallEvent.js";
 
 export interface ImageGenerationStartedEvent extends BaseModelCallStartedEvent {
-  functionType: "image-generation";
+  functionType: "generate-image";
 }
 
 export type ImageGenerationFinishedEventResult =
@@ -18,6 +18,6 @@ export type ImageGenerationFinishedEventResult =
 
 export interface ImageGenerationFinishedEvent
   extends BaseModelCallFinishedEvent {
-  functionType: "image-generation";
+  functionType: "generate-image";
   result: ImageGenerationFinishedEventResult;
 }

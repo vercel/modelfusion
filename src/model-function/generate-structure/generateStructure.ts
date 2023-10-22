@@ -33,7 +33,7 @@ export function generateStructure<
 
   return new ModelFunctionPromise(
     executeStandardCall({
-      functionType: "structure-generation",
+      functionType: "generate-structure",
       input: expandedPrompt,
       model,
       options,

@@ -114,6 +114,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     functionType: "execute-tool" as const,
 
     callId: `call-${createId()}`,
+    parentCallId: options?.parentCallId,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
@@ -136,6 +137,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
       logging: options?.logging,
       observers: options?.observers,
       run,
+      parentCallId: metadata.callId,
     })
   );
 

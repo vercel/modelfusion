@@ -19,6 +19,7 @@ Function events have several standard properties, as well as event-specific prop
 - `eventType`: The type of the event. Can be `started` or `finished`.
 - `functionType`: The type of the function, for example, `text-generation`.
 - `callId`: A unique ID for the function call.
+- `parentCallId`: The ID of the parent function call. Optional.
 - `functionId`: A unique ID for the function. Optional.
 - `runId`: A unique ID for the run. Available when the function is called with a run.
 - `sessionId`: A unique ID for the session. Available when the function is called with a run that has a session.

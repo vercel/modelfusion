@@ -35,13 +35,13 @@ export class OpenAICostCalculator implements CostCalculator {
     const model = call.model.modelName;
 
     switch (type) {
-      case "image-generation": {
+      case "generate-image": {
         return calculateOpenAIImageGenerationCostInMillicents({
           settings: call.settings as OpenAIImageGenerationSettings,
         });
       }
 
-      case "embedding": {
+      case "embed": {
         if (model == null) {
           return null;
         }
@@ -59,8 +59,8 @@ export class OpenAICostCalculator implements CostCalculator {
         break;
       }
 
-      case "structure-generation":
-      case "text-generation": {
+      case "generate-structure":
+      case "generate-text": {
         if (model == null) {
           return null;
         }
@@ -82,7 +82,7 @@ export class OpenAICostCalculator implements CostCalculator {
         break;
       }
 
-      case "transcription": {
+      case "generate-transcription": {
         if (model == null) {
           return null;
         }

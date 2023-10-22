@@ -12,14 +12,15 @@ setGlobalFunctionLogging("detailed-object");
 
 async function main() {
   const story = await guard(
-    (input) =>
+    (input, options) =>
       generateText(
         new OpenAICompletionModel({
           model: "gpt-3.5-turbo-instruct",
           temperature: 0.7,
           maxCompletionTokens: 500,
         }),
-        input
+        input,
+        options
       ),
     "Write a short story about a robot called Nox:\n\n",
     async (result) => {

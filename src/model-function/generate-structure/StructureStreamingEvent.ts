@@ -5,10 +5,10 @@ import {
 
 export interface StructureStreamingStartedEvent
   extends BaseModelCallStartedEvent {
-  functionType: "structure-streaming";
+  functionType: "stream-structure";
 }
 
 export interface StructureStreamingFinishedEvent
   extends BaseModelCallFinishedEvent {
-  functionType: "structure-streaming";
+  functionType: "stream-structure";
 }
