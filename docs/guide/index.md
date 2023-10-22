@@ -15,7 +15,7 @@ ModelFusion is a library for building AI applications, chatbots, and agents. Her
 
 :::note
 
-ModelFusion is in its initial development phase. Until version 1.0 there may be breaking changes, because I am still exploring the API design. Feedback and suggestions are welcome.
+ModelFusion is in its initial development phase. The main API is now mostly stable, but until version 1.0 there may be minor breaking changes. Feedback and suggestions are welcome.
 
 :::
 
