@@ -35,7 +35,7 @@ export class OpenAICostCalculator implements CostCalculator {
     const model = call.model.modelName;
 
     switch (type) {
-      case "image-generation": {
+      case "generate-image": {
         return calculateOpenAIImageGenerationCostInMillicents({
           settings: call.settings as OpenAIImageGenerationSettings,
         });

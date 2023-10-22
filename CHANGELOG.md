@@ -7,6 +7,10 @@
 - `parentCallId` event property
 - Tracing for `useTool`, `useToolOrGenerateText`
 
+### Changed
+
+- **breaking change**: rename `image-generation` event type to `generate-image`
+
 ## v0.49.0 - 2023-10-21
 
 ### Added
@@ -14,7 +18,7 @@
 - Speech synthesis streaming supports string inputs.
 - Observability for speech synthesis streaming.
 
-### Changes
+### Changed
 
 - **breaking change**: split `synthesizeSpeech` into `generateSpeech` and `streamSpeech` functions
 - **breaking change**: renamed `speech-synthesis` event to `speech-generation`
