@@ -26,7 +26,7 @@ export function generateText<PROMPT>(
 ): ModelFunctionPromise<string> {
   return new ModelFunctionPromise(
     executeStandardCall({
-      functionType: "text-generation",
+      functionType: "generate-text",
       input: prompt,
       model,
       options,

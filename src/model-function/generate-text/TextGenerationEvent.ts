@@ -4,7 +4,7 @@ import {
 } from "../ModelCallEvent.js";
 
 export interface TextGenerationStartedEvent extends BaseModelCallStartedEvent {
-  functionType: "text-generation";
+  functionType: "generate-text";
 }
 
 export type TextGenerationFinishedEventResult =
@@ -24,14 +24,14 @@ export type TextGenerationFinishedEventResult =
 
 export interface TextGenerationFinishedEvent
   extends BaseModelCallFinishedEvent {
-  functionType: "text-generation";
+  functionType: "generate-text";
   result: TextGenerationFinishedEventResult;
 }
 
 export interface TextStreamingStartedEvent extends BaseModelCallStartedEvent {
-  functionType: "text-streaming";
+  functionType: "stream-text";
 }
 
 export interface TextStreamingFinishedEvent extends BaseModelCallFinishedEvent {
-  functionType: "text-streaming";
+  functionType: "stream-text";
 }

@@ -13,6 +13,11 @@
 - **breaking change**: rename `image-generation` event type to `generate-image`
 - **breaking change**: rename `speech-generation` event type to `generate-speech`
 - **breaking change**: rename `speech-streaming` event type to `stream-speech`
+- **breaking change**: rename `structure-generation` event type to `generate-structure`
+- **breaking change**: rename `structure-or-text-generation` event type to `generate-structure-or-text`
+- **breaking change**: rename `structure-streaming` event type to `stream-structure`
+- **breaking change**: rename `text-generation` event type to `generate-text`
+- **breaking change**: rename `text-streaming` event type to `stream-text`
 
 ## v0.49.0 - 2023-10-21
 

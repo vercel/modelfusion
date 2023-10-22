@@ -26,7 +26,7 @@ const run = new DefaultRun({
     {
       onFunctionEvent(event) {
         switch (event.functionType) {
-          case "text-generation": {
+          case "generate-text": {
             console.log(
               `Generate text ${event.functionId ?? "unknown"} ${
                 event.functionType

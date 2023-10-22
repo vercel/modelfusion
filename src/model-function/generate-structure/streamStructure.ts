@@ -30,7 +30,7 @@ export function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
       StructureStreamPart<STRUCTURE>,
       StructureStreamingModel<PROMPT>
     >({
-      functionType: "structure-streaming",
+      functionType: "stream-structure",
       input: prompt,
       model,
       options,
