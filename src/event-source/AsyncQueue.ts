@@ -9,7 +9,9 @@ export class AsyncQueue<T> implements AsyncIterable<T> {
 
   push(value: T): void {
     if (this.closed) {
-      throw new Error("Pushing to a closed queue");
+      throw new Error(
+        "Cannot push value to closed queue. The queue has been closed and is no longer accepting new items."
+      );
     }
 
     this.values.push(value);

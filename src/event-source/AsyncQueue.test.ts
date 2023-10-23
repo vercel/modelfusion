@@ -127,5 +127,7 @@ test("receive all values in multiple independent consumers", async () => {
 test("throw error when pushing to a closed queue", async () => {
   const asyncQueue = new AsyncQueue<number>();
   asyncQueue.close();
-  expect(() => asyncQueue.push(1)).toThrowError("Pushing to a closed queue");
+  expect(() => asyncQueue.push(1)).toThrowError(
+    "Cannot push value to closed queue. The queue has been closed and is no longer accepting new items."
+  );
 });
