@@ -13,8 +13,8 @@ async function main() {
     `\n\nHuman: Write a short story about a robot learning to love\n\nAssistant: `
   );
 
-  for await (const textFragment of textStream) {
-    process.stdout.write(textFragment);
+  for await (const textPart of textStream) {
+    process.stdout.write(textPart);
   }
 }
 

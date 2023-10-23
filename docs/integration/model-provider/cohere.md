@@ -64,8 +64,8 @@ const textStream = await streamText(
   "Write a short story about a robot learning to love:\n\n"
 );
 
-for await (const textFragment of textStream) {
-  process.stdout.write(textFragment);
+for await (const textPart of textStream) {
+  process.stdout.write(textPart);
 }
 ```
 

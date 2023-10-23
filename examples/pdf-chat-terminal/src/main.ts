@@ -115,8 +115,8 @@ async function main() {
 
     // stream the answer to the terminal:
     process.stdout.write("\nAI : ");
-    for await (const textFragment of textStream) {
-      process.stdout.write(textFragment);
+    for await (const textPart of textStream) {
+      process.stdout.write(textPart);
     }
     process.stdout.write("\n\n");
   }

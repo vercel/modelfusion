@@ -70,17 +70,17 @@ export async function runEndpointServer({
       await Promise.all([
         // stream text to client:
         (async () => {
-          for await (const textFragment of textStream) {
-            events.push({ type: "text-chunk", delta: textFragment });
+          for await (const textPart of textStream) {
+            events.push({ type: "text-chunk", delta: textPart });
           }
         })(),
 
         // stream tts audio to client:
         (async () => {
-          for await (const speechFragment of speechStream) {
+          for await (const speechPart of speechStream) {
             events.push({
               type: "speech-chunk",
-              base64Audio: speechFragment.toString("base64"),
+              base64Audio: speechPart.toString("base64"),
             });
           }
         })(),

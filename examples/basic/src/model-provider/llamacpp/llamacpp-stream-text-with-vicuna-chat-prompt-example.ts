@@ -21,8 +21,8 @@ async function main() {
     ]
   );
 
-  for await (const textFragment of textStream) {
-    process.stdout.write(textFragment);
+  for await (const textPart of textStream) {
+    process.stdout.write(textPart);
   }
 }
 

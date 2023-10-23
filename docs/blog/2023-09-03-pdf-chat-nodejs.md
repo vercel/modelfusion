@@ -272,8 +272,8 @@ while (true) {
   );
 
   process.stdout.write("\nAI : ");
-  for await (const textFragment of textStream) {
-    process.stdout.write(textFragment);
+  for await (const textPart of textStream) {
+    process.stdout.write(textPart);
   }
   process.stdout.write("\n\n");
 }
@@ -371,13 +371,13 @@ The answer is streamed to show information to the user as soon as it is availabl
 
 ```typescript
 process.stdout.write("\nAI : ");
-for await (const textFragment of textStream) {
-  process.stdout.write(textFragment);
+for await (const textPart of textStream) {
+  process.stdout.write(textPart);
 }
 process.stdout.write("\n\n");
 ```
 
-Finally, we display the generated answer to the user using `stdout.write()` to print the text fragments collected from `textStream`.
+Finally, we display the generated answer to the user using `stdout.write()` to print the text parts collected from `textStream`.
 
 ## Conclusion
 

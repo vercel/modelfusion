@@ -75,8 +75,8 @@ const textStream = await streamText(new OpenAIChatModel(/* ... */), [
   OpenAIChatMessage.user("A robot learning to love"),
 ]);
 
-for await (const textFragment of textStream) {
-  process.stdout.write(textFragment);
+for await (const textPart of textStream) {
+  process.stdout.write(textPart);
 }
 ```
 

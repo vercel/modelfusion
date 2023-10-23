@@ -38,9 +38,9 @@ async function main() {
 
     let fullResponse = "";
     process.stdout.write("\nAI : ");
-    for await (const textFragment of textStream) {
-      fullResponse += textFragment;
-      process.stdout.write(textFragment);
+    for await (const textPart of textStream) {
+      fullResponse += textPart;
+      process.stdout.write(textPart);
     }
     process.stdout.write("\n\n");
     messages.push({ ai: fullResponse });

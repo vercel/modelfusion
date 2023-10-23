@@ -32,8 +32,8 @@ async function main() {
   ).asFullResponse();
 
   console.log("\n\nCONTENT:");
-  for await (const textFragment of textStream) {
-    process.stdout.write(textFragment);
+  for await (const textPart of textStream) {
+    process.stdout.write(textPart);
   }
 
   console.log("\n\nMETADATA:");

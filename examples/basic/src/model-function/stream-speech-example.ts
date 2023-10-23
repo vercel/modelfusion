@@ -36,10 +36,10 @@ async function main() {
   }
 
   let counter = 0;
-  for await (const speechFragment of speechStream) {
+  for await (const speechPart of speechStream) {
     counter++;
-    console.log(`Writing fragment ${counter}...`);
-    fs.appendFileSync("./stream-text-example.mp3", speechFragment);
+    console.log(`Writing part ${counter}...`);
+    fs.appendFileSync("./stream-text-example.mp3", speechPart);
   }
 }
 
