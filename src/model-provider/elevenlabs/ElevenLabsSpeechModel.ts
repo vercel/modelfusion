@@ -24,7 +24,7 @@ const elevenLabsModels = [
   "eleven_monolingual_v1",
 ] as const;
 
-const defaultModel = "eleven_multilingual_v2";
+const defaultModel = "eleven_monolingual_v1";
 
 export interface ElevenLabsSpeechModelSettings
   extends SpeechGenerationModelSettings {

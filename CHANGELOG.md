@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Fixed
+
+- Default ElevenLabs model is `eleven_monolingual_v1`.
+
 ## v0.50.0 - 2023-10-22
 
 ### Added
