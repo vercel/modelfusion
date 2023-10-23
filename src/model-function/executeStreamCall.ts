@@ -6,7 +6,7 @@ import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
 import { AbortError } from "../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
 import { getRun } from "../core/getRun.js";
-import { AsyncQueue } from "../event-source/AsyncQueue.js";
+import { AsyncQueue } from "../util/AsyncQueue.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { runSafe } from "../util/runSafe.js";
 import { Delta } from "./Delta.js";

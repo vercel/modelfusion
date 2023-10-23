@@ -34,6 +34,7 @@ export class AsyncQueue<T> implements AsyncIterable<T> {
     }
 
     this.values.push(value);
+
     while (this.pendingResolvers.length > 0) {
       this.pendingResolvers.shift()?.();
     }

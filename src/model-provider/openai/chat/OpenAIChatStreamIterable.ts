@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AsyncQueue } from "../../../event-source/AsyncQueue.js";
+import { AsyncQueue } from "../../../util/AsyncQueue.js";
 import { parseEventSourceStream } from "../../../event-source/parseEventSourceStream.js";
 import { Delta } from "../../../model-function/Delta.js";
 import { safeParseJsonWithZod } from "../../../util/parseJSON.js";

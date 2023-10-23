@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { delay } from "../util/delay.js";
+import { delay } from "./delay.js";
 import { AsyncQueue } from "./AsyncQueue.js";
 
 test("receive values in order for single iterator created before pushing", async () => {

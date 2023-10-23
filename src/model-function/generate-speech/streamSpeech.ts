@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { AsyncQueue } from "../../event-source/AsyncQueue.js";
+import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
 import { executeStreamCall } from "../executeStreamCall.js";
 import {

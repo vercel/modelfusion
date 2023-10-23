@@ -6,7 +6,7 @@ import {
   createAudioMpegResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { AsyncQueue } from "../../event-source/AsyncQueue.js";
+import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import {
