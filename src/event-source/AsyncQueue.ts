@@ -1,44 +1,51 @@
 export class AsyncQueue<T> implements AsyncIterable<T> {
-  private queue: T[] = [];
-  private resolvers: Array<(result: IteratorResult<T>) => void> = [];
+  private values: T[] = [];
+  private consumers: Array<{
+    position: number;
+  }> = [];
+  private pendingResolvers: Array<(result: IteratorResult<T>) => void> = [];
+
   private closed: boolean = false;
 
-  push(value: T) {
+  push(value: T): void {
     if (this.closed) {
       throw new Error("Pushing to a closed queue");
     }
 
-    const resolve = this.resolvers.shift();
-    if (resolve) {
-      resolve({ value, done: false });
-    } else {
-      this.queue.push(value);
+    this.values.push(value);
+
+    for (const resolver of this.pendingResolvers) {
+      resolver({ value, done: false });
     }
   }
 
-  close() {
-    while (this.resolvers.length) {
-      const resolve = this.resolvers.shift();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      resolve?.({ value: undefined as any, done: true });
-    }
+  close(): void {
     this.closed = true;
+
+    for (const resolver of this.pendingResolvers) {
+      resolver({ value: undefined as any, done: true }); // eslint-disable-line @typescript-eslint/no-explicit-any
+    }
   }
 
   [Symbol.asyncIterator](): AsyncIterator<T> {
+    const consumer = { position: 0 };
+
+    this.consumers.push(consumer);
+
     return {
       next: (): Promise<IteratorResult<T>> => {
-        if (this.queue.length > 0) {
-          return Promise.resolve({
-            value: this.queue.shift() as T,
-            done: false,
-          });
+        if (consumer.position < this.values.length) {
+          // If the consumer is behind the current position, give them the next value:
+          const value = this.values[consumer.position++];
+          return Promise.resolve({ value, done: false });
         } else if (this.closed) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return Promise.resolve({ value: undefined as any, done: true });
+          // using 'as any' to bypass TypeScript error for 'undefined':
+          return Promise.resolve({ value: undefined as any, done: true }); // eslint-disable-line @typescript-eslint/no-explicit-any
         } else {
+          // The consumer has to wait for new values to be pushed:
           return new Promise((resolve) => {
-            this.resolvers.push(resolve);
+            this.pendingResolvers.push(resolve);
+            consumer.position++;
           });
         }
       },
