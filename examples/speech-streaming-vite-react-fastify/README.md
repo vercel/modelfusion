@@ -19,16 +19,18 @@ Given a prompt, the server returns both a text and a speech stream response.
    ELEVENLABS_API_KEY="YOUR_ELEVENLABS_API_KEY"
    ```
 
-2. Start the server:
+2. Increase the max completion tokens in `server.ts` (by default it generates a very short text)
+
+3. Start the server:
 
    ```sh
    npm run server
    ```
 
-3. Start the client:
+4. Start the client:
 
    ```sh
    npm run client
    ```
 
-4. Go to the URL from the client run
+5. Go to the URL from the client run
