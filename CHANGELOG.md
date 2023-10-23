@@ -1,6 +1,8 @@
 # Changelog
 
-## UNRELEASED
+## v0.51.0 - 2023-10-23
+
+ElevenLabs improvements.
 
 ### Added
 
