@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.52.0 - 2023-10-23
+
+### Changed
+
+- Streaming results and `AsyncQueue` objects can be used by several consumers. Each consumer will receive all values. This means that you can e.g. forward the same text stream to speech generation and the client.
+
 ## v0.51.0 - 2023-10-23
 
 ElevenLabs improvements.
