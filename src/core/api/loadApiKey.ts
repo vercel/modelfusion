@@ -15,7 +15,7 @@ export function loadApiKey({
 
   if (typeof process === "undefined") {
     throw new Error(
-      `${description} API key is missing. Pass it using the '${apiKeyParameterName}' parameter. Environment variables is not supported in this environment.`
+      `${description} API key is missing. Pass it using the '${apiKeyParameterName}' parameter into the API configuration. Environment variables is not supported in this environment.`
     );
   }
 
@@ -23,7 +23,7 @@ export function loadApiKey({
 
   if (apiKey == null) {
     throw new Error(
-      `${description} API key is missing. Pass it using the '${apiKeyParameterName}' parameter or set it as an environment variable named ${environmentVariableName}.`
+      `${description} API key is missing. Pass it using the '${apiKeyParameterName}' parameter into the API configuration or set it as an environment variable named ${environmentVariableName}.`
     );
   }
 
