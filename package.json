@@ -48,7 +48,7 @@
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
     "test": "vitest run src",
-    "test-interactive": "vitest run",
+    "test-interactive": "vitest watch",
     "dist": "npm run clean && npm run lint && npm run test && npm run build && npm run dist:copy-files",
     "dist:copy-files": "copyfiles package.json README.md LICENSE dist"
   },
