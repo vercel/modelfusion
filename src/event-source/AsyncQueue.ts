@@ -15,11 +15,7 @@
  */
 export class AsyncQueue<T> implements AsyncIterable<T> {
   private values: T[] = [];
-  private consumers: Array<{
-    position: number;
-  }> = [];
-  private pendingResolvers: Array<(result: IteratorResult<T>) => void> = [];
-
+  private pendingResolvers: Array<() => void> = [];
   private closed: boolean = false;
 
   /**
@@ -38,9 +34,8 @@ export class AsyncQueue<T> implements AsyncIterable<T> {
     }
 
     this.values.push(value);
-
-    for (const resolver of this.pendingResolvers) {
-      resolver({ value, done: false });
+    while (this.pendingResolvers.length > 0) {
+      this.pendingResolvers.shift()?.();
     }
   }
 
@@ -54,8 +49,8 @@ export class AsyncQueue<T> implements AsyncIterable<T> {
   close(): void {
     this.closed = true;
 
-    for (const resolver of this.pendingResolvers) {
-      resolver({ value: undefined as any, done: true }); // eslint-disable-line @typescript-eslint/no-explicit-any
+    while (this.pendingResolvers.length > 0) {
+      this.pendingResolvers.shift()?.();
     }
   }
 
@@ -73,24 +68,28 @@ export class AsyncQueue<T> implements AsyncIterable<T> {
    * })();
    */
   [Symbol.asyncIterator](): AsyncIterator<T> {
-    const consumer = { position: 0 };
-
-    this.consumers.push(consumer);
+    let position = 0;
 
     return {
-      next: (): Promise<IteratorResult<T>> => {
-        if (consumer.position < this.values.length) {
-          const value = this.values[consumer.position++];
-          return Promise.resolve({ value, done: false });
-        } else if (this.closed) {
-          return Promise.resolve({ value: undefined as any, done: true }); // eslint-disable-line @typescript-eslint/no-explicit-any
-        } else {
-          return new Promise((resolve) => {
-            this.pendingResolvers.push(resolve);
-            consumer.position++;
-          });
-        }
-      },
+      next: (): Promise<IteratorResult<T>> =>
+        new Promise((resolve) => {
+          const attemptResolve = () => {
+            if (position < this.values.length) {
+              // There's an available value, resolve it immediately.
+              resolve({ value: this.values[position++], done: false });
+            } else if (this.closed) {
+              // The queue is closed, and there are no more values. Complete the iteration.
+              resolve({ value: undefined as any, done: true }); // eslint-disable-line @typescript-eslint/no-explicit-any
+            } else {
+              // No values are currently available, and the queue is not closed.
+              // The consumer is now pending and will be resolved when a new value is pushed
+              // or when the queue is closed.
+              this.pendingResolvers.push(attemptResolve);
+            }
+          };
+
+          attemptResolve();
+        }),
     };
   }
 }

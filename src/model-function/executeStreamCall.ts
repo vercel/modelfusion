@@ -6,6 +6,7 @@ import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
 import { AbortError } from "../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
 import { getRun } from "../core/getRun.js";
+import { AsyncQueue } from "../event-source/AsyncQueue.js";
 import { startDurationMeasurement } from "../util/DurationMeasurement.js";
 import { runSafe } from "../util/runSafe.js";
 import { Delta } from "./Delta.js";
@@ -94,7 +95,11 @@ export async function executeStreamCall<
       parentCallId: startMetadata.callId,
     });
 
-    return (async function* () {
+    // Return a queue that can be iterated over several times:
+    const responseQueue = new AsyncQueue<VALUE>();
+
+    // run async:
+    (async function () {
       for await (const event of deltaIterable) {
         if (event?.type === "error") {
           const error = event.error;
@@ -124,7 +129,7 @@ export async function executeStreamCall<
         if (event?.type === "delta") {
           const value = processDelta(event);
           if (value !== undefined) {
-            yield value;
+            responseQueue.push(value);
           }
         }
       }
@@ -133,9 +138,11 @@ export async function executeStreamCall<
         const value = processFinished();
 
         if (value !== undefined) {
-          yield value;
+          responseQueue.push(value);
         }
       }
+
+      responseQueue.close();
 
       const finishMetadata = {
         eventType: "finished" as const,
@@ -152,6 +159,8 @@ export async function executeStreamCall<
         },
       } as ModelCallFinishedEvent);
     })();
+
+    return responseQueue;
   });
 
   if (!result.ok) {

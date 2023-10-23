@@ -1,4 +1,5 @@
-import { test, expect } from "vitest";
+import { expect, test } from "vitest";
+import { delay } from "../util/delay.js";
 import { AsyncQueue } from "./AsyncQueue.js";
 
 test("receive values in order for single iterator created before pushing", async () => {
@@ -65,7 +66,7 @@ test("error handling in consumer", async () => {
   await expect(
     (async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for await (const value of asyncQueue) {
+      for await (const _value of asyncQueue) {
         throw new Error("Consumer error");
       }
     })()
@@ -112,9 +113,13 @@ test("receive all values in multiple independent consumers", async () => {
     return receivedValues;
   });
 
+  await delay(5);
   asyncQueue.push(1);
+  await delay(5);
   asyncQueue.push(2);
+  await delay(5);
   asyncQueue.push(3);
+  await delay(5);
   asyncQueue.close();
 
   const allReceivedValues = await Promise.all(consumerPromises);
@@ -122,6 +127,45 @@ test("receive all values in multiple independent consumers", async () => {
   allReceivedValues.forEach((receivedValues) => {
     expect(receivedValues).toEqual([1, 2, 3]);
   });
+});
+
+test("each consumer receives all pushed values under varying conditions", async () => {
+  const asyncQueue = new AsyncQueue<number>();
+
+  // Start the first consumer, which will await values.
+  const receivedValues1: number[] = [];
+  const consumer1 = (async () => {
+    for await (const value of asyncQueue) {
+      receivedValues1.push(value);
+    }
+  })();
+
+  // Simulate some operation delay, then push the first value.
+  await delay(5); // Delay is necessary to simulate real-world async operations.
+  asyncQueue.push(1);
+
+  // Start the second consumer after the first value was pushed.
+  const receivedValues2: number[] = [];
+  const consumer2 = (async () => {
+    for await (const value of asyncQueue) {
+      receivedValues2.push(value);
+    }
+  })();
+
+  // Push the remaining values with some delays.
+  await delay(5);
+  asyncQueue.push(2);
+  asyncQueue.push(3);
+
+  // Close the queue and wait for consumers to finish processing.
+  await delay(5);
+  asyncQueue.close();
+
+  await Promise.all([consumer1, consumer2]);
+
+  // Both consumers should have received all values, even if they started at different times.
+  expect(receivedValues1).toEqual([1, 2, 3]);
+  expect(receivedValues2).toEqual([1, 2, 3]); // This will likely fail because consumer2 started late.
 });
 
 test("throw error when pushing to a closed queue", async () => {

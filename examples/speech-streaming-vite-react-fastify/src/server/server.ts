@@ -51,8 +51,6 @@ export async function runEndpointServer({
         { instruction: input.prompt }
       );
 
-      const speechStreamInput = new AsyncQueue<string>();
-
       const speechStream = await streamSpeech(
         new ElevenLabsSpeechModel({
           voice: "pNInz6obpgDQGcFmaJgB", // Adam
@@ -65,20 +63,15 @@ export async function runEndpointServer({
             chunkLengthSchedule: [50, 90, 120, 150, 200],
           },
         }),
-        speechStreamInput
+        textStream
       );
 
       // Run in parallel:
       await Promise.all([
-        // stream text to client and to tts model:
+        // stream text to client:
         (async () => {
-          try {
-            for await (const textFragment of textStream) {
-              speechStreamInput.push(textFragment);
-              events.push({ type: "text-chunk", delta: textFragment });
-            }
-          } finally {
-            speechStreamInput.close();
+          for await (const textFragment of textStream) {
+            events.push({ type: "text-chunk", delta: textFragment });
           }
         })(),
 
