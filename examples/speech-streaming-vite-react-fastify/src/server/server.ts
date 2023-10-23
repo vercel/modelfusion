@@ -67,7 +67,7 @@ export async function runEndpointServer({
       );
 
       // Run in parallel:
-      await Promise.all([
+      await Promise.allSettled([
         // stream text to client:
         (async () => {
           for await (const textPart of textStream) {
