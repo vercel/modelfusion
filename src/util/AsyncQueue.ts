@@ -42,7 +42,6 @@ export class AsyncQueue<T> implements AsyncIterable<T> {
 
   /**
    * Closes the queue, preventing more elements from being pushed onto it.
-   * Any pending iterators are resolved with `{ value: undefined, done: true }`.
    *
    * @example
    * queue.close();
@@ -57,7 +56,6 @@ export class AsyncQueue<T> implements AsyncIterable<T> {
 
   /**
    * Creates and returns an async iterator that allows the queue to be consumed.
-   * This is part of the AsyncIterable protocol.
    * You can create multiple iterators for the same queue.
    *
    * @returns {AsyncIterator<T>} An async iterator for the queue.
