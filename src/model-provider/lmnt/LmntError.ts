@@ -7,7 +7,6 @@ export const failedLmntCallResponseHandler: ResponseHandler<
   const responseBody = await response.text();
 
   try {
-    // TODO implement LmntError
     return new ApiCallError({
       message: responseBody,
       statusCode: response.status,

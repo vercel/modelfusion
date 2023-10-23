@@ -7,7 +7,6 @@ export const failedElevenLabsCallResponseHandler: ResponseHandler<
   const responseBody = await response.text();
 
   try {
-    // TODO implement ElevenLabsError
     return new ApiCallError({
       message: responseBody,
       statusCode: response.status,
