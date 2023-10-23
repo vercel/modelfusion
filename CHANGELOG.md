@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.53.0 - 2023-10-23
+
+### Added
+
+- `executeFunction` utility function for tracing execution time, parameters, and result of composite functions and non-ModelFusion functions.
+
 ## v0.52.0 - 2023-10-23
 
 ### Changed
