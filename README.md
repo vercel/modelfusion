@@ -664,11 +664,3 @@ Generate text on a Cloudflare Worker using ModelFusion and OpenAI.
 ### [Contributing Guide](https://github.com/lgrammel/modelfusion/blob/main/CONTRIBUTING.md)
 
 Read the [ModelFusion contributing guide](https://github.com/lgrammel/modelfusion/blob/main/CONTRIBUTING.md) to learn about the development process, how to propose bugfixes and improvements, and how to build and test your changes.
-
-```
-
-```
-
-```
-
-```
