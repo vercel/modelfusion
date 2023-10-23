@@ -27,6 +27,7 @@ async function main() {
   const narratedStory = await generateSpeech(
     new ElevenLabsSpeechModel({
       voice: "AZnzlk1XvdvUeBnXmlld", // Domi
+      model: "eleven_multilingual_v2",
     }),
     story
   );

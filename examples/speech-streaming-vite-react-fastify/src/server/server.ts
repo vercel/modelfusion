@@ -56,7 +56,7 @@ export async function runEndpointServer({
       const speechStream = await streamSpeech(
         new ElevenLabsSpeechModel({
           voice: "pNInz6obpgDQGcFmaJgB", // Adam
-          model: "eleven_monolingual_v1",
+          optimizeStreamingLatency: 1,
           voiceSettings: {
             stability: 1,
             similarityBoost: 0.35,

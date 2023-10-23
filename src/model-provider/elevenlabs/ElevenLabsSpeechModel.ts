@@ -41,6 +41,14 @@ export interface ElevenLabsSpeechModelSettings
     // eslint-disable-next-line @typescript-eslint/ban-types
     | (string & {});
 
+  optimizeStreamingLatency?: 0 | 1 | 2 | 3 | 4;
+  outputFormat?:
+    | "mp3_44100"
+    | "pcm_16000"
+    | "pcm_22050"
+    | "pcm_24000"
+    | "pcm_44100";
+
   voiceSettings?: {
     stability: number;
     similarityBoost: number;
@@ -56,7 +64,10 @@ export interface ElevenLabsSpeechModelSettings
 /**
  * Synthesize speech using the ElevenLabs Text to Speech API.
  *
- * @see https://api.elevenlabs.io/docs#/text-to-speech/Text_to_speech_v1_text_to_speech__voice_id__post
+ * Both regular text-to-speech and full duplex text-to-speech streaming are supported.
+ *
+ * @see https://docs.elevenlabs.io/api-reference/text-to-speech
+ * @see https://docs.elevenlabs.io/api-reference/text-to-speech-websockets
  */
 export class ElevenLabsSpeechModel
   extends AbstractModel<ElevenLabsSpeechModelSettings>
@@ -133,7 +144,13 @@ export class ElevenLabsSpeechModel
 
     const model = this.settings.model ?? defaultModel;
     const socket = await createSimpleWebSocket(
-      `wss://api.elevenlabs.io/v1/text-to-speech/${this.settings.voice}/stream-input?model_id=${model}`
+      `wss://api.elevenlabs.io/v1/text-to-speech/${
+        this.settings.voice
+      }/stream-input${assembleQuery({
+        model_id: model,
+        optimize_streaming_latency: this.settings.optimizeStreamingLatency,
+        output_format: this.settings.outputFormat,
+      })}`
     );
 
     socket.onopen = async () => {
@@ -238,6 +255,8 @@ async function callElevenLabsTextToSpeechAPI({
   text,
   voiceId,
   modelId,
+  optimizeStreamingLatency,
+  outputFormat,
   voiceSettings,
 }: {
   api?: ApiConfiguration;
@@ -245,10 +264,17 @@ async function callElevenLabsTextToSpeechAPI({
   text: string;
   voiceId: string;
   modelId?: string;
+  optimizeStreamingLatency?: ElevenLabsSpeechModelSettings["optimizeStreamingLatency"];
+  outputFormat?: ElevenLabsSpeechModelSettings["outputFormat"];
   voiceSettings?: ElevenLabsSpeechModelSettings["voiceSettings"];
 }): Promise<Buffer> {
   return postJsonToApi({
-    url: api.assembleUrl(`/text-to-speech/${voiceId}`),
+    url: api.assembleUrl(
+      `/text-to-speech/${voiceId}${assembleQuery({
+        optimize_streaming_latency: optimizeStreamingLatency,
+        output_format: outputFormat,
+      })}`
+    ),
     headers: api.headers,
     body: {
       text,
@@ -259,6 +285,28 @@ async function callElevenLabsTextToSpeechAPI({
     successfulResponseHandler: createAudioMpegResponseHandler(),
     abortSignal,
   });
+}
+
+function assembleQuery(parameters: Record<string, unknown | undefined>) {
+  let query = "";
+  let hasQuestionMark = false;
+
+  for (const [key, value] of Object.entries(parameters)) {
+    if (value == null) {
+      continue;
+    }
+
+    if (!hasQuestionMark) {
+      query += "?";
+      hasQuestionMark = true;
+    } else {
+      query += "&";
+    }
+
+    query += `${key}=${value}`;
+  }
+
+  return query;
 }
 
 function toApiVoiceSettings(

@@ -2,6 +2,10 @@
 
 ## UNRELEASED
 
+### Added
+
+- ElevenLabs model settings `outputFormat` and `optimizeStreamingLatency`.
+
 ### Fixed
 
 - Default ElevenLabs model is `eleven_monolingual_v1`.
