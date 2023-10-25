@@ -100,10 +100,53 @@ export async function executeStreamCall<
 
     // run async:
     (async function () {
-      for await (const event of deltaIterable) {
-        if (event?.type === "error") {
-          const error = event.error;
+      try {
+        const loopResult = await runSafe(async () => {
+          for await (const event of deltaIterable) {
+            if (event?.type === "error") {
+              const error = event.error;
 
+              const finishMetadata = {
+                eventType: "finished" as const,
+                ...startMetadata,
+                finishTimestamp: new Date(),
+                durationInMs: durationMeasurement.durationInMs,
+              };
+
+              eventSource.notify(
+                error instanceof AbortError
+                  ? ({
+                      ...finishMetadata,
+                      result: { status: "abort" },
+                    } as ModelCallFinishedEvent)
+                  : ({
+                      ...finishMetadata,
+                      result: { status: "error", error },
+                    } as ModelCallFinishedEvent)
+              );
+
+              throw error;
+            }
+
+            if (event?.type === "delta") {
+              const value = processDelta(event);
+              if (value !== undefined) {
+                responseQueue.push(value);
+              }
+            }
+          }
+
+          if (processFinished != null) {
+            const value = processFinished();
+
+            if (value !== undefined) {
+              responseQueue.push(value);
+            }
+          }
+        });
+
+        // deal with abort or errors that happened during streaming:
+        if (!loopResult.ok) {
           const finishMetadata = {
             eventType: "finished" as const,
             ...startMetadata,
@@ -111,53 +154,52 @@ export async function executeStreamCall<
             durationInMs: durationMeasurement.durationInMs,
           };
 
-          eventSource.notify(
-            error instanceof AbortError
-              ? ({
-                  ...finishMetadata,
-                  result: { status: "abort" },
-                } as ModelCallFinishedEvent)
-              : ({
-                  ...finishMetadata,
-                  result: { status: "error", error },
-                } as ModelCallFinishedEvent)
-          );
+          if (loopResult.isAborted) {
+            eventSource.notify({
+              ...finishMetadata,
+              eventType: "finished",
+              result: {
+                status: "abort",
+              },
+            } as ModelCallFinishedEvent);
 
-          throw error;
-        }
+            responseQueue.error(new AbortError());
 
-        if (event?.type === "delta") {
-          const value = processDelta(event);
-          if (value !== undefined) {
-            responseQueue.push(value);
+            return; // error is handled through queue
           }
+
+          eventSource.notify({
+            ...finishMetadata,
+            eventType: "finished",
+            result: {
+              status: "error",
+              error: loopResult.error,
+            },
+          } as ModelCallFinishedEvent);
+
+          responseQueue.error(loopResult.error);
+
+          return; // error is handled through queue
         }
+
+        const finishMetadata = {
+          eventType: "finished" as const,
+          ...startMetadata,
+          finishTimestamp: new Date(),
+          durationInMs: durationMeasurement.durationInMs,
+        };
+
+        eventSource.notify({
+          ...finishMetadata,
+          result: {
+            status: "success",
+            ...getResult(),
+          },
+        } as ModelCallFinishedEvent);
+      } finally {
+        // always close the queue when done, no matter where a potential error happened:
+        responseQueue.close();
       }
-
-      if (processFinished != null) {
-        const value = processFinished();
-
-        if (value !== undefined) {
-          responseQueue.push(value);
-        }
-      }
-
-      responseQueue.close();
-
-      const finishMetadata = {
-        eventType: "finished" as const,
-        ...startMetadata,
-        finishTimestamp: new Date(),
-        durationInMs: durationMeasurement.durationInMs,
-      };
-
-      eventSource.notify({
-        ...finishMetadata,
-        result: {
-          status: "success",
-          ...getResult(),
-        },
-      } as ModelCallFinishedEvent);
     })();
 
     return responseQueue;
@@ -179,6 +221,7 @@ export async function executeStreamCall<
           status: "abort",
         },
       } as ModelCallFinishedEvent);
+
       throw new AbortError();
     }
 

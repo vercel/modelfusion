@@ -172,6 +172,6 @@ test("throw error when pushing to a closed queue", async () => {
   const asyncQueue = new AsyncQueue<number>();
   asyncQueue.close();
   expect(() => asyncQueue.push(1)).toThrowError(
-    "Cannot push value to closed queue. The queue has been closed and is no longer accepting new items."
+    "Cannot push value to closed queue."
   );
 });

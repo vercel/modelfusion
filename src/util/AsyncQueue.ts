@@ -14,9 +14,17 @@
  * })();
  */
 export class AsyncQueue<T> implements AsyncIterable<T> {
-  private values: T[] = [];
+  private values = Array<
+    { type: "value"; value: T } | { type: "error"; error: unknown }
+  >();
   private pendingResolvers: Array<() => void> = [];
   private closed: boolean = false;
+
+  private processPendingResolvers(): void {
+    while (this.pendingResolvers.length > 0) {
+      this.pendingResolvers.shift()?.();
+    }
+  }
 
   /**
    * Pushes an element onto the queue. If the queue is closed, an error is thrown.
@@ -28,16 +36,20 @@ export class AsyncQueue<T> implements AsyncIterable<T> {
    */
   push(value: T): void {
     if (this.closed) {
-      throw new Error(
-        "Cannot push value to closed queue. The queue has been closed and is no longer accepting new items."
-      );
+      throw new Error("Cannot push value to closed queue.");
     }
 
-    this.values.push(value);
+    this.values.push({ type: "value", value });
+    this.processPendingResolvers();
+  }
 
-    while (this.pendingResolvers.length > 0) {
-      this.pendingResolvers.shift()?.();
+  error(error: unknown): void {
+    if (this.closed) {
+      throw new Error("Cannot push error to closed queue.");
     }
+
+    this.values.push({ type: "error", error });
+    this.processPendingResolvers();
   }
 
   /**
@@ -48,10 +60,7 @@ export class AsyncQueue<T> implements AsyncIterable<T> {
    */
   close(): void {
     this.closed = true;
-
-    while (this.pendingResolvers.length > 0) {
-      this.pendingResolvers.shift()?.();
-    }
+    this.processPendingResolvers();
   }
 
   /**
@@ -71,11 +80,18 @@ export class AsyncQueue<T> implements AsyncIterable<T> {
 
     return {
       next: (): Promise<IteratorResult<T>> =>
-        new Promise((resolve) => {
+        new Promise((resolve, reject) => {
           const attemptResolve = () => {
             if (position < this.values.length) {
-              // There's an available value, resolve it immediately.
-              resolve({ value: this.values[position++], done: false });
+              const entry = this.values[position++];
+              switch (entry.type) {
+                case "value":
+                  resolve({ value: entry.value, done: false });
+                  break;
+                case "error":
+                  reject(entry.error);
+                  break;
+              }
             } else if (this.closed) {
               // The queue is closed, and there are no more values. Complete the iteration.
               resolve({ value: undefined as any, done: true }); // eslint-disable-line @typescript-eslint/no-explicit-any
