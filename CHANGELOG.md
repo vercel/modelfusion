@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.53.1 - 2023-10-25
+
+### Fixed
+
+- Abort signals and errors during streaming are caught and forwarded correctly.
+
 ## v0.53.0 - 2023-10-23
 
 ### Added
