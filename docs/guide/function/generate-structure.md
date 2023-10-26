@@ -68,7 +68,7 @@ const structureStream = await streamStructure(
     maxCompletionTokens: 2000,
   }),
   new ZodStructureDefinition({
-    name: "generateCharacter" as const,
+    name: "generateCharacter",
     description: "Generate character descriptions.",
     schema: z.object({
       characters: z.array(
@@ -91,9 +91,12 @@ const structureStream = await streamStructure(
 
 for await (const part of structureStream) {
   if (!part.isComplete) {
+    // use your own logic to handle partial structures, e.g. with Zod .deepPartial()
+    // it depends on your application at which points you want to act on the partial structures
     const unknownPartialStructure = part.value;
     console.log("partial value", unknownPartialStructure);
   } else {
+    // the final structure is fully typed:
     const fullyTypedStructure = part.value;
     console.log("final value", fullyTypedStructure);
   }

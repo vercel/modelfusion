@@ -1,5 +1,5 @@
-import { OpenAITextEmbeddingModel, embedMany } from "modelfusion";
 import dotenv from "dotenv";
+import { OpenAITextEmbeddingModel, embedMany } from "modelfusion";
 
 dotenv.config();
 

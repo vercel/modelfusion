@@ -7,10 +7,12 @@ import {
 import { ImageGenerationPromise } from "./ImageGenerationPromise.js";
 
 /**
- * Generates a base64-encoded image using a prompt.
- * The prompt format depends on the model.
- * For example, OpenAI image models expect a string prompt,
+ * Generates an image using a prompt.
+ *
+ * The prompt depends on the model. For example, OpenAI image models expect a string prompt,
  * and Stability AI models expect an array of text prompts with optional weights.
+ *
+ * @see https://modelfusion.dev/guide/function/generate-image
  *
  * @example
  * const image = await generateImage(
@@ -20,6 +22,13 @@ import { ImageGenerationPromise } from "./ImageGenerationPromise.js";
  *     { text: "style of early 19th century painting", weight: 0.5 },
  *   ]
  * );
+ *
+ * @param {ImageGenerationModel<PROMPT, ImageGenerationModelSettings>} model - The image generation model to be used.
+ * @param {PROMPT} prompt - The prompt to be used for image generation.
+ * @param {FunctionOptions} [options] - Optional settings for the function.
+ *
+ * @returns {ImageGenerationPromise} - Returns a promise that resolves to the generated image.
+ * The image is a Buffer containing the image data in PNG format.
  */
 export function generateImage<PROMPT>(
   model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>,

@@ -7,7 +7,22 @@ import {
 } from "./SpeechGenerationModel.js";
 
 /**
- * Synthesizes speech from text.
+ * Synthesizes speech from text. Also called text-to-speech (TTS).
+ *
+ * @see https://modelfusion.dev/guide/function/generate-speech
+ *
+ * @example
+ * const speech = await generateSpeech(
+ *   new LmntSpeechModel(...),
+ *   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
+ *    "as The Rolling Stones unveil 'Hackney Diamonds.'
+ * );
+ *
+ * @param {SpeechGenerationModel<SpeechGenerationModelSettings>} model - The speech generation model.
+ * @param {string} text - The text to be converted to speech.
+ * @param {FunctionOptions} [options] - Optional function options.
+ *
+ * @returns {ModelFunctionPromise<Buffer>} - A promise that resolves to a buffer containing the synthesized speech.
  */
 export function generateSpeech(
   model: SpeechGenerationModel<SpeechGenerationModelSettings>,

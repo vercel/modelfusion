@@ -8,6 +8,47 @@ import {
 } from "./StructureGenerationModel.js";
 import { StructureValidationError } from "./StructureValidationError.js";
 
+/**
+ * Generate a typed object for a prompt and a structure definition.
+ * The structure definition is used as part of the final prompt.
+ *
+ * For the OpenAI chat model, this generates and parses a function call with a single function.
+ *
+ * @see https://modelfusion.dev/guide/function/generate-structure
+ *
+ * @example
+ * const sentiment = await generateStructure(
+ *   new OpenAIChatModel(...),
+ *   new ZodStructureDefinition({
+ *     name: "sentiment",
+ *     description: "Write the sentiment analysis",
+ *     schema: z.object({
+ *       sentiment: z
+ *         .enum(["positive", "neutral", "negative"])
+ *         .describe("Sentiment."),
+ *     }),
+ *   }),
+ *   [
+ *     OpenAIChatMessage.system(
+ *       "You are a sentiment evaluator. " +
+ *         "Analyze the sentiment of the following product review:"
+ *     ),
+ *     OpenAIChatMessage.user(
+ *       "After I opened the package, I was met by a very unpleasant smell " +
+ *         "that did not disappear even after washing. Never again!"
+ *     ),
+ *   ]
+ * );
+ *
+ * @param {StructureGenerationModel<PROMPT, SETTINGS>} model - The model to generate the structure.
+ * @param {StructureDefinition<NAME, STRUCTURE>} structureDefinition - The structure definition to be used.
+ * @param {PROMPT | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT)} prompt
+ * The prompt to be used.
+ * You can also pass a function that takes the structure definition as an argument and returns the prompt.
+ * @param {FunctionOptions} [options] - Optional function options.
+ *
+ * @returns {ModelFunctionPromise<STRUCTURE>} - Returns a promise that resolves to the generated structure.
+ */
 export function generateStructure<
   STRUCTURE,
   PROMPT,

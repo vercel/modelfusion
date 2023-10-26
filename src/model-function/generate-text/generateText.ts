@@ -7,17 +7,25 @@ import {
 } from "./TextGenerationModel.js";
 
 /**
- * Generates a text using a prompt.
- * The prompt format depends on the model.
- * For example, OpenAI text models expect a string prompt, and OpenAI chat models expect an array of chat messages.
+ * Generate text for a prompt and return it as a string.
+ *
+ * The prompt depends on the model used.
+ * For instance, OpenAI completion models expect a string prompt,
+ * whereas OpenAI chat models expect an array of chat messages.
+ *
+ * @see https://modelfusion.dev/guide/function/generate-text
  *
  * @example
- * const model = new OpenAICompletionModel(...);
- *
  * const text = await generateText(
- *   model,
+ *   new OpenAICompletionModel(...),
  *   "Write a short story about a robot learning to love:\n\n"
  * );
+ *
+ * @param {TextGenerationModel<PROMPT, TextGenerationModelSettings>} model - The text generation model to use.
+ * @param {PROMPT} prompt - The prompt to use for text generation.
+ * @param {FunctionOptions} [options] - Optional parameters for the function.
+ *
+ * @returns {ModelFunctionPromise<string>} - A promise that resolves to the generated text.
  */
 export function generateText<PROMPT>(
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,

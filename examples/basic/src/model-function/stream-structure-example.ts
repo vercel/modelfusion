@@ -17,7 +17,7 @@ async function main() {
       maxCompletionTokens: 2000,
     }),
     new ZodStructureDefinition({
-      name: "generateCharacter" as const,
+      name: "generateCharacter",
       description: "Generate character descriptions.",
       schema: z.object({
         characters: z.array(

@@ -6,7 +6,7 @@ import { FunctionObserver } from "./FunctionObserver.js";
  */
 export type FunctionOptions = {
   /**
-   * Optional function identifier that is used in events to identify the function.
+   * Optional function identifier. Used in events and logging.
    */
   functionId?: string;
 
@@ -22,12 +22,13 @@ export type FunctionOptions = {
   observers?: Array<FunctionObserver>;
 
   /**
-   * Optional run as part of which this function is called.
+   * Optional run as part of which this function is called. Used in events and logging.
+   * Run callbacks are invoked when it is provided.
    */
   run?: Run;
 
   /**
-   * Unique identifier of the call id of the parent function.
+   * Unique identifier of the call id of the parent function. Used in events and logging.
    */
   parentCallId?: string | undefined;
 };
