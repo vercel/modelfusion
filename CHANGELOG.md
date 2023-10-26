@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.53.2 - 2023-10-26
+
+### Added
+
+- Prompt callback option for `streamStructure`
+
+### Improved
+
+- Inline JSDoc comments for the model functions.
+
 ## v0.53.1 - 2023-10-25
 
 ### Fixed
