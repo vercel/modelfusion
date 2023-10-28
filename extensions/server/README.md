@@ -5,6 +5,10 @@
 
 ## Usage
 
+```sh
+npm i @modelfusion/server
+```
+
 ### Fastify server with ModelFusion flow plugin
 
 ```ts
