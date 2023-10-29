@@ -37,6 +37,7 @@
     ".": {
       "types": "./index.d.ts",
       "import": "./index.js",
+      "module": "./index.js",
       "require": "./index.cjs"
     }
   },
@@ -44,13 +45,11 @@
     "setup": "husky install",
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist",
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc --outDir dist/",
-    "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
+    "build": "tsup",
     "test": "vitest run src",
     "test-interactive": "vitest watch",
     "dist": "npm run clean && npm run lint && npm run test && npm run build && npm run dist:copy-files",
-    "dist:copy-files": "copyfiles package.json README.md LICENSE dist"
+    "dist:copy-files": "copyfiles package.json README.md LICENSE src/**/*.ts dist "
   },
   "dependencies": {
     "eventsource-parser": "1.1.1",
@@ -62,7 +61,6 @@
     "zod-to-json-schema": "3.21.4"
   },
   "devDependencies": {
-    "@tsconfig/recommended": "1.0.3",
     "@types/deep-equal": "^1.0.2",
     "@types/node": "18.11.9",
     "@types/ws": "^8.5.7",
@@ -75,6 +73,7 @@
     "lint-staged": "14.0.1",
     "prettier": "3.0.3",
     "rimraf": "5.0.5",
+    "tsup": "7.2.0",
     "typescript": "5.2.2",
     "vitest": "^0.34.5"
   }

@@ -1,4 +1,4 @@
-const { OpenAICompletionModel, generateText } = require("modelfusion");
+const { OpenAICompletionModel, streamText } = require("modelfusion");
 
 require("dotenv").config();
 
@@ -11,10 +11,12 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
     settings: { temperature: 0.7 },
   });
 
-  const text = await generateText(
+  const textStream = await streamText(
     textGenerationModel.withSettings({ maxCompletionTokens: 500 }),
     "Write a short story about a robot learning to love:\n\n"
   );
 
-  console.log(text);
+  for await (const textPart of textStream) {
+    process.stdout.write(textPart);
+  }
 })();
