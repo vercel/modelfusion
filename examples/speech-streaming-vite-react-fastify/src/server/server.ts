@@ -5,7 +5,7 @@ import { setGlobalFunctionLogging } from "modelfusion";
 import {
   FileSystemAssetStorage,
   FileSystemLogger,
-  modelFusionFlowPlugin,
+  modelFusionFastifyPlugin,
 } from "modelfusion/fastify-server";
 import path from "node:path";
 import { duplexStreamingFlow } from "../flow/duplexStreamingFlow";
@@ -16,7 +16,7 @@ setGlobalFunctionLogging("basic-text");
 
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 const host = process.env.HOST ?? "localhost";
-const basePath = process.env.BASE_PATH ?? "runs";
+const fsBasePath = process.env.BASE_PATH ?? "runs";
 const baseUrl = process.env.BASE_URL ?? `http://${host}:${port}`;
 
 export async function main() {
@@ -26,15 +26,15 @@ export async function main() {
     await fastify.register(cors, {});
 
     const logger = new FileSystemLogger({
-      path: (run) => path.join(basePath, run.runId, "logs"),
+      path: (run) => path.join(fsBasePath, run.runId, "logs"),
     });
 
     const assetStorage = new FileSystemAssetStorage({
-      path: (run) => path.join(basePath, run.runId, "assets"),
+      path: (run) => path.join(fsBasePath, run.runId, "assets"),
       logger,
     });
 
-    fastify.register(modelFusionFlowPlugin, {
+    fastify.register(modelFusionFastifyPlugin, {
       baseUrl,
       basePath: "/answer",
       logger,

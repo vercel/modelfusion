@@ -7,7 +7,7 @@ import { FlowRun } from "./FlowRun.js";
 import { Logger } from "./Logger.js";
 import { PathProvider } from "./PathProvider.js";
 
-export interface ModelFusionFlowPluginOptions {
+export interface ModelFusionFastifyPluginOptions {
   flow: Flow<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   baseUrl: string;
   basePath: string;
@@ -15,8 +15,8 @@ export interface ModelFusionFlowPluginOptions {
   logger: Logger;
 }
 
-export const modelFusionFlowPlugin: FastifyPluginAsync<
-  ModelFusionFlowPluginOptions
+export const modelFusionFastifyPlugin: FastifyPluginAsync<
+  ModelFusionFastifyPluginOptions
 > = async (
   fastify: FastifyInstance,
   {
@@ -25,7 +25,7 @@ export const modelFusionFlowPlugin: FastifyPluginAsync<
     basePath,
     assetStorage,
     logger,
-  }: ModelFusionFlowPluginOptions
+  }: ModelFusionFastifyPluginOptions
 ) => {
   type EVENT = z.infer<typeof flow.schema.events>;
 
