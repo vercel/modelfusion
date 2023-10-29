@@ -8,7 +8,7 @@ export class PathProvider {
   }
 
   getAssetUrl(runId: string, assetName: string) {
-    return `${this.baseUrl}/${this.basePath}/${runId}/assets/${assetName}`;
+    return `${this.baseUrl}${this.basePath}/${runId}/assets/${assetName}`;
   }
 
   getAssetPathTemplate() {
@@ -16,7 +16,7 @@ export class PathProvider {
   }
 
   getEventsUrl(runId: string) {
-    return `${this.baseUrl}/${this.basePath}/${runId}/events`;
+    return `${this.baseUrl}${this.basePath}/${runId}/events`;
   }
 
   getEventsPathTemplate() {
