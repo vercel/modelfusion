@@ -12,7 +12,7 @@ Adding experimental ModelFusion server, flows, and browser utils.
 
 ### Changed
 
--- **breaking change**: `readEventSource` and `readEventSourceStream` are now part of 'modelfusion/browser'.
+- **breaking change**: `readEventSource` and `readEventSourceStream` are now part of 'modelfusion/browser'.
 
 ## v0.53.2 - 2023-10-26
 
