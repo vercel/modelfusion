@@ -1,5 +1,4 @@
-import { ZodSchema } from "modelfusion";
-import { MediaSourceAppender, readEventSource } from "modelfusion/browser";
+import { MediaSourceAppender, invokeFlow } from "modelfusion/browser";
 import { useState } from "react";
 import "./App.css";
 import { duplexStreamingFlowSchema } from "./eventSchema";
@@ -19,20 +18,10 @@ function App() {
     const audioSource = new MediaSourceAppender("audio/mpeg");
     setAudioUrl(audioSource.mediaSourceUrl);
 
-    const response = await fetch(`${BASE_URL}/answer`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
-    });
-
-    const url: string = (await response.json()).url;
-
-    readEventSource({
-      url,
-      schema: new ZodSchema(duplexStreamingFlowSchema.events),
-      isStopEvent(event) {
-        return event.data === "[DONE]";
-      },
+    invokeFlow({
+      url: `${BASE_URL}/answer`,
+      input: { prompt },
+      schema: duplexStreamingFlowSchema,
       onEvent(event) {
         switch (event.type) {
           case "text-chunk": {
