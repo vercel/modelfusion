@@ -3,12 +3,15 @@ const textEncoder = new TextEncoder();
 export function createEventSourceStream(events: AsyncIterable<unknown>) {
   return new ReadableStream({
     async start(controller) {
-      for await (const event of events) {
-        controller.enqueue(
-          textEncoder.encode(`data: ${JSON.stringify(event)}\n\n`)
-        );
+      try {
+        for await (const event of events) {
+          controller.enqueue(
+            textEncoder.encode(`data: ${JSON.stringify(event)}\n\n`)
+          );
+        }
+      } finally {
+        controller.close();
       }
-      controller.close();
     },
   });
 }
