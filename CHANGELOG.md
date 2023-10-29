@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.54.0 - 2023-10-29
+
+Adding experimental ModelFusion server, flows, and browser utils.
+
+### Added
+
+- ModelFusion server (separate export 'modelfusion/server') with a Fastify plugin for running ModelFusion flows on a server.
+- ModelFusion flows.
+- ModelFusion browser utils (separate export 'modelfusion/browser') for dealing with audio data and invoking ModelFusion flows on the server (`invokeFlow`).
+
+### Changed
+
+-- **breaking change**: `readEventSource` and `readEventSourceStream` are now part of 'modelfusion/browser'.
+
 ## v0.53.2 - 2023-10-26
 
 ### Added
