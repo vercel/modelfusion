@@ -9,4 +9,7 @@ export const eventSchema = z.discriminatedUnion("type", [
     type: z.literal("speech-chunk"),
     base64Audio: z.string(),
   }),
+  z.object({
+    type: z.literal("finished"),
+  }),
 ]);

@@ -1,6 +1,6 @@
-# Duplex Speech Streaming (Vite(React) + Fastify))
+# Duplex Speech Streaming (using Vite/React & ModelFusion Server/Fastify)
 
-> _Speech Streaming_, _OpenAI_, _Elevenlabs_ _streaming_, _Vite_, _Fastify_
+> _Speech Streaming_, _OpenAI_, _Elevenlabs_ _streaming_, _Vite_, _Fastify_, _ModelFusion Server_
 
 Given a prompt, the server returns both a text and a speech stream response.
 

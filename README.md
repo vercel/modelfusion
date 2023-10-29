@@ -623,9 +623,9 @@ Create an 19th century painting image for your input.
 
 Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
 
-### [Speech Streaming (Vite(React) + Fastify))](https://github.com/lgrammel/modelfusion/tree/main/examples/speech-streaming-vite-react-fastify)
+### [Duplex Speech Streaming (using Vite/React & ModelFusion Server/Fastify)](https://github.com/lgrammel/modelfusion/tree/main/examples/speech-streaming-vite-react-fastify)
 
-> _Speech Streaming_, _OpenAI_, _Elevenlabs_ _streaming_, _Vite_, _Fastify_
+> _Speech Streaming_, _OpenAI_, _Elevenlabs_ _streaming_, _Vite_, _Fastify_, _ModelFusion Server_
 
 Given a prompt, the server returns both a text and a speech stream response.
 

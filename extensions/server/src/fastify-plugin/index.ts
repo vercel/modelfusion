@@ -1,4 +1,5 @@
 export * from "./AssetStorage.js";
+export * from "./DefaultFlow.js";
 export * from "./FileSystemAssetStorage.js";
 export * from "./FileSystemLogger.js";
 export * from "./Flow.js";
