@@ -6,9 +6,9 @@ Given a prompt, the server returns both a text and a speech stream response.
 
 ## Key files
 
+- **ModelFusion Flow:** `src/flow/duplexStreamingFlow.ts`
 - **Server:** `src/server/server.ts`
 - **Client:** `src/App.tsx`
-- **Event Schema:** `src/eventSchema.ts`
 
 ## Usage
 
@@ -19,7 +19,7 @@ Given a prompt, the server returns both a text and a speech stream response.
    ELEVENLABS_API_KEY="YOUR_ELEVENLABS_API_KEY"
    ```
 
-2. Increase the max completion tokens in `server.ts` (by default it generates a very short text)
+2. Increase the max completion tokens in `duplexStreamingFlow.ts` (by default it generates a very short text)
 
 3. Start the server:
 

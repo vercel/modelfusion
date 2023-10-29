@@ -1,21 +1,14 @@
 import cors from "@fastify/cors";
 import dotenv from "dotenv";
 import Fastify from "fastify";
+import { setGlobalFunctionLogging } from "modelfusion";
 import {
-  ElevenLabsSpeechModel,
-  OpenAIChatModel,
-  setGlobalFunctionLogging,
-  streamSpeech,
-  streamText,
-} from "modelfusion";
-import {
-  DefaultFlow,
   FileSystemAssetStorage,
   FileSystemLogger,
   modelFusionFlowPlugin,
 } from "modelfusion/fastify-server";
 import path from "node:path";
-import { duplexStreamingFlowSchema } from "../eventSchema";
+import { duplexStreamingFlow } from "../flow/duplexStreamingFlow";
 
 dotenv.config();
 
@@ -46,54 +39,7 @@ export async function main() {
       basePath: "/answer",
       logger,
       assetStorage,
-      flow: new DefaultFlow({
-        schema: duplexStreamingFlowSchema,
-        async process({ input, run }) {
-          const textStream = await streamText(
-            new OpenAIChatModel({
-              model: "gpt-4",
-              temperature: 0.7,
-              maxCompletionTokens: 50,
-            }).withInstructionPrompt(),
-            { instruction: input.prompt }
-          );
-
-          const speechStream = await streamSpeech(
-            new ElevenLabsSpeechModel({
-              voice: "pNInz6obpgDQGcFmaJgB", // Adam
-              optimizeStreamingLatency: 1,
-              voiceSettings: {
-                stability: 1,
-                similarityBoost: 0.35,
-              },
-              generationConfig: {
-                chunkLengthSchedule: [50, 90, 120, 150, 200],
-              },
-            }),
-            textStream
-          );
-
-          // Run in parallel:
-          await Promise.allSettled([
-            // stream text to client:
-            (async () => {
-              for await (const textPart of textStream) {
-                run.publishEvent({ type: "text-chunk", delta: textPart });
-              }
-            })(),
-
-            // stream tts audio to client:
-            (async () => {
-              for await (const speechPart of speechStream) {
-                run.publishEvent({
-                  type: "speech-chunk",
-                  base64Audio: speechPart.toString("base64"),
-                });
-              }
-            })(),
-          ]);
-        },
-      }),
+      flow: duplexStreamingFlow,
     });
 
     console.log(`Starting server on port ${port}...`);

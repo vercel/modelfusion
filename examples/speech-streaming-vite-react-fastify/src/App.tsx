@@ -1,7 +1,7 @@
 import { MediaSourceAppender, invokeFlow } from "modelfusion/browser";
 import { useState } from "react";
 import "./App.css";
-import { duplexStreamingFlowSchema } from "./eventSchema";
+import { duplexStreamingFlowSchema } from "./flow/duplexStreamingFlow";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 
