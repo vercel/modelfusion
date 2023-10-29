@@ -62,7 +62,6 @@
     "zod-to-json-schema": "3.21.4"
   },
   "devDependencies": {
-    "@tsconfig/recommended": "1.0.3",
     "@types/deep-equal": "^1.0.2",
     "@types/node": "18.11.9",
     "@types/ws": "^8.5.7",
