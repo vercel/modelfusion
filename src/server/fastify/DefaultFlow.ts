@@ -1,5 +1,5 @@
-import { FlowRun } from "./FlowRun";
-import { FlowSchema } from "./FlowSchema";
+import { FlowRun } from "./FlowRun.js";
+import { FlowSchema } from "./FlowSchema.js";
 
 export class DefaultFlow<INPUT, EVENT> {
   readonly schema: FlowSchema<INPUT, EVENT>;

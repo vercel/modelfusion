@@ -1,7 +1,9 @@
-import { AsyncQueue, DefaultRun, FunctionEvent } from "modelfusion";
-import type { Asset, AssetStorage } from "./AssetStorage";
-import { Logger } from "./Logger";
-import { PathProvider } from "./PathProvider";
+import { DefaultRun } from "../../core/DefaultRun.js";
+import { FunctionEvent } from "../../core/FunctionEvent.js";
+import { AsyncQueue } from "../../util/AsyncQueue.js";
+import { Asset, AssetStorage } from "./AssetStorage.js";
+import { Logger } from "./Logger.js";
+import { PathProvider } from "./PathProvider.js";
 
 export class FlowRun<EVENT> extends DefaultRun {
   readonly eventQueue: AsyncQueue<EVENT> = new AsyncQueue();

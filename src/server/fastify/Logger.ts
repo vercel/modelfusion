@@ -1,5 +1,5 @@
-import { FunctionEvent } from "modelfusion";
-import { FlowRun } from "./FlowRun";
+import { FunctionEvent } from "../../core/FunctionEvent.js";
+import { FlowRun } from "./FlowRun.js";
 
 export interface Logger {
   logFunctionEvent(options: {

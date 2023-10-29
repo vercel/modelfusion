@@ -1,6 +1,6 @@
-import { FastifyInstance, FastifyPluginAsync } from "fastify";
-import { withRun } from "modelfusion";
+import type { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { z } from "zod";
+import { withRun } from "../../core/getRun.js";
 import type { AssetStorage } from "./AssetStorage.js";
 import { Flow } from "./Flow.js";
 import { FlowRun } from "./FlowRun.js";

@@ -43,6 +43,11 @@
       "types": "./browser/index.d.ts",
       "import": "./browser/index.js",
       "require": "./browser/index.cjs"
+    },
+    "./fastify-server": {
+      "types": "./server/fastify/index.d.ts",
+      "import": "./server/fastify/index.js",
+      "require": "./server/fastify/index.cjs"
     }
   },
   "scripts": {
@@ -74,6 +79,7 @@
     "copyfiles": "2.4.1",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.0.0",
+    "fastify": "^4.0.0",
     "husky": "^8.0.3",
     "lint-staged": "15.0.2",
     "prettier": "3.0.3",

@@ -1,10 +1,4 @@
 import cors from "@fastify/cors";
-import {
-  DefaultFlow,
-  FileSystemAssetStorage,
-  FileSystemLogger,
-  modelFusionFlowPlugin,
-} from "@modelfusion/server/fastify-plugin";
 import dotenv from "dotenv";
 import Fastify from "fastify";
 import {
@@ -14,6 +8,12 @@ import {
   streamSpeech,
   streamText,
 } from "modelfusion";
+import {
+  DefaultFlow,
+  FileSystemAssetStorage,
+  FileSystemLogger,
+  modelFusionFlowPlugin,
+} from "modelfusion/fastify-server";
 import path from "node:path";
 import { duplexStreamingFlowSchema } from "../eventSchema";
 

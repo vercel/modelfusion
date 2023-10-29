@@ -1,8 +1,8 @@
 import { promises as fs } from "node:fs";
 import { join } from "node:path";
-import type { Asset, AssetStorage } from "./AssetStorage";
-import { FlowRun } from "./FlowRun";
-import { Logger } from "./Logger";
+import type { Asset, AssetStorage } from "./AssetStorage.js";
+import { FlowRun } from "./FlowRun.js";
+import { Logger } from "./Logger.js";
 
 export class FileSystemAssetStorage implements AssetStorage {
   private readonly path: (run: FlowRun<unknown>) => string;

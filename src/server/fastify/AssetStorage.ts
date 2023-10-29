@@ -1,4 +1,4 @@
-import { FlowRun } from "./FlowRun";
+import { FlowRun } from "./FlowRun.js";
 
 export type Asset = {
   data: Buffer;
