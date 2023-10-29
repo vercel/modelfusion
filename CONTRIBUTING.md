@@ -9,7 +9,7 @@ Feedback, bug reports and other contributions are welcome.
 1. Clone the ModelFusion repository: `git clone https://github.com/lgrammel/modelfusion.git``
 2. Go into the cloned repository: `cd modelfusion`
 3. Install dependencies: `npm install`
-4. Setup pre-commit hook: `npm setup`
+4. Setup pre-commit hook: `npm setup`. The precommit hook will lint, format, build and test ModelFusion each time you commit.
 5. Build: `npm run build`
 
 ## Linking for examples
