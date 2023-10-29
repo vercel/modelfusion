@@ -2,7 +2,7 @@ import { Schema } from "../core/structure/Schema.js";
 import { ErrorHandler } from "../util/ErrorHandler.js";
 import { safeParseJsonWithSchema } from "../util/parseJSON.js";
 import { AsyncQueue } from "../util/AsyncQueue.js";
-import { parseEventSourceStream } from "./parseEventSourceStream.js";
+import { parseEventSourceStream } from "../event-source/parseEventSourceStream.js";
 
 export function readEventSourceStream<T>({
   stream,

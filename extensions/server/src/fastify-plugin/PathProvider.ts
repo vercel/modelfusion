@@ -1,16 +1,22 @@
 export class PathProvider {
-  constructor(readonly basePath: string) {}
+  readonly baseUrl: string;
+  readonly basePath: string;
 
-  getAssetPath(runId: string, assetName: string) {
-    return `${this.basePath}/${runId}/assets/${assetName}`;
+  constructor({ baseUrl, basePath }: { baseUrl: string; basePath: string }) {
+    this.baseUrl = baseUrl;
+    this.basePath = basePath;
+  }
+
+  getAssetUrl(runId: string, assetName: string) {
+    return `${this.baseUrl}/${this.basePath}/${runId}/assets/${assetName}`;
   }
 
   getAssetPathTemplate() {
     return `${this.basePath}/:runId/assets/:assetName`;
   }
 
-  getEventsPath(runId: string) {
-    return `${this.basePath}/${runId}/events`;
+  getEventsUrl(runId: string) {
+    return `${this.baseUrl}/${this.basePath}/${runId}/events`;
   }
 
   getEventsPathTemplate() {

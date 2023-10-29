@@ -6,17 +6,27 @@ export function readEventSource<T>({
   schema,
   onEvent,
   onError = console.error,
+  onStop,
+  isStopEvent,
 }: {
   url: string;
   schema: Schema<T>;
   onEvent: (event: T, eventSource: EventSource) => void;
   onError?: (error: unknown, eventSource: EventSource) => void;
+  onStop?: (eventSource: EventSource) => void;
+  isStopEvent?: (event: MessageEvent<unknown>) => boolean;
 }) {
   const eventSource = new EventSource(url);
 
-  eventSource.onmessage = (e) => {
+  eventSource.onmessage = (event) => {
     try {
-      const parseResult = safeParseJsonWithSchema(e.data, schema);
+      if (isStopEvent?.(event)) {
+        eventSource.close();
+        onStop?.(eventSource);
+        return;
+      }
+
+      const parseResult = safeParseJsonWithSchema(event.data, schema);
 
       if (!parseResult.success) {
         onError(parseResult.error, eventSource);

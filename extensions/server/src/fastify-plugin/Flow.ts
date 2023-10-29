@@ -1,9 +1,7 @@
-import { z } from "zod";
 import { FlowRun } from "./FlowRun";
+import { FlowSchema } from "./FlowSchema";
 
-export type Flow<INPUT, EVENT> = {
-  readonly inputSchema: z.ZodType<INPUT>;
-  readonly eventSchema: z.ZodType<EVENT>;
-
+export interface Flow<INPUT, EVENT> {
+  readonly schema: FlowSchema<INPUT, EVENT>;
   process: (options: { input: INPUT; run: FlowRun<EVENT> }) => Promise<void>;
-};
+}

@@ -15,16 +15,16 @@ import {
   streamText,
 } from "modelfusion";
 import path from "node:path";
-import { z } from "zod";
-import { eventSchema } from "../eventSchema";
+import { duplexStreamingFlowSchema } from "../eventSchema";
 
 dotenv.config();
 
 setGlobalFunctionLogging("basic-text");
 
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
-const host = process.env.HOST;
-const basePath = process.env.BASE_PATH || "runs";
+const host = process.env.HOST ?? "localhost";
+const basePath = process.env.BASE_PATH ?? "runs";
+const baseUrl = process.env.BASE_URL ?? `http://${host}:${port}`;
 
 export async function main() {
   try {
@@ -42,14 +42,12 @@ export async function main() {
     });
 
     fastify.register(modelFusionFlowPlugin, {
-      path: "/answer",
+      baseUrl,
+      basePath: "/answer",
       logger,
       assetStorage,
       flow: new DefaultFlow({
-        inputSchema: z.object({
-          prompt: z.string(),
-        }),
-        eventSchema,
+        schema: duplexStreamingFlowSchema,
         async process({ input, run }) {
           const textStream = await streamText(
             new OpenAIChatModel({
@@ -94,8 +92,6 @@ export async function main() {
               }
             })(),
           ]);
-
-          run.publishEvent({ type: "finished" });
         },
       }),
     });

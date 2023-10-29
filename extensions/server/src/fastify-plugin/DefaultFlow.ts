@@ -1,21 +1,17 @@
-import { z } from "zod";
 import { FlowRun } from "./FlowRun";
+import { FlowSchema } from "./FlowSchema";
 
 export class DefaultFlow<INPUT, EVENT> {
-  readonly inputSchema: z.ZodType<INPUT>;
-  readonly eventSchema: z.ZodType<EVENT>;
+  readonly schema: FlowSchema<INPUT, EVENT>;
 
   constructor({
-    inputSchema,
-    eventSchema,
+    schema,
     process,
   }: {
-    inputSchema: z.ZodType<INPUT>;
-    eventSchema: z.ZodType<EVENT>;
+    schema: FlowSchema<INPUT, EVENT>;
     process: (options: { input: INPUT; run: FlowRun<EVENT> }) => Promise<void>;
   }) {
-    this.inputSchema = inputSchema;
-    this.eventSchema = eventSchema;
+    this.schema = schema;
     this.process = process;
   }
 

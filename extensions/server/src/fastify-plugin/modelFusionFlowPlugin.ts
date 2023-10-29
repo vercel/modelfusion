@@ -9,7 +9,8 @@ import { PathProvider } from "./PathProvider.js";
 
 export interface ModelFusionFlowPluginOptions {
   flow: Flow<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
-  path: string;
+  baseUrl: string;
+  basePath: string;
   assetStorage: AssetStorage;
   logger: Logger;
 }
@@ -18,11 +19,21 @@ export const modelFusionFlowPlugin: FastifyPluginAsync<
   ModelFusionFlowPluginOptions
 > = async (
   fastify: FastifyInstance,
-  { flow, path, assetStorage, logger }: ModelFusionFlowPluginOptions
+  {
+    flow,
+    baseUrl,
+    basePath,
+    assetStorage,
+    logger,
+  }: ModelFusionFlowPluginOptions
 ) => {
-  type EVENT = z.infer<typeof flow.eventSchema>;
+  type EVENT = z.infer<typeof flow.schema.events>;
 
-  const paths = new PathProvider(path);
+  const paths = new PathProvider({
+    baseUrl,
+    basePath,
+  });
+
   const runs: Record<string, FlowRun<EVENT>> = {};
 
   fastify.post(paths.basePath, async (request) => {
@@ -35,7 +46,7 @@ export const modelFusionFlowPlugin: FastifyPluginAsync<
     runs[run.runId] = run;
 
     // body the request body is json, parse and validate it:
-    const input = flow.inputSchema.parse(request.body);
+    const input = flow.schema.input.parse(request.body);
 
     // start longer-running process (no await):
     withRun(run, async () => {
@@ -58,7 +69,7 @@ export const modelFusionFlowPlugin: FastifyPluginAsync<
 
     return {
       id: run.runId,
-      path: paths.getEventsPath(run.runId),
+      url: paths.getEventsUrl(run.runId),
     };
   });
 
@@ -121,13 +132,14 @@ export const modelFusionFlowPlugin: FastifyPluginAsync<
     const textEncoder = new TextEncoder();
     for await (const event of eventQueue) {
       if (reply.raw.destroyed) {
-        // client disconnected
-        break;
+        break; // client disconnected
       }
 
-      const text = textEncoder.encode(`data: ${JSON.stringify(event)}\n\n`);
+      reply.raw.write(textEncoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+    }
 
-      reply.raw.write(text);
+    if (!reply.raw.destroyed) {
+      reply.raw.write(textEncoder.encode(`data: [DONE]\n\n`));
     }
 
     reply.raw.end();

@@ -45,7 +45,7 @@ export class FlowRun<EVENT> extends DefaultRun {
       asset,
     });
 
-    return this.paths.getAssetPath(this.runId, asset.name);
+    return this.paths.getAssetUrl(this.runId, asset.name);
   }
 
   async storeTextAsset(asset: {

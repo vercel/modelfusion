@@ -1,8 +1,8 @@
-import { ZodSchema, readEventSource } from "modelfusion";
-import { MediaSourceAppender } from "modelfusion/browser";
+import { ZodSchema } from "modelfusion";
+import { MediaSourceAppender, readEventSource } from "modelfusion/browser";
 import { useState } from "react";
 import "./App.css";
-import { eventSchema } from "./eventSchema";
+import { duplexStreamingFlowSchema } from "./eventSchema";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 
@@ -25,12 +25,15 @@ function App() {
       body: JSON.stringify({ prompt }),
     });
 
-    const path: string = (await response.json()).path;
+    const url: string = (await response.json()).url;
 
     readEventSource({
-      url: `${BASE_URL}${path}`,
-      schema: new ZodSchema(eventSchema),
-      onEvent(event, eventSource) {
+      url,
+      schema: new ZodSchema(duplexStreamingFlowSchema.events),
+      isStopEvent(event) {
+        return event.data === "[DONE]";
+      },
+      onEvent(event) {
         switch (event.type) {
           case "text-chunk": {
             setText((currentText) => currentText + event.delta);
@@ -40,12 +43,10 @@ function App() {
             audioSource.addBase64Data(event.base64Audio);
             break;
           }
-          case "finished": {
-            eventSource.close();
-            audioSource.close();
-            break;
-          }
         }
+      },
+      onStop() {
+        audioSource.close();
       },
     });
   };
