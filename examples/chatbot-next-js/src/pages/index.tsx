@@ -2,9 +2,10 @@ import { ChatInputArea } from "@/component/ChatInputArea";
 import { ChatMessage } from "@/component/ChatMessage";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
-import { ZodSchema, readEventSourceStream } from "modelfusion";
+import { ZodSchema } from "modelfusion";
+import { readEventSourceStream } from "modelfusion/browser";
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";e
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 
 export default function Home() {
