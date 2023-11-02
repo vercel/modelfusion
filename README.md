@@ -544,7 +544,7 @@ ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/
 setGlobalFunctionLogging("detailed-object"); // log full events
 ```
 
-### Server
+### [Server](https://modelfusion.dev/guide/server/)
 
 > [!WARNING]
 > ModelFusion Server is in its initial development phase and not feature-complete. The API is experimental and breaking changes are likely. Feedback and suggestions are welcome.
@@ -622,6 +622,7 @@ invokeFlow({
   - [Retrieve](https://modelfusion.dev/guide/vector-index/retrieve)
 - [Text Chunks](https://modelfusion.dev/guide/text-chunk/)
   - [Split Text](https://modelfusion.dev/guide/text-chunk/split)
+- [Server](https://modelfusion.dev/guide/server/)
 - [Utilities](https://modelfusion.dev/guide/util/)
   - [API Configuration](https://modelfusion.dev/guide/util/api-configuration)
     - [Retry strategies](https://modelfusion.dev/guide/util/api-configuration/retry)
