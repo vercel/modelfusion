@@ -549,6 +549,13 @@ setGlobalFunctionLogging("detailed-object"); // log full events
 > [!WARNING]
 > ModelFusion Server is in its initial development phase and not feature-complete. The API is experimental and breaking changes are likely. Feedback and suggestions are welcome.
 
+ModelFusion Server is desigend for running multi-modal generative AI flows that take up to several minutes to complete. It provides the following benefits:
+
+- 🔄 Real-time progress updates via custom server-sent events
+- 🔒Type-safety with Zod-schema for inputs/events
+- 📦 Efficient handling of dynamically created binary assets (images, audio)
+- 📜 Auto-logging for AI model interactions within flows
+
 ModelFusion provides a [Fastify](https://fastify.dev/) plugin that allows you to set up a server that exposes your ModelFusion flows as REST endpoints using server-sent events.
 
 ```ts

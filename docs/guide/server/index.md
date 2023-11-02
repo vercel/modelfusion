@@ -4,12 +4,12 @@ sidebar_position: 40
 
 # Server
 
-ModelFusion Server makes running multi-modal generative AI flows that take between 1 second and several minutes to complete easy. It provides the following benefits:
+ModelFusion Server is desigend for running multi-modal generative AI flows that take up to several minutes to complete. It provides the following benefits:
 
-- Custom server-sent events for streaming the progress of the flow to the client
-- Type-safety through typed input and flow events using a Zod schema
-- Handling of large files like images and audio files as a binary assets
-- Automatic logging for all AI model calls in the flow runs
+- 🔄 Real-time progress updates via custom server-sent events
+- 🔒 Type-safety with Zod-schema for inputs/events
+- 📦 Efficient handling of dynamically created binary assets (images, audio)
+- 📜 Auto-logging for AI model interactions within flows
 
 ![Server overview](/img/guide/server-overview.png)
 
