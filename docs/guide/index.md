@@ -12,6 +12,7 @@ sidebar_position: 0
 - **Type inference and validation**: ModelFusion infers TypeScript types wherever possible and to validates model responses.
 - **Observability and logging**: ModelFusion provides an observer framework and out-of-the-box logging support.
 - **Resilience and Robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
+- **Server**: ModelFusion provides a Fastify plugin that exposes a ModelFusion flow as a REST endpoint that uses server-sent events.
 
 ## Installation
 

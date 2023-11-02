@@ -20,6 +20,7 @@
 - **Type inference and validation**: ModelFusion infers TypeScript types wherever possible and to validates model responses.
 - **Observability and logging**: ModelFusion provides an observer framework and out-of-the-box logging support.
 - **Resilience and Robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
+- **Server**: ModelFusion provides a Fastify plugin that exposes a ModelFusion flow as a REST endpoint that uses server-sent events.
 
 ## Quick Install
 
@@ -541,6 +542,53 @@ ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/
 
 ```ts
 setGlobalFunctionLogging("detailed-object"); // log full events
+```
+
+### ModelFusion Server
+
+ModelFusion provides a [Fastify](https://fastify.dev/) plugin that allows you to set up a server that exposes your ModelFusion flows as REST endpoints using server-sent events.
+
+```ts
+// configurable logging for all runs using ModelFusion observability:
+const logger = new FileSystemLogger({
+  path: (run) => path.join(fsBasePath, run.runId, "logs"),
+});
+
+// configurable storage for large files like images and audio files:
+const assetStorage = new FileSystemAssetStorage({
+  path: (run) => path.join(fsBasePath, run.runId, "assets"),
+  logger,
+});
+
+fastify.register(modelFusionFastifyPlugin, {
+  baseUrl,
+  basePath: "/myFlow",
+  logger,
+  assetStorage,
+  flow: exampleFlow,
+});
+```
+
+Using `invokeFlow`, you can easily connect your client to a ModelFusion flow endpoint:
+
+```ts
+invokeFlow({
+  url: `${BASE_URL}/myFlow`,
+  schema: duplexStreamingFlowSchema,
+  input: { prompt },
+  onEvent(event) {
+    switch (event.type) {
+      case "my-event": {
+        // do something with the event
+        break;
+      }
+      // more events...
+    }
+  },
+  onStop() {
+    // flow finished
+  },
+});
 ```
 
 ## Documentation

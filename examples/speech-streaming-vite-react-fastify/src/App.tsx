@@ -20,8 +20,8 @@ function App() {
 
     invokeFlow({
       url: `${BASE_URL}/answer`,
-      input: { prompt },
       schema: duplexStreamingFlowSchema,
+      input: { prompt },
       onEvent(event) {
         switch (event.type) {
           case "text-chunk": {
