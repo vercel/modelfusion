@@ -547,7 +547,7 @@ setGlobalFunctionLogging("detailed-object"); // log full events
 ### Server
 
 > [!WARNING]
-> ModelFusion Server is in its initial development phase. The API is experimental and breaking changes are likely. Feedback and suggestions are welcome.
+> ModelFusion Server is in its initial development phase and not feature-complete. The API is experimental and breaking changes are likely. Feedback and suggestions are welcome.
 
 ModelFusion provides a [Fastify](https://fastify.dev/) plugin that allows you to set up a server that exposes your ModelFusion flows as REST endpoints using server-sent events.
 
@@ -585,7 +585,7 @@ import { invokeFlow } from "modelfusion/browser"; // '/browser' import path
 
 invokeFlow({
   url: `${BASE_URL}/myFlow`,
-  schema: duplexStreamingFlowSchema,
+  schema: myFlowSchema,
   input: { prompt },
   onEvent(event) {
     switch (event.type) {
