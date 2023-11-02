@@ -544,11 +544,20 @@ ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/
 setGlobalFunctionLogging("detailed-object"); // log full events
 ```
 
-### ModelFusion Server
+### Server
+
+> [!WARNING]
+> ModelFusion Server is in its initial development phase. The API is experimental and breaking changes are likely. Feedback and suggestions are welcome.
 
 ModelFusion provides a [Fastify](https://fastify.dev/) plugin that allows you to set up a server that exposes your ModelFusion flows as REST endpoints using server-sent events.
 
 ```ts
+import {
+  FileSystemAssetStorage,
+  FileSystemLogger,
+  modelFusionFastifyPlugin,
+} from "modelfusion/fastify-server"; // '/fastify-server' import path
+
 // configurable logging for all runs using ModelFusion observability:
 const logger = new FileSystemLogger({
   path: (run) => path.join(fsBasePath, run.runId, "logs"),
@@ -572,6 +581,8 @@ fastify.register(modelFusionFastifyPlugin, {
 Using `invokeFlow`, you can easily connect your client to a ModelFusion flow endpoint:
 
 ```ts
+import { invokeFlow } from "modelfusion/browser"; // '/browser' import path
+
 invokeFlow({
   url: `${BASE_URL}/myFlow`,
   schema: duplexStreamingFlowSchema,
