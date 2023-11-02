@@ -106,6 +106,30 @@ invokeFlow({
 });
 ```
 
+### Flow Implementation
+
+ModelFusion flows are composed of a flow schema and an async `process` function. The `process` function receives the input object and a flow run. It can use the run to publish events to the client and to store assets.
+
+```ts
+export const myFlow = new DefaultFlow({
+  schema: myFlowSchema,
+  async process({ input, run }) {
+    // Call some AI model:
+    const transcription = await generateTranscription(
+      new OpenAITranscriptionModel({ model: "whisper-1" }),
+      {
+        /* ... */
+      },
+      { functionId: "transcribe" } // optional: provide functionId for logging
+    );
+
+    run.publishEvent({ type: "my-event", input: transcription });
+
+    // more AI model calls and custom processing etc.
+  },
+});
+```
+
 ## Examples
 
 ### StoryTeller
