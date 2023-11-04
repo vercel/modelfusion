@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.55.1 - 2023-11-04
+
+### Fixed
+
+- Llama.cpp embeddings are invoked sequentially to avoid rejection by the server.
+
 ## v0.55.0 - 2023-11-04
 
 ### Added
