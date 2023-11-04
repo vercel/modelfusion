@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.55.0 - 2023-11-04
+
+### Added
+
+- [Ollama model provider](https://modelfusion.dev/integration/model-provider/ollama) for text generation and text streaming.
+
 ## v0.54.0 - 2023-10-29
 
 Adding experimental ModelFusion server, flows, and browser utils.
