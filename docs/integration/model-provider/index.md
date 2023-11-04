@@ -41,4 +41,5 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 - [OpenAI](/integration/model-provider/openai)
 - [Cohere](/integration/model-provider/cohere)
 - [Llama.cpp](/integration/model-provider/llamacpp)
+- [Ollama](/integration/model-provider/ollama)
 - [Hugging Face](/integration/model-provider/huggingface)

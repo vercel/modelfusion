@@ -290,7 +290,7 @@ const embeddings = await embedMany(
 );
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface)
 
 ### [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
 

@@ -46,5 +46,7 @@ const embeddings = await embedMany(
 ## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)
-- [Llama.cpp](/integration/model-provider/llamacpp)
 - [Cohere](/integration/model-provider/cohere)
+- [Llama.cpp](/integration/model-provider/llamacpp)
+- [Ollama](/integration/model-provider/ollama)
+- [HuggingFace](/integration/model-provider/huggingface)
