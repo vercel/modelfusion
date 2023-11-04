@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.57.0 - 2023-11-04
+
+### Added
+
+- Support for [Cohere v3 embeddings](https://txt.cohere.com/introducing-embed-v3/).
+
 ## v0.56.0 - 2023-11-04
 
 ### Added
