@@ -29,7 +29,7 @@ class CalculatorFunctionPromptFormat<STRUCTURE> {
         const result = [
             `As an AI assistant, please select the most suitable function and parameters ` +
             `from the list of available functions below, based on the user's input. ` +
-            `Provide your response in JSON format. Please make sure the json is valid and does not have ekstra {}`,
+            `Provide your response in JSON format.`,
             ``,
             `Available functions:`,
             `${structure.name}:`,
