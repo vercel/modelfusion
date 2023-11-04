@@ -1,33 +1,21 @@
-import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
-
-export const ollamaErrorDataSchema = z.object({
-  error: z.string(),
-});
-
-export type OllamaErrorData = z.infer<typeof ollamaErrorDataSchema>;
 
 export class OllamaError extends ApiCallError {
-  public readonly data: OllamaErrorData;
+  public readonly data: string;
 
   constructor({
-    data,
     statusCode,
     url,
     requestBodyValues,
-    message = data.error,
+    message,
   }: {
-    message?: string;
+    message: string;
     statusCode: number;
     url: string;
     requestBodyValues: unknown;
-    data: OllamaErrorData;
   }) {
     super({ message, statusCode, requestBodyValues, url });
-
-    this.data = data;
   }
 }
 
@@ -38,5 +26,5 @@ export const failedOllamaCallResponseHandler: ResponseHandler<
     url,
     requestBodyValues,
     statusCode: response.status,
-    data: parseJsonWithZod(await response.text(), ollamaErrorDataSchema),
+    message: await response.text(),
   });

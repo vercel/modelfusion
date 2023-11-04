@@ -11,28 +11,26 @@ import {
   EmbeddingModel,
   EmbeddingModelSettings,
 } from "../../model-function/embed/EmbeddingModel.js";
-import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
-import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
-import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
+import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
+import { failedOllamaCallResponseHandler } from "./OllamaError.js";
 
-export interface LlamaCppTextEmbeddingModelSettings
+export interface OllamaTextEmbeddingModelSettings
   extends EmbeddingModelSettings {
   api?: ApiConfiguration;
+  model: string;
   embeddingDimensions?: number;
   isParallizable?: boolean;
 }
 
-export class LlamaCppTextEmbeddingModel
-  extends AbstractModel<LlamaCppTextEmbeddingModelSettings>
-  implements EmbeddingModel<string, LlamaCppTextEmbeddingModelSettings>
+export class OllamaTextEmbeddingModel
+  extends AbstractModel<OllamaTextEmbeddingModelSettings>
+  implements EmbeddingModel<string, OllamaTextEmbeddingModelSettings>
 {
-  constructor(settings: LlamaCppTextEmbeddingModelSettings = {}) {
+  constructor(settings: OllamaTextEmbeddingModelSettings) {
     super({ settings });
-
-    this.tokenizer = new LlamaCppTokenizer(this.settings.api);
   }
 
-  readonly provider = "llamacpp" as const;
+  readonly provider = "ollama" as const;
   get modelName() {
     return null;
   }
@@ -47,16 +45,10 @@ export class LlamaCppTextEmbeddingModel
     return this.settings.embeddingDimensions;
   }
 
-  private readonly tokenizer: LlamaCppTokenizer;
-
-  async tokenize(text: string) {
-    return this.tokenizer.tokenize(text);
-  }
-
   async callAPI(
     texts: Array<string>,
     options?: FunctionOptions
-  ): Promise<LlamaCppTextEmbeddingResponse> {
+  ): Promise<OllamaTextEmbeddingResponse> {
     if (texts.length > this.maxValuesPerCall) {
       throw new Error(
         `The Llama.cpp embedding API only supports ${this.maxValuesPerCall} texts per API call.`
@@ -67,15 +59,15 @@ export class LlamaCppTextEmbeddingModel
       retry: this.settings.api?.retry,
       throttle: this.settings.api?.throttle,
       call: async () =>
-        callLlamaCppEmbeddingAPI({
+        callOllamaEmbeddingAPI({
           ...this.settings,
           abortSignal: options?.run?.abortSignal,
-          content: texts[0],
+          prompt: texts[0],
         }),
     });
   }
 
-  get settingsForEvent(): Partial<LlamaCppTextEmbeddingModelSettings> {
+  get settingsForEvent(): Partial<OllamaTextEmbeddingModelSettings> {
     return {
       embeddingDimensions: this.settings.embeddingDimensions,
     };
@@ -90,39 +82,39 @@ export class LlamaCppTextEmbeddingModel
     };
   }
 
-  withSettings(
-    additionalSettings: Partial<LlamaCppTextEmbeddingModelSettings>
-  ) {
-    return new LlamaCppTextEmbeddingModel(
+  withSettings(additionalSettings: Partial<OllamaTextEmbeddingModelSettings>) {
+    return new OllamaTextEmbeddingModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
 }
 
-const llamaCppTextEmbeddingResponseSchema = z.object({
+const ollamaTextEmbeddingResponseSchema = z.object({
   embedding: z.array(z.number()),
 });
 
-export type LlamaCppTextEmbeddingResponse = z.infer<
-  typeof llamaCppTextEmbeddingResponseSchema
+export type OllamaTextEmbeddingResponse = z.infer<
+  typeof ollamaTextEmbeddingResponseSchema
 >;
 
-async function callLlamaCppEmbeddingAPI({
-  api = new LlamaCppApiConfiguration(),
+async function callOllamaEmbeddingAPI({
+  api = new OllamaApiConfiguration(),
   abortSignal,
-  content,
+  model,
+  prompt,
 }: {
   api?: ApiConfiguration;
   abortSignal?: AbortSignal;
-  content: string;
-}): Promise<LlamaCppTextEmbeddingResponse> {
+  model: string;
+  prompt: string;
+}): Promise<OllamaTextEmbeddingResponse> {
   return postJsonToApi({
-    url: api.assembleUrl(`/embedding`),
+    url: api.assembleUrl(`/api/embeddings`),
     headers: api.headers,
-    body: { content },
-    failedResponseHandler: failedLlamaCppCallResponseHandler,
+    body: { model, prompt },
+    failedResponseHandler: failedOllamaCallResponseHandler,
     successfulResponseHandler: createJsonResponseHandler(
-      llamaCppTextEmbeddingResponseSchema
+      ollamaTextEmbeddingResponseSchema
     ),
     abortSignal,
   });
