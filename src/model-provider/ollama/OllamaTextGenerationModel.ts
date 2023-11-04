@@ -47,6 +47,10 @@ export interface OllamaTextGenerationModelSettings<
   tfs_z?: number;
   top_k?: number;
   top_p?: number;
+
+  system?: string;
+  template?: string;
+  context?: number[];
 }
 
 export class OllamaTextGenerationModel<
@@ -225,6 +229,9 @@ async function callOllamaTextGenerationAPI<RESPONSE>({
   tfs_z,
   top_k,
   top_p,
+  system,
+  template,
+  context,
 }: OllamaTextGenerationModelSettings<number> & {
   abortSignal?: AbortSignal;
   responseFormat: OllamaTextGenerationResponseFormatType<RESPONSE>;
@@ -255,6 +262,9 @@ async function callOllamaTextGenerationAPI<RESPONSE>({
         top_k,
         top_p,
       },
+      system,
+      template,
+      context,
     },
     failedResponseHandler: failedOllamaCallResponseHandler,
     successfulResponseHandler: responseFormat.handler,
