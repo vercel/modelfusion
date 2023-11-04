@@ -67,6 +67,7 @@ export class HuggingFaceTextEmbeddingModel
   }
 
   readonly maxValuesPerCall;
+  readonly isParallizable = true;
 
   readonly contextWindowSize = undefined;
   readonly embeddingDimensions;

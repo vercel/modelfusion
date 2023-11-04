@@ -82,6 +82,7 @@ export class CohereTextEmbeddingModel
   }
 
   readonly maxValuesPerCall = 96;
+  readonly isParallizable = true;
   readonly embeddingDimensions: number;
 
   readonly contextWindowSize: number;

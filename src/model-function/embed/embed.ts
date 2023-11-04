@@ -48,11 +48,21 @@ export function embedMany<VALUE>(
           }
         }
 
-        const responses = await Promise.all(
-          valueGroups.map((valueGroup) =>
-            model.doEmbedValues(valueGroup, options)
-          )
-        );
+        // call the model for each group:
+        let responses: Array<{ response: unknown; embeddings: Vector[] }>;
+        if (model.isParallizable) {
+          responses = await Promise.all(
+            valueGroups.map((valueGroup) =>
+              model.doEmbedValues(valueGroup, options)
+            )
+          );
+        } else {
+          responses = [];
+          for (const valueGroup of valueGroups) {
+            const response = await model.doEmbedValues(valueGroup, options);
+            responses.push(response);
+          }
+        }
 
         const rawResponses = responses.map((response) => response.response);
         const embeddings: Array<Vector> = [];
