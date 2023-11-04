@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "@pinecone-database/pinecone": "^0.1.6",
-    "modelfusion": "^0.45.0",
+    "modelfusion": "^0.55.0",
     "@modelfusion/serpapi-tools": "^0.6.0",
     "@modelfusion/google-custom-search-tool": "^0.6.0",
     "@modelfusion/pinecone": "^0.2.0",
