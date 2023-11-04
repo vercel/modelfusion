@@ -7,8 +7,6 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseEventSourceStream } from "../../event-source/parseEventSourceStream.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
@@ -22,7 +20,9 @@ import {
   mapInstructionPromptToTextFormat,
 } from "../../model-function/generate-text/TextPromptFormat.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
+import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
