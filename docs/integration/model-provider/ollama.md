@@ -32,6 +32,8 @@ const model = new OllamaTextGenerationModel({
 
 ## Model Functions
 
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/ollama)
+
 ### Generate Text
 
 [OllamaTextGenerationModel API](/api/classes/OllamaTextGenerationModel)
