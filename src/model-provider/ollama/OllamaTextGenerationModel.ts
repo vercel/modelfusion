@@ -25,13 +25,28 @@ export interface OllamaTextGenerationModelSettings<
 > extends TextGenerationModelSettings {
   api?: ApiConfiguration;
 
+  model: string;
+
+  temperature?: number;
+
   /**
    * Specify the context window size of the model that you have loaded in your
    * Ollama server.
    */
   contextWindowSize?: CONTEXT_WINDOW_SIZE;
 
-  model: string;
+  mirostat?: number;
+  mirostat_eta?: number;
+  mirostat_tau?: number;
+  num_gqa?: number;
+  num_gpu?: number;
+  num_threads?: number;
+  repeat_last_n?: number;
+  repeat_penalty?: number;
+  seed?: number;
+  tfs_z?: number;
+  top_k?: number;
+  top_p?: number;
 }
 
 export class OllamaTextGenerationModel<
@@ -152,17 +167,13 @@ export class OllamaTextGenerationModel<
 const ollamaTextGenerationResponseSchema = z.object({
   done: z.literal(true),
   model: z.string(),
-  createdAt: z.string(),
   response: z.string(),
   total_duration: z.number(),
   load_duration: z.number(),
-  sample_count: z.number(),
-  sample_duration: z.number(),
   prompt_eval_count: z.number(),
-  prompt_eval_duration: z.number(),
   eval_count: z.number(),
   eval_duration: z.number(),
-  context: z.string(),
+  context: z.array(z.number()),
 });
 
 export type OllamaTextGenerationResponse = z.infer<
@@ -196,13 +207,27 @@ async function callOllamaTextGenerationAPI<RESPONSE>({
   api = new OllamaApiConfiguration(),
   abortSignal,
   responseFormat,
-  model,
   prompt,
-}: {
-  api?: ApiConfiguration;
+  model,
+  contextWindowSize,
+  maxCompletionTokens,
+  mirostat,
+  mirostat_eta,
+  mirostat_tau,
+  num_gpu,
+  num_gqa,
+  num_threads,
+  repeat_last_n,
+  repeat_penalty,
+  seed,
+  stopSequences,
+  temperature,
+  tfs_z,
+  top_k,
+  top_p,
+}: OllamaTextGenerationModelSettings<number> & {
   abortSignal?: AbortSignal;
   responseFormat: OllamaTextGenerationResponseFormatType<RESPONSE>;
-  model: string;
   prompt: string;
 }): Promise<RESPONSE> {
   return postJsonToApi({
@@ -212,6 +237,24 @@ async function callOllamaTextGenerationAPI<RESPONSE>({
       stream: responseFormat.stream,
       model,
       prompt,
+      options: {
+        mirostat,
+        mirostat_eta,
+        mirostat_tau,
+        num_ctx: contextWindowSize,
+        num_gpu,
+        num_gqa,
+        num_predict: maxCompletionTokens,
+        num_threads,
+        repeat_last_n,
+        repeat_penalty,
+        seed,
+        stop: stopSequences,
+        temperature,
+        tfs_z,
+        top_k,
+        top_p,
+      },
     },
     failedResponseHandler: failedOllamaCallResponseHandler,
     successfulResponseHandler: responseFormat.handler,
