@@ -1,6 +1,76 @@
 import { Schema, Vector, VectorIndex } from "modelfusion";
-import * as sqlite_vss from "sqlite-vss";
 import Database from "better-sqlite3";
+import { join } from "node:path";
+import { arch, platform } from "node:process";
+import { statSync } from "node:fs";
+
+const supportedPlatforms = [
+  ["darwin", "x64"],
+  ["darwin", "arm64"],
+  ["linux", "x64"],
+];
+
+function validPlatform(platform: string, arch: string) {
+  return (
+    supportedPlatforms.find(([p, a]) => platform == p && arch === a) !== null
+  );
+}
+function extensionSuffix(platform: string) {
+  if (platform === "win32") return "dll";
+  if (platform === "darwin") return "dylib";
+  return "so";
+}
+function platformPackageName(platform: string, arch: string) {
+  const os = platform === "win32" ? "windows" : platform;
+  return `sqlite-vss-${os}-${arch}`;
+}
+
+function loadablePathResolver(name: string) {
+  if (!validPlatform(platform, arch)) {
+    throw new Error(
+      `Unsupported platform for sqlite-vss, on a ${platform}-${arch} machine, but not in supported platforms (${supportedPlatforms
+        .map(([p, a]) => `${p}-${a}`)
+        .join(",")}). Consult the sqlite-vss NPM package README for details. `
+    );
+  }
+  const packageName = platformPackageName(platform, arch);
+  const loadablePath = join(
+    __filename,
+    "..",
+    "..",
+    "node_modules",
+    packageName,
+    "lib",
+    `${name}.${extensionSuffix(platform)}`
+  );
+  console.log(loadablePath);
+  if (!statSync(loadablePath, { throwIfNoEntry: false })) {
+    throw new Error(
+      `Loadble extension for sqlite-vss not found. Was the ${packageName} package installed? Avoid using the --no-optional flag, as the optional dependencies for sqlite-vss are required.`
+    );
+  }
+
+  return loadablePath;
+}
+
+export function getVectorLoadablePath() {
+  return loadablePathResolver("vector0");
+}
+
+export function getVssLoadablePath() {
+  return loadablePathResolver("vss0");
+}
+
+export function loadVector(db: Database.Database) {
+  db.loadExtension(getVectorLoadablePath());
+}
+export function loadVss(db: Database.Database) {
+  db.loadExtension(getVssLoadablePath());
+}
+export function load(db: Database.Database) {
+  loadVector(db);
+  loadVss(db);
+}
 
 export class SQLiteVectorIndex<DATA extends object | undefined>
   implements VectorIndex<DATA, SQLiteVectorIndex<DATA>, null>
@@ -27,8 +97,8 @@ export class SQLiteVectorIndex<DATA extends object | undefined>
 
   private setupDatabase(filename: string) {
     const db = this.openDatabase(filename);
-    sqlite_vss.loadVector(db);
-    sqlite_vss.loadVss(db);
+    loadVector(db);
+    loadVss(db);
 
     db.prepare("SELECT vss_version()").run();
 
@@ -54,8 +124,8 @@ export class SQLiteVectorIndex<DATA extends object | undefined>
       for (const item of items) {
         const dataString = JSON.stringify(item.data);
         const vectorString = JSON.stringify(item.vector);
-        insertData.run(item.id, dataString, vectorString);
-        insertVss.run(item.id, vectorString);
+        const res = insertData.run(item.id, dataString, vectorString);
+        insertVss.run(res.lastInsertRowid, vectorString);
       }
     });
 
@@ -74,16 +144,21 @@ export class SQLiteVectorIndex<DATA extends object | undefined>
     const maxDistance = similarityThreshold
       ? 1 - similarityThreshold
       : undefined;
-    let query = `WITH matches AS (
+    const query = `WITH matches AS (
             SELECT rowid, distance FROM vss_vectors WHERE vss_search(vector, ?) ${
               maxDistance !== undefined ? `AND distance <= ${maxDistance}` : ""
             } ${maxResults ? "LIMIT " + maxResults : ""}
-        ) SELECT vectors.id, vectors.data, matches.distance FROM matches LEFT JOIN vectors ON vectors.id = matches.rowid`;
+        ) SELECT vectors.id, vectors.data, matches.distance FROM matches LEFT JOIN vectors ON vectors.rowid = matches.rowid`;
 
     const stmt = this.db.prepare(query);
-    const result = stmt.all(JSON.stringify(queryVector));
 
-    return result.map((row: any) => {
+    const result = stmt.all(JSON.stringify(queryVector)) as {
+      id: string;
+      data: string;
+      distance: number;
+    }[];
+
+    return result.map((row) => {
       const data = JSON.parse(row.data);
       const validationResult = this.schema.validate(data);
 
