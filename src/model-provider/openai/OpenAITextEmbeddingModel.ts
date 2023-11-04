@@ -92,6 +92,7 @@ export class OpenAITextEmbeddingModel
   }
 
   readonly maxValuesPerCall = 2048;
+  readonly isParallizable = true;
 
   readonly embeddingDimensions: number;
 

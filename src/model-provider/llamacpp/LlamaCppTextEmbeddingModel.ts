@@ -19,6 +19,7 @@ export interface LlamaCppTextEmbeddingModelSettings
   extends EmbeddingModelSettings {
   api?: ApiConfiguration;
   embeddingDimensions?: number;
+  isParallizable?: boolean;
 }
 
 export class LlamaCppTextEmbeddingModel
@@ -38,6 +39,9 @@ export class LlamaCppTextEmbeddingModel
   }
 
   readonly maxValuesPerCall = 1;
+  get isParallizable() {
+    return this.settings.isParallizable ?? false;
+  }
 
   readonly contextWindowSize = undefined;
   readonly embeddingDimensions;

@@ -18,6 +18,11 @@ export interface EmbeddingModel<
    */
   readonly maxValuesPerCall: number | undefined;
 
+  /**
+   * True if the model can handle multiple embedding calls in parallel.
+   */
+  readonly isParallizable: boolean;
+
   doEmbedValues(
     values: VALUE[],
     options?: FunctionOptions
