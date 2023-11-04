@@ -18,16 +18,32 @@ import { CohereTokenizer } from "./CohereTokenizer.js";
 
 export const COHERE_TEXT_EMBEDDING_MODELS = {
   "embed-english-light-v2.0": {
-    contextWindowSize: 4096,
+    contextWindowSize: 512,
     embeddingDimensions: 1024,
   },
   "embed-english-v2.0": {
-    contextWindowSize: 4096,
+    contextWindowSize: 512,
     embeddingDimensions: 4096,
   },
   "embed-multilingual-v2.0": {
-    contextWindowSize: 4096,
+    contextWindowSize: 512,
     embeddingDimensions: 768,
+  },
+  "embed-english-v3.0": {
+    contextWindowSize: 512,
+    embeddingDimensions: 1024,
+  },
+  "embed-english-light-v3.0": {
+    contextWindowSize: 512,
+    embeddingDimensions: 384,
+  },
+  "embed-multilingual-v3.0": {
+    contextWindowSize: 512,
+    embeddingDimensions: 1024,
+  },
+  "embed-multilingual-light-v3.0": {
+    contextWindowSize: 512,
+    embeddingDimensions: 384,
   },
 };
 
@@ -38,6 +54,11 @@ export interface CohereTextEmbeddingModelSettings
   extends EmbeddingModelSettings {
   api?: ApiConfiguration;
   model: CohereTextEmbeddingModelType;
+  inputType?:
+    | "search_document"
+    | "search_query"
+    | "classification"
+    | "clustering";
   truncate?: "NONE" | "START" | "END";
 }
 
@@ -163,13 +184,15 @@ async function callCohereEmbeddingAPI({
   abortSignal,
   model,
   texts,
+  inputType,
   truncate,
 }: {
   api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   model: CohereTextEmbeddingModelType;
   texts: string[];
-  truncate?: "NONE" | "START" | "END";
+  inputType?: CohereTextEmbeddingModelSettings["inputType"];
+  truncate?: CohereTextEmbeddingModelSettings["truncate"];
 }): Promise<CohereTextEmbeddingResponse> {
   return postJsonToApi({
     url: api.assembleUrl(`/embed`),
@@ -177,6 +200,7 @@ async function callCohereEmbeddingAPI({
     body: {
       model,
       texts,
+      input_type: inputType,
       truncate,
     },
     failedResponseHandler: failedCohereCallResponseHandler,
