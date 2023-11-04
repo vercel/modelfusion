@@ -16,7 +16,7 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
 
@@ -232,66 +232,39 @@ async function createOllamaFullDeltaIterableQueue(
 
   let accumulatedText = "";
 
-  function processLine(line: string) {
-    const event = parseJsonWithZod(line, ollamaTextStreamingResponseSchema);
-
-    if (event.done === true) {
-      queue.push({
-        type: "delta",
-        fullDelta: {
-          content: accumulatedText,
-          isComplete: true,
-          delta: "",
-        },
-        valueDelta: "",
-      });
-    } else {
-      accumulatedText += event.response;
-
-      queue.push({
-        type: "delta",
-        fullDelta: {
-          content: accumulatedText,
-          isComplete: false,
-          delta: event.response,
-        },
-        valueDelta: event.response,
-      });
-    }
-  }
-
   // process the stream asynchonously (no 'await' on purpose):
-  (async () => {
-    try {
-      let unprocessedText = "";
-      const reader = new ReadableStreamDefaultReader(stream);
-      const utf8Decoder = new TextDecoder("utf-8");
+  parseJsonStream({
+    stream,
+    schema: ollamaTextStreamingResponseSchema,
+    process(event) {
+      if (event.done === true) {
+        queue.push({
+          type: "delta",
+          fullDelta: {
+            content: accumulatedText,
+            isComplete: true,
+            delta: "",
+          },
+          valueDelta: "",
+        });
+      } else {
+        accumulatedText += event.response;
 
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        const { value: chunk, done } = await reader.read();
-
-        if (done) {
-          break;
-        }
-
-        unprocessedText += utf8Decoder.decode(chunk, { stream: true });
-
-        const processableLines = unprocessedText.split(/\r\n|\n|\r/g);
-
-        unprocessedText = processableLines.pop() || "";
-
-        processableLines.forEach(processLine);
+        queue.push({
+          type: "delta",
+          fullDelta: {
+            content: accumulatedText,
+            isComplete: false,
+            delta: event.response,
+          },
+          valueDelta: event.response,
+        });
       }
-
-      // processing remaining text:
-      if (unprocessedText) {
-        processLine(unprocessedText);
-      }
-    } finally {
+    },
+    onDone() {
       queue.close();
-    }
-  })();
+    },
+  });
 
   return queue;
 }
