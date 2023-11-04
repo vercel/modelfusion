@@ -1,5 +1,5 @@
 import { Schema, Vector, VectorIndex } from "modelfusion";
-import Database from "better-sqlite3";
+import BetterSqlite3 from "better-sqlite3";
 import { join } from "node:path";
 import { arch, platform } from "node:process";
 import { statSync } from "node:fs";
@@ -53,64 +53,60 @@ function loadablePathResolver(name: string) {
   return loadablePath;
 }
 
-export function getVectorLoadablePath() {
+function getVectorLoadablePath() {
   return loadablePathResolver("vector0");
 }
 
-export function getVssLoadablePath() {
+function getVssLoadablePath() {
   return loadablePathResolver("vss0");
 }
 
-export function loadVector(db: Database.Database) {
+function loadVector(db: BetterSqlite3.Database) {
   db.loadExtension(getVectorLoadablePath());
 }
-export function loadVss(db: Database.Database) {
+
+function loadVss(db: BetterSqlite3.Database) {
   db.loadExtension(getVssLoadablePath());
 }
-export function load(db: Database.Database) {
+
+function openDatabase(filename: string) {
+  const db = new BetterSqlite3(filename, { fileMustExist: false });
+  db.pragma("journal_mode = WAL");
+  return db;
+}
+
+export function setupSQLiteDatabase(filename: string): BetterSqlite3.Database {
+  const db = openDatabase(filename);
   loadVector(db);
   loadVss(db);
+
+  db.prepare("SELECT vss_version()").run();
+
+  db.prepare(
+    `CREATE TABLE IF NOT EXISTS vectors (id TEXT PRIMARY KEY, data TEXT, vector TEXT)`
+  ).run();
+  db.prepare(
+    `CREATE VIRTUAL TABLE IF NOT EXISTS vss_vectors USING vss0(vector(1536))`
+  ).run();
+
+  return db;
 }
 
 export class SQLiteVectorIndex<DATA extends object | undefined>
   implements VectorIndex<DATA, SQLiteVectorIndex<DATA>, null>
 {
-  readonly db: Database.Database;
+  readonly db: BetterSqlite3.Database;
   readonly schema: Schema<DATA>;
 
   constructor({
-    filename,
+    db,
     schema,
   }: {
-    filename: string;
+    db: BetterSqlite3.Database;
     schema: Schema<DATA>;
   }) {
-    this.db = this.setupDatabase(filename);
+    this.db = db;
     this.schema = schema;
-  }
-
-  private openDatabase(filename: string) {
-    const db = new Database(filename, { fileMustExist: false });
-    db.pragma("journal_mode = WAL");
-    return db;
-  }
-
-  private setupDatabase(filename: string) {
-    const db = this.openDatabase(filename);
-    loadVector(db);
-    loadVss(db);
-
-    db.prepare("SELECT vss_version()").run();
-
-    db.prepare(
-      `CREATE TABLE IF NOT EXISTS vectors (id TEXT PRIMARY KEY, data TEXT, vector TEXT)`
-    ).run();
-    db.prepare(
-      `CREATE VIRTUAL TABLE IF NOT EXISTS vss_vectors USING vss0(vector(1536))`
-    ).run();
-
-    console.log("Successfully created vectors and vss_vectors tables");
-    return db;
   }
 
   async upsertMany(data: Array<{ id: string; vector: Vector; data: DATA }>) {

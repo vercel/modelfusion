@@ -8,7 +8,10 @@ import {
 } from "modelfusion";
 import z from "zod";
 
-import { SQLiteVectorIndex } from "@modelfusion/sqlite-vss";
+import {
+  SQLiteVectorIndex,
+  setupSQLiteDatabase,
+} from "@modelfusion/sqlite-vss";
 
 dotenv.config();
 
@@ -26,8 +29,9 @@ async function main() {
     "This is caused by the light being reflected twice on the inside of the droplet before leaving it.`",
   ];
 
+  const db = setupSQLiteDatabase("rainbow.db");
   const vectorIndex = new SQLiteVectorIndex({
-    filename: "rainbow.db",
+    db,
     schema: new ZodSchema(z.object({ text: z.string() })),
   });
   const embeddingModel = new OpenAITextEmbeddingModel({
