@@ -245,6 +245,8 @@ const modelWithMyCustomPromptFormat = model.withPromptFormat(myPromptFormat);
 ## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)
+- [Anthropic](/integration/model-provider/anthropic)
 - [Cohere](/integration/model-provider/cohere)
 - [Llama.cpp](/integration/model-provider/llamacpp)
+- [Ollama](/integration/model-provider/ollama)
 - [Hugging Face](/integration/model-provider/huggingface) (no streaming)

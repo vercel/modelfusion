@@ -7,7 +7,6 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
@@ -21,7 +20,8 @@ import {
   mapInstructionPromptToTextFormat,
 } from "../../model-function/generate-text/TextPromptFormat.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { AsyncQueue } from "../../util/AsyncQueue.js";
+import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
@@ -334,66 +334,39 @@ async function createCohereTextGenerationFullDeltaIterableQueue(
 
   let accumulatedText = "";
 
-  function processLine(line: string) {
-    const event = parseJsonWithZod(line, cohereTextStreamingResponseSchema);
-
-    if (event.is_finished === true) {
-      queue.push({
-        type: "delta",
-        fullDelta: {
-          content: accumulatedText,
-          isComplete: true,
-          delta: "",
-        },
-        valueDelta: "",
-      });
-    } else {
-      accumulatedText += event.text;
-
-      queue.push({
-        type: "delta",
-        fullDelta: {
-          content: accumulatedText,
-          isComplete: false,
-          delta: event.text,
-        },
-        valueDelta: event.text,
-      });
-    }
-  }
-
   // process the stream asynchonously (no 'await' on purpose):
-  (async () => {
-    try {
-      let unprocessedText = "";
-      const reader = new ReadableStreamDefaultReader(stream);
-      const utf8Decoder = new TextDecoder("utf-8");
+  parseJsonStream({
+    stream,
+    schema: cohereTextStreamingResponseSchema,
+    process(event) {
+      if (event.is_finished === true) {
+        queue.push({
+          type: "delta",
+          fullDelta: {
+            content: accumulatedText,
+            isComplete: true,
+            delta: "",
+          },
+          valueDelta: "",
+        });
+      } else {
+        accumulatedText += event.text;
 
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        const { value: chunk, done } = await reader.read();
-
-        if (done) {
-          break;
-        }
-
-        unprocessedText += utf8Decoder.decode(chunk, { stream: true });
-
-        const processableLines = unprocessedText.split(/\r\n|\n|\r/g);
-
-        unprocessedText = processableLines.pop() || "";
-
-        processableLines.forEach(processLine);
+        queue.push({
+          type: "delta",
+          fullDelta: {
+            content: accumulatedText,
+            isComplete: false,
+            delta: event.text,
+          },
+          valueDelta: event.text,
+        });
       }
-
-      // processing remaining text:
-      if (unprocessedText) {
-        processLine(unprocessedText);
-      }
-    } finally {
+    },
+    onDone() {
       queue.close();
-    }
-  })();
+    },
+  });
 
   return queue;
 }

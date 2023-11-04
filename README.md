@@ -54,7 +54,7 @@ const text = await generateText(
 );
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface)
 
 #### streamText
 
@@ -71,7 +71,7 @@ for await (const textPart of textStream) {
 }
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama)
 
 ### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 

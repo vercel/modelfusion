@@ -7,7 +7,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { parseEventSourceStream } from "../../event-source/parseEventSourceStream.js";
+import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";

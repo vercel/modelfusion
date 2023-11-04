@@ -1,7 +1,6 @@
 export * from "./composed-function/index.js";
 export * from "./core/index.js";
 export * from "./cost/index.js";
-export * from "./event-source/index.js";
 export * from "./guard/index.js";
 export * from "./model-function/index.js";
 export * from "./model-provider/index.js";
