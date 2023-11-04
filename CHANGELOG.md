@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.56.0 - 2023-11-04
+
+### Added
+
+- [Ollama model provider](https://modelfusion.dev/integration/model-provider/ollama) for text embeddings.
+
 ## v0.55.1 - 2023-11-04
 
 ### Fixed
