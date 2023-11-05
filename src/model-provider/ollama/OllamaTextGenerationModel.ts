@@ -106,10 +106,25 @@ export class OllamaTextGenerationModel<
     OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
   > {
     const eventSettingProperties: Array<string> = [
-      // "maxCompletionTokens",
-      // "stopSequences",
-
+      "maxCompletionTokens",
+      "stopSequences",
       "contextWindowSize",
+      "temperature",
+      "mirostat",
+      "mirostat_eta",
+      "mirostat_tau",
+      "num_gqa",
+      "num_gpu",
+      "num_threads",
+      "repeat_last_n",
+      "repeat_penalty",
+      "seed",
+      "tfs_z",
+      "top_k",
+      "top_p",
+      "system",
+      "template",
+      "context",
     ] satisfies (keyof OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>)[];
 
     return Object.fromEntries(
