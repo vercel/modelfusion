@@ -4,17 +4,22 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@pinecone-database/pinecone": "^0.1.6",
-    "modelfusion": "^0.55.0",
+    "dotenv": "16.0.3",
+    "secure-json-parse": "2.7.0",
+    "modelfusion": "^0.57.0",
     "@modelfusion/serpapi-tools": "^0.6.0",
     "@modelfusion/google-custom-search-tool": "^0.6.0",
     "@modelfusion/pinecone": "^0.2.0",
-    "dotenv": "16.0.3",
-    "secure-json-parse": "2.7.0"
+    "@modelfusion/sqlite-vss": "^0.1.1",
+    "@pinecone-database/pinecone": "^0.1.6",
+    "better-sqlite3": "9.0.0",
+    "sqlite-vss": "0.1.2",
+    "sqlite-vss-darwin-arm64": "0.1.2"
   },
   "devDependencies": {
     "@types/node": "20.2.3",
-    "ts-node": "10.9.1"
+    "@types/better-sqlite3": "7.6.6",
+    "tsx": "3.14.0"
   },
   "scripts": {
     "build": "tsc --outDir build/"

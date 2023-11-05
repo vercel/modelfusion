@@ -1,17 +1,17 @@
-import dotenv from "dotenv";
-import {
-  ZodSchema,
-  OpenAITextEmbeddingModel,
-  VectorIndexRetriever,
-  retrieve,
-  upsertIntoVectorIndex,
-} from "modelfusion";
-import z from "zod";
-
 import {
   SQLiteVectorIndex,
   setupSQLiteDatabase,
 } from "@modelfusion/sqlite-vss";
+import BetterSqlite3 from "better-sqlite3";
+import dotenv from "dotenv";
+import {
+  OpenAITextEmbeddingModel,
+  VectorIndexRetriever,
+  ZodSchema,
+  retrieve,
+  upsertIntoVectorIndex,
+} from "modelfusion";
+import z from "zod";
 
 dotenv.config();
 
@@ -29,9 +29,13 @@ async function main() {
     "This is caused by the light being reflected twice on the inside of the droplet before leaving it.`",
   ];
 
-  const db = setupSQLiteDatabase("rainbow.db");
+  const database = new BetterSqlite3("rainbow.db", { fileMustExist: false });
+  database.pragma("journal_mode = WAL");
+
+  setupSQLiteDatabase(database);
+
   const vectorIndex = new SQLiteVectorIndex({
-    db,
+    db: database,
     schema: new ZodSchema(z.object({ text: z.string() })),
   });
   const embeddingModel = new OpenAITextEmbeddingModel({

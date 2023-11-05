@@ -1,17 +1,36 @@
 ---
-sidebar_position: 2
+sidebar_position: 10
 title: SQLite VSS
 ---
 
 # SQLite VSS Vector Index
 
+[SQLite VSS](https://github.com/asg017/sqlite-vss) is a SQLite extension that provides vector similarity search (VSS) functionality based on Faiss.
+
+:::info
+
+Windows is currently not supported.
+
+:::
+
 ## Setup
 
-You need to install the ModelFusion SQLite VSS extension:
-
-```bash
-npm install @modelfusion/sqlite-vss
-```
+1. Install [SQLite](https://www.sqlite.org/index.html) if needed
+   - on MacOS it is pre-installed
+2. Install the ModelFusion SQLite VSS extension:
+   ```sh
+   npm install @modelfusion/sqlite-vss
+   ```
+3. Install the peer dependencies:
+   ```sh
+   npm install better-sqlite3 sqlite-vss
+   ```
+4. Install the library for your architecture:
+   ```sh
+   npm install sqlite-vss-darwin-x64
+   npm install sqlite-vss-darwin-arm64
+   npm install sqlite-vss-linux-x64
+   ```
 
 ## Usage
 
@@ -27,11 +46,15 @@ import {
 import { ZodSchema } from "modelfusion";
 
 // Initialize the SQLite database:
-const db = setupSQLiteDatabase(dbPath);
+const database = setupSQLiteDatabase(new BetterSqlite3(":memory:"));
 
-// assuming zod schema for data and an embedding model are defined:
+// Create a vector index:
 const vectorIndex = new SQLiteVectorIndex({
   db,
   schema: new ZodSchema(zodSchema),
 });
 ```
+
+## Source Code
+
+[@modelfusion/sqlite-vss](https://github.com/lgrammel/modelfusion/tree/main/extensions/sqlite-vss)

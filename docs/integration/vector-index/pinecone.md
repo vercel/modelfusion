@@ -5,6 +5,8 @@ title: Pinecone
 
 # Pinecone Vector Index
 
+[Pinecone](https://www.pinecone.io/) is a vector database that provides vector similarity search (VSS) functionality.
+
 ## Setup
 
 You can get an API key from [Pinecone](https://www.pinecone.io/). You also need to create a Pinecone index.
@@ -36,9 +38,13 @@ await client.init({
 });
 const index = client.Index(PINECONE_INDEX_NAME);
 
-// assuming zod schema for data and an embedding model are defined:
+// Create a vector index:
 const vectorIndex = new PineconeVectorIndex({
   index,
   schema: new ZodSchema(zodSchema),
 });
 ```
+
+## Source Code
+
+[@modelfusion/pinecone](https://github.com/lgrammel/modelfusion/tree/main/extensions/pinecone)
