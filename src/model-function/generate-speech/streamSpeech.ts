@@ -1,10 +1,10 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
+import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStreamCall } from "../executeStreamCall.js";
 import {
-  StreamingSpeechGenerationModel,
   SpeechGenerationModelSettings,
+  StreamingSpeechGenerationModel,
 } from "./SpeechGenerationModel.js";
 
 /**
@@ -31,11 +31,30 @@ import {
  *
  * @returns {AsyncIterableResultPromise<Buffer>} An async iterable promise that contains the synthesized speech chunks.
  */
-export function streamSpeech(
+export async function streamSpeech(
   model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>,
   text: AsyncIterable<string> | string,
-  options?: FunctionOptions
-): AsyncIterableResultPromise<Buffer> {
+  options?: FunctionOptions & { returnType?: "buffer-stream" }
+): Promise<AsyncIterable<Buffer>>;
+export async function streamSpeech(
+  model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>,
+  text: AsyncIterable<string> | string,
+  options: FunctionOptions & { returnType: "full" }
+): Promise<{
+  value: AsyncIterable<Buffer>;
+  metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
+}>;
+export async function streamSpeech(
+  model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>,
+  text: AsyncIterable<string> | string,
+  options?: FunctionOptions & { returnType?: "buffer-stream" | "full" }
+): Promise<
+  | AsyncIterable<Buffer>
+  | {
+      value: AsyncIterable<Buffer>;
+      metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
+    }
+> {
   let textStream: AsyncIterable<string>;
 
   // simulate a stream with a single value for a string input:
@@ -48,18 +67,16 @@ export function streamSpeech(
     textStream = text;
   }
 
-  return new AsyncIterableResultPromise<Buffer>(
-    executeStreamCall({
-      functionType: "stream-speech",
-      input: text,
-      model,
-      options,
-      startStream: async (options) =>
-        model.doGenerateSpeechStreamDuplex(textStream, options),
-      processDelta: (delta) => {
-        return delta.valueDelta;
-      },
-      getResult: () => ({}),
-    })
-  );
+  const fullResponse = await executeStreamCall({
+    functionType: "stream-speech",
+    input: text,
+    model,
+    options,
+    startStream: async (options) =>
+      model.doGenerateSpeechStreamDuplex(textStream, options),
+    processDelta: (delta) => delta.valueDelta,
+    getResult: () => ({}),
+  });
+
+  return options?.returnType === "full" ? fullResponse : fullResponse.value;
 }

@@ -1,6 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { executeStandardCall } from "../executeStandardCall.js";
-import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
+import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -25,31 +25,41 @@ import {
  * @param {PROMPT} prompt - The prompt to use for text generation.
  * @param {FunctionOptions} [options] - Optional parameters for the function.
  *
- * @returns {ModelFunctionPromise<string>} - A promise that resolves to the generated text.
+ * @returns {Promise<string>} - A promise that resolves to the generated text.
  */
-export function generateText<PROMPT>(
+export async function generateText<PROMPT>(
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
   prompt: PROMPT,
-  options?: FunctionOptions
-): ModelFunctionPromise<string> {
-  return new ModelFunctionPromise(
-    executeStandardCall({
-      functionType: "generate-text",
-      input: prompt,
-      model,
-      options,
-      generateResponse: async (options) => {
-        const result = await model.doGenerateText(prompt, options);
-        const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
+  options?: FunctionOptions & { returnType?: "text" }
+): Promise<string>;
+export async function generateText<PROMPT>(
+  model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
+  prompt: PROMPT,
+  options: FunctionOptions & { returnType: "full" }
+): Promise<{ value: string; response: unknown; metadata: ModelCallMetadata }>;
+export async function generateText<PROMPT>(
+  model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
+  prompt: PROMPT,
+  options?: FunctionOptions & { returnType?: "text" | "full" }
+): Promise<
+  string | { value: string; response: unknown; metadata: ModelCallMetadata }
+> {
+  const fullResponse = await executeStandardCall({
+    functionType: "generate-text",
+    input: prompt,
+    model,
+    options,
+    generateResponse: async (options) => {
+      const result = await model.doGenerateText(prompt, options);
+      const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
 
-        return {
-          response: result.response,
-          extractedValue: shouldTrimWhitespace
-            ? result.text.trim()
-            : result.text,
-          usage: result.usage,
-        };
-      },
-    })
-  );
+      return {
+        response: result.response,
+        extractedValue: shouldTrimWhitespace ? result.text.trim() : result.text,
+        usage: result.usage,
+      };
+    },
+  });
+
+  return options?.returnType === "full" ? fullResponse : fullResponse.value;
 }

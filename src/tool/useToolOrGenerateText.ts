@@ -63,7 +63,10 @@ export async function useToolOrGenerateText<
           schema: tool.inputSchema,
         })),
         expandedPrompt,
-        options
+        {
+          ...options,
+          returnType: "structure",
+        }
       );
 
       const { structure, text } = modelResponse;

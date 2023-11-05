@@ -27,17 +27,18 @@ async function main() {
     },
     {
       functionId: "generate-story",
+      returnType: "full",
       observers: [customObserver],
     }
-  ).asFullResponse();
+  );
+
+  console.log("\n\nMETADATA:");
+  console.log(JSON.stringify(metadata));
 
   console.log("\n\nCONTENT:");
   for await (const textPart of textStream) {
     process.stdout.write(textPart);
   }
-
-  console.log("\n\nMETADATA:");
-  console.log(JSON.stringify(metadata));
 }
 
 main().catch(console.error);

@@ -1,7 +1,7 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import { isDeepEqualData } from "../../util/isDeepEqualData.js";
-import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
+import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStreamCall } from "../executeStreamCall.js";
 import { StructureStreamingModel } from "./StructureGenerationModel.js";
 
@@ -76,14 +76,39 @@ export type StructureStreamPart<STRUCTURE> =
  * It contains a isComplete flag to indicate whether the structure is complete,
  * and a value that is either the partial structure or the final structure.
  */
-export function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
+export async function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
   model: StructureStreamingModel<PROMPT>,
   structureDefinition: StructureDefinition<NAME, STRUCTURE>,
   prompt:
     | PROMPT
     | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
-  options?: FunctionOptions
-): AsyncIterableResultPromise<StructureStreamPart<STRUCTURE>> {
+  options?: FunctionOptions & { returnType?: "structure-stream" }
+): Promise<AsyncIterable<StructureStreamPart<STRUCTURE>>>;
+export async function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
+  model: StructureStreamingModel<PROMPT>,
+  structureDefinition: StructureDefinition<NAME, STRUCTURE>,
+  prompt:
+    | PROMPT
+    | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
+  options: FunctionOptions & { returnType: "full" }
+): Promise<{
+  value: AsyncIterable<StructureStreamPart<STRUCTURE>>;
+  metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
+}>;
+export async function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
+  model: StructureStreamingModel<PROMPT>,
+  structureDefinition: StructureDefinition<NAME, STRUCTURE>,
+  prompt:
+    | PROMPT
+    | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
+  options?: FunctionOptions & { returnType?: "structure-stream" | "full" }
+): Promise<
+  | AsyncIterable<StructureStreamPart<STRUCTURE>>
+  | {
+      value: AsyncIterable<StructureStreamPart<STRUCTURE>>;
+      metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
+    }
+> {
   // Note: PROMPT must not be a function.
   const expandedPrompt =
     typeof prompt === "function"
@@ -97,53 +122,53 @@ export function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
   let lastStructure: unknown | undefined;
   let lastFullDelta: unknown | undefined;
 
-  return new AsyncIterableResultPromise<StructureStreamPart<STRUCTURE>>(
-    executeStreamCall<
-      unknown,
-      StructureStreamPart<STRUCTURE>,
-      StructureStreamingModel<PROMPT>
-    >({
-      functionType: "stream-structure",
-      input: prompt,
-      model,
-      options,
-      startStream: async (options) =>
-        model.doStreamStructure(structureDefinition, expandedPrompt, options),
-      processDelta: (delta) => {
-        const latestFullDelta = delta.fullDelta;
-        const latestStructure = delta.valueDelta;
+  const fullResponse = await executeStreamCall<
+    unknown,
+    StructureStreamPart<STRUCTURE>,
+    StructureStreamingModel<PROMPT>
+  >({
+    functionType: "stream-structure",
+    input: prompt,
+    model,
+    options,
+    startStream: async (options) =>
+      model.doStreamStructure(structureDefinition, expandedPrompt, options),
+    processDelta: (delta) => {
+      const latestFullDelta = delta.fullDelta;
+      const latestStructure = delta.valueDelta;
 
-        // only send a new part into the stream when the partial structure has changed:
-        if (!isDeepEqualData(lastStructure, latestStructure)) {
-          lastFullDelta = latestFullDelta;
-          lastStructure = latestStructure;
-
-          return {
-            isComplete: false,
-            value: lastStructure,
-          } satisfies StructureStreamPart<STRUCTURE>;
-        }
-
-        return undefined;
-      },
-      processFinished: () => {
-        // process the final result (full type validation):
-        const parseResult = structureDefinition.schema.validate(lastStructure);
-
-        if (!parseResult.success) {
-          reportError(parseResult.error);
-          throw parseResult.error;
-        }
+      // only send a new part into the stream when the partial structure has changed:
+      if (!isDeepEqualData(lastStructure, latestStructure)) {
+        lastFullDelta = latestFullDelta;
+        lastStructure = latestStructure;
 
         return {
-          isComplete: true,
-          value: parseResult.data,
-        };
-      },
-      getResult: () => ({
-        response: lastFullDelta,
-        value: lastStructure,
-      }),
-    })
-  );
+          isComplete: false,
+          value: lastStructure,
+        } satisfies StructureStreamPart<STRUCTURE>;
+      }
+
+      return undefined;
+    },
+    processFinished: () => {
+      // process the final result (full type validation):
+      const parseResult = structureDefinition.schema.validate(lastStructure);
+
+      if (!parseResult.success) {
+        reportError(parseResult.error);
+        throw parseResult.error;
+      }
+
+      return {
+        isComplete: true,
+        value: parseResult.data,
+      };
+    },
+    getResult: () => ({
+      response: lastFullDelta,
+      value: lastStructure,
+    }),
+  });
+
+  return options?.returnType === "full" ? fullResponse : fullResponse.value;
 }

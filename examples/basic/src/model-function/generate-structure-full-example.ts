@@ -38,8 +38,9 @@ async function main() {
         "After I opened the package, I was met by a very unpleasant smell " +
           "that did not disappear even after washing. Never again!"
       ),
-    ]
-  ).asFullResponse();
+    ],
+    { returnType: "full" }
+  );
 
   console.log(JSON.stringify(sentiment, null, 2));
 }

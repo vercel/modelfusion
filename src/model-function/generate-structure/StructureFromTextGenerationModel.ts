@@ -55,8 +55,11 @@ export class StructureFromTextGenerationModel<
     const { response, value } = await generateText(
       this.model,
       this.format.createPrompt(prompt, structure),
-      options
-    ).asFullResponse();
+      {
+        ...options,
+        returnType: "full",
+      }
+    );
 
     try {
       return {

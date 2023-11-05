@@ -1,7 +1,7 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
 import { executeStandardCall } from "../executeStandardCall.js";
-import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
+import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { NoSuchStructureError } from "./NoSuchStructureError.js";
 import {
   StructureOrTextGenerationModel,
@@ -94,9 +94,9 @@ type ToOutputValue<
  * You can also pass a function that takes the array of structure definitions as an argument and returns the prompt.
  * @param {FunctionOptions} [options] - Additional options to control the function's execution behavior.
  *
- * @returns {ModelFunctionPromise<{ structure: null; value: null; text: string } | ToOutputValue<STRUCTURES>>} - Returns a promise that resolves to an object containing either a structured response conforming to one of the provided definitions or a plain text response.
+ * @returns {Promise<{ structure: null; value: null; text: string } | ToOutputValue<STRUCTURES>>} - Returns a promise that resolves to an object containing either a structured response conforming to one of the provided definitions or a plain text response.
  */
-export function generateStructureOrText<
+export async function generateStructureOrText<
   STRUCTURES extends StructureDefinition<any, any>[],
   PROMPT,
 >(
@@ -106,9 +106,49 @@ export function generateStructureOrText<
   >,
   structureDefinitions: STRUCTURES,
   prompt: PROMPT | ((structureDefinitions: STRUCTURES) => PROMPT),
-  options?: FunctionOptions
-): ModelFunctionPromise<
+  options?: FunctionOptions & { returnType?: "structure" }
+): Promise<
   { structure: null; value: null; text: string } | ToOutputValue<STRUCTURES>
+>;
+export async function generateStructureOrText<
+  STRUCTURES extends StructureDefinition<any, any>[],
+  PROMPT,
+>(
+  model: StructureOrTextGenerationModel<
+    PROMPT,
+    StructureOrTextGenerationModelSettings
+  >,
+  structureDefinitions: STRUCTURES,
+  prompt: PROMPT | ((structureDefinitions: STRUCTURES) => PROMPT),
+  options: FunctionOptions & { returnType?: "full" }
+): Promise<{
+  value:
+    | { structure: null; value: null; text: string }
+    | ToOutputValue<STRUCTURES>;
+  response: unknown;
+  metadata: ModelCallMetadata;
+}>;
+export async function generateStructureOrText<
+  STRUCTURES extends StructureDefinition<any, any>[],
+  PROMPT,
+>(
+  model: StructureOrTextGenerationModel<
+    PROMPT,
+    StructureOrTextGenerationModelSettings
+  >,
+  structureDefinitions: STRUCTURES,
+  prompt: PROMPT | ((structureDefinitions: STRUCTURES) => PROMPT),
+  options?: FunctionOptions & { returnType?: "structure" | "full" }
+): Promise<
+  | { structure: null; value: null; text: string }
+  | ToOutputValue<STRUCTURES>
+  | {
+      value:
+        | { structure: null; value: null; text: string }
+        | ToOutputValue<STRUCTURES>;
+      response: unknown;
+      metadata: ModelCallMetadata;
+    }
 > {
   // Note: PROMPT must not be a function.
   const expandedPrompt =
@@ -116,59 +156,57 @@ export function generateStructureOrText<
       ? (prompt as (structures: STRUCTURES) => PROMPT)(structureDefinitions)
       : prompt;
 
-  return new ModelFunctionPromise(
-    executeStandardCall({
-      functionType: "generate-structure-or-text",
-      input: expandedPrompt,
-      model,
-      options,
-      generateResponse: async (options) => {
-        const result = await model.doGenerateStructureOrText(
-          structureDefinitions,
-          expandedPrompt,
-          options
-        );
+  const fullResponse = await executeStandardCall({
+    functionType: "generate-structure-or-text",
+    input: expandedPrompt,
+    model,
+    options,
+    generateResponse: async (options) => {
+      const result = await model.doGenerateStructureOrText(
+        structureDefinitions,
+        expandedPrompt,
+        options
+      );
 
-        const { structure, value, text } = result.structureAndText;
+      const { structure, value, text } = result.structureAndText;
 
-        // text generation:
-        if (structure == null) {
-          return {
-            response: result.response,
-            extractedValue: { structure, value, text },
-            usage: result.usage,
-          };
-        }
-
-        const definition = structureDefinitions.find(
-          (d) => d.name === structure
-        );
-
-        if (definition == undefined) {
-          throw new NoSuchStructureError(structure);
-        }
-
-        const parseResult = definition.schema.validate(value);
-
-        if (!parseResult.success) {
-          throw new StructureValidationError({
-            structureName: structure,
-            value,
-            valueText: result.structureAndText.valueText,
-            cause: parseResult.error,
-          });
-        }
-
+      // text generation:
+      if (structure == null) {
         return {
           response: result.response,
-          extractedValue: {
-            structure: structure as ToOutputValue<STRUCTURES>["structure"],
-            value: parseResult.data,
-            text: text as any, // text is string | null, which is part of the response for schema values
-          },
+          extractedValue: { structure, value, text },
           usage: result.usage,
         };
-      },
-    })
-  );
+      }
+
+      const definition = structureDefinitions.find((d) => d.name === structure);
+
+      if (definition == undefined) {
+        throw new NoSuchStructureError(structure);
+      }
+
+      const parseResult = definition.schema.validate(value);
+
+      if (!parseResult.success) {
+        throw new StructureValidationError({
+          structureName: structure,
+          value,
+          valueText: result.structureAndText.valueText,
+          cause: parseResult.error,
+        });
+      }
+
+      return {
+        response: result.response,
+        extractedValue: {
+          structure: structure as ToOutputValue<STRUCTURES>["structure"],
+          value: parseResult.data,
+          text: text as any, // text is string | null, which is part of the response for schema values
+        },
+        usage: result.usage,
+      };
+    },
+  });
+
+  return options?.returnType === "full" ? fullResponse : fullResponse.value;
 }

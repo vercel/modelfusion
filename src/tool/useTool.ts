@@ -55,8 +55,11 @@ export async function useTool<
           schema: tool.inputSchema,
         },
         expandedPrompt,
-        options
-      ).asFullResponse();
+        {
+          ...options,
+          returnType: "full",
+        }
+      );
 
       return {
         tool: tool.name,

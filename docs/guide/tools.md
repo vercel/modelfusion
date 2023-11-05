@@ -144,11 +144,15 @@ const result = await executeTool(calculator, {
 #### With full response
 
 ```ts
-const { metadata, output } = await executeTool(calculator, {
-  operator: "*" as const,
-  a: 14,
-  b: 12,
-}).asFullResponse();
+const { metadata, output } = await executeTool(
+  calculator,
+  {
+    a: 14,
+    b: 12,
+    operator: "*" as const,
+  },
+  { returnType: "full" }
+);
 ```
 
 ## Pre-defined Tools
