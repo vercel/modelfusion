@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.58 - 2023-11-05
+
+### Fixed
+
+- **breaking change**: Uncaught errors were caused by custom Promises. ModelFusion now uses only standard Promises. To get full responses from model function, you now need to use the `{ returnType: "full" }` option instead of calling `.asFullResponse()` on the result.
+
 ## v0.57.1 - 2023-11-05
 
 ### Improved
