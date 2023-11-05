@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { AsyncIterableResultPromise } from "../AsyncIterableResultPromise.js";
+import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStreamCall } from "../executeStreamCall.js";
 import { TextStreamingModel } from "./TextGenerationModel.js";
 
@@ -28,37 +28,56 @@ import { TextStreamingModel } from "./TextGenerationModel.js";
  *
  * @returns {AsyncIterableResultPromise<string>} An async iterable promise that yields the generated text.
  */
-export function streamText<PROMPT>(
+export async function streamText<PROMPT>(
   model: TextStreamingModel<PROMPT>,
   prompt: PROMPT,
-  options?: FunctionOptions
-): AsyncIterableResultPromise<string> {
+  options?: FunctionOptions & { returnType?: "text-stream" }
+): Promise<AsyncIterable<string>>;
+export async function streamText<PROMPT>(
+  model: TextStreamingModel<PROMPT>,
+  prompt: PROMPT,
+  options: FunctionOptions & { returnType: "full" }
+): Promise<{
+  value: AsyncIterable<string>;
+  metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
+}>;
+export async function streamText<PROMPT>(
+  model: TextStreamingModel<PROMPT>,
+  prompt: PROMPT,
+  options?: FunctionOptions & { returnType?: "text-stream" | "full" }
+): Promise<
+  | AsyncIterable<string>
+  | {
+      value: AsyncIterable<string>;
+      metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
+    }
+> {
   let accumulatedText = "";
   let lastFullDelta: unknown | undefined;
 
-  return new AsyncIterableResultPromise<string>(
-    executeStreamCall({
-      functionType: "stream-text",
-      input: prompt,
-      model,
-      options,
-      startStream: async (options) => model.doStreamText(prompt, options),
-      processDelta: (delta) => {
-        lastFullDelta = delta.fullDelta;
+  const fullResponse = await executeStreamCall({
+    functionType: "stream-text",
+    input: prompt,
+    model,
+    options,
+    startStream: async (options) => model.doStreamText(prompt, options),
+    processDelta: (delta) => {
+      lastFullDelta = delta.fullDelta;
 
-        const textDelta = delta.valueDelta;
+      const textDelta = delta.valueDelta;
 
-        if (textDelta != null && textDelta.length > 0) {
-          accumulatedText += textDelta;
-          return textDelta;
-        }
+      if (textDelta != null && textDelta.length > 0) {
+        accumulatedText += textDelta;
+        return textDelta;
+      }
 
-        return undefined;
-      },
-      getResult: () => ({
-        response: lastFullDelta,
-        value: accumulatedText,
-      }),
-    })
-  );
+      return undefined;
+    },
+    getResult: () => ({
+      response: lastFullDelta,
+      value: accumulatedText,
+    }),
+  });
+
+  return options?.returnType === "full" ? fullResponse : fullResponse.value;
 }
