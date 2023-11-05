@@ -22,8 +22,9 @@ async function main() {
     [
       { text: "the wicked witch of the west" },
       { text: "style of early 19th century painting", weight: 0.5 },
-    ]
-  ).asFullResponse();
+    ],
+    { returnType: "full" }
+  );
 
   const path = `./stability-image-example.png`;
   fs.writeFileSync(path, Buffer.from(image, "base64"));

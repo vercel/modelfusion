@@ -18,8 +18,9 @@ async function main() {
     [
       { text: "the wicked witch of the west" },
       { text: "style of early 19th century painting", weight: 0.5 },
-    ]
-  ).asBase64Text();
+    ],
+    { returnType: "base64" }
+  );
 
   const path = `./stability-image-example.png`;
   fs.writeFileSync(path, Buffer.from(imageBase64, "base64"));
