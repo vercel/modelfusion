@@ -50,7 +50,7 @@ const database = setupSQLiteDatabase(new BetterSqlite3(":memory:"));
 
 // Create a vector index:
 const vectorIndex = new SQLiteVectorIndex({
-  db,
+  db: database,
   schema: new ZodSchema(zodSchema),
 });
 ```
