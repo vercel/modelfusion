@@ -513,7 +513,7 @@ const image = await generateImage(
 
 ### Metadata and original responses
 
-ModelFusion model functions return rich results that include the original response and metadata when you call `.asFullResponse()` before resolving the promise.
+ModelFusion model functions return rich results that include the original response and metadata when you set the `returnType` option to `full`.
 
 ```ts
 // access the full response (needs to be typed) and the metadata:
@@ -523,8 +523,9 @@ const { value, response, metadata } = await generateText(
     maxCompletionTokens: 1000,
     n: 2, // generate 2 completions
   }),
-  "Write a short story about a robot learning to love:\n\n"
-).asFullResponse();
+  "Write a short story about a robot learning to love:\n\n",
+  { returnType: "full" }
+);
 
 console.log(metadata);
 
