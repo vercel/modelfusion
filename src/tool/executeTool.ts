@@ -22,69 +22,35 @@ export type ExecuteToolMetadata = {
   durationInMs: number;
 };
 
-export class ExecuteToolPromise<OUTPUT> extends Promise<OUTPUT> {
-  private outputPromise: Promise<OUTPUT>;
-
-  constructor(
-    private fullPromise: Promise<{
-      output: OUTPUT;
-      metadata: ExecuteToolMetadata;
-    }>
-  ) {
-    super((resolve) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      resolve(null as any); // we override the resolve function
-    });
-
-    this.outputPromise = fullPromise.then((result) => result.output);
-  }
-
-  asFullResponse(): Promise<{
-    output: OUTPUT;
-    metadata: ExecuteToolMetadata;
-  }> {
-    return this.fullPromise;
-  }
-
-  override then<TResult1 = OUTPUT, TResult2 = never>(
-    onfulfilled?:
-      | ((value: OUTPUT) => TResult1 | PromiseLike<TResult1>)
-      | undefined
-      | null,
-    onrejected?:
-      | ((reason: unknown) => TResult2 | PromiseLike<TResult2>)
-      | undefined
-      | null
-  ): Promise<TResult1 | TResult2> {
-    return this.outputPromise.then(onfulfilled, onrejected);
-  }
-
-  override catch<TResult = never>(
-    onrejected?:
-      | ((reason: unknown) => TResult | PromiseLike<TResult>)
-      | undefined
-      | null
-  ): Promise<OUTPUT | TResult> {
-    return this.outputPromise.catch(onrejected);
-  }
-
-  override finally(
-    onfinally?: (() => void) | undefined | null
-  ): Promise<OUTPUT> {
-    return this.outputPromise.finally(onfinally);
-  }
-}
-
 /**
  * `executeTool` directly executes a tool with the given parameters.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function executeTool<TOOL extends Tool<any, any, any>>(
+export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
   tool: TOOL,
   input: TOOL["inputSchema"]["_type"],
-  options?: FunctionOptions
-): ExecuteToolPromise<ReturnType<TOOL["execute"]>> {
-  return new ExecuteToolPromise(doExecuteTool(tool, input, options));
+  options?: FunctionOptions & { returnType?: "output" }
+): Promise<ReturnType<TOOL["execute"]>>;
+export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
+  tool: TOOL,
+  input: TOOL["inputSchema"]["_type"],
+  options: FunctionOptions & { returnType: "full" }
+): Promise<{
+  output: ReturnType<TOOL["execute"]>;
+  metadata: ExecuteToolMetadata;
+}>;
+export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
+  tool: TOOL,
+  input: TOOL["inputSchema"]["_type"],
+  options?: FunctionOptions & { returnType?: "output" | "full" }
+): Promise<
+  | ReturnType<TOOL["execute"]>
+  | {
+      output: ReturnType<TOOL["execute"]>;
+      metadata: ExecuteToolMetadata;
+    }
+> {
+  const fullResponse = await doExecuteTool(tool, input, options);
+  return options?.returnType === "full" ? fullResponse : fullResponse.output;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -93,7 +59,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   input: TOOL["inputSchema"]["_type"],
   options?: FunctionOptions
 ): Promise<{
-  output: Awaited<ReturnType<TOOL["execute"]>>;
+  output: ReturnType<TOOL["execute"]>;
   metadata: ExecuteToolMetadata;
 }> {
   const run = await getRun(options?.run);
