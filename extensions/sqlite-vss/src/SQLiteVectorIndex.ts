@@ -35,10 +35,9 @@ function loadablePathResolver(name: string) {
   }
   const packageName = platformPackageName(platform, arch);
   const loadablePath = join(
-    __filename,
+    __dirname,
     "..",
     "..",
-    "node_modules",
     packageName,
     "lib",
     `${name}.${extensionSuffix(platform)}`
