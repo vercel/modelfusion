@@ -12,7 +12,7 @@ Given a prompt, the server returns both a text and a speech stream response.
 
 ## Usage
 
-1. Create `.env.local` file with the following content:
+1. Create `.env` file with the following content:
 
    ```
    OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
