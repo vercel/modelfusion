@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.57.1 - 2023-11-05
+
+### Improved
+
+- ModelFusion server error logging and reporting.
+
+### Fixed
+
+- ModelFusion server creates directory for runs automatically when errors are thrown.
+
 ## v0.57.0 - 2023-11-04
 
 ### Added
