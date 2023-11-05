@@ -8,7 +8,7 @@
     "commander": "10.0.1",
     "dotenv": "16.0.3",
     "jsdom": "^22.1.0",
-    "modelfusion": "*",
+    "modelfusion": "0.58.0",
     "serpapi": "^2.0.0"
   },
   "devDependencies": {
