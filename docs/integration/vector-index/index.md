@@ -11,4 +11,5 @@ ModelFusion provides a [VectorIndex](/api/interfaces/VectorIndex) interface that
 ## Available Vector Indices
 
 - [Memory](/integration/vector-index/memory)
+- [SQLite VSS](/integration/vector-index/sqlite-vss)
 - [Pinecone](/integration/vector-index/pinecone)

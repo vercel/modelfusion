@@ -447,7 +447,7 @@ const retrievedTexts = await retrieve(
 );
 ```
 
-Available Vector Stores: [Memory](https://modelfusion.dev/integration/vector-index/memory), [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
+Available Vector Stores: [Memory](https://modelfusion.dev/integration/vector-index/memory), [SQLite VSS](https://modelfusion.dev/integration/vector-index/sqlite-vss), [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
 
 ### Prompt Formats
 
