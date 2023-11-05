@@ -27,12 +27,12 @@ import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel.js";
 export async function embedMany<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   values: VALUE[],
-  options?: FunctionOptions & { fullResponse?: false }
+  options?: FunctionOptions & { returnType?: "vectors" }
 ): Promise<Vector[]>;
 export async function embedMany<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   values: VALUE[],
-  options: FunctionOptions & { fullResponse: true }
+  options: FunctionOptions & { returnType: "full" }
 ): Promise<{
   value: Vector[];
   response: unknown;
@@ -41,7 +41,7 @@ export async function embedMany<VALUE>(
 export async function embedMany<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   values: VALUE[],
-  options?: FunctionOptions & { fullResponse?: boolean }
+  options?: FunctionOptions & { returnType?: "vectors" | "full" }
 ): Promise<
   | Vector[]
   | {
@@ -97,7 +97,7 @@ export async function embedMany<VALUE>(
     },
   });
 
-  return options?.fullResponse ? fullResponse : fullResponse.value;
+  return options?.returnType === "full" ? fullResponse : fullResponse.value;
 }
 
 /**
@@ -120,17 +120,17 @@ export async function embedMany<VALUE>(
 export async function embed<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   value: VALUE,
-  options?: FunctionOptions & { fullResponse?: false }
+  options?: FunctionOptions & { returnType?: "vector" }
 ): Promise<Vector>;
 export async function embed<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   value: VALUE,
-  options: FunctionOptions & { fullResponse: true }
+  options: FunctionOptions & { returnType: "full" }
 ): Promise<{ value: Vector; response: unknown; metadata: ModelCallMetadata }>;
 export async function embed<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   value: VALUE,
-  options?: FunctionOptions & { fullResponse?: boolean }
+  options?: FunctionOptions & { returnType?: "vector" | "full" }
 ): Promise<
   Vector | { value: Vector; response: unknown; metadata: ModelCallMetadata }
 > {
@@ -148,5 +148,5 @@ export async function embed<VALUE>(
     },
   });
 
-  return options?.fullResponse ? fullResponse : fullResponse.value;
+  return options?.returnType === "full" ? fullResponse : fullResponse.value;
 }

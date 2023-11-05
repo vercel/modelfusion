@@ -27,17 +27,17 @@ import {
 export async function generateSpeech(
   model: SpeechGenerationModel<SpeechGenerationModelSettings>,
   text: string,
-  options?: FunctionOptions & { fullResponse?: false }
+  options?: FunctionOptions & { returnType?: "buffer" }
 ): Promise<Buffer>;
 export async function generateSpeech(
   model: SpeechGenerationModel<SpeechGenerationModelSettings>,
   text: string,
-  options: FunctionOptions & { fullResponse: true }
+  options: FunctionOptions & { returnType: "full" }
 ): Promise<{ value: Buffer; response: unknown; metadata: ModelCallMetadata }>;
 export async function generateSpeech(
   model: SpeechGenerationModel<SpeechGenerationModelSettings>,
   text: string,
-  options?: FunctionOptions & { fullResponse?: boolean }
+  options?: FunctionOptions & { returnType?: "buffer" | "full" }
 ): Promise<
   Buffer | { value: Buffer; response: unknown; metadata: ModelCallMetadata }
 > {
@@ -56,5 +56,5 @@ export async function generateSpeech(
     },
   });
 
-  return options?.fullResponse ? fullResponse : fullResponse.value;
+  return options?.returnType === "full" ? fullResponse : fullResponse.value;
 }

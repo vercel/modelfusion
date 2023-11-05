@@ -106,7 +106,7 @@ export async function generateStructureOrText<
   >,
   structureDefinitions: STRUCTURES,
   prompt: PROMPT | ((structureDefinitions: STRUCTURES) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: false }
+  options?: FunctionOptions & { returnType?: "structure" }
 ): Promise<
   { structure: null; value: null; text: string } | ToOutputValue<STRUCTURES>
 >;
@@ -120,7 +120,7 @@ export async function generateStructureOrText<
   >,
   structureDefinitions: STRUCTURES,
   prompt: PROMPT | ((structureDefinitions: STRUCTURES) => PROMPT),
-  options: FunctionOptions & { fullResponse: true }
+  options: FunctionOptions & { returnType?: "full" }
 ): Promise<{
   value:
     | { structure: null; value: null; text: string }
@@ -138,7 +138,7 @@ export async function generateStructureOrText<
   >,
   structureDefinitions: STRUCTURES,
   prompt: PROMPT | ((structureDefinitions: STRUCTURES) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: boolean }
+  options?: FunctionOptions & { returnType?: "structure" | "full" }
 ): Promise<
   | { structure: null; value: null; text: string }
   | ToOutputValue<STRUCTURES>
@@ -208,5 +208,5 @@ export async function generateStructureOrText<
     },
   });
 
-  return options?.fullResponse ? fullResponse : fullResponse.value;
+  return options?.returnType === "full" ? fullResponse : fullResponse.value;
 }

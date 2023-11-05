@@ -57,7 +57,7 @@ export async function useTool<
         expandedPrompt,
         {
           ...options,
-          fullResponse: true,
+          returnType: "full",
         }
       );
 

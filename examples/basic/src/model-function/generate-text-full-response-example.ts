@@ -16,7 +16,7 @@ async function main() {
       n: 2, // generate 2 completions
     }),
     "Write a short story about a robot learning to love:\n\n",
-    { fullResponse: true }
+    { returnType: "full" }
   );
 
   console.log(metadata);

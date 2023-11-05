@@ -65,7 +65,7 @@ export async function useToolOrGenerateText<
         expandedPrompt,
         {
           ...options,
-          fullResponse: false,
+          returnType: "structure",
         }
       );
 

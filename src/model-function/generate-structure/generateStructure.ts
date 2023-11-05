@@ -60,7 +60,7 @@ export async function generateStructure<
   prompt:
     | PROMPT
     | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: false }
+  options?: FunctionOptions & { returnType?: "structure" }
 ): Promise<STRUCTURE>;
 export async function generateStructure<
   STRUCTURE,
@@ -73,7 +73,7 @@ export async function generateStructure<
   prompt:
     | PROMPT
     | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
-  options: FunctionOptions & { fullResponse: true }
+  options: FunctionOptions & { returnType: "full" }
 ): Promise<{
   value: STRUCTURE;
   response: unknown;
@@ -90,7 +90,7 @@ export async function generateStructure<
   prompt:
     | PROMPT
     | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: boolean }
+  options?: FunctionOptions & { returnType?: "structure" | "full" }
 ): Promise<
   | STRUCTURE
   | { value: STRUCTURE; response: unknown; metadata: ModelCallMetadata }
@@ -139,5 +139,5 @@ export async function generateStructure<
     },
   });
 
-  return options?.fullResponse ? fullResponse : fullResponse.value;
+  return options?.returnType === "full" ? fullResponse : fullResponse.value;
 }

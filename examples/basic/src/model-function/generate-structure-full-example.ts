@@ -39,7 +39,7 @@ async function main() {
           "that did not disappear even after washing. Never again!"
       ),
     ],
-    { fullResponse: true }
+    { returnType: "full" }
   );
 
   console.log(JSON.stringify(sentiment, null, 2));

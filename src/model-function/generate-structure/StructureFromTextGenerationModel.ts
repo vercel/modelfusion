@@ -57,7 +57,7 @@ export class StructureFromTextGenerationModel<
       this.format.createPrompt(prompt, structure),
       {
         ...options,
-        fullResponse: true,
+        returnType: "full",
       }
     );
 
