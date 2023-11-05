@@ -7,7 +7,7 @@ sidebar_position: 20
 Generates an image using a prompt. The prompt format depends on the model.
 For example, OpenAI image models expect a string prompt, and Stability AI models expect an array of text prompts with optional weights.
 
-By default, the image is a binary buffer. You can use the `asBase64Text()` method on the result to get a base-64 encoded string instead.
+By default, the image is a binary buffer. You can use set the returnType option to `base64` to get a base-64 encoded string instead.
 
 ## Usage
 
@@ -29,8 +29,9 @@ const imageBuffer = await generateImage(
 ```ts
 const imageBase64 = await generateImage(
   new OpenAIImageGenerationModel(/* ... */),
-  "the wicked witch of the west in the style of early 19th century painting"
-).asBase64Text();
+  "the wicked witch of the west in the style of early 19th century painting",
+  { returnType: "base64" }
+);
 ```
 
 #### Stability AI buffer
