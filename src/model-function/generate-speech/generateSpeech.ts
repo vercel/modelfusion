@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
+import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStandardCall } from "../executeStandardCall.js";
 import {
   SpeechGenerationModel,
@@ -22,27 +22,39 @@ import {
  * @param {string} text - The text to be converted to speech.
  * @param {FunctionOptions} [options] - Optional function options.
  *
- * @returns {ModelFunctionPromise<Buffer>} - A promise that resolves to a buffer containing the synthesized speech.
+ * @returns {Promise<Buffer>} - A promise that resolves to a buffer containing the synthesized speech.
  */
-export function generateSpeech(
+export async function generateSpeech(
   model: SpeechGenerationModel<SpeechGenerationModelSettings>,
   text: string,
-  options?: FunctionOptions
-): ModelFunctionPromise<Buffer> {
-  return new ModelFunctionPromise(
-    executeStandardCall({
-      functionType: "generate-speech",
-      input: text,
-      model,
-      options,
-      generateResponse: async (options) => {
-        const response = await model.doGenerateSpeechStandard(text, options);
+  options?: FunctionOptions & { fullResponse?: false }
+): Promise<Buffer>;
+export async function generateSpeech(
+  model: SpeechGenerationModel<SpeechGenerationModelSettings>,
+  text: string,
+  options: FunctionOptions & { fullResponse: true }
+): Promise<{ value: Buffer; response: unknown; metadata: ModelCallMetadata }>;
+export async function generateSpeech(
+  model: SpeechGenerationModel<SpeechGenerationModelSettings>,
+  text: string,
+  options?: FunctionOptions & { fullResponse?: boolean }
+): Promise<
+  Buffer | { value: Buffer; response: unknown; metadata: ModelCallMetadata }
+> {
+  const fullResponse = await executeStandardCall({
+    functionType: "generate-speech",
+    input: text,
+    model,
+    options,
+    generateResponse: async (options) => {
+      const response = await model.doGenerateSpeechStandard(text, options);
 
-        return {
-          response,
-          extractedValue: response,
-        };
-      },
-    })
-  );
+      return {
+        response,
+        extractedValue: response,
+      };
+    },
+  });
+
+  return options?.fullResponse ? fullResponse : fullResponse.value;
 }

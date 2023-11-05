@@ -1,7 +1,7 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
+import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStandardCall } from "../executeStandardCall.js";
-import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   StructureGenerationModel,
   StructureGenerationModelSettings,
@@ -47,9 +47,9 @@ import { StructureValidationError } from "./StructureValidationError.js";
  * You can also pass a function that takes the structure definition as an argument and returns the prompt.
  * @param {FunctionOptions} [options] - Optional function options.
  *
- * @returns {ModelFunctionPromise<STRUCTURE>} - Returns a promise that resolves to the generated structure.
+ * @returns {Promise<STRUCTURE>} - Returns a promise that resolves to the generated structure.
  */
-export function generateStructure<
+export async function generateStructure<
   STRUCTURE,
   PROMPT,
   NAME extends string,
@@ -60,8 +60,41 @@ export function generateStructure<
   prompt:
     | PROMPT
     | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
-  options?: FunctionOptions
-): ModelFunctionPromise<STRUCTURE> {
+  options?: FunctionOptions & { fullResponse?: false }
+): Promise<STRUCTURE>;
+export async function generateStructure<
+  STRUCTURE,
+  PROMPT,
+  NAME extends string,
+  SETTINGS extends StructureGenerationModelSettings,
+>(
+  model: StructureGenerationModel<PROMPT, SETTINGS>,
+  structureDefinition: StructureDefinition<NAME, STRUCTURE>,
+  prompt:
+    | PROMPT
+    | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
+  options: FunctionOptions & { fullResponse: true }
+): Promise<{
+  value: STRUCTURE;
+  response: unknown;
+  metadata: ModelCallMetadata;
+}>;
+export async function generateStructure<
+  STRUCTURE,
+  PROMPT,
+  NAME extends string,
+  SETTINGS extends StructureGenerationModelSettings,
+>(
+  model: StructureGenerationModel<PROMPT, SETTINGS>,
+  structureDefinition: StructureDefinition<NAME, STRUCTURE>,
+  prompt:
+    | PROMPT
+    | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
+  options?: FunctionOptions & { fullResponse?: boolean }
+): Promise<
+  | STRUCTURE
+  | { value: STRUCTURE; response: unknown; metadata: ModelCallMetadata }
+> {
   // Note: PROMPT must not be a function.
   const expandedPrompt =
     typeof prompt === "function"
@@ -72,39 +105,39 @@ export function generateStructure<
         )(structureDefinition)
       : prompt;
 
-  return new ModelFunctionPromise(
-    executeStandardCall({
-      functionType: "generate-structure",
-      input: expandedPrompt,
-      model,
-      options,
-      generateResponse: async (options) => {
-        const result = await model.doGenerateStructure(
-          structureDefinition,
-          expandedPrompt,
-          options
-        );
+  const fullResponse = await executeStandardCall({
+    functionType: "generate-structure",
+    input: expandedPrompt,
+    model,
+    options,
+    generateResponse: async (options) => {
+      const result = await model.doGenerateStructure(
+        structureDefinition,
+        expandedPrompt,
+        options
+      );
 
-        const structure = result.value;
-        const parseResult = structureDefinition.schema.validate(structure);
+      const structure = result.value;
+      const parseResult = structureDefinition.schema.validate(structure);
 
-        if (!parseResult.success) {
-          throw new StructureValidationError({
-            structureName: structureDefinition.name,
-            valueText: result.valueText,
-            value: structure,
-            cause: parseResult.error,
-          });
-        }
+      if (!parseResult.success) {
+        throw new StructureValidationError({
+          structureName: structureDefinition.name,
+          valueText: result.valueText,
+          value: structure,
+          cause: parseResult.error,
+        });
+      }
 
-        const value = parseResult.data;
+      const value = parseResult.data;
 
-        return {
-          response: result.response,
-          extractedValue: value,
-          usage: result.usage,
-        };
-      },
-    })
-  );
+      return {
+        response: result.response,
+        extractedValue: value,
+        usage: result.usage,
+      };
+    },
+  });
+
+  return options?.fullResponse ? fullResponse : fullResponse.value;
 }

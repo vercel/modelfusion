@@ -1,6 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStandardCall } from "../executeStandardCall.js";
-import { ModelFunctionPromise } from "../ModelFunctionPromise.js";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
@@ -23,27 +23,38 @@ import {
  * @param {DATA} data - The data to transcribe.
  * @param {FunctionOptions} [options] - Optional parameters for the function.
  *
- * @returns {ModelFunctionPromise<string>} A promise that resolves to the transcribed text.
+ * @returns {Promise<string>} A promise that resolves to the transcribed text.
  */
-export function generateTranscription<DATA>(
+export async function generateTranscription<DATA>(
   model: TranscriptionModel<DATA, TranscriptionModelSettings>,
   data: DATA,
-  options?: FunctionOptions
-): ModelFunctionPromise<string> {
-  return new ModelFunctionPromise(
-    executeStandardCall({
-      functionType: "generate-transcription",
-      input: data,
-      model,
-      options,
-      generateResponse: async (options) => {
-        const result = await model.doTranscribe(data, options);
+  options?: FunctionOptions & { fullResponse?: false }
+): Promise<string>;
+export async function generateTranscription<DATA>(
+  model: TranscriptionModel<DATA, TranscriptionModelSettings>,
+  data: DATA,
+  options: FunctionOptions & { fullResponse: true }
+): Promise<{ value: string; response: unknown; metadata: ModelCallMetadata }>;
+export async function generateTranscription<DATA>(
+  model: TranscriptionModel<DATA, TranscriptionModelSettings>,
+  data: DATA,
+  options?: FunctionOptions & { fullResponse?: boolean }
+): Promise<
+  string | { value: string; response: unknown; metadata: ModelCallMetadata }
+> {
+  const fullResponse = await executeStandardCall({
+    functionType: "generate-transcription",
+    input: data,
+    model,
+    options,
+    generateResponse: async (options) => {
+      const result = await model.doTranscribe(data, options);
+      return {
+        response: result.response,
+        extractedValue: result.transcription,
+      };
+    },
+  });
 
-        return {
-          response: result.response,
-          extractedValue: result.transcription,
-        };
-      },
-    })
-  );
+  return options?.fullResponse ? fullResponse : fullResponse.value;
 }

@@ -15,8 +15,9 @@ async function main() {
       maxCompletionTokens: 1000,
       n: 2, // generate 2 completions
     }),
-    "Write a short story about a robot learning to love:\n\n"
-  ).asFullResponse();
+    "Write a short story about a robot learning to love:\n\n",
+    { fullResponse: true }
+  );
 
   console.log(metadata);
 
