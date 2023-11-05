@@ -1,6 +1,7 @@
+import { delay } from "../../util/delay.js";
 import { ApiCallError } from "./ApiCallError.js";
-import { RetryFunction } from "./RetryFunction.js";
 import { RetryError } from "./RetryError.js";
+import { RetryFunction } from "./RetryFunction.js";
 
 /**
  * The `retryWithExponentialBackoff` strategy retries a failed API call with an exponential backoff.
@@ -15,7 +16,7 @@ export const retryWithExponentialBackoff =
   async <OUTPUT>(f: () => PromiseLike<OUTPUT>) =>
     _retryWithExponentialBackoff(f, {
       maxTries,
-      delay: initialDelayInMs,
+      delayInMs: initialDelayInMs,
       backoffFactor,
     });
 
@@ -23,9 +24,9 @@ async function _retryWithExponentialBackoff<OUTPUT>(
   f: () => PromiseLike<OUTPUT>,
   {
     maxTries,
-    delay,
+    delayInMs,
     backoffFactor,
-  }: { maxTries: number; delay: number; backoffFactor: number },
+  }: { maxTries: number; delayInMs: number; backoffFactor: number },
   errors: unknown[] = []
 ): Promise<OUTPUT> {
   try {
@@ -52,10 +53,10 @@ async function _retryWithExponentialBackoff<OUTPUT>(
         error.isRetryable &&
         tryNumber < maxTries
       ) {
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        await delay(delayInMs);
         return _retryWithExponentialBackoff(
           f,
-          { maxTries, delay: backoffFactor * delay, backoffFactor },
+          { maxTries, delayInMs: backoffFactor * delayInMs, backoffFactor },
           newErrors
         );
       }
