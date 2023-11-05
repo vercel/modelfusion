@@ -56,6 +56,7 @@ export const modelFusionFastifyPlugin: FastifyPluginAsync<
           run,
         })
         .catch((error) => {
+          console.error("Failed to process flow", error);
           logger.logError({
             run,
             message: "Failed to process flow",

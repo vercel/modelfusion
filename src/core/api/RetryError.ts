@@ -22,4 +22,13 @@ export class RetryError extends Error {
     this.reason = reason;
     this.errors = errors;
   }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      reason: this.reason,
+      errors: this.errors,
+    };
+  }
 }

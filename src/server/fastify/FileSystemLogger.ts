@@ -40,22 +40,26 @@ export class FileSystemLogger implements Logger {
     }
   }
 
-  async logError(options: {
+  async logError({
+    run,
+    error,
+    message,
+  }: {
     run: FlowRun<unknown>;
     message: string;
     error: unknown;
   }): Promise<void> {
     const timestamp = Date.now();
     try {
-      const logPath = this.logPath(options.run);
+      const logPath = this.logPath(run);
       await fs.mkdir(logPath, { recursive: true });
       await fs.writeFile(
         join(logPath, `${timestamp}-error.json`),
         JSON.stringify({
           timestamp: new Date(timestamp).toISOString(),
-          runId: options.run.runId,
-          message: options.message,
-          error: options.error,
+          runId: run.runId,
+          message,
+          error,
         })
       );
     } catch (error) {

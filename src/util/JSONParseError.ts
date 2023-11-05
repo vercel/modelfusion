@@ -17,4 +17,13 @@ export class JSONParseError extends Error {
     this.cause = cause;
     this.valueText = valueText;
   }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      cause: this.cause,
+      valueText: this.valueText,
+    };
+  }
 }

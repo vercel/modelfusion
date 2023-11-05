@@ -30,4 +30,16 @@ export class ApiCallError extends Error {
     this.cause = cause;
     this.isRetryable = isRetryable;
   }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      url: this.url,
+      requestBodyValues: this.requestBodyValues,
+      statusCode: this.statusCode,
+      cause: this.cause,
+      isRetryable: this.isRetryable,
+    };
+  }
 }
