@@ -48,7 +48,8 @@ export class FileSystemLogger implements Logger {
     const timestamp = Date.now();
     try {
       const logPath = this.logPath(options.run);
-      return fs.writeFile(
+      await fs.mkdir(logPath, { recursive: true });
+      await fs.writeFile(
         join(logPath, `${timestamp}-error.json`),
         JSON.stringify({
           timestamp: new Date(timestamp).toISOString(),
