@@ -7,4 +7,13 @@ export class NoSuchToolError extends Error {
     this.name = "NoSuchToolError";
     this.toolName = toolName;
   }
+
+  toJSON() {
+    return {
+      name: this.name,
+      toolName: this.toolName,
+      message: this.message,
+      stack: this.stack,
+    };
+  }
 }

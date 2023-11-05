@@ -21,4 +21,15 @@ export class ToolExecutionError extends Error {
     this.input = input;
     this.cause = cause;
   }
+
+  toJSON() {
+    return {
+      name: this.name,
+      toolName: this.toolName,
+      input: this.input,
+      cause: this.cause,
+      message: this.message,
+      stack: this.stack,
+    };
+  }
 }
