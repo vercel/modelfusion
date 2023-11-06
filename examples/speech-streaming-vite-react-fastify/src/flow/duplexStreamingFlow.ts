@@ -37,6 +37,7 @@ export const duplexStreamingFlow = new DefaultFlow({
 
     const speechStream = await streamSpeech(
       new ElevenLabsSpeechModel({
+        model: "eleven_turbo_v2",
         voice: "pNInz6obpgDQGcFmaJgB", // Adam
         optimizeStreamingLatency: 1,
         voiceSettings: {

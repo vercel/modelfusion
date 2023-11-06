@@ -22,6 +22,7 @@ const elevenLabsModels = [
   "eleven_multilingual_v2",
   "eleven_multilingual_v1",
   "eleven_monolingual_v1",
+  "eleven_turbo_v2",
 ] as const;
 
 const defaultModel = "eleven_monolingual_v1";
