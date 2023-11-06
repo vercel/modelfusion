@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.60.0 - 2023-11-07
+
+### Added
+
+- Support image input for multi-modal Llama.cpp models (e.g. Llava, Bakllava).
+
+### Changed
+
+- **breaking change**: Llama.cpp prompt format has changed to support images. Use `.withTextPrompt()` to get a text prompt format.
+
 ## v0.59.0 - 2023-11-06
 
 ### Added
