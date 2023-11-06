@@ -10,7 +10,7 @@ async function main() {
       // See https://www.philschmid.de/llama-2
       // Change value to match the context window size of the model you are using.
       contextWindowSize: 4096,
-    }),
+    }).withTextPrompt(),
     "Write a short story about a robot learning to love."
   );
 

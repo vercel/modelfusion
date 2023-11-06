@@ -20,7 +20,9 @@ async function main() {
         new LlamaCppTextGenerationModel({
           temperature: 0.7,
           maxCompletionTokens: 500,
-        }).withPromptFormat(mapInstructionPromptToLlama2Format()),
+        })
+          .withTextPrompt()
+          .withPromptFormat(mapInstructionPromptToLlama2Format()),
         input,
         options
       ),

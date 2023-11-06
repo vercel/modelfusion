@@ -10,7 +10,9 @@ async function main() {
     new LlamaCppTextGenerationModel({
       contextWindowSize: 2048, // context window size of Chronos-13B-v2-GGML
       maxCompletionTokens: 1024,
-    }).withPromptFormat(mapInstructionPromptToAlpacaFormat()),
+    })
+      .withTextPrompt()
+      .withPromptFormat(mapInstructionPromptToAlpacaFormat()),
     {
       instruction: "You are a celebrated poet. Write a short story about:",
       input: "a robot learning to love.",

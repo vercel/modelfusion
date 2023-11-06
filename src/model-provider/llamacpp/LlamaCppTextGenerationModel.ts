@@ -50,6 +50,18 @@ export interface LlamaCppTextGenerationModelSettings<
   logitBias?: Array<[number, number | false]>;
 }
 
+export interface LlamaCppTextGenerationPrompt {
+  /**
+   * Text prompt. Images can be included through references such as `[img-ID]`, e.g. `[img-1]`.
+   */
+  text: string;
+
+  /**
+   * Maps image id to image base data.
+   */
+  images?: Record<number, string>;
+}
+
 export class LlamaCppTextGenerationModel<
     CONTEXT_WINDOW_SIZE extends number | undefined,
   >
@@ -58,7 +70,7 @@ export class LlamaCppTextGenerationModel<
   >
   implements
     TextStreamingModel<
-      string,
+      LlamaCppTextGenerationPrompt,
       LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
     >
 {
@@ -81,7 +93,7 @@ export class LlamaCppTextGenerationModel<
   readonly tokenizer: LlamaCppTokenizer;
 
   async callAPI<RESPONSE>(
-    prompt: string,
+    prompt: LlamaCppTextGenerationPrompt,
     options: {
       responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
     } & FunctionOptions
@@ -137,12 +149,17 @@ export class LlamaCppTextGenerationModel<
     );
   }
 
-  async countPromptTokens(prompt: string): Promise<number> {
-    const tokens = await this.tokenizer.tokenize(prompt);
+  async countPromptTokens(
+    prompt: LlamaCppTextGenerationPrompt
+  ): Promise<number> {
+    const tokens = await this.tokenizer.tokenize(prompt.text);
     return tokens.length;
   }
 
-  async doGenerateText(prompt: string, options?: FunctionOptions) {
+  async doGenerateText(
+    prompt: LlamaCppTextGenerationPrompt,
+    options?: FunctionOptions
+  ) {
     const response = await this.callAPI(prompt, {
       ...options,
       responseFormat: LlamaCppTextGenerationResponseFormat.json,
@@ -159,18 +176,33 @@ export class LlamaCppTextGenerationModel<
     };
   }
 
-  doStreamText(prompt: string, options?: FunctionOptions) {
+  doStreamText(
+    prompt: LlamaCppTextGenerationPrompt,
+    options?: FunctionOptions
+  ) {
     return this.callAPI(prompt, {
       ...options,
       responseFormat: LlamaCppTextGenerationResponseFormat.deltaIterable,
     });
   }
 
+  withTextPrompt() {
+    return this.withPromptFormat({
+      format(prompt: string) {
+        return { text: prompt };
+      },
+      stopSequences: [],
+    });
+  }
+
   withPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, string>
+    promptFormat: TextGenerationPromptFormat<
+      INPUT_PROMPT,
+      LlamaCppTextGenerationPrompt
+    >
   ): PromptFormatTextStreamingModel<
     INPUT_PROMPT,
-    string,
+    LlamaCppTextGenerationPrompt,
     LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
@@ -284,7 +316,7 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
   api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
-  prompt: string;
+  prompt: LlamaCppTextGenerationPrompt;
   temperature?: number;
   topK?: number;
   topP?: number;
@@ -308,7 +340,7 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
     headers: api.headers,
     body: {
       stream: responseFormat.stream,
-      prompt,
+      prompt: prompt.text,
       temperature,
       top_k: topK,
       top_p: topP,
@@ -326,6 +358,13 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
       seed,
       ignore_eos: ignoreEos,
       logit_bias: logitBias,
+      image_data:
+        prompt.images != null
+          ? Object.entries(prompt.images).map(([id, data]) => ({
+              id: +id,
+              data,
+            }))
+          : undefined,
     },
     failedResponseHandler: failedLlamaCppCallResponseHandler,
     successfulResponseHandler: responseFormat.handler,

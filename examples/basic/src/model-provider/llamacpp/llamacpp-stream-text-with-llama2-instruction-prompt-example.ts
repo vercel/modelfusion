@@ -10,7 +10,9 @@ async function main() {
     new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size
       maxCompletionTokens: 512,
-    }).withPromptFormat(mapInstructionPromptToLlama2Format()),
+    })
+      .withTextPrompt()
+      .withPromptFormat(mapInstructionPromptToLlama2Format()),
     {
       system: "You are a celebrated poet.",
       instruction: "Write a short story about a robot learning to love.",

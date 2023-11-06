@@ -13,7 +13,9 @@ async function main() {
     new LlamaCppTextGenerationModel({
       contextWindowSize: 2048, // Vicuna v1.5 context window size
       maxCompletionTokens: 512,
-    }).withPromptFormat(mapChatPromptToVicunaFormat()),
+    })
+      .withTextPrompt()
+      .withPromptFormat(mapChatPromptToVicunaFormat()),
     [
       { user: "Write a short story about a robot learning to love." },
       { ai: "Once upon a time, there was a robot who learned to love." },

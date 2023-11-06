@@ -69,7 +69,7 @@ async function main() {
         maxCompletionTokens: 1024,
         temperature: 0,
         contextWindowSize: 2048,
-      }),
+      }).withTextPrompt(),
       format: new AiroborosFunctionPromptFormat(),
     }),
     calculator,
