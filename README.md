@@ -460,7 +460,9 @@ const text = await generateText(
   new LlamaCppTextGenerationModel({
     contextWindowSize: 4096, // Llama 2 context window size
     maxCompletionTokens: 1000,
-  }).withPromptFormat(mapInstructionPromptToLlama2Format()),
+  })
+    .withTextPrompt()
+    .withPromptFormat(mapInstructionPromptToLlama2Format()),
   {
     system: "You are a story writer.",
     instruction: "Write a short story about a robot learning to love.",

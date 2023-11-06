@@ -68,7 +68,9 @@ const result = await guard(
     generateText(
       new LlamaCppTextGenerationModel({
         // ...
-      }).withPromptFormat(mapInstructionPromptToLlama2Format()),
+      })
+        .withTextPrompt()
+        .withPromptFormat(mapInstructionPromptToLlama2Format()),
       input,
       options // pass through options (for tracing)
     ),

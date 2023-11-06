@@ -11,13 +11,31 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 1. Install [llama.cpp](https://github.com/ggerganov/llama.cpp) following the instructions in the `llama.cpp` repository.
 1. Download the models that you want to use and try it out with llama.cpp.
    - [Search for GGUF models on Hugging Face](https://huggingface.co/models?sort=trending&search=gguf)
-   - [Mistral 7b](https://huggingface.co/TheBloke/Mistral-7B-v0.1-GGUF)
    - [Llama 2 7b Chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
    - [Llama 2 7b](https://huggingface.co/TheBloke/Llama-2-7B-GGML)
-1. Start the llama.cpp server with the model that you want to serve:
+1. Start the [llama.cpp server](https://github.com/ggerganov/llama.cpp/tree/master/examples/server) with the model that you want to serve:
    - e.g., `./server -m models/llama-2-7b-chat.GGUF.q4_0.bin -c 4096` (Mac)
    - For generating embeddings, you need to start the server with the `--embedding` flag.
+   - For multi-modal models, you need to specify the projection with the `--mmproj` flag.
    - [llama.cpp server docs](https://github.com/ggerganov/llama.cpp/tree/master/examples/server)
+
+## Models
+
+You can use various GGUF models with llama.cpp.
+
+### Example Text Models
+
+- [Search for GGUF models on Hugging Face](https://huggingface.co/models?sort=trending&search=gguf)
+- [Mistral 7b](https://huggingface.co/TheBloke/Mistral-7B-v0.1-GGUF)
+- [Llama 2 7b Chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
+- [Llama 2 7b](https://huggingface.co/TheBloke/Llama-2-7B-GGML)
+
+## Example Multi-modal Models
+
+For running multi-modal models, you need to specify the projection with the `--mmproj` flag.
+
+- [BakLlava](https://huggingface.co/mys/ggml_bakllava-1/tree/main)
+- [Llava](https://huggingface.co/mys/ggml_llava-v1.5-7b/tree/main)
 
 ## Configuration
 
@@ -45,12 +63,15 @@ const model = new LlamaCppTextGenerationModel({
 [LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
 
 Consider [mapping the prompt to the prompt format](#prompt-formats) that your model was trained on.
+For models that take text input, you can first map the prompt to a simpler format using `.withTextPrompt()`.
 
 ```ts
 import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
 
 const text = await generateText(
-  new LlamaCppTextGenerationModel({ maxCompletionTokens: 256 }),
+  new LlamaCppTextGenerationModel({
+    maxCompletionTokens: 256,
+  }).withTextPrompt(),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -68,7 +89,7 @@ const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     maxCompletionTokens: 1024,
     temperature: 0.7,
-  }),
+  }).withTextPrompt(),
   "Write a short story about a robot learning to love:\n\n"
 );
 
@@ -152,7 +173,9 @@ You can use the [Llama 2 format for instruction prompts](/api/modules#mapinstruc
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  }).withPromptFormat(mapInstructionPromptToLlama2Format()),
+  })
+    .withTextPrompt()
+    .withPromptFormat(mapInstructionPromptToLlama2Format()),
   {
     system: "You are a celebrated poet.",
     instruction: "Write a short story about a robot learning to love.",
@@ -176,7 +199,9 @@ You can use the [Llama 2 format for chat prompts](/api/modules#mapchatprompttoll
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  }).withPromptFormat(mapChatPromptToLlama2Format()),
+  })
+    .withTextPrompt()
+    .withPromptFormat(mapChatPromptToLlama2Format()),
   [
     { system: "You are a celebrated poet." },
     { user: "Write a short story about a robot learning to love." },
@@ -225,7 +250,9 @@ You can use [mapInstructionPromptToAlpacaFormat()](/api/modules#mapinstructionpr
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  }).withPromptFormat(mapInstructionPromptToAlpacaFormat()),
+  })
+    .withTextPrompt()
+    .withPromptFormat(mapInstructionPromptToAlpacaFormat()),
   {
     instruction: "You are a celebrated poet. Write a short story about:",
     input: "a robot learning to love.",
@@ -254,7 +281,9 @@ You can use [mapChatPromptToVicunaFormat()](/api/modules#mapchatprompttovicunafo
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  }).withPromptFormat(mapChatPromptToVicunaFormat()),
+  })
+    .withTextPrompt()
+    .withPromptFormat(mapChatPromptToVicunaFormat()),
   [
     { user: "Write a short story about a robot learning to love." },
     { ai: "Once upon a time, there was a robot who learned to love." },

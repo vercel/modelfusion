@@ -35,15 +35,19 @@ const gpt35turboModel = new OpenAIChatModel({
 const llama2Model = new LlamaCppTextGenerationModel({
   contextWindowSize: 4096, // Llama 2 context window size
   maxCompletionTokens: 512,
-}).withPromptFormat(mapChatPromptToLlama2Format());
+})
+  .withTextPrompt()
+  .withPromptFormat(mapChatPromptToLlama2Format());
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const otherLlamaCppModel = new LlamaCppTextGenerationModel({
   contextWindowSize: 2048, // set to your models context window size
   maxCompletionTokens: 512,
-}).withPromptFormat(
-  mapChatPromptToTextFormat({ user: "user", ai: "assistant" })
-);
+})
+  .withTextPrompt()
+  .withPromptFormat(
+    mapChatPromptToTextFormat({ user: "user", ai: "assistant" })
+  );
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const cohereModel = new CohereTextGenerationModel({

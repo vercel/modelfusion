@@ -24,7 +24,9 @@ async function main() {
     const model = new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size
       maxCompletionTokens: 512,
-    }).withPromptFormat(mapChatPromptToLlama2Format());
+    })
+      .withTextPrompt()
+      .withPromptFormat(mapChatPromptToLlama2Format());
 
     const textStream = await streamText(
       model,
