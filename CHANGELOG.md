@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.59.0 - 2023-11-06
+
+### Added
+
+- ElevenLabs `eleven_turbo_v2` support.
+
 ## v0.58 - 2023-11-05
 
 ### Fixed
