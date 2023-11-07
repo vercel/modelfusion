@@ -54,6 +54,16 @@ export const OPENAI_CHAT_MODELS = {
     promptTokenCostInMillicents: 3,
     completionTokenCostInMillicents: 6,
   },
+  "gpt-4-1106-preview": {
+    contextWindowSize: 128000,
+    promptTokenCostInMillicents: 1,
+    completionTokenCostInMillicents: 3,
+  },
+  "gpt-4-vision-preview": {
+    contextWindowSize: 128000,
+    promptTokenCostInMillicents: 1,
+    completionTokenCostInMillicents: 3,
+  },
   "gpt-4-32k": {
     contextWindowSize: 32768,
     promptTokenCostInMillicents: 6,
@@ -73,8 +83,13 @@ export const OPENAI_CHAT_MODELS = {
     contextWindowSize: 4096,
     promptTokenCostInMillicents: 0.15,
     completionTokenCostInMillicents: 0.2,
-    fineTunedPromptTokenCostInMillicents: 1.2,
-    fineTunedCompletionTokenCostInMillicents: 1.6,
+    fineTunedPromptTokenCostInMillicents: 0.3,
+    fineTunedCompletionTokenCostInMillicents: 0.6,
+  },
+  "gpt-3.5-turbo-1106": {
+    contextWindowSize: 16385,
+    promptTokenCostInMillicents: 0.1,
+    completionTokenCostInMillicents: 0.2,
   },
   "gpt-3.5-turbo-0301": {
     contextWindowSize: 4096,

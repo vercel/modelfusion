@@ -17,7 +17,7 @@ const chatResponseStreamEventSchema = z.object({
           })
           .optional(),
       }),
-      finish_reason: z.enum(["stop", "length"]).nullable(),
+      finish_reason: z.enum(["stop", "length"]).nullable().optional(),
       index: z.number(),
     })
   ),
