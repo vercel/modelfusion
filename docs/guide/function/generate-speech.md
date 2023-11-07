@@ -57,3 +57,4 @@ for await (const part of speechStream) {
 
 - [ElevenLabs](/integration/model-provider/elevenlabs) - Standard mode and duplex streaming mode
 - [LMNT](/integration/model-provider/lmnt) - Standard mode
+- [OpenAI](/integration/model-provider/openai) - Standard mode

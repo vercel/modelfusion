@@ -31,6 +31,7 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 
 - [Eleven Labs](/integration/model-provider/elevenlabs) (standard and duplex streaming)
 - [LMNT](/integration/model-provider/lmnt) (standard)
+- [OpenAI](/integration/model-provider/openai) (standard)
 
 ### [Generate Speech](/guide/function/generate-transcription)
 
