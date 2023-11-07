@@ -6,7 +6,7 @@
   "dependencies": {
     "dotenv": "16.0.3",
     "secure-json-parse": "2.7.0",
-    "modelfusion": "0.60.0",
+    "modelfusion": "0.61.0",
     "@modelfusion/serpapi-tools": "^0.6.0",
     "@modelfusion/google-custom-search-tool": "^0.6.0",
     "@modelfusion/pinecone": "^0.2.0",
