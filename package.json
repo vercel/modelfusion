@@ -1,7 +1,7 @@
 {
   "name": "modelfusion",
   "description": "Build multimodal applications, chatbots, and agents with JavaScript and TypeScript.",
-  "version": "0.60.0",
+  "version": "0.61.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [

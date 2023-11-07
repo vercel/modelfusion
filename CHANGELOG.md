@@ -1,6 +1,17 @@
 # Changelog
 
-## v0.60.0 - 2023-11-07
+## v0.61.0 - 2023-11-07
+
+### Added
+
+- OpenAI `gpt-3.5-turbo-1106`, `gpt-4-1106-preview`, `gpt-4-vision-preview` chat models.
+- OpenAI `Dalle-E-3` image model.
+
+### Changed
+
+- **breaking change**: `OpenAIImageGenerationModel` now requires a `model` parameter.
+
+## v0.60.0 - 2023-11-06
 
 ### Added
 
