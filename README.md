@@ -14,7 +14,7 @@
 
 **ModelFusion** is a TypeScript library for building AI applications, chatbots, and agents.
 
-- **Vendor-neutral**: ModelFusion is a non-commercial open source project that is community-driven. You can use it with any supported vendor and we will not try to sell you a proprietary offering.
+- **Vendor-neutral**: ModelFusion is a non-commercial open source project that is community-driven. You can use it with any supported vendor.
 - **Multimodal**: ModelFusion supports a wide range of models including text generation, image generation, text-to-speech, speech-to-text, and embedding models.
 - **Streaming**: ModelFusion supports streaming for many generation models, e.g. text streaming, structure streaming, and full duplex speech streaming.
 - **Utility functions**: ModelFusion provides functionality for tools and tool usage, vector indices, and guards functions.
