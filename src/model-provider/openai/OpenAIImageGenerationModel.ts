@@ -17,26 +17,79 @@ import { PromptFormatImageGenerationModel } from "../../model-function/generate-
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 
-export interface OpenAIImageGenerationCallSettings {
-  n?: number;
-  size?: "256x256" | "512x512" | "1024x1024";
-}
+export const OPENAI_IMAGE_MODELS = {
+  "dall-e-2": {
+    getCost(settings: OpenAIImageGenerationSettings) {
+      switch (settings.size ?? "1024x1024") {
+        case "1024x1024":
+          return 2000;
+        case "512x512":
+          return 1800;
+        case "256x256":
+          return 1600;
+        default:
+          return null;
+      }
+    },
+  },
+  "dall-e-3": {
+    getCost(settings: OpenAIImageGenerationSettings) {
+      switch (settings.quality ?? "standard") {
+        case "standard": {
+          switch (settings.size ?? "1024x1024") {
+            case "1024x1024":
+              return 4000;
+            case "1024x1792":
+            case "1792x1024":
+              return 8000;
+            default:
+              return null;
+          }
+        }
+        case "hd": {
+          switch (settings.size ?? "1024x1024") {
+            case "1024x1024":
+              return 8000;
+            case "1024x1792":
+            case "1792x1024":
+              return 12000;
+            default:
+              return null;
+          }
+        }
+      }
+    },
+  },
+};
 
 /**
  * @see https://openai.com/pricing
  */
-const sizeToCostInMillicents = {
-  "1024x1024": 2000,
-  "512x512": 1800,
-  "256x256": 1600,
-};
-
 export const calculateOpenAIImageGenerationCostInMillicents = ({
   settings,
 }: {
   settings: OpenAIImageGenerationSettings;
-}): number =>
-  (settings.n ?? 1) * sizeToCostInMillicents[settings.size ?? "1024x1024"];
+}): number | null => {
+  console.log(settings);
+
+  const cost = OPENAI_IMAGE_MODELS[settings.model]?.getCost(settings);
+
+  if (cost == null) {
+    return null;
+  }
+
+  return (settings.n ?? 1) * cost;
+};
+
+export type OpenAIImageModelType = keyof typeof OPENAI_IMAGE_MODELS;
+
+export interface OpenAIImageGenerationCallSettings {
+  model: OpenAIImageModelType;
+  n?: number;
+  size?: "256x256" | "512x512" | "1024x1024" | "1792x1024" | "1024x1792";
+  quality?: "standard" | "hd";
+  style?: "vivid" | "natural";
+}
 
 export interface OpenAIImageGenerationSettings
   extends ImageGenerationModelSettings,
@@ -65,7 +118,9 @@ export class OpenAIImageGenerationModel
   }
 
   readonly provider = "openai" as const;
-  readonly modelName = null;
+  get modelName() {
+    return this.settings.model;
+  }
 
   async callAPI<RESULT>(
     prompt: string,
@@ -93,8 +148,11 @@ export class OpenAIImageGenerationModel
 
   get settingsForEvent(): Partial<OpenAIImageGenerationSettings> {
     const eventSettingProperties: Array<string> = [
+      "model",
       "n",
       "size",
+      "quality",
+      "style",
     ] satisfies (keyof OpenAIImageGenerationSettings)[];
 
     return Object.fromEntries(

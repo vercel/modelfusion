@@ -7,7 +7,10 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function main() {
-  const model = new OpenAIImageGenerationModel({ size: "512x512" });
+  const model = new OpenAIImageGenerationModel({
+    model: "dall-e-2",
+    size: "512x512",
+  });
 
   const response = await model.callAPI(
     "the wicked witch of the west in the style of early 19th century painting",

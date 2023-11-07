@@ -13,7 +13,11 @@ async function main() {
   const run = new DefaultRun();
 
   const image = await generateImage(
-    new OpenAIImageGenerationModel({ size: "512x512" }),
+    new OpenAIImageGenerationModel({
+      model: "dall-e-3",
+      size: "1024x1024",
+      quality: "hd",
+    }),
     "the wicked witch of the west in the style of early 19th century painting",
     { run }
   );
