@@ -104,7 +104,7 @@ export class OpenAICostCalculator implements CostCalculator {
         }
         return calculateOpenAISpeechCostInMillicents({
           model: model as OpenAISpeechModelType,
-          response: call.result.response as any,
+          input: call.input,
         });
       }
     }

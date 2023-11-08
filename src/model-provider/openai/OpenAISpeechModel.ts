@@ -29,18 +29,17 @@ export type OpenAISpeechModelType = keyof typeof OPENAI_SPEECH_MODELS;
 
 export const calculateOpenAISpeechCostInMillicents = ({
   model,
-  response,
+  input,
 }: {
   model: OpenAISpeechModelType;
-  response: any;
+  input: string;
 }): number | null => {
   if (!OPENAI_SPEECH_MODELS[model]) {
     return null;
   }
 
   return (
-    response.input.length *
-    OPENAI_SPEECH_MODELS[model].costInMillicentsPerCharacter
+    input.length * OPENAI_SPEECH_MODELS[model].costInMillicentsPerCharacter
   );
 };
 
