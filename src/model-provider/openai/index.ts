@@ -12,3 +12,4 @@ export * from "./chat/OpenAIChatModel.js";
 export * from "./chat/OpenAIChatPromptFormat.js";
 export { OpenAIChatDelta } from "./chat/OpenAIChatStreamIterable.js";
 export * from "./chat/countOpenAIChatMessageTokens.js";
+export * from "./OpenAISpeechModel.js";

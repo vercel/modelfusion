@@ -24,6 +24,10 @@ import {
   calculateOpenAIChatCostInMillicents,
   isOpenAIChatModel,
 } from "./chat/OpenAIChatModel.js";
+import {
+  OpenAISpeechModelType,
+  calculateOpenAISpeechCostInMillicents,
+} from "./OpenAISpeechModel.js";
 
 export class OpenAICostCalculator implements CostCalculator {
   readonly provider = "openai";
@@ -91,6 +95,16 @@ export class OpenAICostCalculator implements CostCalculator {
           model: model as OpenAITranscriptionModelType,
           response: call.result
             .response as OpenAITranscriptionVerboseJsonResponse,
+        });
+      }
+
+      case "generate-speech": {
+        if (model == null) {
+          return null;
+        }
+        return calculateOpenAISpeechCostInMillicents({
+          model: model as OpenAISpeechModelType,
+          input: call.input,
         });
       }
     }
