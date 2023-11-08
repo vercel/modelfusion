@@ -1,19 +1,24 @@
 import { CostCalculator } from "../../cost/CostCalculator.js";
 import { SuccessfulModelCall } from "../../model-function/SuccessfulModelCall.js";
 import {
+  OpenAICompletionResponse,
+  calculateOpenAICompletionCostInMillicents,
+  isOpenAICompletionModel,
+} from "./OpenAICompletionModel.js";
+import {
   OpenAIImageGenerationSettings,
+  OpenAIImageModelType,
   calculateOpenAIImageGenerationCostInMillicents,
 } from "./OpenAIImageGenerationModel.js";
+import {
+  OpenAISpeechModelType,
+  calculateOpenAISpeechCostInMillicents,
+} from "./OpenAISpeechModel.js";
 import {
   OpenAITextEmbeddingResponse,
   calculateOpenAIEmbeddingCostInMillicents,
   isOpenAIEmbeddingModel,
 } from "./OpenAITextEmbeddingModel.js";
-import {
-  OpenAICompletionResponse,
-  calculateOpenAICompletionCostInMillicents,
-  isOpenAICompletionModel,
-} from "./OpenAICompletionModel.js";
 import {
   OpenAITranscriptionModelType,
   OpenAITranscriptionVerboseJsonResponse,
@@ -24,10 +29,6 @@ import {
   calculateOpenAIChatCostInMillicents,
   isOpenAIChatModel,
 } from "./chat/OpenAIChatModel.js";
-import {
-  OpenAISpeechModelType,
-  calculateOpenAISpeechCostInMillicents,
-} from "./OpenAISpeechModel.js";
 
 export class OpenAICostCalculator implements CostCalculator {
   readonly provider = "openai";
@@ -40,7 +41,12 @@ export class OpenAICostCalculator implements CostCalculator {
 
     switch (type) {
       case "generate-image": {
+        if (model == null) {
+          return null;
+        }
+
         return calculateOpenAIImageGenerationCostInMillicents({
+          model: model as OpenAIImageModelType,
           settings: call.settings as OpenAIImageGenerationSettings,
         });
       }

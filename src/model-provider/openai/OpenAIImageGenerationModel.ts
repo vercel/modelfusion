@@ -66,13 +66,13 @@ export const OPENAI_IMAGE_MODELS = {
  * @see https://openai.com/pricing
  */
 export const calculateOpenAIImageGenerationCostInMillicents = ({
+  model,
   settings,
 }: {
+  model: OpenAIImageModelType;
   settings: OpenAIImageGenerationSettings;
 }): number | null => {
-  console.log(settings);
-
-  const cost = OPENAI_IMAGE_MODELS[settings.model]?.getCost(settings);
+  const cost = OPENAI_IMAGE_MODELS[model]?.getCost(settings);
 
   if (cost == null) {
     return null;
@@ -148,7 +148,6 @@ export class OpenAIImageGenerationModel
 
   get settingsForEvent(): Partial<OpenAIImageGenerationSettings> {
     const eventSettingProperties: Array<string> = [
-      "model",
       "n",
       "size",
       "quality",
