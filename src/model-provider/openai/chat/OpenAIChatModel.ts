@@ -212,6 +212,13 @@ export interface OpenAIChatCallSettings {
 
   temperature?: number;
   topP?: number;
+
+  seed?: number | null;
+
+  responseFormat?: {
+    type?: "text" | "json_object";
+  };
+
   n?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
@@ -307,6 +314,7 @@ export class OpenAIChatModel
           // map to OpenAI API names:
           stop: this.settings.stopSequences,
           maxTokens: this.settings.maxCompletionTokens,
+          openAIResponseFormat: this.settings.responseFormat,
 
           // other settings:
           user: this.settings.isUserIdForwardingEnabled
@@ -530,6 +538,7 @@ const openAIChatResponseSchema = z.object({
   object: z.literal("chat.completion"),
   created: z.number(),
   model: z.string(),
+  system_fingerprint: z.string(),
   choices: z.array(
     z.object({
       message: z.object({
@@ -579,12 +588,15 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
   frequencyPenalty,
   logitBias,
   user,
+  openAIResponseFormat,
+  seed,
 }: OpenAIChatCallSettings & {
   api?: ApiConfiguration;
   abortSignal?: AbortSignal;
   responseFormat: OpenAIChatResponseFormatType<RESPONSE>;
   messages: Array<OpenAIChatMessage>;
   user?: string;
+  openAIResponseFormat: OpenAIChatCallSettings["responseFormat"]; // mapping
 }): Promise<RESPONSE> {
   // empty arrays are not allowed for stop:
   if (stop != null && Array.isArray(stop) && stop.length === 0) {
@@ -608,6 +620,8 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
       presence_penalty: presencePenalty,
       frequency_penalty: frequencyPenalty,
       logit_bias: logitBias,
+      seed,
+      response_format: openAIResponseFormat,
       user,
     },
     failedResponseHandler: failedOpenAICallResponseHandler,
