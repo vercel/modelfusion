@@ -335,7 +335,7 @@ const speech = await generateSpeech(
     "magical Stevie Wonder, and the final beats from the late Charlie Watts."
 );
 
-const path = `./lmnt-speech-example.mp3`;
+const path = `./openai-speech-example.mp3`;
 fs.writeFileSync(path, speech);
 ```
 

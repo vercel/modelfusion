@@ -10,10 +10,10 @@ async function main() {
       voice: "alloy",
       model: "tts-1",
     }),
-    "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight "
-    // "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
-    // "fresh tunes in nearly twenty years, featuring the illustrious Lady Gaga, the " +
-    // "magical Stevie Wonder, and the final beats from the late Charlie Watts."
+    "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
+      "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
+      "fresh tunes in nearly twenty years, featuring the illustrious Lady Gaga, the " +
+      "magical Stevie Wonder, and the final beats from the late Charlie Watts."
   );
 
   const path = `./openai-speech-example.mp3`;
