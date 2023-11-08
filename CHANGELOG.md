@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.62.0 - 2023-11-08
+
+### Added
+
+- OpenAI speech generation support. Shoutout to [@bjsi](https://github.com/bjsi) for the awesome contribution!
+
 ## v0.61.0 - 2023-11-07
 
 ### Added
