@@ -7,8 +7,8 @@ dotenv.config();
 async function main() {
   const speech = await generateSpeech(
     new OpenAISpeechModel({
-      voice: "alloy",
       model: "tts-1",
+      voice: "alloy",
     }),
     "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
       "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +

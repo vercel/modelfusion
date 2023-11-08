@@ -67,13 +67,13 @@ export interface OpenAISpeechModelSettings
   /**
    * Defaults to mp3.
    */
-  response_format?: OpenAISpeechModelResponseFormat;
+  responseFormat?: OpenAISpeechModelResponseFormat;
 }
 
 /**
- * Synthesize speech using the LMNT API.
+ * Synthesize speech using the OpenAI API.
  *
- * @see https://www.lmnt.com/docs/rest/#synthesize-speech
+ * @see https://platform.openai.com/docs/api-reference/audio/createSpeech
  */
 export class OpenAISpeechModel
   extends AbstractModel<OpenAISpeechModelSettings>
@@ -114,7 +114,7 @@ export class OpenAISpeechModel
       voice: this.settings.voice,
       speed: this.settings.speed,
       model: this.settings.model,
-      response_format: this.settings.response_format,
+      responseFormat: this.settings.responseFormat,
     };
   }
 
@@ -137,7 +137,7 @@ async function callOpenAITextToSpeechAPI({
   voice,
   model,
   speed,
-  response_format,
+  responseFormat,
 }: {
   api?: ApiConfiguration;
   abortSignal?: AbortSignal;
@@ -145,7 +145,7 @@ async function callOpenAITextToSpeechAPI({
   voice: OpenAISpeechVoice;
   model: OpenAISpeechModelType;
   speed?: number;
-  response_format?: string;
+  responseFormat?: string;
 }): Promise<Buffer> {
   return postJsonToApi({
     url: api.assembleUrl(`/audio/speech`),
@@ -155,7 +155,7 @@ async function callOpenAITextToSpeechAPI({
       voice,
       speed,
       model,
-      response_format,
+      response_format: responseFormat,
     },
     failedResponseHandler: failedOpenAICallResponseHandler,
     successfulResponseHandler: createAudioMpegResponseHandler(),

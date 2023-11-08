@@ -1,10 +1,11 @@
 export * from "./AzureOpenAIApiConfiguration.js";
 export * from "./OpenAIApiConfiguration.js";
+export * from "./OpenAICompletionModel.js";
 export * from "./OpenAICostCalculator.js";
 export { OpenAIError, OpenAIErrorData } from "./OpenAIError.js";
 export * from "./OpenAIImageGenerationModel.js";
+export * from "./OpenAISpeechModel.js";
 export * from "./OpenAITextEmbeddingModel.js";
-export * from "./OpenAICompletionModel.js";
 export * from "./OpenAITranscriptionModel.js";
 export * from "./TikTokenTokenizer.js";
 export * from "./chat/OpenAIChatMessage.js";
@@ -12,4 +13,3 @@ export * from "./chat/OpenAIChatModel.js";
 export * from "./chat/OpenAIChatPromptFormat.js";
 export { OpenAIChatDelta } from "./chat/OpenAIChatStreamIterable.js";
 export * from "./chat/countOpenAIChatMessageTokens.js";
-export * from "./OpenAISpeechModel.js";
