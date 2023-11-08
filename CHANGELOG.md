@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.63.0 - 2023-11-08
+
+### Added
+
+- Support for OpenAI chat completion `seed` and `responseFormat` options.
+
 ## v0.62.0 - 2023-11-08
 
 ### Added
