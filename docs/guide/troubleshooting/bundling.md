@@ -23,12 +23,10 @@ node:async_hooks
 This is because the `async_hooks` module is not available in the browser. You can configure Webpack to ignore this module by adding the following to your Webpack configuration (e.g. in `next.config.js`):
 
 ```js
-const webpack = require("webpack");
-
 module.exports = {
   output: "export",
 
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, webpack }) => {
     if (!isServer) {
       config.plugins.push(
         new webpack.IgnorePlugin({ resourceRegExp: /^node:async_hooks$/ })
