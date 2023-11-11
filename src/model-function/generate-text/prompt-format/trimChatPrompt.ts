@@ -4,7 +4,7 @@ import {
   HasTokenizer,
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "./TextGenerationModel.js";
+} from "../TextGenerationModel.js";
 import { validateChatPrompt } from "./validateChatPrompt.js";
 
 /**

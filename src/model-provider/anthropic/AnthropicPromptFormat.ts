@@ -1,7 +1,7 @@
-import { ChatPrompt } from "../../model-function/generate-text/ChatPrompt.js";
-import { InstructionPrompt } from "../../model-function/generate-text/InstructionPrompt.js";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-format/ChatPrompt.js";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
-import { validateChatPrompt } from "../../model-function/generate-text/validateChatPrompt.js";
+import { validateChatPrompt } from "../../model-function/generate-text/prompt-format/validateChatPrompt.js";
 
 /**
  * Formats an instruction prompt as an Anthropic prompt.

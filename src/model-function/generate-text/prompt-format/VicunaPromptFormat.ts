@@ -1,5 +1,5 @@
 import { ChatPrompt } from "./ChatPrompt.js";
-import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
+import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
 import { validateChatPrompt } from "./validateChatPrompt.js";
 
 const DEFAULT_SYSTEM_PROMPT =

@@ -18,7 +18,7 @@ import { TextGenerationPromptFormat } from "../../model-function/generate-text/T
 import {
   mapChatPromptToTextFormat,
   mapInstructionPromptToTextFormat,
-} from "../../model-function/generate-text/TextPromptFormat.js";
+} from "../../model-function/generate-text/prompt-format/TextPromptFormat.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseJsonWithZod } from "../../util/parseJSON.js";

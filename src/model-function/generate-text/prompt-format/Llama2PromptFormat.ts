@@ -1,6 +1,6 @@
 import { ChatPrompt } from "./ChatPrompt.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
-import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
+import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
 import { validateChatPrompt } from "./validateChatPrompt.js";
 
 // see https://github.com/facebookresearch/llama/blob/6c7fe276574e78057f917549435a2554000a876d/llama/generation.py#L44

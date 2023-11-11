@@ -1,5 +1,5 @@
 import { InstructionPrompt } from "./InstructionPrompt.js";
-import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
+import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
 
 const DEFAULT_SYSTEM_PROMPT_INPUT =
   "Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.";
