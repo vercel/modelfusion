@@ -9,7 +9,7 @@ async function main() {
       temperature: 0.7,
     }),
     {
-      text: "[img-1] Describe the image in detail:\n\n",
+      text: "Image: [img-1]\n\nDescribe the image in detail:\n\n",
       images: {
         "1": fs.readFileSync(path.join("data", "example-image.png"), {
           encoding: "base64",

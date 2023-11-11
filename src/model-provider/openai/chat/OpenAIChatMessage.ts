@@ -1,20 +1,41 @@
 export type OpenAIChatMessage =
-  // regular message:
   | {
-      role: "user" | "assistant" | "system";
+      role: "system";
       content: string;
       name?: string;
     }
-  // function invocation message:
+  | {
+      role: "user";
+      content:
+        | string
+        | Array<
+            | { type: "text"; text: string }
+            | { type: "image_url"; image_url: string }
+          >;
+      name?: string;
+    }
   | {
       role: "assistant";
       content: string | null;
-      function_call: {
+      name?: string;
+      tool_calls?: Array<{
+        id: string;
+        type: "function";
+        function: {
+          name: string;
+          arguments: string;
+        };
+      }>;
+      function_call?: {
         name: string;
         arguments: string;
       };
     }
-  // function result message:
+  | {
+      role: "tool";
+      tool_call_id: string;
+      content: string | null;
+    }
   | {
       role: "function";
       content: string;

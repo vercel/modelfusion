@@ -25,14 +25,32 @@ export async function countOpenAIChatMessageTokens({
   message: OpenAIChatMessage;
   model: OpenAIChatModelType;
 }) {
-  const contentTokenCount = await countTokens(
-    new TikTokenTokenizer({
-      model: getOpenAIChatModelInformation(model).baseModel,
-    }),
-    message.content ?? ""
-  );
+  const tokenizer = new TikTokenTokenizer({
+    model: getOpenAIChatModelInformation(model).baseModel,
+  });
 
-  return OPENAI_CHAT_MESSAGE_BASE_TOKEN_COUNT + contentTokenCount;
+  // case: function call without content
+  if (message.content == null) {
+    return OPENAI_CHAT_MESSAGE_BASE_TOKEN_COUNT;
+  }
+
+  // case: simple text content
+  if (typeof message.content === "string") {
+    return (
+      OPENAI_CHAT_MESSAGE_BASE_TOKEN_COUNT +
+      (await countTokens(tokenizer, message.content))
+    );
+  }
+
+  // case: array of content objects
+  let contentTokenCount = OPENAI_CHAT_MESSAGE_BASE_TOKEN_COUNT;
+  for (const content of message.content) {
+    if (content.type === "text") {
+      contentTokenCount += await countTokens(tokenizer, content.text);
+    }
+  }
+
+  return contentTokenCount;
 }
 
 export async function countOpenAIChatPromptTokens({
