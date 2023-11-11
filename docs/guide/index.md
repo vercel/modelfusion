@@ -6,7 +6,8 @@ sidebar_position: 0
 
 **ModelFusion** is a TypeScript library for building AI applications, chatbots, and agents.
 
-- **Multimodal**: ModelFusion supports a wide range of models including text generation, image generation, text-to-speech, speech-to-text, and embedding models.
+- **Vendor-neutral**: ModelFusion is a non-commercial open source project that is community-driven. You can use it with any supported provider.
+- **Multimodal**: ModelFusion supports a wide range of models including text generation, image generation, vision, text-to-speech, speech-to-text, and embedding models.
 - **Streaming**: ModelFusion supports streaming for many generation models, e.g. text streaming, structure streaming, and full duplex speech streaming.
 - **Utility functions**: ModelFusion provides functionality for tools and tool usage, vector indices, and guards functions.
 - **Type inference and validation**: ModelFusion infers TypeScript types wherever possible and to validates model responses.
