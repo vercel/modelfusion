@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.64.0 - 2023-11-11
+
+### Added
+
+- Support for OpenAI vision model.
+  - Example: `examples/basic/src/model-provider/openai/openai-chat-stream-text-vision-example.ts`
+- `VisionInstructionPromptFormat`: abstraction for single instruction, single image vision prompts. Mappings for Llama.cpp and OpenAI vision models available.
+  - Example: `examples/basic/src/model-provider/llamacpp/llamacpp-stream-text-vision-with-vision-prompt-example.ts`
+
 ## v0.63.0 - 2023-11-08
 
 ### Added
