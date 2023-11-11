@@ -20,7 +20,7 @@ async function main() {
         role: "user",
         content: [
           { type: "text", text: `Describe the image in detail:` },
-          { type: "image_url", image_url: `data:image/jpeg;base64,${image}` },
+          { type: "image_url", image_url: `data:image/png;base64,${image}` },
         ],
       },
     ]

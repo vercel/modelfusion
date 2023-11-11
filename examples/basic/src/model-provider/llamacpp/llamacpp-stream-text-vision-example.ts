@@ -3,6 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 
 async function main() {
+  const image = fs.readFileSync(path.join("data", "example-image.png"), {
+    encoding: "base64",
+  });
+
   const textStream = await streamText(
     new LlamaCppTextGenerationModel({
       maxCompletionTokens: 1024,
@@ -10,11 +14,7 @@ async function main() {
     }),
     {
       text: "[img-1]\n\nDescribe the image in detail:\n\n",
-      images: {
-        "1": fs.readFileSync(path.join("data", "example-image.png"), {
-          encoding: "base64",
-        }),
-      },
+      images: { "1": image },
     }
   );
 

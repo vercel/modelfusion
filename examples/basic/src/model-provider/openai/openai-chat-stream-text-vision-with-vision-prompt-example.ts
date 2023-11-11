@@ -6,6 +6,10 @@ import path from "node:path";
 dotenv.config();
 
 async function main() {
+  const image = fs.readFileSync(path.join("data", "example-image.png"), {
+    encoding: "base64",
+  });
+
   const textStream = await streamText(
     new OpenAIChatModel({
       model: "gpt-4-vision-preview",
@@ -13,10 +17,8 @@ async function main() {
     }).withVisionInstructionPrompt(),
     {
       instruction: "Describe the image in detail:",
-      image: fs.readFileSync(path.join("data", "example-image.png"), {
-        encoding: "base64",
-      }),
-      mimeType: "image/jpeg",
+      image,
+      mimeType: "image/png",
     }
   );
 
