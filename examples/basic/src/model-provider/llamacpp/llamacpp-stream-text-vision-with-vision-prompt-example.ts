@@ -7,14 +7,12 @@ async function main() {
     new LlamaCppTextGenerationModel({
       maxCompletionTokens: 1024,
       temperature: 0.7,
-    }),
+    }).withVisionInstructionPrompt(),
     {
-      text: "[img-1]\n\nDescribe the image in detail:\n\n",
-      images: {
-        "1": fs.readFileSync(path.join("data", "example-image.png"), {
-          encoding: "base64",
-        }),
-      },
+      instruction: "[img-1]\n\nDescribe the image in detail:\n\n",
+      image: fs.readFileSync(path.join("data", "example-image.png"), {
+        encoding: "base64",
+      }),
     }
   );
 

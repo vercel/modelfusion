@@ -28,6 +28,7 @@ import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import {
   mapChatPromptToOpenAIChatFormat,
   mapInstructionPromptToOpenAIChatFormat,
+  mapVisionInstructionPromptToOpenAIChatFormat,
 } from "./OpenAIChatPromptFormat.js";
 import { createOpenAIChatDeltaIterableQueue } from "./OpenAIChatStreamIterable.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
@@ -498,6 +499,12 @@ export class OpenAIChatModel
    */
   withInstructionPrompt() {
     return this.withPromptFormat(mapInstructionPromptToOpenAIChatFormat());
+  }
+
+  withVisionInstructionPrompt() {
+    return this.withPromptFormat(
+      mapVisionInstructionPromptToOpenAIChatFormat()
+    );
   }
 
   /**
