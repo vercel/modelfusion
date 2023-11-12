@@ -5,7 +5,7 @@ sidebar_position: 10
 # Split Text
 
 When you want to load text chunks into a vector index, you often need to split the text into smaller pieces.
-This can help finding the right text chunks when querying the vector index, for example, for [retrieval-augmented generation](/tutorial/recipes/retrieval-augmented-generation).
+This can help finding the right text chunks when querying the vector index, for example, for [retrieval-augmented generation](/tutorial/tutorials/retrieval-augmented-generation).
 
 ## Split Functions
 

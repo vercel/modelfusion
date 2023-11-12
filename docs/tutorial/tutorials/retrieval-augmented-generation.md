@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 5
 ---
 
 # Retrieval Augmented Generation
@@ -16,7 +16,7 @@ Retrieval augmented generation consists of two steps:
 
 ### Example
 
-[Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/recipes/retrieval-augmented-generation-basic.ts)
+[Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorials/retrieval-augmented-generation-basic.ts)
 
 #### Retrieve related information from a vector index:
 

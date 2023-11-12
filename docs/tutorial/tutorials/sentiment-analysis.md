@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 15
 ---
 
 # Sentiment Analysis
@@ -10,7 +10,7 @@ This is helpful to quickly develop initial product versions and prototypes.
 
 ### Using generateStructure and OpenAI Chat Model
 
-[Example](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/recipes/sentiment-analysis.ts)
+[Example](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorials/sentiment-analysis.ts)
 
 #### Define a sentiment analysis function:
 

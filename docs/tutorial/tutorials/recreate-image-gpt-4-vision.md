@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 22
 ---
 
 # Recreate images with GPT-4 Vision and Dall-E 3
@@ -75,4 +75,4 @@ In summary, this tutorial demonstrates a simple yet powerful way to use AI for t
 
 ## References
 
-- [Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/recipes/recreate-image-gpt4-vision.ts)
+- [Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorials/recreate-image-gpt4-vision.ts)

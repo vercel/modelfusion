@@ -5,8 +5,8 @@ sidebar_position: 50
 # Generate Structure
 
 Generates a structure that matches a schema.
-This is, for example, useful for [information extraction](/tutorial/recipes/information-extraction)
-and classification tasks (e.g. [sentiment analysis](/tutorial/recipes/sentiment-analysis)). The structure can be generated in one pass or streamed.
+This is, for example, useful for [information extraction](/tutorial/tutorials/information-extraction)
+and classification tasks (e.g. [sentiment analysis](/tutorial/tutorials/sentiment-analysis)). The structure can be generated in one pass or streamed.
 
 ## Usage
 
