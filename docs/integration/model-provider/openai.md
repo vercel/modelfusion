@@ -91,7 +91,7 @@ const text = await generateText(
     maxCompletionTokens: 500,
   }),
   [
-    OpenAIChatMessage.system(
+    OpenAIChatMessage.user(
       "Write a short story about a robot learning to love:"
     ),
   ]
@@ -101,6 +101,21 @@ const text = await generateText(
 :::note
 You can use your fine-tuned `gpt-3.5-turbo` models similarly to the base models. Learn more about [OpenAI fine-tuning](https://platform.openai.com/docs/guides/fine-tuning).
 :::
+
+You can provide an image reference in the user message when you are using vision models such as `gpt-4-vision-preview`:
+
+```ts
+const text = await generateText(
+  new OpenAIChatModel({ model: "gpt-4-vision-preview" }),
+  [
+    OpenAIChatMessage.user("Describe the image in detail:", {
+      image: { base64Content: image, mimeType: "image/png" },
+    }),
+  ]
+);
+```
+
+The tutorial "[Using OpenAI GPT-4 Turbo Vision with ModelFusion](/tutorial/tutorials/gpt-4-vision)" has more details.
 
 ### Stream Text
 

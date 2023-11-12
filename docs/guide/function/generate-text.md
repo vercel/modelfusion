@@ -28,7 +28,7 @@ The settings can be set in the constructor of the model, or in the `withSettings
 
 [generateText API](/api/modules#generatetext)
 
-#### With OpenAI text model
+#### Example: OpenAI text model
 
 ```ts
 const text = await generateText(
@@ -37,7 +37,7 @@ const text = await generateText(
 );
 ```
 
-#### With OpenAI chat model
+#### Example: OpenAI chat model
 
 ```ts
 const text = await generateText(new OpenAIChatModel(/* ... */), [
@@ -47,7 +47,22 @@ const text = await generateText(new OpenAIChatModel(/* ... */), [
 ]);
 ```
 
-#### With HuggingFace image captioning model
+#### Example: OpenAI chat model with multi-modal input
+
+Multi-modal vision models such as GPT 4 Vision can process images as part of the prompt.
+
+```ts
+const textStream = await streamText(
+  new OpenAIChatModel({ model: "gpt-4-vision-preview" }),
+  [
+    OpenAIChatMessage.user("Describe the image in detail:", {
+      image: { base64Content: image, mimeType: "image/png" },
+    }),
+  ]
+);
+```
+
+#### Example: HuggingFace image captioning model
 
 You can also use models that take an image as input, such as image captioning models.
 
@@ -67,7 +82,9 @@ const text = await generateText(
 
 [streamText API](/api/modules#streamtext)
 
-#### With OpenAI chat model
+You can use most text generation models in streaming mode. Just use the `streamText` function instead of `generateText`.
+
+#### Example: OpenAI chat model
 
 ```ts
 const textStream = await streamText(new OpenAIChatModel(/* ... */), [
@@ -93,7 +110,9 @@ For convience, models with clear prompt formats have a `withChatPrompt()` or `wi
 
 [Instruction prompts](/api/modules#instructionprompt) are a higher-level prompt format that contains an instruction, an optional input, and an optional system message. For some models, changing the system message can affect the results, so consider how your model works before setting it.
 
-#### Example
+When you use multi-modal models and prompt mappings, you can also provide an optional image as input. The image property consists of a base64-encoded image and an optional mime.
+
+#### Example: CohereTextGenerationModel
 
 ```ts
 const model = new CohereTextGenerationModel({
@@ -119,6 +138,22 @@ const text = await generateText(model, {
   instruction: "Write a short story about:",
   input: "a robot learning to love", // optional
 });
+```
+
+#### Example: OpenAIChatModel multi-modal input
+
+Multi-modal vision models such as GPT 4 Vision can process images as part of the prompt.
+
+```ts
+const textStream = await streamText(
+  new OpenAIChatModel({
+    model: "gpt-4-vision-preview",
+  }).withInstructionPrompt(),
+  {
+    instruction: "Describe the image in detail:",
+    image: { base64Content: image, mimeType: "image/png" },
+  }
+);
 ```
 
 #### Prompt Formats
