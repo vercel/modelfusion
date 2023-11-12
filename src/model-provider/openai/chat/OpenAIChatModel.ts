@@ -53,6 +53,8 @@ export const OPENAI_CHAT_MODELS = {
     contextWindowSize: 8192,
     promptTokenCostInMillicents: 3,
     completionTokenCostInMillicents: 6,
+    fineTunedPromptTokenCostInMillicents: null,
+    fineTunedCompletionTokenCostInMillicents: null,
   },
   "gpt-4-1106-preview": {
     contextWindowSize: 128000,
@@ -119,8 +121,8 @@ export function getOpenAIChatModelInformation(model: OpenAIChatModelType): {
   baseModel: OpenAIChatBaseModelType;
   isFineTuned: boolean;
   contextWindowSize: number;
-  promptTokenCostInMillicents: number;
-  completionTokenCostInMillicents: number;
+  promptTokenCostInMillicents: number | null;
+  completionTokenCostInMillicents: number | null;
 } {
   // Model is already a base model:
   if (model in OPENAI_CHAT_MODELS) {
@@ -142,7 +144,9 @@ export function getOpenAIChatModelInformation(model: OpenAIChatModelType): {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, baseModel, ___, ____, _____] = model.split(":");
 
-  if (["gpt-3.5-turbo", "gpt-3.5-turbo-0613"].includes(baseModel)) {
+  if (
+    ["gpt-3.5-turbo", "gpt-3.5-turbo-0613", "gpt-4-0613"].includes(baseModel)
+  ) {
     const baseModelInformation =
       OPENAI_CHAT_MODELS[baseModel as FineTuneableOpenAIChatModelType];
 
@@ -160,7 +164,10 @@ export function getOpenAIChatModelInformation(model: OpenAIChatModelType): {
   throw new Error(`Unknown OpenAI chat base model ${baseModel}.`);
 }
 
-type FineTuneableOpenAIChatModelType = `gpt-3.5-turbo` | `gpt-3.5-turbo-0613`;
+type FineTuneableOpenAIChatModelType =
+  | `gpt-3.5-turbo`
+  | `gpt-3.5-turbo-0613`
+  | `gpt-4-0613`;
 
 type FineTunedOpenAIChatModelType =
   `ft:${FineTuneableOpenAIChatModelType}:${string}:${string}:${string}`;
@@ -184,14 +191,21 @@ export const calculateOpenAIChatCostInMillicents = ({
 }: {
   model: OpenAIChatModelType;
   response: OpenAIChatResponse;
-}): number => {
-  const modelInformation = getOpenAIChatModelInformation(model);
+}): number | null => {
+  const { promptTokenCostInMillicents, completionTokenCostInMillicents } =
+    getOpenAIChatModelInformation(model);
+
+  // null: when cost is unknown, e.g. for fine-tuned models where the price is not yet known
+  if (
+    promptTokenCostInMillicents == null ||
+    completionTokenCostInMillicents == null
+  ) {
+    return null;
+  }
 
   return (
-    response.usage.prompt_tokens *
-      modelInformation.promptTokenCostInMillicents +
-    response.usage.completion_tokens *
-      modelInformation.completionTokenCostInMillicents
+    response.usage.prompt_tokens * promptTokenCostInMillicents +
+    response.usage.completion_tokens * completionTokenCostInMillicents
   );
 };
 
