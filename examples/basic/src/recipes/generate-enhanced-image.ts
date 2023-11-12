@@ -1,11 +1,9 @@
 import dotenv from "dotenv";
 import {
-  HuggingFaceImageDescriptionModel,
   OpenAIChatModel,
-  StabilityImageGenerationModel,
+  OpenAIImageGenerationModel,
   generateImage,
   generateText,
-  mapInstructionPromptToOpenAIChatFormat,
 } from "modelfusion";
 import fs from "node:fs";
 
@@ -16,26 +14,19 @@ const imageUrl =
 
 async function main() {
   const imageResponse = await fetch(imageUrl);
-  const data = Buffer.from(await imageResponse.arrayBuffer());
-
-  const imageDescription = await generateText(
-    new HuggingFaceImageDescriptionModel({
-      model: "nlpconnect/vit-gpt2-image-captioning",
-    }),
-    data
+  const base64Image = Buffer.from(await imageResponse.arrayBuffer()).toString(
+    "base64"
   );
 
-  console.log(`Image description:\n${imageDescription}`);
-
   const imageGenerationPrompt = await generateText(
-    new OpenAIChatModel({ model: "gpt-4" }).withPromptFormat(
-      mapInstructionPromptToOpenAIChatFormat()
-    ),
+    new OpenAIChatModel({
+      model: "gpt-4-vision-preview",
+      maxCompletionTokens: 512,
+    }).withInstructionPrompt(),
     {
       instruction:
-        "You generate Stable Diffusion prompts for images." +
-        "Generate a prompt for a high resolution, cyberpunk version of the following image description:",
-      input: imageDescription,
+        "Generate an image generation prompt for creating an image that resembles the attached image. Be precise and mention details.",
+      image: { base64Content: base64Image },
     }
   );
 
@@ -43,14 +34,12 @@ async function main() {
   console.log(`Image generation prompt:\n${imageGenerationPrompt}`);
 
   const image = await generateImage(
-    new StabilityImageGenerationModel({
-      model: "stable-diffusion-512-v2-1",
-      height: 512,
-      width: 512,
-      samples: 1,
-      steps: 30,
+    new OpenAIImageGenerationModel({
+      model: "dall-e-3",
+      quality: "hd",
+      size: "1024x1024",
     }),
-    [{ text: imageGenerationPrompt }]
+    imageGenerationPrompt
   );
 
   const path = `./enhanced-image-example.png`;
