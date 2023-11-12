@@ -5,6 +5,7 @@ import { Delta } from "../../../model-function/Delta.js";
 import { safeParseJsonWithZod } from "../../../util/parseJSON.js";
 
 const chatResponseStreamEventSchema = z.object({
+  id: z.string(),
   choices: z.array(
     z.object({
       delta: z.object({
@@ -31,9 +32,9 @@ const chatResponseStreamEventSchema = z.object({
     })
   ),
   created: z.number(),
-  id: z.string(),
   model: z.string(),
-  object: z.string(),
+  system_fingerprint: z.string().optional(),
+  object: z.literal("chat.completion.chunk"),
 });
 
 export type OpenAIChatDelta = Array<{

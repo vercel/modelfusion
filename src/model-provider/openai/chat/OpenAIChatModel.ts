@@ -535,10 +535,6 @@ export class OpenAIChatModel
 
 const openAIChatResponseSchema = z.object({
   id: z.string(),
-  object: z.literal("chat.completion"),
-  created: z.number(),
-  model: z.string(),
-  system_fingerprint: z.string(),
   choices: z.array(
     z.object({
       message: z.object({
@@ -562,6 +558,10 @@ const openAIChatResponseSchema = z.object({
       ]),
     })
   ),
+  created: z.number(),
+  model: z.string(),
+  system_fingerprint: z.string().optional(),
+  object: z.literal("chat.completion"),
   usage: z.object({
     prompt_tokens: z.number(),
     completion_tokens: z.number(),
