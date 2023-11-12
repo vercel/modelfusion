@@ -341,6 +341,8 @@ export class OpenAIChatModel
       "presencePenalty",
       "frequencyPenalty",
       "logitBias",
+      "seed",
+      "responseFormat",
     ] satisfies (keyof OpenAIChatSettings)[];
 
     return Object.fromEntries(

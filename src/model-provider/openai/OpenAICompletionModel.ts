@@ -203,6 +203,7 @@ export interface OpenAICompletionCallSettings {
   frequencyPenalty?: number;
   bestOf?: number;
   logitBias?: Record<number, number>;
+  seed?: number | null;
 }
 
 export interface OpenAICompletionModelSettings
@@ -304,6 +305,7 @@ export class OpenAICompletionModel
       "frequencyPenalty",
       "bestOf",
       "logitBias",
+      "seed",
     ] satisfies (keyof OpenAICompletionModelSettings)[];
 
     return Object.fromEntries(
@@ -379,17 +381,18 @@ export class OpenAICompletionModel
 
 const OpenAICompletionResponseSchema = z.object({
   id: z.string(),
-  object: z.literal("text_completion"),
-  created: z.number(),
-  model: z.string(),
   choices: z.array(
     z.object({
-      text: z.string(),
+      finish_reason: z.enum(["stop", "length", "content_filter"]),
       index: z.number(),
       logprobs: z.nullable(z.any()),
-      finish_reason: z.string(),
+      text: z.string(),
     })
   ),
+  created: z.number(),
+  model: z.string(),
+  system_fingerprint: z.string().optional(),
+  object: z.literal("text_completion"),
   usage: z.object({
     prompt_tokens: z.number(),
     completion_tokens: z.number(),
@@ -415,6 +418,7 @@ async function callOpenAICompletionAPI<RESPONSE>({
   frequencyPenalty,
   bestOf,
   logitBias,
+  seed,
   user,
 }: OpenAICompletionCallSettings & {
   api?: ApiConfiguration;
@@ -443,6 +447,7 @@ async function callOpenAICompletionAPI<RESPONSE>({
       logprobs,
       echo,
       stop,
+      seed,
       presence_penalty: presencePenalty,
       frequency_penalty: frequencyPenalty,
       best_of: bestOf,
@@ -488,14 +493,15 @@ const textResponseStreamEventSchema = z.object({
   choices: z.array(
     z.object({
       text: z.string(),
-      finish_reason: z.enum(["stop", "length"]).nullable(),
+      finish_reason: z.enum(["stop", "length", "content_filter"]).nullable(),
       index: z.number(),
     })
   ),
   created: z.number(),
   id: z.string(),
   model: z.string(),
-  object: z.string(),
+  system_fingerprint: z.string().optional(),
+  object: z.literal("text_completion"),
 });
 
 export type OpenAICompletionDelta = Array<{
