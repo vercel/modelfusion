@@ -115,7 +115,7 @@ const text = await generateText(
 );
 ```
 
-The tutorial "[Using OpenAI GPT-4 Turbo Vision with ModelFusion](/tutorial/tutorials/gpt-4-vision)" has more details.
+The tutorial "[Using OpenAI GPT-4 Turbo Vision](/tutorial/tutorials/using-gpt-4-vision)" provides more details.
 
 ### Stream Text
 
