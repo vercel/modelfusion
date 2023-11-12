@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.65.0 - 2023-11-12
+
+### Added
+
+- Image support for `OpenAIChatMessage.user`
+- `mapInstructionPromptToBakLLaVA1ForLlamaCppFormat` prompt format
+
+### Changed
+
+- **breaking change**: `VisionInstructionPrompt` was replaced by an optional `image` field in `InstructionPrompt`.
+
 ## v0.64.0 - 2023-11-11
 
 ### Added
