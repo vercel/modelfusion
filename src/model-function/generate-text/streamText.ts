@@ -76,10 +76,11 @@ export async function streamText<PROMPT>(
             // remove leading whitespace:
             textDelta = textDelta.trimStart();
           } else {
-            // restore inner whitespace (moved to next chunk):
+            // restore trailing whitespace from previous chunk:
             textDelta = trailingWhitespace + textDelta;
           }
 
+          // trim trailing whitespace and store it for the next chunk:
           const trailingWhitespaceMatch = textDelta.match(/\s+$/);
           trailingWhitespace = trailingWhitespaceMatch
             ? trailingWhitespaceMatch[0]
