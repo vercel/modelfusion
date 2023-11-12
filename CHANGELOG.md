@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.67.0 - 2023-11-12
+
+### Added
+
+- Ollama 0.1.9 support: `format` (for forcing JSON output) and `raw` settings
+- Improved Ollama settings documentation
+
 ## v0.66.0 - 2023-11-12
 
 ### Added
