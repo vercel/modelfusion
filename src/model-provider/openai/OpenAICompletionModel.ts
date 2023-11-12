@@ -383,7 +383,10 @@ const OpenAICompletionResponseSchema = z.object({
   id: z.string(),
   choices: z.array(
     z.object({
-      finish_reason: z.enum(["stop", "length", "content_filter"]),
+      finish_reason: z
+        .enum(["stop", "length", "content_filter"])
+        .optional()
+        .nullable(),
       index: z.number(),
       logprobs: z.nullable(z.any()),
       text: z.string(),
@@ -493,7 +496,10 @@ const textResponseStreamEventSchema = z.object({
   choices: z.array(
     z.object({
       text: z.string(),
-      finish_reason: z.enum(["stop", "length", "content_filter"]).nullable(),
+      finish_reason: z
+        .enum(["stop", "length", "content_filter"])
+        .optional()
+        .nullable(),
       index: z.number(),
     })
   ),

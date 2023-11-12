@@ -565,13 +565,16 @@ const openAIChatResponseSchema = z.object({
       }),
       index: z.number(),
       logprobs: z.nullable(z.any()),
-      finish_reason: z.enum([
-        "stop",
-        "length",
-        "tool_calls",
-        "content_filter",
-        "function_call",
-      ]),
+      finish_reason: z
+        .enum([
+          "stop",
+          "length",
+          "tool_calls",
+          "content_filter",
+          "function_call",
+        ])
+        .optional()
+        .nullable(),
     })
   ),
   created: z.number(),
