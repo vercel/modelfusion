@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.66.0 - 2023-11-12
+
+### Added
+
+- Support for fine-tuned OpenAI `gpt-4-0613` models
+- Support for `trimWhitespace` model setting in `streamText` calls
+
 ## v0.65.0 - 2023-11-12
 
 ### Added
