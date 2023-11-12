@@ -30,12 +30,16 @@ You can use various GGUF models with llama.cpp.
 - [Llama 2 7b Chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
 - [Llama 2 7b](https://huggingface.co/TheBloke/Llama-2-7B-GGML)
 
+Server start example: `./server -m models/llama-2-7b-chat.GGUF.q4_0.bin -c 4096` (Mac)
+
 ## Example Multi-modal Models
 
 For running multi-modal models, you need to specify the projection with the `--mmproj` flag.
 
 - [BakLlava](https://huggingface.co/mys/ggml_bakllava-1/tree/main)
 - [Llava](https://huggingface.co/mys/ggml_llava-v1.5-7b/tree/main)
+
+Server start example: `./server -m models/bakllava/ggml-model-q4_k.gguf --mmproj models/bakllava/mmproj-model-f16.gguf` (Mac)
 
 ## Configuration
 
