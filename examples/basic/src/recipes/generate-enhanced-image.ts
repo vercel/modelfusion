@@ -10,6 +10,7 @@ import fs from "node:fs";
 dotenv.config();
 
 const imageUrl =
+  process.argv[2] ??
   "https://upload.wikimedia.org/wikipedia/commons/d/d8/Steam_train%2C_Seahill_%281985%29_-_geograph.org.uk_-_3789663.jpg";
 
 async function main() {
@@ -21,17 +22,19 @@ async function main() {
   const imageGenerationPrompt = await generateText(
     new OpenAIChatModel({
       model: "gpt-4-vision-preview",
-      maxCompletionTokens: 512,
+      maxCompletionTokens: 128,
     }).withInstructionPrompt(),
     {
       instruction:
-        "Generate an image generation prompt for creating an image that resembles the attached image. Be precise and mention details.",
+        "Generate an image generation prompt for creating a cyberpunk-style image that resembles the attached image. " +
+        "Capture the essence of the image in 1-2 sentences.",
       image: { base64Content: base64Image },
     }
   );
 
   console.log();
-  console.log(`Image generation prompt:\n${imageGenerationPrompt}`);
+  console.log(`Image generation prompt:`);
+  console.log(imageGenerationPrompt);
 
   const image = await generateImage(
     new OpenAIImageGenerationModel({
@@ -44,6 +47,9 @@ async function main() {
 
   const path = `./enhanced-image-example.png`;
   fs.writeFileSync(path, image);
+
+  console.log();
+  console.log(`Image saved to ${path}`);
 }
 
 main().catch(console.error);
