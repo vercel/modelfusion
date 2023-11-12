@@ -8,8 +8,10 @@ async function main() {
     new OllamaTextGenerationModel({
       model: "mistral",
       maxCompletionTokens: 500,
+      format: "json",
     }),
-    "Write a short story about a robot learning to love:\n\n"
+    "Generate 3 character descriptions for a fantasy role playing game. " +
+      "Respond using JSON."
   );
 
   for await (const textPart of textStream) {

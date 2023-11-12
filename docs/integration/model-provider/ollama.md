@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Ollama
 
-Generate text using [Ollama](https://github.com/jmorganca/ollama). You can run the Ollama server locally or remote.
+Generate text and embeddings using [Ollama](https://github.com/jmorganca/ollama). You can run the Ollama server locally or remote.
 
 ## Setup
 
@@ -41,7 +41,7 @@ const model = new OllamaTextGenerationModel({
 ```ts
 const text = await generateText(
   new OllamaTextGenerationModel({
-    model: "llama2",
+    model: "mistral",
     temperature: 0.7,
     maxCompletionTokens: 120,
   }),
@@ -56,7 +56,7 @@ const text = await generateText(
 ```ts
 const textStream = await streamText(
   new OllamaTextGenerationModel({
-    model: "llama2",
+    model: "mistral",
     temperature: 0.7,
     maxCompletionTokens: 500,
   }),
