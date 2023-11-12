@@ -138,6 +138,11 @@ const config = {
           },
           { to: "blog", label: "Blog", position: "right" },
           {
+            href: "https://discord.gg/GqCwYZATem",
+            label: "Discord",
+            position: "right",
+          },
+          {
             href: "https://github.com/lgrammel/modelfusion",
             label: "GitHub",
             position: "right",
@@ -173,7 +178,7 @@ const config = {
               },
               {
                 href: "https://github.com/lgrammel/modelfusion/tree/main/examples",
-                label: "Examples",
+                label: "Examples (GitHub)",
               },
             ],
           },
@@ -187,6 +192,10 @@ const config = {
               {
                 label: "Twitter",
                 href: "https://twitter.com/lgrammel",
+              },
+              {
+                label: "Discord",
+                href: "https://discord.gg/GqCwYZATem",
               },
               {
                 label: "GitHub",
