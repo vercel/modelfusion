@@ -52,8 +52,12 @@ export async function streamText<PROMPT>(
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }
 > {
+  const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
+
   let accumulatedText = "";
   let lastFullDelta: unknown | undefined;
+  let isFirstDelta = true;
+  let trailingWhitespace = "";
 
   const fullResponse = await executeStreamCall({
     functionType: "stream-text",
@@ -64,9 +68,26 @@ export async function streamText<PROMPT>(
     processDelta: (delta) => {
       lastFullDelta = delta.fullDelta;
 
-      const textDelta = delta.valueDelta;
+      let textDelta = delta.valueDelta;
 
       if (textDelta != null && textDelta.length > 0) {
+        if (shouldTrimWhitespace) {
+          if (isFirstDelta) {
+            // remove leading whitespace:
+            textDelta = textDelta.trimStart();
+          } else {
+            // restore inner whitespace (moved to next chunk):
+            textDelta = trailingWhitespace + textDelta;
+          }
+
+          const trailingWhitespaceMatch = textDelta.match(/\s+$/);
+          trailingWhitespace = trailingWhitespaceMatch
+            ? trailingWhitespaceMatch[0]
+            : "";
+          textDelta = textDelta.trimEnd();
+        }
+
+        isFirstDelta = false;
         accumulatedText += textDelta;
         return textDelta;
       }
