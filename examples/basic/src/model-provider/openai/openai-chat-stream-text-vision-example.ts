@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { OpenAIChatModel, streamText } from "modelfusion";
+import { OpenAIChatMessage, OpenAIChatModel, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -16,13 +16,9 @@ async function main() {
       maxCompletionTokens: 1000,
     }),
     [
-      {
-        role: "user",
-        content: [
-          { type: "text", text: `Describe the image in detail:` },
-          { type: "image_url", image_url: `data:image/png;base64,${image}` },
-        ],
-      },
+      OpenAIChatMessage.user("Describe the image in detail:", {
+        image: { base64Content: image, mimeType: "image/png" },
+      }),
     ]
   );
 

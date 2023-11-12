@@ -27,4 +27,19 @@ export type InstructionPrompt = {
    * Optional additional input or context, e.g. a the content from which information should be extracted.
    */
   input?: string;
+
+  /**
+   * Optional image to provide context for the language model. Only supported by some models.
+   */
+  image?: {
+    /**
+     * Base-64 encoded image.
+     */
+    base64Content: string;
+
+    /**
+     * Optional mime type of the image.
+     */
+    mimeType?: string;
+  };
 };

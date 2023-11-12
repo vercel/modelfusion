@@ -32,33 +32,28 @@ const textStream = await streamText(
   }),
   // chat prompt:
   [
-    {
-      role: "user",
-      content: [
-        { type: "text", text: `Describe the image in detail:` },
-        { type: "image_url", image_url: `data:image/png;base64,${image}` },
-      ],
-    },
+    OpenAIChatMessage.user("Describe the image in detail:", {
+      image: { base64Content: image, mimeType: "image/png" },
+    }),
   ]
 );
 ```
 
 In the `image_url` field, we're providing the image data as [data URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs). This allows us to pass the image data directly to the model without needing to serve it from a web server.
 
-## Alternative: Use a Vision Prompt
+## Alternative: Use an instruction prompt
 
-Alternatively, you can use the `withVisionInstructionPrompt()` method which allows you to provide the instruction and image directly, without needing to construct a chat message:
+Alternatively, you can use the `withInstructionPrompt()` method which allows you to use an abstracted prompt format for a single instruction:
 
 ```ts
 const textStream = await streamText(
   new OpenAIChatModel({
     model: "gpt-4-vision-preview",
     maxCompletionTokens: 1000,
-  }).withVisionInstructionPrompt(),
+  }).withInstructionPrompt(),
   {
     instruction: "Describe the image in detail:",
-    image,
-    mimeType: "image/png",
+    image: { base64Content: image, mimeType: "image/png" },
   }
 );
 ```

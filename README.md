@@ -47,9 +47,7 @@ You can use [prompt formats](https://modelfusion.dev/guide/function/generate-tex
 
 ```ts
 const text = await generateText(
-  new OpenAICompletionModel({
-    model: "gpt-3.5-turbo-instruct",
-  }),
+  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -60,9 +58,7 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 
 ```ts
 const textStream = await streamText(
-  new OpenAICompletionModel({
-    model: "gpt-3.5-turbo-instruct",
-  }),
+  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 
@@ -73,16 +69,30 @@ for await (const textPart of textStream) {
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama)
 
+#### streamText with multi-modal prompt
+
+Multi-modal vision models such as GPT 4 Vision can process images as part of the prompt.
+
+```ts
+const textStream = await streamText(
+  new OpenAIChatModel({ model: "gpt-4-vision-preview" }),
+  [
+    OpenAIChatMessage.user("Describe the image in detail:", {
+      image: { base64Content: image, mimeType: "image/png" },
+    }),
+  ]
+);
+```
+
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
+
 ### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 
 Generate an image from a prompt.
 
 ```ts
 const image = await generateImage(
-  new OpenAIImageGenerationModel({
-    model: "dall-e-3",
-    size: "1024x1024",
-  }),
+  new OpenAIImageGenerationModel({ model: "dall-e-3", size: "1024x1024" }),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```
@@ -498,6 +508,8 @@ const textStream = await streamText(
 | Alpaca        | ✅                 | ❌          |
 | Vicuna        | ❌                 | ✅          |
 | Generic Text  | ✅                 | ✅          |
+
+#### [Vision Prompts]
 
 #### [Image Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-image/prompt-format)
 

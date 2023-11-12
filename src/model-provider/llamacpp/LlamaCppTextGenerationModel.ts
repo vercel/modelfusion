@@ -21,7 +21,6 @@ import { parseJsonWithZod } from "../../util/parseJSON.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
-import { mapVisionInstructionPromptToLlamaCppFormat } from "./mapVisionInstructionPromptToLlamaCppFormat.js";
 
 export interface LlamaCppTextGenerationModelSettings<
   CONTEXT_WINDOW_SIZE extends number | undefined,
@@ -194,10 +193,6 @@ export class LlamaCppTextGenerationModel<
       },
       stopSequences: [],
     });
-  }
-
-  withVisionInstructionPrompt() {
-    return this.withPromptFormat(mapVisionInstructionPromptToLlamaCppFormat());
   }
 
   withPromptFormat<INPUT_PROMPT>(

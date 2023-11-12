@@ -1,6 +1,9 @@
-import { LlamaCppTextGenerationModel, streamText } from "modelfusion";
+import dotenv from "dotenv";
+import { OpenAIChatModel, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
+
+dotenv.config();
 
 async function main() {
   const image = fs.readFileSync(path.join("data", "example-image.png"), {
@@ -8,13 +11,13 @@ async function main() {
   });
 
   const textStream = await streamText(
-    new LlamaCppTextGenerationModel({
-      maxCompletionTokens: 1024,
-      temperature: 0.7,
-    }).withVisionInstructionPrompt(),
+    new OpenAIChatModel({
+      model: "gpt-4-vision-preview",
+      maxCompletionTokens: 1000,
+    }).withInstructionPrompt(),
     {
-      instruction: "Describe the image in detail:\n\n",
-      image,
+      instruction: "Describe the image in detail:",
+      image: { base64Content: image, mimeType: "image/png" },
     }
   );
 

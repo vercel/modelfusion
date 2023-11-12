@@ -10,7 +10,6 @@ export * from "./prompt-format/InstructionPrompt.js";
 export * from "./prompt-format/Llama2PromptFormat.js";
 export * from "./prompt-format/TextPromptFormat.js";
 export * from "./prompt-format/VicunaPromptFormat.js";
-export * from "./prompt-format/VisionInstructionPrompt.js";
 export * from "./prompt-format/trimChatPrompt.js";
 export * from "./prompt-format/validateChatPrompt.js";
 export * from "./streamText.js";

@@ -1,9 +1,8 @@
+import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { ChatPrompt } from "../../../model-function/generate-text/prompt-format/ChatPrompt.js";
 import { InstructionPrompt } from "../../../model-function/generate-text/prompt-format/InstructionPrompt.js";
-import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { validateChatPrompt } from "../../../model-function/generate-text/prompt-format/validateChatPrompt.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import { VisionInstructionPrompt } from "../../../model-function/generate-text/prompt-format/VisionInstructionPrompt.js";
 
 /**
  * Formats an instruction prompt as an OpenAI chat prompt.
@@ -17,51 +16,20 @@ export function mapInstructionPromptToOpenAIChatFormat(): TextGenerationPromptFo
       const messages: Array<OpenAIChatMessage> = [];
 
       if (instruction.system != null) {
-        messages.push({
-          role: "system",
-          content: instruction.system,
-        });
+        messages.push(OpenAIChatMessage.system(instruction.system));
       }
 
-      messages.push({
-        role: "user",
-        content: instruction.instruction,
-      });
+      messages.push(
+        OpenAIChatMessage.user(instruction.instruction, {
+          image: instruction.image,
+        })
+      );
 
       if (instruction.input != null) {
-        messages.push({
-          role: "user",
-          content: instruction.input,
-        });
+        messages.push(OpenAIChatMessage.user(instruction.input));
       }
 
       return messages;
-    },
-    stopSequences: [],
-  };
-}
-
-/**
- * Formats a version prompt as an OpenAI chat prompt.
- */
-export function mapVisionInstructionPromptToOpenAIChatFormat(): TextGenerationPromptFormat<
-  VisionInstructionPrompt,
-  Array<OpenAIChatMessage>
-> {
-  return {
-    format: ({ instruction, image, mimeType }) => {
-      return [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: instruction },
-            {
-              type: "image_url",
-              image_url: `data:${mimeType ?? "image/jpeg"};base64,${image}`,
-            },
-          ],
-        },
-      ];
     },
     stopSequences: [],
   };

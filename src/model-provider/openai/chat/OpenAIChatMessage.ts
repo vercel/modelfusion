@@ -47,8 +47,33 @@ export const OpenAIChatMessage = {
     return { role: "system", content };
   },
 
-  user(content: string): OpenAIChatMessage {
-    return { role: "user", content };
+  user(
+    content: string,
+    options?: {
+      name?: string;
+      image?: {
+        base64Content: string;
+        mimeType?: string;
+      };
+    }
+  ): OpenAIChatMessage {
+    if (options?.image != null) {
+      return {
+        role: "user",
+        content: [
+          { type: "text", text: content },
+          {
+            type: "image_url",
+            image_url: `data:${options.image.mimeType ?? "image/jpeg"};base64,${
+              options.image.base64Content
+            }`,
+          },
+        ],
+        name: options.name,
+      };
+    }
+
+    return { role: "user", content, name: options?.name };
   },
 
   assistant(content: string): OpenAIChatMessage {
