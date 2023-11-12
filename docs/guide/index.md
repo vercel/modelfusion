@@ -18,9 +18,7 @@ sidebar_position: 0
 ## Installation
 
 :::note
-
 ModelFusion is in its initial development phase. The main API is now mostly stable, but until version 1.0 there may be minor breaking changes. Feedback and suggestions are welcome.
-
 :::
 
 ```sh

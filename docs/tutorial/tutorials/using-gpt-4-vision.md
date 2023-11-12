@@ -1,10 +1,16 @@
-# Using OpenAI GPT-4 Turbo Vision with ModelFusion
+---
+sidebar_position: 5
+---
+
+# Using GPT-4 Vision
 
 GPT-4 Turbo Vision is a powerful tool for processing images and text in the same prompt. This section will guide you through setting up a basic example to describe an image in detail using ModelFusion.
 
-> **Note:** To use the OpenAI GPT-4 Vision with ModelFusion, you need to have an [OpenAI API key](https://platform.openai.com/) and access to the `gpt-4-vision-preview` model.
+:::note
+To use the OpenAI GPT-4 Vision with ModelFusion, you need to have an [OpenAI API key](https://platform.openai.com/) and access to the `gpt-4-vision-preview` model.
+:::
 
-## Reading the Image
+#### Reading the Image
 
 Before we can process an image, we first need to read it into our program. In the following snippet, we're reading an image file from the `data` directory and encoding it as a base64 string:
 
@@ -17,7 +23,7 @@ const image = fs.readFileSync(path.join("data", "example-image.png"), {
 });
 ```
 
-## Call the Model
+#### Call the Model
 
 Now that we have our image encoded, we can call the OpenAI GPT-4 Vision model to process the image and provide a detailed description:
 
@@ -25,12 +31,10 @@ Now that we have our image encoded, we can call the OpenAI GPT-4 Vision model to
 import { OpenAIChatModel, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  // model:
   new OpenAIChatModel({
     model: "gpt-4-vision-preview",
     maxCompletionTokens: 1000,
   }),
-  // chat prompt:
   [
     OpenAIChatMessage.user("Describe the image in detail:", {
       image: { base64Content: image, mimeType: "image/png" },
@@ -39,7 +43,7 @@ const textStream = await streamText(
 );
 ```
 
-## Alternative: Use an instruction prompt
+#### Alternative: Use an instruction prompt
 
 Alternatively, you can use the `withInstructionPrompt()` method which allows you to use an abstracted prompt format for a single instruction:
 
@@ -56,7 +60,7 @@ const textStream = await streamText(
 );
 ```
 
-## Stream the Output to the Terminal
+#### Stream the Output to the Terminal
 
 Once we have our image processed by the model, we can stream the output directly to the terminal:
 
