@@ -17,9 +17,10 @@ export function parseJsonStream<T>({
 
   return (async () => {
     try {
-      let unprocessedText = "";
       const reader = new ReadableStreamDefaultReader(stream);
       const utf8Decoder = new TextDecoder("utf-8");
+
+      let unprocessedText = "";
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -31,9 +32,9 @@ export function parseJsonStream<T>({
 
         unprocessedText += utf8Decoder.decode(chunk, { stream: true });
 
-        const processableLines = unprocessedText.split(/\r\n|\n|\r/g);
+        const processableLines = unprocessedText.split("\n");
 
-        unprocessedText = processableLines.pop() || "";
+        unprocessedText = processableLines.pop() ?? "";
 
         processableLines.forEach(processLine);
       }
