@@ -39,8 +39,6 @@ const textStream = await streamText(
 );
 ```
 
-In the `image_url` field, we're providing the image data as [data URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs). This allows us to pass the image data directly to the model without needing to serve it from a web server.
-
 ## Alternative: Use an instruction prompt
 
 Alternatively, you can use the `withInstructionPrompt()` method which allows you to use an abstracted prompt format for a single instruction:
