@@ -26,7 +26,7 @@ import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStr
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
-import { ZodSchema } from "../../core/structure/ZodSchema.js";
+import { ZodSchema } from "../../core/schema/ZodSchema.js";
 
 /**
  * @see https://platform.openai.com/docs/models/

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/structure/ZodSchema.js";
+import { ZodSchema } from "../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../util/parseJSON.js";
 
 export const stabilityErrorDataSchema = new ZodSchema(

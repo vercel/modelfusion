@@ -1,4 +1,4 @@
-import { Schema } from "../core/structure/Schema.js";
+import { Schema } from "../core/schema/Schema.js";
 import { ErrorHandler } from "../util/ErrorHandler.js";
 import { safeParseJSON } from "../util/parseJSON.js";
 import { AsyncQueue } from "../util/AsyncQueue.js";

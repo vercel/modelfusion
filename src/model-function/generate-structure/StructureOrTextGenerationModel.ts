@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
+import { StructureDefinition } from "../../core/schema/StructureDefinition.js";
 import { Model, ModelSettings } from "../Model.js";
 
 export interface StructureOrTextGenerationModelSettings extends ModelSettings {}

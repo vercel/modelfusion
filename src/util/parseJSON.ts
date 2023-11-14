@@ -1,5 +1,5 @@
 import SecureJSON from "secure-json-parse";
-import { Schema } from "../core/structure/Schema.js";
+import { Schema } from "../core/schema/Schema.js";
 import { JSONParseError } from "./JSONParseError.js";
 
 export function parseJSON({

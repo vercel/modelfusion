@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { StructureDefinition } from "../../core/structure/StructureDefinition.js";
+import { StructureDefinition } from "../../core/schema/StructureDefinition.js";
 import { executeStandardCall } from "../executeStandardCall.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { NoSuchStructureError } from "./NoSuchStructureError.js";

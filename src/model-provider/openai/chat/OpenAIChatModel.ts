@@ -8,7 +8,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../core/api/postToApi.js";
-import { StructureDefinition } from "../../../core/structure/StructureDefinition.js";
+import { StructureDefinition } from "../../../core/schema/StructureDefinition.js";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { Delta } from "../../../model-function/Delta.js";
 import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";

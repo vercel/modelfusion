@@ -25,7 +25,7 @@ import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
-import { ZodSchema } from "../../core/structure/ZodSchema.js";
+import { ZodSchema } from "../../core/schema/ZodSchema.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {

@@ -11,4 +11,4 @@ export * from "./Vector.js";
 export * from "./api/index.js";
 export * from "./executeFunction.js";
 export * from "./getRun.js";
-export * from "./structure/index.js";
+export * from "./schema/index.js";

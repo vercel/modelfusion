@@ -1,4 +1,4 @@
-import { Schema } from "../core/structure/Schema.js";
+import { Schema } from "../core/schema/Schema.js";
 import { safeParseJSON } from "../util/parseJSON.js";
 
 export function readEventSource<T>({

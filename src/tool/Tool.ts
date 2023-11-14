@@ -1,7 +1,7 @@
 import { FunctionOptions } from "../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../core/structure/JsonSchemaProducer.js";
-import { Schema } from "../core/structure/Schema.js";
-import { StructureDefinition } from "../core/structure/StructureDefinition.js";
+import { JsonSchemaProducer } from "../core/schema/JsonSchemaProducer.js";
+import { Schema } from "../core/schema/Schema.js";
+import { StructureDefinition } from "../core/schema/StructureDefinition.js";
 import { InvalidToolNameError } from "./InvalidToolNameError.js";
 
 const namePattern = /^[a-zA-Z0-9_-]{1,64}$/;

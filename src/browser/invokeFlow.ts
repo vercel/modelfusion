@@ -1,4 +1,4 @@
-import { ZodSchema } from "../core/structure/ZodSchema";
+import { ZodSchema } from "../core/schema/ZodSchema";
 import { FlowSchema } from "../server/fastify/FlowSchema";
 import { readEventSource } from "./readEventSource";
 

@@ -17,7 +17,7 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { ZodSchema } from "../../core/structure/ZodSchema.js";
+import { ZodSchema } from "../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../util/parseJSON.js";
 import { AnthropicApiConfiguration } from "./AnthropicApiConfiguration.js";
 import { failedAnthropicCallResponseHandler } from "./AnthropicError.js";
