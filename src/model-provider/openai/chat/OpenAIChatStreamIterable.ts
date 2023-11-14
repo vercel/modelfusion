@@ -2,7 +2,7 @@ import { z } from "zod";
 import { AsyncQueue } from "../../../util/AsyncQueue.js";
 import { parseEventSourceStream } from "../../../util/streaming/parseEventSourceStream.js";
 import { Delta } from "../../../model-function/Delta.js";
-import { safeParseJSON } from "../../../util/parseJSON.js";
+import { safeParseJSON } from "../../../core/schema/parseJSON.js";
 import { ZodSchema } from "../../../core/schema/ZodSchema.js";
 
 const chatResponseStreamEventSchema = new ZodSchema(

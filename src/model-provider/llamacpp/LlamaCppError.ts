@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
-import { parseJSON } from "../../util/parseJSON.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
 
 export const llamaCppErrorDataSchema = new ZodSchema(

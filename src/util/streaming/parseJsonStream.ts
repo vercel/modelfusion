@@ -1,5 +1,5 @@
 import { Schema } from "../../core/schema/Schema.js";
-import { parseJSON } from "../parseJSON.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 
 export function parseJsonStream<T>({
   schema,

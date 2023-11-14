@@ -1,5 +1,5 @@
 import { Schema } from "../core/schema/Schema.js";
-import { safeParseJSON } from "../util/parseJSON.js";
+import { safeParseJSON } from "../core/schema/parseJSON.js";
 
 export function readEventSource<T>({
   url,

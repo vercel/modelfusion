@@ -17,7 +17,7 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseJSON } from "../../util/parseJSON.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";

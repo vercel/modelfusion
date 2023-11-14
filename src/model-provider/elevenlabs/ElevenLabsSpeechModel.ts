@@ -15,7 +15,7 @@ import {
 } from "../../model-function/generate-speech/SpeechGenerationModel.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
-import { safeParseJSON } from "../../util/parseJSON.js";
+import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 

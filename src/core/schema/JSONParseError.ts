@@ -1,4 +1,4 @@
-import { getErrorMessage } from "./getErrorMessage.js";
+import { getErrorMessage } from "../../util/getErrorMessage.js";
 
 export class JSONParseError extends Error {
   readonly structureName: string;

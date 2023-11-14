@@ -21,7 +21,7 @@ import {
 } from "../../model-function/generate-text/prompt-format/TextPromptFormat.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseJSON } from "../../util/parseJSON.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";

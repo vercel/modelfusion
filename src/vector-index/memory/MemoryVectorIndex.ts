@@ -3,7 +3,7 @@ import { Vector } from "../../core/Vector.js";
 import { Schema } from "../../core/schema/Schema.js";
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
 import { cosineSimilarity } from "../../util/cosineSimilarity.js";
-import { parseJSON } from "../../util/parseJSON.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { VectorIndex } from "../VectorIndex.js";
 
 type Entry<DATA> = {
