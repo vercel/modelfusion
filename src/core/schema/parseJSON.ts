@@ -8,13 +8,7 @@ import { Schema } from "./Schema.js";
  * @param text - The JSON string to parse.
  * @returns {unknown} - The parsed JSON object.
  */
-export function parseJSON({
-  text,
-  schema,
-}: {
-  text: string;
-  schema?: undefined;
-}): unknown;
+export function parseJSON({ text }: { text: string }): unknown;
 /**
  * Parses a JSON string into a strongly-typed object using the provided schema.
  *
@@ -68,10 +62,8 @@ export function parseJSON<T>({
  */
 export function safeParseJSON({
   text,
-  schema,
 }: {
   text: string;
-  schema?: undefined;
 }):
   | { success: true; data: unknown }
   | { success: false; error: JSONParseError };
