@@ -3,7 +3,8 @@ import {
   OllamaTextGenerationModel,
   StructureDefinition,
   StructureFromTextGenerationModel,
-  parseJsonWithZod,
+  ZodSchema,
+  parseJSON,
   useTool,
 } from "modelfusion";
 import { z } from "zod";
@@ -12,10 +13,12 @@ import { calculator } from "../../tool/calculator-tool";
 dotenv.config();
 
 // schema for prompt
-const FunctionSchema = z.object({
-  function: z.string(),
-  params: z.any(),
-});
+const FunctionSchema = new ZodSchema(
+  z.object({
+    function: z.string(),
+    params: z.any(),
+  })
+);
 
 class CalculatorFunctionPromptFormat<STRUCTURE> {
   createPrompt(
@@ -47,7 +50,7 @@ class CalculatorFunctionPromptFormat<STRUCTURE> {
   }
 
   extractStructure(response: string): unknown {
-    const json = parseJsonWithZod(response, FunctionSchema);
+    const json = parseJSON({ text: response, schema: FunctionSchema });
     return json.params;
   }
 }

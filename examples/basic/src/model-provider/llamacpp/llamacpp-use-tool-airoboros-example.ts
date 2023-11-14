@@ -3,7 +3,8 @@ import {
   LlamaCppTextGenerationModel,
   StructureDefinition,
   StructureFromTextGenerationModel,
-  parseJsonWithZod,
+  ZodSchema,
+  parseJSON,
   useTool,
 } from "modelfusion";
 import { z } from "zod";
@@ -12,10 +13,12 @@ import { calculator } from "../../tool/calculator-tool";
 dotenv.config();
 
 // schema is specific to airoboros prompt
-const airoborosFunctionSchema = z.object({
-  function: z.string(),
-  params: z.any(),
-});
+const airoborosFunctionSchema = new ZodSchema(
+  z.object({
+    function: z.string(),
+    params: z.any(),
+  })
+);
 
 // Prompt for Airoboros L2 13B GPT4 2.0:
 // https://huggingface.co/TheBloke/airoboros-l2-13b-gpt4-2.0-GGML
@@ -53,10 +56,10 @@ class AiroborosFunctionPromptFormat<STRUCTURE> {
   }
 
   extractStructure(response: string): unknown {
-    const json = parseJsonWithZod(
-      this.prefix + response,
-      airoborosFunctionSchema
-    );
+    const json = parseJSON({
+      text: this.prefix + response,
+      schema: airoborosFunctionSchema,
+    });
 
     return json.params;
   }

@@ -2,9 +2,10 @@ import dotenv from "dotenv";
 import {
   OllamaTextGenerationModel,
   StructureFromTextGenerationModel,
+  ZodSchema,
   ZodStructureDefinition,
   generateStructure,
-  parseJsonWithZod,
+  parseJSON,
   setGlobalFunctionLogging,
 } from "modelfusion";
 import { z } from "zod";
@@ -14,19 +15,21 @@ dotenv.config();
 setGlobalFunctionLogging("detailed-object");
 
 async function main() {
-  const heros = z.array(
-    z.object({
-      name: z.string().describe("The name of the hero"),
-      race: z
-        .string()
-        .describe("The race of the hero, e.g. human, elf, dwarf, etc."),
-      class: z
-        .string()
-        .describe("The class of the hero, e.g. warrior, mage, etc."),
-      age: z.number().int().positive().describe("The age of the hero"),
-      gender: z.string().describe("The gender of the hero"),
-      backstory: z.string().describe("The backstory of the hero"),
-    })
+  const heros = new ZodSchema(
+    z.array(
+      z.object({
+        name: z.string().describe("The name of the hero"),
+        race: z
+          .string()
+          .describe("The race of the hero, e.g. human, elf, dwarf, etc."),
+        class: z
+          .string()
+          .describe("The class of the hero, e.g. warrior, mage, etc."),
+        age: z.number().int().positive().describe("The age of the hero"),
+        gender: z.string().describe("The gender of the hero"),
+        backstory: z.string().describe("The backstory of the hero"),
+      })
+    )
   );
 
   const result = await generateStructure(
@@ -48,7 +51,7 @@ async function main() {
           );
         },
         extractStructure: (response) => {
-          return parseJsonWithZod(response, heros);
+          return parseJSON({ text: response, schema: heros });
         },
       },
     }),
