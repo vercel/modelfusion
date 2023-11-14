@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.68.0 - 2023-11-14
+
+### Changed
+
+- Refactored JSON parsing to use abstracted schemas. You can now use `parseJSON` and `safeParseJSON` to securely parse JSON objects and optionally type-check them using any schema (e.g. a Zod schema).
+
 ## v0.67.0 - 2023-11-12
 
 ### Added
