@@ -1,5 +1,5 @@
 import { Schema } from "../core/structure/Schema.js";
-import { safeParseJsonWithSchema } from "../util/parseJSON.js";
+import { safeParseJSON } from "../util/parseJSON.js";
 
 export function readEventSource<T>({
   url,
@@ -26,7 +26,7 @@ export function readEventSource<T>({
         return;
       }
 
-      const parseResult = safeParseJsonWithSchema(event.data, schema);
+      const parseResult = safeParseJSON({ text: event.data, schema });
 
       if (!parseResult.success) {
         onError(parseResult.error, eventSource);

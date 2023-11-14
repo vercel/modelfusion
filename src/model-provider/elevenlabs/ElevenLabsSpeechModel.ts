@@ -6,15 +6,16 @@ import {
   createAudioMpegResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import {
-  StreamingSpeechGenerationModel,
   SpeechGenerationModelSettings,
+  StreamingSpeechGenerationModel,
 } from "../../model-function/generate-speech/SpeechGenerationModel.js";
+import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
-import { safeParseJsonWithZod } from "../../util/parseJSON.js";
+import { safeParseJSON } from "../../util/parseJSON.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 
@@ -61,6 +62,30 @@ export interface ElevenLabsSpeechModelSettings
     chunkLengthSchedule: number[];
   };
 }
+
+const streamingResponseSchema = new ZodSchema(
+  z.union([
+    z.object({
+      audio: z.string(),
+      isFinal: z.literal(false).nullable(),
+      normalizedAlignment: z
+        .object({
+          chars: z.array(z.string()),
+          charStartTimesMs: z.array(z.number()),
+          charDurationsMs: z.array(z.number()),
+        })
+        .nullable(),
+    }),
+    z.object({
+      isFinal: z.literal(true),
+    }),
+    z.object({
+      message: z.string(),
+      error: z.string(),
+      code: z.number(),
+    }),
+  ])
+);
 
 /**
  * Synthesize speech using the ElevenLabs Text to Speech API.
@@ -119,28 +144,6 @@ export class ElevenLabsSpeechModel
     textStream: AsyncIterable<string>
     // options?: FunctionOptions | undefined
   ): Promise<AsyncIterable<Delta<Buffer>>> {
-    const responseSchema = z.union([
-      z.object({
-        audio: z.string(),
-        isFinal: z.literal(false).nullable(),
-        normalizedAlignment: z
-          .object({
-            chars: z.array(z.string()),
-            charStartTimesMs: z.array(z.number()),
-            charDurationsMs: z.array(z.number()),
-          })
-          .nullable(),
-      }),
-      z.object({
-        isFinal: z.literal(true),
-      }),
-      z.object({
-        message: z.string(),
-        error: z.string(),
-        code: z.number(),
-      }),
-    ]);
-
     const queue = new AsyncQueue<Delta<Buffer>>();
 
     const model = this.settings.model ?? defaultModel;
@@ -208,7 +211,10 @@ export class ElevenLabsSpeechModel
     };
 
     socket.onmessage = (event) => {
-      const parseResult = safeParseJsonWithZod(event.data, responseSchema);
+      const parseResult = safeParseJSON({
+        text: event.data,
+        schema: streamingResponseSchema,
+      });
 
       if (!parseResult.success) {
         queue.push({ type: "error", error: parseResult.error });

@@ -2,40 +2,43 @@ import { z } from "zod";
 import { AsyncQueue } from "../../../util/AsyncQueue.js";
 import { parseEventSourceStream } from "../../../util/streaming/parseEventSourceStream.js";
 import { Delta } from "../../../model-function/Delta.js";
-import { safeParseJsonWithZod } from "../../../util/parseJSON.js";
+import { safeParseJSON } from "../../../util/parseJSON.js";
+import { ZodSchema } from "../../../core/structure/ZodSchema.js";
 
-const chatResponseStreamEventSchema = z.object({
-  id: z.string(),
-  choices: z.array(
-    z.object({
-      delta: z.object({
-        role: z.enum(["assistant", "user"]).optional(),
-        content: z.string().nullable().optional(),
-        function_call: z
-          .object({
-            name: z.string().optional(),
-            arguments: z.string().optional(),
-          })
+const chatResponseStreamEventSchema = new ZodSchema(
+  z.object({
+    id: z.string(),
+    choices: z.array(
+      z.object({
+        delta: z.object({
+          role: z.enum(["assistant", "user"]).optional(),
+          content: z.string().nullable().optional(),
+          function_call: z
+            .object({
+              name: z.string().optional(),
+              arguments: z.string().optional(),
+            })
+            .optional(),
+        }),
+        finish_reason: z
+          .enum([
+            "stop",
+            "length",
+            "tool_calls",
+            "content_filter",
+            "function_call",
+          ])
+          .nullable()
           .optional(),
-      }),
-      finish_reason: z
-        .enum([
-          "stop",
-          "length",
-          "tool_calls",
-          "content_filter",
-          "function_call",
-        ])
-        .nullable()
-        .optional(),
-      index: z.number(),
-    })
-  ),
-  created: z.number(),
-  model: z.string(),
-  system_fingerprint: z.string().optional(),
-  object: z.literal("chat.completion.chunk"),
-});
+        index: z.number(),
+      })
+    ),
+    created: z.number(),
+    model: z.string(),
+    system_fingerprint: z.string().optional(),
+    object: z.literal("chat.completion.chunk"),
+  })
+);
 
 export type OpenAIChatDelta = Array<{
   role: "assistant" | "user" | undefined;
@@ -74,10 +77,10 @@ export async function createOpenAIChatDeltaIterableQueue<VALUE>(
             return;
           }
 
-          const parseResult = safeParseJsonWithZod(
-            data,
-            chatResponseStreamEventSchema
-          );
+          const parseResult = safeParseJSON({
+            text: data,
+            schema: chatResponseStreamEventSchema,
+          });
 
           if (!parseResult.success) {
             queue.push({

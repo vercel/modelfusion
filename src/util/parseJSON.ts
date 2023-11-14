@@ -5,23 +5,49 @@ import { JSONParseError } from "./JSONParseError.js";
 
 export function parseJsonWithZod<T>(json: string, schema: z.Schema<T>) {
   try {
-    const parsedJson = SecureJSON.parse(json) as unknown;
-    return schema.parse(parsedJson);
+    return schema.parse(SecureJSON.parse(json) as unknown);
   } catch (error) {
     throw new JSONParseError({
-      valueText: json,
+      text: json,
       cause: error,
     });
   }
 }
 
-export function safeParseJsonWithZod<T>(
-  json: string,
-  schema: z.Schema<T>
-): { success: true; data: T } | { success: false; error: JSONParseError } {
+export function safeParseJSON({
+  text,
+  schema,
+}: {
+  text: string;
+  schema?: undefined;
+}):
+  | { success: true; data: unknown }
+  | { success: false; error: JSONParseError };
+export function safeParseJSON<T>({
+  text,
+  schema,
+}: {
+  text: string;
+  schema: Schema<T>;
+}): { success: true; data: T } | { success: false; error: JSONParseError };
+export function safeParseJSON<T>({
+  text,
+  schema,
+}: {
+  text: string;
+  schema?: Schema<T>;
+}): { success: true; data: T } | { success: false; error: JSONParseError } {
   try {
-    const parsedJson = SecureJSON.parse(json) as unknown;
-    const validationResult = schema.safeParse(parsedJson);
+    const json = SecureJSON.parse(text);
+
+    if (schema == null) {
+      return {
+        success: true,
+        data: json as T,
+      };
+    }
+
+    const validationResult = schema.validate(json);
 
     if (validationResult.success) {
       return validationResult;
@@ -29,42 +55,15 @@ export function safeParseJsonWithZod<T>(
 
     return {
       success: false,
-      error: new JSONParseError({
-        valueText: json,
-        cause: validationResult.error,
-      }),
+      error: new JSONParseError({ text, cause: validationResult.error }),
     };
   } catch (error) {
-    throw new JSONParseError({
-      valueText: json,
-      cause: error,
-    });
-  }
-}
-
-export function safeParseJsonWithSchema<T>(
-  json: string,
-  schema: Schema<T>
-): { success: true; data: T } | { success: false; error: JSONParseError } {
-  try {
-    const parsedJson = SecureJSON.parse(json) as unknown;
-    const validationResult = schema.validate(parsedJson);
-
-    if (validationResult.success) {
-      return validationResult;
-    }
-
     return {
       success: false,
-      error: new JSONParseError({
-        valueText: json,
-        cause: validationResult.error,
-      }),
+      error:
+        error instanceof JSONParseError
+          ? error
+          : new JSONParseError({ text, cause: error }),
     };
-  } catch (error) {
-    throw new JSONParseError({
-      valueText: json,
-      cause: error,
-    });
   }
 }
