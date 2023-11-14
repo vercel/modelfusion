@@ -16,10 +16,10 @@ export class ZodStructureDefinition<NAME extends string, STRUCTURE>
   }: {
     name: NAME;
     description?: string;
-    schema: z.Schema<STRUCTURE>;
+    schema: z.Schema<STRUCTURE> | ZodSchema<STRUCTURE>;
   }) {
     this.name = name;
     this.description = description;
-    this.schema = new ZodSchema(schema);
+    this.schema = schema instanceof ZodSchema ? schema : new ZodSchema(schema);
   }
 }
