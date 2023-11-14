@@ -17,7 +17,8 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
+import { parseJSON } from "../../util/parseJSON.js";
 import { AnthropicApiConfiguration } from "./AnthropicApiConfiguration.js";
 import { failedAnthropicCallResponseHandler } from "./AnthropicError.js";
 import {
@@ -237,11 +238,13 @@ async function callAnthropicTextGenerationAPI<RESPONSE>({
   });
 }
 
-const anthropicTextStreamingResponseSchema = z.object({
-  completion: z.string(),
-  stop_reason: z.string().nullable(),
-  model: z.string(),
-});
+const anthropicTextStreamingResponseSchema = new ZodSchema(
+  z.object({
+    completion: z.string(),
+    stop_reason: z.string().nullable(),
+    model: z.string(),
+  })
+);
 
 async function createAnthropicFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
@@ -267,10 +270,10 @@ async function createAnthropicFullDeltaIterableQueue(
 
           const data = event.data;
 
-          const eventData = parseJsonWithZod(
-            data,
-            anthropicTextStreamingResponseSchema
-          );
+          const eventData = parseJSON({
+            text: data,
+            schema: anthropicTextStreamingResponseSchema,
+          });
 
           content += eventData.completion;
 

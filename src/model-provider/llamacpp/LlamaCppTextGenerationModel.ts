@@ -7,8 +7,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
@@ -17,7 +16,9 @@ import {
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { AsyncQueue } from "../../util/AsyncQueue.js";
+import { parseJSON } from "../../util/parseJSON.js";
+import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
@@ -282,13 +283,15 @@ export type LlamaCppTextGenerationResponse = z.infer<
   typeof llamaCppTextGenerationResponseSchema
 >;
 
-const llamaCppTextStreamingResponseSchema = z.discriminatedUnion("stop", [
-  z.object({
-    content: z.string(),
-    stop: z.literal(false),
-  }),
-  llamaCppTextGenerationResponseSchema,
-]);
+const llamaCppTextStreamingResponseSchema = new ZodSchema(
+  z.discriminatedUnion("stop", [
+    z.object({
+      content: z.string(),
+      stop: z.literal(false),
+    }),
+    llamaCppTextGenerationResponseSchema,
+  ])
+);
 
 async function callLlamaCppTextGenerationAPI<RESPONSE>({
   api = new LlamaCppApiConfiguration(),
@@ -392,10 +395,10 @@ async function createLlamaCppFullDeltaIterableQueue(
         for await (const event of events) {
           const data = event.data;
 
-          const eventData = parseJsonWithZod(
-            data,
-            llamaCppTextStreamingResponseSchema
-          );
+          const eventData = parseJSON({
+            text: data,
+            schema: llamaCppTextStreamingResponseSchema,
+          });
 
           content += eventData.content;
 

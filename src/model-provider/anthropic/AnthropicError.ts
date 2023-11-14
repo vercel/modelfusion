@@ -1,16 +1,19 @@
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
+import { parseJSON } from "../../util/parseJSON.js";
 
-export const anthropicErrorDataSchema = z.object({
-  error: z.object({
-    type: z.string(),
-    message: z.string(),
-  }),
-});
+export const anthropicErrorDataSchema = new ZodSchema(
+  z.object({
+    error: z.object({
+      type: z.string(),
+      message: z.string(),
+    }),
+  })
+);
 
-export type AnthropicErrorData = z.infer<typeof anthropicErrorDataSchema>;
+export type AnthropicErrorData = (typeof anthropicErrorDataSchema)["_type"];
 
 export class AnthropicError extends ApiCallError {
   public readonly data: AnthropicErrorData;
@@ -41,5 +44,8 @@ export const failedAnthropicCallResponseHandler: ResponseHandler<
     url,
     requestBodyValues,
     statusCode: response.status,
-    data: parseJsonWithZod(await response.text(), anthropicErrorDataSchema),
+    data: parseJSON({
+      text: await response.text(),
+      schema: anthropicErrorDataSchema,
+    }),
   });

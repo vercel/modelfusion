@@ -1,13 +1,16 @@
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
+import { parseJSON } from "../../util/parseJSON.js";
 
-export const stabilityErrorDataSchema = z.object({
-  message: z.string(),
-});
+export const stabilityErrorDataSchema = new ZodSchema(
+  z.object({
+    message: z.string(),
+  })
+);
 
-export type StabilityErrorData = z.infer<typeof stabilityErrorDataSchema>;
+export type StabilityErrorData = (typeof stabilityErrorDataSchema)["_type"];
 
 export class StabilityError extends ApiCallError {
   public readonly data: StabilityErrorData;
@@ -35,7 +38,10 @@ export const failedStabilityCallResponseHandler: ResponseHandler<
   ApiCallError
 > = async ({ response, url, requestBodyValues }) => {
   const responseBody = await response.text();
-  const parsedError = parseJsonWithZod(responseBody, stabilityErrorDataSchema);
+  const parsedError = parseJSON({
+    text: responseBody,
+    schema: stabilityErrorDataSchema,
+  });
 
   return new StabilityError({
     url,

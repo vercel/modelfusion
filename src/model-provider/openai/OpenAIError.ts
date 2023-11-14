@@ -1,18 +1,21 @@
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
+import { parseJSON } from "../../util/parseJSON.js";
 
-export const openAIErrorDataSchema = z.object({
-  error: z.object({
-    message: z.string(),
-    type: z.string(),
-    param: z.any().nullable(),
-    code: z.string().nullable(),
-  }),
-});
+export const openAIErrorDataSchema = new ZodSchema(
+  z.object({
+    error: z.object({
+      message: z.string(),
+      type: z.string(),
+      param: z.any().nullable(),
+      code: z.string().nullable(),
+    }),
+  })
+);
 
-export type OpenAIErrorData = z.infer<typeof openAIErrorDataSchema>;
+export type OpenAIErrorData = (typeof openAIErrorDataSchema)["_type"];
 
 export class OpenAIError extends ApiCallError {
   public readonly data?: OpenAIErrorData;
@@ -53,7 +56,10 @@ export const failedOpenAICallResponseHandler: ResponseHandler<
 
   // resilient parsing in case the response is not JSON or does not match the schema:
   try {
-    const parsedError = parseJsonWithZod(responseBody, openAIErrorDataSchema);
+    const parsedError = parseJSON({
+      text: responseBody,
+      schema: openAIErrorDataSchema,
+    });
 
     return new OpenAIError({
       url,

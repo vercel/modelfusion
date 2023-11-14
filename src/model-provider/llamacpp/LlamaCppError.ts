@@ -1,13 +1,16 @@
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { parseJSON } from "../../util/parseJSON.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
 
-export const llamaCppErrorDataSchema = z.object({
-  error: z.string(),
-});
+export const llamaCppErrorDataSchema = new ZodSchema(
+  z.object({
+    error: z.string(),
+  })
+);
 
-export type LlamaCppErrorData = z.infer<typeof llamaCppErrorDataSchema>;
+export type LlamaCppErrorData = (typeof llamaCppErrorDataSchema)["_type"];
 
 export class LlamaCppError extends ApiCallError {
   public readonly data: LlamaCppErrorData;
@@ -38,5 +41,8 @@ export const failedLlamaCppCallResponseHandler: ResponseHandler<
     url,
     requestBodyValues,
     statusCode: response.status,
-    data: parseJsonWithZod(await response.text(), llamaCppErrorDataSchema),
+    data: parseJSON({
+      text: await response.text(),
+      schema: llamaCppErrorDataSchema,
+    }),
   });

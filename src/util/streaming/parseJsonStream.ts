@@ -1,4 +1,5 @@
-import { parseJsonWithZod } from "../parseJSON.js";
+import { Schema } from "../../core/structure/Schema.js";
+import { parseJSON } from "../parseJSON.js";
 
 export function parseJsonStream<T>({
   schema,
@@ -6,13 +7,13 @@ export function parseJsonStream<T>({
   process,
   onDone,
 }: {
-  schema: Zod.Schema<T>;
+  schema: Schema<T>;
   stream: ReadableStream<Uint8Array>;
   process: (event: T) => void;
   onDone?: () => void;
 }) {
   function processLine(line: string) {
-    process(parseJsonWithZod(line, schema));
+    process(parseJSON({ text: line, schema }));
   }
 
   return (async () => {

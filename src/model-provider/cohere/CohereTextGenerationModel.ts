@@ -25,6 +25,7 @@ import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
@@ -315,17 +316,19 @@ export type CohereTextGenerationDelta = {
   delta: string;
 };
 
-const cohereTextStreamingResponseSchema = z.discriminatedUnion("is_finished", [
-  z.object({
-    text: z.string(),
-    is_finished: z.literal(false),
-  }),
-  z.object({
-    is_finished: z.literal(true),
-    finish_reason: z.string(),
-    response: cohereTextGenerationResponseSchema,
-  }),
-]);
+const cohereTextStreamingResponseSchema = new ZodSchema(
+  z.discriminatedUnion("is_finished", [
+    z.object({
+      text: z.string(),
+      is_finished: z.literal(false),
+    }),
+    z.object({
+      is_finished: z.literal(true),
+      finish_reason: z.string(),
+      response: cohereTextGenerationResponseSchema,
+    }),
+  ])
+);
 
 async function createCohereTextGenerationFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>

@@ -1,18 +1,20 @@
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
+import { parseJSON } from "../../util/parseJSON.js";
 
-export const automatic1111ErrorDataSchema = z.object({
-  error: z.string(),
-  detail: z.string(),
-  body: z.string(),
-  errors: z.string(),
-});
+export const automatic1111ErrorDataSchema = new ZodSchema(
+  z.object({
+    error: z.string(),
+    detail: z.string(),
+    body: z.string(),
+    errors: z.string(),
+  })
+);
 
-export type Automatic1111ErrorData = z.infer<
-  typeof automatic1111ErrorDataSchema
->;
+export type Automatic1111ErrorData =
+  (typeof automatic1111ErrorDataSchema)["_type"];
 
 export class Automatic1111Error extends ApiCallError {
   public readonly data: Automatic1111ErrorData;
@@ -41,10 +43,10 @@ export const failedAutomatic1111CallResponseHandler: ResponseHandler<
 > = async ({ response, url, requestBodyValues }) => {
   const responseBody = await response.text();
 
-  const parsedError = parseJsonWithZod(
-    responseBody,
-    automatic1111ErrorDataSchema
-  );
+  const parsedError = parseJSON({
+    text: responseBody,
+    schema: automatic1111ErrorDataSchema,
+  });
 
   return new Automatic1111Error({
     url,

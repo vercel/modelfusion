@@ -1,16 +1,48 @@
 import SecureJSON from "secure-json-parse";
-import { z } from "zod";
 import { Schema } from "../core/structure/Schema.js";
 import { JSONParseError } from "./JSONParseError.js";
 
-export function parseJsonWithZod<T>(json: string, schema: z.Schema<T>) {
+export function parseJSON({
+  text,
+  schema,
+}: {
+  text: string;
+  schema?: undefined;
+}): unknown;
+export function parseJSON<T>({
+  text,
+  schema,
+}: {
+  text: string;
+  schema: Schema<T>;
+}): T;
+export function parseJSON<T>({
+  text,
+  schema,
+}: {
+  text: string;
+  schema?: Schema<T>;
+}): T {
   try {
-    return schema.parse(SecureJSON.parse(json) as unknown);
+    const json = SecureJSON.parse(text);
+
+    if (schema == null) {
+      return json;
+    }
+
+    const validationResult = schema.validate(json);
+
+    if (!validationResult.success) {
+      throw new JSONParseError({ text, cause: validationResult.error });
+    }
+
+    return validationResult.data;
   } catch (error) {
-    throw new JSONParseError({
-      text: json,
-      cause: error,
-    });
+    if (error instanceof JSONParseError) {
+      throw error;
+    }
+
+    throw new JSONParseError({ text, cause: error });
   }
 }
 

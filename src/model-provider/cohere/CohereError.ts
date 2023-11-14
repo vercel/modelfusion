@@ -1,13 +1,16 @@
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
+import { parseJSON } from "../../util/parseJSON.js";
 
-export const cohereErrorDataSchema = z.object({
-  message: z.string(),
-});
+export const cohereErrorDataSchema = new ZodSchema(
+  z.object({
+    message: z.string(),
+  })
+);
 
-export type CohereErrorData = z.infer<typeof cohereErrorDataSchema>;
+export type CohereErrorData = (typeof cohereErrorDataSchema)["_type"];
 
 export class CohereError extends ApiCallError {
   public readonly data: CohereErrorData;
@@ -48,7 +51,10 @@ export const failedCohereCallResponseHandler: ResponseHandler<
     });
   }
 
-  const parsedError = parseJsonWithZod(responseBody, cohereErrorDataSchema);
+  const parsedError = parseJSON({
+    text: responseBody,
+    schema: cohereErrorDataSchema,
+  });
 
   return new CohereError({
     url,

@@ -21,11 +21,12 @@ import {
 } from "../../model-function/generate-text/prompt-format/TextPromptFormat.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseJsonWithZod } from "../../util/parseJSON.js";
+import { parseJSON } from "../../util/parseJSON.js";
 import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
 
 /**
  * @see https://platform.openai.com/docs/models/
@@ -492,23 +493,25 @@ export const OpenAITextResponseFormat = {
   } satisfies OpenAITextResponseFormatType<AsyncIterable<Delta<string>>>,
 };
 
-const textResponseStreamEventSchema = z.object({
-  choices: z.array(
-    z.object({
-      text: z.string(),
-      finish_reason: z
-        .enum(["stop", "length", "content_filter"])
-        .optional()
-        .nullable(),
-      index: z.number(),
-    })
-  ),
-  created: z.number(),
-  id: z.string(),
-  model: z.string(),
-  system_fingerprint: z.string().optional(),
-  object: z.literal("text_completion"),
-});
+const textResponseStreamEventSchema = new ZodSchema(
+  z.object({
+    choices: z.array(
+      z.object({
+        text: z.string(),
+        finish_reason: z
+          .enum(["stop", "length", "content_filter"])
+          .optional()
+          .nullable(),
+        index: z.number(),
+      })
+    ),
+    created: z.number(),
+    id: z.string(),
+    model: z.string(),
+    system_fingerprint: z.string().optional(),
+    object: z.literal("text_completion"),
+  })
+);
 
 export type OpenAICompletionDelta = Array<{
   content: string;
@@ -534,10 +537,10 @@ async function createOpenAITextFullDeltaIterableQueue(
             return;
           }
 
-          const eventData = parseJsonWithZod(
-            data,
-            textResponseStreamEventSchema
-          );
+          const eventData = parseJSON({
+            text: data,
+            schema: textResponseStreamEventSchema,
+          });
 
           for (let i = 0; i < eventData.choices.length; i++) {
             const eventChoice = eventData.choices[i];

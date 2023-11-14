@@ -7,6 +7,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { ZodSchema } from "../../core/structure/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
@@ -291,28 +292,30 @@ export type OllamaTextGenerationResponse = z.infer<
   typeof ollamaTextGenerationResponseSchema
 >;
 
-const ollamaTextStreamingResponseSchema = z.discriminatedUnion("done", [
-  z.object({
-    done: z.literal(false),
-    model: z.string(),
-    created_at: z.string(),
-    response: z.string(),
-  }),
-  z.object({
-    done: z.literal(true),
-    model: z.string(),
-    created_at: z.string(),
-    total_duration: z.number(),
-    load_duration: z.number(),
-    sample_count: z.number().optional(),
-    sample_duration: z.number().optional(),
-    prompt_eval_count: z.number(),
-    prompt_eval_duration: z.number().optional(),
-    eval_count: z.number(),
-    eval_duration: z.number(),
-    context: z.array(z.number()),
-  }),
-]);
+const ollamaTextStreamingResponseSchema = new ZodSchema(
+  z.discriminatedUnion("done", [
+    z.object({
+      done: z.literal(false),
+      model: z.string(),
+      created_at: z.string(),
+      response: z.string(),
+    }),
+    z.object({
+      done: z.literal(true),
+      model: z.string(),
+      created_at: z.string(),
+      total_duration: z.number(),
+      load_duration: z.number(),
+      sample_count: z.number().optional(),
+      sample_duration: z.number().optional(),
+      prompt_eval_count: z.number(),
+      prompt_eval_duration: z.number().optional(),
+      eval_count: z.number(),
+      eval_duration: z.number(),
+      context: z.array(z.number()),
+    }),
+  ])
+);
 
 async function callOllamaTextGenerationAPI<RESPONSE>({
   api = new OllamaApiConfiguration(),
