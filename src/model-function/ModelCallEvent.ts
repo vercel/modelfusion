@@ -32,6 +32,10 @@ import {
   TextStreamingStartedEvent,
 } from "./generate-text/TextGenerationEvent.js";
 import {
+  ToolCallsGenerationFinishedEvent,
+  ToolCallsGenerationStartedEvent,
+} from "./generate-tool-calls/ToolCallsGenerationEvent.js";
+import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
 } from "./generate-transcription/TranscriptionEvent.js";
@@ -92,6 +96,7 @@ export type ModelCallStartedEvent =
   | StructureStreamingStartedEvent
   | TextGenerationStartedEvent
   | TextStreamingStartedEvent
+  | ToolCallsGenerationStartedEvent
   | TranscriptionStartedEvent;
 
 export type ModelCallFinishedEvent =
@@ -103,4 +108,5 @@ export type ModelCallFinishedEvent =
   | StructureStreamingFinishedEvent
   | TextGenerationFinishedEvent
   | TextStreamingFinishedEvent
+  | ToolCallsGenerationFinishedEvent
   | TranscriptionFinishedEvent;
