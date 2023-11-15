@@ -1,6 +1,6 @@
-import { ZodSchema } from "../core/schema/ZodSchema";
-import { FlowSchema } from "../server/fastify/FlowSchema";
-import { readEventSource } from "./readEventSource";
+import { ZodSchema } from "../core/schema/ZodSchema.js";
+import { FlowSchema } from "../server/fastify/FlowSchema.js";
+import { readEventSource } from "./readEventSource.js";
 
 export async function invokeFlow<INPUT, EVENT>({
   url,
