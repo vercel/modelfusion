@@ -23,8 +23,9 @@ export class JSONParseError extends Error {
       name: this.name,
       message: this.message,
       cause: this.cause,
-      valueText: this.text,
       stack: this.stack,
+
+      valueText: this.text,
     };
   }
 }
