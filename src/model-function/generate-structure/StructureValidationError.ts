@@ -30,4 +30,17 @@ export class StructureValidationError extends Error {
     this.value = value;
     this.valueText = valueText;
   }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      cause: this.cause,
+      stack: this.stack,
+
+      structureName: this.structureName,
+      value: this.value,
+      valueText: this.valueText,
+    };
+  }
 }
