@@ -9,6 +9,7 @@ import {
   postJsonToApi,
 } from "../../../core/api/postToApi.js";
 import { StructureDefinition } from "../../../core/schema/StructureDefinition.js";
+import { parseJSON } from "../../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { Delta } from "../../../model-function/Delta.js";
 import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
@@ -21,6 +22,8 @@ import {
   TextStreamingModel,
 } from "../../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { ToolCallDefinition } from "../../../model-function/generate-tool-call/ToolCallDefinition.js";
+import { ToolCallGenerationModel } from "../../../model-function/generate-tool-call/ToolCallGenerationModel.js";
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
@@ -221,6 +224,19 @@ export interface OpenAIChatCallSettings {
   }>;
   functionCall?: "none" | "auto" | { name: string };
 
+  tools?: Array<{
+    type: "function";
+    function: {
+      name: string;
+      description?: string;
+      parameters: unknown;
+    };
+  }>;
+  toolChoice?:
+    | "none"
+    | "auto"
+    | { type: "function"; function: { name: string } };
+
   stop?: string | string[];
   maxTokens?: number;
 
@@ -269,7 +285,8 @@ export class OpenAIChatModel
   implements
     TextStreamingModel<OpenAIChatMessage[], OpenAIChatSettings>,
     StructureGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
-    StructureOrTextGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
+    StructureOrTextGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
+    ToolCallGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
 {
   constructor(settings: OpenAIChatSettings) {
     super({ settings });
@@ -306,12 +323,10 @@ export class OpenAIChatModel
     options: {
       responseFormat: OpenAIChatResponseFormatType<RESULT>;
     } & FunctionOptions & {
-        functions?: Array<{
-          name: string;
-          description?: string;
-          parameters: unknown;
-        }>;
-        functionCall?: "none" | "auto" | { name: string };
+        functions?: OpenAIChatCallSettings["functions"];
+        functionCall?: OpenAIChatCallSettings["functionCall"];
+        tools?: OpenAIChatCallSettings["tools"];
+        toolChoice?: OpenAIChatCallSettings["toolChoice"];
       }
   ): Promise<RESULT> {
     return callWithRetryAndThrottle({
@@ -321,9 +336,11 @@ export class OpenAIChatModel
         callOpenAIChatCompletionAPI({
           ...this.settings,
 
-          // function calling:
+          // function & tool calling:
           functions: options.functions ?? this.settings.functions,
           functionCall: options.functionCall ?? this.settings.functionCall,
+          tools: options.tools ?? this.settings.tools,
+          toolChoice: options.toolChoice ?? this.settings.toolChoice,
 
           // map to OpenAI API names:
           stop: this.settings.stopSequences,
@@ -501,6 +518,45 @@ export class OpenAIChatModel
     }
   }
 
+  async doGenerateToolCall(
+    tool: ToolCallDefinition<string, unknown>,
+    prompt: OpenAIChatMessage[],
+    options?: FunctionOptions
+  ) {
+    const response = await this.callAPI(prompt, {
+      ...options,
+      responseFormat: OpenAIChatResponseFormat.json,
+      toolChoice: {
+        type: "function",
+        function: { name: tool.name },
+      },
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: tool.name,
+            description: tool.description,
+            parameters: tool.parameters.getJsonSchema(),
+          },
+        },
+      ],
+    });
+
+    const toolCalls = response.choices[0]?.message.tool_calls;
+
+    return {
+      response,
+      value:
+        toolCalls == null || toolCalls.length === 0
+          ? null
+          : {
+              id: toolCalls[0].id,
+              parameters: parseJSON({ text: toolCalls[0].function.arguments }),
+            },
+      usage: this.extractUsage(response),
+    };
+  }
+
   extractUsage(response: OpenAIChatResponse) {
     return {
       promptTokens: response.usage.prompt_tokens,
@@ -562,6 +618,18 @@ const openAIChatResponseSchema = z.object({
             arguments: z.string(),
           })
           .optional(),
+        tool_calls: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.literal("function"),
+              function: z.object({
+                name: z.string(),
+                arguments: z.string(),
+              }),
+            })
+          )
+          .optional(),
       }),
       index: z.number(),
       logprobs: z.nullable(z.any()),
@@ -598,6 +666,8 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
   messages,
   functions,
   functionCall,
+  tools,
+  toolChoice,
   temperature,
   topP,
   n,
@@ -631,6 +701,8 @@ async function callOpenAIChatCompletionAPI<RESPONSE>({
       messages,
       functions,
       function_call: functionCall,
+      tools,
+      tool_choice: toolChoice,
       temperature,
       top_p: topP,
       n,

@@ -2,12 +2,12 @@ import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 import { ToolCallDefinition } from "./ToolCallDefinition.js";
 
-export interface ToolCallsGenerationModelSettings extends ModelSettings {}
+export interface ToolCallGenerationModelSettings extends ModelSettings {}
 
-export interface ToolCallsGenerationModel<
+export interface ToolCallGenerationModel<
   PROMPT,
   SETTINGS extends
-    ToolCallsGenerationModelSettings = ToolCallsGenerationModelSettings,
+    ToolCallGenerationModelSettings = ToolCallGenerationModelSettings,
 > extends Model<SETTINGS> {
   doGenerateToolCall(
     tool: ToolCallDefinition<string, unknown>,
@@ -15,11 +15,10 @@ export interface ToolCallsGenerationModel<
     options?: FunctionOptions
   ): PromiseLike<{
     response: unknown;
-    valueText: string;
-    value: Array<{
+    value: {
       id: string;
       parameters: unknown;
-    }>;
+    } | null;
     usage?: {
       promptTokens: number;
       completionTokens: number;

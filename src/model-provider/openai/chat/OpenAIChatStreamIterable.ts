@@ -19,6 +19,18 @@ const chatResponseStreamEventSchema = new ZodSchema(
               arguments: z.string().optional(),
             })
             .optional(),
+          tool_calls: z
+            .array(
+              z.object({
+                id: z.string(),
+                type: z.literal("function"),
+                function: z.object({
+                  name: z.string(),
+                  arguments: z.string(),
+                }),
+              })
+            )
+            .optional(),
         }),
         finish_reason: z
           .enum([

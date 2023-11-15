@@ -3,23 +3,20 @@ import { getErrorMessage } from "../../util/getErrorMessage.js";
 export class ToolCallParametersValidationError extends Error {
   readonly toolName: string;
   readonly cause: unknown;
-  readonly valueText: string;
   readonly parameters: unknown;
 
   constructor({
     toolName,
     parameters,
-    valueText,
     cause,
   }: {
     toolName: string;
     parameters: unknown;
-    valueText: string;
     cause: unknown;
   }) {
     super(
       `Parameter validation failed for tool '${toolName}'. ` +
-        `Value: ${valueText}.\n` +
+        `Value: ${JSON.stringify(parameters)}.\n` +
         `Error message: ${getErrorMessage(cause)}`
     );
 
@@ -28,7 +25,6 @@ export class ToolCallParametersValidationError extends Error {
     this.toolName = toolName;
     this.cause = cause;
     this.parameters = parameters;
-    this.valueText = valueText;
   }
 
   toJSON() {
@@ -40,7 +36,6 @@ export class ToolCallParametersValidationError extends Error {
 
       toolName: this.toolName,
       parameter: this.parameters,
-      valueText: this.valueText,
     };
   }
 }
