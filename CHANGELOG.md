@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.69.0 - 2023-11-15
+
+### Added
+
+- Experimental generateToolCall function for generating a single tool call using the OpenAI chat/tools API.
+
 ## v0.68.0 - 2023-11-14
 
 ### Changed
