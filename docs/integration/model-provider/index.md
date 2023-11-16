@@ -11,11 +11,11 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 |                                                         | [Generate text](/guide/function/generate-text) | [Stream text](/guide/function/generate-text) | [Tokenize text](/guide/function/tokenize-text) |
 | ------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
 | [OpenAI](/integration/model-provider/openai)            | ✅                                             | ✅                                           | full                                           |
-| [Anthropic](/integration/model-provider/anthropic)      | ✅                                             | ✅                                           |                                                |
-| [Cohere](/integration/model-provider/cohere)            | ✅                                             | ✅                                           | full                                           |
 | [Llama.cpp](/integration/model-provider/llamacpp)       | ✅                                             | ✅                                           | basic                                          |
 | [Ollama](/integration/model-provider/ollama)            | ✅                                             | ✅                                           |                                                |
 | [Hugging Face](/integration/model-provider/huggingface) | ✅                                             |                                              |                                                |
+| [Cohere](/integration/model-provider/cohere)            | ✅                                             | ✅                                           | full                                           |
+| [Anthropic](/integration/model-provider/anthropic)      | ✅                                             | ✅                                           |                                                |
 
 ### [Generate Structure](/guide/function/generate-structure) and [Generate Structure or Text](/guide/function/generate-structure-or-text)
 
