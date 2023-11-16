@@ -168,6 +168,7 @@ The following prompt formats are available for instruction prompts:
   for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
 - **Alpaca**: [mapInstructionPromptToAlpacaFormat()](/api/modules#mapinstructionprompttoalpacaformat)
   for models that use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release).
+- **ChatML**: TODO
 - **Basic text**: [mapInstructionPromptToTextFormat()](/api/modules#mapinstructionprompttotextformat)
   for other models that expect a generic text prompt.
 
@@ -223,8 +224,10 @@ The following prompt formats are available for chat prompts:
   for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
 - **Vicuna** [mapChatPromptToVicunaFormat()](/api/modules#mapchatprompttovicunaformat)
   for models that use the Vicuna prompt format.
+- **ChatML**: TODO
 - **Basic text**: [mapChatPromptToTextFormat()](/api/modules#mapchatprompttotextformat)
   for other models that expect a generic text prompt.
+  You can change the prefixes for the user, assistant, and system messages.
 
 ### Limiting the chat length
 
