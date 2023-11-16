@@ -16,7 +16,7 @@ const END_SYSTEM = "\n<</SYS>>\n\n";
  *
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
  */
-export function mapInstructionPromptToLlama2Format(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptFormat<
   InstructionPrompt,
   string
 > {
@@ -36,10 +36,7 @@ export function mapInstructionPromptToLlama2Format(): TextGenerationPromptFormat
 /**
  * Formats a chat prompt as a Llama 2 prompt.
  */
-export function mapChatPromptToLlama2Format(): TextGenerationPromptFormat<
-  ChatPrompt,
-  string
-> {
+export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
   return {
     format: (chatPrompt) => {
       validateChatPrompt(chatPrompt);

@@ -6,7 +6,7 @@ import { validateChatPrompt } from "../../model-function/generate-text/prompt-fo
 /**
  * Formats an instruction prompt as an Anthropic prompt.
  */
-export function mapInstructionPromptToAnthropicFormat(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptFormat<
   InstructionPrompt,
   string
 > {
@@ -41,10 +41,7 @@ export function mapInstructionPromptToAnthropicFormat(): TextGenerationPromptFor
  *
  * @see https://docs.anthropic.com/claude/docs/constructing-a-prompt
  */
-export function mapChatPromptToAnthropicFormat(): TextGenerationPromptFormat<
-  ChatPrompt,
-  string
-> {
+export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
   return {
     format: (chatPrompt) => {
       validateChatPrompt(chatPrompt);

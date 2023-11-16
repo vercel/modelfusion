@@ -21,7 +21,7 @@ const airoborosFunctionSchema = new ZodSchema(
 );
 
 // Prompt for Airoboros L2 13B GPT4 2.0:
-// https://huggingface.co/TheBloke/airoboros-l2-13b-gpt4-2.0-GGML
+// https://huggingface.co/TheBloke/airoboros-l2-13b-gpt4-2.0-GGUF
 class AiroborosFunctionPromptFormat<STRUCTURE> {
   readonly prefix = `{`;
 

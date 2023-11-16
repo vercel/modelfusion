@@ -1,7 +1,7 @@
 import {
   ChatPrompt,
   LlamaCppTextGenerationModel,
-  mapChatPromptToTextFormat,
+  TextPromptFormat,
   streamText,
   trimChatPrompt,
 } from "modelfusion";
@@ -27,7 +27,7 @@ async function main() {
       maxCompletionTokens: 512,
     })
       .withTextPrompt()
-      .withPromptFormat(mapChatPromptToTextFormat());
+      .withPromptFormat(TextPromptFormat.chat());
 
     const textStream = await streamText(
       model,

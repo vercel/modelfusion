@@ -20,10 +20,7 @@ const DEFAULT_SYSTEM_MESSAGE =
  * ASSISTANT:
  * ```
  */
-export function mapChatPromptToVicunaFormat(): TextGenerationPromptFormat<
-  ChatPrompt,
-  string
-> {
+export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
   return {
     format: (chatPrompt) => {
       validateChatPrompt(chatPrompt);

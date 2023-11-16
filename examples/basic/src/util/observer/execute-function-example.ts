@@ -6,7 +6,6 @@ import {
   executeFunction,
   generateImage,
   generateText,
-  mapInstructionPromptToOpenAIChatFormat,
   setGlobalFunctionLogging,
 } from "modelfusion";
 import fs from "node:fs";
@@ -36,9 +35,7 @@ async function main() {
       );
 
       const imageGenerationPrompt = await generateText(
-        new OpenAIChatModel({ model: "gpt-4" }).withPromptFormat(
-          mapInstructionPromptToOpenAIChatFormat()
-        ),
+        new OpenAIChatModel({ model: "gpt-4" }).withInstructionPrompt(),
         {
           instruction:
             "You generate Stable Diffusion prompts for images." +

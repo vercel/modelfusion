@@ -1,12 +1,10 @@
 import {
   CohereTextGenerationModel,
+  Llama2PromptFormat,
   LlamaCppTextGenerationModel,
   OpenAIApiConfiguration,
   OpenAIChatModel,
   createEventSourceStream,
-  mapChatPromptToLlama2Format,
-  mapChatPromptToOpenAIChatFormat,
-  mapChatPromptToTextFormat,
   streamText,
   trimChatPrompt,
 } from "modelfusion";
@@ -29,23 +27,16 @@ const gpt35turboModel = new OpenAIChatModel({
   }),
   model: "gpt-3.5-turbo",
   maxCompletionTokens: 512,
-}).withPromptFormat(mapChatPromptToOpenAIChatFormat());
+}).withChatPrompt();
 
+// example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const llama2Model = new LlamaCppTextGenerationModel({
   contextWindowSize: 4096, // Llama 2 context window size
   maxCompletionTokens: 512,
 })
   .withTextPrompt()
-  .withPromptFormat(mapChatPromptToLlama2Format());
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const otherLlamaCppModel = new LlamaCppTextGenerationModel({
-  contextWindowSize: 2048, // set to your models context window size
-  maxCompletionTokens: 512,
-})
-  .withTextPrompt()
-  .withPromptFormat(mapChatPromptToTextFormat());
+  .withPromptFormat(Llama2PromptFormat.chat());
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const cohereModel = new CohereTextGenerationModel({
@@ -56,7 +47,7 @@ const cohereModel = new CohereTextGenerationModel({
   // }),
   model: "command",
   maxCompletionTokens: 512,
-}).withPromptFormat(mapChatPromptToTextFormat());
+}).withChatPrompt();
 
 const sendMessage = async (request: Request): Promise<Response> => {
   if (request.method !== "POST") {

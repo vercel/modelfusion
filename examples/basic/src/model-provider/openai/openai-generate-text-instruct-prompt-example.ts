@@ -1,9 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAICompletionModel,
-  generateText,
-  mapInstructionPromptToTextFormat,
-} from "modelfusion";
+import { OpenAICompletionModel, generateText } from "modelfusion";
 
 dotenv.config();
 
@@ -13,7 +9,7 @@ async function main() {
       model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,
       maxCompletionTokens: 500,
-    }).withPromptFormat(mapInstructionPromptToTextFormat()),
+    }).withInstructionPrompt(),
     {
       instruction: "Write a short story about:",
       input: "a robot learning to love",

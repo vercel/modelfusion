@@ -14,7 +14,7 @@ const DEFAULT_SYSTEM_PROMPT_NO_INPUT =
  *
  * @see https://github.com/tatsu-lab/stanford_alpaca#data-release
  */
-export function mapInstructionPromptToAlpacaFormat(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptFormat<
   InstructionPrompt,
   string
 > {

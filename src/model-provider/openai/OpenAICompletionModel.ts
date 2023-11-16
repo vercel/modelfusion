@@ -7,6 +7,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
@@ -16,17 +18,15 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
 import {
-  mapChatPromptToTextFormat,
-  mapInstructionPromptToTextFormat,
+  chat,
+  instruction,
 } from "../../model-function/generate-text/prompt-format/TextPromptFormat.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
 import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
 
 /**
  * @see https://platform.openai.com/docs/models/
@@ -344,14 +344,14 @@ export class OpenAICompletionModel
    * Returns this model with an instruction prompt format.
    */
   withInstructionPrompt() {
-    return this.withPromptFormat(mapInstructionPromptToTextFormat());
+    return this.withPromptFormat(instruction());
   }
 
   /**
    * Returns this model with a chat prompt format.
    */
-  withChatPrompt(options?: { user?: string; ai?: string }) {
-    return this.withPromptFormat(mapChatPromptToTextFormat(options));
+  withChatPrompt(options?: { user?: string; assistant?: string }) {
+    return this.withPromptFormat(chat(options));
   }
 
   withPromptFormat<INPUT_PROMPT>(

@@ -1,21 +1,21 @@
 import dotenv from "dotenv";
 import {
+  ChatMLPromptFormat,
   LlamaCppTextGenerationModel,
-  VicunaPromptFormat,
   streamText,
 } from "modelfusion";
 
 dotenv.config();
 
-// example assumes you are running https://huggingface.co/TheBloke/vicuna-7B-v1.5-GGUF with llama.cpp
+// example assumes you are running https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp
 async function main() {
   const textStream = await streamText(
     new LlamaCppTextGenerationModel({
-      contextWindowSize: 2048, // Vicuna v1.5 context window size
+      contextWindowSize: 4096,
       maxCompletionTokens: 512,
     })
       .withTextPrompt()
-      .withPromptFormat(VicunaPromptFormat.chat()),
+      .withPromptFormat(ChatMLPromptFormat.chat()),
     {
       system: "You are a celebrated poet.",
       messages: [

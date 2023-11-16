@@ -28,10 +28,7 @@ import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import {
-  mapChatPromptToOpenAIChatFormat,
-  mapInstructionPromptToOpenAIChatFormat,
-} from "./OpenAIChatPromptFormat.js";
+import { chat, instruction } from "./OpenAIChatPromptFormat.js";
 import { createOpenAIChatDeltaIterableQueue } from "./OpenAIChatStreamIterable.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 
@@ -569,14 +566,14 @@ export class OpenAIChatModel
    * Returns this model with an instruction prompt format.
    */
   withInstructionPrompt() {
-    return this.withPromptFormat(mapInstructionPromptToOpenAIChatFormat());
+    return this.withPromptFormat(instruction());
   }
 
   /**
    * Returns this model with a chat prompt format.
    */
   withChatPrompt() {
-    return this.withPromptFormat(mapChatPromptToOpenAIChatFormat());
+    return this.withPromptFormat(chat());
   }
 
   withPromptFormat<INPUT_PROMPT>(

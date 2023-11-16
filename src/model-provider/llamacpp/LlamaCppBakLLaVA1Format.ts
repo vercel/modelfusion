@@ -8,11 +8,11 @@ const DEFAULT_SYSTEM_MESSAGE =
   "The assistant gives helpful, detailed, and polite answers to the user's questions.";
 
 /**
- * BakLLaVA 1 uses a Vicuna 1 prompt. This mapping combines it with the LlamaCpp prompts.
+ * BakLLaVA 1 uses a Vicuna 1 prompt. This mapping combines it with the LlamaCpp prompt structure.
  *
  * @see https://github.com/SkunkworksAI/BakLLaVA
  */
-export function mapInstructionPromptToBakLLaVA1ForLlamaCppFormat(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptFormat<
   InstructionPrompt,
   LlamaCppTextGenerationPrompt
 > {

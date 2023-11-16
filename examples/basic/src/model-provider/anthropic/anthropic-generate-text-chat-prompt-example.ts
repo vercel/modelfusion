@@ -10,11 +10,23 @@ async function main() {
       temperature: 0.7,
       maxCompletionTokens: 500,
     }).withChatPrompt(),
-    [
-      { user: "Suggest a name for a robot" },
-      { ai: "I suggest the name Robbie" },
-      { user: "Write a short story about a robot learning to love" },
-    ]
+    {
+      // note: Anthropic models don't adhere well to the system message, we leave it out
+      messages: [
+        {
+          role: "user",
+          content: "Suggest a name for a robot.",
+        },
+        {
+          role: "assistant",
+          content: "I suggest the name Robbie",
+        },
+        {
+          role: "user",
+          content: "Write a short story about Robbie learning to love",
+        },
+      ],
+    }
   );
 
   console.log(text);

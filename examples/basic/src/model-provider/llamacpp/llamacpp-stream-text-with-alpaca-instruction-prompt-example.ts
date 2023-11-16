@@ -1,18 +1,18 @@
 import {
+  AlpacaPromptFormat,
   LlamaCppTextGenerationModel,
-  mapInstructionPromptToAlpacaFormat,
   streamText,
 } from "modelfusion";
 
+// example assumes you are running https://huggingface.co/TheBloke/chronos-13b-v2-GGUF with llama.cpp
 async function main() {
-  // example assumes you are running https://huggingface.co/TheBloke/Chronos-13B-v2-GGML with llama.cpp
   const textStream = await streamText(
     new LlamaCppTextGenerationModel({
-      contextWindowSize: 2048, // context window size of Chronos-13B-v2-GGML
+      contextWindowSize: 2048, // context window size of Chronos-13B-v2
       maxCompletionTokens: 1024,
     })
       .withTextPrompt()
-      .withPromptFormat(mapInstructionPromptToAlpacaFormat()),
+      .withPromptFormat(AlpacaPromptFormat.instruction()),
     {
       instruction: "You are a celebrated poet. Write a short story about:",
       input: "a robot learning to love.",

@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import {
+  Llama2PromptFormat,
   LlamaCppTextGenerationModel,
   generateText,
   guard,
-  mapInstructionPromptToLlama2Format,
   setGlobalFunctionLogging,
 } from "modelfusion";
 
@@ -13,6 +13,7 @@ setGlobalFunctionLogging("detailed-object");
 
 const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
 
+// example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
 async function main() {
   const result = await guard(
     (input, options) =>
@@ -22,7 +23,7 @@ async function main() {
           maxCompletionTokens: 500,
         })
           .withTextPrompt()
-          .withPromptFormat(mapInstructionPromptToLlama2Format()),
+          .withPromptFormat(Llama2PromptFormat.instruction()),
         input,
         options
       ),

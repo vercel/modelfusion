@@ -1,6 +1,6 @@
 import {
   LlamaCppTextGenerationModel,
-  mapInstructionPromptToBakLLaVA1ForLlamaCppFormat,
+  LlamaCppBakLLaVA1Format,
   streamText,
 } from "modelfusion";
 import fs from "node:fs";
@@ -15,7 +15,7 @@ async function main() {
     new LlamaCppTextGenerationModel({
       maxCompletionTokens: 1024,
       temperature: 0,
-    }).withPromptFormat(mapInstructionPromptToBakLLaVA1ForLlamaCppFormat()),
+    }).withPromptFormat(LlamaCppBakLLaVA1Format.instruction()),
     {
       instruction: "Describe the image in detail:\n\n",
       image: { base64Content: image },

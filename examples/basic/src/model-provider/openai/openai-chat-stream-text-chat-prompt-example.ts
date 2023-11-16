@@ -8,12 +8,23 @@ async function main() {
     new OpenAIChatModel({
       model: "gpt-3.5-turbo",
     }).withChatPrompt(),
-    [
-      { system: "You are a celebrated poet." },
-      { user: "Write a short story about a robot learning to love." },
-      { ai: "Once upon a time, there was a robot who learned to love." },
-      { user: "That's a great start!" },
-    ]
+    {
+      system: "You are a celebrated poet.",
+      messages: [
+        {
+          role: "user",
+          content: "Suggest a name for a robot.",
+        },
+        {
+          role: "assistant",
+          content: "I suggest the name Robbie",
+        },
+        {
+          role: "user",
+          content: "Write a short story about Robbie learning to love",
+        },
+      ],
+    }
   );
 
   for await (const textPart of textStream) {

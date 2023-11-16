@@ -7,7 +7,7 @@ import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 /**
  * Formats an instruction prompt as an OpenAI chat prompt.
  */
-export function mapInstructionPromptToOpenAIChatFormat(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptFormat<
   InstructionPrompt,
   Array<OpenAIChatMessage>
 > {
@@ -38,7 +38,7 @@ export function mapInstructionPromptToOpenAIChatFormat(): TextGenerationPromptFo
 /**
  * Formats a chat prompt as an OpenAI chat prompt.
  */
-export function mapChatPromptToOpenAIChatFormat(): TextGenerationPromptFormat<
+export function chat(): TextGenerationPromptFormat<
   ChatPrompt,
   Array<OpenAIChatMessage>
 > {

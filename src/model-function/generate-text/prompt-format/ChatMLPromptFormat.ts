@@ -30,7 +30,7 @@ function chatMLSegment(
  * Paris<|im_end|>
  * ```
  */
-export function mapInstructionPromptToChatMLFormat(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptFormat<
   InstructionPrompt,
   string
 > {
@@ -60,10 +60,7 @@ export function mapInstructionPromptToChatMLFormat(): TextGenerationPromptFormat
  * Paris<|im_end|>
  * ```
  */
-export function mapChatPromptToChatMLFormat(): TextGenerationPromptFormat<
-  ChatPrompt,
-  string
-> {
+export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
   return {
     format: (chatPrompt) => {
       validateChatPrompt(chatPrompt);

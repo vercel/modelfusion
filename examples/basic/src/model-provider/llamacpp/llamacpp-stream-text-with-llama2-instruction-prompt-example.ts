@@ -1,5 +1,5 @@
 import {
-  mapInstructionPromptToLlama2Format,
+  Llama2PromptFormat,
   LlamaCppTextGenerationModel,
   streamText,
 } from "modelfusion";
@@ -12,7 +12,7 @@ async function main() {
       maxCompletionTokens: 512,
     })
       .withTextPrompt()
-      .withPromptFormat(mapInstructionPromptToLlama2Format()),
+      .withPromptFormat(Llama2PromptFormat.instruction()),
     {
       system: "You are a celebrated poet.",
       instruction: "Write a short story about a robot learning to love.",

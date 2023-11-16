@@ -5,8 +5,6 @@ import {
   OpenAICompletionModel,
   TextGenerationModel,
   generateText,
-  mapInstructionPromptToOpenAIChatFormat,
-  mapInstructionPromptToTextFormat,
 } from "modelfusion";
 
 dotenv.config();
@@ -24,12 +22,12 @@ async function main() {
           model: "gpt-3.5-turbo-instruct",
           temperature: 0.7,
           maxCompletionTokens: 500,
-        }).withPromptFormat(mapInstructionPromptToTextFormat())
+        }).withInstructionPrompt()
       : new OpenAIChatModel({
           model: "gpt-3.5-turbo",
           temperature: 0.7,
           maxCompletionTokens: 500,
-        }).withPromptFormat(mapInstructionPromptToOpenAIChatFormat());
+        }).withInstructionPrompt();
 
   const text = await callModel(model);
 

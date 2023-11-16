@@ -4,8 +4,6 @@ import {
   OpenAIChatModel,
   OpenAICompletionModel,
   TextStreamingModel,
-  mapInstructionPromptToOpenAIChatFormat,
-  mapInstructionPromptToTextFormat,
   streamText,
 } from "modelfusion";
 
@@ -24,12 +22,12 @@ async function main() {
           model: "gpt-3.5-turbo-instruct",
           temperature: 0.7,
           maxCompletionTokens: 500,
-        }).withPromptFormat(mapInstructionPromptToTextFormat())
+        }).withInstructionPrompt()
       : new OpenAIChatModel({
           model: "gpt-3.5-turbo",
           temperature: 0.7,
           maxCompletionTokens: 500,
-        }).withPromptFormat(mapInstructionPromptToOpenAIChatFormat());
+        }).withInstructionPrompt();
 
   const textStream = await callModel(model);
 
