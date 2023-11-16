@@ -37,9 +37,11 @@ export const mapInstructionPromptToTextFormat: () => TextGenerationPromptFormat<
 export const mapChatPromptToTextFormat: (options?: {
   user?: string;
   ai?: string;
+  system?: string;
 }) => TextGenerationPromptFormat<ChatPrompt, string> = ({
   user = "user",
   ai = "ai",
+  system,
 } = {}) => ({
   format: (chatPrompt) => {
     validateChatPrompt(chatPrompt);
@@ -55,7 +57,7 @@ export const mapChatPromptToTextFormat: (options?: {
         "system" in message &&
         typeof message.system === "string"
       ) {
-        text += `${message.system}\n\n`;
+        text += `${system != null ? `${system}:` : ""}${message.system}\n\n`;
         continue;
       }
 
