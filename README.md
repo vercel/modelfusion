@@ -26,7 +26,7 @@
 ## Quick Install
 
 > [!NOTE]
-> ModelFusion is in its initial development phase. The main API is now mostly stable, but until version 1.0 there may be minor breaking changes. Feedback and suggestions are welcome.
+> ModelFusion is in its initial development phase. The main API is now mostly stable, but until version 1.0 there may be breaking changes. Feedback and suggestions are welcome.
 
 ```sh
 npm install modelfusion
