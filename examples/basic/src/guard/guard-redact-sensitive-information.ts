@@ -22,7 +22,7 @@ async function main() {
           temperature: 0.7,
           maxCompletionTokens: 500,
         })
-          .withTextPrompt()
+          .withTextPrompt() // pure text prompt (no images)
           .withPromptFormat(Llama2PromptFormat.instruction()),
         input,
         options

@@ -11,7 +11,7 @@ async function main() {
       contextWindowSize: 2048, // context window size of Chronos-13B-v2
       maxCompletionTokens: 1024,
     })
-      .withTextPrompt()
+      .withTextPrompt() // pure text prompt (no images)
       .withPromptFormat(AlpacaPromptFormat.instruction()),
     {
       instruction: "You are a celebrated poet. Write a short story about:",

@@ -163,23 +163,15 @@ Llama 2 uses a special prompt format (see "[How to prompt Llama 2 chat](https://
 
 #### Instruction prompt format
 
-```
-<s>[INST] <<SYS>>
-${ system prompt }
-<</SYS>>
-
-{ instruction } [/INST]
-```
-
-You can use the [Llama 2 format for instruction prompts](/api/modules#mapinstructionprompttollama2format):
+You can use [Llama2PromptFormat.instruction()](/api/namespaces/Llama2PromptFormat#instruction) to create instruction prompts.
 
 ```ts
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
   })
-    .withTextPrompt()
-    .withPromptFormat(mapInstructionPromptToLlama2Format()),
+    .withTextPrompt() // pure text prompt (no images)
+    .withPromptFormat(Llama2PromptFormat.instruction()),
   {
     system: "You are a celebrated poet.",
     instruction: "Write a short story about a robot learning to love.",
@@ -189,29 +181,83 @@ const textStream = await streamText(
 
 #### Chat prompt format
 
-```
-<s>[INST] <<SYS>>
-${ system prompt }
-<</SYS>>
-
-${ user msg 1 } [/INST] ${ model response 1 } </s><s>[INST] ${ user msg 2 } [/INST] ${ model response 2 } </s><s>[INST] ${ user msg 3 } [/INST]
-```
-
-You can use the [Llama 2 format for chat prompts](/api/modules#mapchatprompttollama2format):
+You can use [Llama2PromptFormat.chat()](/api/namespaces/Llama2PromptFormat#chat) to create chat prompts.
 
 ```ts
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
   })
-    .withTextPrompt()
-    .withPromptFormat(mapChatPromptToLlama2Format()),
-  [
-    { system: "You are a celebrated poet." },
-    { user: "Write a short story about a robot learning to love." },
-    { ai: "Once upon a time, there was a robot who learned to love." },
-    { user: "That's a great start!" },
-  ]
+    .withTextPrompt() // pure text prompt (no images)
+    .withPromptFormat(Llama2PromptFormat.chat()),
+  {
+    system: "You are a celebrated poet.",
+    messages: [
+      {
+        role: "user",
+        content: "Suggest a name for a robot.",
+      },
+      {
+        role: "assistant",
+        content: "I suggest the name Robbie",
+      },
+      {
+        role: "user",
+        content: "Write a short story about Robbie learning to love",
+      },
+    ],
+  }
+);
+```
+
+### ChatML prompt format
+
+ChatML is a prompt format that is used by several models, e.g. [OpenHermes-2.5-Mistral](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF).
+
+#### Instruction prompt format
+
+You can use [ChatMLPromptFormat.instruction()](/api/namespaces/ChatMLPromptFormat#instruction) to create instruction prompts.
+
+```ts
+const textStream = await streamText(
+  new LlamaCppTextGenerationModel({
+    // ...
+  })
+    .withTextPrompt() // pure text prompt (no images)
+    .withPromptFormat(ChatMLPromptFormat.instruction()),
+  {
+    instruction: "Write a short story about a robot learning to love.",
+  }
+);
+```
+
+#### Chat prompt format
+
+You can use [ChatMLPromptFormat.chat()](/api/namespaces/ChatMLPromptFormat#chat) to create chat prompts.
+
+```ts
+const textStream = await streamText(
+  new LlamaCppTextGenerationModel({
+    // ...
+  })
+    .withTextPrompt() // pure text prompt (no images)
+    .withPromptFormat(ChatMLPromptFormat.chat()),
+  {
+    messages: [
+      {
+        role: "user",
+        content: "Suggest a name for a robot.",
+      },
+      {
+        role: "assistant",
+        content: "I suggest the name Robbie",
+      },
+      {
+        role: "user",
+        content: "Write a short story about Robbie learning to love",
+      },
+    ],
+  }
 );
 ```
 
@@ -221,42 +267,19 @@ Alpaca and several other models use the [Alpaca prompt format](https://github.co
 
 #### instruction prompt format
 
-With input:
+You can use [AlpacaPromptFormat.instruction()](/api/namespaces/AlpacaPromptFormat#instruction) to create instruction prompts.
 
-```
-Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
-
-### Instruction:
-{instruction}
-
-### Input:
-{input}
-
-### Response:
-```
-
-Without input:
-
-```
-Below is an instruction that describes a task. Write a response that appropriately completes the request.
-
-### Instruction:
-{instruction}
-
-### Response:
-```
-
-You can use [mapInstructionPromptToAlpacaFormat()](/api/modules#mapinstructionprompttoalpacaformat) to create instruction prompts.
-
-> ℹ️ Setting the system property overrides the Alpaca system prompt and can impact the model responses.
+:::note
+Setting the system property overrides the Alpaca system prompt and can impact the model responses.
+:::
 
 ```ts
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
   })
-    .withTextPrompt()
-    .withPromptFormat(mapInstructionPromptToAlpacaFormat()),
+    .withTextPrompt() // pure text prompt (no images)
+    .withPromptFormat(AlpacaPromptFormat.instruction()),
   {
     instruction: "You are a celebrated poet. Write a short story about:",
     input: "a robot learning to love.",
@@ -266,32 +289,39 @@ const textStream = await streamText(
 
 ### Vicuna prompt format
 
-Vicuna and several other models use the Vicuna prompt format:
+Vicuna and several other models use the Vicuna prompt format.
 
 #### Chat prompt format
 
-```
-A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
+You can use [VicunaPromptFormat.chat()](/api/namespaces/VicunaPromptFormat#chat) to create chat prompts.
 
-USER: {prompt}
-ASSISTANT:
-```
-
-You can use [mapChatPromptToVicunaFormat()](/api/modules#mapchatprompttovicunaformat) to create chat prompts.
-
-> ℹ️ Setting the system property overrides the Vicuna system prompt and can impact the model responses.
+:::note
+Setting the system property overrides the Vicuna system prompt and can impact the model responses.
+:::
 
 ```ts
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
   })
-    .withTextPrompt()
-    .withPromptFormat(mapChatPromptToVicunaFormat()),
-  [
-    { user: "Write a short story about a robot learning to love." },
-    { ai: "Once upon a time, there was a robot who learned to love." },
-    { user: "That's a great start!" },
-  ]
+    .withTextPrompt() // pure text prompt (no images)
+    .withPromptFormat(VicunaPromptFormat.chat()),
+  {
+    system: "You are a celebrated poet.",
+    messages: [
+      {
+        role: "user",
+        content: "Suggest a name for a robot.",
+      },
+      {
+        role: "assistant",
+        content: "I suggest the name Robbie",
+      },
+      {
+        role: "user",
+        content: "Write a short story about Robbie learning to love",
+      },
+    ],
+  }
 );
 ```

@@ -12,6 +12,34 @@ const DEFAULT_SYSTEM_PROMPT_NO_INPUT =
  * If the instruction has a system prompt, it overrides the default system prompt
  * (which can impact the results, because the model may be trained on the default system prompt).
  *
+ * Prompt format with input:
+ * ```
+ * Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+ *
+ * ### Instruction:
+ *
+ * {instruction}
+ *
+ * ### Input:
+ *
+ * {input}
+ *
+ * ### Response:
+ *
+ * ```
+ *
+ * Prompt format without input:
+ * ```
+ * Below is an instruction that describes a task. Write a response that appropriately completes the request.
+ *
+ * ### Instruction:
+ *
+ * {instruction}
+ *
+ * ### Response:
+ *
+ * ```
+ *
  * @see https://github.com/tatsu-lab/stanford_alpaca#data-release
  */
 export function instruction(): TextGenerationPromptFormat<

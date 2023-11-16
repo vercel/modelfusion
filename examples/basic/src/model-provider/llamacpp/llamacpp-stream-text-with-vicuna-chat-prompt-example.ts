@@ -14,7 +14,7 @@ async function main() {
       contextWindowSize: 2048, // Vicuna v1.5 context window size
       maxCompletionTokens: 512,
     })
-      .withTextPrompt()
+      .withTextPrompt() // pure text prompt (no images)
       .withPromptFormat(VicunaPromptFormat.chat()),
     {
       system: "You are a celebrated poet.",

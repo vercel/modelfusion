@@ -77,7 +77,7 @@ Using a prompt mapping can make the interaction with Anthropic models easier.
 
 ### Instruction prompt
 
-You an use [mapInstructionPromptToAnthropicFormat()](/api/modules#mapinstructionprompttoanthropicformat) to use [instruction prompts](/api/modules#instructionprompt) with Anthropic models. It is avaialble as a shorthand method:
+[AnthropicPromptFormat.instruction()](/api/namespaces/AnthropicPromptFormat) lets you use [instruction prompts](/api/modules#instructionprompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -90,18 +90,29 @@ const textStream = await streamText(
 
 ### Chat prompt
 
-You an use [mapChatPromptToAnthropicFormat()](/api/modules#mapchatprompttoanthropicformat) to use [chat prompts](/api/modules#chatprompt) with OpenAI chat models. It is available as a shorthand method:
+[AnthropicPromptFormat.chat()](/api/namespaces/AnthropicPromptFormat) lets you use use [chat prompts](/api/modules#chatprompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
   new AnthropicTextGenerationModel({
     // ...
   }).withChatPrompt(),
-  [
-    { system: "You are a celebrated poet." },
-    { user: "Write a short story about a robot learning to love." },
-    { ai: "Once upon a time, there was a robot who learned to love." },
-    { user: "That's a great start!" },
-  ]
+  {
+    // note: Anthropic models don't adhere well to the system message, we leave it out
+    messages: [
+      {
+        role: "user",
+        content: "Suggest a name for a robot.",
+      },
+      {
+        role: "assistant",
+        content: "I suggest the name Robbie",
+      },
+      {
+        role: "user",
+        content: "Write a short story about Robbie learning to love",
+      },
+    ],
+  }
 );
 ```

@@ -10,7 +10,7 @@ const DEFAULT_SYSTEM_MESSAGE =
 /**
  * Formats a chat prompt as a Vicuna prompt.
  *
- * Overridding the system message in the first chat message can affect model respones.
+ * Overriding the system message in the first chat message can affect model responses.
  *
  * Vicuna prompt template:
  * ```

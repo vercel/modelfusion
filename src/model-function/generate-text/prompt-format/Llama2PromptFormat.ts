@@ -14,6 +14,15 @@ const END_SYSTEM = "\n<</SYS>>\n\n";
 /**
  * Formats an instruction prompt as a Llama 2 prompt.
  *
+ * Llama 2 prompt template:
+ * ```
+ * <s>[INST] <<SYS>>
+ * ${ system prompt }
+ * <</SYS>>
+ *
+ * { instruction } [/INST]
+ * ```
+ *
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
  */
 export function instruction(): TextGenerationPromptFormat<
@@ -35,6 +44,15 @@ export function instruction(): TextGenerationPromptFormat<
 
 /**
  * Formats a chat prompt as a Llama 2 prompt.
+ *
+ * Llama 2 prompt template:
+ * ```
+ * <s>[INST] <<SYS>>
+ * ${ system prompt }
+ * <</SYS>>
+ *
+ * ${ user msg 1 } [/INST] ${ model response 1 } </s><s>[INST] ${ user msg 2 } [/INST] ${ model response 2 } </s><s>[INST] ${ user msg 3 } [/INST]
+ * ```
  */
 export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
   return {

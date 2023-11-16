@@ -61,6 +61,8 @@ The guard can return one of the following actions:
 Handling sensitive data, like API keys, requires careful attention to prevent unintended exposure. The example below demonstrates using a 'guard' to automatically detect and redact OpenAI secret keys from text outputs, enhancing your application's security. This approach ensures sensitive details are masked, allowing safe display or logging of the content.
 
 ```ts
+// example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
+
 const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
 
 const result = await guard(
@@ -69,8 +71,8 @@ const result = await guard(
       new LlamaCppTextGenerationModel({
         // ...
       })
-        .withTextPrompt()
-        .withPromptFormat(mapInstructionPromptToLlama2Format()),
+        .withTextPrompt() // pure text prompt (no images)
+        .withPromptFormat(Llama2PromptFormat.instruction()),
       input,
       options // pass through options (for tracing)
     ),

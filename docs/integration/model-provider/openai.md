@@ -356,11 +356,11 @@ fs.writeFileSync(path, speech);
 
 ## Prompt Formats
 
-### OpenAI Chat Prompt format
+### OpenAI Chat Format
 
 #### Instruction prompt
 
-You an use [mapInstructionPromptToOpenAIChatFormat()](/api/modules#mapinstructionprompttoopenaichatformat) to use [instruction prompts](/api/modules#instructionprompt) with OpenAI chat models. It is available as a shorthand method:
+[OpenAIChatPromptFormat.instruction()](/api/namespaces/OpenAIChatPromptFormat) lets you use [instruction prompts](/api/modules#instructionprompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -376,18 +376,29 @@ const textStream = await streamText(
 
 #### Chat prompt
 
-You an use [mapChatPromptToOpenAIChatFormat()](/api/modules#mapchatprompttoopenaichatformat) to use [chat prompts](/api/modules#chatprompt) with OpenAI chat models. It is available as a shorthand method:
+[OpenAIChatPromptFormat.chat()](/api/namespaces/OpenAIChatPromptFormat) lets you use [chat prompts](/api/modules#chatprompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
   new OpenAIChatModel({
     // ...
   }).withChatPrompt(),
-  [
-    { system: "You are a celebrated poet." },
-    { user: "Write a short story about a robot learning to love." },
-    { ai: "Once upon a time, there was a robot who learned to love." },
-    { user: "That's a great start!" },
-  ]
+  {
+    system: "You are a celebrated poet.",
+    messages: [
+      {
+        role: "user",
+        content: "Suggest a name for a robot.",
+      },
+      {
+        role: "assistant",
+        content: "I suggest the name Robbie",
+      },
+      {
+        role: "user",
+        content: "Write a short story about Robbie learning to love",
+      },
+    ],
+  }
 );
 ```

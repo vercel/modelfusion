@@ -470,13 +470,14 @@ Prompt formats let you use higher level prompt structures (such as instruction o
 #### [Text Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-text#prompt-format)
 
 ```ts
+// example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
 const text = await generateText(
   new LlamaCppTextGenerationModel({
     contextWindowSize: 4096, // Llama 2 context window size
     maxCompletionTokens: 1000,
   })
-    .withTextPrompt()
-    .withPromptFormat(mapInstructionPromptToLlama2Format()),
+    .withTextPrompt() // pure text prompt (no images)
+    .withPromptFormat(Llama2PromptFormat.instruction()),
   {
     system: "You are a story writer.",
     instruction: "Write a short story about a robot learning to love.",
@@ -491,12 +492,23 @@ const textStream = await streamText(
   new OpenAIChatModel({
     model: "gpt-3.5-turbo",
   }).withChatPrompt(),
-  [
-    { system: "You are a celebrated poet." },
-    { user: "Write a short story about a robot learning to love." },
-    { ai: "Once upon a time, there was a robot who learned to love." },
-    { user: "That's a great start!" },
-  ]
+  {
+    system: "You are a celebrated poet.",
+    messages: [
+      {
+        role: "user",
+        content: "Suggest a name for a robot.",
+      },
+      {
+        role: "assistant",
+        content: "I suggest the name Robbie",
+      },
+      {
+        role: "user",
+        content: "Write a short story about Robbie learning to love",
+      },
+    ],
+  }
 );
 ```
 
@@ -505,6 +517,7 @@ const textStream = await streamText(
 | OpenAI Chat   | ✅                 | ✅          |
 | Anthropic     | ✅                 | ✅          |
 | Llama 2       | ✅                 | ✅          |
+| ChatML        | ✅                 | ✅          |
 | Alpaca        | ✅                 | ❌          |
 | Vicuna        | ❌                 | ✅          |
 | Generic Text  | ✅                 | ✅          |

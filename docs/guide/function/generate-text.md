@@ -102,9 +102,9 @@ for await (const textPart of textStream) {
 [Text generation prompt formats](/api/interfaces/TextGenerationPromptFormat) change the prompt format that a text generation model accepts.
 This enables the use of abstracted prompts such as [instruction](/api/modules#instructionprompt) or [chat](/api/modules#chatprompt) prompts.
 
-You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `withPromptFormat()` method. The built-in prompt formats are functions that follow the pattern `map[Chat|Instruction]PromptTo[FORMAT]Format()`, e.g. `mapInstructionPromptToAlpacaFormat()`.
+You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `withPromptFormat()` method.
 
-For convience, models with clear prompt formats have a `withChatPrompt()` or `withInstructionPrompt()` method that automatically applies the correct prompt format.
+For convenience, models with clear prompt formats have a `withChatPrompt()` or `withInstructionPrompt()` method that automatically applies the correct prompt format.
 
 ### Instruction Prompts
 
@@ -117,10 +117,10 @@ When you use multi-modal models and prompt mappings, you can also provide an opt
 ```ts
 const model = new CohereTextGenerationModel({
   // ...
-}).withPromptFormat(mapInstructionPromptToTextFormat());
+}).withPromptFormat(TextPromptFormat.instruction());
 ```
 
-[mapInstructionPromptToTextFormat()](/api/modules#mapinstructionprompttotextformat) formats the instruction prompt as a basic text prompt, which is expected by the [CohereTextGenerationModel](/api/classes/CohereTextGenerationModel).
+[TextPromptFormat.instruction()](/api/namespaces/TextPromptFormat#instruction) formats the instruction prompt as a basic text prompt, which is expected by the [CohereTextGenerationModel](/api/classes/CohereTextGenerationModel).
 
 Alternatively you can use the shorthand method:
 
@@ -160,38 +160,41 @@ const textStream = await streamText(
 
 The following prompt formats are available for instruction prompts:
 
-- **OpenAI chat**: [mapInstructionPromptToOpenAIChatFormat()](/api/modules#mapinstructionprompttoopenaichatformat)
+- **OpenAI chat**: [OpenAIChatPromptFormat.instruction()](/api/namespaces/OpenAIChatPromptFormat#instruction)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [mapInstructionPromptToAnthropicFormat()](/api/modules#mapinstructionprompttoanthropicformat)
+- **Anthropic**: [AnthropicPromptFormat.instruction()](/api/namespaces/AnthropicPromptFormat#instruction)
   for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
-- **Llama 2**: [mapInstructionPromptToLlama2Format()](/api/modules#mapinstructionprompttollama2format)
+- **Llama 2**: [Llama2PromptFormat.instruction()](/api/namespaces/Llama2PromptFormat#instruction)
   for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
-- **Alpaca**: [mapInstructionPromptToAlpacaFormat()](/api/modules#mapinstructionprompttoalpacaformat)
+- **Alpaca**: [AlpacaPromptFormat.instruction()](/api/namespaces/AlpacaPromptFormat#instruction)
   for models that use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release).
-- **ChatML**: TODO
-- **Basic text**: [mapInstructionPromptToTextFormat()](/api/modules#mapinstructionprompttotextformat)
+- **ChatML**: [ChatMLPromptFormat.instruction()](/api/namespaces/ChatMLPromptFormat#instruction)
+  for models that use the ChatML prompt format.
+- **Basic text**: [TextPromptFormat.instruction()](/api/namespaces/TextPromptFormat#instruction)
   for other models that expect a generic text prompt.
 
 ### Chat Prompts
 
 [Chat prompts](/api/modules#chatprompt) are a higher-level prompt format that contains a list of chat messages.
 
-Chat prompts are an array with several constraints that are checked at runtime:
+Chat prompts are a combination of a system message and a list of messages with the following constraints:
 
-- A chat prompt can optionally start with a system message.
-- After the optional system message, the first message of the chat must be a user message.
-- Then it must be alternating between an ai message and a user message.
-- The last message must always be a user message.
+- A chat prompt can optionally have a system message.
+- The first message of the chat must be a user message.
+- Then it must be alternating between an assistant message and a user message.
+- The last message must always be a user message (when submitting to a model).
+
+You can use a ChatPrompt without an final user message when you e.g. want to display the current state of a conversation. The type checking is done at runtime when you submit a chat prompt to a model with a prompt format.
 
 #### Example
 
 ```ts
 const model = new OpenAIChatModel({
   model: "gpt-3.5-turbo",
-}).withPromptFormat(mapChatPromptToOpenAIChatFormat());
+}).withPromptFormat(OpenAIChatPromptFormat.chat());
 ```
 
-The [mapChatPromptToOpenAIChatFormat](/api/modules#mapchatprompttoopenaichatformat) maps the chat prompt to an OpenAI chat prompt (that is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel)).
+The [OpenAIChatPromptFormat.chat()](/api/namespaces/OpenAIChatPromptFormat#chat) maps the chat prompt to an OpenAI chat prompt (that is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel)).
 
 Alternatively you can use the shorthand method:
 
@@ -204,28 +207,40 @@ const model = new OpenAIChatModel({
 You can now generate text using a chat prompt:
 
 ```ts
-const textStream = await streamText(model, [
-  { system: "You are a celebrated poet." },
-  { user: "Write a short story about a robot learning to love." },
-  { ai: "Once upon a time, there was a robot who learned to love." },
-  { user: "That's a great start!" },
-]);
+const textStream = await streamText(model, {
+  system: "You are a celebrated poet.",
+  messages: [
+    {
+      role: "user",
+      content: "Suggest a name for a robot.",
+    },
+    {
+      role: "assistant",
+      content: "I suggest the name Robbie",
+    },
+    {
+      role: "user",
+      content: "Write a short story about Robbie learning to love",
+    },
+  ],
+});
 ```
 
 #### Prompt Formats
 
 The following prompt formats are available for chat prompts:
 
-- **OpenAI chat**: [mapChatPromptToOpenAIChatFormat()](/api/modules#mapchatprompttoopenaichatformat)
+- **OpenAI chat**: [OpenAIChatPromptFormat.chat()](/api/namespaces/OpenAIChatPromptFormat#chat)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [mapChatPromptToAnthropicFormat()](/api/modules#mapchatprompttoanthropicformat)
+- **Anthropic**: [AnthropicPromptFormat.chat()](/api/namespaces/AnthropicPromptFormat#chat)
   for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
-- **Llama 2**: [mapChatPromptToLlama2Format()](/api/modules#mapchatprompttollama2format)
+- **Llama 2**: [Llama2PromptFormat.chat()](/api/namespaces/Llama2PromptFormat#chat)
   for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
-- **Vicuna** [mapChatPromptToVicunaFormat()](/api/modules#mapchatprompttovicunaformat)
-  for models that use the Vicuna prompt format.
-- **ChatML**: TODO
-- **Basic text**: [mapChatPromptToTextFormat()](/api/modules#mapchatprompttotextformat)
+- **Vicuna**: [VicunaPromptFormat.chat()](/api/namespaces/VicunaPromptFormat#chat)
+  for models that use the [Vicuna prompt format](
+- **ChatML**: [ChatMLPromptFormat.chat()](/api/namespaces/ChatMLPromptFormat#chat)
+  for models that use the ChatML prompt format.
+- **Basic text**: [TextPromptFormat.chat()](/api/namespaces/TextPromptFormat#chat)
   for other models that expect a generic text prompt.
   You can change the prefixes for the user, assistant, and system messages.
 
@@ -241,17 +256,16 @@ It automatically uses the [context window size](/api/interfaces/TextGenerationMo
 #### Example
 
 ```ts
-const systemPrompt = `You are a helpful, respectful and honest assistant.`;
-const messages: Array<{ user: string } | { ai: string }> = [
-  // ...
-];
+const chat: ChatPrompt = {
+  system: `You are a helpful, respectful and honest assistant.`,
+  messages: [
+    //...
+  ],
+};
 
 const textStream = await streamText(
   model,
-  await trimChatPrompt({
-    prompt: [{ system: systemPrompt }, ...messages],
-    model,
-  })
+  await trimChatPrompt({ prompt: chat, model })
 );
 ```
 

@@ -14,7 +14,7 @@ async function main() {
       contextWindowSize: 4096, // Llama 2 context window size
       maxCompletionTokens: 512,
     })
-      .withTextPrompt()
+      .withTextPrompt() // pure text prompt (no images)
       .withPromptFormat(Llama2PromptFormat.chat()),
     {
       system: "You are a celebrated poet.",
