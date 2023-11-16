@@ -31,8 +31,9 @@ export const mapInstructionPromptToTextFormat: () => TextGenerationPromptFormat<
 /**
  * Formats a chat prompt as a basic text prompt.
  *
- * @param user The label of the user in the chat.
- * @param ai The name of the AI in the chat.
+ * @param user The label of the user in the chat. Default to "user".
+ * @param assistant The label of the assistant in the chat. Default to "assistant".
+ * @param system The label of the system in the chat. Optional, defaults to no prefix.
  */
 export const mapChatPromptToTextFormat: (options?: {
   user?: string;
