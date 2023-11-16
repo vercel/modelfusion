@@ -6,6 +6,7 @@ export * from "./TextGenerationPromptFormat.js";
 export * from "./generateText.js";
 export * from "./prompt-format/AlpacaPromptFormat.js";
 export * from "./prompt-format/ChatPrompt.js";
+export * from "./prompt-format/ChatPromptValidationError.js";
 export * from "./prompt-format/ChatMLPromptFormat.js";
 export * from "./prompt-format/InstructionPrompt.js";
 export * from "./prompt-format/Llama2PromptFormat.js";

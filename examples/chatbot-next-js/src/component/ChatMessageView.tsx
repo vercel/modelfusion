@@ -3,7 +3,7 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { CodeBlock } from "./CodeBlock";
 import remarkGfm from "remark-gfm";
 
-export const ChatMessage: React.FC<{
+export const ChatMessageView: React.FC<{
   message: {
     role: "assistant" | "user";
     content: string;

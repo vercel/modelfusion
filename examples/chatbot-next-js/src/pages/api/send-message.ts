@@ -45,9 +45,7 @@ const otherLlamaCppModel = new LlamaCppTextGenerationModel({
   maxCompletionTokens: 512,
 })
   .withTextPrompt()
-  .withPromptFormat(
-    mapChatPromptToTextFormat({ user: "user", ai: "assistant" })
-  );
+  .withPromptFormat(mapChatPromptToTextFormat());
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const cohereModel = new CohereTextGenerationModel({
@@ -58,9 +56,7 @@ const cohereModel = new CohereTextGenerationModel({
   // }),
   model: "command",
   maxCompletionTokens: 512,
-}).withPromptFormat(
-  mapChatPromptToTextFormat({ user: "user", ai: "assistant" })
-);
+}).withPromptFormat(mapChatPromptToTextFormat());
 
 const sendMessage = async (request: Request): Promise<Response> => {
   if (request.method !== "POST") {
@@ -96,18 +92,12 @@ const sendMessage = async (request: Request): Promise<Response> => {
     // limit the size of the prompt to leave room for the answer:
     await trimChatPrompt({
       model,
-      prompt: [
-        {
-          system:
-            "You are an AI chat bot. " +
-            "Follow the user's instructions carefully. Respond using markdown.",
-        },
-        ...messages.map((message) =>
-          message.role === "user"
-            ? { user: message.content }
-            : { ai: message.content }
-        ),
-      ],
+      prompt: {
+        system:
+          "You are an AI chat bot. " +
+          "Follow the user's instructions carefully. Respond using markdown.",
+        messages,
+      },
     }),
 
     // forward the abort signal:

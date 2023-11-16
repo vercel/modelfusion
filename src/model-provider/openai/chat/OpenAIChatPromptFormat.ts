@@ -48,45 +48,25 @@ export function mapChatPromptToOpenAIChatFormat(): TextGenerationPromptFormat<
 
       const messages: Array<OpenAIChatMessage> = [];
 
-      for (let i = 0; i < chatPrompt.length; i++) {
-        const message = chatPrompt[i];
+      if (chatPrompt.system != null) {
+        messages.push(OpenAIChatMessage.system(chatPrompt.system));
+      }
 
-        // system message:
-        if (
-          i === 0 &&
-          "system" in message &&
-          typeof message.system === "string"
-        ) {
-          messages.push({
-            role: "system",
-            content: message.system,
-          });
-
-          continue;
+      for (const { role, content } of chatPrompt.messages) {
+        switch (role) {
+          case "user": {
+            messages.push(OpenAIChatMessage.user(content));
+            break;
+          }
+          case "assistant": {
+            messages.push(OpenAIChatMessage.assistant(content));
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = role;
+            throw new Error(`Unsupported role: ${_exhaustiveCheck}`);
+          }
         }
-
-        // user message
-        if ("user" in message) {
-          messages.push({
-            role: "user",
-            content: message.user,
-          });
-
-          continue;
-        }
-
-        // ai message:
-        if ("ai" in message) {
-          messages.push({
-            role: "assistant",
-            content: message.ai,
-          });
-
-          continue;
-        }
-
-        // unsupported message:
-        throw new Error(`Unsupported message: ${JSON.stringify(message)}`);
       }
 
       return messages;

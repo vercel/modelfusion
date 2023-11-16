@@ -1,4 +1,5 @@
 import {
+  ChatPrompt,
   LlamaCppTextGenerationModel,
   mapChatPromptToTextFormat,
   streamText,
@@ -8,44 +9,40 @@ import * as readline from "node:readline/promises";
 
 const systemPrompt = `You are a helpful, respectful and honest assistant.`;
 
-const chat = readline.createInterface({
+const terminal = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
 async function main() {
-  const messages: Array<{ user: string } | { ai: string }> = [];
+  const chat: ChatPrompt = { system: systemPrompt, messages: [] };
 
   while (true) {
-    const userInput = await chat.question("You: ");
+    const userInput = await terminal.question("You: ");
 
-    messages.push({ user: userInput });
+    chat.messages.push({ role: "user", content: userInput });
 
     const model = new LlamaCppTextGenerationModel({
-      contextWindowSize: 4096, // Llama 2 context window size, adjust for other models
+      contextWindowSize: 4096,
       maxCompletionTokens: 512,
     })
       .withTextPrompt()
-      .withPromptFormat(
-        mapChatPromptToTextFormat({ user: "user", ai: "assistant" })
-      );
+      .withPromptFormat(mapChatPromptToTextFormat());
 
     const textStream = await streamText(
       model,
-      await trimChatPrompt({
-        prompt: [{ system: systemPrompt }, ...messages],
-        model,
-      })
+      await trimChatPrompt({ prompt: chat, model })
     );
 
     let fullResponse = "";
-    process.stdout.write("\nAI : ");
+    process.stdout.write("\nAssistant : ");
     for await (const textPart of textStream) {
       fullResponse += textPart;
       process.stdout.write(textPart);
     }
     process.stdout.write("\n\n");
-    messages.push({ ai: fullResponse });
+
+    chat.messages.push({ role: "assistant", content: fullResponse });
   }
 }
 

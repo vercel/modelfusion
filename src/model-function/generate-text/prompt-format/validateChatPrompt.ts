@@ -1,49 +1,32 @@
 import { ChatPrompt } from "./ChatPrompt.js";
-
-export class ChatPromptValidationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ChatPromptValidationError";
-  }
-}
+import { ChatPromptValidationError } from "./ChatPromptValidationError.js";
 
 /**
  * Checks if a chat prompt is valid. Throws a `ChatPromptValidationError` if it's not.
  */
 export function validateChatPrompt(chatPrompt: ChatPrompt) {
-  if (chatPrompt.length < 1) {
+  const messages = chatPrompt.messages;
+
+  if (messages.length < 1) {
     throw new ChatPromptValidationError(
       "ChatPrompt should have at least one message."
     );
   }
 
-  const initialType = "system" in chatPrompt[0] ? "system" : "user";
+  for (let i = 0; i < messages.length; i++) {
+    const expectedRole = i % 2 === 0 ? "user" : "assistant";
+    const role = messages[i].role;
 
-  if (initialType === "system" && chatPrompt.length === 1) {
-    throw new ChatPromptValidationError(
-      "A system message should be followed by a user message."
-    );
-  }
-
-  let expectedType = initialType === "system" ? "user" : "ai";
-
-  for (let i = 1; i < chatPrompt.length; i++) {
-    const messageType = "user" in chatPrompt[i] ? "user" : "ai";
-
-    if (messageType !== expectedType) {
+    if (role !== expectedRole) {
       throw new ChatPromptValidationError(
-        `Message at index ${i} should be a ${expectedType} message, but it's a ${messageType} message.`
+        `Message at index ${i} should have role '${expectedRole}', but has role '${role}'.`
       );
     }
-
-    // Flip the expected type for the next iteration.
-    expectedType = expectedType === "user" ? "ai" : "user";
   }
 
-  // If the last message is not a user message, throw an error.
-  if (expectedType !== "ai") {
+  if (messages.length % 2 === 0) {
     throw new ChatPromptValidationError(
-      "The last message should be a user message."
+      "The last message must be a user message."
     );
   }
 }

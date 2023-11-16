@@ -38,6 +38,8 @@ export function mapInstructionPromptToAnthropicFormat(): TextGenerationPromptFor
 
 /**
  * Formats a chat prompt as an Anthropic prompt.
+ *
+ * @see https://docs.anthropic.com/claude/docs/constructing-a-prompt
  */
 export function mapChatPromptToAnthropicFormat(): TextGenerationPromptFormat<
   ChatPrompt,
@@ -47,35 +49,23 @@ export function mapChatPromptToAnthropicFormat(): TextGenerationPromptFormat<
     format: (chatPrompt) => {
       validateChatPrompt(chatPrompt);
 
-      let text = "";
+      let text = chatPrompt.system != null ? `${chatPrompt.system}\n\n` : "";
 
-      for (let i = 0; i < chatPrompt.length; i++) {
-        const message = chatPrompt[i];
-
-        // system message:
-        if (
-          i === 0 &&
-          "system" in message &&
-          typeof message.system === "string"
-        ) {
-          text += `${message.system}\n\n`;
-          continue;
+      for (const { role, content } of chatPrompt.messages) {
+        switch (role) {
+          case "user": {
+            text += `\n\nHuman:${content}`;
+            break;
+          }
+          case "assistant": {
+            text += `\n\nAssistant:${content}`;
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = role;
+            throw new Error(`Unsupported role: ${_exhaustiveCheck}`);
+          }
         }
-
-        // user message
-        if ("user" in message) {
-          text += `\n\nHuman:${message.user}`;
-          continue;
-        }
-
-        // ai message:
-        if ("ai" in message) {
-          text += `\n\nAssistant:${message.ai}`;
-          continue;
-        }
-
-        // unsupported message:
-        throw new Error(`Unsupported message: ${JSON.stringify(message)}`);
       }
 
       // AI message prefix:

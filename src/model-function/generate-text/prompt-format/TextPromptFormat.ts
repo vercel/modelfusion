@@ -36,49 +36,40 @@ export const mapInstructionPromptToTextFormat: () => TextGenerationPromptFormat<
  */
 export const mapChatPromptToTextFormat: (options?: {
   user?: string;
-  ai?: string;
+  assistant?: string;
   system?: string;
 }) => TextGenerationPromptFormat<ChatPrompt, string> = ({
   user = "user",
-  ai = "ai",
+  assistant = "assistant",
   system,
 } = {}) => ({
   format: (chatPrompt) => {
     validateChatPrompt(chatPrompt);
 
-    let text = "";
+    let text =
+      chatPrompt.system != null
+        ? `${system != null ? `${system}:` : ""}${chatPrompt.system}\n\n`
+        : "";
 
-    for (let i = 0; i < chatPrompt.length; i++) {
-      const message = chatPrompt[i];
-
-      // system message:
-      if (
-        i === 0 &&
-        "system" in message &&
-        typeof message.system === "string"
-      ) {
-        text += `${system != null ? `${system}:` : ""}${message.system}\n\n`;
-        continue;
+    for (const { role, content } of chatPrompt.messages) {
+      switch (role) {
+        case "user": {
+          text += `${user}:\n${content}\n\n`;
+          break;
+        }
+        case "assistant": {
+          text += `${assistant}:\n${content}\n\n`;
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = role;
+          throw new Error(`Unsupported role: ${_exhaustiveCheck}`);
+        }
       }
-
-      // user message
-      if ("user" in message) {
-        text += `${user}:\n${message.user}\n\n`;
-        continue;
-      }
-
-      // ai message:
-      if ("ai" in message) {
-        text += `${ai}:\n${message.ai}\n\n`;
-        continue;
-      }
-
-      // unsupported message:
-      throw new Error(`Unsupported message: ${JSON.stringify(message)}`);
     }
 
-    // AI message prefix:
-    text += `${ai}:\n`;
+    // Assistant message prefix:
+    text += `${assistant}:\n`;
 
     return text;
   },

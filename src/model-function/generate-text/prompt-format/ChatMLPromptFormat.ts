@@ -68,37 +68,26 @@ export function mapChatPromptToChatMLFormat(): TextGenerationPromptFormat<
     format: (chatPrompt) => {
       validateChatPrompt(chatPrompt);
 
-      let text = "";
+      let text =
+        chatPrompt.system != null
+          ? chatMLSegment("system", chatPrompt.system)
+          : "";
 
-      for (let i = 0; i < chatPrompt.length; i++) {
-        const message = chatPrompt[i];
-
-        // system message:
-        if (
-          i === 0 &&
-          "system" in message &&
-          typeof message.system === "string"
-        ) {
-          // Separate section for system message to simplify implementation
-          // (this is slightly different from the original instructions):
-          text += chatMLSegment("system", message.system);
-          continue;
+      for (const { role, content } of chatPrompt.messages) {
+        switch (role) {
+          case "user": {
+            text += chatMLSegment("user", content);
+            break;
+          }
+          case "assistant": {
+            text += chatMLSegment("assistant", content);
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = role;
+            throw new Error(`Unsupported role: ${_exhaustiveCheck}`);
+          }
         }
-
-        // user message
-        if ("user" in message) {
-          text += chatMLSegment("user", message.user);
-          continue;
-        }
-
-        // ai message:
-        if ("ai" in message) {
-          text += chatMLSegment("assistant", message.ai);
-          continue;
-        }
-
-        // unsupported message:
-        throw new Error(`Unsupported message: ${JSON.stringify(message)}`);
       }
 
       // prefix start of assistant response:

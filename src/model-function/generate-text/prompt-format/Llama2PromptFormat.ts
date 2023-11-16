@@ -44,37 +44,28 @@ export function mapChatPromptToLlama2Format(): TextGenerationPromptFormat<
     format: (chatPrompt) => {
       validateChatPrompt(chatPrompt);
 
-      let text = "";
+      let text =
+        chatPrompt.system != null
+          ? // Separate section for system message to simplify implementation
+            // (this is slightly different from the original instructions):
+            `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${BEGIN_SYSTEM}${chatPrompt.system}${END_SYSTEM}${END_INSTRUCTION}${END_SEGMENT}`
+          : "";
 
-      for (let i = 0; i < chatPrompt.length; i++) {
-        const message = chatPrompt[i];
-
-        // system message:
-        if (
-          i === 0 &&
-          "system" in message &&
-          typeof message.system === "string"
-        ) {
-          // Separate section for system message to simplify implementation
-          // (this is slightly different from the original instructions):
-          text += `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${BEGIN_SYSTEM}${message.system}${END_SYSTEM}${END_INSTRUCTION}${END_SEGMENT}`;
-          continue;
+      for (const { role, content } of chatPrompt.messages) {
+        switch (role) {
+          case "user": {
+            text += `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${content}${END_INSTRUCTION}`;
+            break;
+          }
+          case "assistant": {
+            text += `${content}${END_SEGMENT}`;
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = role;
+            throw new Error(`Unsupported role: ${_exhaustiveCheck}`);
+          }
         }
-
-        // user message
-        if ("user" in message) {
-          text += `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${message.user}${END_INSTRUCTION}`;
-          continue;
-        }
-
-        // ai message:
-        if ("ai" in message) {
-          text += `${message.ai}${END_SEGMENT}`;
-          continue;
-        }
-
-        // unsupported message:
-        throw new Error(`Unsupported message: ${JSON.stringify(message)}`);
       }
 
       return text;

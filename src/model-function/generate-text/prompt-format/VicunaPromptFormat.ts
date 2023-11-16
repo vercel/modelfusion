@@ -28,40 +28,26 @@ export function mapChatPromptToVicunaFormat(): TextGenerationPromptFormat<
     format: (chatPrompt) => {
       validateChatPrompt(chatPrompt);
 
-      let text = "";
+      let text =
+        chatPrompt.system != null
+          ? `${chatPrompt.system}\n\n`
+          : `${DEFAULT_SYSTEM_MESSAGE}\n\n`;
 
-      for (let i = 0; i < chatPrompt.length; i++) {
-        const message = chatPrompt[i];
-
-        // system message:
-        if (
-          i === 0 &&
-          "system" in message &&
-          typeof message.system === "string"
-        ) {
-          text += `${message.system}\n\n`;
-          continue;
+      for (const { role, content } of chatPrompt.messages) {
+        switch (role) {
+          case "user": {
+            text += `USER: ${content}\n`;
+            break;
+          }
+          case "assistant": {
+            text += `ASSISTANT: ${content}\n`;
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = role;
+            throw new Error(`Unsupported role: ${_exhaustiveCheck}`);
+          }
         }
-
-        // first message was not a system message:
-        if (i === 0) {
-          text += `${DEFAULT_SYSTEM_MESSAGE}\n\n`;
-        }
-
-        // user message
-        if ("user" in message) {
-          text += `USER: ${message.user}\n`;
-          continue;
-        }
-
-        // ai message:
-        if ("ai" in message) {
-          text += `ASSISTANT:\n${message.ai}\n`;
-          continue;
-        }
-
-        // unsupported message:
-        throw new Error(`Unsupported message: ${JSON.stringify(message)}`);
       }
 
       // AI message prefix:
