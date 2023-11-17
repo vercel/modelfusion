@@ -47,6 +47,8 @@ async function main() {
   }
 
   for (const toolCall of toolCalls ?? []) {
+    console.log("tool call " + toolCall.id);
+
     switch (toolCall.name) {
       case "getCurrentWeather": {
         const { location, unit } = toolCall.parameters;
