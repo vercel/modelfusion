@@ -22,8 +22,9 @@ import {
   TextStreamingModel,
 } from "../../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
-import { ToolCallDefinition } from "../../../model-function/generate-tool-call/ToolCallDefinition.js";
 import { ToolCallGenerationModel } from "../../../model-function/generate-tool-call/ToolCallGenerationModel.js";
+import { ToolCallsOrTextGenerationModel } from "../../../model-function/generate-tool-call/ToolCallsOrTextGenerationModel.js";
+import { ToolDefinition } from "../../../model-function/generate-tool-call/ToolDefinition.js";
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
@@ -283,7 +284,8 @@ export class OpenAIChatModel
     TextStreamingModel<OpenAIChatMessage[], OpenAIChatSettings>,
     StructureGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
     StructureOrTextGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
-    ToolCallGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
+    ToolCallGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
+    ToolCallsOrTextGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
 {
   constructor(settings: OpenAIChatSettings) {
     super({ settings });
@@ -516,7 +518,7 @@ export class OpenAIChatModel
   }
 
   async doGenerateToolCall(
-    tool: ToolCallDefinition<string, unknown>,
+    tool: ToolDefinition<string, unknown>,
     prompt: OpenAIChatMessage[],
     options?: FunctionOptions
   ) {
@@ -543,13 +545,47 @@ export class OpenAIChatModel
 
     return {
       response,
-      value:
+      toolCall:
         toolCalls == null || toolCalls.length === 0
           ? null
           : {
               id: toolCalls[0].id,
               parameters: parseJSON({ text: toolCalls[0].function.arguments }),
             },
+      usage: this.extractUsage(response),
+    };
+  }
+
+  async doGenerateToolCallsOrText(
+    tools: Array<ToolDefinition<string, unknown>>,
+    prompt: OpenAIChatMessage[],
+    options?: FunctionOptions
+  ) {
+    const response = await this.callAPI(prompt, {
+      ...options,
+      responseFormat: OpenAIChatResponseFormat.json,
+      toolChoice: "auto",
+      tools: tools.map((tool) => ({
+        type: "function",
+        function: {
+          name: tool.name,
+          description: tool.description,
+          parameters: tool.parameters.getJsonSchema(),
+        },
+      })),
+    });
+
+    const message = response.choices[0]?.message;
+
+    return {
+      response,
+      text: message.content ?? null,
+      toolCalls:
+        message.tool_calls?.map((toolCall) => ({
+          id: toolCall.id,
+          name: toolCall.function.name,
+          parameters: parseJSON({ text: toolCall.function.arguments }),
+        })) ?? null,
       usage: this.extractUsage(response),
     };
   }

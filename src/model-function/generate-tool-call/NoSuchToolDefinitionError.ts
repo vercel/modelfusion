@@ -1,6 +1,4 @@
-import { getErrorMessage } from "../../util/getErrorMessage.js";
-
-export class ToolCallParametersValidationError extends Error {
+export class NoSuchToolDefinitionError extends Error {
   readonly toolName: string;
   readonly cause: unknown;
   readonly parameters: unknown;
@@ -8,22 +6,18 @@ export class ToolCallParametersValidationError extends Error {
   constructor({
     toolName,
     parameters,
-    cause,
   }: {
     toolName: string;
     parameters: unknown;
-    cause: unknown;
   }) {
     super(
-      `Parameter validation failed for tool '${toolName}'. ` +
-        `Parameters: ${JSON.stringify(parameters)}.\n` +
-        `Error message: ${getErrorMessage(cause)}`
+      `Tool definition '${toolName}' not found. ` +
+        `Parameters: ${JSON.stringify(parameters)}.`
     );
 
-    this.name = "ToolCallParametersValidationError";
+    this.name = "NoSuchToolDefinitionError";
 
     this.toolName = toolName;
-    this.cause = cause;
     this.parameters = parameters;
   }
 

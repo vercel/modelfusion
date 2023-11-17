@@ -1,13 +1,14 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStandardCall } from "../executeStandardCall.js";
-import { ToolCallDefinition } from "./ToolCallDefinition.js";
+import { ToolDefinition } from "./ToolDefinition.js";
 import { ToolCallParametersValidationError } from "./ToolCallParametersValidationError.js";
 import { ToolCallsGenerationError } from "./ToolCallGenerationError.js";
 import {
   ToolCallGenerationModel,
   ToolCallGenerationModelSettings,
 } from "./ToolCallGenerationModel.js";
+import { ToolCall } from "./ToolCall.js";
 
 export async function generateToolCall<
   PARAMETERS,
@@ -16,10 +17,10 @@ export async function generateToolCall<
   SETTINGS extends ToolCallGenerationModelSettings,
 >(
   model: ToolCallGenerationModel<PROMPT, SETTINGS>,
-  tool: ToolCallDefinition<NAME, PARAMETERS>,
-  prompt: PROMPT | ((tool: ToolCallDefinition<NAME, PARAMETERS>) => PROMPT),
+  tool: ToolDefinition<NAME, PARAMETERS>,
+  prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT),
   options?: FunctionOptions & { returnType?: "structure" }
-): Promise<{ id: string; parameters: PARAMETERS }>;
+): Promise<ToolCall<NAME, PARAMETERS>>;
 export async function generateToolCall<
   PARAMETERS,
   PROMPT,
@@ -27,11 +28,11 @@ export async function generateToolCall<
   SETTINGS extends ToolCallGenerationModelSettings,
 >(
   model: ToolCallGenerationModel<PROMPT, SETTINGS>,
-  tool: ToolCallDefinition<NAME, PARAMETERS>,
-  prompt: PROMPT | ((tool: ToolCallDefinition<NAME, PARAMETERS>) => PROMPT),
+  tool: ToolDefinition<NAME, PARAMETERS>,
+  prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT),
   options: FunctionOptions & { returnType: "full" }
 ): Promise<{
-  value: { id: string; parameters: PARAMETERS };
+  value: ToolCall<NAME, PARAMETERS>;
   response: unknown;
   metadata: ModelCallMetadata;
 }>;
@@ -42,13 +43,13 @@ export async function generateToolCall<
   SETTINGS extends ToolCallGenerationModelSettings,
 >(
   model: ToolCallGenerationModel<PROMPT, SETTINGS>,
-  tool: ToolCallDefinition<NAME, PARAMETERS>,
-  prompt: PROMPT | ((tool: ToolCallDefinition<NAME, PARAMETERS>) => PROMPT),
+  tool: ToolDefinition<NAME, PARAMETERS>,
+  prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT),
   options?: FunctionOptions & { returnType?: "structure" | "full" }
 ): Promise<
-  | { id: string; parameters: PARAMETERS }
+  | ToolCall<NAME, PARAMETERS>
   | {
-      value: { id: string; parameters: PARAMETERS };
+      value: ToolCall<NAME, PARAMETERS>;
       response: unknown;
       metadata: ModelCallMetadata;
     }
@@ -56,7 +57,7 @@ export async function generateToolCall<
   // Note: PROMPT must not be a function.
   const expandedPrompt =
     typeof prompt === "function"
-      ? (prompt as (tool: ToolCallDefinition<NAME, PARAMETERS>) => PROMPT)(tool)
+      ? (prompt as (tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT)(tool)
       : prompt;
 
   const fullResponse = await executeStandardCall({
@@ -72,7 +73,7 @@ export async function generateToolCall<
           options
         );
 
-        const toolCall = result.value;
+        const toolCall = result.toolCall;
 
         if (toolCall === null) {
           throw new ToolCallsGenerationError({
@@ -95,6 +96,7 @@ export async function generateToolCall<
           response: result.response,
           extractedValue: {
             id: toolCall.id,
+            name: tool.name,
             parameters: parseResult.data,
           },
           usage: result.usage,

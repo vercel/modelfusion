@@ -71,7 +71,7 @@ export class Tool<NAME extends string, INPUT, OUTPUT> {
   }
 
   /**
-   * Provdes a structure definition with the name, description and schema of the input.
+   * Provides a structure definition with the name, description and schema of the input.
    * This is used by `useTool`.
    */
   get inputStructureDefinition(): StructureDefinition<NAME, INPUT> {
