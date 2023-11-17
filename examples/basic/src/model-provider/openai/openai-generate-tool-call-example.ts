@@ -12,7 +12,7 @@ dotenv.config();
 async function main() {
   const toolCall = await generateToolCall(
     new OpenAIChatModel({
-      model: "gpt-4-1106-preview",
+      model: "gpt-3.5-turbo",
       temperature: 0,
       maxCompletionTokens: 200,
     }),
