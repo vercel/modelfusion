@@ -10,7 +10,15 @@ export type OpenAIChatMessage =
         | string
         | Array<
             | { type: "text"; text: string }
-            | { type: "image_url"; image_url: string }
+            | {
+                type: "image_url";
+                image_url:
+                  | string
+                  | {
+                      url: string;
+                      detail: "low" | "high" | "auto";
+                    };
+              }
           >;
       name?: string;
     }
