@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.71.0 - 2023-11-17
+
+### Added
+
+- Experimental generateToolCallsOrText function for generating a multiple parallel tool call using the OpenAI chat/tools API.
+
 ## v0.70.0 - 2023-11-16
 
 ### Added
