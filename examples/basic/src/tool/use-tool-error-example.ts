@@ -37,11 +37,11 @@ async function main() {
     [OpenAIChatMessage.user("What's fourteen times twelve?")]
   );
 
-  console.log(`Tool call`, toolCall);
-  console.log(`Tool: ${tool}`);
-  console.log(`Arguments: ${JSON.stringify(args)}`);
-  console.log(`Ok: ${ok}`);
-  console.log(`Result: ${result}`);
+  console.log(`Tool call:`, toolCall);
+  console.log(`Tool:`, tool);
+  console.log(`Arguments:`, args);
+  console.log(`Ok:`, ok);
+  console.log(`Result or Error:`, result);
 }
 
 main().catch(console.error);

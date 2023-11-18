@@ -381,7 +381,7 @@ const result = await executeTool(calculator, {
 });
 ```
 
-#### generateToolCall
+#### [generateToolCall](https://modelfusion.dev/guide/tools/generate-tool-call)
 
 With `generateToolCall`, you can generate a tool call for a specific tool with a language model that supports tools calls (e.g. OpenAI Chat). This function does not execute the tools.
 
@@ -393,16 +393,22 @@ const { id, name, args } = await generateToolCall(
 );
 ```
 
-#### useTool
+#### [useTool](https://modelfusion.dev/guide/tools/use-tool)
 
 With `useTool`, you can use a tool with a language model that supports tools calls (e.g. OpenAI Chat). `useTool` first generates a tool call and then executes the tool with the arguments.
 
 ```ts
-const { tool, toolCall, args, result } = await useTool(
+const { tool, toolCall, args, ok, result } = await useTool(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   calculator,
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
+
+console.log(`Tool call:`, toolCall);
+console.log(`Tool:`, tool);
+console.log(`Arguments:`, args);
+console.log(`Ok:`, ok);
+console.log(`Result or Error:`, result);
 ```
 
 #### generateToolCallsOrText
