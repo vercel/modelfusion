@@ -4,7 +4,7 @@ sidebar_position: 30
 
 # Generate Tool Call
 
-You can translate a prompt into arguments for a tool call with [generateToolCall](/api/modules/#generatetoolcall). The model that you provide needs to support tools calls (e.g. OpenAI Chat).
+You can translate a prompt into arguments for a single tool call with [generateToolCall](/api/modules/#generatetoolcall). The model that you provide needs to support tools calls (e.g. OpenAI Chat).
 
 :::note
 `generateToolCall` function does not execute the tool.

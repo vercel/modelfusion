@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@types/node": "20.2.3",
-    "ts-node": "10.9.1"
+    "tsx": "3.14.0"
   },
   "scripts": {
     "build": "tsc --outDir build/"

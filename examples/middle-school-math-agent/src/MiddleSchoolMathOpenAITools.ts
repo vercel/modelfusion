@@ -53,17 +53,21 @@ async function main() {
       console.log(`TEXT: ${text}\n`);
     }
 
-    for (const { tool, result, args, toolCall } of toolResults ?? []) {
+    for (const { tool, result, ok, args, toolCall } of toolResults ?? []) {
       messages.push(
         OpenAIChatMessage.tool({ toolCallId: toolCall.id, content: result })
       );
+
+      if (!ok) {
+        console.log(`ERROR: ${result}\n`);
+        continue;
+      }
 
       switch (tool) {
         case "calculator": {
           console.log(
             `CALCULATION: ${args.a} ${args.operator} ${args.b} = ${result}\n`
           );
-
           break;
         }
       }

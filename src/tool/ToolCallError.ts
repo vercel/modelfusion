@@ -3,7 +3,7 @@ import { ToolCall } from "./ToolCall";
 
 export class ToolCallError extends Error {
   readonly toolCall: ToolCall<string, unknown>;
-  readonly cause: unknown;
+  readonly cause: unknown | undefined;
 
   constructor({
     cause,
@@ -11,7 +11,7 @@ export class ToolCallError extends Error {
     message = getErrorMessage(cause),
   }: {
     toolCall: ToolCall<string, unknown>;
-    cause: unknown | undefined;
+    cause?: unknown;
     message?: string;
   }) {
     super(`Tool call for tool '${toolCall.name}' failed: ${message}`);

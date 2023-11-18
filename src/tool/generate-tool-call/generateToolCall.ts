@@ -3,7 +3,7 @@ import { ModelCallMetadata } from "../../model-function/ModelCallMetadata.js";
 import { executeStandardCall } from "../../model-function/executeStandardCall.js";
 import { ToolCall } from "../ToolCall.js";
 import { ToolCallArgumentsValidationError } from "../ToolCallArgumentsValidationError.js";
-import { ToolCallsGenerationError } from "../ToolCallGenerationError.js";
+import { ToolCallGenerationError } from "../ToolCallGenerationError.js";
 import { ToolDefinition } from "../ToolDefinition.js";
 import {
   ToolCallGenerationModel,
@@ -76,7 +76,7 @@ export async function generateToolCall<
         const toolCall = result.toolCall;
 
         if (toolCall === null) {
-          throw new ToolCallsGenerationError({
+          throw new ToolCallGenerationError({
             toolName: tool.name,
             cause: "No tool call generated.",
           });
@@ -104,12 +104,12 @@ export async function generateToolCall<
       } catch (error) {
         if (
           error instanceof ToolCallArgumentsValidationError ||
-          error instanceof ToolCallsGenerationError
+          error instanceof ToolCallGenerationError
         ) {
           throw error;
         }
 
-        throw new ToolCallsGenerationError({
+        throw new ToolCallGenerationError({
           toolName: tool.name,
           cause: error,
         });

@@ -1,6 +1,6 @@
 import { getErrorMessage } from "../util/getErrorMessage.js";
 
-export class ToolCallsGenerationError extends Error {
+export class ToolCallGenerationError extends Error {
   readonly toolName: string;
   readonly cause: unknown;
 
@@ -22,6 +22,7 @@ export class ToolCallsGenerationError extends Error {
       message: this.message,
       cause: this.cause,
       stack: this.stack,
+
       toolName: this.toolName,
     };
   }

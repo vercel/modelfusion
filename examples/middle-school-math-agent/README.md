@@ -23,5 +23,5 @@ npm install
 3. Run:
 
 ```sh
-npx ts-node src/MiddleSchoolMathOpenAITools.ts
+npx tsx src/MiddleSchoolMathOpenAITools.ts
 ```

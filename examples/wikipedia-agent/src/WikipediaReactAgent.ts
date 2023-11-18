@@ -112,10 +112,18 @@ async function main() {
       console.log();
     }
 
-    for (const { tool, result, args, toolCall } of toolResults ?? []) {
+    for (const { tool, result, args, ok, toolCall } of toolResults ?? []) {
       messages.push(
         OpenAIChatMessage.tool({ toolCallId: toolCall.id, content: result })
       );
+
+      if (!ok) {
+        console.log(chalk.red.bold(`*****ERROR*****`));
+        console.log(result);
+        console.log();
+
+        continue;
+      }
 
       switch (tool) {
         case "search_wikipedia": {

@@ -1,10 +1,10 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { executeFunctionCall } from "../../core/executeFunctionCall.js";
-import { NoSuchToolError } from "../NoSuchToolError.js";
 import { Tool } from "../Tool.js";
 import { ToolCall } from "../ToolCall.js";
+import { ToolCallError } from "../ToolCallError.js";
 import { ToolCallResult } from "../ToolCallResult.js";
-import { executeTool } from "../execute-tool/executeTool.js";
+import { safeExecuteToolCall } from "../execute-tool/safeExecuteToolCall.js";
 import {
   ToolCallsOrTextGenerationModel,
   ToolCallsOrTextGenerationModelSettings,
@@ -70,10 +70,7 @@ export async function useToolsOrGenerateText<
         model,
         tools,
         expandedPrompt,
-        {
-          ...options,
-          returnType: "structure",
-        }
+        { ...options, returnType: "structure" }
       );
 
       const { toolCalls, text } = modelResponse;
@@ -89,18 +86,26 @@ export async function useToolsOrGenerateText<
           const tool = tools.find((tool) => tool.name === toolCall.name);
 
           if (tool == null) {
-            throw new NoSuchToolError(toolCall.name);
+            return {
+              tool: toolCall.name,
+              toolCall,
+              args: toolCall.args,
+              ok: false,
+              result: new ToolCallError({
+                message: `No tool with name '${toolCall.name}' found.`,
+                toolCall,
+              }),
+            };
           }
 
-          return {
-            tool: toolCall.name,
-            toolCall: toolCall as ToolCall<
+          return await safeExecuteToolCall(
+            tool,
+            toolCall as ToolCall<
               (typeof tool)["name"],
               (typeof tool)["parameters"]
             >,
-            args: toolCall.args,
-            result: await executeTool(tool, toolCall.args, options),
-          };
+            options
+          );
         })
       );
 

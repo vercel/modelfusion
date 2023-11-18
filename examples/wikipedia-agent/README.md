@@ -27,5 +27,5 @@ Run the following commands:
 
 ```sh
 npm install
-npx ts-node src/WikipediaReactAgent.ts --question "Who was born first, Einstein or Picasso?"
+npx tsx src/WikipediaReactAgent.ts --question "Who was born first, Einstein or Picasso?"
 ```

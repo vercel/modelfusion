@@ -55,7 +55,8 @@ export async function useTool<
           PROMPT,
           TOOL["name"],
           ToolCallGenerationModelSettings
-        >(model, tool, expandedPrompt, { ...options })
+        >(model, tool, expandedPrompt, options),
+        options
       ),
   });
 }
