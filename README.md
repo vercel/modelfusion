@@ -333,9 +333,9 @@ Tools are functions that can be executed by an AI model. They are useful for bui
 
 Predefined tools: [SerpAPI](https://modelfusion.dev/integration/tool/serpapi), [Google Custom Search](https://modelfusion.dev/integration/tool/google-custom-search)
 
-#### Tool
+#### [Creating Tools](https://modelfusion.dev/guide/tools/create-tools)
 
-A tool is comprised of an async execution function, a name, a description, and a schema for the input parameters.
+A tool is comprised of an async execute function, a name, a description, and a schema for the input parameters.
 
 ```ts
 const calculator = new Tool({
@@ -369,7 +369,7 @@ const calculator = new Tool({
 });
 ```
 
-#### executeTool
+#### [executeTool](https://modelfusion.dev/guide/tools/execute-tool)
 
 You can directly invoke a tool with `executeTool`:
 
@@ -377,7 +377,7 @@ You can directly invoke a tool with `executeTool`:
 const result = await executeTool(calculator, {
   a: 14,
   b: 12,
-  operator: "*" as const,
+  operator: "*",
 });
 ```
 

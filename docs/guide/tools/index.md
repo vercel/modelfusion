@@ -4,53 +4,13 @@ sidebar_position: 15
 
 # Tools
 
-Tools enable chatbots and agents to execute actions.
-They are the glue that connects them to the outside world.
+Tools enable chatbots and agents to execute actions. They are the glue that connects them to functions, APIS, and more.
 
 In ModelFusion, tools are functions with a description and a defined input schema.
 Language models can be instructed to use tools by selecting a tool and generating parameters for it.
 
 The tool description and the text description in the zod schema (as well as the names in the schema) are used as part of the prompt.
 Relevant names and descriptions can help the language model to understand the schema and enter the correct data.
-
-## Creating Tools
-
-You can create the tools that you need for yor application by using the [Tool class](/api/classes/Tool).
-
-### Tool class
-
-[Tool API](/api/classes/Tool)
-
-```ts
-const calculator = new Tool({
-  name: "calculator",
-  description: "Execute a calculation",
-
-  inputSchema: new ZodSchema(
-    z.object({
-      a: z.number().describe("The first number."),
-      b: z.number().describe("The second number."),
-      operator: z
-        .enum(["+", "-", "*", "/"])
-        .describe("The operator (+, -, *, /)."),
-    })
-  ),
-  execute: async ({ a, b, operator }) => {
-    switch (operator) {
-      case "+":
-        return a + b;
-      case "-":
-        return a - b;
-      case "*":
-        return a * b;
-      case "/":
-        return a / b;
-      default:
-        throw new Error(`Unknown operator: ${operator}`);
-    }
-  },
-});
-```
 
 ## Using Tools
 
@@ -154,13 +114,6 @@ const { metadata, output } = await executeTool(
   { returnType: "full" }
 );
 ```
-
-## Pre-defined Tools
-
-The following tools are available as a separate packages:
-
-- [SerpAPI websearch](/integration/tool/serpapi)
-- [Google Custom Search](/integration/tool/google-custom-search)
 
 ## Demo Apps
 

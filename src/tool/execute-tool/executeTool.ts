@@ -23,7 +23,7 @@ export type ExecuteToolMetadata = {
 };
 
 /**
- * `executeTool` directly executes a tool with the given parameters.
+ * `executeTool` executes a tool with the given parameters.
  */
 export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
   tool: TOOL,
