@@ -204,66 +204,6 @@ const sentiment = await generateStructure(
 );
 ```
 
-### Generate Structure or Text
-
-#### Chat Model
-
-Structure generation uses the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides multiple function specifications and instructs the model to provide parameters for calling one of the functions, or to just return text (`auto`). The result is returned as parsed JSON.
-
-[OpenAIChatModel API](/api/classes/OpenAIChatModel) |
-
-```ts
-const { structure, value, text } = await generateStructureOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
-  [
-    new ZodStructureDefinition({
-      name: "getCurrentWeather" as const, // mark 'as const' for type inference
-      description: "Get the current weather in a given location",
-      schema: z.object({
-        location: z
-          .string()
-          .describe("The city and state, e.g. San Francisco, CA"),
-        unit: z.enum(["celsius", "fahrenheit"]).optional(),
-      }),
-    }),
-    new ZodStructureDefinition({
-      name: "getContactInformation" as const,
-      description: "Get the contact information for a given person",
-      schema: z.object({
-        name: z.string().describe("The name of the person"),
-      }),
-    }),
-  ],
-  [OpenAIChatMessage.user(query)]
-);
-```
-
-The result contains:
-
-- `structure`: The name of the structure that was matched or `null` if text was generated.
-- `value`: The value of the structure that was matched or `null` if text was generated.
-- `text`: The generated text. Optional when a structure was matched.
-
-```ts
-switch (structure) {
-  case "getCurrentWeather": {
-    const { location, unit } = value;
-    console.log("getCurrentWeather", location, unit);
-    break;
-  }
-
-  case "getContactInformation": {
-    const { name } = value;
-    console.log("getContactInformation", name);
-    break;
-  }
-
-  case null: {
-    console.log("No function call. Generated text: ", text);
-  }
-}
-```
-
 ### Text Embedding
 
 [OpenAITextEmbeddingModel API](/api/classes/OpenAITextEmbeddingModel)

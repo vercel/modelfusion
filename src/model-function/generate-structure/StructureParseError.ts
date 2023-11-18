@@ -26,4 +26,16 @@ export class StructureParseError extends Error {
     this.cause = cause;
     this.valueText = valueText;
   }
+
+  toJSON() {
+    return {
+      name: this.name,
+      cause: this.cause,
+      message: this.message,
+      stack: this.stack,
+
+      structureName: this.structureName,
+      valueText: this.valueText,
+    };
+  }
 }

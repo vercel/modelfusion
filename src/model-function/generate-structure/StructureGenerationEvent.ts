@@ -5,7 +5,7 @@ import {
 
 export interface StructureGenerationStartedEvent
   extends BaseModelCallStartedEvent {
-  functionType: "generate-structure" | "generate-structure-or-text";
+  functionType: "generate-structure";
 }
 
 export type StructureGenerationFinishedEventResult =
@@ -24,6 +24,6 @@ export type StructureGenerationFinishedEventResult =
   | { status: "abort" };
 
 export type StructureGenerationFinishedEvent = BaseModelCallFinishedEvent & {
-  functionType: "generate-structure" | "generate-structure-or-text";
+  functionType: "generate-structure";
   result: StructureGenerationFinishedEventResult;
 };
