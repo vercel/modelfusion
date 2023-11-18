@@ -5,7 +5,6 @@ import {
   ZodStructureDefinition,
   fixStructure,
   generateStructure,
-  generateToolCall,
   guard,
   setGlobalFunctionLogging,
 } from "modelfusion";
@@ -18,7 +17,7 @@ setGlobalFunctionLogging("detailed-object");
 async function main() {
   const sentiment = await guard(
     (input, options) =>
-      generateToolCall(
+      generateStructure(
         new OpenAIChatModel({
           model: "gpt-3.5-turbo",
           temperature: 0,
@@ -49,10 +48,11 @@ async function main() {
     fixStructure({
       modifyInputForRetry: async ({ input, error }) => [
         ...input,
-        OpenAIChatMessage.toolCalls(null, {
+        {
+          role: "function",
           name: error.structureName,
-          arguments: error.valueText,
-        }),
+          content: JSON.stringify(error.valueText),
+        } satisfies OpenAIChatMessage,
         OpenAIChatMessage.user(error.message),
         OpenAIChatMessage.user("Please fix the error and try again."),
       ],

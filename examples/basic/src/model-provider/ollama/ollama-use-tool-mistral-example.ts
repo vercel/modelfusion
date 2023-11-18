@@ -1,42 +1,46 @@
 import dotenv from "dotenv";
 import {
   OllamaTextGenerationModel,
-  StructureDefinition,
-  StructureFromTextGenerationModel,
+  TextGenerationToolCallModel,
+  ToolCallTextPromptFormat,
+  ToolDefinition,
   ZodSchema,
   parseJSON,
   useTool,
 } from "modelfusion";
+import { nanoid } from "nanoid";
 import { z } from "zod";
 import { calculator } from "../../tool/calculator-tool";
 
 dotenv.config();
 
 // schema for prompt
-const FunctionSchema = new ZodSchema(
+const functionSchema = new ZodSchema(
   z.object({
     function: z.string(),
     params: z.any(),
   })
 );
 
-class CalculatorFunctionPromptFormat<STRUCTURE> {
+class CalculatorFunctionPromptFormat
+  implements ToolCallTextPromptFormat<string>
+{
   createPrompt(
     instruction: string,
-    structure: StructureDefinition<any, STRUCTURE>
+    tool: ToolDefinition<string, unknown>
   ): string {
     // map parameters JSON schema
     const properties: Record<string, { type: string; description: string }> = (
-      structure.schema.getJsonSchema() as any
-    ).properties;
+      tool.parameters.getJsonSchema() as any
+    ).properties; // unsafe, assuming 1 level deep
     return [
       `As an AI assistant, please select the most suitable function and parameters ` +
         `from the list of available functions below, based on the user's input. ` +
         `Provide your response in JSON format.`,
       ``,
       `Available functions:`,
-      `${structure.name}:`,
-      `  description: ${structure.description ?? ""}`,
+      `${tool.name}:`,
+      `  description: ${tool.description ?? ""}`,
       `  params:`,
       // Note: Does support nested schemas yet
       ...Object.entries(properties).map(
@@ -49,15 +53,18 @@ class CalculatorFunctionPromptFormat<STRUCTURE> {
     ].join("\n");
   }
 
-  extractStructure(response: string): unknown {
-    const json = parseJSON({ text: response, schema: FunctionSchema });
-    return json.params;
+  extractToolCall(response: string) {
+    const json = parseJSON({ text: response, schema: functionSchema });
+    return {
+      id: nanoid(),
+      args: json.params,
+    };
   }
 }
 
 async function main() {
-  const { tool, parameters, result } = await useTool(
-    new StructureFromTextGenerationModel({
+  const { tool, args, toolCall, result } = await useTool(
+    new TextGenerationToolCallModel({
       model: new OllamaTextGenerationModel({
         model: "mistral",
         format: "json",
@@ -69,8 +76,9 @@ async function main() {
     "What's fourteen times twelve?"
   );
 
+  console.log(`Tool call`, toolCall);
   console.log(`Tool: ${tool}`);
-  console.log(`Parameters: ${JSON.stringify(parameters)}`);
+  console.log(`Arguments: ${JSON.stringify(args)}`);
   console.log(`Result: ${result}`);
 }
 
