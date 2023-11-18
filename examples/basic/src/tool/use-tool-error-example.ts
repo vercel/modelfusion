@@ -31,19 +31,17 @@ export const calculatorThatThrowsError = new Tool({
 });
 
 async function main() {
-  try {
-    const ignoredResult = await useTool(
-      new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-      calculatorThatThrowsError,
-      [OpenAIChatMessage.user("What's fourteen times twelve?")]
-    );
-  } catch (error) {
-    if (error instanceof ToolExecutionError) {
-      console.log(`Error message: ${error.message}`);
-      console.log(`Tool: ${error.toolName}`);
-      console.log(`Parameters: ${JSON.stringify(error.input)}`);
-    }
-  }
+  const { tool, toolCall, args, ok, result } = await useTool(
+    new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+    calculatorThatThrowsError,
+    [OpenAIChatMessage.user("What's fourteen times twelve?")]
+  );
+
+  console.log(`Tool call`, toolCall);
+  console.log(`Tool: ${tool}`);
+  console.log(`Arguments: ${JSON.stringify(args)}`);
+  console.log(`Ok: ${ok}`);
+  console.log(`Result: ${result}`);
 }
 
 main().catch(console.error);

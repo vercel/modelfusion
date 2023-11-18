@@ -7,7 +7,7 @@ export * from "./ToolCallArgumentsValidationError.js";
 export * from "./ToolCallGenerationError.js";
 export * from "./ToolDefinition.js";
 export * from "./ToolExecutionError.js";
-export * from "./ToolResult.js";
+export * from "./ToolCallResult.js";
 export * from "./WebSearchTool.js";
 export * from "./execute-tool/index.js";
 export * from "./generate-tool-call/index.js";

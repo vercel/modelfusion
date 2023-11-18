@@ -1,8 +1,8 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { executeFunctionCall } from "../../core/executeFunctionCall.js";
 import { Tool } from "../Tool.js";
-import { ToolResult } from "../ToolResult.js";
-import { executeTool } from "../execute-tool/executeTool.js";
+import { ToolCallResult } from "../ToolCallResult.js";
+import { safeExecuteToolCall } from "../execute-tool/safeExecuteToolCall.js";
 import {
   ToolCallGenerationModel,
   ToolCallGenerationModelSettings,
@@ -24,15 +24,14 @@ export async function useTool<
   PROMPT,
   // Using 'any' is required to allow for flexibility in the inputs. The actual types are
   // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TOOL extends Tool<any, any, any>,
+  TOOL extends Tool<string, any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
 >(
   model: ToolCallGenerationModel<PROMPT, ToolCallGenerationModelSettings>,
   tool: TOOL,
   prompt: PROMPT | ((tool: TOOL) => PROMPT),
   options?: FunctionOptions
 ): Promise<
-  ToolResult<
+  ToolCallResult<
     TOOL["name"],
     TOOL["parameters"],
     Awaited<ReturnType<TOOL["execute"]>>
@@ -48,22 +47,15 @@ export async function useTool<
     options,
     input: expandedPrompt,
     functionType: "use-tool",
-    execute: async (options) => {
-      const toolCall = await generateToolCall<
-        TOOL["parameters"],
-        PROMPT,
-        TOOL["name"],
-        ToolCallGenerationModelSettings
-      >(model, tool, expandedPrompt, {
-        ...options,
-      });
-
-      return {
-        tool: toolCall.name,
-        toolCall,
-        args: toolCall.args,
-        result: await executeTool(tool, toolCall.args, options),
-      };
-    },
+    execute: async (options) =>
+      safeExecuteToolCall(
+        tool,
+        await generateToolCall<
+          TOOL["parameters"],
+          PROMPT,
+          TOOL["name"],
+          ToolCallGenerationModelSettings
+        >(model, tool, expandedPrompt, { ...options })
+      ),
   });
 }

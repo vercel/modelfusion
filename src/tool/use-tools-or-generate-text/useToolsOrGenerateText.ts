@@ -3,7 +3,7 @@ import { executeFunctionCall } from "../../core/executeFunctionCall.js";
 import { NoSuchToolError } from "../NoSuchToolError.js";
 import { Tool } from "../Tool.js";
 import { ToolCall } from "../ToolCall.js";
-import { ToolResult } from "../ToolResult.js";
+import { ToolCallResult } from "../ToolCallResult.js";
 import { executeTool } from "../execute-tool/executeTool.js";
 import {
   ToolCallsOrTextGenerationModel,
@@ -33,7 +33,7 @@ type ToToolCallUnion<T> = {
     infer PARAMETERS,
     infer OUTPUT
   >
-    ? ToolResult<KEY, PARAMETERS, OUTPUT>
+    ? ToolCallResult<KEY, PARAMETERS, OUTPUT>
     : never;
 }[StringKeys<T>];
 

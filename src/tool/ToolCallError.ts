@@ -1,27 +1,24 @@
 import { getErrorMessage } from "../util/getErrorMessage";
+import { ToolCall } from "./ToolCall";
 
-export class ToolExecutionError extends Error {
-  readonly toolName: string;
-  readonly input: unknown;
+export class ToolCallError extends Error {
+  readonly toolCall: ToolCall<string, unknown>;
   readonly cause: unknown;
 
   constructor({
-    toolName,
-    input,
     cause,
+    toolCall,
     message = getErrorMessage(cause),
   }: {
-    toolName: string;
-    input: unknown;
+    toolCall: ToolCall<string, unknown>;
     cause: unknown | undefined;
     message?: string;
   }) {
-    super(`Error executing tool '${toolName}': ${message}`);
+    super(`Tool call for tool '${toolCall.name}' failed: ${message}`);
 
-    this.name = "ToolExecutionError";
+    this.name = "ToolCallError";
 
-    this.toolName = toolName;
-    this.input = input;
+    this.toolCall = toolCall;
     this.cause = cause;
   }
 
@@ -32,8 +29,7 @@ export class ToolExecutionError extends Error {
       message: this.message,
       stack: this.stack,
 
-      toolName: this.toolName,
-      input: this.input,
+      toolCall: this.toolCall,
     };
   }
 }
