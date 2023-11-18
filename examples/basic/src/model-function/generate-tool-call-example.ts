@@ -10,7 +10,7 @@ import { z } from "zod";
 dotenv.config();
 
 async function main() {
-  const toolCall = await generateToolCall(
+  const { id, name, args } = await generateToolCall(
     new OpenAIChatModel({
       model: "gpt-4-1106-preview",
       temperature: 0,
@@ -32,7 +32,9 @@ async function main() {
     ]
   );
 
-  console.log(JSON.stringify(toolCall, null, 2));
+  console.log(`Tool ID: ${id}`);
+  console.log(`Tool name: ${name}`);
+  console.log(`Tool arguments: ${JSON.stringify(args, null, 2)}`);
 }
 
 main().catch(console.error);

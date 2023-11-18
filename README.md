@@ -366,16 +366,16 @@ Tools are functions that can be executed by an AI model. They are useful for bui
 
 Predefined tools: [SerpAPI](https://modelfusion.dev/integration/tool/serpapi), [Google Custom Search](https://modelfusion.dev/integration/tool/google-custom-search)
 
-#### Create Tool
+#### Tool
 
-A tool is a function with a name, a description, and a schema for the input parameters.
+A tool is comprised of an async execution function, a name, a description, and a schema for the input parameters.
 
 ```ts
 const calculator = new Tool({
   name: "calculator",
   description: "Execute a calculation",
 
-  inputSchema: new ZodSchema(
+  parameters: new ZodSchema(
     z.object({
       a: z.number().describe("The first number."),
       b: z.number().describe("The second number."),
@@ -402,27 +402,62 @@ const calculator = new Tool({
 });
 ```
 
-#### useTool
+#### executeTool
 
-The model determines the parameters for the tool from the prompt and then executes it.
+You can directly invoke a tool with `executeTool`:
 
 ```ts
-const { tool, parameters, result } = await useTool(
+const result = await executeTool(calculator, {
+  a: 14,
+  b: 12,
+  operator: "*" as const,
+});
+```
+
+#### generateToolCall
+
+With `generateToolCall`, you can generate a tool call for a specific tool with a language model that supports tools calls (e.g. OpenAI Chat). This function does not execute the tools.
+
+```ts
+const { id, name, args } = await generateToolCall(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   calculator,
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
 ```
 
-#### useToolOrGenerateText
+#### useTool
 
-The model determines which tool to use and its parameters from the prompt and then executes it.
-Text is generated as a fallback.
+With `useTool`, you can use a tool with a language model that supports tools calls (e.g. OpenAI Chat). `useTool` first generates a tool call and then executes the tool with the arguments.
 
 ```ts
-const { tool, parameters, result, text } = await useToolOrGenerateText(
+const { tool, toolCall, args, result } = await useTool(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  [calculator /* and other tools... */],
+  calculator,
+  [OpenAIChatMessage.user("What's fourteen times twelve?")]
+);
+```
+
+#### generateToolCallsOrText
+
+With `generateToolCallsOrText`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function does not execute the tools.
+
+```ts
+const { text, toolCalls } = await generateToolCallsOrText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  [toolA, toolB, toolC],
+  [OpenAIChatMessage.user(query)]
+);
+```
+
+#### useToolsOrGenerateText
+
+With `useToolsOrGenerateText`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function executes the tools.
+
+```ts
+const { text, toolResults } = await useToolsOrGenerateText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  [calculator /* ... */],
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
 ```
