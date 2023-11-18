@@ -15,7 +15,7 @@ export const calculatorThatThrowsError = new Tool({
   name: "calculator",
   description: "Execute a calculation",
 
-  inputSchema: new ZodSchema(
+  parameters: new ZodSchema(
     z.object({
       a: z.number().describe("The first number."),
       b: z.number().describe("The second number."),
@@ -25,7 +25,7 @@ export const calculatorThatThrowsError = new Tool({
     })
   ),
 
-  execute: async ({ a, b, operator }) => {
+  execute: async () => {
     throw new Error("This tool always throws an error.");
   },
 });

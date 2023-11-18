@@ -5,7 +5,7 @@ export const calculator = new Tool({
   name: "calculator",
   description: "Execute a calculation",
 
-  inputSchema: new ZodSchema(
+  parameters: new ZodSchema(
     z.object({
       a: z.number().describe("The first number."),
       b: z.number().describe("The second number."),

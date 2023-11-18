@@ -14,9 +14,10 @@ export class ToolExecutionError extends Error {
     message: string | undefined;
     cause: unknown | undefined;
   }) {
-    super(`Error executing tool ${toolName}: ${message}`);
+    super(`Error executing tool '${toolName}': ${message}`);
 
     this.name = "ToolExecutionError";
+
     this.toolName = toolName;
     this.input = input;
     this.cause = cause;
@@ -25,11 +26,12 @@ export class ToolExecutionError extends Error {
   toJSON() {
     return {
       name: this.name,
-      toolName: this.toolName,
-      input: this.input,
       cause: this.cause,
       message: this.message,
       stack: this.stack,
+
+      toolName: this.toolName,
+      input: this.input,
     };
   }
 }

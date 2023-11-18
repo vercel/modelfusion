@@ -3,7 +3,7 @@ import {
   OpenAIChatMessage,
   OpenAIChatModel,
   setGlobalFunctionLogging,
-  useToolOrGenerateText,
+  useToolsOrGenerateText,
 } from "modelfusion";
 import { calculator } from "./calculator-tool";
 
@@ -12,7 +12,7 @@ dotenv.config();
 async function main() {
   setGlobalFunctionLogging("detailed-object");
 
-  const { tool, parameters, result, text } = await useToolOrGenerateText(
+  const { text, toolResults } = await useToolsOrGenerateText(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     [calculator /* ... */],
     // Instead of using a curried function,
@@ -26,15 +26,21 @@ async function main() {
           .join(", ")}).`
       ),
       OpenAIChatMessage.user("What's fourteen times twelve?"),
-      // OpenAIChatMessage.user("What's twelwe plus 1234?"),
+      // OpenAIChatMessage.user("What's twelve plus 1234?"),
       // OpenAIChatMessage.user("Tell me about Berlin"),
     ]
   );
 
-  console.log(tool != null ? `TOOL: ${tool}` : "TEXT");
-  console.log(`PARAMETERS: ${JSON.stringify(parameters)}`);
-  console.log(`TEXT: ${text}`);
-  console.log(`RESULT: ${JSON.stringify(result)}`);
+  if (text != null) {
+    console.log(`TEXT: ${text}`);
+    return;
+  }
+
+  for (const { tool, toolCall, result } of toolResults ?? []) {
+    console.log(`Tool call`, toolCall);
+    console.log(`Tool: ${tool}`);
+    console.log(`Result: ${result}`);
+  }
 }
 
 main().catch(console.error);

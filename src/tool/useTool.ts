@@ -1,19 +1,24 @@
 import { FunctionOptions } from "../core/FunctionOptions.js";
 import { executeFunctionCall } from "../core/executeFunctionCall.js";
 import {
-  StructureGenerationModel,
-  StructureGenerationModelSettings,
-} from "../model-function/generate-structure/StructureGenerationModel.js";
-import { generateStructure } from "../model-function/generate-structure/generateStructure.js";
+  ToolCallGenerationModel,
+  ToolCallGenerationModelSettings,
+} from "../model-function/generate-tool-call/ToolCallGenerationModel.js";
+import { generateToolCall } from "../model-function/generate-tool-call/generateToolCall.js";
 import { Tool } from "./Tool.js";
+import { ToolResult } from "./ToolResult.js";
 import { executeTool } from "./executeTool.js";
 
 /**
- * `useTool` uses `generateStructure` to generate parameters for a tool and then executes the tool with the parameters.
+ * `useTool` uses `generateToolCall` to generate parameters for a tool and
+ * then executes the tool with the parameters using `executeTool`.
  *
  * @returns The result contains the name of the tool (`tool` property),
  * the parameters (`parameters` property, typed),
  * and the result of the tool execution (`result` property, typed).
+ *
+ * @see {@link generateToolCall}
+ * @see {@link executeTool}
  */
 export async function useTool<
   PROMPT,
@@ -22,15 +27,17 @@ export async function useTool<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TOOL extends Tool<any, any, any>,
 >(
-  model: StructureGenerationModel<PROMPT, StructureGenerationModelSettings>,
+  model: ToolCallGenerationModel<PROMPT, ToolCallGenerationModelSettings>,
   tool: TOOL,
   prompt: PROMPT | ((tool: TOOL) => PROMPT),
   options?: FunctionOptions
-): Promise<{
-  tool: TOOL["name"];
-  parameters: TOOL["inputSchema"];
-  result: Awaited<ReturnType<TOOL["execute"]>>;
-}> {
+): Promise<
+  ToolResult<
+    TOOL["name"],
+    TOOL["parameters"],
+    Awaited<ReturnType<TOOL["execute"]>>
+  >
+> {
   // Note: PROMPT must not be a function.
   const expandedPrompt =
     typeof prompt === "function"
@@ -42,29 +49,20 @@ export async function useTool<
     input: expandedPrompt,
     functionType: "use-tool",
     execute: async (options) => {
-      const { value } = await generateStructure<
-        TOOL["inputSchema"],
+      const toolCall = await generateToolCall<
+        TOOL["parameters"],
         PROMPT,
         TOOL["name"],
-        StructureGenerationModelSettings
-      >(
-        model,
-        {
-          name: tool.name,
-          description: tool.description,
-          schema: tool.inputSchema,
-        },
-        expandedPrompt,
-        {
-          ...options,
-          returnType: "full",
-        }
-      );
+        ToolCallGenerationModelSettings
+      >(model, tool, expandedPrompt, {
+        ...options,
+      });
 
       return {
-        tool: tool.name,
-        parameters: value,
-        result: await executeTool(tool, value, options),
+        tool: toolCall.name,
+        toolCall,
+        args: toolCall.args,
+        result: await executeTool(tool, toolCall.args, options),
       };
     },
   });

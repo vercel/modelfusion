@@ -20,9 +20,9 @@ import {
   UseToolStartedEvent,
 } from "../tool/UseToolEvent.js";
 import {
-  UseToolOrGenerateTextFinishedEvent,
-  UseToolOrGenerateTextStartedEvent,
-} from "../tool/UseToolOrGenerateTextEvent.js";
+  UseToolsOrGenerateTextFinishedEvent,
+  UseToolsOrGenerateTextStartedEvent,
+} from "../tool/UseToolsOrGenerateTextEvent.js";
 import {
   UpsertIntoVectorIndexFinishedEvent,
   UpsertIntoVectorIndexStartedEvent,
@@ -134,5 +134,5 @@ export type FunctionEvent =
   | UpsertIntoVectorIndexFinishedEvent
   | UseToolStartedEvent
   | UseToolFinishedEvent
-  | UseToolOrGenerateTextStartedEvent
-  | UseToolOrGenerateTextFinishedEvent;
+  | UseToolsOrGenerateTextStartedEvent
+  | UseToolsOrGenerateTextFinishedEvent;

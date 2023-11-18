@@ -51,13 +51,13 @@ async function main() {
 
     switch (toolCall.name) {
       case "getCurrentWeather": {
-        const { location, unit } = toolCall.parameters;
+        const { location, unit } = toolCall.args;
         console.log("getCurrentWeather", location, unit);
         break;
       }
 
       case "getContactInformation": {
-        const { name } = toolCall.parameters;
+        const { name } = toolCall.args;
         console.log("getContactInformation", name);
         break;
       }

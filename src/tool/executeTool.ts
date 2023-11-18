@@ -27,39 +27,39 @@ export type ExecuteToolMetadata = {
  */
 export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
   tool: TOOL,
-  input: TOOL["inputSchema"]["_type"],
+  args: TOOL["parameters"]["_type"],
   options?: FunctionOptions & { returnType?: "output" }
 ): Promise<ReturnType<TOOL["execute"]>>;
 export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
   tool: TOOL,
-  input: TOOL["inputSchema"]["_type"],
+  args: TOOL["parameters"]["_type"],
   options: FunctionOptions & { returnType: "full" }
 ): Promise<{
-  output: ReturnType<TOOL["execute"]>;
+  output: Awaited<ReturnType<TOOL["execute"]>>;
   metadata: ExecuteToolMetadata;
 }>;
 export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
   tool: TOOL,
-  input: TOOL["inputSchema"]["_type"],
+  args: TOOL["parameters"]["_type"],
   options?: FunctionOptions & { returnType?: "output" | "full" }
 ): Promise<
   | ReturnType<TOOL["execute"]>
   | {
-      output: ReturnType<TOOL["execute"]>;
+      output: Awaited<ReturnType<TOOL["execute"]>>;
       metadata: ExecuteToolMetadata;
     }
 > {
-  const fullResponse = await doExecuteTool(tool, input, options);
+  const fullResponse = await doExecuteTool(tool, args, options);
   return options?.returnType === "full" ? fullResponse : fullResponse.output;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   tool: TOOL,
-  input: TOOL["inputSchema"]["_type"],
+  args: TOOL["parameters"]["_type"],
   options?: FunctionOptions
 ): Promise<{
-  output: ReturnType<TOOL["execute"]>;
+  output: Awaited<ReturnType<TOOL["execute"]>>;
   metadata: ExecuteToolMetadata;
 }> {
   const run = await getRun(options?.run);
@@ -87,7 +87,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     functionId: options?.functionId,
 
     toolName: tool.name,
-    input,
+    input: args,
   };
 
   eventSource.notify({
@@ -98,7 +98,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
   });
 
   const result = await runSafe(() =>
-    tool.execute(input, {
+    tool.execute(args, {
       functionId: options?.functionId,
       logging: options?.logging,
       observers: options?.observers,
@@ -138,7 +138,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
     throw new ToolExecutionError({
       toolName: tool.name,
-      input,
+      input: args,
       cause: result.error,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       message: (result.error as any)?.message,

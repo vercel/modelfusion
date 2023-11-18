@@ -15,7 +15,7 @@ export interface ToolCallsOrTextGenerationModel<
   ): PromiseLike<{
     response: unknown;
     text: string | null;
-    toolCalls: Array<{ id: string; name: string; parameters: unknown }> | null;
+    toolCalls: Array<{ id: string; name: string; args: unknown }> | null;
     usage?: {
       promptTokens: number;
       completionTokens: number;

@@ -550,7 +550,7 @@ export class OpenAIChatModel
           ? null
           : {
               id: toolCalls[0].id,
-              parameters: parseJSON({ text: toolCalls[0].function.arguments }),
+              args: parseJSON({ text: toolCalls[0].function.arguments }),
             },
       usage: this.extractUsage(response),
     };
@@ -584,7 +584,7 @@ export class OpenAIChatModel
         message.tool_calls?.map((toolCall) => ({
           id: toolCall.id,
           name: toolCall.function.name,
-          parameters: parseJSON({ text: toolCall.function.arguments }),
+          args: parseJSON({ text: toolCall.function.arguments }),
         })) ?? null,
       usage: this.extractUsage(response),
     };

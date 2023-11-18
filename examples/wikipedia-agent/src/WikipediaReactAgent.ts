@@ -9,7 +9,7 @@ import {
   Tool,
   ZodSchema,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
-  useToolOrGenerateText,
+  useToolsOrGenerateText,
 } from "modelfusion";
 import { z } from "zod";
 
@@ -24,20 +24,6 @@ program
 
 const { question } = program.opts();
 
-const answer = new Tool({
-  name: "answer",
-  description: "Provide the final answer to the question",
-
-  inputSchema: new ZodSchema(
-    z.object({
-      explanation: z.string().describe("The explanation of the answer."),
-      answer: z.string().describe("The answer to the question"),
-    })
-  ),
-
-  execute: async (result) => result,
-});
-
 const searchWikipedia = new GoogleCustomSearchTool({
   name: "search_wikipedia",
   searchEngineId: "76fe2b5e95a3e4215",
@@ -49,7 +35,7 @@ const readWikipediaArticle = new Tool({
   name: "read_wikipedia_article",
   description:
     "Read a Wikipedia article and scan it for information on a topic",
-  inputSchema: new ZodSchema(
+  parameters: new ZodSchema(
     z.object({
       url: z.string().url().describe("The URL of the Wikipedia article."),
       topic: z.string().describe("The topic to look for in the article."),
@@ -84,13 +70,12 @@ const readWikipediaArticle = new Tool({
 });
 
 async function main() {
-  const messages = [
+  const messages: Array<OpenAIChatMessage> = [
     OpenAIChatMessage.system(
       "You are researching the answer to the user's question on Wikipedia. " +
         "Reason step by step. " +
-        "Search Wikipedia and extract information from relevent articles as needed. " +
-        "All facts for your answer must be from Wikipedia articles that you have read. " +
-        "When you have the final answer, use the answer function to report it back to the user."
+        "Search Wikipedia and extract information from relevant articles as needed. " +
+        "All facts for your answer must be from Wikipedia articles that you have read."
     ),
     OpenAIChatMessage.user(question),
   ];
@@ -101,74 +86,72 @@ async function main() {
   console.log();
 
   while (true) {
-    const { tool, parameters, result, text } = await useToolOrGenerateText(
-      new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
-      [searchWikipedia, readWikipediaArticle, answer],
+    const { text, toolResults } = await useToolsOrGenerateText(
+      new OpenAIChatModel({ model: "gpt-4-1106-preview", temperature: 0 }),
+      [searchWikipedia, readWikipediaArticle],
       messages
     );
 
-    switch (tool) {
-      case null: {
-        console.log(chalk.yellow.bold(`*****TEXT*****`));
-        console.log(result);
-        console.log();
+    messages.push(
+      OpenAIChatMessage.assistant(text, {
+        toolCalls: toolResults?.map((result) => result.toolCall),
+      })
+    );
 
-        messages.push(OpenAIChatMessage.assistant(text));
+    if (toolResults == null) {
+      console.log(chalk.green.bold(`*****ANSWER*****`));
+      console.log(text ?? "No answer found.");
+      console.log();
 
-        break;
-      }
+      return; // no more actions, exit the program:
+    }
 
-      case "search_wikipedia": {
-        console.log(chalk.yellow.bold(`*****SEARCH WIKIPEDIA*****`));
-        console.log(`Query: ${parameters.query}`);
-        console.log();
+    if (text != null) {
+      console.log(chalk.yellow.bold(`*****TEXT*****`));
+      console.log(text);
+      console.log();
+    }
 
-        if (text != null) {
-          console.log(chalk.blueBright.bold("*****REASONING*****"));
-          console.log(text);
+    for (const { tool, result, args, toolCall } of toolResults ?? []) {
+      messages.push(
+        OpenAIChatMessage.tool({ toolCallId: toolCall.id, content: result })
+      );
+
+      switch (tool) {
+        case "search_wikipedia": {
+          console.log(chalk.yellow.bold(`*****SEARCH WIKIPEDIA*****`));
+          console.log(`Query: ${args.query}`);
           console.log();
+
+          if (text != null) {
+            console.log(chalk.blueBright.bold("*****REASONING*****"));
+            console.log(text);
+            console.log();
+          }
+
+          console.log(chalk.blueBright.bold("*****RESULTS*****"));
+          for (const entry of result.results) {
+            console.log(chalk.bold(entry.title));
+            console.log(entry.link);
+            console.log(entry.snippet);
+            console.log();
+          }
+
+          break;
         }
 
-        console.log(chalk.blueBright.bold("*****RESULTS*****"));
-        for (const entry of result.results) {
-          console.log(chalk.bold(entry.title));
-          console.log(entry.link);
-          console.log(entry.snippet);
+        case "read_wikipedia_article": {
+          console.log(chalk.yellow.bold(`*****READ ARTICLE*****`));
+          console.log(args.url);
+          console.log(`Topic: ${args.topic}`);
           console.log();
+
+          console.log(chalk.blueBright.bold("*****SUMMARY*****"));
+          console.log(result);
+          console.log();
+
+          break;
         }
-
-        messages.push(OpenAIChatMessage.toolCall({ text, tool, parameters }));
-        messages.push(OpenAIChatMessage.toolResult({ tool, result }));
-
-        break;
-      }
-
-      case "read_wikipedia_article": {
-        console.log(chalk.yellow.bold(`*****READ ARTICLE*****`));
-        console.log(parameters.url);
-        console.log(`Topic: ${parameters.topic}`);
-        console.log();
-
-        console.log(chalk.blueBright.bold("*****SUMMARY*****"));
-        console.log(result);
-        console.log();
-
-        messages.push(OpenAIChatMessage.toolCall({ text, tool, parameters }));
-        messages.push(OpenAIChatMessage.toolResult({ tool, result }));
-
-        break;
-      }
-
-      case "answer": {
-        console.log(chalk.green.bold(`*****ANSWER*****`));
-        console.log(result.answer);
-        console.log();
-
-        console.log(chalk.green(`*****EXPLANATION*****`));
-        console.log(result.explanation);
-        console.log();
-
-        return; // exit the program
       }
     }
   }

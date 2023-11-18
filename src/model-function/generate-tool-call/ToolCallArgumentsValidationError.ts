@@ -1,30 +1,35 @@
 import { getErrorMessage } from "../../util/getErrorMessage.js";
 
-export class ToolCallParametersValidationError extends Error {
+/**
+ * Thrown when the arguments of a tool call are invalid.
+ *
+ * This typically means they don't match the parameters schema that is expected the tool.
+ */
+export class ToolCallArgumentsValidationError extends Error {
   readonly toolName: string;
   readonly cause: unknown;
-  readonly parameters: unknown;
+  readonly args: unknown;
 
   constructor({
     toolName,
-    parameters,
+    args,
     cause,
   }: {
     toolName: string;
-    parameters: unknown;
+    args: unknown;
     cause: unknown;
   }) {
     super(
-      `Parameter validation failed for tool '${toolName}'. ` +
-        `Parameters: ${JSON.stringify(parameters)}.\n` +
+      `Argument validation failed for tool '${toolName}'.\n` +
+        `Arguments: ${JSON.stringify(args)}.\n` +
         `Error message: ${getErrorMessage(cause)}`
     );
 
-    this.name = "ToolCallParametersValidationError";
+    this.name = "ToolCallArgumentsValidationError";
 
     this.toolName = toolName;
     this.cause = cause;
-    this.parameters = parameters;
+    this.args = args;
   }
 
   toJSON() {
@@ -35,7 +40,7 @@ export class ToolCallParametersValidationError extends Error {
       stack: this.stack,
 
       toolName: this.toolName,
-      parameter: this.parameters,
+      args: this.args,
     };
   }
 }

@@ -2,7 +2,7 @@ import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStandardCall } from "../executeStandardCall.js";
 import { NoSuchToolDefinitionError } from "./NoSuchToolDefinitionError.js";
-import { ToolCallParametersValidationError } from "./ToolCallParametersValidationError.js";
+import { ToolCallArgumentsValidationError } from "./ToolCallArgumentsValidationError.js";
 import {
   ToolCallsOrTextGenerationModel,
   ToolCallsOrTextGenerationModelSettings,
@@ -26,7 +26,7 @@ type ToToolCallDefinitionMap<
 // { tool: "n", parameters: PARAMETERS } | ...
 type ToToolCallUnion<T> = {
   [KEY in keyof T]: T[KEY] extends ToolDefinition<any, infer PARAMETERS>
-    ? { id: string; name: KEY; parameters: PARAMETERS }
+    ? { id: string; name: KEY; args: PARAMETERS }
     : never;
 }[keyof T];
 
@@ -132,16 +132,16 @@ export async function generateToolCallsOrText<
         if (tool == undefined) {
           throw new NoSuchToolDefinitionError({
             toolName: rawToolCall.name,
-            parameters: rawToolCall.parameters,
+            parameters: rawToolCall.args,
           });
         }
 
-        const parseResult = tool.parameters.validate(rawToolCall.parameters);
+        const parseResult = tool.parameters.validate(rawToolCall.args);
 
         if (!parseResult.success) {
-          throw new ToolCallParametersValidationError({
+          throw new ToolCallArgumentsValidationError({
             toolName: tool.name,
-            parameters: rawToolCall.parameters,
+            args: rawToolCall.args,
             cause: parseResult.error,
           });
         }
@@ -149,7 +149,7 @@ export async function generateToolCallsOrText<
         return {
           id: rawToolCall.id,
           name: tool.name,
-          parameters: parseResult.data,
+          args: parseResult.data,
         };
       });
 

@@ -2,7 +2,7 @@ import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStandardCall } from "../executeStandardCall.js";
 import { ToolDefinition } from "./ToolDefinition.js";
-import { ToolCallParametersValidationError } from "./ToolCallParametersValidationError.js";
+import { ToolCallArgumentsValidationError } from "./ToolCallArgumentsValidationError.js";
 import { ToolCallsGenerationError } from "./ToolCallGenerationError.js";
 import {
   ToolCallGenerationModel,
@@ -82,12 +82,12 @@ export async function generateToolCall<
           });
         }
 
-        const parseResult = tool.parameters.validate(toolCall.parameters);
+        const parseResult = tool.parameters.validate(toolCall.args);
 
         if (!parseResult.success) {
-          throw new ToolCallParametersValidationError({
+          throw new ToolCallArgumentsValidationError({
             toolName: tool.name,
-            parameters: toolCall.parameters,
+            args: toolCall.args,
             cause: parseResult.error,
           });
         }
@@ -97,13 +97,13 @@ export async function generateToolCall<
           extractedValue: {
             id: toolCall.id,
             name: tool.name,
-            parameters: parseResult.data,
+            args: parseResult.data,
           },
           usage: result.usage,
         };
       } catch (error) {
         if (
-          error instanceof ToolCallParametersValidationError ||
+          error instanceof ToolCallArgumentsValidationError ||
           error instanceof ToolCallsGenerationError
         ) {
           throw error;

@@ -1,3 +1,5 @@
+import { ToolCall } from "../../../model-function/generate-tool-call/ToolCall";
+
 export type OpenAIChatMessage =
   | {
       role: "system";
@@ -84,58 +86,44 @@ export const OpenAIChatMessage = {
     return { role: "user", content, name: options?.name };
   },
 
-  assistant(content: string): OpenAIChatMessage {
-    return { role: "assistant", content };
-  },
-
-  functionCall(
+  /**
+   * Creates an assistant chat message. The assistant message can optionally contain tool calls.
+   */
+  assistant(
     content: string | null,
-    functionCall: {
-      name: string;
-      arguments: string;
+    options?: {
+      toolCalls: Array<ToolCall<string, unknown>> | null | undefined;
     }
   ): OpenAIChatMessage {
     return {
       role: "assistant",
       content,
-      function_call: functionCall,
+      tool_calls:
+        options?.toolCalls?.map((toolCall) => ({
+          id: toolCall.id,
+          type: "function",
+          function: {
+            name: toolCall.name,
+            arguments: JSON.stringify(toolCall.args),
+          },
+        })) ?? undefined,
     };
   },
 
-  functionResult(name: string, content: string): OpenAIChatMessage {
-    return { role: "function", name, content };
-  },
-
   /**
-   * Creates a function call chat message for tool calls.
+   * Creates a tool result chat message with the result of a tool call.
    */
-  toolCall({
-    text,
-    tool,
-    parameters,
+  tool({
+    toolCallId,
+    content,
   }: {
-    text: string | null;
-    tool: string;
-    parameters: unknown;
-  }) {
+    toolCallId: string;
+    content: unknown;
+  }): OpenAIChatMessage {
     return {
-      role: "assistant" as const,
-      content: text,
-      function_call: {
-        name: tool,
-        arguments: JSON.stringify(parameters),
-      },
-    };
-  },
-
-  /**
-   * Creates a function result chat message for tool call results.
-   */
-  toolResult({ tool, result }: { tool: string; result: unknown }) {
-    return {
-      role: "function" as const,
-      name: tool,
-      content: JSON.stringify(result),
+      role: "tool" as const,
+      tool_call_id: toolCallId,
+      content: JSON.stringify(content),
     };
   },
 };

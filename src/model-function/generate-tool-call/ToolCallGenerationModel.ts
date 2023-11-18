@@ -15,7 +15,7 @@ export interface ToolCallGenerationModel<
     options?: FunctionOptions
   ): PromiseLike<{
     response: unknown;
-    toolCall: { id: string; parameters: unknown } | null;
+    toolCall: { id: string; args: unknown } | null;
     usage?: {
       promptTokens: number;
       completionTokens: number;
