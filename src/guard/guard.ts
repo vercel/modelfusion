@@ -39,10 +39,10 @@ export async function guard<INPUT, OUTPUT>(
   execute: (input: INPUT, options?: FunctionOptions) => PromiseLike<OUTPUT>,
   input: INPUT,
   guards: Guard<INPUT, OUTPUT> | Array<Guard<INPUT, OUTPUT>>,
-  options?: FunctionOptions & { maxRetries: number }
+  options?: FunctionOptions & { maxAttempts: number }
 ): Promise<OUTPUT | undefined> {
   const guardList = Array.isArray(guards) ? guards : [guards];
-  const maxRetries = options?.maxRetries ?? 1;
+  const maxAttempts = options?.maxAttempts ?? 2;
 
   return executeFunctionCall({
     options,
@@ -50,7 +50,7 @@ export async function guard<INPUT, OUTPUT>(
     functionType: "guard",
     execute: async (options) => {
       let attempts = 0;
-      while (attempts <= maxRetries) {
+      while (attempts < maxAttempts) {
         let result: OutputResult<INPUT, OUTPUT>;
 
         try {
@@ -114,9 +114,10 @@ export async function guard<INPUT, OUTPUT>(
         attempts++;
       }
 
+      // TODO dedicated error type
       throw new Error(
-        `Maximum retry attempts of ${maxRetries} reached ` +
-          `without producing a valid output or handling an error after ${attempts} attempts.`
+        `Maximum attempts of ${maxAttempts} reached ` +
+          `without producing a valid output or handling an error.`
       );
     },
   });
