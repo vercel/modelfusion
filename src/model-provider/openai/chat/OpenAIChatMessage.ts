@@ -1,4 +1,4 @@
-import { ToolCall } from "../../../model-function/generate-tool-call/ToolCall";
+import { ToolCall } from "../../../tool/ToolCall";
 
 export type OpenAIChatMessage =
   | {

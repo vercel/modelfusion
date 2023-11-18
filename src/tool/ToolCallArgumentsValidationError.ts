@@ -1,4 +1,4 @@
-import { getErrorMessage } from "../../util/getErrorMessage.js";
+import { getErrorMessage } from "../util/getErrorMessage.js";
 
 /**
  * Thrown when the arguments of a tool call are invalid.

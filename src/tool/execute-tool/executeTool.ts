@@ -1,15 +1,15 @@
 import { nanoid as createId } from "nanoid";
-import { FunctionEventSource } from "../core/FunctionEventSource.js";
-import { FunctionOptions } from "../core/FunctionOptions.js";
-import { getGlobalFunctionLogging } from "../core/GlobalFunctionLogging.js";
-import { getGlobalFunctionObservers } from "../core/GlobalFunctionObservers.js";
-import { AbortError } from "../core/api/AbortError.js";
-import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
-import { getRun } from "../core/getRun.js";
-import { startDurationMeasurement } from "../util/DurationMeasurement.js";
-import { runSafe } from "../util/runSafe.js";
-import { Tool } from "./Tool.js";
-import { ToolExecutionError } from "./ToolExecutionError.js";
+import { FunctionEventSource } from "../../core/FunctionEventSource.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
+import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
+import { AbortError } from "../../core/api/AbortError.js";
+import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
+import { getRun } from "../../core/getRun.js";
+import { startDurationMeasurement } from "../../util/DurationMeasurement.js";
+import { runSafe } from "../../util/runSafe.js";
+import { Tool } from "../Tool.js";
+import { ToolExecutionError } from "../ToolExecutionError.js";
 
 export type ExecuteToolMetadata = {
   callId: string;

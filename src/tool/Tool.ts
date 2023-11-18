@@ -1,8 +1,8 @@
 import { FunctionOptions } from "../core/FunctionOptions.js";
 import { JsonSchemaProducer } from "../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../core/schema/Schema.js";
-import { ToolDefinition } from "../model-function/generate-tool-call/ToolDefinition.js";
 import { InvalidToolNameError } from "./InvalidToolNameError.js";
+import { ToolDefinition } from "./ToolDefinition.js";
 
 const namePattern = /^[a-zA-Z0-9_-]{1,64}$/;
 

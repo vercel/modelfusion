@@ -1,5 +1,5 @@
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
+import { JsonSchemaProducer } from "../core/schema/JsonSchemaProducer.js";
+import { Schema } from "../core/schema/Schema.js";
 
 export interface ToolDefinition<NAME extends string, PARAMETERS> {
   name: NAME;

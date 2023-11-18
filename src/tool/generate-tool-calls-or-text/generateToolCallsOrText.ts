@@ -1,13 +1,13 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStandardCall } from "../executeStandardCall.js";
-import { NoSuchToolDefinitionError } from "./NoSuchToolDefinitionError.js";
-import { ToolCallArgumentsValidationError } from "./ToolCallArgumentsValidationError.js";
+import { ModelCallMetadata } from "../../model-function/ModelCallMetadata.js";
+import { executeStandardCall } from "../../model-function/executeStandardCall.js";
+import { NoSuchToolDefinitionError } from "../NoSuchToolDefinitionError.js";
+import { ToolCallArgumentsValidationError } from "../ToolCallArgumentsValidationError.js";
+import { ToolDefinition } from "../ToolDefinition.js";
 import {
   ToolCallsOrTextGenerationModel,
   ToolCallsOrTextGenerationModelSettings,
 } from "./ToolCallsOrTextGenerationModel.js";
-import { ToolDefinition } from "./ToolDefinition.js";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
 // retrieved through lookups such as TOOL["name"], such that any does not affect any client.

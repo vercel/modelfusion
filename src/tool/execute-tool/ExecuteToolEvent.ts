@@ -1,7 +1,7 @@
 import {
   BaseFunctionFinishedEvent,
   BaseFunctionStartedEvent,
-} from "../core/FunctionEvent.js";
+} from "../../core/FunctionEvent.js";
 
 export interface ExecuteToolStartedEvent extends BaseFunctionStartedEvent {
   functionType: "execute-tool";

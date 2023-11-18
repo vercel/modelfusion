@@ -1,13 +1,13 @@
-import { FunctionOptions } from "../core/FunctionOptions.js";
-import { executeFunctionCall } from "../core/executeFunctionCall.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { executeFunctionCall } from "../../core/executeFunctionCall.js";
+import { Tool } from "../Tool.js";
+import { ToolResult } from "../ToolResult.js";
+import { executeTool } from "../execute-tool/executeTool.js";
 import {
   ToolCallGenerationModel,
   ToolCallGenerationModelSettings,
-} from "../model-function/generate-tool-call/ToolCallGenerationModel.js";
-import { generateToolCall } from "../model-function/generate-tool-call/generateToolCall.js";
-import { Tool } from "./Tool.js";
-import { ToolResult } from "./ToolResult.js";
-import { executeTool } from "./executeTool.js";
+} from "../generate-tool-call/ToolCallGenerationModel.js";
+import { generateToolCall } from "../generate-tool-call/generateToolCall.js";
 
 /**
  * `useTool` uses `generateToolCall` to generate parameters for a tool and

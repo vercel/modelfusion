@@ -1,7 +1,7 @@
 import {
   BaseModelCallFinishedEvent,
   BaseModelCallStartedEvent,
-} from "../ModelCallEvent.js";
+} from "../../model-function/ModelCallEvent.js";
 
 export interface ToolCallGenerationStartedEvent
   extends BaseModelCallStartedEvent {

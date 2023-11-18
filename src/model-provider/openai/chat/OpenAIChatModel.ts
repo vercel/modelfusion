@@ -22,9 +22,9 @@ import {
   TextStreamingModel,
 } from "../../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
-import { ToolCallGenerationModel } from "../../../model-function/generate-tool-call/ToolCallGenerationModel.js";
-import { ToolCallsOrTextGenerationModel } from "../../../model-function/generate-tool-call/ToolCallsOrTextGenerationModel.js";
-import { ToolDefinition } from "../../../model-function/generate-tool-call/ToolDefinition.js";
+import { ToolDefinition } from "../../../tool/ToolDefinition.js";
+import { ToolCallGenerationModel } from "../../../tool/generate-tool-call/ToolCallGenerationModel.js";
+import { ToolCallsOrTextGenerationModel } from "../../../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";

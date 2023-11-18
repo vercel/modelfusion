@@ -1,4 +1,4 @@
-import { ToolCall } from "../model-function/generate-tool-call/ToolCall";
+import { ToolCall } from "./ToolCall";
 
 export interface ToolResult<NAME extends string, PARAMETERS, RETURN_TYPE> {
   tool: NAME;

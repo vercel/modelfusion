@@ -1,15 +1,15 @@
-import { FunctionOptions } from "../core/FunctionOptions.js";
-import { executeFunctionCall } from "../core/executeFunctionCall.js";
-import { ToolCall } from "../model-function/generate-tool-call/ToolCall.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { executeFunctionCall } from "../../core/executeFunctionCall.js";
+import { NoSuchToolError } from "../NoSuchToolError.js";
+import { Tool } from "../Tool.js";
+import { ToolCall } from "../ToolCall.js";
+import { ToolResult } from "../ToolResult.js";
+import { executeTool } from "../execute-tool/executeTool.js";
 import {
   ToolCallsOrTextGenerationModel,
   ToolCallsOrTextGenerationModelSettings,
-} from "../model-function/generate-tool-call/ToolCallsOrTextGenerationModel.js";
-import { generateToolCallsOrText } from "../model-function/generate-tool-call/generateToolCallsOrText.js";
-import { NoSuchToolError } from "./NoSuchToolError.js";
-import { Tool } from "./Tool.js";
-import { ToolResult } from "./ToolResult.js";
-import { executeTool } from "./executeTool.js";
+} from "../generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
+import { generateToolCallsOrText } from "../generate-tool-calls-or-text/generateToolCallsOrText.js";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
 // retrieved through lookups such as TOOL["name"], such that any does not affect any client.

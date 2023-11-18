@@ -1,14 +1,14 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStandardCall } from "../executeStandardCall.js";
-import { ToolDefinition } from "./ToolDefinition.js";
-import { ToolCallArgumentsValidationError } from "./ToolCallArgumentsValidationError.js";
-import { ToolCallsGenerationError } from "./ToolCallGenerationError.js";
+import { ModelCallMetadata } from "../../model-function/ModelCallMetadata.js";
+import { executeStandardCall } from "../../model-function/executeStandardCall.js";
+import { ToolCall } from "../ToolCall.js";
+import { ToolCallArgumentsValidationError } from "../ToolCallArgumentsValidationError.js";
+import { ToolCallsGenerationError } from "../ToolCallGenerationError.js";
+import { ToolDefinition } from "../ToolDefinition.js";
 import {
   ToolCallGenerationModel,
   ToolCallGenerationModelSettings,
 } from "./ToolCallGenerationModel.js";
-import { ToolCall } from "./ToolCall.js";
 
 export async function generateToolCall<
   PARAMETERS,

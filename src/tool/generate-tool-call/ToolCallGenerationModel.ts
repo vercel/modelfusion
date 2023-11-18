@@ -1,6 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { Model, ModelSettings } from "../Model.js";
-import { ToolDefinition } from "./ToolDefinition.js";
+import { Model, ModelSettings } from "../../model-function/Model.js";
+import { ToolDefinition } from "../ToolDefinition.js";
 
 export interface ToolCallGenerationModelSettings extends ModelSettings {}
 

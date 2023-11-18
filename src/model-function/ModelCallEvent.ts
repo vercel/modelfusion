@@ -2,6 +2,14 @@ import {
   BaseFunctionFinishedEvent,
   BaseFunctionStartedEvent,
 } from "../core/FunctionEvent.js";
+import {
+  ToolCallGenerationFinishedEvent,
+  ToolCallGenerationStartedEvent,
+} from "../tool/generate-tool-call/ToolCallGenerationEvent.js";
+import {
+  ToolCallsOrTextGenerationFinishedEvent,
+  ToolCallsOrTextGenerationStartedEvent,
+} from "../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
   EmbeddingFinishedEvent,
@@ -31,14 +39,6 @@ import {
   TextStreamingFinishedEvent,
   TextStreamingStartedEvent,
 } from "./generate-text/TextGenerationEvent.js";
-import {
-  ToolCallGenerationFinishedEvent,
-  ToolCallGenerationStartedEvent,
-} from "./generate-tool-call/ToolCallGenerationEvent.js";
-import {
-  ToolCallsOrTextGenerationFinishedEvent,
-  ToolCallsOrTextGenerationStartedEvent,
-} from "./generate-tool-call/ToolCallsOrTextGenerationEvent.js";
 import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
