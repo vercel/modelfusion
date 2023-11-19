@@ -1,5 +1,5 @@
-import { ToolCall } from "./ToolCall";
-import { ToolCallError } from "./ToolCallError";
+import { ToolCall } from "./ToolCall.js";
+import { ToolCallError } from "./ToolCallError.js";
 
 export type ToolCallResult<NAME extends string, PARAMETERS, RETURN_TYPE> = {
   tool: NAME;

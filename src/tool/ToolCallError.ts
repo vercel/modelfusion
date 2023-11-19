@@ -1,5 +1,5 @@
-import { getErrorMessage } from "../util/getErrorMessage";
-import { ToolCall } from "./ToolCall";
+import { getErrorMessage } from "../util/getErrorMessage.js";
+import { ToolCall } from "./ToolCall.js";
 
 export class ToolCallError extends Error {
   readonly toolCall: ToolCall<string, unknown>;
