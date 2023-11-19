@@ -11,7 +11,7 @@ You can use [generateToolCallsOrText](/api/modules/#generatetoolcallsortext) for
 :::note
 `generateToolCallsOrText` function does not execute the tools.
 It only generates the arguments for the tool calls (or a text response).
-You can execute the tool with [useToolsOrGenerateText](/guide/tools/use-tool-or-generate-text) or [executeTool](/guide/tools/execute-tool).
+You can execute the tool with [useToolsOrGenerateText](/guide/tools/use-tools-or-generate-text) or [executeTool](/guide/tools/execute-tool).
 :::
 
 ## Example

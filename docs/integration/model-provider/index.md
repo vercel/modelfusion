@@ -17,7 +17,11 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 | [Cohere](/integration/model-provider/cohere)            | ✅                                             | ✅                                           | full                                           |
 | [Anthropic](/integration/model-provider/anthropic)      | ✅                                             | ✅                                           |                                                |
 
-### [Generate Structure](/guide/function/generate-structure) and [Generate Structure or Text](/guide/function/generate-structure-or-text)
+### [Generate Structure](/guide/function/generate-structure)
+
+- [OpenAI](/integration/model-provider/openai) chat models
+
+### [Generate Tool Call](/guide/tools/generate-tool-call) and [Generate Tool Calls or Text](/guide/tools/generate-tool-calls-or-text)
 
 - [OpenAI](/integration/model-provider/openai) chat models
 
