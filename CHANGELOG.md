@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.73.1 - 2023-11-19
+
+Remove section newlines from Llama 2 prompt format.
+
 ## v0.73.0 - 2023-11-19
 
 Ollama edge case and error handling improvements.
