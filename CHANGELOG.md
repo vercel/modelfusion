@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.72.0 - 2023-11-19
+
+**Breaking change**: the tool calling API has been reworked to support multiple parallel tool calls. This required multiple breaking changes (see below). Check out the updated [tools documentation](https://modelfusion.dev/guide/tools/) for details.
+
+### Changed
+
+- `Tool` now has `parameters` and `returnType` schemas (instead of `inputSchema` and `outputSchema`).
+- `useTool` uses `generateToolCall` under the hood. The return value and error handling has changed.
+- `useToolOrGenerateText` has been renamed to `useToolsOrGenerateText`. It now uses `generateToolCallsOrText` under the hood. The return value and error handling has changed. It can now invoke several tools in parallel and returns an array of tool results.
+- The `maxRetries` parameter in `guard` has been replaced by a `maxAttempt` parameter.
+
+### Removed
+
+- `generateStructureOrText` has been removed.
+
 ## v0.71.0 - 2023-11-17
 
 ### Added
