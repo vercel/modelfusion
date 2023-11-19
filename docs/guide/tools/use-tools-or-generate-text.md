@@ -18,7 +18,7 @@ An essential behavior of chat agents is to be able to choose from different tool
 
 ```ts
 const { text, toolResults } = await useToolsOrGenerateText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  new OpenAIChatModel({ model: "gpt-4-1106-preview" }),
   [toolA, toolB, toolC],
   [OpenAIChatMessage.user(query)]
 );
