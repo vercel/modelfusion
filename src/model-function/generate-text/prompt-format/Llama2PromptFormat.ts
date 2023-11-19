@@ -5,9 +5,9 @@ import { validateChatPrompt } from "./validateChatPrompt.js";
 
 // see https://github.com/facebookresearch/llama/blob/6c7fe276574e78057f917549435a2554000a876d/llama/generation.py#L44
 const BEGIN_SEGMENT = "<s>";
-const END_SEGMENT = "</s>\n";
+const END_SEGMENT = "</s>";
 const BEGIN_INSTRUCTION = "[INST]";
-const END_INSTRUCTION = "[/INST]\n";
+const END_INSTRUCTION = "[/INST]";
 const BEGIN_SYSTEM = "<<SYS>>\n";
 const END_SYSTEM = "\n<</SYS>>\n\n";
 
