@@ -10,36 +10,38 @@ import { z } from "zod";
 dotenv.config();
 
 async function main() {
-  const query = "What's the weather like in Boston?";
-  // const query = "Where does Kevin work?";
-  // const query = "Tell me something random.";
-
   const { text, toolCalls } = await generateToolCallsOrText(
-    new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
+    new OpenAIChatModel({
+      model: "gpt-4-1106-preview",
+      maxCompletionTokens: 200,
+    }),
     [
       {
-        name: "getCurrentWeather" as const, // mark 'as const' for type inference
-        description: "Get the current weather in a given location",
+        name: "getTemperature" as const, // 'as const' important for type inference
+        description: "Get the temperature of a room.",
         parameters: new ZodSchema(
           z.object({
-            location: z
-              .string()
-              .describe("The city and state, e.g. San Francisco, CA"),
-            unit: z.enum(["celsius", "fahrenheit"]).optional(),
+            room: z.enum(["kitchen", "bedroom", "bathroom"]),
+            unit: z.enum(["Celsius", "Fahrenheit"]),
           })
         ),
       },
       {
-        name: "getContactInformation" as const,
-        description: "Get the contact information for a given person",
+        name: "setTemperature" as const, // 'as const' important for type inference
+        description: "Set the temperature of a room.",
         parameters: new ZodSchema(
           z.object({
-            name: z.string().describe("The name of the person"),
+            room: z.enum(["kitchen", "bedroom", "bathroom"]),
+            temperature: z.number(),
+            unit: z.enum(["Celsius", "Fahrenheit"]),
           })
         ),
       },
     ],
-    [OpenAIChatMessage.user(query)]
+    [
+      OpenAIChatMessage.system("You are home automation system."),
+      OpenAIChatMessage.user("Show me the kitchen temperature"),
+    ]
   );
 
   if (text != null) {
@@ -47,18 +49,18 @@ async function main() {
   }
 
   for (const toolCall of toolCalls ?? []) {
-    console.log("tool call " + toolCall.id);
+    console.log("tool call", toolCall);
 
     switch (toolCall.name) {
-      case "getCurrentWeather": {
-        const { location, unit } = toolCall.args;
-        console.log("getCurrentWeather", location, unit);
+      case "getTemperature": {
+        const { room, unit } = toolCall.args;
+        console.log("getTemperature", room, unit);
         break;
       }
 
-      case "getContactInformation": {
-        const { name } = toolCall.args;
-        console.log("getContactInformation", name);
+      case "setTemperature": {
+        const { room, temperature, unit } = toolCall.args;
+        console.log("setTemperature", room, temperature, unit);
         break;
       }
     }
