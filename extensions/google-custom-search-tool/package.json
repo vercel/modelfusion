@@ -1,7 +1,7 @@
 {
   "name": "@modelfusion/google-custom-search-tool",
   "description": "Google Custom Search tool for ModelFusion",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
@@ -52,7 +52,7 @@
     "copyfiles": "2.4.1",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.0.0",
-    "modelfusion": "^0.72.0",
+    "modelfusion": ">=0.72.0 <1.0.0-0",
     "prettier": "3.0.1",
     "rimraf": "5.0.1",
     "typescript": "5.2.2",
@@ -60,6 +60,6 @@
   },
   "peerDependencies": {
     "zod": "^3.22",
-    "modelfusion": "^0.72.0"
+    "modelfusion": ">=0.72.0 <1.0.0-0"
   }
 }

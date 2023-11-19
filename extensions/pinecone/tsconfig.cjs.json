@@ -3,7 +3,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "declaration": false
+    "declaration": false,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules"]
 }

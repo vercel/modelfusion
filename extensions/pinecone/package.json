@@ -1,7 +1,7 @@
 {
   "name": "@modelfusion/pinecone",
   "description": "Pinecone vector DB for ModelFusion",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
@@ -45,20 +45,19 @@
   "dependencies": {},
   "devDependencies": {
     "@pinecone-database/pinecone": "^0.1.6",
-    "@tsconfig/recommended": "1.0.2",
     "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
     "copyfiles": "2.4.1",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.0.0",
-    "modelfusion": "^0.45.0",
+    "modelfusion": ">=0.72.0 <1.0.0-0",
     "prettier": "3.0.1",
     "rimraf": "5.0.1",
     "typescript": "5.2.2"
   },
   "peerDependencies": {
-    "modelfusion": "^0.45.0",
+    "modelfusion": ">=0.72.0 <1.0.0-0",
     "@pinecone-database/pinecone": "0.1.6"
   }
 }

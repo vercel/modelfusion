@@ -1,7 +1,7 @@
 {
   "name": "@modelfusion/sqlite-vss",
   "description": "SQLite VSS Vector DB for ModelFusion",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
@@ -44,7 +44,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@tsconfig/recommended": "1.0.2",
     "@types/better-sqlite3": "^7.6.6",
     "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
@@ -52,7 +51,7 @@
     "copyfiles": "2.4.1",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.0.0",
-    "modelfusion": "^0.57.0",
+    "modelfusion": ">=0.72.0 <1.0.0-0",
     "prettier": "3.0.1",
     "rimraf": "5.0.1",
     "typescript": "5.2.2",
@@ -60,7 +59,7 @@
     "better-sqlite3": "^9.0.0"
   },
   "peerDependencies": {
-    "modelfusion": "^0.57.0",
+    "modelfusion": ">=0.72.0 <1.0.0-0",
     "sqlite-vss": "^0.1.2",
     "better-sqlite3": "^9.0.0"
   }

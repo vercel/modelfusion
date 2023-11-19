@@ -79,7 +79,7 @@ export class PineconeVectorIndex<DATA extends object | undefined>
 
         return {
           id: match.id,
-          data: validationResult.value,
+          data: validationResult.data,
           similarity: match.score,
         };
       });
