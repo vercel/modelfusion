@@ -435,6 +435,10 @@ const { text, toolResults } = await useToolsOrGenerateText(
 );
 ```
 
+#### [Agent Loop](https://modelfusion.dev/guide/tools/agent-loop)
+
+You can use `useToolsOrGenerateText` to implement an agent loop that responds to user messages and executes tools. [Learn more](https://modelfusion.dev/guide/tools/agent-loop).
+
 ### [Vector Indices](https://modelfusion.dev/guide/vector-index)
 
 ```ts

@@ -36,6 +36,7 @@ async function main() {
       messages
     );
 
+    // add the agent response to the messages:
     messages.push(
       OpenAIChatMessage.assistant(text, {
         toolCalls: toolResults?.map((result) => result.toolCall),
@@ -54,6 +55,7 @@ async function main() {
     }
 
     for (const { tool, result, ok, args, toolCall } of toolResults ?? []) {
+      // add the tool results to the messages:
       messages.push(
         OpenAIChatMessage.tool({ toolCallId: toolCall.id, content: result })
       );
