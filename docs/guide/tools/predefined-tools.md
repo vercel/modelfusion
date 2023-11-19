@@ -2,7 +2,7 @@
 sidebar_position: 15
 ---
 
-# Pre-defined Tools
+# Predefined Tools
 
 The following tools are available as a separate packages:
 

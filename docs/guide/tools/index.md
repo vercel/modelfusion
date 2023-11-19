@@ -4,127 +4,26 @@ sidebar_position: 15
 
 # Tools
 
-Tools enable chatbots and agents to execute actions. They are the glue that connects them to functions, APIS, and more.
+Tools are functions and descriptions of their parameters and purpose. They can be used by language models in prompts to execute actions. This enables chatbots and agents to go beyond generating text and to interact with the world.
 
-In ModelFusion, tools are functions with a description and a defined input schema.
-Language models can be instructed to use tools by selecting a tool and generating parameters for it.
+ModelFusion provides several building blocks for working with tools:
 
-The tool description and the text description in the zod schema (as well as the names in the schema) are used as part of the prompt.
-Relevant names and descriptions can help the language model to understand the schema and enter the correct data.
+### Tools
 
-## Using Tools
+- [Tools](/guide/tools/create-tools): an interface for defining tools
+- [Predefined Tools](/guide/tools/predefined-tools): a set of predefined tools for common tasks
 
-### useTool
+### Generating Tool Calls
 
-[useTool API](/api/modules/#useTool)
+- [Generate Tool Call](/guide/tools/generate-tool-call): a function that generates a tool call for a specific tool from a prompt
+- [Generate Tool Calls or Text](/guide/tools/generate-tool-calls-or-text): a function that generates a set of tool calls and text from a prompt. This is useful for chat agents that need to decide whether to use tools or to generate text.
 
-`useTool` uses [generateStructure](/guide/function/generate-structure) to generate parameters for a tool and then executes the tool with the parameters.
+### Using Tools
 
-The result contains the name of the tool (`tool` property), the parameters (`parameters` property, typed), and the result of the tool execution (`result` property, typed).
+- [Execute Tool](/guide/tools/execute-tool): a function that executes a tool with the provided arguments
+- [Use Tool](/guide/tools/use-tool): a function that generates a tool call and executes the tool with the generated arguments
+- [Use Tools or Generate Text](/guide/tools/use-tools-or-generate-text): a function that generates tool calls and text from a prompt, and then executes the tools
 
-```ts
-const { tool, parameters, result } = await useTool(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  calculator,
-  [OpenAIChatMessage.user("What's fourteen times twelve?")]
-);
-```
+### Agents
 
-### useToolOrGenerateText
-
-[useToolOrGenerateText API](/api/modules/#useToolorgeneratetext)
-
-`useToolOrGenerateText` uses [generateStructureOrText](/guide/function/generate-structure-or-text)
-to select a tool, generate parameters for it and execute it.
-It can be configured with several tools.
-
-```ts
-const { tool, parameters, result, text } = await useToolOrGenerateText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  [calculator /* ... */],
-  [OpenAIChatMessage.user("What's fourteen times twelve?")]
-);
-```
-
-If you need more control of the prompt, e.g. to reduce errors, you can access the tools in the prompt generation:
-
-```ts
-const { tool, parameters, result, text } = await useToolOrGenerateText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  [calculator /* ... */],
-  // Instead of using a curried function,
-  // you can also work with the tools directly:
-  (tools) => [
-    OpenAIChatMessage.system(
-      // Here the available tools are used to create
-      // a more precise prompt that reduces errors:
-      `You have ${tools.length} tools available (${tools
-        .map((tool) => tool.name)
-        .join(", ")}).`
-    ),
-    OpenAIChatMessage.user("What's fourteen times twelve?"),
-    // OpenAIChatMessage.user("What's twelwe plus 1234?"),
-    // OpenAIChatMessage.user("Tell me about Berlin"),
-  ]
-);
-```
-
-The result contains:
-
-- `tool`: the name of the tool or `null` if text was generated
-- `parameters`: the parameters (typed) or `null` if text was generated
-- `result`: the result of the tool execution (typed) or `null` if text was generated
-- `text`: the generated text. Optional if a tool was selected.
-
-```ts
-console.log(tool != null ? `TOOL: ${tool}` : "TEXT");
-console.log(`PARAMETERS: ${JSON.stringify(parameters)}`);
-console.log(`TEXT: ${text}`);
-console.log(`RESULT: ${JSON.stringify(result)}`);
-```
-
-### executeTool
-
-[executeTool API](/api/modules/#executetool)
-
-`executeTool` directly executes a tool with the given parameters.
-It also records the runtime and handles errors.
-`executeTool` is used by `useTool` and `useToolOrGenerateText`.
-
-#### Basic Example
-
-```ts
-const result = await executeTool(calculator, {
-  operator: "*" as const,
-  a: 14,
-  b: 12,
-});
-```
-
-#### With full response
-
-```ts
-const { metadata, output } = await executeTool(
-  calculator,
-  {
-    a: 14,
-    b: 12,
-    operator: "*" as const,
-  },
-  { returnType: "full" }
-);
-```
-
-## Demo Apps
-
-### [Middle school math](https://github.com/lgrammel/modelfusion/tree/main/examples/middle-school-math-agent)
-
-> _terminal app_, _agent_, _tools_, _GPT-4_
-
-Small agent that solves middle school math problems. It uses a calculator tool to solve the problems.
-
-### [Wikipedia Agent](https://github.com/lgrammel/modelfusion/tree/main/examples/wikipedia-agent)
-
-> _terminal app_, _ReAct agent_, _GPT-4_, _OpenAI functions_, _tools_
-
-Get answers to questions from Wikipedia, e.g. "Who was born first, Einstein or Picasso?"
+- [Agent Loop](/guide/tools/agent-loop): an example of how to use the building blocks to run an agent loop that generates tool calls and text from a prompt, and then executes the tools
