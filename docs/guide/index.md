@@ -25,7 +25,10 @@ ModelFusion is in its initial development phase. The main API is now mostly stab
 npm install modelfusion
 ```
 
-Or use a template: [ModelFusion terminal app starter](https://github.com/lgrammel/modelfusion-terminal-app-starter)
+Or use a template:
+
+- [ModelFusion terminal app starter](https://github.com/lgrammel/modelfusion-terminal-app-starter)
+- [Next.js, Vercel AI SDK, Ollama & ModelFusion starter](https://github.com/lgrammel/modelfusion-ollama-nextjs-starter)
 
 ## API Keys
 
