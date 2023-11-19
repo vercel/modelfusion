@@ -285,7 +285,7 @@ const ollamaTextGenerationResponseSchema = z.object({
   prompt_eval_count: z.number(),
   eval_count: z.number(),
   eval_duration: z.number(),
-  context: z.array(z.number()),
+  context: z.array(z.number()).optional(),
 });
 
 export type OllamaTextGenerationResponse = z.infer<
@@ -312,7 +312,7 @@ const ollamaTextStreamingResponseSchema = new ZodSchema(
       prompt_eval_duration: z.number().optional(),
       eval_count: z.number(),
       eval_duration: z.number(),
-      context: z.array(z.number()),
+      context: z.array(z.number()).optional(),
     }),
   ])
 );
