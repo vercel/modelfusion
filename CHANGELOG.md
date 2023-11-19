@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.73.0 - 2023-11-19
+
+Ollama edge case and error handling improvements.
+
 ## v0.72.0 - 2023-11-19
 
 **Breaking change**: the tool calling API has been reworked to support multiple parallel tool calls. This required multiple breaking changes (see below). Check out the updated [tools documentation](https://modelfusion.dev/guide/tools/) for details.
