@@ -8,7 +8,7 @@ async function main() {
   const result = await executeTool(calculator, {
     a: 14,
     b: 12,
-    operator: "*" as const,
+    operator: "*",
   });
 
   console.log(`Result: ${result}`);

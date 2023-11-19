@@ -15,7 +15,7 @@
 **ModelFusion** is a TypeScript library for building AI applications, chatbots, and agents.
 
 - **Vendor-neutral**: ModelFusion is a non-commercial open source project that is community-driven. You can use it with any supported provider.
-- **Multimodal**: ModelFusion supports a wide range of models including text generation, image generation, vision, text-to-speech, speech-to-text, and embedding models.
+- **Multi-modal**: ModelFusion supports a wide range of models including text generation, image generation, vision, text-to-speech, speech-to-text, and embedding models.
 - **Streaming**: ModelFusion supports streaming for many generation models, e.g. text streaming, structure streaming, and full duplex speech streaming.
 - **Utility functions**: ModelFusion provides functionality for tools and tool usage, vector indices, and guards functions.
 - **Type inference and validation**: ModelFusion infers TypeScript types wherever possible and to validates model responses.
@@ -250,39 +250,6 @@ for await (const part of structureStream) {
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
 
-### [Generate Structure or Text](https://modelfusion.dev/guide/function/generate-structure-or-text)
-
-Generate a structure (or text as a fallback) using a prompt and multiple schemas.
-It either matches one of the schemas or is text reponse.
-
-```ts
-const { structure, value, text } = await generateStructureOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
-  [
-    new ZodStructureDefinition({
-      name: "getCurrentWeather" as const, // mark 'as const' for type inference
-      description: "Get the current weather in a given location",
-      schema: z.object({
-        location: z
-          .string()
-          .describe("The city and state, e.g. San Francisco, CA"),
-        unit: z.enum(["celsius", "fahrenheit"]).optional(),
-      }),
-    }),
-    new ZodStructureDefinition({
-      name: "getContactInformation" as const,
-      description: "Get the contact information for a given person",
-      schema: z.object({
-        name: z.string().describe("The name of the person"),
-      }),
-    }),
-  ],
-  [OpenAIChatMessage.user(query)]
-);
-```
-
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
-
 ### [Embed Value](https://modelfusion.dev/guide/function/embed)
 
 Create embeddings for text and other values. Embeddings are vectors that represent the essence of the values in the context of the model.
@@ -366,16 +333,16 @@ Tools are functions that can be executed by an AI model. They are useful for bui
 
 Predefined tools: [SerpAPI](https://modelfusion.dev/integration/tool/serpapi), [Google Custom Search](https://modelfusion.dev/integration/tool/google-custom-search)
 
-#### Create Tool
+#### [Creating Tools](https://modelfusion.dev/guide/tools/create-tools)
 
-A tool is a function with a name, a description, and a schema for the input parameters.
+A tool is comprised of an async execute function, a name, a description, and a schema for the input parameters.
 
 ```ts
 const calculator = new Tool({
   name: "calculator",
   description: "Execute a calculation",
 
-  inputSchema: new ZodSchema(
+  parameters: new ZodSchema(
     z.object({
       a: z.number().describe("The first number."),
       b: z.number().describe("The second number."),
@@ -402,30 +369,75 @@ const calculator = new Tool({
 });
 ```
 
-#### useTool
+#### [generateToolCall](https://modelfusion.dev/guide/tools/generate-tool-call)
 
-The model determines the parameters for the tool from the prompt and then executes it.
+With `generateToolCall`, you can generate a tool call for a specific tool with a language model that supports tools calls (e.g. OpenAI Chat). This function does not execute the tools.
 
 ```ts
-const { tool, parameters, result } = await useTool(
+const { id, name, args } = await generateToolCall(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
   calculator,
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
 ```
 
-#### useToolOrGenerateText
+#### [generateToolCallsOrText](https://modelfusion.dev/guide/tools/generate-tool-calls-or-text)
 
-The model determines which tool to use and its parameters from the prompt and then executes it.
-Text is generated as a fallback.
+With `generateToolCallsOrText`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function does not execute the tools.
 
 ```ts
-const { tool, parameters, result, text } = await useToolOrGenerateText(
+const { text, toolCalls } = await generateToolCallsOrText(
   new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  [calculator /* and other tools... */],
+  [toolA, toolB, toolC],
+  [OpenAIChatMessage.user(query)]
+);
+```
+
+#### [executeTool](https://modelfusion.dev/guide/tools/execute-tool)
+
+You can directly invoke a tool with `executeTool`:
+
+```ts
+const result = await executeTool(calculator, {
+  a: 14,
+  b: 12,
+  operator: "*",
+});
+```
+
+#### [useTool](https://modelfusion.dev/guide/tools/use-tool)
+
+With `useTool`, you can use a tool with a language model that supports tools calls (e.g. OpenAI Chat). `useTool` first generates a tool call and then executes the tool with the arguments.
+
+```ts
+const { tool, toolCall, args, ok, result } = await useTool(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  calculator,
+  [OpenAIChatMessage.user("What's fourteen times twelve?")]
+);
+
+console.log(`Tool call:`, toolCall);
+console.log(`Tool:`, tool);
+console.log(`Arguments:`, args);
+console.log(`Ok:`, ok);
+console.log(`Result or Error:`, result);
+```
+
+#### [useToolsOrGenerateText](https://modelfusion.dev/guide/tools/use-tools-or-generate-text)
+
+With `useToolsOrGenerateText`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function executes the tools.
+
+```ts
+const { text, toolResults } = await useToolsOrGenerateText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  [calculator /* ... */],
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
 ```
+
+#### [Agent Loop](https://modelfusion.dev/guide/tools/agent-loop)
+
+You can use `useToolsOrGenerateText` to implement an agent loop that responds to user messages and executes tools. [Learn more](https://modelfusion.dev/guide/tools/agent-loop).
 
 ### [Vector Indices](https://modelfusion.dev/guide/vector-index)
 

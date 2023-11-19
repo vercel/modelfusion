@@ -12,7 +12,7 @@ import { z } from "zod";
 
 dotenv.config();
 
-setGlobalFunctionLogging("detailed-object");
+setGlobalFunctionLogging("basic-text");
 
 async function main() {
   const sentiment = await guard(
@@ -48,10 +48,14 @@ async function main() {
     fixStructure({
       modifyInputForRetry: async ({ input, error }) => [
         ...input,
-        OpenAIChatMessage.functionCall(null, {
-          name: error.structureName,
-          arguments: error.valueText,
-        }),
+        {
+          role: "assistant",
+          content: null,
+          function_call: {
+            name: error.structureName,
+            arguments: JSON.stringify(error.valueText),
+          },
+        } satisfies OpenAIChatMessage,
         OpenAIChatMessage.user(error.message),
         OpenAIChatMessage.user("Please fix the error and try again."),
       ],

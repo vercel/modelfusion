@@ -17,6 +17,6 @@
     "@types/html-to-text": "^9.0.0",
     "@types/jsdom": "^21.1.1",
     "@types/node": "20.2.3",
-    "ts-node": "10.9.1"
+    "tsx": "3.14.0"
   }
 }

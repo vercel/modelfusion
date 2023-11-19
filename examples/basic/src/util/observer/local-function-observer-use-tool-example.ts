@@ -7,7 +7,7 @@ dotenv.config();
 
 async function main() {
   // Set the observer on the function call:
-  const { tool, parameters, result } = await useTool(
+  const { tool, result } = await useTool(
     new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
     calculator,
     [OpenAIChatMessage.user("What's fourteen times twelve?")],

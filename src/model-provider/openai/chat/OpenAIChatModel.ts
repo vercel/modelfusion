@@ -13,7 +13,6 @@ import { parseJSON } from "../../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { Delta } from "../../../model-function/Delta.js";
 import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
-import { StructureOrTextGenerationModel } from "../../../model-function/generate-structure/StructureOrTextGenerationModel.js";
 import { StructureParseError } from "../../../model-function/generate-structure/StructureParseError.js";
 import { parsePartialJson } from "../../../model-function/generate-structure/parsePartialJson.js";
 import { PromptFormatTextStreamingModel } from "../../../model-function/generate-text/PromptFormatTextStreamingModel.js";
@@ -22,9 +21,9 @@ import {
   TextStreamingModel,
 } from "../../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
-import { ToolCallGenerationModel } from "../../../model-function/generate-tool-call/ToolCallGenerationModel.js";
-import { ToolCallsOrTextGenerationModel } from "../../../model-function/generate-tool-call/ToolCallsOrTextGenerationModel.js";
-import { ToolDefinition } from "../../../model-function/generate-tool-call/ToolDefinition.js";
+import { ToolDefinition } from "../../../tool/ToolDefinition.js";
+import { ToolCallGenerationModel } from "../../../tool/generate-tool-call/ToolCallGenerationModel.js";
+import { ToolCallsOrTextGenerationModel } from "../../../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
@@ -283,7 +282,6 @@ export class OpenAIChatModel
   implements
     TextStreamingModel<OpenAIChatMessage[], OpenAIChatSettings>,
     StructureGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
-    StructureOrTextGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
     ToolCallGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
     ToolCallsOrTextGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
 {
@@ -464,59 +462,6 @@ export class OpenAIChatModel
     });
   }
 
-  async doGenerateStructureOrText(
-    structureDefinitions: Array<StructureDefinition<string, unknown>>,
-    prompt: OpenAIChatMessage[],
-    options?: FunctionOptions
-  ) {
-    const response = await this.callAPI(prompt, {
-      ...options,
-      responseFormat: OpenAIChatResponseFormat.json,
-      functionCall: "auto",
-      functions: structureDefinitions.map((structureDefinition) => ({
-        name: structureDefinition.name,
-        description: structureDefinition.description,
-        parameters: structureDefinition.schema.getJsonSchema(),
-      })),
-    });
-
-    const message = response.choices[0]!.message;
-    const content = message.content;
-    const functionCall = message.function_call;
-
-    if (functionCall == null) {
-      return {
-        response,
-        structureAndText: {
-          structure: null,
-          value: null,
-          valueText: null,
-          text: content ?? "",
-        },
-        usage: this.extractUsage(response),
-      };
-    }
-
-    try {
-      return {
-        response,
-        structureAndText: {
-          structure: functionCall.name,
-          value: SecureJSON.parse(functionCall.arguments),
-          valueText: functionCall.arguments,
-          text: content,
-        },
-        usage: this.extractUsage(response),
-      };
-    } catch (error) {
-      throw new StructureParseError({
-        structureName: functionCall.name,
-        valueText: functionCall.arguments,
-        cause: error,
-      });
-    }
-  }
-
   async doGenerateToolCall(
     tool: ToolDefinition<string, unknown>,
     prompt: OpenAIChatMessage[],
@@ -550,7 +495,7 @@ export class OpenAIChatModel
           ? null
           : {
               id: toolCalls[0].id,
-              parameters: parseJSON({ text: toolCalls[0].function.arguments }),
+              args: parseJSON({ text: toolCalls[0].function.arguments }),
             },
       usage: this.extractUsage(response),
     };
@@ -584,7 +529,7 @@ export class OpenAIChatModel
         message.tool_calls?.map((toolCall) => ({
           id: toolCall.id,
           name: toolCall.function.name,
-          parameters: parseJSON({ text: toolCall.function.arguments }),
+          args: parseJSON({ text: toolCall.function.arguments }),
         })) ?? null,
       usage: this.extractUsage(response),
     };

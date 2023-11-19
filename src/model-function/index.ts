@@ -15,7 +15,6 @@ export * from "./generate-image/generateImage.js";
 export * from "./generate-speech/index.js";
 export * from "./generate-structure/index.js";
 export * from "./generate-text/index.js";
-export * from "./generate-tool-call/index.js";
 export * from "./generate-transcription/TranscriptionEvent.js";
 export * from "./generate-transcription/TranscriptionModel.js";
 export * from "./generate-transcription/generateTranscription.js";

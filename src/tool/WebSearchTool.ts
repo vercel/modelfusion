@@ -3,7 +3,7 @@ import { FunctionOptions } from "../core/FunctionOptions.js";
 import { ZodSchema } from "../core/schema/ZodSchema.js";
 import { Tool } from "./Tool.js";
 
-const OUTPUT_SCHEMA = new ZodSchema(
+const RETURN_TYPE_SCHEMA = new ZodSchema(
   z.object({
     results: z.array(
       z.object({
@@ -16,7 +16,7 @@ const OUTPUT_SCHEMA = new ZodSchema(
 );
 
 // expose the schemas to library consumers:
-const createInputSchema = (description: string) =>
+const createParameters = (description: string) =>
   // same structure, but with description:
   new ZodSchema(
     z.object({
@@ -67,7 +67,7 @@ export class WebSearchTool<NAME extends string> extends Tool<
   WebSearchToolOutput
 > {
   // output schema is always available
-  declare readonly outputSchema: typeof OUTPUT_SCHEMA;
+  declare readonly returnType: typeof RETURN_TYPE_SCHEMA;
 
   constructor({
     name,
@@ -86,8 +86,8 @@ export class WebSearchTool<NAME extends string> extends Tool<
     super({
       name,
       description,
-      inputSchema: createInputSchema(queryDescription),
-      outputSchema: OUTPUT_SCHEMA,
+      parameters: createParameters(queryDescription),
+      returnType: RETURN_TYPE_SCHEMA,
       execute,
     });
   }
