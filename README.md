@@ -369,18 +369,6 @@ const calculator = new Tool({
 });
 ```
 
-#### [executeTool](https://modelfusion.dev/guide/tools/execute-tool)
-
-You can directly invoke a tool with `executeTool`:
-
-```ts
-const result = await executeTool(calculator, {
-  a: 14,
-  b: 12,
-  operator: "*",
-});
-```
-
 #### [generateToolCall](https://modelfusion.dev/guide/tools/generate-tool-call)
 
 With `generateToolCall`, you can generate a tool call for a specific tool with a language model that supports tools calls (e.g. OpenAI Chat). This function does not execute the tools.
@@ -391,6 +379,30 @@ const { id, name, args } = await generateToolCall(
   calculator,
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
+```
+
+#### [generateToolCallsOrText](https://modelfusion.dev/guide/tools/generate-tool-calls-or-text)
+
+With `generateToolCallsOrText`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function does not execute the tools.
+
+```ts
+const { text, toolCalls } = await generateToolCallsOrText(
+  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  [toolA, toolB, toolC],
+  [OpenAIChatMessage.user(query)]
+);
+```
+
+#### [executeTool](https://modelfusion.dev/guide/tools/execute-tool)
+
+You can directly invoke a tool with `executeTool`:
+
+```ts
+const result = await executeTool(calculator, {
+  a: 14,
+  b: 12,
+  operator: "*",
+});
 ```
 
 #### [useTool](https://modelfusion.dev/guide/tools/use-tool)
@@ -411,19 +423,7 @@ console.log(`Ok:`, ok);
 console.log(`Result or Error:`, result);
 ```
 
-#### [generateToolCallsOrText](https://modelfusion.dev/guide/tools/generate-tool-calls-or-text)
-
-With `generateToolCallsOrText`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function does not execute the tools.
-
-```ts
-const { text, toolCalls } = await generateToolCallsOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
-  [toolA, toolB, toolC],
-  [OpenAIChatMessage.user(query)]
-);
-```
-
-#### useToolsOrGenerateText
+#### [useToolsOrGenerateText](https://modelfusion.dev/guide/tools/use-tools-or-generate-text)
 
 With `useToolsOrGenerateText`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function executes the tools.
 

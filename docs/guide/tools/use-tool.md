@@ -1,16 +1,16 @@
 ---
-sidebar_position: 35
+sidebar_position: 40
 ---
 
 # Use Tool
 
-With [useTool](/api/modules/#usetool), you can invoke a single tool with a model prompt. The model that you provide needs to support tools calls (e.g. OpenAI Chat). The model will always generate a tool c
+With [useTool](/api/modules/#usetool), you can invoke a single tool with a model prompt. The model that you provide needs to support tools calls (e.g. OpenAI Chat).
 
 `useTool` does the following:
 
 1. It calls `generateToolCall` to generate the arguments for the tool call using the model.
 2. It calls `executeTool` to execute the tool with the arguments.
-3. It handles errors and returns a safe result.
+3. It handles tool execution errors and returns a safe result.
 
 ## Example: Using a Calculator
 
