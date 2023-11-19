@@ -1,7 +1,7 @@
 export class ApiCallError extends Error {
   public readonly url: string;
   public readonly requestBodyValues: unknown;
-  public readonly statusCode: number;
+  public readonly statusCode?: number;
   public readonly cause?: unknown;
   public readonly isRetryable: boolean;
 
@@ -11,12 +11,13 @@ export class ApiCallError extends Error {
     requestBodyValues,
     statusCode,
     cause,
-    isRetryable = statusCode === 429 || statusCode >= 500,
+    isRetryable = statusCode != null &&
+      (statusCode === 429 || statusCode >= 500),
   }: {
     message: string;
     url: string;
     requestBodyValues: unknown;
-    statusCode: number;
+    statusCode?: number;
     cause?: unknown;
     isRetryable?: boolean;
   }) {
