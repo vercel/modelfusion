@@ -49,7 +49,7 @@ export class SerpapiGoogleWebSearchTool<
           })
         );
 
-        const validationResult = this.outputSchema.validate({
+        const validationResult = this.returnType.validate({
           results: organicResults,
         });
 
