@@ -69,7 +69,7 @@
     "secure-json-parse": "2.7.0",
     "ws": "8.14.2",
     "zod": "3.22.4",
-    "zod-to-json-schema": "3.21.4"
+    "zod-to-json-schema": "3.22.0"
   },
   "devDependencies": {
     "@types/node": "18.11.9",
