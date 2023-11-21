@@ -250,7 +250,9 @@ export class OllamaTextGenerationModel<
     });
   }
 
-  asToolCallGenerationModel(promptFormat: ToolCallPromptFormat<string>) {
+  asToolCallGenerationModel<INPUT_PROMPT>(
+    promptFormat: ToolCallPromptFormat<INPUT_PROMPT, string>
+  ) {
     return new TextGenerationToolCallModel({
       model: this.withSettings({ format: "json" }),
       format: promptFormat,

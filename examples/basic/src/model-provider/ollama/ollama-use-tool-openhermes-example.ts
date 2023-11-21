@@ -1,21 +1,32 @@
 import dotenv from "dotenv";
 import {
+  ChatMLPromptFormat,
   FunctionListToolCallPromptFormat,
+  OllamaApiConfiguration,
   OllamaTextGenerationModel,
+  retryNever,
+  setGlobalFunctionLogging,
   useTool,
 } from "modelfusion";
 import { calculator } from "../../tool/calculator-tool";
 
 dotenv.config();
 
+setGlobalFunctionLogging("detailed-object");
+
 async function main() {
   const { tool, args, toolCall, result } = await useTool(
     new OllamaTextGenerationModel({
-      model: "mistral",
+      model: "openhermes2.5-mistral",
       temperature: 0,
-    }).asToolCallGenerationModel(FunctionListToolCallPromptFormat.text()),
+      api: new OllamaApiConfiguration({ retry: retryNever() }),
+    }).asToolCallGenerationModel(
+      FunctionListToolCallPromptFormat.instruction({
+        baseFormat: ChatMLPromptFormat.instruction(),
+      })
+    ),
     calculator,
-    "What's fourteen times twelve?"
+    { instruction: "What's fourteen times twelve?" }
   );
 
   console.log(`Tool call`, toolCall);
