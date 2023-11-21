@@ -7,6 +7,23 @@ const DEFAULT_SYSTEM_PROMPT_NO_INPUT =
   "Below is an instruction that describes a task. Write a response that appropriately completes the request.";
 
 /**
+ * Formats a text prompt as an Alpaca prompt.
+ */
+export function text(): TextGenerationPromptFormat<string, string> {
+  return {
+    stopSequences: [],
+    format: (instruction) => {
+      let text = DEFAULT_SYSTEM_PROMPT_NO_INPUT;
+      text += "\n\n### Instruction:\n";
+      text += instruction;
+      text += "\n\n### Response:\n";
+
+      return text;
+    },
+  };
+}
+
+/**
  * Formats an instruction prompt as an Alpaca prompt.
  *
  * If the instruction has a system prompt, it overrides the default system prompt

@@ -13,9 +13,7 @@ async function main() {
     new LlamaCppTextGenerationModel({
       contextWindowSize: 4096, // Llama 2 context window size
       maxCompletionTokens: 512,
-    })
-      .withTextPrompt() // pure text prompt (no images)
-      .withPromptFormat(Llama2PromptFormat.chat()),
+    }).withTextPromptFormat(Llama2PromptFormat.chat()),
     {
       system: "You are a celebrated poet.",
       messages: [

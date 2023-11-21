@@ -187,7 +187,12 @@ export class LlamaCppTextGenerationModel<
     });
   }
 
-  withTextPrompt() {
+  withTextPrompt(): PromptFormatTextStreamingModel<
+    string,
+    LlamaCppTextGenerationPrompt,
+    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+    this
+  > {
     return this.withPromptFormat({
       format(prompt: string) {
         return { text: prompt };
@@ -196,6 +201,36 @@ export class LlamaCppTextGenerationModel<
     });
   }
 
+  /**
+   * Maps the prompt for a text version of the Llama.cpp prompt format (without image support).
+   */
+  withTextPromptFormat<INPUT_PROMPT>(
+    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, string>
+  ): PromptFormatTextStreamingModel<
+    INPUT_PROMPT,
+    string,
+    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+    PromptFormatTextStreamingModel<
+      string,
+      LlamaCppTextGenerationPrompt,
+      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+      this
+    >
+  > {
+    return new PromptFormatTextStreamingModel({
+      model: this.withTextPrompt().withSettings({
+        stopSequences: [
+          ...(this.settings.stopSequences ?? []),
+          ...promptFormat.stopSequences,
+        ],
+      }),
+      promptFormat,
+    });
+  }
+
+  /**
+   * Maps the prompt for the full Llama.cpp prompt format (incl. image support).
+   */
   withPromptFormat<INPUT_PROMPT>(
     promptFormat: TextGenerationPromptFormat<
       INPUT_PROMPT,

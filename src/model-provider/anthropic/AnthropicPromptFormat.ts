@@ -4,6 +4,23 @@ import { TextGenerationPromptFormat } from "../../model-function/generate-text/T
 import { validateChatPrompt } from "../../model-function/generate-text/prompt-format/validateChatPrompt.js";
 
 /**
+ * Formats a text prompt as an Anthropic prompt.
+ */
+export function text(): TextGenerationPromptFormat<string, string> {
+  return {
+    format: (instruction) => {
+      let text = "";
+      text += "\n\nHuman:";
+      text += instruction;
+      text += "\n\nAssistant:";
+
+      return text;
+    },
+    stopSequences: [],
+  };
+}
+
+/**
  * Formats an instruction prompt as an Anthropic prompt.
  */
 export function instruction(): TextGenerationPromptFormat<
@@ -19,9 +36,7 @@ export function instruction(): TextGenerationPromptFormat<
       }
 
       text += "\n\nHuman:";
-
       text += instruction.instruction;
-
       text += "\n\nAssistant:";
 
       return text;

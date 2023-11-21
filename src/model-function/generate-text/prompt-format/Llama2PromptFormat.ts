@@ -12,6 +12,24 @@ const BEGIN_SYSTEM = "<<SYS>>\n";
 const END_SYSTEM = "\n<</SYS>>\n\n";
 
 /**
+ * Formats a text prompt as a Llama 2 prompt.
+ *
+ * Llama 2 prompt template:
+ * ```
+ * <s>[INST]{ instruction } [/INST]
+ * ```
+ *
+ * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
+ */
+export function text(): TextGenerationPromptFormat<string, string> {
+  return {
+    stopSequences: [END_SEGMENT],
+    format: (instruction) =>
+      `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${instruction}${END_INSTRUCTION}\n`,
+  };
+}
+
+/**
  * Formats an instruction prompt as a Llama 2 prompt.
  *
  * Llama 2 prompt template:

@@ -479,11 +479,22 @@ const retrievedTexts = await retrieve(
 
 Available Vector Stores: [Memory](https://modelfusion.dev/integration/vector-index/memory), [SQLite VSS](https://modelfusion.dev/integration/vector-index/sqlite-vss), [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
 
-### Prompt Formats
+### [Text Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-text#prompt-format)
 
-Prompt formats let you use higher level prompt structures (such as instruction or chat prompts) for different models.
+Prompt formats let you use higher level prompt structures (such as text, instruction or chat prompts) for different models.
 
-#### [Text Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-text#prompt-format)
+#### Text Prompt Example
+
+```ts
+const text = await generateText(
+  new AnthropicTextGenerationModel({
+    model: "claude-instant-1",
+  }).withTextPrompt(),
+  "Write a short story about a robot learning to love"
+);
+```
+
+#### Instruction Prompt Example
 
 ```ts
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
@@ -491,9 +502,7 @@ const text = await generateText(
   new LlamaCppTextGenerationModel({
     contextWindowSize: 4096, // Llama 2 context window size
     maxCompletionTokens: 1000,
-  })
-    .withTextPrompt() // pure text prompt (no images)
-    .withPromptFormat(Llama2PromptFormat.instruction()),
+  }).withTextPromptFormat(Llama2PromptFormat.instruction()),
   {
     system: "You are a story writer.",
     instruction: "Write a short story about a robot learning to love.",
@@ -501,7 +510,9 @@ const text = await generateText(
 );
 ```
 
-They can also be accessed through the shorthand methods `.withChatPrompt()` and `.withInstructionPrompt()` for many models:
+They can also be accessed through the shorthand methods `.withTextPrompt()`, `.withChatPrompt()` and `.withInstructionPrompt()` for many models:
+
+#### Chat Prompt Example
 
 ```ts
 const textStream = await streamText(
@@ -528,19 +539,17 @@ const textStream = await streamText(
 );
 ```
 
-| Prompt Format | Instruction Prompt | Chat Prompt |
-| ------------- | ------------------ | ----------- |
-| OpenAI Chat   | ✅                 | ✅          |
-| Anthropic     | ✅                 | ✅          |
-| Llama 2       | ✅                 | ✅          |
-| ChatML        | ✅                 | ✅          |
-| Alpaca        | ✅                 | ❌          |
-| Vicuna        | ❌                 | ✅          |
-| Generic Text  | ✅                 | ✅          |
+| Prompt Format | Text Prompt | Instruction Prompt | Chat Prompt |
+| ------------- | ----------- | ------------------ | ----------- |
+| OpenAI Chat   | ✅          | ✅                 | ✅          |
+| Anthropic     | ✅          | ✅                 | ✅          |
+| Llama 2       | ✅          | ✅                 | ✅          |
+| ChatML        | ✅          | ✅                 | ✅          |
+| Alpaca        | ✅          | ✅                 | ❌          |
+| Vicuna        | ❌          | ❌                 | ✅          |
+| Generic Text  | ✅          | ✅                 | ✅          |
 
-#### [Vision Prompts]
-
-#### [Image Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-image/prompt-format)
+### [Image Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-image/prompt-format)
 
 You an use prompt formats with image models as well, e.g. to use a basic text prompt. It is available as a shorthand method:
 

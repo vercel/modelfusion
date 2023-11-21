@@ -5,6 +5,19 @@ import { validateChatPrompt } from "../../../model-function/generate-text/prompt
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 
 /**
+ * Formats a text prompt as an OpenAI chat prompt.
+ */
+export function text(): TextGenerationPromptFormat<
+  string,
+  Array<OpenAIChatMessage>
+> {
+  return {
+    format: (instruction) => [OpenAIChatMessage.user(instruction)],
+    stopSequences: [],
+  };
+}
+
+/**
  * Formats an instruction prompt as an OpenAI chat prompt.
  */
 export function instruction(): TextGenerationPromptFormat<

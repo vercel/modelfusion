@@ -75,6 +75,19 @@ for await (const textPart of textStream) {
 Anthropic requires a very specific prompt format with "Human: " and "Assistant: " sections.
 Using a prompt mapping can make the interaction with Anthropic models easier.
 
+### Text prompt
+
+[AnthropicPromptFormat.text()](/api/namespaces/AnthropicPromptFormat) lets you use basic text prompts with Anthropic models. It is available as a shorthand method:
+
+```ts
+const textStream = await streamText(
+  new AnthropicTextGenerationModel({
+    // ...
+  }).withTextPrompt(),
+  "Write a short story about a robot learning to love"
+);
+```
+
 ### Instruction prompt
 
 [AnthropicPromptFormat.instruction()](/api/namespaces/AnthropicPromptFormat) lets you use [instruction prompts](/api/modules#instructionprompt) with Anthropic models. It is available as a shorthand method:
