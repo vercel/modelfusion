@@ -1,5 +1,51 @@
 # Changelog
 
+## v0.74.0 - 2023-11-21
+
+Prompt format and tool calling improvements.
+
+### Added
+
+- text prompt format. Use simple text prompts, e.g. with `OpenAIChatModel`:
+  ```ts
+  const textStream = await streamText(
+    new OpenAIChatModel({
+      model: "gpt-3.5-turbo",
+    }).withTextPrompt(),
+    "Write a short story about a robot learning to love."
+  );
+  ```
+- `.withTextPromptFormat` to `LlamaCppTextGenerationModel` for simplified prompt construction:
+  ```ts
+  const textStream = await streamText(
+    new LlamaCppTextGenerationModel({
+      // ...
+    }).withTextPromptFormat(Llama2PromptFormat.text()),
+    "Write a short story about a robot learning to love."
+  );
+  ```
+- `FunctionListToolCallPromptFormat` to simplify tool calls with text models
+- `.asToolCallGenerationModel()` to `OllamaTextGenerationModel` to simplify tool calls:
+
+  ```ts
+  const { tool, args, toolCall, result } = await useTool(
+    new OllamaTextGenerationModel({
+      model: "mistral",
+      temperature: 0,
+    }).asToolCallGenerationModel(FunctionListToolCallPromptFormat.text()),
+    calculator,
+    "What's fourteen times twelve?"
+  );
+  ```
+
+### Improved
+
+- better error reporting when using exponent backoff retries
+
+### Removed
+
+- **breaking change**: removed `input` from `InstructionPrompt` (was Alpaca-specific, `AlpacaPromptFormat` still supports it)
+
 ## v0.73.1 - 2023-11-19
 
 Remove section newlines from Llama 2 prompt format.
