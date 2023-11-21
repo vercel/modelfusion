@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
 import {
-  OllamaTextGenerationModel,
-  TextGenerationToolCallModel,
   FunctionListToolCallPromptFormat,
+  OllamaTextGenerationModel,
   useTool,
 } from "modelfusion";
 import { calculator } from "../../tool/calculator-tool";
@@ -11,14 +10,10 @@ dotenv.config();
 
 async function main() {
   const { tool, args, toolCall, result } = await useTool(
-    new TextGenerationToolCallModel({
-      model: new OllamaTextGenerationModel({
-        model: "mistral",
-        format: "json",
-        temperature: 0,
-      }),
-      format: new FunctionListToolCallPromptFormat(),
-    }),
+    new OllamaTextGenerationModel({
+      model: "mistral",
+      temperature: 0,
+    }).asToolCallGenerationModel(new FunctionListToolCallPromptFormat()),
     calculator,
     "What's fourteen times twelve?"
   );
