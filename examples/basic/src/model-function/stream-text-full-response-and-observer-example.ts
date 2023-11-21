@@ -21,10 +21,7 @@ async function main() {
       model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 500,
     }).withInstructionPrompt(),
-    {
-      instruction: "You are a story writer. Write a story about:",
-      input: "A robot learning to love",
-    },
+    { instruction: "Write a story about a robot learning to love" },
     {
       functionId: "generate-story",
       returnType: "full",

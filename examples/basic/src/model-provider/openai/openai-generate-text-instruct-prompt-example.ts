@@ -10,10 +10,7 @@ async function main() {
       temperature: 0.7,
       maxCompletionTokens: 500,
     }).withInstructionPrompt(),
-    {
-      instruction: "Write a short story about:",
-      input: "a robot learning to love",
-    }
+    { instruction: "Write a story about a robot learning to love" }
   );
 
   console.log(text);

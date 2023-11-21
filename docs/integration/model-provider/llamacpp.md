@@ -282,7 +282,7 @@ const textStream = await streamText(
     .withPromptFormat(AlpacaPromptFormat.instruction()),
   {
     instruction: "You are a celebrated poet. Write a short story about:",
-    input: "a robot learning to love.",
+    input: "a robot learning to love.", // Alpaca supports optional input field
   }
 );
 ```

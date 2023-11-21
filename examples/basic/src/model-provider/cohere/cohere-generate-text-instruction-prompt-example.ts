@@ -11,8 +11,7 @@ async function main() {
     }).withInstructionPrompt(),
     {
       system: "You are a celebrated poet.",
-      instruction: "Write a short story about:",
-      input: "a robot learning to love",
+      instruction: "Write a story about a robot learning to love",
     }
   );
 

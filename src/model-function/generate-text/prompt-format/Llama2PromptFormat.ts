@@ -36,9 +36,7 @@ export function instruction(): TextGenerationPromptFormat<
         instruction.system != null
           ? ` ${BEGIN_SYSTEM}${instruction.system}${END_SYSTEM}`
           : ""
-      } ${instruction.instruction}${
-        instruction.input != null ? `\n\n${instruction.input}` : ""
-      } ${END_INSTRUCTION}\n`,
+      }${instruction.instruction}${END_INSTRUCTION}\n`,
   };
 }
 

@@ -25,10 +25,6 @@ export function instruction(): TextGenerationPromptFormat<
         })
       );
 
-      if (instruction.input != null) {
-        messages.push(OpenAIChatMessage.user(instruction.input));
-      }
-
       return messages;
     },
     stopSequences: [],

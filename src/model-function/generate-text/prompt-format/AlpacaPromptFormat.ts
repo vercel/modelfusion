@@ -43,7 +43,7 @@ const DEFAULT_SYSTEM_PROMPT_NO_INPUT =
  * @see https://github.com/tatsu-lab/stanford_alpaca#data-release
  */
 export function instruction(): TextGenerationPromptFormat<
-  InstructionPrompt,
+  InstructionPrompt & { input?: string }, // optional input supported by Alpaca
   string
 > {
   return {

@@ -20,10 +20,6 @@ export const instruction: () => TextGenerationPromptFormat<
 
     text += instruction.instruction;
 
-    if (instruction.input != null) {
-      text += `\n\n${instruction.input}`;
-    }
-
     return text;
   },
 });
