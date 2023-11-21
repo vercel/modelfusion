@@ -8,7 +8,7 @@ import { ToolCallParseError } from "../ToolCallParseError.js";
 import { ToolDefinition } from "../ToolDefinition.js";
 import { ToolCallGenerationModel } from "./ToolCallGenerationModel.js";
 
-export interface ToolCallTextPromptFormat<PROMPT> {
+export interface ToolCallPromptFormat<PROMPT> {
   createPrompt: (
     prompt: PROMPT,
     tool: ToolDefinition<string, unknown>
@@ -22,14 +22,14 @@ export class TextGenerationToolCallModel<
 > implements ToolCallGenerationModel<PROMPT, MODEL["settings"]>
 {
   private readonly model: MODEL;
-  private readonly format: ToolCallTextPromptFormat<PROMPT>;
+  private readonly format: ToolCallPromptFormat<PROMPT>;
 
   constructor({
     model,
     format,
   }: {
     model: MODEL;
-    format: ToolCallTextPromptFormat<PROMPT>;
+    format: ToolCallPromptFormat<PROMPT>;
   }) {
     this.model = model;
     this.format = format;
