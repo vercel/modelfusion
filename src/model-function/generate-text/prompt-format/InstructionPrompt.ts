@@ -1,13 +1,11 @@
 /**
- * A single instruction prompt. It can contain an optional system message to define the role and behavior of the language model
- * and an optiona input to provide context for the language model.
+ * A single instruction prompt. It can contain an optional system message to define the role and behavior of the language model.
  *
  * @example
  * ```ts
  * {
  *   system: "You are a celebrated poet.", // optional
- *   instruction: "Write a short story about:",
- *   input: "a robot learning to love.", // optional
+ *   instruction: "Write a story about a robot learning to love",
  * }
  * ```
  */
@@ -22,11 +20,6 @@ export type InstructionPrompt = {
    * The instruction for the model.
    */
   instruction: string;
-
-  /**
-   * Optional additional input or context, e.g. a the content from which information should be extracted.
-   */
-  input?: string;
 
   /**
    * Optional image to provide context for the language model. Only supported by some models.

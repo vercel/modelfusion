@@ -18,6 +18,16 @@ function chatMLSegment(
 }
 
 /**
+ * Formats a text prompt using the ChatML format.
+ */
+export function text(): TextGenerationPromptFormat<string, string> {
+  return {
+    stopSequences: [END_SEGMENT],
+    format: (instruction) => chatMLSegment("user", instruction),
+  };
+}
+
+/**
  * Formats an instruction prompt using the ChatML format.
  *
  * ChatML prompt template:
@@ -38,12 +48,7 @@ export function instruction(): TextGenerationPromptFormat<
     stopSequences: [END_SEGMENT],
     format: (instruction) =>
       chatMLSegment("system", instruction.system) +
-      chatMLSegment(
-        "user",
-        instruction.instruction + instruction.input != null
-          ? `\n\n${instruction.input}`
-          : ""
-      ),
+      chatMLSegment("user", instruction.instruction),
   };
 }
 

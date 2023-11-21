@@ -1,17 +1,17 @@
 import dotenv from "dotenv";
-import { CohereTextGenerationModel, streamText } from "modelfusion";
+import { OpenAIChatModel, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    new CohereTextGenerationModel({
-      model: "command",
+    new OpenAIChatModel({
+      model: "gpt-3.5-turbo",
+      temperature: 0.7,
       maxCompletionTokens: 500,
     }).withInstructionPrompt(),
     {
-      system: "You are a celebrated poet.",
-      instruction: "Write a story about a robot learning to love",
+      instruction: "Write a short story about a robot learning to love.",
     }
   );
 

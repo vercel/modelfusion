@@ -104,7 +104,55 @@ This enables the use of abstracted prompts such as [instruction](/api/modules#in
 
 You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `withPromptFormat()` method.
 
-For convenience, models with clear prompt formats have a `withChatPrompt()` or `withInstructionPrompt()` method that automatically applies the correct prompt format.
+For convenience, models with clear prompt formats have a `withTextPrompt()`, `withChatPrompt()`, or `withInstructionPrompt()` method that automatically applies the correct prompt format.
+
+### Text Prompts
+
+Text prompts are a simple string prompts. They are useful for mapping a simple prompt into the specific prompt format that a model expects.
+
+#### Example: OpenAIChatPromptFormat
+
+```ts
+const model = new OpenAIChatModel({
+  // ...
+}).withPromptFormat(OpenAIChatPromptFormat.text());
+```
+
+[OpenAIChatPromptFormat.text()](/api/namespaces/OpenAIChatPromptFormat#text) formats the instruction as an OpenAI message prompt, which is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel).
+
+Alternatively you can use the shorthand method:
+
+```ts
+const model = new OpenAIChatModel({
+  // ...
+}).withTextPrompt();
+```
+
+You can now generate text using a basic text prompt:
+
+```ts
+const text = await generateText(
+  model,
+  "Write a story about a robot learning to love"
+);
+```
+
+#### Prompt Formats
+
+The following prompt formats are available for text prompts:
+
+- **OpenAI chat**: [OpenAIChatPromptFormat.text()](/api/namespaces/OpenAIChatPromptFormat#text)
+  for [OpenAI chat models](/api/classes/OpenAIChatModel).
+- **Anthropic**: [AnthropicPromptFormat.text()](/api/namespaces/AnthropicPromptFormat#text)
+  for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
+- **Llama 2**: [Llama2PromptFormat.text()](/api/namespaces/Llama2PromptFormat#text)
+  for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
+- **Alpaca**: [AlpacaPromptFormat.text()](/api/namespaces/AlpacaPromptFormat#text)
+  for models that use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release).
+- **ChatML**: [ChatMLPromptFormat.text()](/api/namespaces/ChatMLPromptFormat#text)
+  for models that use the ChatML prompt format.
+- **Basic text**: [TextPromptFormat.text()](/api/namespaces/TextPromptFormat#text)
+  for other models that expect a generic text prompt.
 
 ### Instruction Prompts
 
@@ -135,8 +183,7 @@ You can now generate text using an instruction prompt:
 ```ts
 const text = await generateText(model, {
   system: "You are a celebrated poet.", // optional
-  instruction: "Write a short story about:",
-  input: "a robot learning to love", // optional
+  instruction: "Write a story about a robot learning to love",
 });
 ```
 

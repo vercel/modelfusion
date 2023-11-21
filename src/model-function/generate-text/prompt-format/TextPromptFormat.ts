@@ -4,6 +4,14 @@ import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
 import { validateChatPrompt } from "./validateChatPrompt.js";
 
 /**
+ * Formats a text prompt as a basic text prompt. Does not change the text prompt in any way.
+ */
+export const text: () => TextGenerationPromptFormat<string, string> = () => ({
+  stopSequences: [],
+  format: (instruction) => instruction,
+});
+
+/**
  * Formats an instruction prompt as a basic text prompt.
  */
 export const instruction: () => TextGenerationPromptFormat<
@@ -19,10 +27,6 @@ export const instruction: () => TextGenerationPromptFormat<
     }
 
     text += instruction.instruction;
-
-    if (instruction.input != null) {
-      text += `\n\n${instruction.input}`;
-    }
 
     return text;
   },

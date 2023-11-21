@@ -70,9 +70,7 @@ const result = await guard(
     generateText(
       new LlamaCppTextGenerationModel({
         // ...
-      })
-        .withTextPrompt() // pure text prompt (no images)
-        .withPromptFormat(Llama2PromptFormat.instruction()),
+      }).withTextPromptFormat(Llama2PromptFormat.instruction()),
       input,
       options // pass through options (for tracing)
     ),

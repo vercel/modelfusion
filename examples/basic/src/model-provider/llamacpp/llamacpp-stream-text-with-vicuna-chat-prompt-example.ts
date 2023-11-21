@@ -13,9 +13,7 @@ async function main() {
     new LlamaCppTextGenerationModel({
       contextWindowSize: 2048, // Vicuna v1.5 context window size
       maxCompletionTokens: 512,
-    })
-      .withTextPrompt() // pure text prompt (no images)
-      .withPromptFormat(VicunaPromptFormat.chat()),
+    }).withTextPromptFormat(VicunaPromptFormat.chat()),
     {
       system: "You are a celebrated poet.",
       messages: [

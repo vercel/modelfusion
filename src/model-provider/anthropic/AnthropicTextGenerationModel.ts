@@ -21,7 +21,7 @@ import { ZodSchema } from "../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../core/schema/parseJSON.js";
 import { AnthropicApiConfiguration } from "./AnthropicApiConfiguration.js";
 import { failedAnthropicCallResponseHandler } from "./AnthropicError.js";
-import { instruction, chat } from "./AnthropicPromptFormat.js";
+import { instruction, chat, text } from "./AnthropicPromptFormat.js";
 
 export const ANTHROPIC_TEXT_GENERATION_MODELS = {
   "claude-instant-1": {
@@ -136,6 +136,13 @@ export class AnthropicTextGenerationModel
       ...options,
       responseFormat: AnthropicTextGenerationResponseFormat.deltaIterable,
     });
+  }
+
+  /**
+   * Returns this model with a text prompt format.
+   */
+  withTextPrompt() {
+    return this.withPromptFormat(text());
   }
 
   /**

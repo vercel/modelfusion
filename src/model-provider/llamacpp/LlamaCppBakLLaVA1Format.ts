@@ -30,10 +30,6 @@ export function instruction(): TextGenerationPromptFormat<
 
       text += `${instruction.instruction}\n`;
 
-      if (instruction.input != null) {
-        text += `${instruction.input}\n`;
-      }
-
       text += `ASSISTANT: `;
 
       return {

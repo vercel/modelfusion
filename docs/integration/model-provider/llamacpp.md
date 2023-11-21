@@ -67,7 +67,6 @@ const model = new LlamaCppTextGenerationModel({
 [LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
 
 Consider [mapping the prompt to the prompt format](#prompt-formats) that your model was trained on.
-For models that take text input, you can first map the prompt to a simpler format using `.withTextPrompt()`.
 
 ```ts
 import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
@@ -161,6 +160,19 @@ The prompt format that the model expected is usually described on the model card
 
 Llama 2 uses a special prompt format (see "[How to prompt Llama 2 chat](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat)"):
 
+#### Text prompt format
+
+You can use [Llama2PromptFormat.text()](/api/namespaces/Llama2PromptFormat#text) to create basic text prompts.
+
+```ts
+const textStream = await streamText(
+  new LlamaCppTextGenerationModel({
+    // ...
+  }).withTextPromptFormat(Llama2PromptFormat.text()),
+  "Write a short story about a robot learning to love."
+);
+```
+
 #### Instruction prompt format
 
 You can use [Llama2PromptFormat.instruction()](/api/namespaces/Llama2PromptFormat#instruction) to create instruction prompts.
@@ -169,9 +181,7 @@ You can use [Llama2PromptFormat.instruction()](/api/namespaces/Llama2PromptForma
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  })
-    .withTextPrompt() // pure text prompt (no images)
-    .withPromptFormat(Llama2PromptFormat.instruction()),
+  }).withTextPromptFormat(Llama2PromptFormat.instruction()),
   {
     system: "You are a celebrated poet.",
     instruction: "Write a short story about a robot learning to love.",
@@ -187,9 +197,7 @@ You can use [Llama2PromptFormat.chat()](/api/namespaces/Llama2PromptFormat#chat)
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  })
-    .withTextPrompt() // pure text prompt (no images)
-    .withPromptFormat(Llama2PromptFormat.chat()),
+  }).withTextPromptFormat(Llama2PromptFormat.chat()),
   {
     system: "You are a celebrated poet.",
     messages: [
@@ -214,6 +222,19 @@ const textStream = await streamText(
 
 ChatML is a prompt format that is used by several models, e.g. [OpenHermes-2.5-Mistral](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF).
 
+#### Text prompt format
+
+You can use [ChatMLPromptFormat.text()](/api/namespaces/ChatMLPromptFormat#text) to create basic text prompts.
+
+```ts
+const textStream = await streamText(
+  new LlamaCppTextGenerationModel({
+    // ...
+  }).withTextPromptFormat(ChatMLPromptFormat.text()),
+  "Write a short story about a robot learning to love."
+);
+```
+
 #### Instruction prompt format
 
 You can use [ChatMLPromptFormat.instruction()](/api/namespaces/ChatMLPromptFormat#instruction) to create instruction prompts.
@@ -222,9 +243,7 @@ You can use [ChatMLPromptFormat.instruction()](/api/namespaces/ChatMLPromptForma
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  })
-    .withTextPrompt() // pure text prompt (no images)
-    .withPromptFormat(ChatMLPromptFormat.instruction()),
+  }).withTextPromptFormat(ChatMLPromptFormat.instruction()),
   {
     instruction: "Write a short story about a robot learning to love.",
   }
@@ -239,9 +258,7 @@ You can use [ChatMLPromptFormat.chat()](/api/namespaces/ChatMLPromptFormat#chat)
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  })
-    .withTextPrompt() // pure text prompt (no images)
-    .withPromptFormat(ChatMLPromptFormat.chat()),
+  }).withTextPromptFormat(ChatMLPromptFormat.chat()),
   {
     messages: [
       {
@@ -265,6 +282,19 @@ const textStream = await streamText(
 
 Alpaca and several other models use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release):
 
+#### text prompt format
+
+You can use [AlpacaPromptFormat.text()](/api/namespaces/AlpacaPromptFormat#text) to create basic text prompts.
+
+```ts
+const textStream = await streamText(
+  new LlamaCppTextGenerationModel({
+    // ...
+  }).withTextPromptFormat(AlpacaPromptFormat.text()),
+  "Write a short story about a robot learning to love."
+);
+```
+
 #### instruction prompt format
 
 You can use [AlpacaPromptFormat.instruction()](/api/namespaces/AlpacaPromptFormat#instruction) to create instruction prompts.
@@ -277,12 +307,10 @@ Setting the system property overrides the Alpaca system prompt and can impact th
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  })
-    .withTextPrompt() // pure text prompt (no images)
-    .withPromptFormat(AlpacaPromptFormat.instruction()),
+  }).withTextPromptFormat(AlpacaPromptFormat.instruction()),
   {
     instruction: "You are a celebrated poet. Write a short story about:",
-    input: "a robot learning to love.",
+    input: "a robot learning to love.", // Alpaca supports optional input field
   }
 );
 ```
@@ -303,9 +331,7 @@ Setting the system property overrides the Vicuna system prompt and can impact th
 const textStream = await streamText(
   new LlamaCppTextGenerationModel({
     // ...
-  })
-    .withTextPrompt() // pure text prompt (no images)
-    .withPromptFormat(VicunaPromptFormat.chat()),
+  }).withTextPromptFormat(VicunaPromptFormat.chat()),
   {
     system: "You are a celebrated poet.",
     messages: [

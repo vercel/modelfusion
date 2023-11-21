@@ -8,28 +8,29 @@ import { ToolCallParseError } from "../ToolCallParseError.js";
 import { ToolDefinition } from "../ToolDefinition.js";
 import { ToolCallGenerationModel } from "./ToolCallGenerationModel.js";
 
-export interface ToolCallTextPromptFormat<PROMPT> {
+export interface ToolCallPromptFormat<SOURCE_PROMPT, TARGET_PROMPT> {
   createPrompt: (
-    prompt: PROMPT,
+    prompt: SOURCE_PROMPT,
     tool: ToolDefinition<string, unknown>
-  ) => string;
+  ) => TARGET_PROMPT;
   extractToolCall: (response: string) => { id: string; args: unknown } | null;
 }
 
 export class TextGenerationToolCallModel<
-  PROMPT,
-  MODEL extends TextGenerationModel<string, TextGenerationModelSettings>,
-> implements ToolCallGenerationModel<PROMPT, MODEL["settings"]>
+  SOURCE_PROMPT,
+  TARGET_PROMPT,
+  MODEL extends TextGenerationModel<TARGET_PROMPT, TextGenerationModelSettings>,
+> implements ToolCallGenerationModel<SOURCE_PROMPT, MODEL["settings"]>
 {
   private readonly model: MODEL;
-  private readonly format: ToolCallTextPromptFormat<PROMPT>;
+  private readonly format: ToolCallPromptFormat<SOURCE_PROMPT, TARGET_PROMPT>;
 
   constructor({
     model,
     format,
   }: {
     model: MODEL;
-    format: ToolCallTextPromptFormat<PROMPT>;
+    format: ToolCallPromptFormat<SOURCE_PROMPT, TARGET_PROMPT>;
   }) {
     this.model = model;
     this.format = format;
@@ -49,7 +50,7 @@ export class TextGenerationToolCallModel<
 
   async doGenerateToolCall(
     tool: ToolDefinition<string, unknown>,
-    prompt: PROMPT,
+    prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
     const { response, value, metadata } = await generateText(

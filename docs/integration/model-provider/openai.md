@@ -298,6 +298,19 @@ fs.writeFileSync(path, speech);
 
 ### OpenAI Chat Format
 
+#### Text prompt
+
+[OpenAIChatPromptFormat.text()](/api/namespaces/OpenAIChatPromptFormat) lets you use basic text prompts with OpenAI chat models. It is available as a shorthand method:
+
+```ts
+const textStream = await streamText(
+  new OpenAIChatModel({
+    // ...
+  }).withTextPrompt(),
+  "Write a short story about a robot learning to love."
+);
+```
+
 #### Instruction prompt
 
 [OpenAIChatPromptFormat.instruction()](/api/namespaces/OpenAIChatPromptFormat) lets you use [instruction prompts](/api/modules#instructionprompt) with OpenAI chat models. It is available as a shorthand method:

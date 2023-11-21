@@ -1,4 +1,5 @@
 import { delay } from "../../util/delay.js";
+import { getErrorMessage } from "../../util/getErrorMessage.js";
 import { ApiCallError } from "./ApiCallError.js";
 import { RetryError } from "./RetryError.js";
 import { RetryFunction } from "./RetryFunction.js";
@@ -32,12 +33,13 @@ async function _retryWithExponentialBackoff<OUTPUT>(
   try {
     return await f();
   } catch (error) {
+    const errorMessage = getErrorMessage(error);
     const newErrors = [...errors, error];
     const tryNumber = newErrors.length;
 
     if (tryNumber >= maxTries) {
       throw new RetryError({
-        message: `Failed after ${tryNumber} tries.`,
+        message: `Failed after ${tryNumber} tries. Last error: ${errorMessage}`,
         reason: "maxTriesExceeded",
         errors: newErrors,
       });
@@ -61,8 +63,6 @@ async function _retryWithExponentialBackoff<OUTPUT>(
         );
       }
     }
-
-    const errorMessage = error instanceof Error ? error.message : String(error);
 
     throw new RetryError({
       message: `Failed after ${tryNumber} attempt(s) with non-retryable error: '${errorMessage}'`,

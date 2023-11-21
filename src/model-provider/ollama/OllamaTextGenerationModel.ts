@@ -16,6 +16,10 @@ import {
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import {
+  TextGenerationToolCallModel,
+  ToolCallPromptFormat,
+} from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
@@ -243,6 +247,15 @@ export class OllamaTextGenerationModel<
     return this.callAPI(prompt, {
       ...options,
       responseFormat: OllamaTextGenerationResponseFormat.deltaIterable,
+    });
+  }
+
+  asToolCallGenerationModel<INPUT_PROMPT>(
+    promptFormat: ToolCallPromptFormat<INPUT_PROMPT, string>
+  ) {
+    return new TextGenerationToolCallModel({
+      model: this.withSettings({ format: "json" }),
+      format: promptFormat,
     });
   }
 

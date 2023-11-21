@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
-import { AnthropicTextGenerationModel, generateText } from "modelfusion";
+import { AnthropicTextGenerationModel, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const text = await generateText(
+  const textStream = await streamText(
     new AnthropicTextGenerationModel({
       model: "claude-instant-1",
       temperature: 0.7,
@@ -29,7 +29,9 @@ async function main() {
     }
   );
 
-  console.log(text);
+  for await (const textPart of textStream) {
+    process.stdout.write(textPart);
+  }
 }
 
 main().catch(console.error);

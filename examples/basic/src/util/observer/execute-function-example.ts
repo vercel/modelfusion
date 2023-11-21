@@ -39,8 +39,8 @@ async function main() {
         {
           instruction:
             "You generate Stable Diffusion prompts for images." +
-            "Generate a prompt for a high resolution, cyberpunk version of the following image description:",
-          input: imageDescription,
+            "Generate a prompt for a high resolution, cyberpunk version of the following image description:\n" +
+            imageDescription,
         },
         { functionId: "generate-image-prompt", ...options }
       );
