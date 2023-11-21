@@ -67,7 +67,6 @@ const model = new LlamaCppTextGenerationModel({
 [LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
 
 Consider [mapping the prompt to the prompt format](#prompt-formats) that your model was trained on.
-For models that take text input, you can first map the prompt to a simpler format using `.withTextPrompt()`.
 
 ```ts
 import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
