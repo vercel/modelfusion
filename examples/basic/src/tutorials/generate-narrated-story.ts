@@ -1,21 +1,18 @@
 import dotenv from "dotenv";
-import {
-  ElevenLabsSpeechModel,
-  OpenAIChatModel,
-  generateSpeech,
-  generateText,
-} from "modelfusion";
+import { elevenlabs, generateSpeech, generateText, openai } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
 
 async function main() {
   const story = await generateText(
-    new OpenAIChatModel({
-      model: "gpt-3.5-turbo",
-      temperature: 0.7,
-      maxCompletionTokens: 500,
-    }).withInstructionPrompt(),
+    openai
+      .ChatTextGenerator({
+        model: "gpt-3.5-turbo",
+        temperature: 0.7,
+        maxCompletionTokens: 500,
+      })
+      .withInstructionPrompt(),
     {
       system:
         "You are a great storyteller. " +
@@ -25,7 +22,7 @@ async function main() {
   );
 
   const narratedStory = await generateSpeech(
-    new ElevenLabsSpeechModel({
+    elevenlabs.Speech({
       voice: "AZnzlk1XvdvUeBnXmlld", // Domi
       model: "eleven_multilingual_v2",
     }),

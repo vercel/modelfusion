@@ -25,10 +25,12 @@ After obtaining the base image, the next step is to create an image generation p
 
 ```ts
 const imageGenerationPrompt = await generateText(
-  new OpenAIChatModel({
-    model: "gpt-4-vision-preview",
-    maxCompletionTokens: 128,
-  }).withInstructionPrompt(),
+  openai
+    .ChatTextGenerator({
+      model: "gpt-4-vision-preview",
+      maxCompletionTokens: 128,
+    })
+    .withInstructionPrompt(),
   {
     instruction:
       "Generate an image generation prompt for creating a cyberpunk-style image that resembles the attached image. " +
@@ -45,7 +47,7 @@ Dall-E 3 will interpret the prompt and create a new image in the specified cyber
 
 ```ts
 const image = await generateImage(
-  new OpenAIImageGenerationModel({
+  openai.ImageGenerator({
     model: "dall-e-3",
     quality: "hd",
     size: "1024x1024",

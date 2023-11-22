@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
   ZodStructureDefinition,
   generateStructure,
+  openai,
 } from "modelfusion";
 import { z } from "zod";
 
@@ -12,7 +12,7 @@ dotenv.config();
 async function main() {
   const analyzeSentiment = async (productReview: string) =>
     generateStructure(
-      new OpenAIChatModel({
+      openai.ChatTextGenerator({
         model: "gpt-4",
         temperature: 0, // remove randomness
         maxCompletionTokens: 500, // enough tokens for reasoning and sentiment

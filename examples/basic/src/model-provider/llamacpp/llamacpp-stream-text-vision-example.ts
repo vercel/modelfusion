@@ -1,4 +1,4 @@
-import { LlamaCppTextGenerationModel, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -8,7 +8,7 @@ async function main() {
   });
 
   const textStream = await streamText(
-    new LlamaCppTextGenerationModel({
+    llamacpp.TextGenerator({
       maxCompletionTokens: 1024,
       temperature: 0,
     }),

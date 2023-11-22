@@ -1,15 +1,15 @@
+import dotenv from "dotenv";
 import {
   HeliconeOpenAIApiConfiguration,
-  OpenAICompletionModel,
   generateText,
+  openai,
 } from "modelfusion";
-import dotenv from "dotenv";
 
 dotenv.config();
 
 async function main() {
   const text = await generateText(
-    new OpenAICompletionModel({
+    openai.CompletionTextGenerator({
       api: new HeliconeOpenAIApiConfiguration(),
       model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,

@@ -1,7 +1,7 @@
 import {
   ChatPrompt,
   Llama2PromptFormat,
-  LlamaCppTextGenerationModel,
+  llamacpp,
   streamText,
   trimChatPrompt,
 } from "modelfusion";
@@ -22,10 +22,12 @@ async function main() {
 
     chat.messages.push({ role: "user", content: userInput });
 
-    const model = new LlamaCppTextGenerationModel({
-      contextWindowSize: 4096, // Llama 2 context window size
-      maxCompletionTokens: 512,
-    }).withTextPromptFormat(Llama2PromptFormat.chat());
+    const model = llamacpp
+      .TextGenerator({
+        contextWindowSize: 4096, // Llama 2 context window size
+        maxCompletionTokens: 512,
+      })
+      .withTextPromptFormat(Llama2PromptFormat.chat());
 
     const textStream = await streamText(
       model,

@@ -1,16 +1,12 @@
 import dotenv from "dotenv";
-import {
-  OpenAIApiConfiguration,
-  OpenAICompletionModel,
-  generateText,
-} from "modelfusion";
+import { OpenAIApiConfiguration, generateText, openai } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   try {
     const text = await generateText(
-      new OpenAICompletionModel({
+      openai.CompletionTextGenerator({
         api: new OpenAIApiConfiguration({
           baseUrl: "invalid-url",
         }),

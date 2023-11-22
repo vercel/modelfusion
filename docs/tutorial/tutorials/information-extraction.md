@@ -17,7 +17,7 @@ Depending on the context, it can be important to provide an escape hatch when th
 ```ts
 const extractNameAndPopulation = async (text: string) =>
   generateStructure(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "gpt-4",
       temperature: 0, // remove randomness as much as possible
       maxCompletionTokens: 200, // only a few tokens needed for the response
@@ -71,7 +71,7 @@ This approach generates a text output and the input needs to fit into the chat p
 ```ts
 function extractText({ text, topic }: { text: string; topic: string }) {
   return generateText(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "gpt-4",
       temperature: 0,
       maxCompletionTokens: 500,

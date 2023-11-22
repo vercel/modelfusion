@@ -21,7 +21,7 @@ const api = new HuggingFaceApiConfiguration({
   // ...
 });
 
-const model = new HuggingFaceTextGenerationModel({
+const model = huggingface.TextGenerator({
   api,
   // ...
 });
@@ -40,33 +40,15 @@ You can override this behavior by setting `waitForModel` to `false` in the model
 [HuggingFaceTextGenerationModel API](/api/classes/HuggingFaceTextGenerationModel)
 
 ```ts
-import { HuggingFaceTextGenerationModel, generateText } from "modelfusion";
+import { huggingface, generateText } from "modelfusion";
 
 const text = await generateText(
-  new HuggingFaceTextGenerationModel({
+  huggingface.TextGenerator({
     model: "tiiuae/falcon-7b",
     temperature: 700,
     maxNewTokens: 500,
   }),
   "Write a short story about a robot learning to love:\n\n"
-);
-```
-
-### Generate Text (Image Description Model)
-
-[HuggingFaceImageDescriptionModel API](/api/classes/HuggingFaceImageDescriptionModel)
-
-```ts
-import { HuggingFaceImageDescriptionModel, generateText } from "modelfusion";
-
-const imageResponse = await fetch(imageUrl);
-const data = Buffer.from(await imageResponse.arrayBuffer());
-
-const text = await generateText(
-  new HuggingFaceImageDescriptionModel({
-    model: "nlpconnect/vit-gpt2-image-captioning",
-  }),
-  data
 );
 ```
 
@@ -77,10 +59,10 @@ const text = await generateText(
 Text embeddings are using the HuggingFace feature extract pipeline.
 
 ```ts
-import { HuggingFaceTextEmbeddingModel, embedMany } from "modelfusion";
+import { huggingface, embedMany } from "modelfusion";
 
 const embeddings = await embedMany(
-  new HuggingFaceTextEmbeddingModel({
+  huggingface.TextEmbedder({
     model: "intfloat/e5-base-v2",
     embeddingDimensions: 768,
   }),

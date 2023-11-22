@@ -44,7 +44,7 @@ const split = splitAtToken({
   maxTokensPerChunk: 256,
   // You can get a tokenizer from a model or create it explicitly.
   // The tokenizer must support getting the text for a single token.
-  tokenizer: new TikTokenTokenizer({ model: "gpt-4" }),
+  tokenizer: openai.Tokenizer({ model: "gpt-4" }),
 });
 const result = await split({ text });
 ```

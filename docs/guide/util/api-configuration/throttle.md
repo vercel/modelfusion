@@ -28,7 +28,7 @@ const api = new OpenAIApiConfiguration({
   throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
 });
 
-const model = new OpenAITextEmbeddingModel({
+const model = openai.TextEmbedder({
   model: "text-embedding-ada-002",
   api,
 });
@@ -49,7 +49,7 @@ const api = new OpenAIApiConfiguration({
   throttle: throttleUnlimitedConcurrency(),
 });
 
-new OpenAITextEmbeddingModel({
+openai.TextEmbedder({
   model: "text-embedding-ada-002",
   api,
 });

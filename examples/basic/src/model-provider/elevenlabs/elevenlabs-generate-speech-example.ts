@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
-import { ElevenLabsSpeechModel, generateSpeech } from "modelfusion";
+import { elevenlabs, generateSpeech } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
 
 async function main() {
   const speech = await generateSpeech(
-    new ElevenLabsSpeechModel({
+    elevenlabs.Speech({
       voice: "pNInz6obpgDQGcFmaJgB", // Adam
     }),
     "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +

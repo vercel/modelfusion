@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import {
-  ElevenLabsSpeechModel,
-  LmntSpeechModel,
   SpeechGenerationModel,
+  elevenlabs,
   generateSpeech,
+  lmnt,
 } from "modelfusion";
 
 dotenv.config();
@@ -14,10 +14,10 @@ async function callModel(model: SpeechGenerationModel) {
 async function main() {
   const model =
     Math.random() < 0.5
-      ? new LmntSpeechModel({
+      ? lmnt.Speech({
           voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
         })
-      : new ElevenLabsSpeechModel({
+      : elevenlabs.Speech({
           voice: "pNInz6obpgDQGcFmaJgB", // Adam
         });
 

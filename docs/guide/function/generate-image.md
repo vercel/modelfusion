@@ -19,7 +19,7 @@ By default, the image is a binary buffer. You can use set the returnType option 
 
 ```ts
 const imageBuffer = await generateImage(
-  new OpenAIImageGenerationModel(/* ... */),
+  openai.ImageGenerator(/* ... */),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```
@@ -28,7 +28,7 @@ const imageBuffer = await generateImage(
 
 ```ts
 const imageBase64 = await generateImage(
-  new OpenAIImageGenerationModel(/* ... */),
+  openai.ImageGenerator(/* ... */),
   "the wicked witch of the west in the style of early 19th century painting",
   { returnType: "base64" }
 );
@@ -37,13 +37,10 @@ const imageBase64 = await generateImage(
 #### Stability AI buffer
 
 ```ts
-const imageBuffer = await generateImage(
-  new StabilityImageGenerationModel(/* ... */),
-  [
-    { text: "the wicked witch of the west" },
-    { text: "style of early 19th century painting", weight: 0.5 },
-  ]
-);
+const imageBuffer = await generateImage(stability.ImageGenerator(/* ... */), [
+  { text: "the wicked witch of the west" },
+  { text: "style of early 19th century painting", weight: 0.5 },
+]);
 ```
 
 ## Prompt Format
@@ -60,9 +57,11 @@ Basic prompts are simple text prompts.
 #### Example
 
 ```ts
-const model = new StabilityImageGenerationModel({
-  // ...
-}).withBasicPrompt();
+const model = stability
+  .ImageGenerator({
+    // ...
+  })
+  .withBasicPrompt();
 ```
 
 You can now generate images using a text prompt:

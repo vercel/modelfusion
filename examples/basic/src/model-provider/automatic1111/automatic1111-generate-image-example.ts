@@ -1,9 +1,9 @@
-import { Automatic1111ImageGenerationModel, generateImage } from "modelfusion";
+import { automatic1111, generateImage } from "modelfusion";
 import fs from "node:fs";
 
 async function main() {
   const image = await generateImage(
-    new Automatic1111ImageGenerationModel({
+    automatic1111.ImageGenerator({
       model: "aZovyaRPGArtistTools_v3.safetensors [25ba966c5d]",
       steps: 30,
       sampler: "DPM++ 2M Karras",

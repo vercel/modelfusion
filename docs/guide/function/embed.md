@@ -18,7 +18,7 @@ Generate an embedding for a single value.
 
 ```ts
 const embedding = await embed(
-  new OpenAITextEmbeddingModel(/* ... */),
+  openai.TextEmbedder(/* ... */),
   "At first, Nox didn't know what to do with the pup."
 );
 ```
@@ -33,7 +33,7 @@ Generate embeddings for multiple values.
 
 ```ts
 const embeddings = await embedMany(
-  new OpenAITextEmbeddingModel({
+  openai.TextEmbedder({
     /* ... */
   }),
   [

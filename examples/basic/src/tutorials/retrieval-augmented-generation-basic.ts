@@ -2,10 +2,9 @@ import dotenv from "dotenv";
 import {
   MemoryVectorIndex,
   OpenAIChatMessage,
-  OpenAIChatModel,
-  OpenAITextEmbeddingModel,
   VectorIndexRetriever,
   generateText,
+  openai,
   retrieve,
   upsertIntoVectorIndex,
 } from "modelfusion";
@@ -25,7 +24,7 @@ async function main() {
       // some vector index that contains the information:
       vectorIndex,
       // use the same embedding model that was used when adding information:
-      embeddingModel: new OpenAITextEmbeddingModel({
+      embeddingModel: openai.TextEmbedder({
         model: "text-embedding-ada-002",
       }),
       // you need to experiment with these setting for your use case:
@@ -37,7 +36,7 @@ async function main() {
 
   // Generate an answer using the retrieved information:
   const answer = await generateText(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "gpt-4",
       temperature: 0, // remove randomness as much as possible
       maxCompletionTokens: 500,
@@ -79,7 +78,7 @@ async function ingestInformation() {
   ];
 
   const vectorIndex = new MemoryVectorIndex<string>();
-  const embeddingModel = new OpenAITextEmbeddingModel({
+  const embeddingModel = openai.TextEmbedder({
     model: "text-embedding-ada-002",
   });
 

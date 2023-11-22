@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 import {
   DefaultRun,
   OpenAICostCalculator,
-  OpenAITranscriptionModel,
   calculateCost,
   generateTranscription,
+  openai,
 } from "modelfusion";
 import fs from "node:fs";
 
@@ -16,7 +16,7 @@ async function main() {
   const run = new DefaultRun();
 
   const transcription = await generateTranscription(
-    new OpenAITranscriptionModel({ model: "whisper-1" }),
+    openai.Transcription({ model: "whisper-1" }),
     { type: "mp3", data },
     { run }
   );

@@ -16,7 +16,7 @@ In standard mode, a text string is passed to the `generateSpeech` function, alon
 
 ```ts
 const speech = await generateSpeech(
-  new LmntSpeechModel({
+  lmnt.Speech({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
@@ -36,7 +36,7 @@ In duplex streaming mode, an `AsyncIterable<string>` is passed to the `streamSpe
 const textStream = await streamText(/* ... */);
 
 const speechStream = await streamSpeech(
-  new ElevenLabsSpeechModel({
+  elevenlabs.Speech({
     model: "eleven_turbo_v2",
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     optimizeStreamingLatency: 1,

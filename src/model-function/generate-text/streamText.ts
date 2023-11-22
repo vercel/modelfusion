@@ -14,7 +14,7 @@ import { TextStreamingModel } from "./TextGenerationModel.js";
  *
  * @example
  * const textStream = await streamText(
- *   new OpenAICompletionModel(...),
+ *   openai.CompletionTextGenerator(...),
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  *

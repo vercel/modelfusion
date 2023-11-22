@@ -23,7 +23,7 @@ const api = new Automatic1111ApiConfiguration({
   // ...
 });
 
-const model = new Automatic1111ImageGenerationModel({
+const model = automatic1111.ImageGenerator({
   api,
   // ...
 });
@@ -38,10 +38,10 @@ const model = new Automatic1111ImageGenerationModel({
 [Automatic1111ImageGenerationModel API](/api/classes/Automatic1111ImageGenerationModel)
 
 ```ts
-import { Automatic1111ImageGenerationModel, generateImage } from "modelfusion";
+import { automatic1111, generateImage } from "modelfusion";
 
 const image = await generateImage(
-  new Automatic1111ImageGenerationModel({
+  automatic1111.ImageGenerator({
     model: "aZovyaRPGArtistTools_v3.safetensors [25ba966c5d]",
     steps: 30,
     sampler: "DPM++ 2M Karras",
@@ -63,9 +63,11 @@ You an use [mapBasicPromptToAutomatic1111Format()](/api/modules#mapbasicpromptto
 
 ```ts
 const image = await generateImage(
-  new Automatic1111ImageGenerationModel({
-    //...
-  }).withBasicPrompt(),
+  automatic1111
+    .ImageGenerator({
+      //...
+    })
+    .withBasicPrompt(),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```

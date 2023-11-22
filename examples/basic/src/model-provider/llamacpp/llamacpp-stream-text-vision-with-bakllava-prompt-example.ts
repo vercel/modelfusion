@@ -1,8 +1,4 @@
-import {
-  LlamaCppTextGenerationModel,
-  LlamaCppBakLLaVA1Format,
-  streamText,
-} from "modelfusion";
+import { LlamaCppBakLLaVA1Format, llamacpp, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -12,10 +8,12 @@ async function main() {
   });
 
   const textStream = await streamText(
-    new LlamaCppTextGenerationModel({
-      maxCompletionTokens: 1024,
-      temperature: 0,
-    }).withPromptFormat(LlamaCppBakLLaVA1Format.instruction()),
+    llamacpp
+      .TextGenerator({
+        maxCompletionTokens: 1024,
+        temperature: 0,
+      })
+      .withPromptFormat(LlamaCppBakLLaVA1Format.instruction()),
     {
       instruction: "Describe the image in detail:\n\n",
       image: { base64Content: image },

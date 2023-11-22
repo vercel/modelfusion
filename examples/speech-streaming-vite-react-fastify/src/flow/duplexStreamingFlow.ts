@@ -1,9 +1,4 @@
-import {
-  ElevenLabsSpeechModel,
-  OpenAIChatModel,
-  streamSpeech,
-  streamText,
-} from "modelfusion";
+import { elevenlabs, openai, streamSpeech, streamText } from "modelfusion";
 import { DefaultFlow } from "modelfusion/fastify-server";
 import { z } from "zod";
 
@@ -27,16 +22,18 @@ export const duplexStreamingFlow = new DefaultFlow({
   schema: duplexStreamingFlowSchema,
   async process({ input, run }) {
     const textStream = await streamText(
-      new OpenAIChatModel({
-        model: "gpt-4",
-        temperature: 0.7,
-        maxCompletionTokens: 50,
-      }).withInstructionPrompt(),
+      openai
+        .ChatTextGenerator({
+          model: "gpt-4",
+          temperature: 0.7,
+          maxCompletionTokens: 50,
+        })
+        .withInstructionPrompt(),
       { instruction: input.prompt }
     );
 
     const speechStream = await streamSpeech(
-      new ElevenLabsSpeechModel({
+      elevenlabs.Speech({
         model: "eleven_turbo_v2",
         voice: "pNInz6obpgDQGcFmaJgB", // Adam
         optimizeStreamingLatency: 1,

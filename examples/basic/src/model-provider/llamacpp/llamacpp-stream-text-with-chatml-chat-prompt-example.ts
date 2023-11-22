@@ -1,19 +1,17 @@
 import dotenv from "dotenv";
-import {
-  ChatMLPromptFormat,
-  LlamaCppTextGenerationModel,
-  streamText,
-} from "modelfusion";
+import { ChatMLPromptFormat, llamacpp, streamText } from "modelfusion";
 
 dotenv.config();
 
 // example assumes you are running https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp
 async function main() {
   const textStream = await streamText(
-    new LlamaCppTextGenerationModel({
-      contextWindowSize: 4096,
-      maxCompletionTokens: 512,
-    }).withTextPromptFormat(ChatMLPromptFormat.chat()),
+    llamacpp
+      .TextGenerator({
+        contextWindowSize: 4096,
+        maxCompletionTokens: 512,
+      })
+      .withTextPromptFormat(ChatMLPromptFormat.chat()),
     {
       system: "You are a celebrated poet.",
       messages: [

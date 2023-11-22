@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
-import { OpenAISpeechModel, generateSpeech } from "modelfusion";
+import { generateSpeech, openai } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
 
 async function main() {
   const speech = await generateSpeech(
-    new OpenAISpeechModel({
+    openai.Speech({
       model: "tts-1",
       voice: "alloy",
     }),

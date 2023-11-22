@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 import {
   DefaultRun,
   OpenAICostCalculator,
-  OpenAIImageGenerationModel,
   calculateCost,
   generateImage,
+  openai,
 } from "modelfusion";
 
 dotenv.config();
@@ -13,7 +13,7 @@ async function main() {
   const run = new DefaultRun();
 
   const image = await generateImage(
-    new OpenAIImageGenerationModel({
+    openai.ImageGenerator({
       model: "dall-e-3",
       size: "1024x1024",
       quality: "hd",

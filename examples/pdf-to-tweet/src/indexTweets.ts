@@ -1,10 +1,6 @@
 import { Command } from "commander";
 import dotenv from "dotenv";
-import {
-  MemoryVectorIndex,
-  OpenAITextEmbeddingModel,
-  upsertIntoVectorIndex,
-} from "modelfusion";
+import { MemoryVectorIndex, openai, upsertIntoVectorIndex } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
@@ -28,7 +24,7 @@ async function main() {
 
   await upsertIntoVectorIndex({
     vectorIndex,
-    embeddingModel: new OpenAITextEmbeddingModel({
+    embeddingModel: openai.TextEmbedder({
       model: "text-embedding-ada-002",
     }),
     objects: exampleTweets,

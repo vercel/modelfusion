@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
-import { OllamaTextGenerationModel, streamText } from "modelfusion";
+import { ollama, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    new OllamaTextGenerationModel({
+    ollama.TextGenerator({
       model: "mistral",
       maxCompletionTokens: 500,
     }),

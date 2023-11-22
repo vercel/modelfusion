@@ -1,10 +1,9 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
   Tool,
-  ToolExecutionError,
   ZodSchema,
+  openai,
   useTool,
 } from "modelfusion";
 import { z } from "zod";
@@ -32,7 +31,7 @@ export const calculatorThatThrowsError = new Tool({
 
 async function main() {
   const { tool, toolCall, args, ok, result } = await useTool(
-    new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+    openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
     calculatorThatThrowsError,
     [OpenAIChatMessage.user("What's fourteen times twelve?")]
   );

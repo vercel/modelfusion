@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
   ZodStructureDefinition,
   fixStructure,
   generateStructure,
   guard,
+  openai,
   setGlobalFunctionLogging,
 } from "modelfusion";
 import { z } from "zod";
@@ -18,7 +18,7 @@ async function main() {
   const sentiment = await guard(
     (input, options) =>
       generateStructure(
-        new OpenAIChatModel({
+        openai.ChatTextGenerator({
           model: "gpt-3.5-turbo",
           temperature: 0,
           maxCompletionTokens: 50,

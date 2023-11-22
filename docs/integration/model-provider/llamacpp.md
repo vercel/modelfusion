@@ -52,7 +52,7 @@ const api = new LlamaCppApiConfiguration({
   // ...
 });
 
-const model = new LlamaCppTextGenerationModel({
+const model = llamacpp.TextGenerator({
   api,
   // ...
 });
@@ -69,12 +69,14 @@ const model = new LlamaCppTextGenerationModel({
 Consider [mapping the prompt to the prompt format](#prompt-formats) that your model was trained on.
 
 ```ts
-import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
+import { llamacpp, generateText } from "modelfusion";
 
 const text = await generateText(
-  new LlamaCppTextGenerationModel({
-    maxCompletionTokens: 256,
-  }).withTextPrompt(),
+  llamacpp
+    .TextGenerator({
+      maxCompletionTokens: 256,
+    })
+    .withTextPrompt(),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -86,13 +88,15 @@ const text = await generateText(
 Consider [mapping the prompt to the prompt format](#prompt-formats) that your model was trained on.
 
 ```ts
-import { LlamaCppTextGenerationModel, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({
-    maxCompletionTokens: 1024,
-    temperature: 0.7,
-  }).withTextPrompt(),
+  llamacpp
+    .TextGenerator({
+      maxCompletionTokens: 1024,
+      temperature: 0.7,
+    })
+    .withTextPrompt(),
   "Write a short story about a robot learning to love:\n\n"
 );
 
@@ -106,9 +110,9 @@ for await (const textPart of textStream) {
 [LlamaCppTextEmbeddingModel API](/api/classes/LlamaCppTextEmbeddingModel)
 
 ```ts
-import { LlamaCppTextEmbeddingModel, embedMany } from "modelfusion";
+import { llamacpp, embedMany } from "modelfusion";
 
-const embeddings = await embedMany(new LlamaCppTextEmbeddingModel(), [
+const embeddings = await embedMany(llamacpp.TextEmbedder(), [
   "At first, Nox didn't know what to do with the pup.",
   "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
 ]);
@@ -119,9 +123,9 @@ const embeddings = await embedMany(new LlamaCppTextEmbeddingModel(), [
 [LlamaCppTokenizer API](/api/classes/LlamaCppTokenizer)
 
 ```ts
-import { LlamaCppTokenizer, countTokens } from "modelfusion";
+import { llamacpp, countTokens } from "modelfusion";
 
-const tokenizer = new LlamaCppTokenizer();
+const tokenizer = llamacpp.Tokenizer();
 
 const text = "At first, Nox didn't know what to do with the pup.";
 
@@ -140,9 +144,9 @@ However, some functions that automatically optimize the prompt size (e.g., recur
 You can set the context window size on the model by passing it as a parameter to the constructor.
 
 ```ts
-import { LlamaCppTextGenerationModel } from "modelfusion";
+import { llamacpp } from "modelfusion";
 
-const model = new LlamaCppTextGenerationModel({
+const model = llamacpp.TextGenerator({
   // Assuming Llama2 7B model context window size of 4096 tokens.
   // Change to the context window size of the model you are using:
   contextWindowSize: 4096,
@@ -166,9 +170,11 @@ You can use [Llama2PromptFormat.text()](/api/namespaces/Llama2PromptFormat#text)
 
 ```ts
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({
-    // ...
-  }).withTextPromptFormat(Llama2PromptFormat.text()),
+  llamacpp
+    .TextGenerator({
+      // ...
+    })
+    .withTextPromptFormat(Llama2PromptFormat.text()),
   "Write a short story about a robot learning to love."
 );
 ```
@@ -179,9 +185,11 @@ You can use [Llama2PromptFormat.instruction()](/api/namespaces/Llama2PromptForma
 
 ```ts
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({
-    // ...
-  }).withTextPromptFormat(Llama2PromptFormat.instruction()),
+  llamacpp
+    .TextGenerator({
+      // ...
+    })
+    .withTextPromptFormat(Llama2PromptFormat.instruction()),
   {
     system: "You are a celebrated poet.",
     instruction: "Write a short story about a robot learning to love.",
@@ -195,9 +203,11 @@ You can use [Llama2PromptFormat.chat()](/api/namespaces/Llama2PromptFormat#chat)
 
 ```ts
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({
-    // ...
-  }).withTextPromptFormat(Llama2PromptFormat.chat()),
+  llamacpp
+    .TextGenerator({
+      // ...
+    })
+    .withTextPromptFormat(Llama2PromptFormat.chat()),
   {
     system: "You are a celebrated poet.",
     messages: [
@@ -228,9 +238,11 @@ You can use [ChatMLPromptFormat.text()](/api/namespaces/ChatMLPromptFormat#text)
 
 ```ts
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({
-    // ...
-  }).withTextPromptFormat(ChatMLPromptFormat.text()),
+  llamacpp
+    .TextGenerator({
+      // ...
+    })
+    .withTextPromptFormat(ChatMLPromptFormat.text()),
   "Write a short story about a robot learning to love."
 );
 ```
@@ -241,9 +253,11 @@ You can use [ChatMLPromptFormat.instruction()](/api/namespaces/ChatMLPromptForma
 
 ```ts
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({
-    // ...
-  }).withTextPromptFormat(ChatMLPromptFormat.instruction()),
+  llamacpp
+    .TextGenerator({
+      // ...
+    })
+    .withTextPromptFormat(ChatMLPromptFormat.instruction()),
   {
     instruction: "Write a short story about a robot learning to love.",
   }
@@ -256,9 +270,11 @@ You can use [ChatMLPromptFormat.chat()](/api/namespaces/ChatMLPromptFormat#chat)
 
 ```ts
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({
-    // ...
-  }).withTextPromptFormat(ChatMLPromptFormat.chat()),
+  llamacpp
+    .TextGenerator({
+      // ...
+    })
+    .withTextPromptFormat(ChatMLPromptFormat.chat()),
   {
     messages: [
       {
@@ -288,9 +304,11 @@ You can use [AlpacaPromptFormat.text()](/api/namespaces/AlpacaPromptFormat#text)
 
 ```ts
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({
-    // ...
-  }).withTextPromptFormat(AlpacaPromptFormat.text()),
+  llamacpp
+    .TextGenerator({
+      // ...
+    })
+    .withTextPromptFormat(AlpacaPromptFormat.text()),
   "Write a short story about a robot learning to love."
 );
 ```
@@ -305,9 +323,11 @@ Setting the system property overrides the Alpaca system prompt and can impact th
 
 ```ts
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({
-    // ...
-  }).withTextPromptFormat(AlpacaPromptFormat.instruction()),
+  llamacpp
+    .TextGenerator({
+      // ...
+    })
+    .withTextPromptFormat(AlpacaPromptFormat.instruction()),
   {
     instruction: "You are a celebrated poet. Write a short story about:",
     input: "a robot learning to love.", // Alpaca supports optional input field
@@ -329,9 +349,11 @@ Setting the system property overrides the Vicuna system prompt and can impact th
 
 ```ts
 const textStream = await streamText(
-  new LlamaCppTextGenerationModel({
-    // ...
-  }).withTextPromptFormat(VicunaPromptFormat.chat()),
+  llamacpp
+    .TextGenerator({
+      // ...
+    })
+    .withTextPromptFormat(VicunaPromptFormat.chat()),
   {
     system: "You are a celebrated poet.",
     messages: [

@@ -1,10 +1,10 @@
 import {
-  CohereTextGenerationModel,
   Llama2PromptFormat,
-  LlamaCppTextGenerationModel,
   OpenAIApiConfiguration,
-  OpenAIChatModel,
+  cohere,
   createEventSourceStream,
+  llamacpp,
+  openai,
   streamText,
   trimChatPrompt,
 } from "modelfusion";
@@ -19,33 +19,39 @@ const messageSchame = z.object({
 
 const requestSchema = z.array(messageSchame);
 
-const gpt35turboModel = new OpenAIChatModel({
-  // explicit API configuration needed for NextJS environment
-  // (otherwise env variables are not available):
-  api: new OpenAIApiConfiguration({
-    apiKey: process.env.OPENAI_API_KEY,
-  }),
-  model: "gpt-3.5-turbo",
-  maxCompletionTokens: 512,
-}).withChatPrompt();
+const gpt35turboModel = openai
+  .ChatTextGenerator({
+    // explicit API configuration needed for NextJS environment
+    // (otherwise env variables are not available):
+    api: new OpenAIApiConfiguration({
+      apiKey: process.env.OPENAI_API_KEY,
+    }),
+    model: "gpt-3.5-turbo",
+    maxCompletionTokens: 512,
+  })
+  .withChatPrompt();
 
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const llama2Model = new LlamaCppTextGenerationModel({
-  contextWindowSize: 4096, // Llama 2 context window size
-  maxCompletionTokens: 512,
-}).withTextPromptFormat(Llama2PromptFormat.chat());
+const llama2Model = llamacpp
+  .TextGenerator({
+    contextWindowSize: 4096, // Llama 2 context window size
+    maxCompletionTokens: 512,
+  })
+  .withTextPromptFormat(Llama2PromptFormat.chat());
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const cohereModel = new CohereTextGenerationModel({
-  // explicit API configuration needed for NextJS environment
-  // (otherwise env variables are not available):
-  // api: new CohereApiConfiguration({
-  //   apiKey: process.env.COHERE_API_KEY,
-  // }),
-  model: "command",
-  maxCompletionTokens: 512,
-}).withChatPrompt();
+const cohereModel = cohere
+  .TextGenerator({
+    // explicit API configuration needed for NextJS environment
+    // (otherwise env variables are not available):
+    // api: new CohereApiConfiguration({
+    //   apiKey: process.env.COHERE_API_KEY,
+    // }),
+    model: "command",
+    maxCompletionTokens: 512,
+  })
+  .withChatPrompt();
 
 const sendMessage = async (request: Request): Promise<Response> => {
   if (request.method !== "POST") {

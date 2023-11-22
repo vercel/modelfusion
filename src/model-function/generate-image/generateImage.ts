@@ -16,7 +16,7 @@ import {
  *
  * @example
  * const image = await generateImage(
- *   new StabilityImageGenerationModel(...),
+ *   stability.ImageGenerator(...),
  *   [
  *     { text: "the wicked witch of the west" },
  *     { text: "style of early 19th century painting", weight: 0.5 },

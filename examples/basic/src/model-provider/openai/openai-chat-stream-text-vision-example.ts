@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { OpenAIChatMessage, OpenAIChatModel, streamText } from "modelfusion";
+import { OpenAIChatMessage, openai, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -11,7 +11,7 @@ async function main() {
   });
 
   const textStream = await streamText(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "gpt-4-vision-preview",
       maxCompletionTokens: 1000,
     }),
