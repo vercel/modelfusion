@@ -18,6 +18,10 @@ import {
   OpenAITranscriptionModel,
   OpenAITranscriptionModelSettings,
 } from "./OpenAITranscriptionModel.js";
+import {
+  TikTokenTokenizer,
+  TikTokenTokenizerSettings,
+} from "./TikTokenTokenizer.js";
 import { OpenAIChatModel, OpenAIChatSettings } from "./chat/OpenAIChatModel.js";
 
 /**
@@ -137,4 +141,25 @@ export function Transcription(settings: OpenAITranscriptionModelSettings) {
  */
 export function ImageGenerator(settings: OpenAIImageGenerationSettings) {
   return new OpenAIImageGenerationModel(settings);
+}
+
+/**
+ * Creates a TikToken tokenizer for OpenAI language models.
+ *
+ * @see https://github.com/openai/tiktoken
+ *
+ * @example
+ * const tokenizer = openai.Tokenizer({ model: "gpt-4" });
+ *
+ * const text = "At first, Nox didn't know what to do with the pup.";
+ *
+ * const tokenCount = await countTokens(tokenizer, text);
+ * const tokens = await tokenizer.tokenize(text);
+ * const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
+ * const reconstructedText = await tokenizer.detokenize(tokens);
+ *
+ * @returns A new instance of {@link TikTokenTokenizer}.
+ */
+export function Tokenizer(settings: TikTokenTokenizerSettings) {
+  return new TikTokenTokenizer(settings);
 }

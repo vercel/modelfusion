@@ -282,7 +282,7 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 Split text into tokens and reconstruct the text from tokens.
 
 ```ts
-const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });
+const tokenizer = openai.Tokenizer({ model: "gpt-4" });
 
 const text = "At first, Nox didn't know what to do with the pup.";
 
