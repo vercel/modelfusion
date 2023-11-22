@@ -52,24 +52,6 @@ const text = await generateText(
 );
 ```
 
-### Generate Text (Image Description Model)
-
-[HuggingFaceImageDescriptionModel API](/api/classes/HuggingFaceImageDescriptionModel)
-
-```ts
-import { HuggingFaceImageDescriptionModel, generateText } from "modelfusion";
-
-const imageResponse = await fetch(imageUrl);
-const data = Buffer.from(await imageResponse.arrayBuffer());
-
-const text = await generateText(
-  new HuggingFaceImageDescriptionModel({
-    model: "nlpconnect/vit-gpt2-image-captioning",
-  }),
-  data
-);
-```
-
 ### Embed Text
 
 [HuggingFaceTextEmbeddingModel API](/api/classes/HuggingFaceTextEmbeddingModel)

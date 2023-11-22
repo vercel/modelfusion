@@ -62,22 +62,6 @@ const textStream = await streamText(
 );
 ```
 
-#### Example: HuggingFace image captioning model
-
-You can also use models that take an image as input, such as image captioning models.
-
-```ts
-const imageResponse = await fetch(imageUrl);
-const data = Buffer.from(await imageResponse.arrayBuffer());
-
-const text = await generateText(
-  new HuggingFaceImageDescriptionModel({
-    model: "nlpconnect/vit-gpt2-image-captioning",
-  }),
-  data
-);
-```
-
 ### streamText
 
 [streamText API](/api/modules#streamtext)

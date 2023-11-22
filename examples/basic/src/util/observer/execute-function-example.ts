@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import {
-  HuggingFaceImageDescriptionModel,
   executeFunction,
   generateImage,
   generateText,
@@ -17,32 +16,30 @@ setGlobalFunctionLogging("detailed-object");
 async function main() {
   const image = await executeFunction(
     async (imageUrl, options) => {
-      const data = await executeFunction(
+      const base64Image = await executeFunction(
         async (imageUrl) => {
           const imageResponse = await fetch(imageUrl);
-          return Buffer.from(await imageResponse.arrayBuffer());
+          return Buffer.from(await imageResponse.arrayBuffer()).toString(
+            "base64"
+          );
         },
         imageUrl,
         { functionId: "fetch-image", ...options }
       );
 
-      const imageDescription = await generateText(
-        new HuggingFaceImageDescriptionModel({
-          model: "nlpconnect/vit-gpt2-image-captioning",
-        }),
-        data,
-        { functionId: "describe-image", ...options }
-      );
-
       const imageGenerationPrompt = await generateText(
-        openai.ChatTextGenerator({ model: "gpt-4" }).withInstructionPrompt(),
+        openai
+          .ChatTextGenerator({
+            model: "gpt-4-vision-preview",
+            maxCompletionTokens: 128,
+          })
+          .withInstructionPrompt(),
         {
           instruction:
-            "You generate Stable Diffusion prompts for images." +
-            "Generate a prompt for a high resolution, cyberpunk version of the following image description:\n" +
-            imageDescription,
-        },
-        { functionId: "generate-image-prompt", ...options }
+            "Generate an image generation prompt for creating a cyberpunk-style image that resembles the attached image. " +
+            "Capture the essence of the image in 1-2 sentences.",
+          image: { base64Content: base64Image },
+        }
       );
 
       return generateImage(
