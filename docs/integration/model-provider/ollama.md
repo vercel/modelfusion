@@ -73,11 +73,8 @@ for await (const textPart of textStream) {
 [OllamaTextEmbeddingModel API](/api/classes/OllamaTextEmbeddingModel)
 
 ```ts
-const embeddings = await embedMany(
-  new OllamaTextEmbeddingModel({ model: "llama2" }),
-  [
-    "At first, Nox didn't know what to do with the pup.",
-    "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-  ]
-);
+const embeddings = await embedMany(ollama.TextEmbedder({ model: "llama2" }), [
+  "At first, Nox didn't know what to do with the pup.",
+  "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+]);
 ```
