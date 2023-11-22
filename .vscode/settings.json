@@ -12,6 +12,7 @@
     "GGUF",
     "huggingface",
     "lgrammel",
+    "llamacpp",
     "logit",
     "Millicents",
     "modelfusion",

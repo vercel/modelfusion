@@ -1,11 +1,13 @@
-import { LlamaCppTextGenerationModel, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 
 async function main() {
   const textStream = await streamText(
-    new LlamaCppTextGenerationModel({
-      maxCompletionTokens: 1024,
-      temperature: 0.7,
-    }).withTextPrompt(),
+    llamacpp
+      .TextGenerator({
+        maxCompletionTokens: 1024,
+        temperature: 0.7,
+      })
+      .withTextPrompt(),
     "Write a short story about a robot learning to love:\n\n"
   );
 

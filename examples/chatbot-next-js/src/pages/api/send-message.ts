@@ -1,10 +1,10 @@
 import {
-  cohere,
   Llama2PromptFormat,
-  LlamaCppTextGenerationModel,
   OpenAIApiConfiguration,
   OpenAIChatModel,
+  cohere,
   createEventSourceStream,
+  llamacpp,
   streamText,
   trimChatPrompt,
 } from "modelfusion";
@@ -31,10 +31,12 @@ const gpt35turboModel = new OpenAIChatModel({
 
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const llama2Model = new LlamaCppTextGenerationModel({
-  contextWindowSize: 4096, // Llama 2 context window size
-  maxCompletionTokens: 512,
-}).withTextPromptFormat(Llama2PromptFormat.chat());
+const llama2Model = llamacpp
+  .TextGenerator({
+    contextWindowSize: 4096, // Llama 2 context window size
+    maxCompletionTokens: 512,
+  })
+  .withTextPromptFormat(Llama2PromptFormat.chat());
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const cohereModel = cohere

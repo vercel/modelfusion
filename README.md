@@ -499,10 +499,12 @@ const text = await generateText(
 ```ts
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
 const text = await generateText(
-  new LlamaCppTextGenerationModel({
-    contextWindowSize: 4096, // Llama 2 context window size
-    maxCompletionTokens: 1000,
-  }).withTextPromptFormat(Llama2PromptFormat.instruction()),
+  llamacpp
+    .TextGenerator({
+      contextWindowSize: 4096, // Llama 2 context window size
+      maxCompletionTokens: 1000,
+    })
+    .withTextPromptFormat(Llama2PromptFormat.instruction()),
   {
     system: "You are a story writer.",
     instruction: "Write a short story about a robot learning to love.",

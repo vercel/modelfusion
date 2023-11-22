@@ -1,21 +1,17 @@
 import dotenv from "dotenv";
-import {
-  LlamaCppTextGenerationModel,
-  streamText,
-  Llama2PromptFormat,
-} from "modelfusion";
+import { llamaCpp, streamText, Llama2PromptFormat } from "modelfusion";
 
 dotenv.config();
 
 (async () => {
   // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
   const textStream = await streamText(
-    new LlamaCppTextGenerationModel({
-      contextWindowSize: 4096, // Llama 2 context window size
-      maxCompletionTokens: 512,
-    })
-      .withTextPrompt()
-      .withPromptFormat(Llama2PromptFormat.chat()),
+    llamaCpp
+      .TextGenerator({
+        contextWindowSize: 4096, // Llama 2 context window size
+        maxCompletionTokens: 512,
+      })
+      .withTextPromptFormat(Llama2PromptFormat.chat()),
     {
       system: "You are a celebrated poet.",
       messages: [

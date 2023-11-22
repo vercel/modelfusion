@@ -68,9 +68,11 @@ const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
 const result = await guard(
   (input, options) =>
     generateText(
-      new LlamaCppTextGenerationModel({
-        // ...
-      }).withTextPromptFormat(Llama2PromptFormat.instruction()),
+      llamacpp
+        .TextGenerator({
+          // ...
+        })
+        .withTextPromptFormat(Llama2PromptFormat.instruction()),
       input,
       options // pass through options (for tracing)
     ),

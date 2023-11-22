@@ -1,8 +1,8 @@
-import { LlamaCppTextGenerationModel, generateText } from "modelfusion";
+import { generateText, llamacpp } from "modelfusion";
 
 async function main() {
   const text = await generateText(
-    new LlamaCppTextGenerationModel({
+    llamacpp.TextGenerator({
       maxCompletionTokens: 256,
       temperature: 0.7,
     }),

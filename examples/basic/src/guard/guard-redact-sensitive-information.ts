@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import {
   Llama2PromptFormat,
-  LlamaCppTextGenerationModel,
   generateText,
   guard,
+  llamacpp,
   setGlobalFunctionLogging,
 } from "modelfusion";
 
@@ -18,10 +18,12 @@ async function main() {
   const result = await guard(
     (input, options) =>
       generateText(
-        new LlamaCppTextGenerationModel({
-          temperature: 0.7,
-          maxCompletionTokens: 500,
-        }).withTextPromptFormat(Llama2PromptFormat.instruction()),
+        llamacpp
+          .TextGenerator({
+            temperature: 0.7,
+            maxCompletionTokens: 500,
+          })
+          .withTextPromptFormat(Llama2PromptFormat.instruction()),
         input,
         options
       ),
