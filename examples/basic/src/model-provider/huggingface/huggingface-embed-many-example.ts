@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
-import { HuggingFaceTextEmbeddingModel, embedMany } from "modelfusion";
+import { embedMany, huggingface } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const embeddings = await embedMany(
-    new HuggingFaceTextEmbeddingModel({
+    huggingface.TextEmbedder({
       model: "intfloat/e5-base-v2",
       embeddingDimensions: 768,
     }),
