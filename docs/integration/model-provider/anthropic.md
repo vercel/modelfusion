@@ -22,7 +22,7 @@ const api = new AnthropicApiConfiguration({
   // ...
 });
 
-const model = new AnthropicTextGenerationModel({
+const model = anthropic.TextGenerator({
   api,
   // ...
 });
@@ -37,10 +37,10 @@ const model = new AnthropicTextGenerationModel({
 [AnthropicTextGenerationModel API](/api/classes/AnthropicTextGenerationModel)
 
 ```ts
-import { AnthropicTextGenerationModel, generateText } from "modelfusion";
+import { anthropic, generateText } from "modelfusion";
 
 const text = await generateText(
-  new AnthropicTextGenerationModel({
+  anthropic.TextGenerator({
     model: "claude-instant-1",
     temperature: 0.7,
     maxCompletionTokens: 500,
@@ -54,10 +54,10 @@ const text = await generateText(
 [AnthropicTextGenerationModel API](/api/classes/AnthropicTextGenerationModel)
 
 ```ts
-import { AnthropicTextGenerationModel, streamText } from "modelfusion";
+import { anthropic, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  new AnthropicTextGenerationModel({
+  anthropic.TextGenerator({
     model: "claude-instant-1",
     temperature: 0.7,
     maxCompletionTokens: 500,
@@ -81,9 +81,11 @@ Using a prompt mapping can make the interaction with Anthropic models easier.
 
 ```ts
 const textStream = await streamText(
-  new AnthropicTextGenerationModel({
-    // ...
-  }).withTextPrompt(),
+  anthropic
+    .TextGenerator({
+      // ...
+    })
+    .withTextPrompt(),
   "Write a short story about a robot learning to love"
 );
 ```
@@ -94,9 +96,11 @@ const textStream = await streamText(
 
 ```ts
 const textStream = await streamText(
-  new AnthropicTextGenerationModel({
-    // ...
-  }).withInstructionPrompt(),
+  anthropic
+    .TextGenerator({
+      // ...
+    })
+    .withInstructionPrompt(),
   { instruction: "Write a short story about a robot learning to love" }
 );
 ```
@@ -107,9 +111,11 @@ const textStream = await streamText(
 
 ```ts
 const textStream = await streamText(
-  new AnthropicTextGenerationModel({
-    // ...
-  }).withChatPrompt(),
+  anthropic
+    .TextGenerator({
+      // ...
+    })
+    .withChatPrompt(),
   {
     // note: Anthropic models don't adhere well to the system message, we leave it out
     messages: [

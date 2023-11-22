@@ -487,9 +487,11 @@ Prompt formats let you use higher level prompt structures (such as text, instruc
 
 ```ts
 const text = await generateText(
-  new AnthropicTextGenerationModel({
-    model: "claude-instant-1",
-  }).withTextPrompt(),
+  anthropic
+    .TextGenerator({
+      model: "claude-instant-1",
+    })
+    .withTextPrompt(),
   "Write a short story about a robot learning to love"
 );
 ```
