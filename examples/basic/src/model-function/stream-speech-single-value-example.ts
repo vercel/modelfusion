@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
-  ElevenLabsSpeechModel,
   OpenAICompletionModel,
+  elevenlabs,
   generateText,
   streamSpeech,
 } from "modelfusion";
@@ -20,7 +20,7 @@ async function main() {
   );
 
   const speechStream = await streamSpeech(
-    new ElevenLabsSpeechModel({
+    elevenlabs.Speech({
       voice: "pNInz6obpgDQGcFmaJgB", // Adam
       voiceSettings: {
         stability: 1,

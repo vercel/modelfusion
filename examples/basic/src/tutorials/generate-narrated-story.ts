@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
-  ElevenLabsSpeechModel,
   OpenAIChatModel,
+  elevenlabs,
   generateSpeech,
   generateText,
 } from "modelfusion";
@@ -25,7 +25,7 @@ async function main() {
   );
 
   const narratedStory = await generateSpeech(
-    new ElevenLabsSpeechModel({
+    elevenlabs.Speech({
       voice: "AZnzlk1XvdvUeBnXmlld", // Domi
       model: "eleven_multilingual_v2",
     }),

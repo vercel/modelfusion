@@ -1,5 +1,5 @@
 import {
-  ElevenLabsSpeechModel,
+  elevenlabs,
   OpenAIChatModel,
   streamSpeech,
   streamText,
@@ -36,7 +36,7 @@ export const duplexStreamingFlow = new DefaultFlow({
     );
 
     const speechStream = await streamSpeech(
-      new ElevenLabsSpeechModel({
+      elevenlabs.Speech({
         model: "eleven_turbo_v2",
         voice: "pNInz6obpgDQGcFmaJgB", // Adam
         optimizeStreamingLatency: 1,

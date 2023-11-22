@@ -36,7 +36,7 @@ In duplex streaming mode, an `AsyncIterable<string>` is passed to the `streamSpe
 const textStream = await streamText(/* ... */);
 
 const speechStream = await streamSpeech(
-  new ElevenLabsSpeechModel({
+  elevenlabs.Speech({
     model: "eleven_turbo_v2",
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     optimizeStreamingLatency: 1,

@@ -134,7 +134,7 @@ Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elev
 const textStream = await streamText(/* ... */);
 
 const speechStream = await streamSpeech(
-  new ElevenLabsSpeechModel({
+  elevenlabs.Speech({
     model: "eleven_turbo_v2",
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     optimizeStreamingLatency: 1,

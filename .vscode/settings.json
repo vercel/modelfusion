@@ -7,6 +7,7 @@
     "davinci",
     "Detokenization",
     "detokenize",
+    "elevenlabs",
     "Embedder",
     "GGUF",
     "huggingface",
