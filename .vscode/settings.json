@@ -14,6 +14,7 @@
     "huggingface",
     "lgrammel",
     "llamacpp",
+    "Lmnt",
     "logit",
     "Millicents",
     "modelfusion",

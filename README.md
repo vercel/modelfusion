@@ -114,7 +114,7 @@ Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 ```ts
 // `speech` is a Buffer with MP3 audio data
 const speech = await generateSpeech(
-  new LmntSpeechModel({
+  lmnt.Speech({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
