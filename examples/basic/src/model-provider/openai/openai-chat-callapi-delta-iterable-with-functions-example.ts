@@ -1,14 +1,14 @@
+import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
   OpenAIChatResponseFormat,
+  openai,
 } from "modelfusion";
-import dotenv from "dotenv";
 
 dotenv.config();
 
 async function main() {
-  const model = new OpenAIChatModel({
+  const model = openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0.7,
     maxCompletionTokens: 500,

@@ -18,7 +18,7 @@ and classification tasks (e.g. [sentiment analysis](/tutorial/tutorials/sentimen
 
 ```ts
 const sentiment = await generateStructure(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0,
     maxCompletionTokens: 50,
@@ -62,7 +62,7 @@ You can do your own type inference on partial results if needed.
 
 ```ts
 const structureStream = await streamStructure(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0,
     maxCompletionTokens: 2000,

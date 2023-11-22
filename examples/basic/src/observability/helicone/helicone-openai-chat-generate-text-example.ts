@@ -2,15 +2,15 @@ import dotenv from "dotenv";
 import {
   HeliconeOpenAIApiConfiguration,
   OpenAIChatMessage,
-  OpenAIChatModel,
   generateText,
+  openai,
 } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const text = await generateText(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       api: new HeliconeOpenAIApiConfiguration(),
       model: "gpt-3.5-turbo",
       temperature: 0.7,

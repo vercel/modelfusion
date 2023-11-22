@@ -1,10 +1,10 @@
+import dotenv from "dotenv";
 import {
   OpenAIApiConfiguration,
-  OpenAICompletionModel,
   generateText,
+  openai,
   retryWithExponentialBackoff,
 } from "modelfusion";
-import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ async function main() {
   });
 
   const text = await generateText(
-    new OpenAICompletionModel({
+    openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       api,
     }),

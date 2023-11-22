@@ -7,12 +7,14 @@ export interface Env {
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const text = await generateText(
-			new OpenAICompletionModel({
-				api: new OpenAIApiConfiguration({ apiKey: env.OPENAI_API_KEY }),
-				model: 'gpt-3.5-turbo-instruct',
-				temperature: 0.7,
-				maxCompletionTokens: 50,
-			}).withInstructionPrompt(),
+			openai
+				.CompletionTextGenerator({
+					api: new OpenAIApiConfiguration({ apiKey: env.OPENAI_API_KEY }),
+					model: 'gpt-3.5-turbo-instruct',
+					temperature: 0.7,
+					maxCompletionTokens: 50,
+				})
+				.withInstructionPrompt(),
 			{ instruction: 'Write a short story about a robot learning to love' },
 		);
 

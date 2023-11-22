@@ -51,7 +51,7 @@ You can use [prompt formats](https://modelfusion.dev/guide/function/generate-tex
 
 ```ts
 const text = await generateText(
-  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
+  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -62,7 +62,7 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 
 ```ts
 const textStream = await streamText(
-  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
+  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 
@@ -79,7 +79,7 @@ Multi-modal vision models such as GPT 4 Vision can process images as part of the
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({ model: "gpt-4-vision-preview" }),
+  openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
     OpenAIChatMessage.user("Describe the image in detail:", {
       image: { base64Content: image, mimeType: "image/png" },
@@ -159,7 +159,7 @@ Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 
 ```ts
 const transcription = await generateTranscription(
-  new OpenAITranscriptionModel({ model: "whisper-1" }),
+  openai.Transcription({ model: "whisper-1" }),
   {
     type: "mp3",
     data: await fs.promises.readFile("data/test.mp3"),
@@ -179,7 +179,7 @@ Generate a structure that matches a schema.
 
 ```ts
 const sentiment = await generateStructure(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0,
     maxCompletionTokens: 50,
@@ -214,7 +214,7 @@ Stream a structure that matches a schema. Partial structures before the final pa
 
 ```ts
 const structureStream = await streamStructure(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0,
     maxCompletionTokens: 2000,
@@ -305,7 +305,7 @@ Guard functions can be used to implement retry on error, redacting and changing 
 const result = await guard(
   (input, options) =>
     generateStructure(
-      new OpenAIChatModel({
+      openai.ChatTextGenerator({
         // ...
       }),
       new ZodStructureDefinition({
@@ -379,7 +379,7 @@ With `generateToolCall`, you can generate a tool call for a specific tool with a
 
 ```ts
 const { id, name, args } = await generateToolCall(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   calculator,
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
@@ -391,7 +391,7 @@ With `generateToolCallsOrText`, you can ask a language model to generate several
 
 ```ts
 const { text, toolCalls } = await generateToolCallsOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   [toolA, toolB, toolC],
   [OpenAIChatMessage.user(query)]
 );
@@ -415,7 +415,7 @@ With `useTool`, you can use a tool with a language model that supports tools cal
 
 ```ts
 const { tool, toolCall, args, ok, result } = await useTool(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   calculator,
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
@@ -433,7 +433,7 @@ With `useToolsOrGenerateText`, you can ask a language model to generate several 
 
 ```ts
 const { text, toolResults } = await useToolsOrGenerateText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   [calculator /* ... */],
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
@@ -518,9 +518,11 @@ They can also be accessed through the shorthand methods `.withTextPrompt()`, `.w
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({
-    model: "gpt-3.5-turbo",
-  }).withChatPrompt(),
+  openai
+    .ChatTextGenerator({
+      model: "gpt-3.5-turbo",
+    })
+    .withChatPrompt(),
   {
     system: "You are a celebrated poet.",
     messages: [
@@ -576,7 +578,7 @@ ModelFusion model functions return rich results that include the original respon
 ```ts
 // access the full response (needs to be typed) and the metadata:
 const { value, response, metadata } = await generateText(
-  new OpenAICompletionModel({
+  openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
     n: 2, // generate 2 completions

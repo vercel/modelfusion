@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 import {
   HuggingFaceImageDescriptionModel,
-  OpenAIChatModel,
   StabilityImageGenerationModel,
   executeFunction,
   generateImage,
   generateText,
+  openai,
   setGlobalFunctionLogging,
 } from "modelfusion";
 import fs from "node:fs";
@@ -35,7 +35,7 @@ async function main() {
       );
 
       const imageGenerationPrompt = await generateText(
-        new OpenAIChatModel({ model: "gpt-4" }).withInstructionPrompt(),
+        openai.ChatTextGenerator({ model: "gpt-4" }).withInstructionPrompt(),
         {
           instruction:
             "You generate Stable Diffusion prompts for images." +

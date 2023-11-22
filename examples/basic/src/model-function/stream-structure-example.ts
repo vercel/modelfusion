@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
   ZodStructureDefinition,
+  openai,
   streamStructure,
 } from "modelfusion";
 import { z } from "zod";
@@ -11,7 +11,7 @@ dotenv.config();
 
 async function main() {
   const structureStream = await streamStructure(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "gpt-3.5-turbo",
       temperature: 0,
       maxCompletionTokens: 2000,

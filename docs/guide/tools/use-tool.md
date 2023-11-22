@@ -16,7 +16,7 @@ With [useTool](/api/modules/#usetool), you can invoke a single tool with a model
 
 ```ts
 const { tool, toolCall, args, ok, result } = await useTool(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   calculator,
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );

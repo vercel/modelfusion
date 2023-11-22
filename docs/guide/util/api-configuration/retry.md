@@ -32,7 +32,7 @@ const api = new OpenAIApiConfiguration({
   }),
 });
 
-const model = new OpenAICompletionModel({
+const model = openai.CompletionTextGenerator({
   model: "gpt-3.5-turbo-instruct",
   api,
 });
@@ -53,7 +53,7 @@ const api = new OpenAIApiConfiguration({
   retry: retryNever(),
 });
 
-const model = new OpenAICompletionModel({
+const model = openai.CompletionTextGenerator({
   model: "gpt-3.5-turbo-instruct",
   api,
 });

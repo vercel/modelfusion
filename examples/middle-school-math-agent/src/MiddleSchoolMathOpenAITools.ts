@@ -1,9 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  OpenAIChatModel,
-  useToolsOrGenerateText,
-} from "modelfusion";
+import { OpenAIChatMessage, openai, useToolsOrGenerateText } from "modelfusion";
 import { calculator } from "./CalculatorTool";
 import { questions } from "./Questions";
 
@@ -27,7 +23,7 @@ async function main() {
 
   while (true) {
     const { text, toolResults } = await useToolsOrGenerateText(
-      new OpenAIChatModel({
+      openai.ChatTextGenerator({
         model: "gpt-4-1106-preview",
         temperature: 0,
         maxCompletionTokens: 500,

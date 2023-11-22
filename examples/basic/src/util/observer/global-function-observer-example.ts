@@ -1,9 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAICompletionModel,
-  generateText,
-  setGlobalFunctionObservers,
-} from "modelfusion";
+import { generateText, openai, setGlobalFunctionObservers } from "modelfusion";
 import { customObserver } from "./custom-observer";
 
 dotenv.config();
@@ -13,7 +9,7 @@ async function main() {
   setGlobalFunctionObservers([customObserver]);
 
   const text = await generateText(
-    new OpenAICompletionModel({
+    openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 50,
     }),

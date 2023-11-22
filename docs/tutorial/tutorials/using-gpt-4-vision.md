@@ -31,7 +31,7 @@ Now that we have our image encoded, we can call the OpenAI GPT-4 Vision model to
 import { OpenAIChatModel, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-4-vision-preview",
     maxCompletionTokens: 1000,
   }),
@@ -49,10 +49,12 @@ Alternatively, you can use the `withInstructionPrompt()` method which allows you
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({
-    model: "gpt-4-vision-preview",
-    maxCompletionTokens: 1000,
-  }).withInstructionPrompt(),
+  openai
+    .ChatTextGenerator({
+      model: "gpt-4-vision-preview",
+      maxCompletionTokens: 1000,
+    })
+    .withInstructionPrompt(),
   {
     instruction: "Describe the image in detail:",
     image: { base64Content: image, mimeType: "image/png" },

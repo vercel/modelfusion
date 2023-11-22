@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
   OpenAIChatModelType,
   ZodStructureDefinition,
   fixStructure,
   generateStructure,
   guard,
+  openai,
   setGlobalFunctionLogging,
 } from "modelfusion";
 import { z } from "zod";
@@ -22,7 +22,7 @@ async function main() {
       options
     ) =>
       generateStructure(
-        new OpenAIChatModel({
+        openai.ChatTextGenerator({
           model: input.model,
           temperature: 0,
           maxCompletionTokens: 50,

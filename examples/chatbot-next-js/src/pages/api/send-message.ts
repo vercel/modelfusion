@@ -1,10 +1,10 @@
 import {
   Llama2PromptFormat,
   OpenAIApiConfiguration,
-  OpenAIChatModel,
   cohere,
   createEventSourceStream,
   llamacpp,
+  openai,
   streamText,
   trimChatPrompt,
 } from "modelfusion";
@@ -19,15 +19,17 @@ const messageSchame = z.object({
 
 const requestSchema = z.array(messageSchame);
 
-const gpt35turboModel = new OpenAIChatModel({
-  // explicit API configuration needed for NextJS environment
-  // (otherwise env variables are not available):
-  api: new OpenAIApiConfiguration({
-    apiKey: process.env.OPENAI_API_KEY,
-  }),
-  model: "gpt-3.5-turbo",
-  maxCompletionTokens: 512,
-}).withChatPrompt();
+const gpt35turboModel = openai
+  .ChatTextGenerator({
+    // explicit API configuration needed for NextJS environment
+    // (otherwise env variables are not available):
+    api: new OpenAIApiConfiguration({
+      apiKey: process.env.OPENAI_API_KEY,
+    }),
+    model: "gpt-3.5-turbo",
+    maxCompletionTokens: 512,
+  })
+  .withChatPrompt();
 
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

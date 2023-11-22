@@ -14,7 +14,7 @@ Calls to generative models such as OpenAI's API can get expensive quickly. To ke
 const run = new DefaultRun();
 
 const text = await generateText(
-  new OpenAICompletionModel({
+  openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     temperature: 0.7,
     maxCompletionTokens: 500,

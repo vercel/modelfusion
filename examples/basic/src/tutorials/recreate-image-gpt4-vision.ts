@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatModel,
   OpenAIImageGenerationModel,
   generateImage,
   generateText,
+  openai,
 } from "modelfusion";
 import fs from "node:fs";
 
@@ -20,10 +20,12 @@ async function main() {
   );
 
   const imageGenerationPrompt = await generateText(
-    new OpenAIChatModel({
-      model: "gpt-4-vision-preview",
-      maxCompletionTokens: 128,
-    }).withInstructionPrompt(),
+    openai
+      .ChatTextGenerator({
+        model: "gpt-4-vision-preview",
+        maxCompletionTokens: 128,
+      })
+      .withInstructionPrompt(),
     {
       instruction:
         "Generate an image generation prompt for creating a cyberpunk-style image that resembles the attached image. " +

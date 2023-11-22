@@ -1,11 +1,11 @@
 import {
   MemoryVectorIndex,
   OpenAIChatMessage,
-  OpenAIChatModel,
   OpenAITextEmbeddingModel,
   VectorIndexRetriever,
   ZodSchema,
   generateText,
+  openai,
   retrieve,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "modelfusion";
@@ -22,7 +22,7 @@ export async function createTweetFromPdf({
   pdfPath: string;
   exampleTweetIndexPath: string;
 }) {
-  const model = new OpenAIChatModel({ model: "gpt-4" });
+  const model = openai.ChatTextGenerator({ model: "gpt-4" });
 
   const textFromPdf = await loadPdfAsText(pdfPath);
 

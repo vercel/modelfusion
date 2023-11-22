@@ -22,7 +22,7 @@ const api = new OpenAIApiConfiguration({
   // ...
 });
 
-const model = new OpenAIChatModel({
+const model = openai.ChatTextGenerator({
   api,
   // ...
 });
@@ -37,7 +37,7 @@ This configuration is for using [OpenAI with Azure](https://azure.microsoft.com/
 You need to configure the API as `AZURE_OPENAI_API_KEY` if you want to use it as an environment variable and configure the API as follows:
 
 ```ts
-new OpenAIChatModel({
+openai.ChatTextGenerator({
   api: new AzureOpenAIApiConfiguration({
     // apiKey: automatically uses process.env.AZURE_OPENAI_API_KEY,
     resourceName: "my-resource-name",
@@ -62,7 +62,7 @@ new OpenAIChatModel({
 import { OpenAICompletionModel, generateText } from "modelfusion";
 
 const text = await generateText(
-  new OpenAICompletionModel({
+  openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     temperature: 0.7,
     maxCompletionTokens: 500,
@@ -82,10 +82,10 @@ The OpenAI chat models include GPT-3.5-turbo and GPT-4.
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
 ```ts
-import { OpenAIChatMessage, OpenAIChatModel, generateText } from "modelfusion";
+import { OpenAIChatMessage, openai, generateText } from "modelfusion";
 
 const text = await generateText(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0.7,
     maxCompletionTokens: 500,
@@ -106,7 +106,7 @@ You can provide an image reference in the user message when you are using vision
 
 ```ts
 const text = await generateText(
-  new OpenAIChatModel({ model: "gpt-4-vision-preview" }),
+  openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
     OpenAIChatMessage.user("Describe the image in detail:", {
       image: { base64Content: image, mimeType: "image/png" },
@@ -127,7 +127,7 @@ The tutorial "[Using OpenAI GPT-4 Turbo Vision](/tutorial/tutorials/using-gpt-4-
 import { OpenAICompletionModel, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  new OpenAICompletionModel({
+  openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
   }),
@@ -144,10 +144,13 @@ for await (const textPart of textStream) {
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
 ```ts
-import { OpenAIChatMessage, OpenAIChatModel, streamText } from "modelfusion";
+import { OpenAIChatMessage, openai, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo", maxCompletionTokens: 1000 }),
+  openai.ChatTextGenerator({
+    model: "gpt-3.5-turbo",
+    maxCompletionTokens: 1000,
+  }),
   [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
     OpenAIChatMessage.user("A robot learning to love"),
@@ -170,14 +173,14 @@ Structure generation uses the [OpenAI GPT function calling API](https://platform
 ```ts
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
+  openai,
   ZodStructureDefinition,
   generateStructure,
 } from "modelfusion";
 import { z } from "zod";
 
 const sentiment = await generateStructure(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0,
     maxCompletionTokens: 50,
@@ -248,7 +251,7 @@ import { OpenAITranscriptionModel, generateTranscription } from "modelfusion";
 const data = await fs.promises.readFile("data/test.mp3");
 
 const transcription = await generateTranscription(
-  new OpenAITranscriptionModel({ model: "whisper-1" }),
+  openai.Transcription({ model: "whisper-1" }),
   {
     type: "mp3",
     data,
@@ -277,10 +280,10 @@ const image = await generateImage(
 ### Generate Speech
 
 ```ts
-import { OpenAISpeechModel, generateSpeech } from "modelfusion";
+import { openai, generateSpeech } from "modelfusion";
 
 const speech = await generateSpeech(
-  new OpenAISpeechModel({
+  openai.Speech({
     model: "tts-1",
     voice: "onyx",
   }),

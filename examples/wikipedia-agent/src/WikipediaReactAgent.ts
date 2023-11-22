@@ -5,9 +5,9 @@ import dotenv from "dotenv";
 import { convert as convertHtmlToText } from "html-to-text";
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
   Tool,
   ZodSchema,
+  openai,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
   useToolsOrGenerateText,
 } from "modelfusion";
@@ -51,7 +51,7 @@ const readWikipediaArticle = new Tool({
 
     // extract the topic from the text:
     return await summarizeRecursivelyWithTextGenerationAndTokenSplitting({
-      model: new OpenAIChatModel({
+      model: openai.ChatTextGenerator({
         model: "gpt-3.5-turbo-16k",
         temperature: 0,
       }),
@@ -87,7 +87,7 @@ async function main() {
 
   while (true) {
     const { text, toolResults } = await useToolsOrGenerateText(
-      new OpenAIChatModel({ model: "gpt-4-1106-preview", temperature: 0 }),
+      openai.ChatTextGenerator({ model: "gpt-4-1106-preview", temperature: 0 }),
       [searchWikipedia, readWikipediaArticle],
       messages
     );

@@ -18,7 +18,7 @@ You can execute the tool with [useToolsOrGenerateText](/guide/tools/use-tools-or
 
 ```ts
 const { text, toolCalls } = await generateToolCallsOrText(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-4-1106-preview",
     maxCompletionTokens: 200,
   }),

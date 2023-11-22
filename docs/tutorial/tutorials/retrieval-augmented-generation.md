@@ -41,7 +41,7 @@ const chunks = await retrieve(
 
 ```ts
 const answer = await generateText(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-4",
     temperature: 0, // remove randomness as much as possible
     maxCompletionTokens: 500,

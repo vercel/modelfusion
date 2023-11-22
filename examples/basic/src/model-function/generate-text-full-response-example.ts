@@ -1,8 +1,4 @@
-import {
-  OpenAICompletionModel,
-  OpenAICompletionResponse,
-  generateText,
-} from "modelfusion";
+import { openai, OpenAICompletionResponse, generateText } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -10,7 +6,7 @@ dotenv.config();
 async function main() {
   // access the full response and the metadata:
   const { response, metadata } = await generateText(
-    new OpenAICompletionModel({
+    openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 1000,
       n: 2, // generate 2 completions

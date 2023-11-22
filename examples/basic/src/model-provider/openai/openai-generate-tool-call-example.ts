@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
   ZodSchema,
   generateToolCall,
+  openai,
 } from "modelfusion";
 import { z } from "zod";
 
@@ -11,7 +11,7 @@ dotenv.config();
 
 async function main() {
   const toolCall = await generateToolCall(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "gpt-3.5-turbo",
       temperature: 0,
       maxCompletionTokens: 200,

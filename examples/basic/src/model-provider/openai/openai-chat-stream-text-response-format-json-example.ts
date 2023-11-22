@@ -1,15 +1,17 @@
 import dotenv from "dotenv";
-import { OpenAIChatModel, streamText } from "modelfusion";
+import { openai, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    new OpenAIChatModel({
-      model: "gpt-4-1106-preview",
-      responseFormat: { type: "json_object" },
-      maxCompletionTokens: 500,
-    }).withInstructionPrompt(),
+    openai
+      .ChatTextGenerator({
+        model: "gpt-4-1106-preview",
+        responseFormat: { type: "json_object" },
+        maxCompletionTokens: 500,
+      })
+      .withInstructionPrompt(),
     {
       system: "Generate JSON output.",
       instruction:

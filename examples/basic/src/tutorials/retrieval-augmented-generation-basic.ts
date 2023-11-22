@@ -2,10 +2,10 @@ import dotenv from "dotenv";
 import {
   MemoryVectorIndex,
   OpenAIChatMessage,
-  OpenAIChatModel,
   OpenAITextEmbeddingModel,
   VectorIndexRetriever,
   generateText,
+  openai,
   retrieve,
   upsertIntoVectorIndex,
 } from "modelfusion";
@@ -37,7 +37,7 @@ async function main() {
 
   // Generate an answer using the retrieved information:
   const answer = await generateText(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "gpt-4",
       temperature: 0, // remove randomness as much as possible
       maxCompletionTokens: 500,

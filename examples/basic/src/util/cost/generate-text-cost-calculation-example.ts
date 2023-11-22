@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 import {
   DefaultRun,
   OpenAICostCalculator,
-  OpenAICompletionModel,
   calculateCost,
   generateText,
+  openai,
 } from "modelfusion";
 
 dotenv.config();
@@ -13,7 +13,7 @@ async function main() {
   const run = new DefaultRun();
 
   const text = await generateText(
-    new OpenAICompletionModel({
+    openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,
       maxCompletionTokens: 500,

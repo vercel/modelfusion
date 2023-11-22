@@ -1,10 +1,9 @@
 import dotenv from "dotenv";
 import {
   InstructionPrompt,
-  OpenAIChatModel,
-  OpenAICompletionModel,
   TextGenerationModel,
   generateText,
+  openai,
 } from "modelfusion";
 
 dotenv.config();
@@ -18,16 +17,20 @@ async function callModel(model: TextGenerationModel<InstructionPrompt>) {
 async function main() {
   const model =
     Math.random() < 0.5
-      ? new OpenAICompletionModel({
-          model: "gpt-3.5-turbo-instruct",
-          temperature: 0.7,
-          maxCompletionTokens: 500,
-        }).withInstructionPrompt()
-      : new OpenAIChatModel({
-          model: "gpt-3.5-turbo",
-          temperature: 0.7,
-          maxCompletionTokens: 500,
-        }).withInstructionPrompt();
+      ? openai
+          .CompletionTextGenerator({
+            model: "gpt-3.5-turbo-instruct",
+            temperature: 0.7,
+            maxCompletionTokens: 500,
+          })
+          .withInstructionPrompt()
+      : openai
+          .ChatTextGenerator({
+            model: "gpt-3.5-turbo",
+            temperature: 0.7,
+            maxCompletionTokens: 500,
+          })
+          .withInstructionPrompt();
 
   const text = await callModel(model);
 

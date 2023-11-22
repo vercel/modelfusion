@@ -109,7 +109,7 @@ function contentRequiresModeration(text: string): boolean {
 const story = await guard(
   (input) =>
     generateText(
-      new OpenAICompletionModel({
+      openai.CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
         temperature: 0.7,
         maxCompletionTokens: 250,
@@ -138,7 +138,7 @@ With the [`fixStructure`](/api/modules/#fixstructure) guard, you can retry gener
 const result = await guard(
   (input, options) =>
     generateStructure(
-      new OpenAIChatModel({
+      openai.ChatTextGenerator({
         // ...
       }),
       new ZodStructureDefinition({
@@ -177,7 +177,7 @@ const result = await guard(
     options
   ) =>
     generateStructure(
-      new OpenAIChatModel({
+      openai.ChatTextGenerator({
         model: input.model,
       }),
       new ZodStructureDefinition({

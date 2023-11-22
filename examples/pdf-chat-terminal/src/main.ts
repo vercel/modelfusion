@@ -4,10 +4,10 @@ import fs from "fs/promises";
 import {
   MemoryVectorIndex,
   OpenAIChatMessage,
-  OpenAIChatModel,
   OpenAITextEmbeddingModel,
   VectorIndexRetriever,
   generateText,
+  openai,
   retrieve,
   splitAtToken,
   splitTextChunks,
@@ -72,7 +72,7 @@ async function main() {
     // hypothetical document embeddings:
     const hypotheticalAnswer = await generateText(
       // use cheaper model to generate hypothetical answer:
-      new OpenAIChatModel({ model: "gpt-3.5-turbo", temperature: 0 }),
+      openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
       [
         OpenAIChatMessage.system(`Answer the user's question.`),
         OpenAIChatMessage.user(question),
@@ -93,7 +93,7 @@ async function main() {
     // answer the user's question using the retrieved information:
     const textStream = await streamText(
       // use stronger model to answer the question:
-      new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
+      openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
       [
         OpenAIChatMessage.system(
           // Instruct the model on how to answer:

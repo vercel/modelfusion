@@ -1,13 +1,15 @@
 import dotenv from "dotenv";
-import { OpenAIChatModel, streamText } from "modelfusion";
+import { openai, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    new OpenAIChatModel({
-      model: "gpt-3.5-turbo",
-    }).withTextPrompt(),
+    openai
+      .ChatTextGenerator({
+        model: "gpt-3.5-turbo",
+      })
+      .withTextPrompt(),
     "Write a short story about a robot learning to love."
   );
 

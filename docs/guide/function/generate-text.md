@@ -32,7 +32,7 @@ The settings can be set in the constructor of the model, or in the `withSettings
 
 ```ts
 const text = await generateText(
-  new OpenAICompletionModel(/* ... */),
+  openai.CompletionTextGenerator(/* ... */),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -40,7 +40,7 @@ const text = await generateText(
 #### Example: OpenAI chat model
 
 ```ts
-const text = await generateText(new OpenAIChatModel(/* ... */), [
+const text = await generateText(openai.ChatTextGenerator(/* ... */), [
   OpenAIChatMessage.system(
     "Write a short story about a robot learning to love:"
   ),
@@ -53,7 +53,7 @@ Multi-modal vision models such as GPT 4 Vision can process images as part of the
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({ model: "gpt-4-vision-preview" }),
+  openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
     OpenAIChatMessage.user("Describe the image in detail:", {
       image: { base64Content: image, mimeType: "image/png" },
@@ -87,7 +87,7 @@ You can use most text generation models in streaming mode. Just use the `streamT
 #### Example: OpenAI chat model
 
 ```ts
-const textStream = await streamText(new OpenAIChatModel(/* ... */), [
+const textStream = await streamText(openai.ChatTextGenerator(/* ... */), [
   OpenAIChatMessage.system("You are a story writer. Write a story about:"),
   OpenAIChatMessage.user("A robot learning to love"),
 ]);
@@ -113,9 +113,11 @@ Text prompts are a simple string prompts. They are useful for mapping a simple p
 #### Example: OpenAIChatPromptFormat
 
 ```ts
-const model = new OpenAIChatModel({
-  // ...
-}).withPromptFormat(OpenAIChatPromptFormat.text());
+const model = openai
+  .ChatTextGenerator({
+    // ...
+  })
+  .withPromptFormat(OpenAIChatPromptFormat.text());
 ```
 
 [OpenAIChatPromptFormat.text()](/api/namespaces/OpenAIChatPromptFormat#text) formats the instruction as an OpenAI message prompt, which is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel).
@@ -123,9 +125,11 @@ const model = new OpenAIChatModel({
 Alternatively you can use the shorthand method:
 
 ```ts
-const model = new OpenAIChatModel({
-  // ...
-}).withTextPrompt();
+const model = openai
+  .ChatTextGenerator({
+    // ...
+  })
+  .withTextPrompt();
 ```
 
 You can now generate text using a basic text prompt:
@@ -197,9 +201,11 @@ Multi-modal vision models such as GPT 4 Vision can process images as part of the
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({
-    model: "gpt-4-vision-preview",
-  }).withInstructionPrompt(),
+  openai
+    .ChatTextGenerator({
+      model: "gpt-4-vision-preview",
+    })
+    .withInstructionPrompt(),
   {
     instruction: "Describe the image in detail:",
     image: { base64Content: image, mimeType: "image/png" },
@@ -239,20 +245,27 @@ You can use a ChatPrompt without an final user message when you e.g. want to dis
 
 #### Example
 
+openai.ChatTextGenerator
+
 ```ts
-const model = new OpenAIChatModel({
-  model: "gpt-3.5-turbo",
-}).withPromptFormat(OpenAIChatPromptFormat.chat());
+const model = openai
+  .ChatTextGenerator({
+    model: "gpt-3.5-turbo",
+  })
+  .withPromptFormat(OpenAIChatPromptFormat.chat());
 ```
 
 The [OpenAIChatPromptFormat.chat()](/api/namespaces/OpenAIChatPromptFormat#chat) maps the chat prompt to an OpenAI chat prompt (that is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel)).
-
+openai.ChatTextGenerator
 Alternatively you can use the shorthand method:
+openai.ChatTexopenai.ChatTextGenerator
 
 ```ts
-const model = new OpenAIChatModel({
-  model: "gpt-3.5-turbo",
-}).withChatPrompt();
+const model = openai
+  .ChatTextGenerator({
+    model: "gpt-3.5-turbo",
+  })
+  .withChatPrompt();
 ```
 
 You can now generate text using a chat prompt:
