@@ -5,51 +5,62 @@ import { Delta } from "../../../model-function/Delta.js";
 import { safeParseJSON } from "../../../core/schema/parseJSON.js";
 import { ZodSchema } from "../../../core/schema/ZodSchema.js";
 
-const chatResponseStreamEventSchema = new ZodSchema(
-  z.object({
-    id: z.string(),
-    choices: z.array(
-      z.object({
-        delta: z.object({
-          role: z.enum(["assistant", "user"]).optional(),
-          content: z.string().nullable().optional(),
-          function_call: z
-            .object({
-              name: z.string().optional(),
-              arguments: z.string().optional(),
-            })
-            .optional(),
-          tool_calls: z
-            .array(
-              z.object({
-                id: z.string(),
-                type: z.literal("function"),
-                function: z.object({
-                  name: z.string(),
-                  arguments: z.string(),
-                }),
-              })
-            )
-            .optional(),
-        }),
-        finish_reason: z
-          .enum([
-            "stop",
-            "length",
-            "tool_calls",
-            "content_filter",
-            "function_call",
-          ])
-          .nullable()
+const chatCompletionChunkSchema = z.object({
+  object: z.literal("chat.completion.chunk"),
+  id: z.string(),
+  choices: z.array(
+    z.object({
+      delta: z.object({
+        role: z.enum(["assistant", "user"]).optional(),
+        content: z.string().nullable().optional(),
+        function_call: z
+          .object({
+            name: z.string().optional(),
+            arguments: z.string().optional(),
+          })
           .optional(),
-        index: z.number(),
-      })
-    ),
-    created: z.number(),
-    model: z.string(),
-    system_fingerprint: z.string().optional(),
-    object: z.literal("chat.completion.chunk"),
-  })
+        tool_calls: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.literal("function"),
+              function: z.object({
+                name: z.string(),
+                arguments: z.string(),
+              }),
+            })
+          )
+          .optional(),
+      }),
+      finish_reason: z
+        .enum([
+          "stop",
+          "length",
+          "tool_calls",
+          "content_filter",
+          "function_call",
+        ])
+        .nullable()
+        .optional(),
+      index: z.number(),
+    })
+  ),
+  created: z.number(),
+  model: z.string(),
+  system_fingerprint: z.string().optional(),
+});
+
+type ChatCompletionChunk = z.infer<typeof chatCompletionChunkSchema>;
+
+const chatResponseStreamEventSchema = new ZodSchema(
+  z.union([
+    chatCompletionChunkSchema,
+    z.object({
+      object: z.string().refine((obj) => obj !== "chat.completion.chunk", {
+        message: "Object must not be 'chat.completion.chunk'",
+      }),
+    }),
+  ])
 );
 
 export type OpenAIChatDelta = Array<{
@@ -99,14 +110,23 @@ export async function createOpenAIChatDeltaIterableQueue<VALUE>(
               type: "error",
               error: parseResult.error,
             });
-            queue.close();
-            return;
+            // Note: the queue is not closed on purpose. Some providers might add additional
+            // chunks that are not parsable, and ModelFusion should be resilient to that.
+            continue;
           }
 
           const eventData = parseResult.data;
 
-          for (let i = 0; i < eventData.choices.length; i++) {
-            const eventChoice = eventData.choices[i];
+          // ignore objects that are not "chat.completion.chunk" events.
+          // Such additional objects are e.g. sent by Azure OpenAI.
+          if (eventData.object !== "chat.completion.chunk") {
+            continue;
+          }
+
+          const completionChunk = eventData as ChatCompletionChunk;
+
+          for (let i = 0; i < completionChunk.choices.length; i++) {
+            const eventChoice = completionChunk.choices[i];
             const delta = eventChoice.delta;
 
             if (streamDelta[i] == null) {
