@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.74.1 - 2023-11-22
+
+### Improved
+
+- Increase OpenAI chat streaming resilience.
+
 ## v0.74.0 - 2023-11-21
 
 Prompt format and tool calling improvements.

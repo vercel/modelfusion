@@ -1,7 +1,7 @@
 {
   "name": "modelfusion",
   "description": "The TypeScript library for building multi-modal AI applications.",
-  "version": "0.74.0",
+  "version": "0.74.1",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
