@@ -3,6 +3,10 @@ import {
   OpenAICompletionModelSettings,
 } from "./OpenAICompletionModel.js";
 import {
+  OpenAIImageGenerationModel,
+  OpenAIImageGenerationSettings,
+} from "./OpenAIImageGenerationModel.js";
+import {
   OpenAISpeechModel,
   OpenAISpeechModelSettings,
 } from "./OpenAISpeechModel.js";
@@ -92,4 +96,21 @@ export function Speech(settings: OpenAISpeechModelSettings) {
  */
 export function Transcription(settings: OpenAITranscriptionModelSettings) {
   return new OpenAITranscriptionModel(settings);
+}
+
+/**
+ * Create an image generation model that calls the OpenAI AI image creation API.
+ *
+ * @see https://platform.openai.com/docs/api-reference/images/create
+ *
+ * @example
+ * const image = await generateImage(
+ *   new OpenAIImageGenerationModel({ size: "512x512" }),
+ *   "the wicked witch of the west in the style of early 19th century painting"
+ * );
+ *
+ * @returns A new instance of {@link OpenAIImageGenerationModel}.
+ */
+export function ImageGenerator(settings: OpenAIImageGenerationSettings) {
+  return new OpenAIImageGenerationModel(settings);
 }

@@ -266,10 +266,10 @@ OpenAI provides a model called DALL-E that can generate images from text descrip
 [OpenAIImageGenerationModel API](/api/classes/OpenAIImageGenerationModel)
 
 ```ts
-import { OpenAIImageGenerationModel, generateImage } from "modelfusion";
+import { openai, generateImage } from "modelfusion";
 
 const image = await generateImage(
-  new OpenAIImageGenerationModel({
+  openai.ImageGenerator({
     model: "dall-e-3",
     size: "1024x1024",
   }),

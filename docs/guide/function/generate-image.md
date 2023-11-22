@@ -19,7 +19,7 @@ By default, the image is a binary buffer. You can use set the returnType option 
 
 ```ts
 const imageBuffer = await generateImage(
-  new OpenAIImageGenerationModel(/* ... */),
+  openai.ImageGenerator(/* ... */),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```
@@ -28,7 +28,7 @@ const imageBuffer = await generateImage(
 
 ```ts
 const imageBase64 = await generateImage(
-  new OpenAIImageGenerationModel(/* ... */),
+  openai.ImageGenerator(/* ... */),
   "the wicked witch of the west in the style of early 19th century painting",
   { returnType: "base64" }
 );

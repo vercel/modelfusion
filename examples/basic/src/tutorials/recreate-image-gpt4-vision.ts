@@ -1,10 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIImageGenerationModel,
-  generateImage,
-  generateText,
-  openai,
-} from "modelfusion";
+import { generateImage, generateText, openai } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
@@ -39,7 +34,7 @@ async function main() {
   console.log(imageGenerationPrompt);
 
   const image = await generateImage(
-    new OpenAIImageGenerationModel({
+    openai.ImageGenerator({
       model: "dall-e-3",
       quality: "hd",
       size: "1024x1024",

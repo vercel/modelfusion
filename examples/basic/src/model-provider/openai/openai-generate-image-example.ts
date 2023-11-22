@@ -1,12 +1,12 @@
-import { OpenAIImageGenerationModel, generateImage } from "modelfusion";
 import dotenv from "dotenv";
+import { generateImage, openai } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
 
 async function main() {
   const image = await generateImage(
-    new OpenAIImageGenerationModel({ model: "dall-e-3", size: "1024x1024" }),
+    openai.ImageGenerator({ model: "dall-e-3", size: "1024x1024" }),
     "the wicked witch of the west in the style of early 19th century painting"
   );
 

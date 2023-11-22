@@ -47,7 +47,7 @@ Dall-E 3 will interpret the prompt and create a new image in the specified cyber
 
 ```ts
 const image = await generateImage(
-  new OpenAIImageGenerationModel({
+  openai.ImageGenerator({
     model: "dall-e-3",
     quality: "hd",
     size: "1024x1024",

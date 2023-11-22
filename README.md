@@ -96,7 +96,7 @@ Generate an image from a prompt.
 
 ```ts
 const image = await generateImage(
-  new OpenAIImageGenerationModel({ model: "dall-e-3", size: "1024x1024" }),
+  openai.ImageGenerator({ model: "dall-e-3", size: "1024x1024" }),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```
