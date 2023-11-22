@@ -3,7 +3,7 @@ import {
   ChatMLPromptFormat,
   FunctionListToolCallPromptFormat,
   OllamaApiConfiguration,
-  OllamaTextGenerationModel,
+  ollama,
   retryNever,
   setGlobalFunctionLogging,
   useTool,
@@ -16,15 +16,17 @@ setGlobalFunctionLogging("detailed-object");
 
 async function main() {
   const { tool, args, toolCall, result } = await useTool(
-    new OllamaTextGenerationModel({
-      model: "openhermes2.5-mistral",
-      temperature: 0,
-      api: new OllamaApiConfiguration({ retry: retryNever() }),
-    }).asToolCallGenerationModel(
-      FunctionListToolCallPromptFormat.instruction({
-        baseFormat: ChatMLPromptFormat.instruction(),
+    ollama
+      .TextGenerator({
+        model: "openhermes2.5-mistral",
+        temperature: 0,
+        api: new OllamaApiConfiguration({ retry: retryNever() }),
       })
-    ),
+      .asToolCallGenerationModel(
+        FunctionListToolCallPromptFormat.instruction({
+          baseFormat: ChatMLPromptFormat.instruction(),
+        })
+      ),
     calculator,
     { instruction: "What's fourteen times twelve?" }
   );

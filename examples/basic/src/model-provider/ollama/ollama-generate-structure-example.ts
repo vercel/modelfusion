@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 import {
-  OllamaTextGenerationModel,
   StructureFromTextGenerationModel,
   ZodSchema,
   ZodStructureDefinition,
   generateStructure,
+  ollama,
   parseJSON,
 } from "modelfusion";
 import { z } from "zod";
@@ -31,7 +31,7 @@ async function main() {
 
   const result = await generateStructure(
     new StructureFromTextGenerationModel({
-      model: new OllamaTextGenerationModel({
+      model: ollama.TextGenerator({
         model: "mistral",
         maxCompletionTokens: 1024,
         format: "json",

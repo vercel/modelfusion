@@ -24,7 +24,7 @@ const api = new OllamaApiConfiguration({
   // ...
 });
 
-const model = new OllamaTextGenerationModel({
+const model = ollama.TextGenerator({
   api,
   // ...
 });
@@ -40,7 +40,7 @@ const model = new OllamaTextGenerationModel({
 
 ```ts
 const text = await generateText(
-  new OllamaTextGenerationModel({
+  ollama.TextGenerator({
     model: "mistral",
     temperature: 0.7,
     maxCompletionTokens: 120,
@@ -55,7 +55,7 @@ const text = await generateText(
 
 ```ts
 const textStream = await streamText(
-  new OllamaTextGenerationModel({
+  ollama.TextGenerator({
     model: "mistral",
     temperature: 0.7,
     maxCompletionTokens: 500,
