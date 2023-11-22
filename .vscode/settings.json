@@ -20,6 +20,7 @@
     "modelfusion",
     "Ollama",
     "openai",
+    "Parallelizable",
     "reprioritize",
     "reprioritizing",
     "Retryable",

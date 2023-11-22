@@ -70,7 +70,7 @@ export async function embedMany<VALUE>(
 
       // call the model for each group:
       let responses: Array<{ response: unknown; embeddings: Vector[] }>;
-      if (model.isParallizable) {
+      if (model.isParallelizable) {
         responses = await Promise.all(
           valueGroups.map((valueGroup) =>
             model.doEmbedValues(valueGroup, options)

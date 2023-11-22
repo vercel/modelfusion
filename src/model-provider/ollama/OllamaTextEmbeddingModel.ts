@@ -19,7 +19,7 @@ export interface OllamaTextEmbeddingModelSettings
   api?: ApiConfiguration;
   model: string;
   embeddingDimensions?: number;
-  isParallizable?: boolean;
+  isParallelizable?: boolean;
 }
 
 export class OllamaTextEmbeddingModel
@@ -36,8 +36,8 @@ export class OllamaTextEmbeddingModel
   }
 
   readonly maxValuesPerCall = 1;
-  get isParallizable() {
-    return this.settings.isParallizable ?? false;
+  get isParallelizable() {
+    return this.settings.isParallelizable ?? false;
   }
 
   readonly contextWindowSize = undefined;
