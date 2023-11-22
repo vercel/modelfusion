@@ -37,13 +37,10 @@ const imageBase64 = await generateImage(
 #### Stability AI buffer
 
 ```ts
-const imageBuffer = await generateImage(
-  new StabilityImageGenerationModel(/* ... */),
-  [
-    { text: "the wicked witch of the west" },
-    { text: "style of early 19th century painting", weight: 0.5 },
-  ]
-);
+const imageBuffer = await generateImage(stability.ImageGenerator(/* ... */), [
+  { text: "the wicked witch of the west" },
+  { text: "style of early 19th century painting", weight: 0.5 },
+]);
 ```
 
 ## Prompt Format
@@ -60,9 +57,11 @@ Basic prompts are simple text prompts.
 #### Example
 
 ```ts
-const model = new StabilityImageGenerationModel({
-  // ...
-}).withBasicPrompt();
+const model = stability
+  .ImageGenerator({
+    // ...
+  })
+  .withBasicPrompt();
 ```
 
 You can now generate images using a text prompt:

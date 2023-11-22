@@ -561,9 +561,11 @@ You an use prompt formats with image models as well, e.g. to use a basic text pr
 
 ```ts
 const image = await generateImage(
-  new StabilityImageGenerationModel({
-    //...
-  }).withBasicPrompt(),
+  stability
+    .ImageGenerator({
+      //...
+    })
+    .withBasicPrompt(),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```

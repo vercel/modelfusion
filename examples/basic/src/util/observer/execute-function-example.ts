@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 import {
   HuggingFaceImageDescriptionModel,
-  StabilityImageGenerationModel,
   executeFunction,
   generateImage,
   generateText,
   openai,
   setGlobalFunctionLogging,
+  stability,
 } from "modelfusion";
 import fs from "node:fs";
 
@@ -46,7 +46,7 @@ async function main() {
       );
 
       return generateImage(
-        new StabilityImageGenerationModel({
+        stability.ImageGenerator({
           model: "stable-diffusion-512-v2-1",
           height: 512,
           width: 512,
