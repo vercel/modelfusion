@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.75.0 - 2023-11-22
+
+Introducing model provider facades:
+
+```ts
+const image = await generateImage(
+  openai.ImageGenerator({ model: "dall-e-3", size: "1024x1024" }),
+  "the wicked witch of the west in the style of early 19th century painting"
+);
+```
+
+### Added
+
+- Model provider facades. You can e.g. now use `ollama.TextGenerator(...)` instead of `new OllamaTextGenerationModel(...)`.
+
+### Changed
+
+- **breaking change**: Fixed method name `isParallizable` to `isParallelizable` in `EmbeddingModel`.
+
+### Removed
+
+- **breaking change**: removed `HuggingFaceImageDescriptionModel`. Image description models will be replaced by multi-modal vision models.
+
 ## v0.74.1 - 2023-11-22
 
 ### Improved
