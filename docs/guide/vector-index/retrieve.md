@@ -34,7 +34,7 @@ const vectorIndex = new MemoryVectorIndex<string>();
 const retrievedObjects = await retrieve(
   new VectorIndexRetriever({
     vectorIndex,
-    embeddingModel: new OpenAITextEmbeddingModel({
+    embeddingModel: openai.TextEmbedder({
       model: "text-embedding-ada-002",
     }),
     maxResults: 3,
@@ -69,7 +69,7 @@ const vectorIndex = new MemoryVectorIndex<{
 const retrievedObjects = await retrieve(
   new VectorIndexRetriever({
     vectorIndex,
-    embeddingModel: new OpenAITextEmbeddingModel({
+    embeddingModel: openai.TextEmbedder({
       model: "text-embedding-ada-002",
     }),
     maxResults: 2,

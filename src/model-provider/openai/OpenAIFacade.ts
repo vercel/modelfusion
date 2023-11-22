@@ -11,6 +11,10 @@ import {
   OpenAISpeechModelSettings,
 } from "./OpenAISpeechModel.js";
 import {
+  OpenAITextEmbeddingModel,
+  OpenAITextEmbeddingModelSettings,
+} from "./OpenAITextEmbeddingModel.js";
+import {
   OpenAITranscriptionModel,
   OpenAITranscriptionModelSettings,
 } from "./OpenAITranscriptionModel.js";
@@ -63,6 +67,26 @@ export function CompletionTextGenerator(
  */
 export function ChatTextGenerator(settings: OpenAIChatSettings) {
   return new OpenAIChatModel(settings);
+}
+
+/**
+ * Create a text embedding model that calls the OpenAI embedding API.
+ *
+ * @see https://platform.openai.com/docs/api-reference/embeddings
+ *
+ * @example
+ * const embeddings = await embedMany(
+ *   openai.TextEmbedder({ model: "text-embedding-ada-002" }),
+ *   [
+ *     "At first, Nox didn't know what to do with the pup.",
+ *     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+ *   ]
+ * );
+ *
+ * @returns A new instance of {@link OpenAITextEmbeddingModel}.
+ */
+export function TextEmbedder(settings: OpenAITextEmbeddingModelSettings) {
+  return new OpenAITextEmbeddingModel(settings);
 }
 
 /**

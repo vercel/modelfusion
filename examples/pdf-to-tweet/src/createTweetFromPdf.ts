@@ -1,7 +1,6 @@
 import {
   MemoryVectorIndex,
   OpenAIChatMessage,
-  OpenAITextEmbeddingModel,
   VectorIndexRetriever,
   ZodSchema,
   generateText,
@@ -76,7 +75,7 @@ export async function createTweetFromPdf({
         serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
         schema: new ZodSchema(z.string()),
       }),
-      embeddingModel: new OpenAITextEmbeddingModel({
+      embeddingModel: openai.TextEmbedder({
         model: "text-embedding-ada-002",
       }),
       maxResults: 1,

@@ -26,7 +26,7 @@ const chunks = await retrieve(
     // some vector index that contains the information:
     vectorIndex,
     // use the same embedding model that was used when adding information:
-    embeddingModel: new OpenAITextEmbeddingModel({
+    embeddingModel: openai.TextEmbedder({
       model: "text-embedding-ada-002",
     }),
     // you need to experiment with these setting for your use case:

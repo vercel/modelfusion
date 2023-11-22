@@ -5,9 +5,9 @@ import {
 import BetterSqlite3 from "better-sqlite3";
 import dotenv from "dotenv";
 import {
-  OpenAITextEmbeddingModel,
   VectorIndexRetriever,
   ZodSchema,
+  openai,
   retrieve,
   upsertIntoVectorIndex,
 } from "modelfusion";
@@ -38,7 +38,7 @@ async function main() {
     db: database,
     schema: new ZodSchema(z.object({ text: z.string() })),
   });
-  const embeddingModel = new OpenAITextEmbeddingModel({
+  const embeddingModel = openai.TextEmbedder({
     model: "text-embedding-ada-002",
   });
 

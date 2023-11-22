@@ -122,7 +122,7 @@ Now that the PDF pages are available as text, we'll delve into the mechanism for
 ```typescript
 const pages = await loadPdfPages(file);
 
-const embeddingModel = new OpenAITextEmbeddingModel({
+const embeddingModel = openai.TextEmbedder({
   model: "text-embedding-ada-002",
   throttle: throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
 });
@@ -155,7 +155,7 @@ Let's look at each step:
 The first step is to initialize a text embedding model. This model will be responsible for converting our text data into a format that can be compared for similarity.
 
 ```typescript
-const embeddingModel = new OpenAITextEmbeddingModel({
+const embeddingModel = openai.TextEmbedder({
   model: "text-embedding-ada-002",
 });
 ```

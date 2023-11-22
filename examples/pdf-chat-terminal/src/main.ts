@@ -4,7 +4,6 @@ import fs from "fs/promises";
 import {
   MemoryVectorIndex,
   OpenAIChatMessage,
-  OpenAITextEmbeddingModel,
   VectorIndexRetriever,
   generateText,
   openai,
@@ -33,7 +32,7 @@ async function main() {
 
   const pages = await loadPdfPages(file);
 
-  const embeddingModel = new OpenAITextEmbeddingModel({
+  const embeddingModel = openai.TextEmbedder({
     model: "text-embedding-ada-002",
   });
 

@@ -11,7 +11,7 @@ import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel.js";
  *
  * @example
  * const embeddings = await embedMany(
- *   new OpenAITextEmbeddingModel(...),
+ *   openai.TextEmbedder(...),
  *   [
  *     "At first, Nox didn't know what to do with the pup.",
  *     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
@@ -107,7 +107,7 @@ export async function embedMany<VALUE>(
  *
  * @example
  * const embedding = await embed(
- *   new OpenAITextEmbeddingModel(...),
+ *   openai.TextEmbedder(...),
  *   "At first, Nox didn't know what to do with the pup."
  * );
  *

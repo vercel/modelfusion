@@ -261,13 +261,13 @@ Create embeddings for text and other values. Embeddings are vectors that represe
 ```ts
 // embed single value:
 const embedding = await embed(
-  new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
+  openai.TextEmbedder({ model: "text-embedding-ada-002" }),
   "At first, Nox didn't know what to do with the pup."
 );
 
 // embed many values:
 const embeddings = await embedMany(
-  new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
+  openai.TextEmbedder({ model: "text-embedding-ada-002" }),
   [
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
@@ -453,7 +453,7 @@ const texts = [
 ];
 
 const vectorIndex = new MemoryVectorIndex<string>();
-const embeddingModel = new OpenAITextEmbeddingModel({
+const embeddingModel = openai.TextEmbedder({
   model: "text-embedding-ada-002",
 });
 
