@@ -160,12 +160,14 @@ The following prompt formats are available for text prompts:
 
 When you use multi-modal models and prompt mappings, you can also provide an optional image as input. The image property consists of a base64-encoded image and an optional mime.
 
-#### Example: CohereTextGenerationModel
+#### Example: Cohere text generation
 
 ```ts
-const model = new CohereTextGenerationModel({
-  // ...
-}).withPromptFormat(TextPromptFormat.instruction());
+const model = cohere
+  .TextGenerator({
+    // ...
+  })
+  .withPromptFormat(TextPromptFormat.instruction());
 ```
 
 [TextPromptFormat.instruction()](/api/namespaces/TextPromptFormat#instruction) formats the instruction prompt as a basic text prompt, which is expected by the [CohereTextGenerationModel](/api/classes/CohereTextGenerationModel).
@@ -173,9 +175,11 @@ const model = new CohereTextGenerationModel({
 Alternatively you can use the shorthand method:
 
 ```ts
-const model = new CohereTextGenerationModel({
-  // ...
-}).withInstructionPrompt();
+const model = cohere
+  .TextGenerator({
+    // ...
+  })
+  .withInstructionPrompt();
 ```
 
 You can now generate text using an instruction prompt:

@@ -1,5 +1,5 @@
 import {
-  CohereTextGenerationModel,
+  cohere,
   Llama2PromptFormat,
   LlamaCppTextGenerationModel,
   OpenAIApiConfiguration,
@@ -37,15 +37,17 @@ const llama2Model = new LlamaCppTextGenerationModel({
 }).withTextPromptFormat(Llama2PromptFormat.chat());
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const cohereModel = new CohereTextGenerationModel({
-  // explicit API configuration needed for NextJS environment
-  // (otherwise env variables are not available):
-  // api: new CohereApiConfiguration({
-  //   apiKey: process.env.COHERE_API_KEY,
-  // }),
-  model: "command",
-  maxCompletionTokens: 512,
-}).withChatPrompt();
+const cohereModel = cohere
+  .TextGenerator({
+    // explicit API configuration needed for NextJS environment
+    // (otherwise env variables are not available):
+    // api: new CohereApiConfiguration({
+    //   apiKey: process.env.COHERE_API_KEY,
+    // }),
+    model: "command",
+    maxCompletionTokens: 512,
+  })
+  .withChatPrompt();
 
 const sendMessage = async (request: Request): Promise<Response> => {
   if (request.method !== "POST") {

@@ -1,11 +1,11 @@
-import { CohereTextEmbeddingModel, embedMany } from "modelfusion";
 import dotenv from "dotenv";
+import { cohere, embedMany } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const embeddings = await embedMany(
-    new CohereTextEmbeddingModel({
+    cohere.TextEmbedder({
       model: "embed-english-light-v3.0",
       inputType: "search_document",
     }),

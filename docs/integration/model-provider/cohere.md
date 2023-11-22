@@ -21,7 +21,7 @@ const api = new CohereApiConfiguration({
   // ...
 });
 
-const model = new CohereTextGenerationModel({
+const model = cohere.TextGenerator({
   api,
   // ...
 });
@@ -39,7 +39,7 @@ const model = new CohereTextGenerationModel({
 import { CohereTextGenerationModel, generateText } from "modelfusion";
 
 const text = await generateText(
-  new CohereTextGenerationModel({
+  cohere.TextGenerator({
     model: "command-nightly",
     temperature: 0.7,
     maxCompletionTokens: 500,
@@ -53,10 +53,10 @@ const text = await generateText(
 [CohereTextGenerationModel API](/api/classes/CohereTextGenerationModel)
 
 ```ts
-import { CohereTextGenerationModel, streamText } from "modelfusion";
+import { cohere, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  new CohereTextGenerationModel({
+  cohere.TextGenerator({
     model: "command-nightly",
     temperature: 0.7,
     maxCompletionTokens: 500,
@@ -74,10 +74,10 @@ for await (const textPart of textStream) {
 [CohereTextEmbeddingModel API](/api/classes/CohereTextEmbeddingModel)
 
 ```ts
-import { CohereTextEmbeddingModel, embedMany } from "modelfusion";
+import { cohere, embedMany } from "modelfusion";
 
 const embeddings = await embedMany(
-  new CohereTextEmbeddingModel({ model: "embed-english-light-v2.0" }),
+  cohere.TextEmbedder({ model: "embed-english-light-v2.0" }),
   [
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
@@ -90,9 +90,9 @@ const embeddings = await embedMany(
 [CohereTokenizer API](/api/classes/CohereTokenizer)
 
 ```ts
-import { CohereTokenizer, countTokens } from "modelfusion";
+import { cohere, countTokens } from "modelfusion";
 
-const tokenizer = new CohereTokenizer({ model: "command-nightly" });
+const tokenizer = cohere.Tokenizer({ model: "command-nightly" });
 
 const text = "At first, Nox didn't know what to do with the pup.";
 

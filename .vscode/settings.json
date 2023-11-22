@@ -7,6 +7,7 @@
     "davinci",
     "Detokenization",
     "detokenize",
+    "Embedder",
     "GGUF",
     "huggingface",
     "lgrammel",
