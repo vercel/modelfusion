@@ -173,7 +173,7 @@ Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 import { generateTranscription, openai } from "modelfusion";
 
 const transcription = await generateTranscription(
-  openai.Transcription({ model: "whisper-1" }),
+  openai.Transcriber({ model: "whisper-1" }),
   {
     type: "mp3",
     data: await fs.promises.readFile("data/test.mp3"),

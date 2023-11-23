@@ -16,7 +16,7 @@ async function main() {
   const run = new DefaultRun();
 
   const transcription = await generateTranscription(
-    openai.Transcription({ model: "whisper-1" }),
+    openai.Transcriber({ model: "whisper-1" }),
     { type: "mp3", data },
     { run }
   );

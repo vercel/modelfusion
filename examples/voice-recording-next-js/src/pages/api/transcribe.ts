@@ -53,7 +53,7 @@ export default async function handler(
     }
 
     const transcription = await generateTranscription(
-      openai.Transcription({
+      openai.Transcriber({
         // explicit API configuration needed for NextJS environment
         // (otherwise env variables are not available):
         api: new OpenAIApiConfiguration({

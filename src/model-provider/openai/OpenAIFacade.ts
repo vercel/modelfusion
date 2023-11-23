@@ -113,7 +113,7 @@ export function SpeechGenerator(settings: OpenAISpeechModelSettings) {
  * const data = await fs.promises.readFile("data/test.mp3");
  *
  * const transcription = await transcribe(
- *   openai.Transcription({ model: "whisper-1" }),
+ *   openai.Transcriber({ model: "whisper-1" }),
  *   {
  *     type: "mp3",
  *     data,
@@ -122,7 +122,7 @@ export function SpeechGenerator(settings: OpenAISpeechModelSettings) {
  *
  * @returns A new instance of {@link OpenAITranscriptionModel}.
  */
-export function Transcription(settings: OpenAITranscriptionModelSettings) {
+export function Transcriber(settings: OpenAITranscriptionModelSettings) {
   return new OpenAITranscriptionModel(settings);
 }
 

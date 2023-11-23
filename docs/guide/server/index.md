@@ -116,7 +116,7 @@ export const myFlow = new DefaultFlow({
   async process({ input, run }) {
     // Call some AI model:
     const transcription = await generateTranscription(
-      openai.Transcription({ model: "whisper-1" }),
+      openai.Transcriber({ model: "whisper-1" }),
       {
         /* ... */
       },
