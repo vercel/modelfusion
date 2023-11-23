@@ -13,6 +13,7 @@ export const openHermesToolCallsPromptFormat: ToolCallsOrGenerateTextPromptForma
   InstructionPrompt
 > = {
   createPrompt(prompt: string, tools: Array<ToolDefinition<string, unknown>>) {
+    // prompt inspired by https://github.com/abacaj/openhermes-function-calling/
     return {
       system: [
         "You are a helpful assistant with access to the following functions:",
