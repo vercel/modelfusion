@@ -17,7 +17,7 @@ import {
  * const textStream = await streamText(...);
  *
  * const speechStream = await streamSpeech(
- *   elevenlabs.Speech(...),
+ *   elevenlabs.SpeechGenerator(...),
  *   textStream
  * );
  *

@@ -13,6 +13,6 @@ import {
  *
  * @returns A new instance of {@link ElevenLabsSpeechModel}.
  */
-export function Speech(settings: ElevenLabsSpeechModelSettings) {
+export function SpeechGenerator(settings: ElevenLabsSpeechModelSettings) {
   return new ElevenLabsSpeechModel(settings);
 }

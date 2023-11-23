@@ -100,7 +100,7 @@ export function TextEmbedder(settings: OpenAITextEmbeddingModelSettings) {
  *
  * @returns A new instance of {@link OpenAISpeechModel}.
  */
-export function Speech(settings: OpenAISpeechModelSettings) {
+export function SpeechGenerator(settings: OpenAISpeechModelSettings) {
   return new OpenAISpeechModel(settings);
 }
 

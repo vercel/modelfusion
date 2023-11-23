@@ -20,7 +20,7 @@ const api = new ElevenLabsApiConfiguration({
   // ...
 });
 
-const model = elevenlabs.Speech({
+const model = elevenlabs.SpeechGenerator({
   api,
   // ...
 });
@@ -37,7 +37,7 @@ const model = elevenlabs.Speech({
 import { elevenlabs, generateSpeech } from "modelfusion";
 
 const speech = await generateSpeech(
-  elevenlabs.Speech({
+  elevenlabs.SpeechGenerator({
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
@@ -56,7 +56,7 @@ fs.writeFileSync(path, speech);
 const textStream = await streamText(/* ... */);
 
 const speechStream = await streamSpeech(
-  elevenlabs.Speech({
+  elevenlabs.SpeechGenerator({
     model: "eleven_turbo_v2",
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     optimizeStreamingLatency: 1,

@@ -14,10 +14,10 @@ async function callModel(model: SpeechGenerationModel) {
 async function main() {
   const model =
     Math.random() < 0.5
-      ? lmnt.Speech({
+      ? lmnt.SpeechGenerator({
           voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
         })
-      : elevenlabs.Speech({
+      : elevenlabs.SpeechGenerator({
           voice: "pNInz6obpgDQGcFmaJgB", // Adam
         });
 

@@ -6,7 +6,7 @@ dotenv.config();
 
 async function main() {
   const speech = await generateSpeech(
-    elevenlabs.Speech({
+    elevenlabs.SpeechGenerator({
       voice: "pNInz6obpgDQGcFmaJgB", // Adam
     }),
     "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +

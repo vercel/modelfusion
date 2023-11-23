@@ -15,7 +15,7 @@ async function main() {
   );
 
   const speechStream = await streamSpeech(
-    elevenlabs.Speech({
+    elevenlabs.SpeechGenerator({
       voice: "pNInz6obpgDQGcFmaJgB", // Adam
       optimizeStreamingLatency: 1,
       voiceSettings: {

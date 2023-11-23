@@ -20,7 +20,7 @@ const api = new LmntApiConfiguration({
   // ...
 });
 
-const model = lmnt.Speech({
+const model = lmnt.SpeechGenerator({
   api,
   // ...
 });
@@ -37,7 +37,7 @@ const model = lmnt.Speech({
 import { lmnt, generateSpeech } from "modelfusion";
 
 const speech = await generateSpeech(
-  lmnt.Speech({
+  lmnt.SpeechGenerator({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +

@@ -18,7 +18,7 @@ In standard mode, a text string is passed to the `generateSpeech` function, alon
 import { generateSpeech, lmnt } from "modelfusion";
 
 const speech = await generateSpeech(
-  lmnt.Speech({
+  lmnt.SpeechGenerator({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
@@ -40,7 +40,7 @@ import { streamSpeech, elevenlabs } from "modelfusion";
 const textStream: AsyncIterable<string>;
 
 const speechStream = await streamSpeech(
-  elevenlabs.Speech({
+  elevenlabs.SpeechGenerator({
     model: "eleven_turbo_v2",
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     optimizeStreamingLatency: 1,

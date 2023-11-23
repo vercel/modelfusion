@@ -22,7 +22,7 @@ async function main() {
   );
 
   const narratedStory = await generateSpeech(
-    elevenlabs.Speech({
+    elevenlabs.SpeechGenerator({
       voice: "AZnzlk1XvdvUeBnXmlld", // Domi
       model: "eleven_multilingual_v2",
     }),

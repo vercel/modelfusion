@@ -283,7 +283,7 @@ const image = await generateImage(
 import { openai, generateSpeech } from "modelfusion";
 
 const speech = await generateSpeech(
-  openai.Speech({
+  openai.SpeechGenerator({
     model: "tts-1",
     voice: "onyx",
   }),

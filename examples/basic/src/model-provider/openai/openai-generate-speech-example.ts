@@ -6,7 +6,7 @@ dotenv.config();
 
 async function main() {
   const speech = await generateSpeech(
-    openai.Speech({
+    openai.SpeechGenerator({
       model: "tts-1",
       voice: "alloy",
     }),

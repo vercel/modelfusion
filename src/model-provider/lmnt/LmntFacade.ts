@@ -7,6 +7,6 @@ import { LmntSpeechModel, LmntSpeechModelSettings } from "./LmntSpeechModel.js";
  *
  * @returns A new instance of {@link LmntSpeechModel}.
  */
-export function Speech(settings: LmntSpeechModelSettings) {
+export function SpeechGenerator(settings: LmntSpeechModelSettings) {
   return new LmntSpeechModel(settings);
 }

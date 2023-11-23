@@ -33,7 +33,7 @@ export const duplexStreamingFlow = new DefaultFlow({
     );
 
     const speechStream = await streamSpeech(
-      elevenlabs.Speech({
+      elevenlabs.SpeechGenerator({
         model: "eleven_turbo_v2",
         voice: "pNInz6obpgDQGcFmaJgB", // Adam
         optimizeStreamingLatency: 1,
