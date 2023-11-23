@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.79.0 - 2023-11-23
+
+### Added
+
+- Multi-tool usage from open source models
+
+  Use `TextGenerationToolCallsOrGenerateTextModel` and related helper methods `.asToolCallsOrTextGenerationModel()` to create custom prompts & parsers.
+
+  Examples:
+
+  - `examples/basic/src/model-provider/ollama/ollama-use-tools-or-generate-text-openhermes-example.ts`
+  - `examples/basic/src/model-provider/llamacpp/llamacpp-use-tools-or-generate-text-openhermes-example.ts`
+
+  Example prompt format:
+
+  - `examples/basic/src/tool/prompts/open-hermes.ts` for OpenHermes 2.5
+
 ## v0.78.0 - 2023-11-23
 
 ### Removed
