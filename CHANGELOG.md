@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.76.0 - 2023-11-23
+
+### Added
+
+- Anthropic Claude 2.1 support
+
 ## v0.75.0 - 2023-11-22
 
 Introducing model provider facades:
