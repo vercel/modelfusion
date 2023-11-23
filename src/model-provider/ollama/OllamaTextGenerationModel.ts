@@ -20,6 +20,10 @@ import {
   TextGenerationToolCallModel,
   ToolCallPromptFormat,
 } from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
+import {
+  TextGenerationToolCallsOrGenerateTextModel,
+  ToolCallsOrGenerateTextPromptFormat,
+} from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
@@ -254,6 +258,15 @@ export class OllamaTextGenerationModel<
     promptFormat: ToolCallPromptFormat<INPUT_PROMPT, string>
   ) {
     return new TextGenerationToolCallModel({
+      model: this,
+      format: promptFormat,
+    });
+  }
+
+  asToolCallsOrTextGenerationModel<INPUT_PROMPT>(
+    promptFormat: ToolCallsOrGenerateTextPromptFormat<INPUT_PROMPT, string>
+  ) {
+    return new TextGenerationToolCallsOrGenerateTextModel({
       model: this,
       format: promptFormat,
     });
