@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.77.0 - 2023-11-23
+
+### Changed
+
+- **breaking change**: Rename `Speech` to `SpeechGenerator` in facades
+- **breaking change**: Rename `Transcription` to `Transcriber` in facades
+
 ## v0.76.0 - 2023-11-23
 
 ### Added
