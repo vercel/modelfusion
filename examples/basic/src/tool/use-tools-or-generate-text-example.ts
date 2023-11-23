@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import { OpenAIChatMessage, openai, useToolsOrGenerateText } from "modelfusion";
-import { calculator } from "./calculator-tool";
+import { calculator } from "./tools/calculator-tool";
 
 dotenv.config();
 

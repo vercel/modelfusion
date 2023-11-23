@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import { executeTool } from "modelfusion";
-import { calculator } from "../../tool/calculator-tool";
+import { calculator } from "../../tool/tools/calculator-tool";
 import { customObserver } from "./custom-observer";
 
 dotenv.config();
