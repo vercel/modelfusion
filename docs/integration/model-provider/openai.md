@@ -59,7 +59,7 @@ openai.ChatTextGenerator({
 [OpenAICompletionModel API](/api/classes/OpenAICompletionModel)
 
 ```ts
-import { OpenAICompletionModel, generateText } from "modelfusion";
+import { openai, generateText } from "modelfusion";
 
 const text = await generateText(
   openai.CompletionTextGenerator({

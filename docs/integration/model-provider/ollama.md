@@ -39,6 +39,8 @@ const model = ollama.TextGenerator({
 [OllamaTextGenerationModel API](/api/classes/OllamaTextGenerationModel)
 
 ```ts
+import { ollama, generateText } from "modelfusion";
+
 const text = await generateText(
   ollama.TextGenerator({
     model: "mistral",
@@ -54,6 +56,8 @@ const text = await generateText(
 [OllamaTextGenerationModel API](/api/classes/OllamaTextGenerationModel)
 
 ```ts
+import { ollama, streamText } from "modelfusion";
+
 const textStream = await streamText(
   ollama.TextGenerator({
     model: "mistral",

@@ -50,6 +50,8 @@ You can use [prompt formats](https://modelfusion.dev/guide/function/generate-tex
 #### generateText
 
 ```ts
+import { generateText, openai } from "modelfusion";
+
 const text = await generateText(
   openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
@@ -61,6 +63,8 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 #### streamText
 
 ```ts
+import { streamText, openai } from "modelfusion";
+
 const textStream = await streamText(
   openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
@@ -78,6 +82,8 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 Multi-modal vision models such as GPT 4 Vision can process images as part of the prompt.
 
 ```ts
+import { streamText, openai } from "modelfusion";
+
 const textStream = await streamText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
@@ -95,6 +101,8 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 Generate an image from a prompt.
 
 ```ts
+import { generateImage, openai } from "modelfusion";
+
 const image = await generateImage(
   openai.ImageGenerator({ model: "dall-e-3", size: "1024x1024" }),
   "the wicked witch of the west in the style of early 19th century painting"
@@ -112,6 +120,8 @@ Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 `generateSpeech` synthesizes speech from text.
 
 ```ts
+import { generateSpeech, lmnt } from "modelfusion";
+
 // `speech` is a Buffer with MP3 audio data
 const speech = await generateSpeech(
   lmnt.Speech({
@@ -131,7 +141,9 @@ Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elev
 `generateSpeech` generates a stream of speech chunks from text or from a text stream. Depending on the model, this can be fully duplex.
 
 ```ts
-const textStream = await streamText(/* ... */);
+import { streamSpeech, elevenlabs } from "modelfusion";
+
+const textStream: AsyncIterable<string>;
 
 const speechStream = await streamSpeech(
   elevenlabs.Speech({
@@ -158,6 +170,8 @@ Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elev
 Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 
 ```ts
+import { generateTranscription, openai } from "modelfusion";
+
 const transcription = await generateTranscription(
   openai.Transcription({ model: "whisper-1" }),
   {

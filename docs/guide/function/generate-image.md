@@ -18,6 +18,8 @@ By default, the image is a binary buffer. You can use set the returnType option 
 #### OpenAI DALL·E buffer
 
 ```ts
+import { generateImage, openai } from "modelfusion";
+
 const imageBuffer = await generateImage(
   openai.ImageGenerator(/* ... */),
   "the wicked witch of the west in the style of early 19th century painting"
@@ -27,6 +29,8 @@ const imageBuffer = await generateImage(
 #### OpenAI DALL·E base64
 
 ```ts
+import { generateImage, openai } from "modelfusion";
+
 const imageBase64 = await generateImage(
   openai.ImageGenerator(/* ... */),
   "the wicked witch of the west in the style of early 19th century painting",
@@ -37,6 +41,8 @@ const imageBase64 = await generateImage(
 #### Stability AI buffer
 
 ```ts
+import { generateImage, stability } from "modelfusion";
+
 const imageBuffer = await generateImage(stability.ImageGenerator(/* ... */), [
   { text: "the wicked witch of the west" },
   { text: "style of early 19th century painting", weight: 0.5 },

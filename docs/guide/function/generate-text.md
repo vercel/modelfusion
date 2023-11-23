@@ -31,6 +31,8 @@ The settings can be set in the constructor of the model, or in the `withSettings
 #### Example: OpenAI text model
 
 ```ts
+import { generateText, openai } from "modelfusion";
+
 const text = await generateText(
   openai.CompletionTextGenerator(/* ... */),
   "Write a short story about a robot learning to love:\n\n"
@@ -40,6 +42,8 @@ const text = await generateText(
 #### Example: OpenAI chat model
 
 ```ts
+import { generateText, openai } from "modelfusion";
+
 const text = await generateText(openai.ChatTextGenerator(/* ... */), [
   OpenAIChatMessage.system(
     "Write a short story about a robot learning to love:"
@@ -52,7 +56,9 @@ const text = await generateText(openai.ChatTextGenerator(/* ... */), [
 Multi-modal vision models such as GPT 4 Vision can process images as part of the prompt.
 
 ```ts
-const textStream = await streamText(
+import { generateText, openai } from "modelfusion";
+
+const text = await generateText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
     OpenAIChatMessage.user("Describe the image in detail:", {
@@ -71,6 +77,8 @@ You can use most text generation models in streaming mode. Just use the `streamT
 #### Example: OpenAI chat model
 
 ```ts
+import { streamText, openai } from "modelfusion";
+
 const textStream = await streamText(openai.ChatTextGenerator(/* ... */), [
   OpenAIChatMessage.system("You are a story writer. Write a story about:"),
   OpenAIChatMessage.user("A robot learning to love"),

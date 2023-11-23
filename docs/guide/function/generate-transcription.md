@@ -15,6 +15,8 @@ Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 #### With OpenAI transcription model
 
 ```ts
+import { generateTranscription, openai } from "modelfusion";
+
 const data = await fs.promises.readFile("data/test.mp3");
 
 const transcription = await generateTranscription(

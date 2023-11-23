@@ -34,7 +34,7 @@ const model = elevenlabs.Speech({
 ### Generate Speech
 
 ```ts
-import { ElevenLabsSpeechModel, generateSpeech } from "modelfusion";
+import { elevenlabs, generateSpeech } from "modelfusion";
 
 const speech = await generateSpeech(
   elevenlabs.Speech({

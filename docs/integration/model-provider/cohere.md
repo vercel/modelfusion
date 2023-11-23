@@ -36,7 +36,7 @@ const model = cohere.TextGenerator({
 [CohereTextGenerationModel API](/api/classes/CohereTextGenerationModel)
 
 ```ts
-import { CohereTextGenerationModel, generateText } from "modelfusion";
+import { cohere, generateText } from "modelfusion";
 
 const text = await generateText(
   cohere.TextGenerator({
