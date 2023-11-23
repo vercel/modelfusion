@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.78.0 - 2023-11-23
+
+### Removed
+
+- **breaking change**: Removed `FunctionListToolCallPromptFormat`. See `examples/basic/src/model-provide/ollama/ollama-use-tool-mistral-example.ts` for how to implement a `ToolCallPromptFormat` for your tool.
+
 ## v0.77.0 - 2023-11-23
 
 ### Changed
@@ -66,19 +72,7 @@ Prompt format and tool calling improvements.
     "Write a short story about a robot learning to love."
   );
   ```
-- `FunctionListToolCallPromptFormat` to simplify tool calls with text models
-- `.asToolCallGenerationModel()` to `OllamaTextGenerationModel` to simplify tool calls:
-
-  ```ts
-  const { tool, args, toolCall, result } = await useTool(
-    new OllamaTextGenerationModel({
-      model: "mistral",
-      temperature: 0,
-    }).asToolCallGenerationModel(FunctionListToolCallPromptFormat.text()),
-    calculator,
-    "What's fourteen times twelve?"
-  );
-  ```
+- `.asToolCallGenerationModel()` to `OllamaTextGenerationModel` to simplify tool calls.
 
 ### Improved
 
