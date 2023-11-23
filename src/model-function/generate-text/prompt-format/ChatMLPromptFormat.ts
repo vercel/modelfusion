@@ -23,7 +23,9 @@ function chatMLSegment(
 export function text(): TextGenerationPromptFormat<string, string> {
   return {
     stopSequences: [END_SEGMENT],
-    format: (instruction) => chatMLSegment("user", instruction),
+    format: (instruction) =>
+      // prompt and then prefix start of assistant response:
+      chatMLSegment("user", instruction) + chatMLStart("assistant"),
   };
 }
 
@@ -48,7 +50,8 @@ export function instruction(): TextGenerationPromptFormat<
     stopSequences: [END_SEGMENT],
     format: (instruction) =>
       chatMLSegment("system", instruction.system) +
-      chatMLSegment("user", instruction.instruction),
+      chatMLSegment("user", instruction.instruction) +
+      chatMLStart("assistant"), // prefix start of assistant response
   };
 }
 
