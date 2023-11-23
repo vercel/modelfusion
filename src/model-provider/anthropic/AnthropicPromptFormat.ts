@@ -29,11 +29,7 @@ export function instruction(): TextGenerationPromptFormat<
 > {
   return {
     format: (instruction) => {
-      let text = "";
-
-      if (instruction.system != null) {
-        text += `${instruction.system}`;
-      }
+      let text = instruction.system ?? "";
 
       text += "\n\nHuman:";
       text += instruction.instruction;
@@ -55,7 +51,7 @@ export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
     format: (chatPrompt) => {
       validateChatPrompt(chatPrompt);
 
-      let text = chatPrompt.system != null ? `${chatPrompt.system}\n\n` : "";
+      let text = chatPrompt.system ?? "";
 
       for (const { role, content } of chatPrompt.messages) {
         switch (role) {
