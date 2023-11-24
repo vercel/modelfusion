@@ -2,6 +2,8 @@ import { LlamaCppBakLLaVA1Format, llamacpp, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
+// see https://modelfusion.dev/tutorial/tutorials/using-llamacpp-bakllava
+// for setup instructions
 async function main() {
   const image = fs.readFileSync(path.join("data", "example-image.png"), {
     encoding: "base64",
