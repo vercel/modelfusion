@@ -1,13 +1,9 @@
+import { MultiModalInput } from "./Content.js";
+
 /**
- * A single instruction prompt. It can contain an optional system message to define the role and behavior of the language model.
- *
- * @example
- * ```ts
- * {
- *   system: "You are a celebrated poet.", // optional
- *   instruction: "Write a story about a robot learning to love",
- * }
- * ```
+ * A single multi-modal instruction prompt. It can contain an optional system message to define
+ * the role and behavior of the language model.
+ * The instruction is a multi-model input (`array` of content).
  */
 export type InstructionPrompt = {
   /**
@@ -17,22 +13,32 @@ export type InstructionPrompt = {
   system?: string;
 
   /**
-   * The instruction for the model.
+   * The multi-modal instruction for the model.
    */
-  instruction: string;
+  instruction: MultiModalInput;
+};
+
+/**
+ * A single text instruction prompt. It can contain an optional system message to define
+ * the role and behavior of the language model.
+ *
+ * @example
+ * ```ts
+ * {
+ *   system: "You are a celebrated poet.", // optional
+ *   instruction: "Write a story about a robot learning to love",
+ * }
+ * ```
+ */
+export type TextInstructionPrompt = {
+  /**
+   * Optional system message to provide context for the language model. Note that for some models,
+   * changing the system message can impact the results, because the model may be trained on the default system message.
+   */
+  system?: string;
 
   /**
-   * Optional image to provide context for the language model. Only supported by some models.
+   * The text instruction for the model.
    */
-  image?: {
-    /**
-     * Base-64 encoded image.
-     */
-    base64Content: string;
-
-    /**
-     * Optional mime type of the image.
-     */
-    mimeType?: string;
-  };
+  instruction: string;
 };

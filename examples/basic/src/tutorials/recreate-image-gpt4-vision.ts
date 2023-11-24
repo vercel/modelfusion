@@ -22,10 +22,16 @@ async function main() {
       })
       .withInstructionPrompt(),
     {
-      instruction:
-        "Generate an image generation prompt for creating a cyberpunk-style image that resembles the attached image. " +
-        "Capture the essence of the image in 1-2 sentences.",
-      image: { base64Content: base64Image },
+      instruction: [
+        {
+          type: "text",
+          text:
+            "Generate an image generation prompt for creating a cyberpunk-style image " +
+            "that resembles the attached image. " +
+            "Capture the essence of the image in 1-2 sentences.",
+        },
+        { type: "image", base64Image },
+      ],
     }
   );
 

@@ -1,5 +1,5 @@
-import { InstructionPrompt } from "./InstructionPrompt.js";
 import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
+import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
 const DEFAULT_SYSTEM_PROMPT_INPUT =
   "Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.";
@@ -12,10 +12,10 @@ const DEFAULT_SYSTEM_PROMPT_NO_INPUT =
 export function text(): TextGenerationPromptFormat<string, string> {
   return {
     stopSequences: [],
-    format: (instruction) => {
+    format(prompt) {
       let text = DEFAULT_SYSTEM_PROMPT_NO_INPUT;
       text += "\n\n### Instruction:\n";
-      text += instruction;
+      text += prompt;
       text += "\n\n### Response:\n";
 
       return text;
@@ -60,28 +60,28 @@ export function text(): TextGenerationPromptFormat<string, string> {
  * @see https://github.com/tatsu-lab/stanford_alpaca#data-release
  */
 export function instruction(): TextGenerationPromptFormat<
-  InstructionPrompt & { input?: string }, // optional input supported by Alpaca
+  TextInstructionPrompt & { input?: string }, // optional input supported by Alpaca
   string
 > {
   return {
     stopSequences: [],
-    format: (instruction) => {
+    format(prompt) {
       let text =
-        instruction.system ??
-        (instruction.input != null
+        prompt.system ??
+        (prompt.input != null
           ? DEFAULT_SYSTEM_PROMPT_INPUT
           : DEFAULT_SYSTEM_PROMPT_NO_INPUT);
 
       text += "\n\n### Instruction:\n";
 
-      if (instruction.system != null) {
-        text += `${instruction.system}\n`;
+      if (prompt.system != null) {
+        text += `${prompt.system}\n`;
       }
 
-      text += instruction.instruction;
+      text += prompt.instruction;
 
-      if (instruction.input != null) {
-        text += `\n\n### Input:\n${instruction.input}`;
+      if (prompt.input != null) {
+        text += `\n\n### Input:\n${prompt.input}`;
       }
 
       text += "\n\n### Response:\n";

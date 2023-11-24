@@ -1,7 +1,6 @@
-import { ChatPrompt } from "./ChatPrompt.js";
-import { InstructionPrompt } from "./InstructionPrompt.js";
 import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
-import { validateChatPrompt } from "./validateChatPrompt.js";
+import { ChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
 const START_SEGMENT = "<|im_start|>";
 const END_SEGMENT = "<|im_end|>";
@@ -23,9 +22,10 @@ function chatMLSegment(
 export function text(): TextGenerationPromptFormat<string, string> {
   return {
     stopSequences: [END_SEGMENT],
-    format: (instruction) =>
+    format(prompt) {
       // prompt and then prefix start of assistant response:
-      chatMLSegment("user", instruction) + chatMLStart("assistant"),
+      return chatMLSegment("user", prompt) + chatMLStart("assistant");
+    },
   };
 }
 
@@ -43,15 +43,18 @@ export function text(): TextGenerationPromptFormat<string, string> {
  * ```
  */
 export function instruction(): TextGenerationPromptFormat<
-  InstructionPrompt,
+  TextInstructionPrompt,
   string
 > {
   return {
     stopSequences: [END_SEGMENT],
-    format: (instruction) =>
-      chatMLSegment("system", instruction.system) +
-      chatMLSegment("user", instruction.instruction) +
-      chatMLStart("assistant"), // prefix start of assistant response
+    format(prompt) {
+      return (
+        chatMLSegment("system", prompt.system) +
+        chatMLSegment("user", prompt.instruction) +
+        chatMLStart("assistant") // prefix start of assistant response
+      );
+    },
   };
 }
 
@@ -70,15 +73,13 @@ export function instruction(): TextGenerationPromptFormat<
  */
 export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
   return {
-    format: (chatPrompt) => {
-      validateChatPrompt(chatPrompt);
+    format(prompt) {
+      validateChatPrompt(prompt);
 
       let text =
-        chatPrompt.system != null
-          ? chatMLSegment("system", chatPrompt.system)
-          : "";
+        prompt.system != null ? chatMLSegment("system", prompt.system) : "";
 
-      for (const { role, content } of chatPrompt.messages) {
+      for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
             text += chatMLSegment("user", content);

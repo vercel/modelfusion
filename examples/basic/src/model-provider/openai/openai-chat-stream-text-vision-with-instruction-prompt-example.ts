@@ -18,8 +18,10 @@ async function main() {
       })
       .withInstructionPrompt(),
     {
-      instruction: "Describe the image in detail:",
-      image: { base64Content: image, mimeType: "image/png" },
+      instruction: [
+        { type: "text", text: "Describe the image in detail:\n\n" },
+        { type: "image", base64Image: image, mimeType: "image/png" },
+      ],
     }
   );
 

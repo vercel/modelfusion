@@ -1,7 +1,10 @@
 import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { ChatPrompt } from "../../../model-function/generate-text/prompt-format/ChatPrompt.js";
-import { InstructionPrompt } from "../../../model-function/generate-text/prompt-format/InstructionPrompt.js";
-import { validateChatPrompt } from "../../../model-function/generate-text/prompt-format/validateChatPrompt.js";
+import {
+  InstructionPrompt,
+  TextInstructionPrompt,
+} from "../../../model-function/generate-text/prompt-format/InstructionPrompt.js";
+import { validateChatPrompt } from "../../../model-function/generate-text/prompt-format/ChatPrompt.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 
 /**
@@ -12,7 +15,7 @@ export function text(): TextGenerationPromptFormat<
   Array<OpenAIChatMessage>
 > {
   return {
-    format: (instruction) => [OpenAIChatMessage.user(instruction)],
+    format: (prompt) => [OpenAIChatMessage.user(prompt)],
     stopSequences: [],
   };
 }
@@ -21,22 +24,18 @@ export function text(): TextGenerationPromptFormat<
  * Formats an instruction prompt as an OpenAI chat prompt.
  */
 export function instruction(): TextGenerationPromptFormat<
-  InstructionPrompt,
+  InstructionPrompt | TextInstructionPrompt,
   Array<OpenAIChatMessage>
 > {
   return {
-    format: (instruction) => {
+    format(prompt) {
       const messages: Array<OpenAIChatMessage> = [];
 
-      if (instruction.system != null) {
-        messages.push(OpenAIChatMessage.system(instruction.system));
+      if (prompt.system != null) {
+        messages.push(OpenAIChatMessage.system(prompt.system));
       }
 
-      messages.push(
-        OpenAIChatMessage.user(instruction.instruction, {
-          image: instruction.image,
-        })
-      );
+      messages.push(OpenAIChatMessage.user(prompt.instruction));
 
       return messages;
     },
@@ -52,16 +51,16 @@ export function chat(): TextGenerationPromptFormat<
   Array<OpenAIChatMessage>
 > {
   return {
-    format: (chatPrompt) => {
-      validateChatPrompt(chatPrompt);
+    format(prompt) {
+      validateChatPrompt(prompt);
 
       const messages: Array<OpenAIChatMessage> = [];
 
-      if (chatPrompt.system != null) {
-        messages.push(OpenAIChatMessage.system(chatPrompt.system));
+      if (prompt.system != null) {
+        messages.push(OpenAIChatMessage.system(prompt.system));
       }
 
-      for (const { role, content } of chatPrompt.messages) {
+      for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
             messages.push(OpenAIChatMessage.user(content));

@@ -16,9 +16,10 @@ async function main() {
       maxCompletionTokens: 1000,
     }),
     [
-      OpenAIChatMessage.user("Describe the image in detail:", {
-        image: { base64Content: image, mimeType: "image/png" },
-      }),
+      OpenAIChatMessage.user([
+        { type: "text", text: "Describe the image in detail:\n\n" },
+        { type: "image", base64Image: image, mimeType: "image/png" },
+      ]),
     ]
   );
 
