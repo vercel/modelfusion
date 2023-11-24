@@ -92,7 +92,7 @@ const textStream = await streamText(
 
 ### Instruction prompt
 
-[AnthropicPromptFormat.instruction()](/api/namespaces/AnthropicPromptFormat) lets you use [instruction prompts](/api/modules#instructionprompt) with Anthropic models. It is available as a shorthand method:
+[AnthropicPromptFormat.instruction()](/api/namespaces/AnthropicPromptFormat) lets you use [text instruction prompts](/api/interfaces/TextInstructionPrompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -107,7 +107,7 @@ const textStream = await streamText(
 
 ### Chat prompt
 
-[AnthropicPromptFormat.chat()](/api/namespaces/AnthropicPromptFormat) lets you use use [chat prompts](/api/modules#chatprompt) with Anthropic models. It is available as a shorthand method:
+[AnthropicPromptFormat.chat()](/api/namespaces/AnthropicPromptFormat) lets you use use [chat prompts](/api/interfaces/ChatPrompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(

@@ -2,16 +2,16 @@ export type MultiModalInput = Array<Content>;
 
 export type Content = TextContent | ImageContent;
 
-export type TextContent = {
+export interface TextContent {
   type: "text";
 
   /**
    * The text content.
    */
   text: string;
-};
+}
 
-export type ImageContent = {
+export interface ImageContent {
   type: "image";
 
   /**
@@ -23,4 +23,4 @@ export type ImageContent = {
    * Optional mime type of the image.
    */
   mimeType?: string;
-};
+}

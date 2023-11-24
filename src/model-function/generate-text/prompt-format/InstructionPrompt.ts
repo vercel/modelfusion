@@ -5,7 +5,7 @@ import { MultiModalInput } from "./Content.js";
  * the role and behavior of the language model.
  * The instruction is a multi-model input (`array` of content).
  */
-export type InstructionPrompt = {
+export interface InstructionPrompt {
   /**
    * Optional system message to provide context for the language model. Note that for some models,
    * changing the system message can impact the results, because the model may be trained on the default system message.
@@ -16,7 +16,7 @@ export type InstructionPrompt = {
    * The multi-modal instruction for the model.
    */
   instruction: MultiModalInput;
-};
+}
 
 /**
  * A single text instruction prompt. It can contain an optional system message to define
@@ -30,7 +30,7 @@ export type InstructionPrompt = {
  * }
  * ```
  */
-export type TextInstructionPrompt = {
+export interface TextInstructionPrompt {
   /**
    * Optional system message to provide context for the language model. Note that for some models,
    * changing the system message can impact the results, because the model may be trained on the default system message.
@@ -41,4 +41,4 @@ export type TextInstructionPrompt = {
    * The text instruction for the model.
    */
   instruction: string;
-};
+}

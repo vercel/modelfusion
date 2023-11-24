@@ -26,19 +26,19 @@ import { InvalidPromptError } from "./InvalidPromptError.js";
  *
  * @see validateChatPrompt
  */
-export type ChatPrompt = {
+export interface ChatPrompt {
   system?: string;
   messages: Array<ChatMessage>;
-};
+}
 
 /**
  * A message in a chat prompt.
  * @see ChatPrompt
  */
-export type ChatMessage = {
+export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
-};
+}
 
 /**
  * Checks if a chat prompt is valid. Throws a {@link ChatPromptValidationError} if it's not.

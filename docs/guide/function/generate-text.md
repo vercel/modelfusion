@@ -93,7 +93,7 @@ for await (const textPart of textStream) {
 ## Prompt Format
 
 [Text generation prompt formats](/api/interfaces/TextGenerationPromptFormat) change the prompt format that a text generation model accepts.
-This enables the use of abstracted prompts such as [instruction](/api/modules#instructionprompt) or [chat](/api/modules#chatprompt) prompts.
+This enables the use of abstracted prompts such as [instruction](/api/interfaces/InstructionPrompt) or [chat](/api/interfaces/ChatPrompt) prompts.
 
 You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `withPromptFormat()` method.
 
@@ -153,9 +153,9 @@ The following prompt formats are available for text prompts:
 
 ### Instruction Prompts
 
-[Instruction prompts](/api/modules#instructionprompt) are a higher-level prompt format that contains an instruction, an optional input, and an optional system message. For some models, changing the system message can affect the results, so consider how your model works before setting it.
+Instruction prompts are a higher-level prompt formats that contains an instruction and an optional system message. Instruction prompts can be [text instruction prompts](/api/interfaces/TextInstructionPrompt) or [multi-modal instruction prompts](/api/interfaces/InstructionPrompt).
 
-When you use multi-modal models and prompt mappings, you can also provide an optional image as input. The image property consists of a base64-encoded image and an optional mime.
+The supported instruction prompt type depends on the prompt format that you use. For text instruction prompts, the `instruction` property is a `string`, and for multi-modal instruction prompts it is a [MultiModalInput](/api/modules#multimodalinput). Multi-modal inputs are arrays that can contain text or image content.
 
 #### Example: Cohere text generation
 
@@ -190,7 +190,7 @@ const text = await generateText(model, {
 
 #### Example: OpenAIChatModel multi-modal input
 
-Multi-modal vision models such as GPT 4 Vision can process images as part of the prompt.
+Multi-modal vision models such as GPT 4 Vision support multi-modal prompts:
 
 ```ts
 const textStream = await streamText(
@@ -227,7 +227,7 @@ The following prompt formats are available for instruction prompts:
 
 ### Chat Prompts
 
-[Chat prompts](/api/modules#chatprompt) are a higher-level prompt format that contains a list of chat messages.
+[Chat prompts](/api/interfaces/ChatPrompt) are a higher-level prompt format that contains a list of chat messages.
 
 Chat prompts are a combination of a system message and a list of messages with the following constraints:
 
