@@ -61,9 +61,10 @@ import { generateText, openai } from "modelfusion";
 const text = await generateText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
-    OpenAIChatMessage.user("Describe the image in detail:", {
-      image: { base64Content: image, mimeType: "image/png" },
-    }),
+    OpenAIChatMessage.user([
+      { type: "text", text: "Describe the image in detail:" },
+      { type: "image", base64Image: image, mimeType: "image/png" },
+    ]),
   ]
 );
 ```
@@ -199,8 +200,10 @@ const textStream = await streamText(
     })
     .withInstructionPrompt(),
   {
-    instruction: "Describe the image in detail:",
-    image: { base64Content: image, mimeType: "image/png" },
+    instruction: [
+      { type: "text", text: "Describe the image in detail:\n\n" },
+      { type: "image", base64Image: image, mimeType: "image/png" },
+    ],
   }
 );
 ```

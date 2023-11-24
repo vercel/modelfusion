@@ -87,9 +87,10 @@ import { streamText, openai } from "modelfusion";
 const textStream = await streamText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
-    OpenAIChatMessage.user("Describe the image in detail:", {
-      image: { base64Content: image, mimeType: "image/png" },
-    }),
+    OpenAIChatMessage.user([
+      { type: "text", text: "Describe the image in detail:" },
+      { type: "image", base64Image: image, mimeType: "image/png" },
+    ]),
   ]
 );
 ```

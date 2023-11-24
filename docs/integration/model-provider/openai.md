@@ -108,9 +108,10 @@ You can provide an image reference in the user message when you are using vision
 const text = await generateText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
-    OpenAIChatMessage.user("Describe the image in detail:", {
-      image: { base64Content: image, mimeType: "image/png" },
-    }),
+    OpenAIChatMessage.user([
+      { type: "text", text: "Describe the image in detail:" },
+      { type: "image", base64Image: image, mimeType: "image/png" },
+    ]),
   ]
 );
 ```
