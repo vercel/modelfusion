@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.80.0 - 2023-11-24
+
+### Changed
+
+- **breaking change**: Restructured multi-modal instruction prompts and `OpenAIChatMessage.user()`
+
 ## v0.79.0 - 2023-11-23
 
 ### Added
