@@ -19,7 +19,7 @@ async function main() {
         temperature: 0,
         format: "json",
         raw: true,
-        stopSequences: ["\n\n"], // prevent streaming from running forever
+        stopSequences: ["\n\n"], // prevent infinite generation
       })
       .withPromptFormat(ChatMLPromptFormat.instruction())
       .asStructureGenerationModel(
