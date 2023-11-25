@@ -22,7 +22,7 @@ async function main() {
         stopSequences: ["\n\n"], // prevent streaming from running forever
       })
       .withPromptFormat(ChatMLPromptFormat.instruction())
-      .asStructureStreamingModel(
+      .asStructureGenerationModel(
         jsonStructurePrompt((instruction: string, schema) => ({
           system:
             "JSON schema: \n" +

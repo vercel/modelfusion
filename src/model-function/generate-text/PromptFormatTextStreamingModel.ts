@@ -29,7 +29,7 @@ export class PromptFormatTextStreamingModel<
     return this.model.doStreamText(mappedPrompt, options);
   }
 
-  asStructureStreamingModel<INPUT_PROMPT>(
+  asStructureGenerationModel<INPUT_PROMPT>(
     promptFormat: StructureFromTextPromptFormat<INPUT_PROMPT, PROMPT>
   ) {
     return new StructureFromTextStreamingModel({
