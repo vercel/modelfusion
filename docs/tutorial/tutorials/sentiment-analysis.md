@@ -17,30 +17,35 @@ This is helpful to quickly develop initial product versions and prototypes.
 ```ts
 const analyzeSentiment = async (productReview: string) =>
   generateStructure(
-    openai.ChatTextGenerator({
-      model: "gpt-4",
-      temperature: 0, // remove randomness
-      maxCompletionTokens: 500, // enough tokens for reasoning and sentiment
-    }),
-    new ZodStructureDefinition({
-      name: "sentiment",
-      description: "Write the sentiment analysis",
-      schema: z.object({
+    openai
+      .ChatTextGenerator({
+        model: "gpt-4",
+        temperature: 0, // remove randomness
+        maxCompletionTokens: 500, // enough tokens for reasoning and sentiment
+      })
+      .asFunctionCallStructureGenerationModel({
+        fnName: "sentiment",
+        fnDescription: "Write the sentiment analysis",
+      })
+      .withInstructionPrompt(),
+
+    new ZodSchema(
+      z.object({
         // Reason first to improve results:
         reasoning: z.string().describe("Reasoning to explain the sentiment."),
         // Report sentiment after reasoning:
         sentiment: z
           .enum(["positive", "neutral", "negative"])
           .describe("Sentiment."),
-      }),
-    }),
-    [
-      OpenAIChatMessage.system(
+      })
+    ),
+
+    {
+      system:
         "You are a sentiment evaluator. " +
-          "Analyze the sentiment of the following product review:"
-      ),
-      OpenAIChatMessage.user(productReview),
-    ]
+        "Analyze the sentiment of the following product review:",
+      instruction: productReview,
+    }
   );
 ```
 

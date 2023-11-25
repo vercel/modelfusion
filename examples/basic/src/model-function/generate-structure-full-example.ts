@@ -21,6 +21,7 @@ async function main() {
         fnDescription: "Generate character descriptions.",
       })
       .withInstructionPrompt(),
+
     new ZodSchema(
       z.object({
         characters: z.array(
@@ -34,6 +35,7 @@ async function main() {
         ),
       })
     ),
+
     {
       system:
         "You are a sentiment evaluator. " +

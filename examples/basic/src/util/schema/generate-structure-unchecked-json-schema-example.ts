@@ -1,10 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  UncheckedSchema,
-  generateStructure,
-  openai,
-} from "modelfusion";
+import { UncheckedSchema, generateStructure, openai } from "modelfusion";
 
 dotenv.config();
 
@@ -19,7 +14,9 @@ async function main() {
       .asFunctionCallStructureGenerationModel({
         fnName: "sentiment",
         fnDescription: "Write the sentiment analysis",
-      }),
+      })
+      .withInstructionPrompt(),
+
     new UncheckedSchema({
       $schema: "http://json-schema.org/draft-07/schema#",
       type: "object",
@@ -33,16 +30,15 @@ async function main() {
       required: ["sentiment"],
       additionalProperties: false,
     }),
-    [
-      OpenAIChatMessage.system(
+
+    {
+      system:
         "You are a sentiment evaluator. " +
-          "Analyze the sentiment of the following product review:"
-      ),
-      OpenAIChatMessage.user(
+        "Analyze the sentiment of the following product review:",
+      instruction:
         "After I opened the package, I was met by a very unpleasant smell " +
-          "that did not disappear even after washing. Never again!"
-      ),
-    ]
+        "that did not disappear even after washing. Never again!",
+    }
   );
 
   console.log(JSON.stringify(sentiment, null, 2));

@@ -16,7 +16,7 @@ import { StructureValidationError } from "./StructureValidationError.js";
  *
  * @example
  * const sentiment = await generateStructure(
- *   new OpenAIChatModel(...),
+ *   openai.ChatTextGenerator(...).asFunctionCallStructureGenerationModel(...),
  *   new ZodSchema(z.object({
  *     sentiment: z
  *       .enum(["positive", "neutral", "negative"])

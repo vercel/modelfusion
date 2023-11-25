@@ -28,12 +28,14 @@ import { Guard } from "./guard.js";
  * const result = await guard(
  *  (input) =>
  *    generateStructure(
- *      openai.ChatTextGenerator({
+ *      openai
+ *        .ChatTextGenerator(/* ... * /)
+ *        .asFunctionCallStructureGenerationModel(/* ... * /),
+ *
+ *      new ZodSchema({
  *        // ...
  *      }),
- *      new ZodStructureDefinition({
- *        // ...
- *      }),
+ *
  *      input
  *    ),
  *  [
@@ -42,10 +44,14 @@ import { Guard } from "./guard.js";
  *  fixStructure({
  *    modifyInputForRetry: async ({ input, error }) => [
  *      ...input,
- *      OpenAIChatMessage.functionCall(null, {
- *        name: error.structureName,
- *        arguments: error.valueText,
- *      }),
+ *      {
+ *        role: "assistant",
+  *       content: null,
+          function_call: {
+ *          name: "sentiment",
+ *          arguments: JSON.stringify(error.valueText),
+ *        },
+ *      } satisfies OpenAIChatMessage,
  *      OpenAIChatMessage.user(error.message),
  *      OpenAIChatMessage.user("Please fix the error and try again."),
  *    ],

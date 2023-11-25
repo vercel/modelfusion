@@ -26,12 +26,9 @@ export type StructureStreamPart<STRUCTURE> =
  *
  * @example
  * const structureStream = await streamStructure(
- *    openai.ChatTextGenerator({
- *      model: "gpt-3.5-turbo",
- *     temperature: 0,
- *     maxCompletionTokens: 2000,
- *   }),
- *   new ZodSchema(z.array(
+ *   openai.ChatTextGenerator(...).asFunctionCallStructureGenerationModel(...),
+ *   new ZodSchema(
+ *     z.array(
  *       z.object({
  *         name: z.string(),
  *         class: z

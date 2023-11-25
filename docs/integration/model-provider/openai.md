@@ -165,46 +165,47 @@ for await (const textPart of textStream) {
 
 ### Generate Structure
 
-#### Chat Model
+#### Chat Model (function call)
 
-Structure generation uses the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides a single function specification and instructs the model to provide parameters for calling the function. The result is returned as parsed JSON.
+You can map the chat model to a `StructureGenerationModel` by using the `asFunctionCallStructureGenerationModel` method.
+
+The mapped model will use the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides a single function specification and instructs the model to provide parameters for calling the function. The result is returned as parsed JSON.
 
 [OpenAIChatModel API](/api/classes/OpenAIChatModel) |
 
 ```ts
-import {
-  OpenAIChatMessage,
-  openai,
-  ZodStructureDefinition,
-  generateStructure,
-} from "modelfusion";
+import { openai, ZodSchema, generateStructure } from "modelfusion";
 import { z } from "zod";
 
 const sentiment = await generateStructure(
-  openai.ChatTextGenerator({
-    model: "gpt-3.5-turbo",
-    temperature: 0,
-    maxCompletionTokens: 50,
-  }),
-  new ZodStructureDefinition({
-    name: "sentiment" as const,
-    description: "Write the sentiment analysis",
-    schema: z.object({
+  openai
+    .ChatTextGenerator({
+      model: "gpt-3.5-turbo",
+      temperature: 0,
+      maxCompletionTokens: 50,
+    })
+    .asFunctionCallStructureGenerationModel({
+      fnName: "sentiment",
+      fnDescription: "Write the sentiment analysis",
+    })
+    .withInstructionPrompt(),
+
+  new ZodSchema(
+    z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
         .describe("Sentiment."),
-    }),
-  }),
-  [
-    OpenAIChatMessage.system(
+    })
+  ),
+
+  {
+    system:
       "You are a sentiment evaluator. " +
-        "Analyze the sentiment of the following product review:"
-    ),
-    OpenAIChatMessage.user(
+      "Analyze the sentiment of the following product review:",
+    instruction:
       "After I opened the package, I was met by a very unpleasant smell " +
-        "that did not disappear even after washing. Never again!"
-    ),
-  ]
+      "that did not disappear even after washing. Never again!",
+  }
 );
 ```
 

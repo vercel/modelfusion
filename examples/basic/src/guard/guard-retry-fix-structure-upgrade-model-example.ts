@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatMessage,
   OpenAIChatModelType,
+  TextInstructionPrompt,
   ZodSchema,
   fixStructure,
   generateStructure,
@@ -18,7 +18,7 @@ setGlobalFunctionLogging("detailed-object");
 async function main() {
   const sentiment = await guard(
     (
-      input: { model: OpenAIChatModelType; prompt: OpenAIChatMessage[] },
+      input: { model: OpenAIChatModelType; prompt: TextInstructionPrompt },
       options
     ) =>
       generateStructure(
@@ -31,7 +31,9 @@ async function main() {
           .asFunctionCallStructureGenerationModel({
             fnName: "sentiment",
             fnDescription: "Write the sentiment analysis",
-          }),
+          })
+          .withInstructionPrompt(),
+
         new ZodSchema(
           z.object({
             sentiment: z
@@ -44,16 +46,14 @@ async function main() {
       ),
     {
       model: "gpt-3.5-turbo",
-      prompt: [
-        OpenAIChatMessage.system(
+      prompt: {
+        system:
           "You are a sentiment evaluator. " +
-            "Analyze the sentiment of the following product review:"
-        ),
-        OpenAIChatMessage.user(
+          "Analyze the sentiment of the following product review:",
+        instruction:
           "After I opened the package, I was met by a very unpleasant smell " +
-            "that did not disappear even after washing. Never again!"
-        ),
-      ],
+          "that did not disappear even after washing. Never again!",
+      },
     },
     fixStructure({
       modifyInputForRetry: async ({ input, error }) => ({

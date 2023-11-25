@@ -1,10 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  ZodSchema,
-  generateStructure,
-  openai,
-} from "modelfusion";
+import { ZodSchema, generateStructure, openai } from "modelfusion";
 import fs from "node:fs";
 import { z } from "zod";
 
@@ -22,7 +17,9 @@ async function main() {
         .asFunctionCallStructureGenerationModel({
           fnName: "storeCity",
           fnDescription: "Save information about the city",
-        }),
+        })
+        .withInstructionPrompt(),
+
       new ZodSchema(
         z.object({
           city: z
@@ -34,17 +31,16 @@ async function main() {
             .describe("information about the city"),
         })
       ),
-      [
-        OpenAIChatMessage.system(
-          [
-            "Extract the name and the population of the city.",
-            // escape hatch to limit extractions to city information:
-            "The text might not be about a city.",
-            "If it is not, set city to null.",
-          ].join("\n")
-        ),
-        OpenAIChatMessage.user(text),
-      ]
+
+      {
+        system: [
+          "Extract the name and the population of the city.",
+          // escape hatch to limit extractions to city information:
+          "The text might not be about a city.",
+          "If it is not, set city to null.",
+        ].join("\n"),
+        instruction: text,
+      }
     );
 
   const sanFranciscoWikipedia = JSON.parse(

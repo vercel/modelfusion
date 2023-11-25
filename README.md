@@ -194,20 +194,20 @@ Generate a structure that matches a schema.
 
 ```ts
 const sentiment = await generateStructure(
-  openai.ChatTextGenerator({
-    model: "gpt-3.5-turbo",
-    temperature: 0,
-    maxCompletionTokens: 50,
-  }),
-  new ZodStructureDefinition({
-    name: "sentiment",
-    description: "Write the sentiment analysis",
-    schema: z.object({
+  openai
+    .ChatTextGenerator({
+      model: "gpt-3.5-turbo",
+      temperature: 0,
+      maxCompletionTokens: 50,
+    })
+    .asFunctionCallStructureGenerationModel({ fnName: "sentiment" }),
+  new ZodSchema(
+    z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
         .describe("Sentiment."),
-    }),
-  }),
+    })
+  ),
   [
     OpenAIChatMessage.system(
       "You are a sentiment evaluator. " +
@@ -320,10 +320,14 @@ Guard functions can be used to implement retry on error, redacting and changing 
 const result = await guard(
   (input, options) =>
     generateStructure(
-      openai.ChatTextGenerator({
-        // ...
-      }),
-      new ZodStructureDefinition({
+      openai
+        .ChatTextGenerator({
+          // ...
+        })
+        .asFunctionCallStructureGenerationModel({
+          fnName: "myFunction",
+        }),
+      new ZodSchema({
         // ...
       }),
       input,
@@ -335,10 +339,14 @@ const result = await guard(
   fixStructure({
     modifyInputForRetry: async ({ input, error }) => [
       ...input,
-      OpenAIChatMessage.functionCall(null, {
-        name: error.structureName,
-        arguments: error.valueText,
-      }),
+      {
+        role: "assistant",
+        content: null,
+        function_call: {
+          name: "sentiment",
+          arguments: JSON.stringify(error.valueText),
+        },
+      } satisfies OpenAIChatMessage,
       OpenAIChatMessage.user(error.message),
       OpenAIChatMessage.user("Please fix the error and try again."),
     ],
