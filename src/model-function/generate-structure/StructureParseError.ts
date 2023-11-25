@@ -1,28 +1,18 @@
 import { getErrorMessage } from "../../util/getErrorMessage.js";
 
 export class StructureParseError extends Error {
-  readonly structureName: string;
   readonly cause: unknown;
   readonly valueText: string;
 
-  constructor({
-    structureName,
-    valueText,
-    cause,
-  }: {
-    structureName: string;
-    valueText: string;
-    cause: unknown;
-  }) {
+  constructor({ valueText, cause }: { valueText: string; cause: unknown }) {
     super(
-      `Structure parsing failed for '${structureName}'. ` +
+      `Structure parsing failed. ` +
         `Value: ${valueText}.\n` +
         `Error message: ${getErrorMessage(cause)}`
     );
 
     this.name = "StructureParseError";
 
-    this.structureName = structureName;
     this.cause = cause;
     this.valueText = valueText;
   }
@@ -34,7 +24,6 @@ export class StructureParseError extends Error {
       message: this.message,
       stack: this.stack,
 
-      structureName: this.structureName,
       valueText: this.valueText,
     };
   }

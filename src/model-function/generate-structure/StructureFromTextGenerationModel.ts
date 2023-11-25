@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { StructureDefinition } from "../../core/schema/StructureDefinition.js";
+import { Schema } from "../../core/schema/Schema.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -9,10 +9,7 @@ import { StructureGenerationModel } from "./StructureGenerationModel.js";
 import { StructureParseError } from "./StructureParseError.js";
 
 export type StructureFromTextPromptFormat<PROMPT> = {
-  createPrompt: (
-    prompt: PROMPT,
-    structure: StructureDefinition<string, unknown>
-  ) => string;
+  createPrompt: (prompt: PROMPT, schema: Schema<unknown>) => string;
   extractStructure: (response: string) => unknown;
 };
 
@@ -48,13 +45,13 @@ export class StructureFromTextGenerationModel<
   }
 
   async doGenerateStructure(
-    structure: StructureDefinition<string, unknown>,
+    schema: Schema<unknown>,
     prompt: PROMPT,
     options?: FunctionOptions
   ) {
     const { response, value } = await generateText(
       this.model,
-      this.format.createPrompt(prompt, structure),
+      this.format.createPrompt(prompt, schema),
       {
         ...options,
         returnType: "full",
@@ -69,7 +66,6 @@ export class StructureFromTextGenerationModel<
       };
     } catch (error) {
       throw new StructureParseError({
-        structureName: structure.name,
         valueText: value,
         cause: error,
       });

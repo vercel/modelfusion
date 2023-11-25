@@ -1,4 +1,3 @@
-import SecureJSON from "secure-json-parse";
 import { z } from "zod";
 import { FunctionOptions } from "../../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../../core/api/ApiConfiguration.js";
@@ -8,12 +7,9 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../core/api/postToApi.js";
-import { StructureDefinition } from "../../../core/schema/StructureDefinition.js";
 import { parseJSON } from "../../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { Delta } from "../../../model-function/Delta.js";
-import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
-import { StructureParseError } from "../../../model-function/generate-structure/StructureParseError.js";
 import { parsePartialJson } from "../../../model-function/generate-structure/parsePartialJson.js";
 import { PromptFormatTextStreamingModel } from "../../../model-function/generate-text/PromptFormatTextStreamingModel.js";
 import {
@@ -27,6 +23,7 @@ import { ToolCallsOrTextGenerationModel } from "../../../tool/generate-tool-call
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
+import { OpenAIChatFunctionCallStructureGenerationModel } from "./OpenAIChatFunctionCallStructureGenerationModel.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 import { chat, instruction, text } from "./OpenAIChatPromptFormat.js";
 import { createOpenAIChatDeltaIterableQueue } from "./OpenAIChatStreamIterable.js";
@@ -281,7 +278,6 @@ export class OpenAIChatModel
   extends AbstractModel<OpenAIChatSettings>
   implements
     TextStreamingModel<OpenAIChatMessage[], OpenAIChatSettings>,
-    StructureGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
     ToolCallGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>,
     ToolCallsOrTextGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
 {
@@ -400,68 +396,6 @@ export class OpenAIChatModel
     });
   }
 
-  /**
-   * JSON generation uses the OpenAI GPT function calling API.
-   * It provides a single function specification and instructs the model to provide parameters for calling the function.
-   * The result is returned as parsed JSON.
-   *
-   * @see https://platform.openai.com/docs/guides/gpt/function-calling
-   */
-  async doGenerateStructure(
-    structureDefinition: StructureDefinition<string, unknown>,
-    prompt: OpenAIChatMessage[],
-    options?: FunctionOptions
-  ) {
-    const response = await this.callAPI(prompt, {
-      ...options,
-      responseFormat: OpenAIChatResponseFormat.json,
-      functionCall: { name: structureDefinition.name },
-      functions: [
-        {
-          name: structureDefinition.name,
-          description: structureDefinition.description,
-          parameters: structureDefinition.schema.getJsonSchema(),
-        },
-      ],
-    });
-
-    const valueText = response.choices[0]!.message.function_call!.arguments;
-
-    try {
-      return {
-        response,
-        valueText,
-        value: SecureJSON.parse(valueText),
-        usage: this.extractUsage(response),
-      };
-    } catch (error) {
-      throw new StructureParseError({
-        structureName: structureDefinition.name,
-        valueText,
-        cause: error,
-      });
-    }
-  }
-
-  async doStreamStructure(
-    structureDefinition: StructureDefinition<string, unknown>,
-    prompt: OpenAIChatMessage[],
-    options?: FunctionOptions
-  ) {
-    return this.callAPI(prompt, {
-      ...options,
-      responseFormat: OpenAIChatResponseFormat.structureDeltaIterable,
-      functionCall: { name: structureDefinition.name },
-      functions: [
-        {
-          name: structureDefinition.name,
-          description: structureDefinition.description,
-          parameters: structureDefinition.schema.getJsonSchema(),
-        },
-      ],
-    });
-  }
-
   async doGenerateToolCall(
     tool: ToolDefinition<string, unknown>,
     prompt: OpenAIChatMessage[],
@@ -542,6 +476,21 @@ export class OpenAIChatModel
       totalTokens: response.usage.total_tokens,
     };
   }
+
+  asFunctionCallStructureGenerationModel({
+    fnName,
+    fnDescription,
+  }: {
+    fnName: string;
+    fnDescription?: string;
+  }) {
+    return new OpenAIChatFunctionCallStructureGenerationModel({
+      model: this,
+      fnName,
+      fnDescription,
+    });
+  }
+
   /**
    * Returns this model with a text prompt format.
    */

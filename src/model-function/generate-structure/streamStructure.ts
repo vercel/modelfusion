@@ -1,5 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { StructureDefinition } from "../../core/schema/StructureDefinition.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
+import { Schema } from "../../core/schema/Schema.js";
 import { isDeepEqualData } from "../../util/isDeepEqualData.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStreamCall } from "../executeStreamCall.js";
@@ -30,21 +31,15 @@ export type StructureStreamPart<STRUCTURE> =
  *     temperature: 0,
  *     maxCompletionTokens: 2000,
  *   }),
- *   new ZodStructureDefinition({
- *     name: "generateCharacter",
- *     description: "Generate character descriptions.",
- *     schema: z.object({
- *       characters: z.array(
- *         z.object({
- *           name: z.string(),
- *           class: z
- *             .string()
- *             .describe("Character class, e.g. warrior, mage, or thief."),
- *           description: z.string(),
- *         })
- *       ),
- *     }),
- *   }),
+ *   new ZodSchema(z.array(
+ *       z.object({
+ *         name: z.string(),
+ *         class: z
+ *           .string()
+ *           .describe("Character class, e.g. warrior, mage, or thief."),
+ *         description: z.string(),
+ *       })
+ *     ),
  *   [
  *     OpenAIChatMessage.user(
  *       "Generate 3 character descriptions for a fantasy role playing game."
@@ -64,10 +59,10 @@ export type StructureStreamPart<STRUCTURE> =
  * }
  *
  * @param {StructureStreamingModel<PROMPT>} model - The model to use for streaming
- * @param {StructureDefinition<NAME, STRUCTURE>} structureDefinition - The structure definition to use
- * @param {PROMPT | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT)} prompt
+ * @param {Schema<STRUCTURE>} schema - The schema to be used.
+ * @param {PROMPT | ((structureDefinition: Schema<STRUCTURE>) => PROMPT)} prompt
  * The prompt to be used.
- * You can also pass a function that takes the structure definition as an argument and returns the prompt.
+ * You can also pass a function that takes the schema as an argument and returns the prompt.
  * @param {FunctionOptions} [options] - Optional function options
  *
  * @returns {AsyncIterableResultPromise<StructureStreamPart<STRUCTURE>>}
@@ -76,31 +71,25 @@ export type StructureStreamPart<STRUCTURE> =
  * It contains a isComplete flag to indicate whether the structure is complete,
  * and a value that is either the partial structure or the final structure.
  */
-export async function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
+export async function streamStructure<STRUCTURE, PROMPT>(
   model: StructureStreamingModel<PROMPT>,
-  structureDefinition: StructureDefinition<NAME, STRUCTURE>,
-  prompt:
-    | PROMPT
-    | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
+  schema: Schema<STRUCTURE> & JsonSchemaProducer,
+  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
   options?: FunctionOptions & { returnType?: "structure-stream" }
 ): Promise<AsyncIterable<StructureStreamPart<STRUCTURE>>>;
-export async function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
+export async function streamStructure<STRUCTURE, PROMPT>(
   model: StructureStreamingModel<PROMPT>,
-  structureDefinition: StructureDefinition<NAME, STRUCTURE>,
-  prompt:
-    | PROMPT
-    | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
+  schema: Schema<STRUCTURE> & JsonSchemaProducer,
+  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
   options: FunctionOptions & { returnType: "full" }
 ): Promise<{
   value: AsyncIterable<StructureStreamPart<STRUCTURE>>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
-export async function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
+export async function streamStructure<STRUCTURE, PROMPT>(
   model: StructureStreamingModel<PROMPT>,
-  structureDefinition: StructureDefinition<NAME, STRUCTURE>,
-  prompt:
-    | PROMPT
-    | ((structureDefinition: StructureDefinition<NAME, STRUCTURE>) => PROMPT),
+  schema: Schema<STRUCTURE> & JsonSchemaProducer,
+  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
   options?: FunctionOptions & { returnType?: "structure-stream" | "full" }
 ): Promise<
   | AsyncIterable<StructureStreamPart<STRUCTURE>>
@@ -112,11 +101,7 @@ export async function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
   // Note: PROMPT must not be a function.
   const expandedPrompt =
     typeof prompt === "function"
-      ? (
-          prompt as (
-            structureDefinition: StructureDefinition<NAME, STRUCTURE>
-          ) => PROMPT
-        )(structureDefinition)
+      ? (prompt as (schema: Schema<STRUCTURE>) => PROMPT)(schema)
       : prompt;
 
   let lastStructure: unknown | undefined;
@@ -132,7 +117,7 @@ export async function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
     model,
     options,
     startStream: async (options) =>
-      model.doStreamStructure(structureDefinition, expandedPrompt, options),
+      model.doStreamStructure(schema, expandedPrompt, options),
     processDelta: (delta) => {
       const latestFullDelta = delta.fullDelta;
       const latestStructure = delta.valueDelta;
@@ -152,7 +137,7 @@ export async function streamStructure<STRUCTURE, PROMPT, NAME extends string>(
     },
     processFinished: () => {
       // process the final result (full type validation):
-      const parseResult = structureDefinition.schema.validate(lastStructure);
+      const parseResult = schema.validate(lastStructure);
 
       if (!parseResult.success) {
         reportError(parseResult.error);
