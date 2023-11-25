@@ -17,6 +17,9 @@ and classification tasks (e.g. [sentiment analysis](/tutorial/tutorials/sentimen
 #### OpenAI chat model with function call
 
 ```ts
+import { openai, zodSchema, generateStructure } from "modelfusion";
+import { z } from "zod";
+
 const model = openai
   .ChatTextGenerator({
     model: "gpt-3.5-turbo",
