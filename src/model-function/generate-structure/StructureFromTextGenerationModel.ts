@@ -1,35 +1,33 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { StructureDefinition } from "../../core/schema/StructureDefinition.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
+import { Schema } from "../../core/schema/Schema.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../generate-text/TextGenerationModel.js";
 import { generateText } from "../generate-text/generateText.js";
+import { StructureFromTextPromptFormat } from "./StructureFromTextPromptFormat.js";
 import { StructureGenerationModel } from "./StructureGenerationModel.js";
 import { StructureParseError } from "./StructureParseError.js";
 
-export type StructureFromTextPromptFormat<PROMPT> = {
-  createPrompt: (
-    prompt: PROMPT,
-    structure: StructureDefinition<string, unknown>
-  ) => string;
-  extractStructure: (response: string) => unknown;
-};
-
 export class StructureFromTextGenerationModel<
-  PROMPT,
-  MODEL extends TextGenerationModel<string, TextGenerationModelSettings>,
-> implements StructureGenerationModel<PROMPT, MODEL["settings"]>
+  SOURCE_PROMPT,
+  TARGET_PROMPT,
+  MODEL extends TextGenerationModel<TARGET_PROMPT, TextGenerationModelSettings>,
+> implements StructureGenerationModel<SOURCE_PROMPT, MODEL["settings"]>
 {
-  private readonly model: MODEL;
-  private readonly format: StructureFromTextPromptFormat<PROMPT>;
+  protected readonly model: MODEL;
+  protected readonly format: StructureFromTextPromptFormat<
+    SOURCE_PROMPT,
+    TARGET_PROMPT
+  >;
 
   constructor({
     model,
     format,
   }: {
     model: MODEL;
-    format: StructureFromTextPromptFormat<PROMPT>;
+    format: StructureFromTextPromptFormat<SOURCE_PROMPT, TARGET_PROMPT>;
   }) {
     this.model = model;
     this.format = format;
@@ -48,13 +46,13 @@ export class StructureFromTextGenerationModel<
   }
 
   async doGenerateStructure(
-    structure: StructureDefinition<string, unknown>,
-    prompt: PROMPT,
+    schema: Schema<unknown> & JsonSchemaProducer,
+    prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
     const { response, value } = await generateText(
       this.model,
-      this.format.createPrompt(prompt, structure),
+      this.format.createPrompt(prompt, schema),
       {
         ...options,
         returnType: "full",
@@ -69,7 +67,6 @@ export class StructureFromTextGenerationModel<
       };
     } catch (error) {
       throw new StructureParseError({
-        structureName: structure.name,
         valueText: value,
         cause: error,
       });

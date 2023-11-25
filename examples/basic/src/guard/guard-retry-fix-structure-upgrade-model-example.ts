@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatMessage,
   OpenAIChatModelType,
-  ZodStructureDefinition,
+  TextInstructionPrompt,
+  ZodSchema,
   fixStructure,
   generateStructure,
   guard,
@@ -18,39 +18,42 @@ setGlobalFunctionLogging("detailed-object");
 async function main() {
   const sentiment = await guard(
     (
-      input: { model: OpenAIChatModelType; prompt: OpenAIChatMessage[] },
+      input: { model: OpenAIChatModelType; prompt: TextInstructionPrompt },
       options
     ) =>
       generateStructure(
-        openai.ChatTextGenerator({
-          model: input.model,
-          temperature: 0,
-          maxCompletionTokens: 50,
-        }),
-        new ZodStructureDefinition({
-          name: "sentiment",
-          description: "Write the sentiment analysis",
-          schema: z.object({
+        openai
+          .ChatTextGenerator({
+            model: input.model,
+            temperature: 0,
+            maxCompletionTokens: 50,
+          })
+          .asFunctionCallStructureGenerationModel({
+            fnName: "sentiment",
+            fnDescription: "Write the sentiment analysis",
+          })
+          .withInstructionPrompt(),
+
+        new ZodSchema(
+          z.object({
             sentiment: z
               .enum(["positivee", "neutra", "negaaa"])
               .describe("Sentiment."),
-          }),
-        }),
+          })
+        ),
         input.prompt,
         options
       ),
     {
       model: "gpt-3.5-turbo",
-      prompt: [
-        OpenAIChatMessage.system(
+      prompt: {
+        system:
           "You are a sentiment evaluator. " +
-            "Analyze the sentiment of the following product review:"
-        ),
-        OpenAIChatMessage.user(
+          "Analyze the sentiment of the following product review:",
+        instruction:
           "After I opened the package, I was met by a very unpleasant smell " +
-            "that did not disappear even after washing. Never again!"
-        ),
-      ],
+          "that did not disappear even after washing. Never again!",
+      },
     },
     fixStructure({
       modifyInputForRetry: async ({ input, error }) => ({

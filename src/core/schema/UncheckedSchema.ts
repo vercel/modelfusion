@@ -1,6 +1,9 @@
+import { JsonSchemaProducer } from "./JsonSchemaProducer.js";
 import { Schema } from "./Schema.js";
 
-export class UncheckedSchema<STRUCTURE> implements Schema<STRUCTURE> {
+export class UncheckedSchema<STRUCTURE>
+  implements Schema<STRUCTURE>, JsonSchemaProducer
+{
   constructor(private readonly jsonSchema?: unknown) {}
 
   validate(

@@ -17,7 +17,6 @@ async function main() {
         fnDescription: "Write the sentiment analysis",
       })
       .withInstructionPrompt(),
-
     new ZodSchema(
       z.object({
         sentiment: z
@@ -25,7 +24,6 @@ async function main() {
           .describe("Sentiment."),
       })
     ),
-
     {
       system:
         "You are a sentiment evaluator. " +

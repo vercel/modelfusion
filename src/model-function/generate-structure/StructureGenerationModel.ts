@@ -1,5 +1,6 @@
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { StructureDefinition } from "../../core/schema/StructureDefinition.js";
+import { Schema } from "../../core/schema/Schema.js";
 import { Delta } from "../../model-function/Delta.js";
 import { Model, ModelSettings } from "../Model.js";
 
@@ -11,7 +12,7 @@ export interface StructureGenerationModel<
     StructureGenerationModelSettings = StructureGenerationModelSettings,
 > extends Model<SETTINGS> {
   doGenerateStructure(
-    structure: StructureDefinition<string, unknown>,
+    schema: Schema<unknown> & JsonSchemaProducer,
     prompt: PROMPT,
     options?: FunctionOptions
   ): PromiseLike<{
@@ -32,7 +33,7 @@ export interface StructureStreamingModel<
     StructureGenerationModelSettings = StructureGenerationModelSettings,
 > extends StructureGenerationModel<PROMPT, SETTINGS> {
   doStreamStructure(
-    structureDefinition: StructureDefinition<string, unknown>,
+    schema: Schema<unknown> & JsonSchemaProducer,
     prompt: PROMPT,
     options?: FunctionOptions
   ): PromiseLike<AsyncIterable<Delta<unknown>>>;

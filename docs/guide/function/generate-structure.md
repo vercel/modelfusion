@@ -14,34 +14,38 @@ and classification tasks (e.g. [sentiment analysis](/tutorial/tutorials/sentimen
 
 [generateStructure API](/api/modules#generatestructure)
 
-#### OpenAI chat model
+#### OpenAI chat model with function call
 
 ```ts
 const sentiment = await generateStructure(
-  openai.ChatTextGenerator({
-    model: "gpt-3.5-turbo",
-    temperature: 0,
-    maxCompletionTokens: 50,
-  }),
-  new ZodStructureDefinition({
-    name: "sentiment",
-    description: "Write the sentiment analysis",
-    schema: z.object({
+  openai
+    .ChatTextGenerator({
+      model: input.model,
+      temperature: 0,
+      maxCompletionTokens: 50,
+    })
+    .asFunctionCallStructureGenerationModel({
+      fnName: "sentiment",
+      fnDescription: "Write the sentiment analysis",
+    })
+    .withInstructionPrompt(),
+
+  new ZodSchema(
+    z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
         .describe("Sentiment."),
-    }),
-  }),
-  [
-    OpenAIChatMessage.system(
+    })
+  ),
+
+  {
+    system:
       "You are a sentiment evaluator. " +
-        "Analyze the sentiment of the following product review:"
-    ),
-    OpenAIChatMessage.user(
+      "Analyze the sentiment of the following product review:",
+    instruction:
       "After I opened the package, I was met by a very unpleasant smell " +
-        "that did not disappear even after washing. Never again!"
-    ),
-  ]
+      "that did not disappear even after washing. Never again!",
+  }
 );
 ```
 
@@ -62,15 +66,12 @@ You can do your own type inference on partial results if needed.
 
 ```ts
 const structureStream = await streamStructure(
-  openai.ChatTextGenerator({
-    model: "gpt-3.5-turbo",
-    temperature: 0,
-    maxCompletionTokens: 2000,
+  openai.ChatTextGenerator(/* ... */).asFunctionCallStructureGenerationModel({
+    fnName: "generateCharacter",
+    fnDescription: "Generate character descriptions.",
   }),
-  new ZodStructureDefinition({
-    name: "generateCharacter",
-    description: "Generate character descriptions.",
-    schema: z.object({
+  new ZodSchema(
+    z.object({
       characters: z.array(
         z.object({
           name: z.string(),
@@ -80,8 +81,8 @@ const structureStream = await streamStructure(
           description: z.string(),
         })
       ),
-    }),
-  }),
+    })
+  ),
   [
     OpenAIChatMessage.user(
       "Generate 3 character descriptions for a fantasy role playing game."

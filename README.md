@@ -193,31 +193,34 @@ Generate typed objects using a language model and a schema.
 Generate a structure that matches a schema.
 
 ```ts
+import { ZodSchema, generateStructure, openai } from "modelfusion";
+
 const sentiment = await generateStructure(
-  openai.ChatTextGenerator({
-    model: "gpt-3.5-turbo",
-    temperature: 0,
-    maxCompletionTokens: 50,
-  }),
-  new ZodStructureDefinition({
-    name: "sentiment",
-    description: "Write the sentiment analysis",
-    schema: z.object({
+  openai
+    .ChatTextGenerator({
+      model: "gpt-3.5-turbo",
+      temperature: 0,
+      maxCompletionTokens: 50,
+    })
+    .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
+    .withInstructionPrompt(),
+
+  new ZodSchema(
+    z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
         .describe("Sentiment."),
-    }),
-  }),
-  [
-    OpenAIChatMessage.system(
+    })
+  ),
+
+  {
+    system:
       "You are a sentiment evaluator. " +
-        "Analyze the sentiment of the following product review:"
-    ),
-    OpenAIChatMessage.user(
+      "Analyze the sentiment of the following product review:",
+    instruction:
       "After I opened the package, I was met by a very unpleasant smell " +
-        "that did not disappear even after washing. Never again!"
-    ),
-  ]
+      "that did not disappear even after washing. Never again!",
+  }
 );
 ```
 
@@ -228,16 +231,19 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
 Stream a structure that matches a schema. Partial structures before the final part are untyped JSON.
 
 ```ts
+import { ZodSchema, openai, streamStructure } from "modelfusion";
+
 const structureStream = await streamStructure(
-  openai.ChatTextGenerator({
-    model: "gpt-3.5-turbo",
-    temperature: 0,
-    maxCompletionTokens: 2000,
-  }),
-  new ZodStructureDefinition({
-    name: "generateCharacter" as const,
-    description: "Generate character descriptions.",
-    schema: z.object({
+  openai
+    .ChatTextGenerator(/* ... */)
+    .asFunctionCallStructureGenerationModel({
+      fnName: "generateCharacter",
+      fnDescription: "Generate character descriptions.",
+    })
+    .withTextPrompt(),
+
+  new ZodSchema(
+    z.object({
       characters: z.array(
         z.object({
           name: z.string(),
@@ -247,13 +253,10 @@ const structureStream = await streamStructure(
           description: z.string(),
         })
       ),
-    }),
-  }),
-  [
-    OpenAIChatMessage.user(
-      "Generate 3 character descriptions for a fantasy role playing game."
-    ),
-  ]
+    })
+  ),
+
+  "Generate 3 character descriptions for a fantasy role playing game."
 );
 
 for await (const part of structureStream) {
@@ -320,10 +323,14 @@ Guard functions can be used to implement retry on error, redacting and changing 
 const result = await guard(
   (input, options) =>
     generateStructure(
-      openai.ChatTextGenerator({
-        // ...
-      }),
-      new ZodStructureDefinition({
+      openai
+        .ChatTextGenerator({
+          // ...
+        })
+        .asFunctionCallStructureGenerationModel({
+          fnName: "myFunction",
+        }),
+      new ZodSchema({
         // ...
       }),
       input,
@@ -335,10 +342,14 @@ const result = await guard(
   fixStructure({
     modifyInputForRetry: async ({ input, error }) => [
       ...input,
-      OpenAIChatMessage.functionCall(null, {
-        name: error.structureName,
-        arguments: error.valueText,
-      }),
+      {
+        role: "assistant",
+        content: null,
+        function_call: {
+          name: "sentiment",
+          arguments: JSON.stringify(error.valueText),
+        },
+      } satisfies OpenAIChatMessage,
       OpenAIChatMessage.user(error.message),
       OpenAIChatMessage.user("Please fix the error and try again."),
     ],

@@ -1,10 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  ZodStructureDefinition,
-  generateStructure,
-  openai,
-} from "modelfusion";
+import { ZodSchema, generateStructure, openai } from "modelfusion";
 import fs from "node:fs";
 import { z } from "zod";
 
@@ -13,36 +8,39 @@ dotenv.config();
 async function main() {
   const extractNameAndPopulation = async (text: string) =>
     generateStructure(
-      openai.ChatTextGenerator({
-        model: "gpt-4",
-        temperature: 0, // remove randomness as much as possible
-        maxCompletionTokens: 200, // only a few tokens needed for the response
-      }),
-      new ZodStructureDefinition({
-        name: "storeCity",
-        description: "Save information about the city",
-        // structure supports escape hatch:
-        schema: z.object({
+      openai
+        .ChatTextGenerator({
+          model: "gpt-4",
+          temperature: 0, // remove randomness as much as possible
+          maxCompletionTokens: 200, // only a few tokens needed for the response
+        })
+        .asFunctionCallStructureGenerationModel({
+          fnName: "storeCity",
+          fnDescription: "Save information about the city",
+        })
+        .withInstructionPrompt(),
+
+      new ZodSchema(
+        z.object({
           city: z
             .object({
               name: z.string().describe("name of the city"),
               population: z.number().describe("population of the city"),
             })
-            .nullable()
+            .nullable() // structure supports escape hatch
             .describe("information about the city"),
-        }),
-      }),
-      [
-        OpenAIChatMessage.system(
-          [
-            "Extract the name and the population of the city.",
-            // escape hatch to limit extractions to city information:
-            "The text might not be about a city.",
-            "If it is not, set city to null.",
-          ].join("\n")
-        ),
-        OpenAIChatMessage.user(text),
-      ]
+        })
+      ),
+
+      {
+        system: [
+          "Extract the name and the population of the city.",
+          // escape hatch to limit extractions to city information:
+          "The text might not be about a city.",
+          "If it is not, set city to null.",
+        ].join("\n"),
+        instruction: text,
+      }
     );
 
   const sanFranciscoWikipedia = JSON.parse(

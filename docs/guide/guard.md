@@ -138,10 +138,10 @@ With the [`fixStructure`](/api/modules/#fixstructure) guard, you can retry gener
 const result = await guard(
   (input, options) =>
     generateStructure(
-      openai.ChatTextGenerator({
-        // ...
+      openai.ChatTextGenerator(/*...*/).asFunctionCallStructureGenerationModel({
+        fnName: "myFunction",
       }),
-      new ZodStructureDefinition({
+      new ZodSchema({
         // ...
       }),
       input,
@@ -153,10 +153,14 @@ const result = await guard(
   fixStructure({
     modifyInputForRetry: async ({ input, error }) => [
       ...input,
-      OpenAIChatMessage.functionCall(null, {
-        name: error.structureName,
-        arguments: error.valueText,
-      }),
+      {
+        role: "assistant",
+        content: null,
+        function_call: {
+          name: "sentiment",
+          arguments: JSON.stringify(error.valueText),
+        },
+      } satisfies OpenAIChatMessage,
       OpenAIChatMessage.user(error.message),
       OpenAIChatMessage.user("Please fix the error and try again."),
     ],
@@ -177,12 +181,10 @@ const result = await guard(
     options
   ) =>
     generateStructure(
-      openai.ChatTextGenerator({
-        model: input.model,
-      }),
-      new ZodStructureDefinition({
-        //...
-      }),
+      openai
+        .ChatTextGenerator({ model: input.model })
+        .asFunctionCallStructureGenerationModel(/*...*/),
+      new ZodSchema(/*...*/),
       input.prompt,
       options
     ),

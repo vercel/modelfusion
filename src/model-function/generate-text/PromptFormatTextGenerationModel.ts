@@ -1,4 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { StructureFromTextGenerationModel } from "../../model-function/generate-structure/StructureFromTextGenerationModel.js";
+import { StructureFromTextPromptFormat } from "model-function/generate-structure/StructureFromTextPromptFormat.js";
 import {
   TextGenerationToolCallModel,
   ToolCallPromptFormat,
@@ -93,6 +95,15 @@ export class PromptFormatTextGenerationModel<
     promptFormat: ToolCallsOrGenerateTextPromptFormat<INPUT_PROMPT, PROMPT>
   ) {
     return new TextGenerationToolCallsOrGenerateTextModel({
+      model: this,
+      format: promptFormat,
+    });
+  }
+
+  asStructureGenerationModel<INPUT_PROMPT>(
+    promptFormat: StructureFromTextPromptFormat<INPUT_PROMPT, PROMPT>
+  ) {
+    return new StructureFromTextGenerationModel({
       model: this,
       format: promptFormat,
     });
