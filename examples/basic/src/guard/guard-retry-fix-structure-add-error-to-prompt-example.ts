@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  ZodStructureDefinition,
+  ZodSchema,
   fixStructure,
   generateStructure,
   guard,
@@ -18,20 +18,23 @@ async function main() {
   const sentiment = await guard(
     (input, options) =>
       generateStructure(
-        openai.ChatTextGenerator({
-          model: "gpt-3.5-turbo",
-          temperature: 0,
-          maxCompletionTokens: 50,
-        }),
-        new ZodStructureDefinition({
-          name: "sentiment",
-          description: "Write the sentiment analysis",
-          schema: z.object({
+        openai
+          .ChatTextGenerator({
+            model: "gpt-3.5-turbo",
+            temperature: 0,
+            maxCompletionTokens: 50,
+          })
+          .asFunctionCallStructureGenerationModel({
+            fnName: "sentiment",
+            fnDescription: "Write the sentiment analysis",
+          }),
+        new ZodSchema(
+          z.object({
             sentiment: z
               .enum(["positivee", "neutra", "negaaa"])
               .describe("Sentiment."),
-          }),
-        }),
+          })
+        ),
         input,
         options
       ),
@@ -52,7 +55,7 @@ async function main() {
           role: "assistant",
           content: null,
           function_call: {
-            name: error.structureName,
+            name: "sentiment",
             arguments: JSON.stringify(error.valueText),
           },
         } satisfies OpenAIChatMessage,

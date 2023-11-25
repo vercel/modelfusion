@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import {
   StructureFromTextGenerationModel,
   ZodSchema,
-  ZodStructureDefinition,
   generateStructure,
   ollama,
   parseJSON,
@@ -39,22 +38,15 @@ async function main() {
         temperature: 0,
       }),
       format: {
-        createPrompt: (instruction, structure) => {
-          return (
-            "Respond using JSON. Adhere to this JSON schema: \n" +
-            JSON.stringify(structure.schema.getJsonSchema()) +
-            "\n\n" +
-            instruction
-          );
-        },
+        createPrompt: (instruction, schema) =>
+          "Respond using JSON. Adhere to this JSON schema: \n" +
+          JSON.stringify(schema.getJsonSchema()) +
+          "\n\n" +
+          instruction,
         extractStructure: (response) => parseJSON({ text: response }),
       },
     }),
-    new ZodStructureDefinition({
-      schema: heros,
-      name: "heros",
-      description: "Generated heros",
-    }),
+    heros,
     "Generate 3 character descriptions for a fantasy role playing game. "
   );
 

@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  ZodStructureDefinition,
+  ZodSchema,
   generateStructure,
   openai,
 } from "modelfusion";
@@ -11,20 +11,23 @@ dotenv.config();
 
 async function main() {
   const sentiment = await generateStructure(
-    openai.ChatTextGenerator({
-      model: "gpt-3.5-turbo",
-      temperature: 0,
-      maxCompletionTokens: 50,
-    }),
-    new ZodStructureDefinition({
-      name: "sentiment",
-      description: "Write the sentiment analysis",
-      schema: z.object({
+    openai
+      .ChatTextGenerator({
+        model: "gpt-3.5-turbo",
+        temperature: 0,
+        maxCompletionTokens: 50,
+      })
+      .asFunctionCallStructureGenerationModel({
+        fnName: "sentiment",
+        fnDescription: "Write the sentiment analysis",
+      }),
+    new ZodSchema(
+      z.object({
         sentiment: z
           .enum(["positive", "neutral", "negative"])
           .describe("Sentiment."),
-      }),
-    }),
+      })
+    ),
     [
       OpenAIChatMessage.system(
         "You are a sentiment evaluator. " +

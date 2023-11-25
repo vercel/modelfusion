@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
   OpenAIChatModelType,
-  ZodStructureDefinition,
+  ZodSchema,
   fixStructure,
   generateStructure,
   guard,
@@ -22,20 +22,23 @@ async function main() {
       options
     ) =>
       generateStructure(
-        openai.ChatTextGenerator({
-          model: input.model,
-          temperature: 0,
-          maxCompletionTokens: 50,
-        }),
-        new ZodStructureDefinition({
-          name: "sentiment",
-          description: "Write the sentiment analysis",
-          schema: z.object({
-            sentiment: z
-              .enum(["positivee", "neutra", "negaaa"])
-              .describe("Sentiment."),
+        openai
+          .ChatTextGenerator({
+            model: input.model,
+            temperature: 0,
+            maxCompletionTokens: 50,
+          })
+          .asFunctionCallStructureGenerationModel({
+            fnName: "sentiment",
+            fnDescription: "Write the sentiment analysis",
           }),
-        }),
+        new ZodSchema(
+          z.object({
+            sentiment: z
+              .enum(["positive", "neutral", "negative"])
+              .describe("Sentiment."),
+          })
+        ),
         input.prompt,
         options
       ),

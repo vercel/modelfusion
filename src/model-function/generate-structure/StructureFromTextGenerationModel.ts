@@ -1,4 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../../core/schema/Schema.js";
 import {
   TextGenerationModel,
@@ -9,7 +10,10 @@ import { StructureGenerationModel } from "./StructureGenerationModel.js";
 import { StructureParseError } from "./StructureParseError.js";
 
 export type StructureFromTextPromptFormat<PROMPT> = {
-  createPrompt: (prompt: PROMPT, schema: Schema<unknown>) => string;
+  createPrompt: (
+    prompt: PROMPT,
+    schema: Schema<unknown> & JsonSchemaProducer
+  ) => string;
   extractStructure: (response: string) => unknown;
 };
 
@@ -45,7 +49,7 @@ export class StructureFromTextGenerationModel<
   }
 
   async doGenerateStructure(
-    schema: Schema<unknown>,
+    schema: Schema<unknown> & JsonSchemaProducer,
     prompt: PROMPT,
     options?: FunctionOptions
   ) {
