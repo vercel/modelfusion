@@ -43,7 +43,7 @@ export async function generateToolCallsOrText<
     ToolCallsOrTextGenerationModelSettings
   >,
   tools: TOOLS,
-  prompt: PROMPT | ((structureDefinitions: TOOLS) => PROMPT),
+  prompt: PROMPT | ((tools: TOOLS) => PROMPT),
   options?: FunctionOptions & { returnType?: "structure" }
 ): Promise<{
   text: string | null;
@@ -58,7 +58,7 @@ export async function generateToolCallsOrText<
     ToolCallsOrTextGenerationModelSettings
   >,
   tools: TOOLS,
-  prompt: PROMPT | ((structureDefinitions: TOOLS) => PROMPT),
+  prompt: PROMPT | ((tools: TOOLS) => PROMPT),
   options: FunctionOptions & { returnType?: "full" }
 ): Promise<{
   value: { text: string | null; toolCalls: Array<ToOutputValue<TOOLS>> };
@@ -74,7 +74,7 @@ export async function generateToolCallsOrText<
     ToolCallsOrTextGenerationModelSettings
   >,
   tools: TOOLS,
-  prompt: PROMPT | ((structureDefinitions: TOOLS) => PROMPT),
+  prompt: PROMPT | ((tools: TOOLS) => PROMPT),
   options?: FunctionOptions & { returnType?: "structure" | "full" }
 ): Promise<
   | { text: string | null; toolCalls: Array<ToOutputValue<TOOLS>> | null }

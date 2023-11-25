@@ -57,7 +57,7 @@ export type StructureStreamPart<STRUCTURE> =
  *
  * @param {StructureStreamingModel<PROMPT>} model - The model to use for streaming
  * @param {Schema<STRUCTURE>} schema - The schema to be used.
- * @param {PROMPT | ((structureDefinition: Schema<STRUCTURE>) => PROMPT)} prompt
+ * @param {PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT)} prompt
  * The prompt to be used.
  * You can also pass a function that takes the schema as an argument and returns the prompt.
  * @param {FunctionOptions} [options] - Optional function options
