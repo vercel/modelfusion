@@ -18,18 +18,17 @@ and classification tasks (e.g. [sentiment analysis](/tutorial/tutorials/sentimen
 
 ```ts
 const sentiment = await generateStructure(
+  // model:
   openai
     .ChatTextGenerator({
-      model: input.model,
+      model: "gpt-3.5-turbo",
       temperature: 0,
       maxCompletionTokens: 50,
     })
-    .asFunctionCallStructureGenerationModel({
-      fnName: "sentiment",
-      fnDescription: "Write the sentiment analysis",
-    })
+    .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
     .withInstructionPrompt(),
 
+  // schema:
   zodSchema(
     z.object({
       sentiment: z
@@ -38,6 +37,7 @@ const sentiment = await generateStructure(
     })
   ),
 
+  // prompt:
   {
     system:
       "You are a sentiment evaluator. " +

@@ -196,6 +196,7 @@ Generate a structure that matches a schema.
 import { zodSchema, generateStructure, openai } from "modelfusion";
 
 const sentiment = await generateStructure(
+  // model:
   openai
     .ChatTextGenerator({
       model: "gpt-3.5-turbo",
@@ -205,6 +206,7 @@ const sentiment = await generateStructure(
     .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
     .withInstructionPrompt(),
 
+  // schema:
   zodSchema(
     z.object({
       sentiment: z
@@ -213,6 +215,7 @@ const sentiment = await generateStructure(
     })
   ),
 
+  // prompt:
   {
     system:
       "You are a sentiment evaluator. " +
