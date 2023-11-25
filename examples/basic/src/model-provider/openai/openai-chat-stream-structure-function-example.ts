@@ -1,37 +1,22 @@
 import dotenv from "dotenv";
-import {
-  ChatMLPromptFormat,
-  ZodSchema,
-  jsonStructurePrompt,
-  ollama,
-  streamStructure,
-} from "modelfusion";
+import { ZodSchema, openai, streamStructure } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
 
 async function main() {
   const structureStream = await streamStructure(
-    ollama
-      .TextGenerator({
-        model: "openhermes2.5-mistral",
-        maxCompletionTokens: 1024,
+    openai
+      .ChatTextGenerator({
+        model: "gpt-3.5-turbo",
         temperature: 0,
-        format: "json",
-        raw: true,
-        stopSequences: ["\n\n"], // prevent streaming from running forever
+        maxCompletionTokens: 2000,
       })
-      .withPromptFormat(ChatMLPromptFormat.instruction())
-      .asStructureGenerationModel(
-        jsonStructurePrompt((instruction: string, schema) => ({
-          system:
-            "JSON schema: \n" +
-            JSON.stringify(schema.getJsonSchema()) +
-            "\n\n" +
-            "Respond only using JSON that matches the above schema.",
-          instruction,
-        }))
-      ),
+      .asFunctionCallStructureGenerationModel({
+        fnName: "generateCharacter",
+        fnDescription: "Generate character descriptions.",
+      })
+      .withTextPrompt(),
 
     new ZodSchema(
       z.object({
@@ -47,7 +32,7 @@ async function main() {
       })
     ),
 
-    "Generate 3 character descriptions for a fantasy role playing game. "
+    "Generate 3 character descriptions for a fantasy role playing game."
   );
 
   for await (const part of structureStream) {

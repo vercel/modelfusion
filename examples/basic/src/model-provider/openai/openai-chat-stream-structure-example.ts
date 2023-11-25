@@ -1,5 +1,11 @@
 import dotenv from "dotenv";
-import { ZodSchema, openai, streamStructure } from "modelfusion";
+import {
+  OpenAIChatMessage,
+  ZodSchema,
+  jsonStructurePrompt,
+  openai,
+  streamStructure,
+} from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
@@ -8,15 +14,22 @@ async function main() {
   const structureStream = await streamStructure(
     openai
       .ChatTextGenerator({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-1106-preview",
         temperature: 0,
-        maxCompletionTokens: 2000,
+        maxCompletionTokens: 1024,
+        responseFormat: { type: "json_object" },
       })
-      .asFunctionCallStructureGenerationModel({
-        fnName: "generateCharacter",
-        fnDescription: "Generate character descriptions.",
-      })
-      .withTextPrompt(),
+      .asStructureGenerationModel(
+        jsonStructurePrompt((instruction: string, schema) => [
+          OpenAIChatMessage.system(
+            "JSON schema: \n" +
+              JSON.stringify(schema.getJsonSchema()) +
+              "\n\n" +
+              "Respond only using JSON that matches the above schema."
+          ),
+          OpenAIChatMessage.user(instruction),
+        ])
+      ),
 
     new ZodSchema(
       z.object({

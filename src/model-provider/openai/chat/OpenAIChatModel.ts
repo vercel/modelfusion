@@ -10,6 +10,8 @@ import {
 import { parseJSON } from "../../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { Delta } from "../../../model-function/Delta.js";
+import { StructureFromTextPromptFormat } from "../../../model-function/generate-structure/StructureFromTextPromptFormat.js";
+import { StructureFromTextStreamingModel } from "../../../model-function/generate-structure/StructureFromTextStreamingModel.js";
 import { parsePartialJson } from "../../../model-function/generate-structure/parsePartialJson.js";
 import { PromptFormatTextStreamingModel } from "../../../model-function/generate-text/PromptFormatTextStreamingModel.js";
 import {
@@ -489,6 +491,18 @@ export class OpenAIChatModel
       fnName,
       fnDescription,
       promptFormat: identity(),
+    });
+  }
+
+  asStructureGenerationModel<INPUT_PROMPT>(
+    promptFormat: StructureFromTextPromptFormat<
+      INPUT_PROMPT,
+      OpenAIChatMessage[]
+    >
+  ) {
+    return new StructureFromTextStreamingModel({
+      model: this,
+      format: promptFormat,
     });
   }
 
