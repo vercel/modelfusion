@@ -1,15 +1,17 @@
 import dotenv from "dotenv";
-import { AnthropicTextGenerationModel, generateText } from "modelfusion";
+import { anthropic, generateText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const text = await generateText(
-    new AnthropicTextGenerationModel({
-      model: "claude-instant-1",
-      temperature: 0.7,
-      maxCompletionTokens: 500,
-    }).withInstructionPrompt(),
+    anthropic
+      .TextGenerator({
+        model: "claude-instant-1",
+        temperature: 0.7,
+        maxCompletionTokens: 500,
+      })
+      .withInstructionPrompt(),
     { instruction: "Write a short story about a robot learning to love" }
   );
 

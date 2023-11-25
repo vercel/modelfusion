@@ -1,5 +1,5 @@
-import { OpenAIChatMessage, OpenAIChatModel, generateText } from "modelfusion";
 import dotenv from "dotenv";
+import { OpenAIChatMessage, generateText, openai } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
@@ -7,7 +7,7 @@ dotenv.config();
 async function main() {
   function extractText({ text, topic }: { text: string; topic: string }) {
     return generateText(
-      new OpenAIChatModel({
+      openai.ChatTextGenerator({
         model: "gpt-4",
         temperature: 0, // remove randomness as much as possible
         maxCompletionTokens: 500,

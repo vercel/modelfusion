@@ -3,6 +3,7 @@ export * from "./OpenAIApiConfiguration.js";
 export * from "./OpenAICompletionModel.js";
 export * from "./OpenAICostCalculator.js";
 export { OpenAIError, OpenAIErrorData } from "./OpenAIError.js";
+export * as openai from "./OpenAIFacade.js";
 export * from "./OpenAIImageGenerationModel.js";
 export * from "./OpenAISpeechModel.js";
 export * from "./OpenAITextEmbeddingModel.js";

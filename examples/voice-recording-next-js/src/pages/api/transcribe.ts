@@ -2,9 +2,9 @@ import { File, Files, IncomingForm } from "formidable";
 import fs from "fs";
 import {
   OpenAIApiConfiguration,
-  OpenAITranscriptionModel,
   generateTranscription,
   getAudioFileExtension,
+  openai,
 } from "modelfusion";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -53,7 +53,7 @@ export default async function handler(
     }
 
     const transcription = await generateTranscription(
-      new OpenAITranscriptionModel({
+      openai.Transcriber({
         // explicit API configuration needed for NextJS environment
         // (otherwise env variables are not available):
         api: new OpenAIApiConfiguration({

@@ -21,7 +21,7 @@ export interface EmbeddingModel<
   /**
    * True if the model can handle multiple embedding calls in parallel.
    */
-  readonly isParallizable: boolean;
+  readonly isParallelizable: boolean;
 
   doEmbedValues(
     values: VALUE[],

@@ -1,11 +1,10 @@
 import {
   MemoryVectorIndex,
   OpenAIChatMessage,
-  OpenAIChatModel,
-  OpenAITextEmbeddingModel,
   VectorIndexRetriever,
   ZodSchema,
   generateText,
+  openai,
   retrieve,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "modelfusion";
@@ -22,7 +21,7 @@ export async function createTweetFromPdf({
   pdfPath: string;
   exampleTweetIndexPath: string;
 }) {
-  const model = new OpenAIChatModel({ model: "gpt-4" });
+  const model = openai.ChatTextGenerator({ model: "gpt-4" });
 
   const textFromPdf = await loadPdfAsText(pdfPath);
 
@@ -76,7 +75,7 @@ export async function createTweetFromPdf({
         serializedData: fs.readFileSync(exampleTweetIndexPath, "utf-8"),
         schema: new ZodSchema(z.string()),
       }),
-      embeddingModel: new OpenAITextEmbeddingModel({
+      embeddingModel: openai.TextEmbedder({
         model: "text-embedding-ada-002",
       }),
       maxResults: 1,

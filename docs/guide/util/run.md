@@ -20,7 +20,7 @@ To link a model call with a run, you can pass the run as the second parameter to
 const run = new DefaultRun();
 
 const text = await generateText(
-  new OpenAICompletionModel(/* ... */),
+  openai.CompletionTextGenerator(/* ... */),
   "Write a short story about a robot learning to love:\n\n",
   { run } // pass in the run in the second parameter
 );
@@ -47,7 +47,7 @@ withRun(run, async () => {
 
   // automatically uses the run stored in the AsyncLocalStorage:
   const text = await generateText(
-    new OpenAICompletionModel({
+    openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,
       maxCompletionTokens: 500,

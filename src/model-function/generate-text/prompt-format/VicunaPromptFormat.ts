@@ -1,6 +1,5 @@
-import { ChatPrompt } from "./ChatPrompt.js";
 import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
-import { validateChatPrompt } from "./validateChatPrompt.js";
+import { ChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
 
 // default Vicuna 1 system message
 const DEFAULT_SYSTEM_MESSAGE =
@@ -22,15 +21,15 @@ const DEFAULT_SYSTEM_MESSAGE =
  */
 export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
   return {
-    format: (chatPrompt) => {
-      validateChatPrompt(chatPrompt);
+    format(prompt) {
+      validateChatPrompt(prompt);
 
       let text =
-        chatPrompt.system != null
-          ? `${chatPrompt.system}\n\n`
+        prompt.system != null
+          ? `${prompt.system}\n\n`
           : `${DEFAULT_SYSTEM_MESSAGE}\n\n`;
 
-      for (const { role, content } of chatPrompt.messages) {
+      for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
             text += `USER: ${content}\n`;

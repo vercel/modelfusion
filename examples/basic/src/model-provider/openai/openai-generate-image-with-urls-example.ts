@@ -1,13 +1,10 @@
-import {
-  OpenAIImageGenerationModel,
-  OpenAIImageGenerationResponseFormat,
-} from "modelfusion";
 import dotenv from "dotenv";
+import { OpenAIImageGenerationResponseFormat, openai } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const model = new OpenAIImageGenerationModel({
+  const model = openai.ImageGenerator({
     model: "dall-e-2",
     size: "512x512",
   });

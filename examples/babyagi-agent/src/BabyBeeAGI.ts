@@ -2,12 +2,7 @@ import chalk from "chalk";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import { JSDOM } from "jsdom";
-import {
-  OpenAIChatMessage,
-  OpenAIChatModel,
-  OpenAICompletionModel,
-  generateText,
-} from "modelfusion";
+import { OpenAIChatMessage, generateText, openai } from "modelfusion";
 import { getJson } from "serpapi";
 
 dotenv.config();
@@ -71,7 +66,7 @@ async function runBabyBeeAGI({
   // ### Tool functions ##############################
   const textCompletionTool = async (prompt: string) =>
     generateText(
-      new OpenAICompletionModel({
+      openai.CompletionTextGenerator({
         model: "text-davinci-003",
         temperature: 0.5,
         maxCompletionTokens: 1500,
@@ -212,7 +207,7 @@ async function runBabyBeeAGI({
     console.log(chalk.gray.italic(`\nRunning task manager agent...`));
 
     const text = await generateText(
-      new OpenAIChatModel({
+      openai.ChatTextGenerator({
         model: "gpt-4",
         temperature: 0.2,
       }),
@@ -251,7 +246,7 @@ async function runBabyBeeAGI({
 
   async function summarizerAgent(input: string) {
     return await generateText(
-      new OpenAICompletionModel({
+      openai.CompletionTextGenerator({
         model: "text-davinci-003",
         temperature: 0.5,
         maxCompletionTokens: 100,
@@ -275,7 +270,7 @@ async function runBabyBeeAGI({
       .join("\n");
 
     return await generateText(
-      new OpenAICompletionModel({
+      openai.CompletionTextGenerator({
         model: "text-davinci-003",
         temperature: 0.5,
         maxCompletionTokens: 200,

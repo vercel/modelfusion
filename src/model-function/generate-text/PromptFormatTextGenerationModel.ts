@@ -1,5 +1,13 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import {
+  TextGenerationToolCallModel,
+  ToolCallPromptFormat,
+} from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
+import {
+  TextGenerationToolCallsOrGenerateTextModel,
+  ToolCallsOrGenerateTextPromptFormat,
+} from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
+import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
@@ -70,6 +78,24 @@ export class PromptFormatTextGenerationModel<
 
   get settingsForEvent(): Partial<SETTINGS> {
     return this.model.settingsForEvent;
+  }
+
+  asToolCallGenerationModel<INPUT_PROMPT>(
+    promptFormat: ToolCallPromptFormat<INPUT_PROMPT, PROMPT>
+  ) {
+    return new TextGenerationToolCallModel({
+      model: this,
+      format: promptFormat,
+    });
+  }
+
+  asToolCallsOrTextGenerationModel<INPUT_PROMPT>(
+    promptFormat: ToolCallsOrGenerateTextPromptFormat<INPUT_PROMPT, PROMPT>
+  ) {
+    return new TextGenerationToolCallsOrGenerateTextModel({
+      model: this,
+      format: promptFormat,
+    });
   }
 
   withPromptFormat<INPUT_PROMPT>(

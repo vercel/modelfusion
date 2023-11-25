@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import {
   MemoryVectorIndex,
-  OpenAITextEmbeddingModel,
   VectorIndexRetriever,
+  openai,
   retrieve,
   upsertIntoVectorIndex,
 } from "modelfusion";
@@ -24,7 +24,7 @@ async function main() {
   ];
 
   const vectorIndex = new MemoryVectorIndex<string>();
-  const embeddingModel = new OpenAITextEmbeddingModel({
+  const embeddingModel = openai.TextEmbedder({
     model: "text-embedding-ada-002",
   });
 

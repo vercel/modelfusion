@@ -1,16 +1,16 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
   UncheckedStructureDefinition,
   generateStructure,
+  openai,
 } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const sentiment = await generateStructure(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "gpt-3.5-turbo",
       temperature: 0,
       maxCompletionTokens: 50,

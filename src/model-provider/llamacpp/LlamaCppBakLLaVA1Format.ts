@@ -17,28 +17,36 @@ export function instruction(): TextGenerationPromptFormat<
   LlamaCppTextGenerationPrompt
 > {
   return {
-    format: (instruction) => {
+    format(prompt) {
       let text = "";
 
-      text += `${instruction.system ?? DEFAULT_SYSTEM_MESSAGE}\n\n`;
+      text += `${prompt.system ?? DEFAULT_SYSTEM_MESSAGE}\n\n`;
 
       text += `USER: `;
 
-      if (instruction.image != null) {
-        text += `[img-1]\n`;
-      }
+      // construct text and image mapping:
+      let imageCounter = 1;
+      const images: Record<string, string> = {};
+      for (const content of prompt.instruction) {
+        switch (content.type) {
+          case "text": {
+            text += content.text;
+            break;
+          }
+          case "image": {
+            text += `[img-${imageCounter}]`;
+            images[imageCounter.toString()] = content.base64Image;
+            imageCounter++;
+            break;
+          }
+        }
 
-      text += `${instruction.instruction}\n`;
+        text += `${content}\n`;
+      }
 
       text += `ASSISTANT: `;
 
-      return {
-        text,
-        images:
-          instruction.image != null
-            ? { "1": instruction.image.base64Content }
-            : undefined,
-      };
+      return { text, images };
     },
     stopSequences: [`\nUSER:`],
   };

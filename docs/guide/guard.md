@@ -68,9 +68,11 @@ const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
 const result = await guard(
   (input, options) =>
     generateText(
-      new LlamaCppTextGenerationModel({
-        // ...
-      }).withTextPromptFormat(Llama2PromptFormat.instruction()),
+      llamacpp
+        .TextGenerator({
+          // ...
+        })
+        .withTextPromptFormat(Llama2PromptFormat.instruction()),
       input,
       options // pass through options (for tracing)
     ),
@@ -107,7 +109,7 @@ function contentRequiresModeration(text: string): boolean {
 const story = await guard(
   (input) =>
     generateText(
-      new OpenAICompletionModel({
+      openai.CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
         temperature: 0.7,
         maxCompletionTokens: 250,
@@ -136,7 +138,7 @@ With the [`fixStructure`](/api/modules/#fixstructure) guard, you can retry gener
 const result = await guard(
   (input, options) =>
     generateStructure(
-      new OpenAIChatModel({
+      openai.ChatTextGenerator({
         // ...
       }),
       new ZodStructureDefinition({
@@ -175,7 +177,7 @@ const result = await guard(
     options
   ) =>
     generateStructure(
-      new OpenAIChatModel({
+      openai.ChatTextGenerator({
         model: input.model,
       }),
       new ZodStructureDefinition({

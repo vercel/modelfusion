@@ -1,19 +1,17 @@
 import dotenv from "dotenv";
-import {
-  LlamaCppTextGenerationModel,
-  VicunaPromptFormat,
-  streamText,
-} from "modelfusion";
+import { VicunaPromptFormat, llamacpp, streamText } from "modelfusion";
 
 dotenv.config();
 
 // example assumes you are running https://huggingface.co/TheBloke/vicuna-7B-v1.5-GGUF with llama.cpp
 async function main() {
   const textStream = await streamText(
-    new LlamaCppTextGenerationModel({
-      contextWindowSize: 2048, // Vicuna v1.5 context window size
-      maxCompletionTokens: 512,
-    }).withTextPromptFormat(VicunaPromptFormat.chat()),
+    llamacpp
+      .TextGenerator({
+        contextWindowSize: 2048, // Vicuna v1.5 context window size
+        maxCompletionTokens: 512,
+      })
+      .withTextPromptFormat(VicunaPromptFormat.chat()),
     {
       system: "You are a celebrated poet.",
       messages: [

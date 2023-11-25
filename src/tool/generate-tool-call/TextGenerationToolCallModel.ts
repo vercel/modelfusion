@@ -4,7 +4,7 @@ import {
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
-import { ToolCallParseError } from "../ToolCallParseError.js";
+import { ToolCallParseError } from "./ToolCallParseError.js";
 import { ToolDefinition } from "../ToolDefinition.js";
 import { ToolCallGenerationModel } from "./ToolCallGenerationModel.js";
 

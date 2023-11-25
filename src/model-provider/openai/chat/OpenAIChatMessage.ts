@@ -1,3 +1,4 @@
+import { MultiModalInput } from "../../../model-function/generate-text/prompt-format/Content.js";
 import { ToolCall } from "../../../tool/ToolCall.js";
 
 export type OpenAIChatMessage =
@@ -58,32 +59,31 @@ export const OpenAIChatMessage = {
   },
 
   user(
-    content: string,
-    options?: {
-      name?: string;
-      image?: {
-        base64Content: string;
-        mimeType?: string;
-      };
-    }
+    content: string | MultiModalInput,
+    options?: { name?: string }
   ): OpenAIChatMessage {
-    if (options?.image != null) {
-      return {
-        role: "user",
-        content: [
-          { type: "text", text: content },
-          {
-            type: "image_url",
-            image_url: `data:${options.image.mimeType ?? "image/jpeg"};base64,${
-              options.image.base64Content
-            }`,
-          },
-        ],
-        name: options.name,
-      };
-    }
-
-    return { role: "user", content, name: options?.name };
+    return {
+      role: "user",
+      content:
+        typeof content === "string"
+          ? content
+          : content.map((element) => {
+              switch (element.type) {
+                case "text": {
+                  return { type: "text", text: element.text };
+                }
+                case "image": {
+                  return {
+                    type: "image_url",
+                    image_url: `data:${
+                      element.mimeType ?? "image/jpeg"
+                    };base64,${element.base64Image}`,
+                  };
+                }
+              }
+            }),
+      name: options?.name,
+    };
   },
 
   /**

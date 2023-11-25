@@ -1,5 +1,76 @@
 # Changelog
 
+## v0.80.0 - 2023-11-24
+
+### Changed
+
+- **breaking change**: Restructured multi-modal instruction prompts and `OpenAIChatMessage.user()`
+
+## v0.79.0 - 2023-11-23
+
+### Added
+
+- Multi-tool usage from open source models
+
+  Use `TextGenerationToolCallsOrGenerateTextModel` and related helper methods `.asToolCallsOrTextGenerationModel()` to create custom prompts & parsers.
+
+  Examples:
+
+  - `examples/basic/src/model-provider/ollama/ollama-use-tools-or-generate-text-openhermes-example.ts`
+  - `examples/basic/src/model-provider/llamacpp/llamacpp-use-tools-or-generate-text-openhermes-example.ts`
+
+  Example prompt format:
+
+  - `examples/basic/src/tool/prompts/open-hermes.ts` for OpenHermes 2.5
+
+## v0.78.0 - 2023-11-23
+
+### Removed
+
+- **breaking change**: Removed `FunctionListToolCallPromptFormat`. See `examples/basic/src/model-provide/ollama/ollama-use-tool-mistral-example.ts` for how to implement a `ToolCallPromptFormat` for your tool.
+
+## v0.77.0 - 2023-11-23
+
+### Changed
+
+- **breaking change**: Rename `Speech` to `SpeechGenerator` in facades
+- **breaking change**: Rename `Transcription` to `Transcriber` in facades
+
+## v0.76.0 - 2023-11-23
+
+### Added
+
+- Anthropic Claude 2.1 support
+
+## v0.75.0 - 2023-11-22
+
+Introducing model provider facades:
+
+```ts
+const image = await generateImage(
+  openai.ImageGenerator({ model: "dall-e-3", size: "1024x1024" }),
+  "the wicked witch of the west in the style of early 19th century painting"
+);
+```
+
+### Added
+
+- Model provider facades. You can e.g. now use `ollama.TextGenerator(...)` instead of `new OllamaTextGenerationModel(...)`.
+
+### Changed
+
+- **breaking change**: Fixed method name `isParallizable` to `isParallelizable` in `EmbeddingModel`.
+
+### Removed
+
+- **breaking change**: removed `HuggingFaceImageDescriptionModel`. Image description models will be replaced by multi-modal vision models.
+
+## v0.74.1 - 2023-11-22
+
+### Improved
+
+- Increase OpenAI chat streaming resilience.
+
 ## v0.74.0 - 2023-11-21
 
 Prompt format and tool calling improvements.
@@ -24,19 +95,7 @@ Prompt format and tool calling improvements.
     "Write a short story about a robot learning to love."
   );
   ```
-- `FunctionListToolCallPromptFormat` to simplify tool calls with text models
-- `.asToolCallGenerationModel()` to `OllamaTextGenerationModel` to simplify tool calls:
-
-  ```ts
-  const { tool, args, toolCall, result } = await useTool(
-    new OllamaTextGenerationModel({
-      model: "mistral",
-      temperature: 0,
-    }).asToolCallGenerationModel(FunctionListToolCallPromptFormat.text()),
-    calculator,
-    "What's fourteen times twelve?"
-  );
-  ```
+- `.asToolCallGenerationModel()` to `OllamaTextGenerationModel` to simplify tool calls.
 
 ### Improved
 

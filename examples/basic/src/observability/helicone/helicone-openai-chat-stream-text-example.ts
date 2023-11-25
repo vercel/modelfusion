@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import {
   HeliconeOpenAIApiConfiguration,
   OpenAIChatMessage,
-  OpenAIChatModel,
+  openai,
   streamText,
 } from "modelfusion";
 
@@ -10,7 +10,7 @@ dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       api: new HeliconeOpenAIApiConfiguration(),
       model: "gpt-3.5-turbo",
       temperature: 0.7,

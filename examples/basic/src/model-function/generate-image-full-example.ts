@@ -1,5 +1,5 @@
-import { StabilityImageGenerationModel, generateImage } from "modelfusion";
 import dotenv from "dotenv";
+import { generateImage, stability } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
@@ -10,7 +10,7 @@ async function main() {
     metadata,
     response,
   } = await generateImage(
-    new StabilityImageGenerationModel({
+    stability.ImageGenerator({
       model: "stable-diffusion-512-v2-1",
       cfgScale: 7,
       clipGuidancePreset: "FAST_BLUE",

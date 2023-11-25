@@ -15,8 +15,10 @@ Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 In standard mode, a text string is passed to the `generateSpeech` function, along with a `SpeechGenerationModel` instance, and an audio buffer with mpeg audio data is returned.
 
 ```ts
+import { generateSpeech, lmnt } from "modelfusion";
+
 const speech = await generateSpeech(
-  new LmntSpeechModel({
+  lmnt.SpeechGenerator({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
@@ -33,10 +35,12 @@ const speech = await generateSpeech(
 In duplex streaming mode, an `AsyncIterable<string>` is passed to the `streamSpeech` function, along with a `StreamingSpeechGenerationModel`, and an `AsyncIterable<Buffer>` is returned. You can also pass in a string and get streaming audio back.
 
 ```ts
-const textStream = await streamText(/* ... */);
+import { streamSpeech, elevenlabs } from "modelfusion";
+
+const textStream: AsyncIterable<string>;
 
 const speechStream = await streamSpeech(
-  new ElevenLabsSpeechModel({
+  elevenlabs.SpeechGenerator({
     model: "eleven_turbo_v2",
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     optimizeStreamingLatency: 1,

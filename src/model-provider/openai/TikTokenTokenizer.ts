@@ -8,6 +8,13 @@ import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
 import { OpenAICompletionBaseModelType } from "./OpenAICompletionModel.js";
 import { OpenAIChatBaseModelType } from "./chat/OpenAIChatModel.js";
 
+export type TikTokenTokenizerSettings = {
+  model:
+    | OpenAIChatBaseModelType
+    | OpenAICompletionBaseModelType
+    | OpenAITextEmbeddingModelType;
+};
+
 /**
  * TikToken tokenizer for OpenAI language models.
  *
@@ -27,13 +34,8 @@ export class TikTokenTokenizer implements FullTokenizer {
   /**
    * Get a TikToken tokenizer for a specific model or encoding.
    */
-  constructor(options: {
-    model:
-      | OpenAIChatBaseModelType
-      | OpenAICompletionBaseModelType
-      | OpenAITextEmbeddingModelType;
-  }) {
-    this.tiktoken = new Tiktoken(getTiktokenBPE(options.model));
+  constructor(settings: TikTokenTokenizerSettings) {
+    this.tiktoken = new Tiktoken(getTiktokenBPE(settings.model));
   }
 
   private readonly tiktoken: Tiktoken;

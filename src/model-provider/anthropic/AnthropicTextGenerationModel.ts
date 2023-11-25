@@ -31,10 +31,13 @@ export const ANTHROPIC_TEXT_GENERATION_MODELS = {
     contextWindowSize: 100_000,
   },
   "claude-2": {
-    contextWindowSize: 100_000,
+    contextWindowSize: 200_000,
   },
   "claude-2.0": {
     contextWindowSize: 100_000,
+  },
+  "claude-2.1": {
+    contextWindowSize: 200_000,
   },
 };
 

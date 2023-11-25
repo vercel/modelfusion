@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
-import { OpenAIChatMessage, OpenAIChatModel, streamText } from "modelfusion";
+import { OpenAIChatMessage, openai, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "ft:gpt-3.5-turbo-0613:COMPANY_ID::IDSTRING", // You need to provide your own fine-tuned model here
       maxCompletionTokens: 1000,
     }),

@@ -1,7 +1,7 @@
 import {
   StabilityApiConfiguration,
-  StabilityImageGenerationModel,
   generateImage,
+  stability,
 } from "modelfusion";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -21,7 +21,7 @@ export default async function handler(
   const { text: description } = req.body;
 
   const image = await generateImage(
-    new StabilityImageGenerationModel({
+    stability.ImageGenerator({
       // explicit API configuration needed for NextJS environment
       // (otherwise env variables are not available):
       api: new StabilityApiConfiguration({

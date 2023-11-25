@@ -23,7 +23,7 @@ const vectorIndex = new MemoryVectorIndex<string>();
 
 await upsertIntoVectorIndex({
   vectorIndex,
-  embeddingModel: new OpenAITextEmbeddingModel({
+  embeddingModel: openai.TextEmbedder({
     model: "text-embedding-ada-002",
   }),
   objects: texts,

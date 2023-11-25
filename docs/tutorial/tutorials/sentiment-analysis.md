@@ -17,7 +17,7 @@ This is helpful to quickly develop initial product versions and prototypes.
 ```ts
 const analyzeSentiment = async (productReview: string) =>
   generateStructure(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "gpt-4",
       temperature: 0, // remove randomness
       maxCompletionTokens: 500, // enough tokens for reasoning and sentiment

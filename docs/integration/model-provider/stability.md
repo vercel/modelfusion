@@ -21,7 +21,7 @@ const api = new StabilityApiConfiguration({
   // ...
 });
 
-const model = new StabilityImageGenerationModel({
+const model = stability.ImageGenerator({
   api,
   // ...
 });
@@ -36,10 +36,10 @@ const model = new StabilityImageGenerationModel({
 [StabilityImageGenerationModel API](/api/classes/StabilityImageGenerationModel)
 
 ```ts
-import { StabilityImageGenerationModel, generateImage } from "modelfusion";
+import { stability, generateImage } from "modelfusion";
 
 const imageBase64 = await generateImage(
-  new StabilityImageGenerationModel({
+  stability.ImageGenerator({
     model: "stable-diffusion-512-v2-1",
     cfgScale: 7,
     clipGuidancePreset: "FAST_BLUE",
@@ -63,9 +63,11 @@ You an use [mapBasicPromptToStabilityFormat()](/api/modules#mapbasicprompttostab
 
 ```ts
 const image = await generateImage(
-  new StabilityImageGenerationModel({
-    //...
-  }).withBasicPrompt(),
+  stability
+    .ImageGenerator({
+      //...
+    })
+    .withBasicPrompt(),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```

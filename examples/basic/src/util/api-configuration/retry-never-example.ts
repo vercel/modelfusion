@@ -1,10 +1,10 @@
+import dotenv from "dotenv";
 import {
   OpenAIApiConfiguration,
-  OpenAICompletionModel,
   generateText,
+  openai,
   retryNever,
 } from "modelfusion";
-import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -14,7 +14,7 @@ async function main() {
   });
 
   const text = await generateText(
-    new OpenAICompletionModel({
+    openai.CompletionTextGenerator({
       api,
       model: "gpt-3.5-turbo-instruct",
     }),

@@ -16,7 +16,7 @@ You can execute the tool with [useTool](/guide/tools/use-tool) or [executeTool](
 
 ```ts
 const { id, name, args } = await generateToolCall(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   calculator,
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );

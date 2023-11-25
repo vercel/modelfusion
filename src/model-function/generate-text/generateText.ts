@@ -17,7 +17,7 @@ import {
  *
  * @example
  * const text = await generateText(
- *   new OpenAICompletionModel(...),
+ *   openai.CompletionTextGenerator(...),
  *   "Write a short story about a robot learning to love:\n\n"
  * );
  *

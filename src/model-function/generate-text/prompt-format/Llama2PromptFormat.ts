@@ -1,7 +1,6 @@
-import { ChatPrompt } from "./ChatPrompt.js";
-import { InstructionPrompt } from "./InstructionPrompt.js";
 import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
-import { validateChatPrompt } from "./validateChatPrompt.js";
+import { ChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
 // see https://github.com/facebookresearch/llama/blob/6c7fe276574e78057f917549435a2554000a876d/llama/generation.py#L44
 const BEGIN_SEGMENT = "<s>";
@@ -24,8 +23,9 @@ const END_SYSTEM = "\n<</SYS>>\n\n";
 export function text(): TextGenerationPromptFormat<string, string> {
   return {
     stopSequences: [END_SEGMENT],
-    format: (instruction) =>
-      `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${instruction}${END_INSTRUCTION}\n`,
+    format(prompt) {
+      return `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${prompt}${END_INSTRUCTION}\n`;
+    },
   };
 }
 
@@ -44,17 +44,18 @@ export function text(): TextGenerationPromptFormat<string, string> {
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
  */
 export function instruction(): TextGenerationPromptFormat<
-  InstructionPrompt,
+  TextInstructionPrompt,
   string
 > {
   return {
     stopSequences: [END_SEGMENT],
-    format: (instruction) =>
-      `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${
-        instruction.system != null
-          ? ` ${BEGIN_SYSTEM}${instruction.system}${END_SYSTEM}`
+    format(prompt) {
+      return `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${
+        prompt.system != null
+          ? ` ${BEGIN_SYSTEM}${prompt.system}${END_SYSTEM}`
           : ""
-      }${instruction.instruction}${END_INSTRUCTION}\n`,
+      }${prompt.instruction}${END_INSTRUCTION}\n`;
+    },
   };
 }
 
@@ -72,17 +73,17 @@ export function instruction(): TextGenerationPromptFormat<
  */
 export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
   return {
-    format: (chatPrompt) => {
-      validateChatPrompt(chatPrompt);
+    format(prompt) {
+      validateChatPrompt(prompt);
 
       let text =
-        chatPrompt.system != null
+        prompt.system != null
           ? // Separate section for system message to simplify implementation
             // (this is slightly different from the original instructions):
-            `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${BEGIN_SYSTEM}${chatPrompt.system}${END_SYSTEM}${END_INSTRUCTION}${END_SEGMENT}`
+            `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${BEGIN_SYSTEM}${prompt.system}${END_SYSTEM}${END_INSTRUCTION}${END_SEGMENT}`
           : "";
 
-      for (const { role, content } of chatPrompt.messages) {
+      for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
             text += `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${content}${END_INSTRUCTION}`;

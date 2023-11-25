@@ -24,7 +24,7 @@ const api = new OllamaApiConfiguration({
   // ...
 });
 
-const model = new OllamaTextGenerationModel({
+const model = ollama.TextGenerator({
   api,
   // ...
 });
@@ -39,8 +39,10 @@ const model = new OllamaTextGenerationModel({
 [OllamaTextGenerationModel API](/api/classes/OllamaTextGenerationModel)
 
 ```ts
+import { ollama, generateText } from "modelfusion";
+
 const text = await generateText(
-  new OllamaTextGenerationModel({
+  ollama.TextGenerator({
     model: "mistral",
     temperature: 0.7,
     maxCompletionTokens: 120,
@@ -54,8 +56,10 @@ const text = await generateText(
 [OllamaTextGenerationModel API](/api/classes/OllamaTextGenerationModel)
 
 ```ts
+import { ollama, streamText } from "modelfusion";
+
 const textStream = await streamText(
-  new OllamaTextGenerationModel({
+  ollama.TextGenerator({
     model: "mistral",
     temperature: 0.7,
     maxCompletionTokens: 500,
@@ -73,11 +77,8 @@ for await (const textPart of textStream) {
 [OllamaTextEmbeddingModel API](/api/classes/OllamaTextEmbeddingModel)
 
 ```ts
-const embeddings = await embedMany(
-  new OllamaTextEmbeddingModel({ model: "llama2" }),
-  [
-    "At first, Nox didn't know what to do with the pup.",
-    "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-  ]
-);
+const embeddings = await embedMany(ollama.TextEmbedder({ model: "llama2" }), [
+  "At first, Nox didn't know what to do with the pup.",
+  "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+]);
 ```

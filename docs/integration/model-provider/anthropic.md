@@ -22,7 +22,7 @@ const api = new AnthropicApiConfiguration({
   // ...
 });
 
-const model = new AnthropicTextGenerationModel({
+const model = anthropic.TextGenerator({
   api,
   // ...
 });
@@ -37,10 +37,10 @@ const model = new AnthropicTextGenerationModel({
 [AnthropicTextGenerationModel API](/api/classes/AnthropicTextGenerationModel)
 
 ```ts
-import { AnthropicTextGenerationModel, generateText } from "modelfusion";
+import { anthropic, generateText } from "modelfusion";
 
 const text = await generateText(
-  new AnthropicTextGenerationModel({
+  anthropic.TextGenerator({
     model: "claude-instant-1",
     temperature: 0.7,
     maxCompletionTokens: 500,
@@ -54,10 +54,10 @@ const text = await generateText(
 [AnthropicTextGenerationModel API](/api/classes/AnthropicTextGenerationModel)
 
 ```ts
-import { AnthropicTextGenerationModel, streamText } from "modelfusion";
+import { anthropic, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  new AnthropicTextGenerationModel({
+  anthropic.TextGenerator({
     model: "claude-instant-1",
     temperature: 0.7,
     maxCompletionTokens: 500,
@@ -81,35 +81,41 @@ Using a prompt mapping can make the interaction with Anthropic models easier.
 
 ```ts
 const textStream = await streamText(
-  new AnthropicTextGenerationModel({
-    // ...
-  }).withTextPrompt(),
+  anthropic
+    .TextGenerator({
+      // ...
+    })
+    .withTextPrompt(),
   "Write a short story about a robot learning to love"
 );
 ```
 
 ### Instruction prompt
 
-[AnthropicPromptFormat.instruction()](/api/namespaces/AnthropicPromptFormat) lets you use [instruction prompts](/api/modules#instructionprompt) with Anthropic models. It is available as a shorthand method:
+[AnthropicPromptFormat.instruction()](/api/namespaces/AnthropicPromptFormat) lets you use [text instruction prompts](/api/interfaces/TextInstructionPrompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
-  new AnthropicTextGenerationModel({
-    // ...
-  }).withInstructionPrompt(),
+  anthropic
+    .TextGenerator({
+      // ...
+    })
+    .withInstructionPrompt(),
   { instruction: "Write a short story about a robot learning to love" }
 );
 ```
 
 ### Chat prompt
 
-[AnthropicPromptFormat.chat()](/api/namespaces/AnthropicPromptFormat) lets you use use [chat prompts](/api/modules#chatprompt) with Anthropic models. It is available as a shorthand method:
+[AnthropicPromptFormat.chat()](/api/namespaces/AnthropicPromptFormat) lets you use use [chat prompts](/api/interfaces/ChatPrompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
-  new AnthropicTextGenerationModel({
-    // ...
-  }).withChatPrompt(),
+  anthropic
+    .TextGenerator({
+      // ...
+    })
+    .withChatPrompt(),
   {
     // note: Anthropic models don't adhere well to the system message, we leave it out
     messages: [

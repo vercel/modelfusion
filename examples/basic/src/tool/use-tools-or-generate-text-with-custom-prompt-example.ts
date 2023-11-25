@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  OpenAIChatModel,
+  openai,
   setGlobalFunctionLogging,
   useToolsOrGenerateText,
 } from "modelfusion";
-import { calculator } from "./calculator-tool";
+import { calculator } from "./tools/calculator-tool";
 
 dotenv.config();
 
@@ -13,7 +13,7 @@ setGlobalFunctionLogging("basic-text");
 
 async function main() {
   const { text, toolResults } = await useToolsOrGenerateText(
-    new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+    openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
     [calculator /* ... */],
     // Instead of using a curried function,
     // you can also work with the tools directly:

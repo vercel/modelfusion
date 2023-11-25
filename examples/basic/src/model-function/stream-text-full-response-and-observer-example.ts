@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import {
   FunctionEvent,
   FunctionObserver,
-  OpenAICompletionModel,
+  openai,
   streamText,
 } from "modelfusion";
 
@@ -17,10 +17,12 @@ const customObserver: FunctionObserver = {
 
 async function main() {
   const { value: textStream, metadata } = await streamText(
-    new OpenAICompletionModel({
-      model: "gpt-3.5-turbo-instruct",
-      maxCompletionTokens: 500,
-    }).withInstructionPrompt(),
+    openai
+      .CompletionTextGenerator({
+        model: "gpt-3.5-turbo-instruct",
+        maxCompletionTokens: 500,
+      })
+      .withInstructionPrompt(),
     { instruction: "Write a story about a robot learning to love" },
     {
       functionId: "generate-story",

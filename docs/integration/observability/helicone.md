@@ -22,7 +22,7 @@ You can change the `api` parameter to use a `HeliconeOpenAIApiConfiguration`.
 
 ```ts
 const text = await generateText(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     // uses the API keys from the OPENAI_API_KEY and HELICONE_API_KEY environment variables
     api: new HeliconeOpenAIApiConfiguration(),
     model: "gpt-3.5-turbo",
@@ -35,7 +35,7 @@ const text = await generateText(
 
 ```ts
 const text = await generateText(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     api: new HeliconeOpenAIApiConfiguration({
       openAIApiKey: myOpenAIApiKey,
       heliconeApiKey: myHeliconeApiKey,

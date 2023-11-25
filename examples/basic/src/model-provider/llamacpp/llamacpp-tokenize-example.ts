@@ -1,7 +1,7 @@
-import { LlamaCppTokenizer, countTokens } from "modelfusion";
+import { countTokens, llamacpp } from "modelfusion";
 
 async function main() {
-  const tokenizer = new LlamaCppTokenizer();
+  const tokenizer = llamacpp.Tokenizer();
 
   const text = "At first, Nox didn't know what to do with the pup.";
 

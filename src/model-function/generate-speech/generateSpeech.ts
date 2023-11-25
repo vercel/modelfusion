@@ -13,7 +13,7 @@ import {
  *
  * @example
  * const speech = await generateSpeech(
- *   new LmntSpeechModel(...),
+ *   lmnt.SpeechGenerator(...),
  *   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
  *    "as The Rolling Stones unveil 'Hackney Diamonds.'
  * );

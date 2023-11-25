@@ -29,7 +29,7 @@ async function runBabyAGI({
   objective: string;
   firstTask: string;
 }) {
-  const model = new OpenAICompletionModel({
+  const model = openai.CompletionTextGenerator({
     model: "text-davinci-003",
   });
 

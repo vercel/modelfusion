@@ -122,7 +122,7 @@ Now that the PDF pages are available as text, we'll delve into the mechanism for
 ```typescript
 const pages = await loadPdfPages(file);
 
-const embeddingModel = new OpenAITextEmbeddingModel({
+const embeddingModel = openai.TextEmbedder({
   model: "text-embedding-ada-002",
   throttle: throttleMaxConcurrency({ maxConcurrentCalls: 5 }),
 });
@@ -155,7 +155,7 @@ Let's look at each step:
 The first step is to initialize a text embedding model. This model will be responsible for converting our text data into a format that can be compared for similarity.
 
 ```typescript
-const embeddingModel = new OpenAITextEmbeddingModel({
+const embeddingModel = openai.TextEmbedder({
   model: "text-embedding-ada-002",
 });
 ```
@@ -237,7 +237,7 @@ while (true) {
   const question = await chat.question("You: ");
 
   const hypotheticalAnswer = await generateText(
-    new OpenAIChatModel({ model: "gpt-3.5-turbo", temperature: 0 }),
+    openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
     [
       OpenAIChatMessage.system(`Answer the user's question.`),
       OpenAIChatMessage.user(question),
@@ -255,7 +255,7 @@ while (true) {
   );
 
   const textStream = await streamText(
-    new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
+    openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
     [
       OpenAIChatMessage.system(
         `Answer the user's question using only the provided information.\n` +
@@ -302,7 +302,7 @@ We use the Node.js `readline` package for collecting user input from the termina
 
 ```typescript
 const hypotheticalAnswer = await generateText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo", temperature: 0 }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
   [
     OpenAIChatMessage.system(`Answer the user's question.`),
     OpenAIChatMessage.user(question),
@@ -337,7 +337,7 @@ We limit the results to 5 and set a similarity threshold of 0.75. You can play w
 
 ```typescript
 const textStream = await streamText(
-  new OpenAIChatModel({ model: "gpt-4", temperature: 0 }),
+  openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
   [
     OpenAIChatMessage.system(
       `Answer the user's question using only the provided information.\n` +

@@ -1,11 +1,11 @@
-import { CohereTextGenerationModel, generateText } from "modelfusion";
 import dotenv from "dotenv";
+import { cohere, generateText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const text = await generateText(
-    new CohereTextGenerationModel({
+    cohere.TextGenerator({
       model: "command-nightly",
       temperature: 0.7,
       maxCompletionTokens: 500,

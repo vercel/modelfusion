@@ -29,7 +29,7 @@ const messages = [
 while (true) {
   // call the language model and execute the tools:
   const { text, toolResults } = await useToolsOrGenerateText(
-    new OpenAIChatModel({
+    openai.ChatTextGenerator({
       model: "gpt-4-1106-preview",
       temperature: 0,
       maxCompletionTokens: 500,

@@ -50,8 +50,10 @@ You can use [prompt formats](https://modelfusion.dev/guide/function/generate-tex
 #### generateText
 
 ```ts
+import { generateText, openai } from "modelfusion";
+
 const text = await generateText(
-  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
+  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -61,8 +63,10 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 #### streamText
 
 ```ts
+import { streamText, openai } from "modelfusion";
+
 const textStream = await streamText(
-  new OpenAICompletionModel({ model: "gpt-3.5-turbo-instruct" }),
+  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
   "Write a short story about a robot learning to love:\n\n"
 );
 
@@ -78,12 +82,15 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 Multi-modal vision models such as GPT 4 Vision can process images as part of the prompt.
 
 ```ts
+import { streamText, openai } from "modelfusion";
+
 const textStream = await streamText(
-  new OpenAIChatModel({ model: "gpt-4-vision-preview" }),
+  openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
-    OpenAIChatMessage.user("Describe the image in detail:", {
-      image: { base64Content: image, mimeType: "image/png" },
-    }),
+    OpenAIChatMessage.user([
+      { type: "text", text: "Describe the image in detail:" },
+      { type: "image", base64Image: image, mimeType: "image/png" },
+    ]),
   ]
 );
 ```
@@ -95,8 +102,10 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 Generate an image from a prompt.
 
 ```ts
+import { generateImage, openai } from "modelfusion";
+
 const image = await generateImage(
-  new OpenAIImageGenerationModel({ model: "dall-e-3", size: "1024x1024" }),
+  openai.ImageGenerator({ model: "dall-e-3", size: "1024x1024" }),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```
@@ -112,9 +121,11 @@ Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 `generateSpeech` synthesizes speech from text.
 
 ```ts
+import { generateSpeech, lmnt } from "modelfusion";
+
 // `speech` is a Buffer with MP3 audio data
 const speech = await generateSpeech(
-  new LmntSpeechModel({
+  lmnt.SpeechGenerator({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
@@ -131,10 +142,12 @@ Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elev
 `generateSpeech` generates a stream of speech chunks from text or from a text stream. Depending on the model, this can be fully duplex.
 
 ```ts
-const textStream = await streamText(/* ... */);
+import { streamSpeech, elevenlabs } from "modelfusion";
+
+const textStream: AsyncIterable<string>;
 
 const speechStream = await streamSpeech(
-  new ElevenLabsSpeechModel({
+  elevenlabs.SpeechGenerator({
     model: "eleven_turbo_v2",
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     optimizeStreamingLatency: 1,
@@ -158,8 +171,10 @@ Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elev
 Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 
 ```ts
+import { generateTranscription, openai } from "modelfusion";
+
 const transcription = await generateTranscription(
-  new OpenAITranscriptionModel({ model: "whisper-1" }),
+  openai.Transcriber({ model: "whisper-1" }),
   {
     type: "mp3",
     data: await fs.promises.readFile("data/test.mp3"),
@@ -179,7 +194,7 @@ Generate a structure that matches a schema.
 
 ```ts
 const sentiment = await generateStructure(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0,
     maxCompletionTokens: 50,
@@ -214,7 +229,7 @@ Stream a structure that matches a schema. Partial structures before the final pa
 
 ```ts
 const structureStream = await streamStructure(
-  new OpenAIChatModel({
+  openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0,
     maxCompletionTokens: 2000,
@@ -261,13 +276,13 @@ Create embeddings for text and other values. Embeddings are vectors that represe
 ```ts
 // embed single value:
 const embedding = await embed(
-  new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
+  openai.TextEmbedder({ model: "text-embedding-ada-002" }),
   "At first, Nox didn't know what to do with the pup."
 );
 
 // embed many values:
 const embeddings = await embedMany(
-  new OpenAITextEmbeddingModel({ model: "text-embedding-ada-002" }),
+  openai.TextEmbedder({ model: "text-embedding-ada-002" }),
   [
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
@@ -282,7 +297,7 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 Split text into tokens and reconstruct the text from tokens.
 
 ```ts
-const tokenizer = new TikTokenTokenizer({ model: "gpt-4" });
+const tokenizer = openai.Tokenizer({ model: "gpt-4" });
 
 const text = "At first, Nox didn't know what to do with the pup.";
 
@@ -305,7 +320,7 @@ Guard functions can be used to implement retry on error, redacting and changing 
 const result = await guard(
   (input, options) =>
     generateStructure(
-      new OpenAIChatModel({
+      openai.ChatTextGenerator({
         // ...
       }),
       new ZodStructureDefinition({
@@ -379,7 +394,7 @@ With `generateToolCall`, you can generate a tool call for a specific tool with a
 
 ```ts
 const { id, name, args } = await generateToolCall(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   calculator,
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
@@ -391,7 +406,7 @@ With `generateToolCallsOrText`, you can ask a language model to generate several
 
 ```ts
 const { text, toolCalls } = await generateToolCallsOrText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   [toolA, toolB, toolC],
   [OpenAIChatMessage.user(query)]
 );
@@ -415,7 +430,7 @@ With `useTool`, you can use a tool with a language model that supports tools cal
 
 ```ts
 const { tool, toolCall, args, ok, result } = await useTool(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   calculator,
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
@@ -433,7 +448,7 @@ With `useToolsOrGenerateText`, you can ask a language model to generate several 
 
 ```ts
 const { text, toolResults } = await useToolsOrGenerateText(
-  new OpenAIChatModel({ model: "gpt-3.5-turbo" }),
+  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   [calculator /* ... */],
   [OpenAIChatMessage.user("What's fourteen times twelve?")]
 );
@@ -453,7 +468,7 @@ const texts = [
 ];
 
 const vectorIndex = new MemoryVectorIndex<string>();
-const embeddingModel = new OpenAITextEmbeddingModel({
+const embeddingModel = openai.TextEmbedder({
   model: "text-embedding-ada-002",
 });
 
@@ -487,9 +502,11 @@ Prompt formats let you use higher level prompt structures (such as text, instruc
 
 ```ts
 const text = await generateText(
-  new AnthropicTextGenerationModel({
-    model: "claude-instant-1",
-  }).withTextPrompt(),
+  anthropic
+    .TextGenerator({
+      model: "claude-instant-1",
+    })
+    .withTextPrompt(),
   "Write a short story about a robot learning to love"
 );
 ```
@@ -499,10 +516,12 @@ const text = await generateText(
 ```ts
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
 const text = await generateText(
-  new LlamaCppTextGenerationModel({
-    contextWindowSize: 4096, // Llama 2 context window size
-    maxCompletionTokens: 1000,
-  }).withTextPromptFormat(Llama2PromptFormat.instruction()),
+  llamacpp
+    .TextGenerator({
+      contextWindowSize: 4096, // Llama 2 context window size
+      maxCompletionTokens: 1000,
+    })
+    .withTextPromptFormat(Llama2PromptFormat.instruction()),
   {
     system: "You are a story writer.",
     instruction: "Write a short story about a robot learning to love.",
@@ -516,9 +535,11 @@ They can also be accessed through the shorthand methods `.withTextPrompt()`, `.w
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({
-    model: "gpt-3.5-turbo",
-  }).withChatPrompt(),
+  openai
+    .ChatTextGenerator({
+      model: "gpt-3.5-turbo",
+    })
+    .withChatPrompt(),
   {
     system: "You are a celebrated poet.",
     messages: [
@@ -555,9 +576,11 @@ You an use prompt formats with image models as well, e.g. to use a basic text pr
 
 ```ts
 const image = await generateImage(
-  new StabilityImageGenerationModel({
-    //...
-  }).withBasicPrompt(),
+  stability
+    .ImageGenerator({
+      //...
+    })
+    .withBasicPrompt(),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```
@@ -574,7 +597,7 @@ ModelFusion model functions return rich results that include the original respon
 ```ts
 // access the full response (needs to be typed) and the metadata:
 const { value, response, metadata } = await generateText(
-  new OpenAICompletionModel({
+  openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
     n: 2, // generate 2 completions

@@ -1,11 +1,11 @@
-import { HuggingFaceTextGenerationModel, generateText } from "modelfusion";
 import dotenv from "dotenv";
+import { generateText, huggingface } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const text = await generateText(
-    new HuggingFaceTextGenerationModel({
+    huggingface.TextGenerator({
       model: "tiiuae/falcon-7b",
       temperature: 700,
       maxCompletionTokens: 500,

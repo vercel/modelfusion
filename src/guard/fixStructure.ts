@@ -28,7 +28,7 @@ import { Guard } from "./guard.js";
  * const result = await guard(
  *  (input) =>
  *    generateStructure(
- *      new OpenAIChatModel({
+ *      openai.ChatTextGenerator({
  *        // ...
  *      }),
  *      new ZodStructureDefinition({

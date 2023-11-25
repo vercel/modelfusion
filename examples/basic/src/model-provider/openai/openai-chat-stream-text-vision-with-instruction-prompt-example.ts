@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { OpenAIChatModel, streamText } from "modelfusion";
+import { openai, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -11,13 +11,17 @@ async function main() {
   });
 
   const textStream = await streamText(
-    new OpenAIChatModel({
-      model: "gpt-4-vision-preview",
-      maxCompletionTokens: 1000,
-    }).withInstructionPrompt(),
+    openai
+      .ChatTextGenerator({
+        model: "gpt-4-vision-preview",
+        maxCompletionTokens: 1000,
+      })
+      .withInstructionPrompt(),
     {
-      instruction: "Describe the image in detail:",
-      image: { base64Content: image, mimeType: "image/png" },
+      instruction: [
+        { type: "text", text: "Describe the image in detail:\n\n" },
+        { type: "image", base64Image: image, mimeType: "image/png" },
+      ],
     }
   );
 

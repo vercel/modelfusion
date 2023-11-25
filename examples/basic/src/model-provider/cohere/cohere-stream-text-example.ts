@@ -1,11 +1,11 @@
-import { CohereTextGenerationModel, streamText } from "modelfusion";
+import { cohere, streamText } from "modelfusion";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    new CohereTextGenerationModel({
+    cohere.TextGenerator({
       model: "command-nightly",
       temperature: 0.7,
       maxCompletionTokens: 500,

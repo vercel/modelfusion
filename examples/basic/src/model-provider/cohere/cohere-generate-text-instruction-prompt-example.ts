@@ -1,14 +1,16 @@
 import dotenv from "dotenv";
-import { CohereTextGenerationModel, streamText } from "modelfusion";
+import { cohere, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    new CohereTextGenerationModel({
-      model: "command",
-      maxCompletionTokens: 500,
-    }).withInstructionPrompt(),
+    cohere
+      .TextGenerator({
+        model: "command",
+        maxCompletionTokens: 500,
+      })
+      .withInstructionPrompt(),
     {
       system: "You are a celebrated poet.",
       instruction: "Write a story about a robot learning to love",

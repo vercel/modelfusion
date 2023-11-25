@@ -2,7 +2,7 @@ import { PineconeVectorIndex } from "@modelfusion/pinecone";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import dotenv from "dotenv";
 import {
-  CohereTextEmbeddingModel,
+  cohere,
   VectorIndexRetriever,
   ZodSchema,
   retrieve,
@@ -47,7 +47,7 @@ async function main() {
     index,
     schema: new ZodSchema(z.object({ text: z.string() })),
   });
-  const embeddingModel = new CohereTextEmbeddingModel({
+  const embeddingModel = cohere.TextEmbedder({
     model: "embed-english-light-v2.0",
   });
 

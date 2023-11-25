@@ -1,19 +1,20 @@
-import { ChatPrompt } from "../../model-function/generate-text/prompt-format/ChatPrompt.js";
-import { InstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
-import { validateChatPrompt } from "../../model-function/generate-text/prompt-format/validateChatPrompt.js";
+import {
+  ChatPrompt,
+  validateChatPrompt,
+} from "../../model-function/generate-text/prompt-format/ChatPrompt.js";
+import { TextInstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
 
 /**
  * Formats a text prompt as an Anthropic prompt.
  */
 export function text(): TextGenerationPromptFormat<string, string> {
   return {
-    format: (instruction) => {
+    format(prompt) {
       let text = "";
       text += "\n\nHuman:";
-      text += instruction;
+      text += prompt;
       text += "\n\nAssistant:";
-
       return text;
     },
     stopSequences: [],
@@ -24,19 +25,15 @@ export function text(): TextGenerationPromptFormat<string, string> {
  * Formats an instruction prompt as an Anthropic prompt.
  */
 export function instruction(): TextGenerationPromptFormat<
-  InstructionPrompt,
+  TextInstructionPrompt,
   string
 > {
   return {
-    format: (instruction) => {
-      let text = "";
-
-      if (instruction.system != null) {
-        text += `${instruction.system}`;
-      }
+    format(prompt) {
+      let text = prompt.system ?? "";
 
       text += "\n\nHuman:";
-      text += instruction.instruction;
+      text += prompt.instruction;
       text += "\n\nAssistant:";
 
       return text;
@@ -52,12 +49,12 @@ export function instruction(): TextGenerationPromptFormat<
  */
 export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
   return {
-    format: (chatPrompt) => {
-      validateChatPrompt(chatPrompt);
+    format(prompt) {
+      validateChatPrompt(prompt);
 
-      let text = chatPrompt.system != null ? `${chatPrompt.system}\n\n` : "";
+      let text = prompt.system ?? "";
 
-      for (const { role, content } of chatPrompt.messages) {
+      for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
             text += `\n\nHuman:${content}`;

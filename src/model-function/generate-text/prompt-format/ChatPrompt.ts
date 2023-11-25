@@ -1,3 +1,5 @@
+import { InvalidPromptError } from "./InvalidPromptError.js";
+
 /**
  * A chat prompt is a combination of a system message and a list of messages with the following constraints:
  *
@@ -24,16 +26,51 @@
  *
  * @see validateChatPrompt
  */
-export type ChatPrompt = {
+export interface ChatPrompt {
   system?: string;
   messages: Array<ChatMessage>;
-};
+}
 
 /**
  * A message in a chat prompt.
  * @see ChatPrompt
  */
-export type ChatMessage = {
+export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
-};
+}
+
+/**
+ * Checks if a chat prompt is valid. Throws a {@link ChatPromptValidationError} if it's not.
+ *
+ * @throws {@link ChatPromptValidationError}
+ */
+export function validateChatPrompt(chatPrompt: ChatPrompt) {
+  const messages = chatPrompt.messages;
+
+  if (messages.length < 1) {
+    throw new InvalidPromptError(
+      "ChatPrompt should have at least one message.",
+      chatPrompt
+    );
+  }
+
+  for (let i = 0; i < messages.length; i++) {
+    const expectedRole = i % 2 === 0 ? "user" : "assistant";
+    const role = messages[i].role;
+
+    if (role !== expectedRole) {
+      throw new InvalidPromptError(
+        `Message at index ${i} should have role '${expectedRole}', but has role '${role}'.`,
+        chatPrompt
+      );
+    }
+  }
+
+  if (messages.length % 2 === 0) {
+    throw new InvalidPromptError(
+      "The last message must be a user message.",
+      chatPrompt
+    );
+  }
+}
