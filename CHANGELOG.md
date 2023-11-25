@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.82.0 - 2023-11-25
+
+### Added
+
+- Introduce `zodSchema()` function as an easier way to create new ModelFusion Zod schemas. This clearly distinguishes it from `ZodSchema` that is also part of the zod library.
+
 ## v0.81.0 - 2023-11-25
 
 **breaking change**: `generateStructure` and `streamStructure` redesign. The new API does not require function calling and `StructureDefinition` objects any more. This makes it more flexible and it can now be used in 3 ways:
