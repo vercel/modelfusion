@@ -1,5 +1,69 @@
 # Changelog
 
+## v0.81.0 - 2023-11-25
+
+**breaking change**: `generateStructure` and `streamStructure` redesign. The new API does not require function calling and `StructureDefinition` objects any more. This makes it more flexible and it can now be used in 3 ways:
+
+- with OpenAI function calling:
+
+  ```ts
+  const model = openai
+    .ChatTextGenerator({ model: "gpt-3.5-turbo" })
+    .asFunctionCallStructureGenerationModel({
+      fnName: "...",
+      fnDescription: "...",
+    });
+  ```
+
+- with OpenAI JSON format:
+
+  ```ts
+  const model = openai
+    .ChatTextGenerator({
+      model: "gpt-4-1106-preview",
+      temperature: 0,
+      maxCompletionTokens: 1024,
+      responseFormat: { type: "json_object" },
+    })
+    .asStructureGenerationModel(
+      jsonStructurePrompt((instruction: string, schema) => [
+        OpenAIChatMessage.system(
+          "JSON schema: \n" +
+            JSON.stringify(schema.getJsonSchema()) +
+            "\n\n" +
+            "Respond only using JSON that matches the above schema."
+        ),
+        OpenAIChatMessage.user(instruction),
+      ])
+    );
+  ```
+
+- with Ollama (and a capable model, e.g., OpenHermes 2.5):
+  ```ts
+  const model = ollama
+    .TextGenerator({
+      model: "openhermes2.5-mistral",
+      maxCompletionTokens: 1024,
+      temperature: 0,
+      format: "json",
+      raw: true,
+      stopSequences: ["\n\n"], // prevent infinite generation
+    })
+    .withPromptFormat(ChatMLPromptFormat.instruction())
+    .asStructureGenerationModel(
+      jsonStructurePrompt((instruction: string, schema) => ({
+        system:
+          "JSON schema: \n" +
+          JSON.stringify(schema.getJsonSchema()) +
+          "\n\n" +
+          "Respond only using JSON that matches the above schema.",
+        instruction,
+      }))
+    );
+  ```
+
+See [generateStructure](https://modelfusion.dev/guide/function/generate-structure) for details on the new API.
+
 ## v0.80.0 - 2023-11-24
 
 ### Changed
