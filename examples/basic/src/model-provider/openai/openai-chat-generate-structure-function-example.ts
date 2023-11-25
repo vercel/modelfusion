@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { ZodSchema, generateStructure, openai } from "modelfusion";
+import { zodSchema, generateStructure, openai } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
@@ -17,7 +17,7 @@ async function main() {
         fnDescription: "Write the sentiment analysis",
       })
       .withInstructionPrompt(),
-    new ZodSchema(
+    zodSchema(
       z.object({
         sentiment: z
           .enum(["positive", "neutral", "negative"])

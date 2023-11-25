@@ -29,7 +29,7 @@ const analyzeSentiment = async (productReview: string) =>
       })
       .withInstructionPrompt(),
 
-    new ZodSchema(
+    zodSchema(
       z.object({
         // Reason first to improve results:
         reasoning: z.string().describe("Reasoning to explain the sentiment."),

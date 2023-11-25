@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   ChatMLPromptFormat,
-  ZodSchema,
+  zodSchema,
   jsonStructurePrompt,
   ollama,
   streamStructure,
@@ -33,7 +33,7 @@ async function main() {
         }))
       ),
 
-    new ZodSchema(
+    zodSchema(
       z.object({
         characters: z.array(
           z.object({

@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  ZodSchema,
+  zodSchema,
   fixStructure,
   generateStructure,
   guard,
@@ -29,7 +29,7 @@ async function main() {
             fnDescription: "Write the sentiment analysis",
           }),
 
-        new ZodSchema(
+        zodSchema(
           z.object({
             sentiment: z
               .enum(["positivee", "neutra", "negaaa"])

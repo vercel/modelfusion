@@ -29,7 +29,7 @@ const extractNameAndPopulation = async (text: string) =>
       })
       .withInstructionPrompt(),
 
-    new ZodSchema(
+    zodSchema(
       z.object({
         city: z
           .object({

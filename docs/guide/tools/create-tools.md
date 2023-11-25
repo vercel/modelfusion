@@ -11,7 +11,7 @@ A tool is comprised of an async execute function, a name, a description, and a s
 ## Example: Calculator Tool
 
 ```ts
-import { Tool, ZodSchema } from "modelfusion";
+import { Tool, zodSchema } from "modelfusion";
 import { z } from "zod";
 
 const calculator = new Tool({
@@ -20,7 +20,7 @@ const calculator = new Tool({
 
   // The input schema describes the parameters that the tool expects.
   // You can use any ModelFusion schema (here: ZodSchema).
-  parameters: new ZodSchema(
+  parameters: zodSchema(
     z.object({
       a: z.number().describe("The first number."),
       b: z.number().describe("The second number."),

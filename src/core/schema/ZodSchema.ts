@@ -3,6 +3,10 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 import { JsonSchemaProducer } from "./JsonSchemaProducer.js";
 import { Schema } from "./Schema.js";
 
+export function zodSchema<STRUCTURE>(zodSchema: z.Schema<STRUCTURE>) {
+  return new ZodSchema(zodSchema);
+}
+
 export class ZodSchema<STRUCTURE>
   implements Schema<STRUCTURE>, JsonSchemaProducer
 {

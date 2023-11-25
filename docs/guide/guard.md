@@ -141,7 +141,7 @@ const result = await guard(
       openai.ChatTextGenerator(/*...*/).asFunctionCallStructureGenerationModel({
         fnName: "myFunction",
       }),
-      new ZodSchema({
+      zodSchema({
         // ...
       }),
       input,
@@ -184,7 +184,7 @@ const result = await guard(
       openai
         .ChatTextGenerator({ model: input.model })
         .asFunctionCallStructureGenerationModel(/*...*/),
-      new ZodSchema(/*...*/),
+      zodSchema(/*...*/),
       input.prompt,
       options
     ),

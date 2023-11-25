@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { ZodSchema, openai, streamStructure } from "modelfusion";
+import { zodSchema, openai, streamStructure } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
@@ -18,7 +18,7 @@ async function main() {
       })
       .withTextPrompt(),
 
-    new ZodSchema(
+    zodSchema(
       z.object({
         characters: z.array(
           z.object({

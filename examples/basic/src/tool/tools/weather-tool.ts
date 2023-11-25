@@ -1,11 +1,11 @@
-import { Tool, ZodSchema } from "modelfusion";
+import { Tool, zodSchema } from "modelfusion";
 import { z } from "zod";
 
 export const weather = new Tool({
   name: "weather",
   description: "Get the weather at a location",
 
-  parameters: new ZodSchema(
+  parameters: zodSchema(
     z.object({
       zipCode: z
         .string()

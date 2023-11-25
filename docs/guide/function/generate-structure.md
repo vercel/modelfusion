@@ -30,7 +30,7 @@ const sentiment = await generateStructure(
     })
     .withInstructionPrompt(),
 
-  new ZodSchema(
+  zodSchema(
     z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
@@ -70,7 +70,7 @@ const structureStream = await streamStructure(
     fnName: "generateCharacter",
     fnDescription: "Generate character descriptions.",
   }),
-  new ZodSchema(
+  zodSchema(
     z.object({
       characters: z.array(
         z.object({

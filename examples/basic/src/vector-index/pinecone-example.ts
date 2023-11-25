@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import {
   cohere,
   VectorIndexRetriever,
-  ZodSchema,
+  zodSchema,
   retrieve,
   upsertIntoVectorIndex,
 } from "modelfusion";
@@ -45,7 +45,7 @@ async function main() {
 
   const vectorIndex = new PineconeVectorIndex({
     index,
-    schema: new ZodSchema(z.object({ text: z.string() })),
+    schema: zodSchema(z.object({ text: z.string() })),
   });
   const embeddingModel = cohere.TextEmbedder({
     model: "embed-english-light-v2.0",

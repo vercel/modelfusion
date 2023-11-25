@@ -1,11 +1,11 @@
-import { Tool, ZodSchema } from "modelfusion";
+import { Tool, zodSchema } from "modelfusion";
 import { z } from "zod";
 
 export const calculator = new Tool({
   name: "calculator",
   description: "Execute a calculation",
 
-  parameters: new ZodSchema(
+  parameters: zodSchema(
     z.object({
       a: z.number().describe("The first number."),
       b: z.number().describe("The second number."),

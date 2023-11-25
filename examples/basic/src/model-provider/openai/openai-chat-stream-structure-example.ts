@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  ZodSchema,
+  zodSchema,
   jsonStructurePrompt,
   openai,
   streamStructure,
@@ -31,7 +31,7 @@ async function main() {
         ])
       ),
 
-    new ZodSchema(
+    zodSchema(
       z.object({
         characters: z.array(
           z.object({

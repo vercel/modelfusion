@@ -26,7 +26,7 @@ const { text, toolCalls } = await generateToolCallsOrText(
     {
       name: "getTemperature" as const, // 'as const' important for type inference
       description: "Get the temperature of a room.",
-      parameters: new ZodSchema(
+      parameters: zodSchema(
         z.object({
           room: z.enum(["kitchen", "bedroom", "bathroom"]),
           unit: z.enum(["Celsius", "Fahrenheit"]),
@@ -36,7 +36,7 @@ const { text, toolCalls } = await generateToolCallsOrText(
     {
       name: "setTemperature" as const, // 'as const' important for type inference
       description: "Set the temperature of a room.",
-      parameters: new ZodSchema(
+      parameters: zodSchema(
         z.object({
           room: z.enum(["kitchen", "bedroom", "bathroom"]),
           temperature: z.number(),

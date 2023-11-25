@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
   Tool,
-  ZodSchema,
+  zodSchema,
   openai,
   useTool,
 } from "modelfusion";
@@ -14,7 +14,7 @@ export const calculatorThatThrowsError = new Tool({
   name: "calculator",
   description: "Execute a calculation",
 
-  parameters: new ZodSchema(
+  parameters: zodSchema(
     z.object({
       a: z.number().describe("The first number."),
       b: z.number().describe("The second number."),

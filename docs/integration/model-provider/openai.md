@@ -174,7 +174,7 @@ The mapped model will use the [OpenAI GPT function calling API](https://platform
 [OpenAIChatModel API](/api/classes/OpenAIChatModel) |
 
 ```ts
-import { openai, ZodSchema, generateStructure } from "modelfusion";
+import { openai, zodSchema, generateStructure } from "modelfusion";
 import { z } from "zod";
 
 const sentiment = await generateStructure(
@@ -190,7 +190,7 @@ const sentiment = await generateStructure(
     })
     .withInstructionPrompt(),
 
-  new ZodSchema(
+  zodSchema(
     z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])

@@ -1,7 +1,7 @@
 import {
   ToolCallPromptFormat,
   ToolDefinition,
-  ZodSchema,
+  zodSchema,
   parseJSON,
 } from "modelfusion";
 import { nanoid } from "nanoid";
@@ -30,7 +30,7 @@ export const mistralSingleToolCallPromptFormat: ToolCallPromptFormat<
   extractToolCall(response: string) {
     const json = parseJSON({
       text: response,
-      schema: new ZodSchema(
+      schema: zodSchema(
         z.object({ function: z.string(), parameters: z.any() })
       ),
     });

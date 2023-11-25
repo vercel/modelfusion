@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { ZodSchema, generateStructure, openai } from "modelfusion";
+import { zodSchema, generateStructure, openai } from "modelfusion";
 import fs from "node:fs";
 import { z } from "zod";
 
@@ -20,7 +20,7 @@ async function main() {
         })
         .withInstructionPrompt(),
 
-      new ZodSchema(
+      zodSchema(
         z.object({
           city: z
             .object({

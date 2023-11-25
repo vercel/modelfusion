@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  ZodSchema,
+  zodSchema,
   generateToolCall,
   openai,
 } from "modelfusion";
@@ -19,7 +19,7 @@ async function main() {
     {
       name: "getTemperature",
       description: "Get the temperature of a room.",
-      parameters: new ZodSchema(
+      parameters: zodSchema(
         z.object({
           room: z.enum(["kitchen", "bedroom", "bathroom"]),
           unit: z.enum(["Celsius", "Fahrenheit"]),

@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatMessage,
-  ZodSchema,
+  zodSchema,
   generateToolCallsOrText,
   openai,
 } from "modelfusion";
@@ -19,7 +19,7 @@ async function main() {
       {
         name: "getTemperature" as const, // 'as const' important for type inference
         description: "Get the temperature of a room.",
-        parameters: new ZodSchema(
+        parameters: zodSchema(
           z.object({
             room: z.enum(["kitchen", "bedroom", "bathroom"]),
             unit: z.enum(["Celsius", "Fahrenheit"]),
@@ -29,7 +29,7 @@ async function main() {
       {
         name: "setTemperature" as const, // 'as const' important for type inference
         description: "Set the temperature of a room.",
-        parameters: new ZodSchema(
+        parameters: zodSchema(
           z.object({
             room: z.enum(["kitchen", "bedroom", "bathroom"]),
             temperature: z.number(),

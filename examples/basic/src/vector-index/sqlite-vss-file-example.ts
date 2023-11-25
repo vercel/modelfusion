@@ -6,7 +6,7 @@ import BetterSqlite3 from "better-sqlite3";
 import dotenv from "dotenv";
 import {
   VectorIndexRetriever,
-  ZodSchema,
+  zodSchema,
   openai,
   retrieve,
   upsertIntoVectorIndex,
@@ -36,7 +36,7 @@ async function main() {
 
   const vectorIndex = new SQLiteVectorIndex({
     db: database,
-    schema: new ZodSchema(z.object({ text: z.string() })),
+    schema: zodSchema(z.object({ text: z.string() })),
   });
   const embeddingModel = openai.TextEmbedder({
     model: "text-embedding-ada-002",

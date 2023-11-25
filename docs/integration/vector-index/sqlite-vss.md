@@ -43,7 +43,7 @@ import {
   SQLiteVectorIndex,
   setupSQLiteDatabase,
 } from "@modelfusion/sqlite-vss";
-import { ZodSchema } from "modelfusion";
+import { zodSchema } from "modelfusion";
 
 // Initialize the SQLite database:
 const database = setupSQLiteDatabase(new BetterSqlite3(":memory:"));
@@ -51,7 +51,7 @@ const database = setupSQLiteDatabase(new BetterSqlite3(":memory:"));
 // Create a vector index:
 const vectorIndex = new SQLiteVectorIndex({
   db: database,
-  schema: new ZodSchema(zodSchema),
+  schema: zodSchema(zodSchema),
 });
 ```
 

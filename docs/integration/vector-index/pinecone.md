@@ -28,7 +28,7 @@ npm install @modelfusion/pinecone @pinecone-database/pinecone
 ```ts
 import { PineconeVectorIndex } from "@modelfusion/pinecone";
 import { PineconeClient } from "@pinecone-database/pinecone";
-import { ZodSchema } from "modelfusion";
+import { zodSchema } from "modelfusion";
 
 // Initialize the Pinecone index:
 const client = new PineconeClient();
@@ -41,7 +41,7 @@ const index = client.Index(PINECONE_INDEX_NAME);
 // Create a vector index:
 const vectorIndex = new PineconeVectorIndex({
   index,
-  schema: new ZodSchema(zodSchema),
+  schema: zodSchema(zodSchema),
 });
 ```
 

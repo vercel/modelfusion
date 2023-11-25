@@ -6,7 +6,7 @@ import { convert as convertHtmlToText } from "html-to-text";
 import {
   OpenAIChatMessage,
   Tool,
-  ZodSchema,
+  zodSchema,
   openai,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
   useToolsOrGenerateText,
@@ -35,7 +35,7 @@ const readWikipediaArticle = new Tool({
   name: "read_wikipedia_article",
   description:
     "Read a Wikipedia article and scan it for information on a topic",
-  parameters: new ZodSchema(
+  parameters: zodSchema(
     z.object({
       url: z.string().url().describe("The URL of the Wikipedia article."),
       topic: z.string().describe("The topic to look for in the article."),

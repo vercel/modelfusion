@@ -193,7 +193,7 @@ Generate typed objects using a language model and a schema.
 Generate a structure that matches a schema.
 
 ```ts
-import { ZodSchema, generateStructure, openai } from "modelfusion";
+import { zodSchema, generateStructure, openai } from "modelfusion";
 
 const sentiment = await generateStructure(
   openai
@@ -205,7 +205,7 @@ const sentiment = await generateStructure(
     .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
     .withInstructionPrompt(),
 
-  new ZodSchema(
+  zodSchema(
     z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
@@ -231,7 +231,7 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
 Stream a structure that matches a schema. Partial structures before the final part are untyped JSON.
 
 ```ts
-import { ZodSchema, openai, streamStructure } from "modelfusion";
+import { zodSchema, openai, streamStructure } from "modelfusion";
 
 const structureStream = await streamStructure(
   openai
@@ -242,7 +242,7 @@ const structureStream = await streamStructure(
     })
     .withTextPrompt(),
 
-  new ZodSchema(
+  zodSchema(
     z.object({
       characters: z.array(
         z.object({
@@ -330,7 +330,7 @@ const result = await guard(
         .asFunctionCallStructureGenerationModel({
           fnName: "myFunction",
         }),
-      new ZodSchema({
+      zodSchema({
         // ...
       }),
       input,
@@ -372,7 +372,7 @@ const calculator = new Tool({
   name: "calculator",
   description: "Execute a calculation",
 
-  parameters: new ZodSchema(
+  parameters: zodSchema(
     z.object({
       a: z.number().describe("The first number."),
       b: z.number().describe("The second number."),

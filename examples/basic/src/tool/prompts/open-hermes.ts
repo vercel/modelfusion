@@ -2,7 +2,7 @@ import {
   TextInstructionPrompt,
   ToolCallsOrGenerateTextPromptFormat,
   ToolDefinition,
-  ZodSchema,
+  zodSchema,
   parseJSON,
 } from "modelfusion";
 import { nanoid } from "nanoid";
@@ -60,7 +60,7 @@ export const openHermesToolCallsPromptFormat: ToolCallsOrGenerateTextPromptForma
     // parse function call:
     const functionCallJson = parseJSON({
       text: functionCall,
-      schema: new ZodSchema(z.object({ name: z.string(), args: z.any() })),
+      schema: zodSchema(z.object({ name: z.string(), args: z.any() })),
     });
 
     // extract text before and after function call, concatenate and trim:
