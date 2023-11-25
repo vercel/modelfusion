@@ -193,6 +193,8 @@ Generate typed objects using a language model and a schema.
 Generate a structure that matches a schema.
 
 ```ts
+import { ZodSchema, generateStructure, openai } from "modelfusion";
+
 const sentiment = await generateStructure(
   openai
     .ChatTextGenerator({
@@ -200,7 +202,9 @@ const sentiment = await generateStructure(
       temperature: 0,
       maxCompletionTokens: 50,
     })
-    .asFunctionCallStructureGenerationModel({ fnName: "sentiment" }),
+    .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
+    .withInstructionPrompt(),
+
   new ZodSchema(
     z.object({
       sentiment: z
@@ -208,16 +212,15 @@ const sentiment = await generateStructure(
         .describe("Sentiment."),
     })
   ),
-  [
-    OpenAIChatMessage.system(
+
+  {
+    system:
       "You are a sentiment evaluator. " +
-        "Analyze the sentiment of the following product review:"
-    ),
-    OpenAIChatMessage.user(
+      "Analyze the sentiment of the following product review:",
+    instruction:
       "After I opened the package, I was met by a very unpleasant smell " +
-        "that did not disappear even after washing. Never again!"
-    ),
-  ]
+      "that did not disappear even after washing. Never again!",
+  }
 );
 ```
 
@@ -228,11 +231,17 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
 Stream a structure that matches a schema. Partial structures before the final part are untyped JSON.
 
 ```ts
+import { ZodSchema, openai, streamStructure } from "modelfusion";
+
 const structureStream = await streamStructure(
-  openai.ChatTextGenerator(/* ... */).asFunctionCallStructureGenerationModel({
-    fnName: "generateCharacter",
-    fnDescription: "Generate character descriptions.",
-  }),
+  openai
+    .ChatTextGenerator(/* ... */)
+    .asFunctionCallStructureGenerationModel({
+      fnName: "generateCharacter",
+      fnDescription: "Generate character descriptions.",
+    })
+    .withTextPrompt(),
+
   new ZodSchema(
     z.object({
       characters: z.array(
@@ -246,11 +255,8 @@ const structureStream = await streamStructure(
       ),
     })
   ),
-  [
-    OpenAIChatMessage.user(
-      "Generate 3 character descriptions for a fantasy role playing game."
-    ),
-  ]
+
+  "Generate 3 character descriptions for a fantasy role playing game."
 );
 
 for await (const part of structureStream) {
