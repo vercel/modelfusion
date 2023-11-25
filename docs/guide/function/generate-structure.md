@@ -17,18 +17,17 @@ and classification tasks (e.g. [sentiment analysis](/tutorial/tutorials/sentimen
 #### OpenAI chat model with function call
 
 ```ts
-const sentiment = await generateStructure(
-  // model:
-  openai
-    .ChatTextGenerator({
-      model: "gpt-3.5-turbo",
-      temperature: 0,
-      maxCompletionTokens: 50,
-    })
-    .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
-    .withInstructionPrompt(),
+const model = openai
+  .ChatTextGenerator({
+    model: "gpt-3.5-turbo",
+    temperature: 0,
+    maxCompletionTokens: 50,
+  })
+  .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
+  .withInstructionPrompt();
 
-  // schema:
+const sentiment = await generateStructure(
+  model,
   zodSchema(
     z.object({
       sentiment: z
@@ -36,8 +35,6 @@ const sentiment = await generateStructure(
         .describe("Sentiment."),
     })
   ),
-
-  // prompt:
   {
     system:
       "You are a sentiment evaluator. " +
@@ -47,6 +44,60 @@ const sentiment = await generateStructure(
       "that did not disappear even after washing. Never again!",
   }
 );
+```
+
+#### OpenAI JSON format
+
+You can also use the JSON format of OpenAI to generate a structure.
+
+```ts
+const model = openai
+  .ChatTextGenerator({
+    model: "gpt-4-1106-preview",
+    temperature: 0,
+    maxCompletionTokens: 1024,
+    responseFormat: { type: "json_object" }, // force JSON output
+  })
+  .asStructureGenerationModel(
+    // Instruct the model to generate a JSON object that matches the given schema.
+    jsonStructurePrompt((instruction: string, schema) => [
+      OpenAIChatMessage.system(
+        "JSON schema: \n" +
+          JSON.stringify(schema.getJsonSchema()) +
+          "\n\n" +
+          "Respond only using JSON that matches the above schema."
+      ),
+      OpenAIChatMessage.user(instruction),
+    ])
+  );
+```
+
+#### Ollama OpenHermes 2.5
+
+Structure generation is also possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B).
+
+```ts
+const model = ollama
+  .TextGenerator({
+    model: "openhermes2.5-mistral",
+    maxCompletionTokens: 1024,
+    temperature: 0,
+    format: "json", // force JSON output
+    raw: true, // prevent Ollama from adding its own prompts
+    stopSequences: ["\n\n"], // prevent infinite generation
+  })
+  .withPromptFormat(ChatMLPromptFormat.instruction())
+  .asStructureGenerationModel(
+    // Instruct the model to generate a JSON object that matches the given schema.
+    jsonStructurePrompt((instruction: string, schema) => ({
+      system:
+        "JSON schema: \n" +
+        JSON.stringify(schema.getJsonSchema()) +
+        "\n\n" +
+        "Respond only using JSON that matches the above schema.",
+      instruction,
+    }))
+  );
 ```
 
 ### streamStructure
@@ -66,10 +117,7 @@ You can do your own type inference on partial results if needed.
 
 ```ts
 const structureStream = await streamStructure(
-  openai.ChatTextGenerator(/* ... */).asFunctionCallStructureGenerationModel({
-    fnName: "generateCharacter",
-    fnDescription: "Generate character descriptions.",
-  }),
+  model, // see generateStructure examples
   zodSchema(
     z.object({
       characters: z.array(
@@ -83,11 +131,10 @@ const structureStream = await streamStructure(
       ),
     })
   ),
-  [
-    OpenAIChatMessage.user(
-      "Generate 3 character descriptions for a fantasy role playing game."
-    ),
-  ]
+  {
+    instruction:
+      "Generate 3 character descriptions for a fantasy role playing game.",
+  }
 );
 
 for await (const part of structureStream) {
@@ -107,3 +154,4 @@ for await (const part of structureStream) {
 ## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)
+- [Ollama](/integration/model-provider/ollama)

@@ -227,7 +227,7 @@ const sentiment = await generateStructure(
 );
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Ollama](https://modelfusion.dev//integration/model-provider/ollama)
 
 #### streamStructure
 
@@ -273,7 +273,7 @@ for await (const part of structureStream) {
 }
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Ollama](https://modelfusion.dev//integration/model-provider/ollama)
 
 ### [Embed Value](https://modelfusion.dev/guide/function/embed)
 

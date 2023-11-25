@@ -72,6 +72,56 @@ for await (const textPart of textStream) {
 }
 ```
 
+### Generate Structure
+
+Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B).
+
+```ts
+import { ollama, zodSchema, generateStructure } from "modelfusion";
+import { z } from "zod";
+
+const model = ollama
+  .TextGenerator({
+    model: "openhermes2.5-mistral",
+    maxCompletionTokens: 1024,
+    temperature: 0,
+    format: "json", // force JSON output
+    raw: true, // prevent Ollama from adding its own prompts
+    stopSequences: ["\n\n"], // prevent infinite generation
+  })
+  .withPromptFormat(ChatMLPromptFormat.instruction())
+  .asStructureGenerationModel(
+    // Instruct the model to generate a JSON object that matches the given schema.
+    jsonStructurePrompt((instruction: string, schema) => ({
+      system:
+        "JSON schema: \n" +
+        JSON.stringify(schema.getJsonSchema()) +
+        "\n\n" +
+        "Respond only using JSON that matches the above schema.",
+      instruction,
+    }))
+  );
+
+const sentiment = await generateStructure(
+  model,
+  zodSchema(
+    z.object({
+      sentiment: z
+        .enum(["positive", "neutral", "negative"])
+        .describe("Sentiment."),
+    })
+  ),
+  {
+    system:
+      "You are a sentiment evaluator. " +
+      "Analyze the sentiment of the following product review:",
+    instruction:
+      "After I opened the package, I was met by a very unpleasant smell " +
+      "that did not disappear even after washing. Never again!",
+  }
+);
+```
+
 ### Embed Text
 
 [OllamaTextEmbeddingModel API](/api/classes/OllamaTextEmbeddingModel)
