@@ -229,15 +229,12 @@ Stream a structure that matches a schema. Partial structures before the final pa
 
 ```ts
 const structureStream = await streamStructure(
-  openai.ChatTextGenerator({
-    model: "gpt-3.5-turbo",
-    temperature: 0,
-    maxCompletionTokens: 2000,
+  openai.ChatTextGenerator(/* ... */).asFunctionCallStructureGenerationModel({
+    fnName: "generateCharacter",
+    fnDescription: "Generate character descriptions.",
   }),
-  new ZodStructureDefinition({
-    name: "generateCharacter" as const,
-    description: "Generate character descriptions.",
-    schema: z.object({
+  new ZodSchema(
+    z.object({
       characters: z.array(
         z.object({
           name: z.string(),
@@ -247,8 +244,8 @@ const structureStream = await streamStructure(
           description: z.string(),
         })
       ),
-    }),
-  }),
+    })
+  ),
   [
     OpenAIChatMessage.user(
       "Generate 3 character descriptions for a fantasy role playing game."

@@ -1,10 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  ZodSchema,
-  openai,
-  streamStructure,
-} from "modelfusion";
+import { ZodSchema, openai, streamStructure } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
@@ -20,7 +15,9 @@ async function main() {
       .asFunctionCallStructureGenerationModel({
         fnName: "generateCharacter",
         fnDescription: "Generate character descriptions.",
-      }),
+      })
+      .withTextPrompt(),
+
     new ZodSchema(
       z.object({
         characters: z.array(
@@ -34,11 +31,8 @@ async function main() {
         ),
       })
     ),
-    [
-      OpenAIChatMessage.user(
-        "Generate 3 character descriptions for a fantasy role playing game."
-      ),
-    ]
+
+    "Generate 3 character descriptions for a fantasy role playing game."
   );
 
   for await (const part of structureStream) {

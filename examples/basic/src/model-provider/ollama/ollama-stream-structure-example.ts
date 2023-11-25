@@ -32,11 +32,12 @@ async function main() {
           instruction,
         }))
       ),
+
     new ZodSchema(
-      // note: the outer object with the "heros" property is required,
+      // note: the outer object with the "characters" property is required,
       // just passing in an array will produce results that don't match the schema
       z.object({
-        heros: z.array(
+        characters: z.array(
           z.object({
             name: z.string().describe("The name of the hero"),
             race: z
@@ -52,6 +53,7 @@ async function main() {
         ),
       })
     ),
+
     "Generate 3 character descriptions for a fantasy role playing game. "
   );
 
