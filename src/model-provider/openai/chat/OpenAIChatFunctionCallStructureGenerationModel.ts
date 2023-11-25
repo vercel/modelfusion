@@ -18,7 +18,11 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
     unknown,
     OpenAIChatMessage[]
   >,
-> implements StructureGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
+> implements
+    StructureGenerationModel<
+      Parameters<PROMPT_FORMAT["format"]>[0], // first argument of the function
+      OpenAIChatSettings
+    >
 {
   readonly model: OpenAIChatModel;
   readonly fnName: string;
@@ -153,10 +157,12 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
 
   async doStreamStructure(
     schema: Schema<unknown> & JsonSchemaProducer,
-    prompt: OpenAIChatMessage[],
+    prompt: Parameters<PROMPT_FORMAT["format"]>[0], // first argument of the function
     options?: FunctionOptions
   ) {
-    return this.model.callAPI(prompt, {
+    const expandedPrompt = this.promptFormat.format(prompt);
+
+    return this.model.callAPI(expandedPrompt, {
       ...options,
       responseFormat: OpenAIChatResponseFormat.structureDeltaIterable,
       functionCall: { name: this.fnName },
