@@ -9,31 +9,33 @@ import {
   TextStreamingModel,
 } from "../generate-text/TextGenerationModel.js";
 import { generateText } from "../generate-text/generateText.js";
-import {
-  StructureFromTextGenerationModel,
-  StructureFromTextPromptFormat,
-} from "./StructureFromTextGenerationModel.js";
+import { StructureFromTextGenerationModel } from "./StructureFromTextGenerationModel.js";
+import { StructureFromTextPromptFormat } from "./StructureFromTextPromptFormat.js";
 import { StructureStreamingModel } from "./StructureGenerationModel.js";
 import { StructureParseError } from "./StructureParseError.js";
 import { parsePartialJson } from "./parsePartialJson.js";
 
 export class StructureFromTextStreamingModel<
-    PROMPT,
-    MODEL extends TextStreamingModel<string, TextGenerationModelSettings>,
+    SOURCE_PROMPT,
+    TARGET_PROMPT,
+    MODEL extends TextStreamingModel<
+      TARGET_PROMPT,
+      TextGenerationModelSettings
+    >,
   >
-  extends StructureFromTextGenerationModel<PROMPT, MODEL>
-  implements StructureStreamingModel<PROMPT, MODEL["settings"]>
+  extends StructureFromTextGenerationModel<SOURCE_PROMPT, TARGET_PROMPT, MODEL>
+  implements StructureStreamingModel<SOURCE_PROMPT, MODEL["settings"]>
 {
   constructor(options: {
     model: MODEL;
-    format: StructureFromTextPromptFormat<PROMPT>;
+    format: StructureFromTextPromptFormat<SOURCE_PROMPT, TARGET_PROMPT>;
   }) {
     super(options);
   }
 
   async doStreamStructure(
     schema: Schema<unknown> & JsonSchemaProducer,
-    prompt: PROMPT,
+    prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
     const textStream = await streamText(
@@ -74,7 +76,7 @@ export class StructureFromTextStreamingModel<
 
   async doGenerateStructure(
     schema: Schema<unknown> & JsonSchemaProducer,
-    prompt: PROMPT,
+    prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
     const { response, value } = await generateText(

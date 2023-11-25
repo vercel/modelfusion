@@ -1,58 +1,57 @@
 import dotenv from "dotenv";
 import {
-  StructureFromTextStreamingModel,
+  ChatMLPromptFormat,
   ZodSchema,
+  jsonStructurePrompt,
   ollama,
-  parseJSON,
-  setGlobalFunctionLogging,
   streamStructure,
 } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
 
-setGlobalFunctionLogging("detailed-object");
-
 async function main() {
-  const heros = new ZodSchema(
-    z.object({
-      heros: z.array(
-        z.object({
-          name: z.string().describe("The name of the hero"),
-          race: z
-            .string()
-            .describe("The race of the hero, e.g. human, elf, dwarf, etc."),
-          class: z
-            .string()
-            .describe("The class of the hero, e.g. warrior, mage, etc."),
-          age: z.number().int().positive().describe("The age of the hero"),
-          gender: z.string().describe("The gender of the hero"),
-          backstory: z.string().describe("The backstory of the hero"),
-        })
-      ),
-    })
-  );
-
   const structureStream = await streamStructure(
-    new StructureFromTextStreamingModel({
-      model: ollama.TextGenerator({
+    ollama
+      .TextGenerator({
         model: "openhermes2.5-mistral",
         maxCompletionTokens: 1024,
+        temperature: 0,
         format: "json",
         raw: true,
-        temperature: 0,
-      }),
-      format: {
-        createPrompt: (instruction, schema) =>
-          "JSON schema: \n" +
-          JSON.stringify(schema.getJsonSchema()) +
-          "\n\n" +
-          "Respond using JSON that matches the above schema:\n" +
+        stopSequences: ["\n\n"], // prevent streaming from running forever
+      })
+      .withPromptFormat(ChatMLPromptFormat.instruction())
+      .asStructureStreamingModel(
+        jsonStructurePrompt((instruction: string, schema) => ({
+          system:
+            "JSON schema: \n" +
+            JSON.stringify(schema.getJsonSchema()) +
+            "\n\n" +
+            "Respond only using JSON that matches the above schema.",
           instruction,
-        extractStructure: (response) => parseJSON({ text: response }),
-      },
-    }),
-    heros,
+        }))
+      ),
+    new ZodSchema(
+      // note: the outer object with the "heros" property is required,
+      // just passing in an array will produce results that don't match the schema
+      z.object({
+        heros: z.array(
+          z.object({
+            name: z.string().describe("The name of the hero"),
+            race: z
+              .string()
+              .describe("The race of the hero, e.g. human, elf, dwarf, etc."),
+            class: z
+              .string()
+              .describe("The class of the hero, e.g. warrior, mage, etc."),
+            age: z.number().int().positive().describe("The age of the hero"),
+            gender: z.string().describe("The gender of the hero"),
+            backstory: z.string().describe("The backstory of the hero"),
+          })
+        ),
+      })
+    ),
     "Generate 3 character descriptions for a fantasy role playing game. "
   );
 
