@@ -110,7 +110,7 @@ export class StabilityImageGenerationModel
     };
   }
 
-  withBasicPrompt() {
+  withTextPrompt() {
     return this.withPromptFormat(mapBasicPromptToStabilityFormat());
   }
 

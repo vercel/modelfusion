@@ -54,7 +54,8 @@ const imageBuffer = await generateImage(stability.ImageGenerator(/* ... */), [
 [Prompt formats](/api/interfaces/PromptFormat) change the prompt format that an image generation model accepts.
 This enables the use of abstracted prompts, e.g. basic prompts that are just text.
 
-You can map the prompt of an [ImageGenerationModel](/api/interfaces/ImageGenerationModel) using the `withPromptFormat()` method. For convience, models with clear prompt formats have a `withBasicPrompt()` method that returns a model with a simple text prompt.
+You can map the prompt of an [ImageGenerationModel](/api/interfaces/ImageGenerationModel) using the `withPromptFormat()` method.
+For convenience, models with clear prompt formats have a `withTextPrompt()` method that returns a model with a simple text prompt.
 
 ### Basic Prompts
 
@@ -67,7 +68,7 @@ const model = stability
   .ImageGenerator({
     // ...
   })
-  .withBasicPrompt();
+  .withTextPrompt();
 ```
 
 You can now generate images using a text prompt:

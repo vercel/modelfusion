@@ -594,15 +594,15 @@ const image = await generateImage(
     .ImageGenerator({
       //...
     })
-    .withBasicPrompt(),
+    .withTextPrompt(),
   "the wicked witch of the west in the style of early 19th century painting"
 );
 ```
 
-| Prompt Format | Basic Text Prompt |
-| ------------- | ----------------- |
-| Automatic1111 | ✅                |
-| Stability     | ✅                |
+| Prompt Format | Text Prompt |
+| ------------- | ----------- |
+| Automatic1111 | ✅          |
+| Stability     | ✅          |
 
 ### Metadata and original responses
 

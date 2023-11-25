@@ -9,7 +9,7 @@ async function main() {
         steps: 30,
         sampler: "DPM++ 2M Karras",
       })
-      .withBasicPrompt(),
+      .withTextPrompt(),
     "the wicked witch of the west in the style of early 19th century painting"
   );
 

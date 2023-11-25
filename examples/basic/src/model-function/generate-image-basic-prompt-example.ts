@@ -16,7 +16,7 @@ async function main() {
         samples: 1,
         steps: 30,
       })
-      .withBasicPrompt(),
+      .withTextPrompt(),
     "the wicked witch of the west in the style of early 19th century painting"
   );
 

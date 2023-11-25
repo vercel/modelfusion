@@ -81,7 +81,7 @@ export class Automatic1111ImageGenerationModel
     };
   }
 
-  withBasicPrompt() {
+  withTextPrompt() {
     return this.withPromptFormat(mapBasicPromptToAutomatic1111Format());
   }
 
