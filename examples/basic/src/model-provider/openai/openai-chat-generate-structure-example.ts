@@ -1,10 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  ZodSchema,
-  generateStructure,
-  openai,
-} from "modelfusion";
+import { ZodSchema, generateStructure, openai } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
@@ -20,7 +15,8 @@ async function main() {
       .asFunctionCallStructureGenerationModel({
         fnName: "sentiment",
         fnDescription: "Write the sentiment analysis",
-      }),
+      })
+      .withInstructionPrompt(),
     new ZodSchema(
       z.object({
         sentiment: z
@@ -28,16 +24,14 @@ async function main() {
           .describe("Sentiment."),
       })
     ),
-    [
-      OpenAIChatMessage.system(
+    {
+      system:
         "You are a sentiment evaluator. " +
-          "Analyze the sentiment of the following product review:"
-      ),
-      OpenAIChatMessage.user(
+        "Analyze the sentiment of the following product review:",
+      instruction:
         "After I opened the package, I was met by a very unpleasant smell " +
-          "that did not disappear even after washing. Never again!"
-      ),
-    ]
+        "that did not disappear even after washing. Never again!",
+    }
   );
 
   console.log(JSON.stringify(sentiment, null, 2));

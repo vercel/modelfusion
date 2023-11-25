@@ -1,10 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  ZodSchema,
-  openai,
-  generateStructure,
-} from "modelfusion";
+import { ZodSchema, generateStructure, openai } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
@@ -24,7 +19,8 @@ async function main() {
       .asFunctionCallStructureGenerationModel({
         fnName: "generateCharacter",
         fnDescription: "Generate character descriptions.",
-      }),
+      })
+      .withInstructionPrompt(),
     new ZodSchema(
       z.object({
         characters: z.array(
@@ -38,16 +34,14 @@ async function main() {
         ),
       })
     ),
-    [
-      OpenAIChatMessage.system(
+    {
+      system:
         "You are a sentiment evaluator. " +
-          "Analyze the sentiment of the following product review:"
-      ),
-      OpenAIChatMessage.user(
+        "Analyze the sentiment of the following product review:",
+      instruction:
         "After I opened the package, I was met by a very unpleasant smell " +
-          "that did not disappear even after washing. Never again!"
-      ),
-    ],
+        "that did not disappear even after washing. Never again!",
+    },
     { returnType: "full" }
   );
 

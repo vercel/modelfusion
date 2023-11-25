@@ -4,32 +4,42 @@ import { JsonSchemaProducer } from "../../../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../../../core/schema/Schema.js";
 import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
 import { StructureParseError } from "../../../model-function/generate-structure/StructureParseError.js";
+import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage";
 import {
   OpenAIChatModel,
   OpenAIChatResponseFormat,
   OpenAIChatSettings,
 } from "./OpenAIChatModel";
+import { chat, instruction, text } from "./OpenAIChatPromptFormat.js";
 
-export class OpenAIChatFunctionCallStructureGenerationModel
-  implements StructureGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
+export class OpenAIChatFunctionCallStructureGenerationModel<
+  PROMPT_FORMAT extends TextGenerationPromptFormat<
+    unknown,
+    OpenAIChatMessage[]
+  >,
+> implements StructureGenerationModel<OpenAIChatMessage[], OpenAIChatSettings>
 {
   readonly model: OpenAIChatModel;
   readonly fnName: string;
   readonly fnDescription?: string;
+  readonly promptFormat: PROMPT_FORMAT;
 
   constructor({
     model,
     fnName,
     fnDescription,
+    promptFormat,
   }: {
     model: OpenAIChatModel;
     fnName: string;
     fnDescription?: string;
+    promptFormat: PROMPT_FORMAT;
   }) {
     this.model = model;
     this.fnName = fnName;
     this.fnDescription = fnDescription;
+    this.promptFormat = promptFormat;
   }
 
   get modelInformation() {
@@ -44,11 +54,49 @@ export class OpenAIChatFunctionCallStructureGenerationModel
     return this.model.settingsForEvent;
   }
 
+  /**
+   * Returns this model with a text prompt format.
+   */
+  withTextPrompt() {
+    return this.withPromptFormat(text());
+  }
+
+  /**
+   * Returns this model with an instruction prompt format.
+   */
+  withInstructionPrompt() {
+    return this.withPromptFormat(instruction());
+  }
+
+  /**
+   * Returns this model with a chat prompt format.
+   */
+  withChatPrompt() {
+    return this.withPromptFormat(chat());
+  }
+
+  withPromptFormat<
+    TARGET_PROMPT_FORMAT extends TextGenerationPromptFormat<
+      unknown,
+      OpenAIChatMessage[]
+    >,
+  >(
+    promptFormat: TARGET_PROMPT_FORMAT
+  ): OpenAIChatFunctionCallStructureGenerationModel<TARGET_PROMPT_FORMAT> {
+    return new OpenAIChatFunctionCallStructureGenerationModel({
+      model: this.model,
+      fnName: this.fnName,
+      fnDescription: this.fnDescription,
+      promptFormat,
+    });
+  }
+
   withSettings(additionalSettings: Partial<OpenAIChatSettings>) {
     return new OpenAIChatFunctionCallStructureGenerationModel({
       model: this.model.withSettings(additionalSettings),
       fnName: this.fnName,
       fnDescription: this.fnDescription,
+      promptFormat: this.promptFormat,
     }) as this;
   }
 
@@ -61,21 +109,30 @@ export class OpenAIChatFunctionCallStructureGenerationModel
    */
   async doGenerateStructure(
     schema: Schema<unknown> & JsonSchemaProducer,
-    prompt: OpenAIChatMessage[],
+    prompt: Parameters<PROMPT_FORMAT["format"]>[0], // first argument of the function
     options?: FunctionOptions
   ) {
-    const response = await this.model.callAPI(prompt, {
-      ...options,
-      responseFormat: OpenAIChatResponseFormat.json,
-      functionCall: { name: this.fnName },
-      functions: [
-        {
-          name: this.fnName,
-          description: this.fnDescription,
-          parameters: schema.getJsonSchema(),
-        },
-      ],
-    });
+    const expandedPrompt = this.promptFormat.format(prompt);
+
+    const response = await this.model
+      .withSettings({
+        stopSequences: [
+          ...(this.settings.stopSequences ?? []),
+          ...this.promptFormat.stopSequences,
+        ],
+      })
+      .callAPI(expandedPrompt, {
+        ...options,
+        responseFormat: OpenAIChatResponseFormat.json,
+        functionCall: { name: this.fnName },
+        functions: [
+          {
+            name: this.fnName,
+            description: this.fnDescription,
+            parameters: schema.getJsonSchema(),
+          },
+        ],
+      });
 
     const valueText = response.choices[0]!.message.function_call!.arguments;
 

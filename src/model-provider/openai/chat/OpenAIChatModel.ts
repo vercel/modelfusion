@@ -25,7 +25,7 @@ import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
 import { OpenAIChatFunctionCallStructureGenerationModel } from "./OpenAIChatFunctionCallStructureGenerationModel.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import { chat, instruction, text } from "./OpenAIChatPromptFormat.js";
+import { chat, identity, instruction, text } from "./OpenAIChatPromptFormat.js";
 import { createOpenAIChatDeltaIterableQueue } from "./OpenAIChatStreamIterable.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 
@@ -488,6 +488,7 @@ export class OpenAIChatModel
       model: this,
       fnName,
       fnDescription,
+      promptFormat: identity(),
     });
   }
 

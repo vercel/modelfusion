@@ -8,6 +8,16 @@ import { validateChatPrompt } from "../../../model-function/generate-text/prompt
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 
 /**
+ * OpenAIMessage[] identity chat format.
+ */
+export function identity(): TextGenerationPromptFormat<
+  Array<OpenAIChatMessage>,
+  Array<OpenAIChatMessage>
+> {
+  return { format: (prompt) => prompt, stopSequences: [] };
+}
+
+/**
  * Formats a text prompt as an OpenAI chat prompt.
  */
 export function text(): TextGenerationPromptFormat<
