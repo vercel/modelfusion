@@ -1,4 +1,5 @@
 export * from "./StructureFromTextGenerationModel.js";
+export * from "./StructureFromTextStreamingModel.js";
 export * from "./StructureGenerationEvent.js";
 export * from "./StructureGenerationModel.js";
 export * from "./StructureParseError.js";

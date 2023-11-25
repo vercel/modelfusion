@@ -22,8 +22,8 @@ export class StructureFromTextGenerationModel<
   MODEL extends TextGenerationModel<string, TextGenerationModelSettings>,
 > implements StructureGenerationModel<PROMPT, MODEL["settings"]>
 {
-  private readonly model: MODEL;
-  private readonly format: StructureFromTextPromptFormat<PROMPT>;
+  protected readonly model: MODEL;
+  protected readonly format: StructureFromTextPromptFormat<PROMPT>;
 
   constructor({
     model,
