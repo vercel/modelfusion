@@ -5,19 +5,15 @@ import { Schema } from "../../../core/schema/Schema.js";
 import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
 import { StructureParseError } from "../../../model-function/generate-structure/StructureParseError.js";
 import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
-import { OpenAIChatMessage } from "./OpenAIChatMessage";
 import {
-  OpenAIChatModel,
+  OpenAIChatPrompt,
   OpenAIChatResponseFormat,
-  OpenAIChatSettings,
-} from "./OpenAIChatModel";
+} from "./AbstractOpenAIChatModel.js";
+import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel";
 import { chat, instruction, text } from "./OpenAIChatPromptFormat.js";
 
 export class OpenAIChatFunctionCallStructureGenerationModel<
-  PROMPT_FORMAT extends TextGenerationPromptFormat<
-    unknown,
-    OpenAIChatMessage[]
-  >,
+  PROMPT_FORMAT extends TextGenerationPromptFormat<unknown, OpenAIChatPrompt>,
 > implements
     StructureGenerationModel<
       Parameters<PROMPT_FORMAT["format"]>[0], // first argument of the function
@@ -82,7 +78,7 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
   withPromptFormat<
     TARGET_PROMPT_FORMAT extends TextGenerationPromptFormat<
       unknown,
-      OpenAIChatMessage[]
+      OpenAIChatPrompt
     >,
   >(
     promptFormat: TARGET_PROMPT_FORMAT

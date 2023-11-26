@@ -4,6 +4,8 @@ import { Model, ModelSettings } from "./Model.js";
 export abstract class AbstractModel<SETTINGS extends ModelSettings>
   implements Model<SETTINGS>
 {
+  readonly settings: SETTINGS;
+
   constructor({ settings }: { settings: SETTINGS }) {
     this.settings = settings;
   }
@@ -20,8 +22,6 @@ export abstract class AbstractModel<SETTINGS extends ModelSettings>
   }
 
   abstract get settingsForEvent(): Partial<SETTINGS>;
-
-  readonly settings: SETTINGS;
 
   abstract withSettings(additionalSettings: Partial<SETTINGS>): this;
 }

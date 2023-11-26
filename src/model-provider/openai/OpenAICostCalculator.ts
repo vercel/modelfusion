@@ -24,8 +24,8 @@ import {
   OpenAITranscriptionVerboseJsonResponse,
   calculateOpenAITranscriptionCostInMillicents,
 } from "./OpenAITranscriptionModel.js";
+import { OpenAIChatResponse } from "./chat/AbstractOpenAIChatModel.js";
 import {
-  OpenAIChatResponse,
   calculateOpenAIChatCostInMillicents,
   isOpenAIChatModel,
 } from "./chat/OpenAIChatModel.js";
