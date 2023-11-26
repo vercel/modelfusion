@@ -209,7 +209,7 @@ const sentiment = await generateStructure(
 );
 ```
 
-### Text Embedding
+### Embed Text
 
 [OpenAITextEmbeddingModel API](/api/classes/OpenAITextEmbeddingModel)
 
