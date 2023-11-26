@@ -92,12 +92,11 @@ for await (const textPart of textStream) {
 
 ## Prompt Format
 
-[Text generation prompt formats](/api/interfaces/TextGenerationPromptFormat) change the prompt format that a text generation model accepts.
-This enables the use of abstracted prompts such as [instruction](/api/interfaces/InstructionPrompt) or [chat](/api/interfaces/ChatPrompt) prompts.
+[Text generation prompt formats](/api/interfaces/TextGenerationPromptFormat) change the prompt format that a text generation model accepts. This enables the use of abstracted prompts such as text, instruction or chat prompts.
 
 You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `withPromptFormat()` method.
 
-For convenience, models with clear prompt formats have a `withTextPrompt()`, `withChatPrompt()`, or `withInstructionPrompt()` method that automatically applies the correct prompt format.
+For convenience, models with clear prompt formats provide `withTextPrompt()`, `withChatPrompt()`, and `withInstructionPrompt()` methods that automatically apply the correct prompt format.
 
 ### Text Prompts
 
@@ -153,7 +152,7 @@ The following prompt formats are available for text prompts:
 
 ### Instruction Prompts
 
-Instruction prompts are a higher-level prompt formats that contains an instruction and an optional system message. Instruction prompts can be [text instruction prompts](/api/interfaces/TextInstructionPrompt) or [multi-modal instruction prompts](/api/interfaces/InstructionPrompt).
+Instruction prompts are a higher-level prompt formats that contains an instruction and an optional system message. Instruction prompts can be [text instruction prompts](/api/interfaces/TextInstructionPrompt) or [multi-modal instruction prompts](/api/interfaces/MultiModalInstructionPrompt).
 
 The supported instruction prompt type depends on the prompt format that you use. For text instruction prompts, the `instruction` property is a `string`, and for multi-modal instruction prompts it is a [MultiModalInput](/api/modules#multimodalinput). Multi-modal inputs are arrays that can contain text or image content.
 

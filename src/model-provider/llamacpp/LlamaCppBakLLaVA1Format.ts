@@ -1,4 +1,4 @@
-import { InstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
+import { MultiModalInstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
 import { LlamaCppTextGenerationPrompt } from "./LlamaCppTextGenerationModel.js";
 
@@ -13,7 +13,7 @@ const DEFAULT_SYSTEM_MESSAGE =
  * @see https://github.com/SkunkworksAI/BakLLaVA
  */
 export function instruction(): TextGenerationPromptFormat<
-  InstructionPrompt,
+  MultiModalInstructionPrompt,
   LlamaCppTextGenerationPrompt
 > {
   return {
