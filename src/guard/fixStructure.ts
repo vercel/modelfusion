@@ -44,14 +44,12 @@ import { Guard } from "./guard.js";
  *  fixStructure({
  *    modifyInputForRetry: async ({ input, error }) => [
  *      ...input,
- *      {
- *        role: "assistant",
-  *       content: null,
-          function_call: {
+ *      OpenAIChatMessage.assistant(null, {
+ *        functionCall: {
  *          name: "sentiment",
  *          arguments: JSON.stringify(error.valueText),
  *        },
- *      } satisfies OpenAIChatMessage,
+ *      }),
  *      OpenAIChatMessage.user(error.message),
  *      OpenAIChatMessage.user("Please fix the error and try again."),
  *    ],

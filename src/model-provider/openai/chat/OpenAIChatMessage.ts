@@ -54,10 +54,16 @@ export type OpenAIChatMessage =
     };
 
 export const OpenAIChatMessage = {
+  /**
+   * Creates a system chat message.
+   */
   system(content: string): OpenAIChatMessage {
     return { role: "system", content };
   },
 
+  /**
+   * Creates a user chat message. The message can be a string or a multi-modal input.
+   */
   user(
     content: string | MultiModalInput,
     options?: { name?: string }
@@ -87,17 +93,27 @@ export const OpenAIChatMessage = {
   },
 
   /**
-   * Creates an assistant chat message. The assistant message can optionally contain tool calls.
+   * Creates an assistant chat message.
+   * The assistant message can optionally contain tool calls
+   * or a function call (function calls are deprecated).
    */
   assistant(
     content: string | null,
     options?: {
-      toolCalls: Array<ToolCall<string, unknown>> | null | undefined;
+      functionCall?: { name: string; arguments: string };
+      toolCalls?: Array<ToolCall<string, unknown>> | null | undefined;
     }
   ): OpenAIChatMessage {
     return {
       role: "assistant",
       content,
+      function_call:
+        options?.functionCall == null
+          ? undefined
+          : {
+              name: options.functionCall.name,
+              arguments: options.functionCall.arguments,
+            },
       tool_calls:
         options?.toolCalls?.map((toolCall) => ({
           id: toolCall.id,
@@ -108,6 +124,21 @@ export const OpenAIChatMessage = {
           },
         })) ?? undefined,
     };
+  },
+
+  /**
+   * Creates a function result chat message for tool call results.
+   *
+   * @deprecated OpenAI functions are deprecated in favor of tools.
+   */
+  fn({
+    fnName,
+    content,
+  }: {
+    fnName: string;
+    content: unknown;
+  }): OpenAIChatMessage {
+    return { role: "function", name: fnName, content: JSON.stringify(content) };
   },
 
   /**
