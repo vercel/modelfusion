@@ -1,6 +1,36 @@
 # Changelog
 
-## v0.83.0 - 2023-11-25
+## v0.84.0 - 2023-11-26
+
+### Added
+
+- Support for OpenAI-compatible chat APIs. See [OpenAI Compatible](https://modelfusion.dev/integration/model-provider/openaicompatible) for details.
+
+  ```ts
+  import {
+    BaseUrlApiConfiguration,
+    openaicompatible,
+    generateText,
+  } from "modelfusion";
+
+  const text = await generateText(
+    openaicompatible
+      .ChatTextGenerator({
+        api: new BaseUrlApiConfiguration({
+          baseUrl: "https://api.fireworks.ai/inference/v1",
+          headers: {
+            Authorization: `Bearer ${process.env.FIREWORKS_API_KEY}`,
+          },
+        }),
+        model: "accounts/fireworks/models/mistral-7b",
+      })
+      .withTextPrompt(),
+
+    "Write a story about a robot learning to love"
+  );
+  ```
+
+## v0.83.0 - 2023-11-26
 
 ### Added
 
