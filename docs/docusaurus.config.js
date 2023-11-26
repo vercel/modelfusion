@@ -71,6 +71,15 @@ const config = {
     [
       "@docusaurus/plugin-content-docs",
       {
+        routeBasePath: "showcase",
+        id: "showcase",
+        path: "showcase",
+        sidebarCollapsible: false,
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
         routeBasePath: "tutorial",
         id: "tutorial",
         path: "tutorial",
@@ -117,13 +126,6 @@ const config = {
             position: "left",
           },
           {
-            to: "/tutorial/",
-            label: "Examples & Tutorials",
-            activeBaseRegex: `/tutorial/`,
-            sidebarId: "tutorial",
-            position: "left",
-          },
-          {
             to: "/integration/model-provider/",
             label: "Integrations",
             activeBaseRegex: `/integration/model-provider/`,
@@ -131,10 +133,24 @@ const config = {
             position: "left",
           },
           {
+            to: "/tutorial/",
+            label: "Examples & Tutorials",
+            activeBaseRegex: `/tutorial/`,
+            sidebarId: "tutorial",
+            position: "left",
+          },
+          {
+            to: "/showcase/",
+            label: "Showcase",
+            activeBaseRegex: `/showcase/`,
+            sidebarId: "showcase",
+            position: "left",
+          },
+          {
             to: "/api/modules/",
             label: "API Reference",
             activeBaseRegex: `/api/`,
-            position: "left",
+            position: "right",
           },
           { to: "blog", label: "Blog", position: "right" },
           {
@@ -179,6 +195,10 @@ const config = {
               {
                 href: "https://github.com/lgrammel/modelfusion/tree/main/examples",
                 label: "Examples (GitHub)",
+              },
+              {
+                label: "Showcase",
+                to: "/showcase/",
               },
             ],
           },

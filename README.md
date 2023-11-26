@@ -736,9 +736,11 @@ invokeFlow({
 - [Troubleshooting](https://modelfusion.dev/guide/troubleshooting)
   - [Bundling](https://modelfusion.dev/guide/troubleshooting/bundling)
 
+### [Integrations](https://modelfusion.dev/integration/model-provider)
+
 ### [Examples & Tutorials](https://modelfusion.dev/tutorial)
 
-### [Integrations](https://modelfusion.dev/integration/model-provider)
+### [Showcase](https://modelfusion.dev/showcase)
 
 ### [API Reference](https://modelfusion.dev/api/modules)
 
