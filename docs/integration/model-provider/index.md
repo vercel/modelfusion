@@ -8,18 +8,20 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 
 ### [Generate Text](/guide/function/generate-text)
 
-|                                                         | [Generate text](/guide/function/generate-text) | [Stream text](/guide/function/generate-text) | [Tokenize text](/guide/function/tokenize-text) |
-| ------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
-| [OpenAI](/integration/model-provider/openai)            | ✅                                             | ✅                                           | full                                           |
-| [Llama.cpp](/integration/model-provider/llamacpp)       | ✅                                             | ✅                                           | basic                                          |
-| [Ollama](/integration/model-provider/ollama)            | ✅                                             | ✅                                           |                                                |
-| [Hugging Face](/integration/model-provider/huggingface) | ✅                                             |                                              |                                                |
-| [Cohere](/integration/model-provider/cohere)            | ✅                                             | ✅                                           | full                                           |
-| [Anthropic](/integration/model-provider/anthropic)      | ✅                                             | ✅                                           |                                                |
+|                                                                   | [Generate text](/guide/function/generate-text) | [Stream text](/guide/function/generate-text) | [Tokenize text](/guide/function/tokenize-text) |
+| ----------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
+| [OpenAI](/integration/model-provider/openai)                      | ✅                                             | ✅                                           | full                                           |
+| [OpenAI Compatible](/integration/model-provider/openaicompatible) | ✅                                             | ✅                                           |                                                |
+| [Llama.cpp](/integration/model-provider/llamacpp)                 | ✅                                             | ✅                                           | basic                                          |
+| [Ollama](/integration/model-provider/ollama)                      | ✅                                             | ✅                                           |                                                |
+| [Hugging Face](/integration/model-provider/huggingface)           | ✅                                             |                                              |                                                |
+| [Cohere](/integration/model-provider/cohere)                      | ✅                                             | ✅                                           | full                                           |
+| [Anthropic](/integration/model-provider/anthropic)                | ✅                                             | ✅                                           |                                                |
 
 ### [Generate Structure](/guide/function/generate-structure)
 
-- [OpenAI](/integration/model-provider/openai) chat models
+- [OpenAI](/integration/model-provider/openai) chat models (function call, json mode)
+- [Ollama](/integration/model-provider/ollama) json mode, with compatible models
 
 ### [Generate Tool Call](/guide/tools/generate-tool-call) and [Generate Tool Calls or Text](/guide/tools/generate-tool-calls-or-text)
 
