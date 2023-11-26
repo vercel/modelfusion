@@ -1,6 +1,10 @@
 import { JsonSchemaProducer } from "./JsonSchemaProducer.js";
 import { Schema } from "./Schema.js";
 
+export function uncheckedSchema<STRUCTURE>(jsonSchema?: unknown) {
+  return new UncheckedSchema<STRUCTURE>(jsonSchema);
+}
+
 export class UncheckedSchema<STRUCTURE>
   implements Schema<STRUCTURE>, JsonSchemaProducer
 {

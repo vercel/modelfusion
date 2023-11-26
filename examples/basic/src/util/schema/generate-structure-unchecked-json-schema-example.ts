@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { UncheckedSchema, generateStructure, openai } from "modelfusion";
+import { generateStructure, openai, uncheckedSchema } from "modelfusion";
 
 dotenv.config();
 
@@ -17,7 +17,7 @@ async function main() {
       })
       .withInstructionPrompt(),
 
-    new UncheckedSchema({
+    uncheckedSchema({
       $schema: "http://json-schema.org/draft-07/schema#",
       type: "object",
       properties: {
