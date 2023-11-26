@@ -1,8 +1,9 @@
 ---
 sidebar_position: 20
+title: Using BakLLaVA with llama.cpp
 ---
 
-# Using BakLLaVA with llama.cpp
+# Using BakLLaVA with llama.cpp and ModelFusion
 
 [BakLLaVA 1](https://huggingface.co/SkunkworksAI/BakLLaVA-1) is an open-source multi-modal model. It is based on [Mistral 7B](https://mistral.ai/news/announcing-mistral-7b/), with an added [LLaVA 1.5](https://llava-vl.github.io/) architecture to support multi-modal inputs.
 

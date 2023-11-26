@@ -1,8 +1,9 @@
 ---
 sidebar_position: 20
+title: Using GPT-4 Vision
 ---
 
-# Using GPT-4 Vision
+# Using GPT-4 Vision with ModelFusion
 
 GPT-4 Turbo Vision is a powerful tool for processing images and text in the same prompt. This section will guide you through setting up a basic example to describe an image in detail using ModelFusion.
 
