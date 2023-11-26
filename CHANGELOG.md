@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.85.0 - 2023-11-26
+
+### Added
+
+- `OpenAIChatMessage` function call support.
+
 ## v0.84.0 - 2023-11-26
 
 ### Added
