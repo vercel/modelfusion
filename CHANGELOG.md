@@ -1,10 +1,21 @@
 # Changelog
 
+## v0.83.0 - 2023-11-25
+
+### Added
+
+- Introduce `uncheckedSchema()` facade function as an easier way to create unchecked ModelFusion schemas. This aligns the API with `zodSchema()`.
+
+### Changed
+
+- **breaking change**: Renamed `InstructionPrompt` interface to `MultiModalInstructionPrompt` to clearly distinguish it from `TextInstructionPrompt`.
+- **breaking change**: Renamed `.withBasicPrompt` methods for image generation models to `.withTextPrompt` to align with text generation models.
+
 ## v0.82.0 - 2023-11-25
 
 ### Added
 
-- Introduce `zodSchema()` function as an easier way to create new ModelFusion Zod schemas. This clearly distinguishes it from `ZodSchema` that is also part of the zod library.
+- Introduce `zodSchema()` facade function as an easier way to create new ModelFusion Zod schemas. This clearly distinguishes it from `ZodSchema` that is also part of the zod library.
 
 ## v0.81.0 - 2023-11-25
 
