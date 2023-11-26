@@ -7,4 +7,5 @@ export * from "./llamacpp/index.js";
 export * from "./lmnt/index.js";
 export * from "./ollama/index.js";
 export * from "./openai/index.js";
+export * from "./openai-compatible/index.js";
 export * from "./stability/index.js";
