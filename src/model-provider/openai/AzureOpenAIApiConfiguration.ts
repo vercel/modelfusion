@@ -4,7 +4,7 @@ import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
 
 /**
- * Cconfiguration for the Azure OpenAI API. This class is responsible for constructing URLs specific to the Azure OpenAI deployment.
+ * Configuration for the Azure OpenAI API. This class is responsible for constructing URLs specific to the Azure OpenAI deployment.
  * It creates URLs of the form
  * `https://[resourceName].openai.azure.com/openai/deployments/[deploymentId]/[path]?api-version=[apiVersion]`
  *
