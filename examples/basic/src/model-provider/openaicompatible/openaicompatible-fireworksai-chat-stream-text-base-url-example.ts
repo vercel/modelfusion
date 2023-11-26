@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import {
-  FireworksAIApiConfiguration,
+  BaseUrlApiConfiguration,
   openaicompatible,
   streamText,
 } from "modelfusion";
@@ -11,7 +11,12 @@ async function main() {
   const textStream = await streamText(
     openaicompatible
       .ChatTextGenerator({
-        api: new FireworksAIApiConfiguration(),
+        api: new BaseUrlApiConfiguration({
+          baseUrl: "https://api.fireworks.ai/inference/v1",
+          headers: {
+            Authorization: `Bearer ${process.env.FIREWORKS_API_KEY}`,
+          },
+        }),
         model: "accounts/fireworks/models/mistral-7b",
       })
       .withTextPrompt(),
