@@ -9,6 +9,7 @@ export * from "./OpenAISpeechModel.js";
 export * from "./OpenAITextEmbeddingModel.js";
 export * from "./OpenAITranscriptionModel.js";
 export * from "./TikTokenTokenizer.js";
+export * from "./chat/AbstractOpenAIChatModel.js";
 export * from "./chat/OpenAIChatMessage.js";
 export * from "./chat/OpenAIChatModel.js";
 export * as OpenAIChatPromptFormat from "./chat/OpenAIChatPromptFormat.js";
