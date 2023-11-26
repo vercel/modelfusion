@@ -207,7 +207,7 @@ export interface OpenAIChatSettings
 }
 
 /**
- * Create a text generation model that calls the OpenAI chat completion API.
+ * Create a text generation model that calls the OpenAI chat API.
  *
  * @see https://platform.openai.com/docs/api-reference/chat/create
  *

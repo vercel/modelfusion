@@ -70,7 +70,7 @@ export interface AbstractOpenAIChatSettings
 export type OpenAIChatPrompt = OpenAIChatMessage[];
 
 /**
- * Abstract text generation model that calls an API that is compatible with the OpenAI chat completion API.
+ * Abstract text generation model that calls an API that is compatible with the OpenAI chat API.
  *
  * @see https://platform.openai.com/docs/api-reference/chat/create
  */
