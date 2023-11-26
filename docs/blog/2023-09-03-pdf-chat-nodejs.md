@@ -264,10 +264,10 @@ while (true) {
           `respond with "I don't know".`
       ),
       OpenAIChatMessage.user(question),
-      OpenAIChatMessage.functionResult(
-        "getInformation",
-        JSON.stringify(information)
-      ),
+      OpenAIChatMessage.fn({
+        fnName: "getInformation",
+        content: JSON.stringify(information),
+      }),
     ]
   );
 
