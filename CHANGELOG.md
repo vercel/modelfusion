@@ -4,7 +4,7 @@
 
 ### Added
 
-- **experimental**: `modelfusion/extension` export with functions and classes that are necessary to implement providers in 3rd party node modules.
+- **experimental**: `modelfusion/extension` export with functions and classes that are necessary to implement providers in 3rd party node modules. See [lgrammel/modelfusion-example-provider](https://github.com/lgrammel/modelfusion-example-provider) for an example.
 
 ## v0.85.0 - 2023-11-26
 
