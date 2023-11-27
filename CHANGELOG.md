@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.87.0 - 2023-11-27
+
+### Added
+
+- **experimental**: `modelfusion/extension` export with functions and classes that are necessary to implement providers in 3rd party node modules.
+
 ## v0.85.0 - 2023-11-26
 
 ### Added
