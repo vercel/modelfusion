@@ -1,5 +1,5 @@
 import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
-import { ChatPrompt } from "../../../model-function/generate-text/prompt-format/ChatPrompt.js";
+import { TextChatPrompt } from "../../../model-function/generate-text/prompt-format/ChatPrompt.js";
 import {
   MultiModalInstructionPrompt,
   TextInstructionPrompt,
@@ -57,7 +57,7 @@ export function instruction(): TextGenerationPromptFormat<
  * Formats a chat prompt as an OpenAI chat prompt.
  */
 export function chat(): TextGenerationPromptFormat<
-  ChatPrompt,
+  TextChatPrompt,
   Array<OpenAIChatMessage>
 > {
   return {

@@ -1,5 +1,5 @@
 import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
-import { ChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
 import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
 /**
@@ -42,7 +42,7 @@ export const chat: (options?: {
   user?: string;
   assistant?: string;
   system?: string;
-}) => TextGenerationPromptFormat<ChatPrompt, string> = ({
+}) => TextGenerationPromptFormat<TextChatPrompt, string> = ({
   user = "user",
   assistant = "assistant",
   system,

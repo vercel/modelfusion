@@ -1,7 +1,7 @@
 import { InvalidPromptError } from "./InvalidPromptError.js";
 
 /**
- * A chat prompt is a combination of a system message and a list of messages with the following constraints:
+ * A textual chat prompt is a combination of a system message and a list of messages with the following constraints:
  *
  * - A chat prompt can optionally have a system message.
  * - The first message of the chat must be a user message.
@@ -26,26 +26,25 @@ import { InvalidPromptError } from "./InvalidPromptError.js";
  *
  * @see validateChatPrompt
  */
-export interface ChatPrompt {
+export interface TextChatPrompt {
   system?: string;
-  messages: Array<ChatMessage>;
+  messages: Array<TextChatMessage>;
 }
 
 /**
- * A message in a chat prompt.
- * @see ChatPrompt
+ * A text message in a chat prompt.
+ * @see TextChatPrompt
  */
-export interface ChatMessage {
-  role: "user" | "assistant";
-  content: string;
-}
+export type TextChatMessage =
+  | { role: "user"; content: string }
+  | { role: "assistant"; content: string };
 
 /**
  * Checks if a chat prompt is valid. Throws a {@link ChatPromptValidationError} if it's not.
  *
  * @throws {@link ChatPromptValidationError}
  */
-export function validateChatPrompt(chatPrompt: ChatPrompt) {
+export function validateChatPrompt(chatPrompt: TextChatPrompt) {
   const messages = chatPrompt.messages;
 
   if (messages.length < 1) {

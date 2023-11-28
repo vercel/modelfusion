@@ -1,6 +1,6 @@
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
 import {
-  ChatPrompt,
+  TextChatPrompt,
   validateChatPrompt,
 } from "../../model-function/generate-text/prompt-format/ChatPrompt.js";
 import { TextInstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
@@ -47,7 +47,7 @@ export function instruction(): TextGenerationPromptFormat<
  *
  * @see https://docs.anthropic.com/claude/docs/constructing-a-prompt
  */
-export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
+export function chat(): TextGenerationPromptFormat<TextChatPrompt, string> {
   return {
     format(prompt) {
       validateChatPrompt(prompt);

@@ -1,5 +1,5 @@
 import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
-import { ChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
 import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
 const START_SEGMENT = "<|im_start|>";
@@ -71,7 +71,7 @@ export function instruction(): TextGenerationPromptFormat<
  * Paris<|im_end|>
  * ```
  */
-export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
+export function chat(): TextGenerationPromptFormat<TextChatPrompt, string> {
   return {
     format(prompt) {
       validateChatPrompt(prompt);

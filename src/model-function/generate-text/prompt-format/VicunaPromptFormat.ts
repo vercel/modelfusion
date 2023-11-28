@@ -1,5 +1,5 @@
 import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
-import { ChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
 
 // default Vicuna 1 system message
 const DEFAULT_SYSTEM_MESSAGE =
@@ -19,7 +19,7 @@ const DEFAULT_SYSTEM_MESSAGE =
  * ASSISTANT:
  * ```
  */
-export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
+export function chat(): TextGenerationPromptFormat<TextChatPrompt, string> {
   return {
     format(prompt) {
       validateChatPrompt(prompt);

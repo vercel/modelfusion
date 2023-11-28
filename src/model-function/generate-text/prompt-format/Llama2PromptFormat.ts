@@ -1,5 +1,5 @@
 import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
-import { ChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
 import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
 // see https://github.com/facebookresearch/llama/blob/6c7fe276574e78057f917549435a2554000a876d/llama/generation.py#L44
@@ -71,7 +71,7 @@ export function instruction(): TextGenerationPromptFormat<
  * ${ user msg 1 } [/INST] ${ model response 1 } </s><s>[INST] ${ user msg 2 } [/INST] ${ model response 2 } </s><s>[INST] ${ user msg 3 } [/INST]
  * ```
  */
-export function chat(): TextGenerationPromptFormat<ChatPrompt, string> {
+export function chat(): TextGenerationPromptFormat<TextChatPrompt, string> {
   return {
     format(prompt) {
       validateChatPrompt(prompt);
