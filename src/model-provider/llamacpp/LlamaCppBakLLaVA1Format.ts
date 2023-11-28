@@ -1,5 +1,9 @@
-import { MultiModalInstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
 import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import {
+  MultiModalChatPrompt,
+  validateChatPrompt,
+} from "../../model-function/generate-text/prompt-format/ChatPrompt.js";
+import { MultiModalInstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
 import { LlamaCppTextGenerationPrompt } from "./LlamaCppTextGenerationModel.js";
 
 // default Vicuna 1 system message
@@ -42,6 +46,65 @@ export function instruction(): TextGenerationPromptFormat<
         }
 
         text += `${content}\n`;
+      }
+
+      text += `\nASSISTANT: `;
+
+      return { text, images };
+    },
+    stopSequences: [`\nUSER:`],
+  };
+}
+
+export function chat(): TextGenerationPromptFormat<
+  MultiModalChatPrompt,
+  LlamaCppTextGenerationPrompt
+> {
+  return {
+    format(prompt) {
+      validateChatPrompt(prompt);
+
+      let text = "";
+
+      text += `${prompt.system ?? DEFAULT_SYSTEM_MESSAGE}\n\n`;
+
+      // construct text and image mapping:
+      let imageCounter = 1;
+      const images: Record<string, string> = {};
+
+      for (const { role, content } of prompt.messages) {
+        switch (role) {
+          case "user": {
+            text += `USER: `;
+
+            for (const part of content) {
+              switch (part.type) {
+                case "text": {
+                  text += part.text;
+                  break;
+                }
+                case "image": {
+                  text += `[img-${imageCounter}]`;
+                  images[imageCounter.toString()] = part.base64Image;
+                  imageCounter++;
+                  break;
+                }
+              }
+            }
+
+            break;
+          }
+          case "assistant": {
+            text += `ASSISTANT: ${content}`;
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = role;
+            throw new Error(`Unsupported role: ${_exhaustiveCheck}`);
+          }
+        }
+
+        text += `\n\n`;
       }
 
       text += `ASSISTANT: `;

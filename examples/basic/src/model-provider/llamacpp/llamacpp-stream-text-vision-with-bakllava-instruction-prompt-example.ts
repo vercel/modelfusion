@@ -16,6 +16,7 @@ async function main() {
         temperature: 0,
       })
       .withPromptFormat(LlamaCppBakLLaVA1Format.instruction()),
+
     {
       instruction: [
         { type: "text", text: "Describe the image in detail:\n\n" },
