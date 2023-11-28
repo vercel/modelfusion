@@ -1,6 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { StructureFromTextGenerationModel } from "../../model-function/generate-structure/StructureFromTextGenerationModel.js";
-import { StructureFromTextPromptFormat } from "model-function/generate-structure/StructureFromTextPromptFormat.js";
+import { StructureFromTextPromptFormat } from "../../model-function/generate-structure/StructureFromTextPromptFormat.js";
 import {
   TextGenerationToolCallModel,
   ToolCallPromptFormat,
