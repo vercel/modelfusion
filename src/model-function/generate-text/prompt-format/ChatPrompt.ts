@@ -1,3 +1,4 @@
+import { MultiModalInput } from "./Content.js";
 import { InvalidPromptError } from "./InvalidPromptError.js";
 
 /**
@@ -39,12 +40,23 @@ export type TextChatMessage =
   | { role: "user"; content: string }
   | { role: "assistant"; content: string };
 
+export interface MultiModalChatPrompt {
+  system?: string;
+  messages: Array<MultiModalChatMessage>;
+}
+
+export type MultiModalChatMessage =
+  | { role: "user"; content: MultiModalInput }
+  | { role: "assistant"; content: string };
+
 /**
  * Checks if a chat prompt is valid. Throws a {@link ChatPromptValidationError} if it's not.
  *
  * @throws {@link ChatPromptValidationError}
  */
-export function validateChatPrompt(chatPrompt: TextChatPrompt) {
+export function validateChatPrompt(
+  chatPrompt: TextChatPrompt | MultiModalChatPrompt
+) {
   const messages = chatPrompt.messages;
 
   if (messages.length < 1) {
