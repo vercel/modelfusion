@@ -334,7 +334,7 @@ const textStream = await streamText(
 
 #### Chat prompt
 
-[OpenAIChatPromptFormat.chat()](/api/namespaces/OpenAIChatPromptFormat) lets you use [chat prompts](/api/interfaces/ChatPrompt) with OpenAI chat models. It is available as a shorthand method:
+[OpenAIChatPromptFormat.chat()](/api/namespaces/OpenAIChatPromptFormat) lets you use [text chat prompts](/api/interfaces/TextChatPrompt) and [multi-modal chat prompts](/api/interfaces/MultiModalChatPrompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(

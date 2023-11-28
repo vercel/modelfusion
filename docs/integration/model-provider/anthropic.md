@@ -107,7 +107,7 @@ const textStream = await streamText(
 
 ### Chat prompt
 
-[AnthropicPromptFormat.chat()](/api/namespaces/AnthropicPromptFormat) lets you use use [chat prompts](/api/interfaces/ChatPrompt) with Anthropic models. It is available as a shorthand method:
+[AnthropicPromptFormat.chat()](/api/namespaces/AnthropicPromptFormat) lets you use use [text chat prompts](/api/interfaces/TextChatPrompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
