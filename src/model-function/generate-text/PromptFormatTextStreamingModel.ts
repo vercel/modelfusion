@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { StructureFromTextPromptFormat } from "model-function/generate-structure/StructureFromTextPromptFormat.js";
+import { StructureFromTextPromptFormat } from "../../model-function/generate-structure/StructureFromTextPromptFormat.js";
 import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
 import { PromptFormatTextGenerationModel } from "./PromptFormatTextGenerationModel.js";
 import {
