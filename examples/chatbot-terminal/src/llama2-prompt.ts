@@ -1,6 +1,6 @@
 import {
-  ChatPrompt,
   Llama2PromptFormat,
+  TextChatPrompt,
   llamacpp,
   streamText,
   trimChatPrompt,
@@ -15,7 +15,7 @@ const terminal = readline.createInterface({
 });
 
 async function main() {
-  const chat: ChatPrompt = { system: systemPrompt, messages: [] };
+  const chat: TextChatPrompt = { system: systemPrompt, messages: [] };
 
   while (true) {
     const userInput = await terminal.question("You: ");

@@ -226,7 +226,7 @@ The following prompt formats are available for instruction prompts:
 
 ### Chat Prompts
 
-[Chat prompts](/api/interfaces/ChatPrompt) are a higher-level prompt format that contains a list of chat messages.
+Chat prompts are a higher-level prompt format that contains a list of chat messages. They can be either a [TextChatPrompt](/api/interfaces/TextChatPrompt) or a [MultiModalChatPrompt](/api/interfaces/MultiModalChatPrompt).
 
 Chat prompts are a combination of a system message and a list of messages with the following constraints:
 
@@ -250,9 +250,6 @@ const model = openai
 ```
 
 The [OpenAIChatPromptFormat.chat()](/api/namespaces/OpenAIChatPromptFormat#chat) maps the chat prompt to an OpenAI chat prompt (that is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel)).
-openai.ChatTextGenerator
-Alternatively you can use the shorthand method:
-openai.ChatTexopenai.ChatTextGenerator
 
 ```ts
 const model = openai
@@ -314,7 +311,7 @@ It automatically uses the [context window size](/api/interfaces/TextGenerationMo
 #### Example
 
 ```ts
-const chat: ChatPrompt = {
+const chat: TextChatPrompt = {
   system: `You are a helpful, respectful and honest assistant.`,
   messages: [
     //...
