@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.88.0 - 2023-11-28
+
+### Added
+
+- Multi-modal chat prompts. Supported by OpenAI vision chat models and by BakLLaVA prompt format.
+
+### Changed
+
+- **breaking change**: renamed `ChatPrompt` to `TextChatPrompt` to distinguish it from multi-modal chat prompts.
+
 ## v0.87.0 - 2023-11-27
 
 ### Added
