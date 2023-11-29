@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "modelfusion": "0.85.0"
+    "modelfusion": "0.88.0"
   },
   "devDependencies": {
     "@types/node": "20.2.3",
