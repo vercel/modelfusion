@@ -26,13 +26,13 @@ async function main() {
         {
           role: "user",
           content: [
-            { type: "text", text: "Here is a first image:" },
+            { type: "text", text: "First image:" },
             { type: "image", base64Image: catImage },
-            { type: "text", text: " and a second image:" },
+            { type: "text", text: "\n\nSecond image:" },
             { type: "image", base64Image: mouseImage },
             {
               type: "text",
-              text: "Write a story about the characters from both the first and the second image.",
+              text: "\n\nWrite a story about the characters from both the first and the second image.",
             },
           ],
         },
