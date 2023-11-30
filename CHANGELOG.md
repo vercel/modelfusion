@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.89-0 - 2023-11-30
+
+### Added
+
+- `maxValuesPerCall` setting for `OpenAITextEmbeddingModel` to enable different configurations, e.g. for Azure. Thanks [@nanotronic](https://github.com/nanotronic) for the contribution!
+
 ## v0.88.0 - 2023-11-28
 
 ### Added
