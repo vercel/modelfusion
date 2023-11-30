@@ -53,6 +53,7 @@ export const calculateOpenAIEmbeddingCostInMillicents = ({
 export interface OpenAITextEmbeddingModelSettings
   extends EmbeddingModelSettings {
   api?: ApiConfiguration;
+  maxValuesPerCall?: number | undefined;
   model: OpenAITextEmbeddingModelType;
   isUserIdForwardingEnabled?: boolean;
 }
@@ -91,7 +92,10 @@ export class OpenAITextEmbeddingModel
     return this.settings.model;
   }
 
-  readonly maxValuesPerCall = 2048;
+  get maxValuesPerCall() {
+    return this.settings.maxValuesPerCall ?? 2048;
+  }
+  
   readonly isParallelizable = true;
 
   readonly embeddingDimensions: number;
