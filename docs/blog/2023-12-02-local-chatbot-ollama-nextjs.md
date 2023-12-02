@@ -1,17 +1,17 @@
 ---
-description: Tutorial on how to build a local chatbot with Next.js, Ollama, and ModelFusion.
+description: Tutorial on how to build a local chatbot with Next.js, Ollama, ModelFusion and the Vercel AI SDK.
 slug: ollama-nextjs-chatbot
 authors:
   - name: Lars Grammel
     title: AI Engineer
     url: https://github.com/lgrammel
     image_url: https://avatars.githubusercontent.com/u/205036
-tags: [tutorial, chatbot, ollama, nextjs, modelfusion]
+tags: [tutorial, chatbot, ollama, nextjs, modelfusion, vercel-ai-sdk]
 image: /img/blog/2023-12-02-local-chatbot-ollama-nextjs.png
 hide_table_of_contents: false
 ---
 
-# Create Your Own Local Chatbot with Next.js and Ollama
+# Create Your Own Local Chatbot with Next.js, Ollama, and ModelFusion
 
 <img src="/img/blog/2023-12-02-local-chatbot-ollama-nextjs.png"></img>
 

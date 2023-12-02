@@ -6,12 +6,12 @@ authors:
     title: AI Engineer
     url: https://github.com/lgrammel
     image_url: https://avatars.githubusercontent.com/u/205036
-tags: [modelfusion, chatbot, retrieval augmentation]
+tags: [tutorial, modelfusion, chatbot, retrieval augmentation, pdf]
 image: /img/blog/2023-09-03-pdf-chat-nodejs.png
 hide_table_of_contents: false
 ---
 
-# PDF Chat with Node.js, OpenAI and ModelFusion
+# PDF Chat with Node.js, OpenAI, and ModelFusion
 
 <img src="/img/blog/2023-09-03-pdf-chat-nodejs.png"></img>
 
