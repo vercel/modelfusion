@@ -62,12 +62,14 @@ export function CompletionTextGenerator(
  *   maxCompletionTokens: 500,
  * });
  *
- * const text = await generateText([
+ * const text = await generateText(
  *   model,
- *   OpenAIChatMessage.system(
- *     "Write a short story about a robot learning to love:"
- *   ),
- * ]);
+ *   [
+ *     OpenAIChatMessage.system(
+ *       "Write a short story about a robot learning to love:"
+ *     ),
+ *   ]
+ * );
  */
 export function ChatTextGenerator(settings: OpenAIChatSettings) {
   return new OpenAIChatModel(settings);
