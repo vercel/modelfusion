@@ -47,7 +47,7 @@ const chatCompletionChunkSchema = z.object({
   ),
   created: z.number(),
   model: z.string(),
-  system_fingerprint: z.string().optional(),
+  system_fingerprint: z.string().optional().nullable(),
 });
 
 type ChatCompletionChunk = z.infer<typeof chatCompletionChunkSchema>;

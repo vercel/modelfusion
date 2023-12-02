@@ -266,7 +266,7 @@ const openAIChatResponseSchema = z.object({
   ),
   created: z.number(),
   model: z.string(),
-  system_fingerprint: z.string().optional(),
+  system_fingerprint: z.string().optional().nullable(),
   object: z.literal("chat.completion"),
   usage: z.object({
     prompt_tokens: z.number(),
