@@ -14,6 +14,8 @@ Feedback, bug reports and other contributions are welcome.
 
 ## Linking for examples
 
+In ModelFusion's root directory:
+
 ```sh
 npm run dist
 cd dist
