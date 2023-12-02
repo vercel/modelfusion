@@ -172,6 +172,20 @@ const prompt = {
 };
 ```
 
+With the prompt and the model, you can then use ModelFusion to call Ollama and generate a streaming response:
+
+```ts
+const textStream = await streamText(model, prompt);
+```
+
+Finally you can return the streaming text response with the Vercel AI SDK. The `ModelFusionTextStream` adapts ModelFusion's streaming response to the Vercel AI SDK's streaming response:
+
+```ts
+  // Return the result using the Vercel AI SDK:
+  return new StreamingTextResponse(ModelFusionTextStream(textStream));
+}
+```
+
 ## Adding the Chat Interface
 
 We need to create a dedicated chat page to bring our chatbot to life on the frontend. This page will be located at `src/app/page.tsx` and will leverage the useChat hook from the Vercel AI SDK. The `useChat` hook calls the `/api/chat` route and processes the streaming response as an array of messages, rendering each token as it arrives.
