@@ -181,9 +181,8 @@ const textStream = await streamText(model, prompt);
 Finally you can return the streaming text response with the Vercel AI SDK. The `ModelFusionTextStream` adapts ModelFusion's streaming response to the Vercel AI SDK's streaming response:
 
 ```ts
-  // Return the result using the Vercel AI SDK:
-  return new StreamingTextResponse(ModelFusionTextStream(textStream));
-}
+// Return the result using the Vercel AI SDK:
+return new StreamingTextResponse(ModelFusionTextStream(textStream));
 ```
 
 ## Adding the Chat Interface
