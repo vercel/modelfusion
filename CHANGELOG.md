@@ -1,6 +1,12 @@
 # Changelog
 
-## v0.89-0 - 2023-11-30
+## v0.90.0 - 2023-12-03
+
+### Added
+
+- Temperature and language settings to OpenAI transcription model.
+
+## v0.89.0 - 2023-11-30
 
 ### Added
 
