@@ -57,6 +57,9 @@ const config = {
         id: "guide",
         path: "guide",
         sidebarCollapsible: false,
+        editUrl: ({ docPath }) => {
+          return `https://holocron.so/github/pr/lgrammel/modelfusion/main/editor/docs/guide/${docPath}`
+        },
       },
     ],
     [
@@ -66,6 +69,9 @@ const config = {
         id: "integration",
         path: "integration",
         sidebarCollapsible: false,
+        editUrl: ({ docPath }) => {
+          return `https://holocron.so/github/pr/lgrammel/modelfusion/main/editor/docs/integration/${docPath}`
+        },
       },
     ],
     [
@@ -75,6 +81,9 @@ const config = {
         id: "showcase",
         path: "showcase",
         sidebarCollapsible: false,
+        editUrl: ({ docPath }) => {
+          return `https://holocron.so/github/pr/lgrammel/modelfusion/main/editor/docs/showcase/${docPath}`
+        },
       },
     ],
     [
@@ -84,6 +93,9 @@ const config = {
         id: "tutorial",
         path: "tutorial",
         sidebarCollapsible: false,
+        editUrl: ({ docPath }) => {
+          return `https://holocron.so/github/pr/lgrammel/modelfusion/main/editor/docs/tutorial/${docPath}`
+        },
       },
     ],
     [
