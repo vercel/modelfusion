@@ -57,7 +57,7 @@ const chatResponseStreamEventSchema = new ZodSchema(
     chatCompletionChunkSchema,
     z.object({
       object: z.string().refine((obj) => obj !== "chat.completion.chunk", {
-        message: "Object must not be 'chat.completion.chunk'",
+        message: "Object must be 'chat.completion.chunk'",
       }),
     }),
   ])
