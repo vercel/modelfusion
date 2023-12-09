@@ -248,16 +248,13 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 ```ts
 import fs from "node:fs";
-import { OpenAITranscriptionModel, generateTranscription } from "modelfusion";
+import { openai, generateTranscription } from "modelfusion";
 
 const data = await fs.promises.readFile("data/test.mp3");
 
 const transcription = await generateTranscription(
   openai.Transcriber({ model: "whisper-1" }),
-  {
-    type: "mp3",
-    data,
-  }
+  { type: "mp3", data }
 );
 ```
 

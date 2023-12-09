@@ -39,9 +39,10 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 - [LMNT](/integration/model-provider/lmnt) (standard)
 - [OpenAI](/integration/model-provider/openai) (standard)
 
-### [Generate Speech](/guide/function/generate-transcription)
+### [Generate Transcription](/guide/function/generate-transcription)
 
 - [OpenAI (Whisper)](/integration/model-provider/openai)
+- [Whisper.cpp](/integration/model-provider/whispercpp)
 
 ### [Embed Value](/guide/function/embed)
 

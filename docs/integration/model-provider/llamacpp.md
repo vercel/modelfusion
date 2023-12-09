@@ -49,6 +49,7 @@ Server start example: `./server -m models/bakllava/ggml-model-q4_k.gguf --mmproj
 
 ```ts
 const api = new LlamaCppApiConfiguration({
+  baseUrl: "http://localhost:8080",
   // ...
 });
 

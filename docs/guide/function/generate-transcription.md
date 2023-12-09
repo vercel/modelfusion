@@ -31,3 +31,4 @@ const transcription = await generateTranscription(
 ## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)
+- [Whisper.cpp](/integration/model-provider/whispercpp)

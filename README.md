@@ -182,7 +182,7 @@ const transcription = await generateTranscription(
 );
 ```
 
-Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai)
+Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai), [Whisper.cpp](https://modelfusion.dev/integration/model-provider/whispercpp)
 
 ### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure#generatestructure)
 
