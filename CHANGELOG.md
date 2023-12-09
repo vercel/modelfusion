@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.92.0 - 2023-12-09
+
+### Changed
+
+- **breaking change**: setting global function observers and global logging has changed.
+  You can now call methods on a `modelfusion` import:
+
+  ```ts
+  import { modelfusion } from "modelfusion";
+
+  modelfusion.setLogFormat("basic-text");
+  ```
+
+- Cleaned output when using `detailed-object` log format.
+
 ## v0.91.0 - 2023-12-09
 
 ### Added
