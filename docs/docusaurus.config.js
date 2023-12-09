@@ -56,7 +56,7 @@ const config = {
         routeBasePath: "guide",
         id: "guide",
         path: "guide",
-        sidebarCollapsible: false,
+        sidebarCollapsible: true,
       },
     ],
     [
@@ -65,16 +65,7 @@ const config = {
         routeBasePath: "integration",
         id: "integration",
         path: "integration",
-        sidebarCollapsible: false,
-      },
-    ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        routeBasePath: "showcase",
-        id: "showcase",
-        path: "showcase",
-        sidebarCollapsible: false,
+        sidebarCollapsible: true,
       },
     ],
     [
@@ -83,7 +74,7 @@ const config = {
         routeBasePath: "tutorial",
         id: "tutorial",
         path: "tutorial",
-        sidebarCollapsible: false,
+        sidebarCollapsible: true,
       },
     ],
     [
@@ -140,13 +131,6 @@ const config = {
             position: "left",
           },
           {
-            to: "/showcase/",
-            label: "Showcase",
-            activeBaseRegex: `/showcase/`,
-            sidebarId: "showcase",
-            position: "left",
-          },
-          {
             to: "/api/modules/",
             label: "API Reference",
             activeBaseRegex: `/api/`,
@@ -198,7 +182,7 @@ const config = {
               },
               {
                 label: "Showcase",
-                to: "/showcase/",
+                to: "/tutorial/showcase/",
               },
             ],
           },
