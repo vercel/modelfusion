@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
-import { generateText, openai, setGlobalFunctionObservers } from "modelfusion";
+import { generateText, openai, modelfusion } from "modelfusion";
 import { customObserver } from "./custom-observer";
 
 dotenv.config();
 
 async function main() {
-  // Set a global funtion observer:
-  setGlobalFunctionObservers([customObserver]);
+  // Set a global function observer:
+  modelfusion.setFunctionObservers([customObserver]);
 
   const text = await generateText(
     openai.CompletionTextGenerator({

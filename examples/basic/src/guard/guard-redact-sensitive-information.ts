@@ -4,12 +4,12 @@ import {
   generateText,
   guard,
   llamacpp,
-  setGlobalFunctionLogging,
+  modelfusion,
 } from "modelfusion";
 
 dotenv.config();
 
-setGlobalFunctionLogging("detailed-object");
+modelfusion.setLogFormat("detailed-object");
 
 const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
 

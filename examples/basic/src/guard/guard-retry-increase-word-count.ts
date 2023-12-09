@@ -1,14 +1,9 @@
 import dotenv from "dotenv";
-import {
-  generateText,
-  guard,
-  openai,
-  setGlobalFunctionLogging,
-} from "modelfusion";
+import { generateText, guard, modelfusion, openai } from "modelfusion";
 
 dotenv.config();
 
-setGlobalFunctionLogging("detailed-object");
+modelfusion.setLogFormat("detailed-object");
 
 async function main() {
   const story = await guard(

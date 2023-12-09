@@ -1,15 +1,11 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  openai,
-  setGlobalFunctionLogging,
-  useToolsOrGenerateText,
-} from "modelfusion";
+import { OpenAIChatMessage, openai, useToolsOrGenerateText } from "modelfusion";
+import { setLogFormat } from "modelfusion/core/ModelFusionConfiguration";
 import { calculator } from "./tools/calculator-tool";
 
 dotenv.config();
 
-setGlobalFunctionLogging("basic-text");
+setLogFormat("basic-text");
 
 async function main() {
   const { text, toolResults } = await useToolsOrGenerateText(

@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { generateText, openai, setGlobalFunctionLogging } from "modelfusion";
+import { generateText, modelfusion, openai } from "modelfusion";
 
 dotenv.config();
 
@@ -8,7 +8,7 @@ async function main() {
   console.log("Logging: off (override)");
   console.log();
 
-  setGlobalFunctionLogging("basic-text");
+  modelfusion.setLogFormat("basic-text");
 
   const text = await generateText(
     openai.CompletionTextGenerator({

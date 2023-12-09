@@ -636,7 +636,9 @@ ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/
 #### Global Logging Example
 
 ```ts
-setGlobalFunctionLogging("detailed-object"); // log full events
+import { modelfusion } from "modelfusion";
+
+modelfusion.setLogFormat("detailed-object"); // log full events
 ```
 
 ### [Server](https://modelfusion.dev/guide/server/)

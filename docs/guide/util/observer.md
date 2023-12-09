@@ -78,14 +78,15 @@ const observer: FunctionObserver = {
 
 ### Global function observers
 
-[getGlobalFunctionObservers()](/api/modules/#getglobalfunctionobservers) | [setGlobalFunctionObservers()](/api/modules/#setglobalfunctionobservers)
-
 You can set global function observers that are called for all function events.
 
 #### Example
 
 ```ts
-setGlobalFunctionObservers([observer]);
+import { generateText, openai, modelfusion } from "modelfusion";
+
+// Set a global function observer:
+modelfusion.setFunctionObservers([customObserver]);
 
 const text = await generateText(
   openai.CompletionTextGenerator({

@@ -17,12 +17,14 @@ If you need more advanced logging or integration into observability systems, ple
 
 ### Global Function Logging
 
-You can configure the logging mode globally by calling [setGlobalFunctionLogging](/api/modules/#setglobalfunctionlogging).
+You can configure the logging mode globally by calling `modelfusion.setLogFormat()`.
 
 #### Example
 
 ```ts
-setGlobalFunctionLogging("basic-text");
+import { generateText, modelfusion, openai } from "modelfusion";
+
+modelfusion.setLogFormat("basic-text");
 
 const text = await generateText(
   openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
@@ -49,7 +51,9 @@ The per function logging mode takes precedence over the global function logging 
 #### Example
 
 ```ts
-setGlobalFunctionLogging("basic-text");
+import { generateText, modelfusion, openai } from "modelfusion";
+
+modelfusion.setLogFormat("basic-text");
 
 const text = await generateText(
   openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),

@@ -9,6 +9,7 @@
     "detokenize",
     "elevenlabs",
     "Embedder",
+    "Fastify",
     "GGUF",
     "Helicone",
     "huggingface",

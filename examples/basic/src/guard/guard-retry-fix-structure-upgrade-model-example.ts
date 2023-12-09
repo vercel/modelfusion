@@ -2,18 +2,18 @@ import dotenv from "dotenv";
 import {
   OpenAIChatModelType,
   TextInstructionPrompt,
-  zodSchema,
   fixStructure,
   generateStructure,
   guard,
+  modelfusion,
   openai,
-  setGlobalFunctionLogging,
+  zodSchema,
 } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
 
-setGlobalFunctionLogging("detailed-object");
+modelfusion.setLogFormat("detailed-object");
 
 async function main() {
   const sentiment = await guard(

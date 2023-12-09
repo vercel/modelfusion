@@ -3,15 +3,15 @@ import {
   executeFunction,
   generateImage,
   generateText,
+  modelfusion,
   openai,
-  setGlobalFunctionLogging,
   stability,
 } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
 
-setGlobalFunctionLogging("detailed-object");
+modelfusion.setLogFormat("detailed-object");
 
 async function main() {
   const image = await executeFunction(

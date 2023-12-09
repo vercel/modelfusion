@@ -1,8 +1,10 @@
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../../core/FunctionEventSource.js";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { getGlobalFunctionLogging } from "../../core/GlobalFunctionLogging.js";
-import { getGlobalFunctionObservers } from "../../core/GlobalFunctionObservers.js";
+import {
+  getFunctionObservers,
+  getLogFormat,
+} from "../../core/ModelFusionConfiguration.js";
 import { AbortError } from "../../core/api/AbortError.js";
 import { getFunctionCallLogger } from "../../core/getFunctionCallLogger.js";
 import { getRun } from "../../core/getRun.js";
@@ -66,8 +68,8 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   const eventSource = new FunctionEventSource({
     observers: [
-      ...getFunctionCallLogger(options?.logging ?? getGlobalFunctionLogging()),
-      ...getGlobalFunctionObservers(),
+      ...getFunctionCallLogger(options?.logging ?? getLogFormat()),
+      ...getFunctionObservers(),
       ...(run?.functionObserver != null ? [run.functionObserver] : []),
       ...(options?.observers ?? []),
     ],

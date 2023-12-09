@@ -1,8 +1,8 @@
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "./FunctionEventSource.js";
 import { FunctionOptions } from "./FunctionOptions.js";
-import { getGlobalFunctionLogging } from "./GlobalFunctionLogging.js";
-import { getGlobalFunctionObservers } from "./GlobalFunctionObservers.js";
+import { getLogFormat } from "./ModelFusionConfiguration.js";
+import { getFunctionObservers } from "./ModelFusionConfiguration.js";
 import { AbortError } from "./api/AbortError.js";
 import { getFunctionCallLogger } from "./getFunctionCallLogger.js";
 import { getRun } from "./getRun.js";
@@ -29,8 +29,8 @@ export async function executeFunctionCall<VALUE>({
 
   const eventSource = new FunctionEventSource({
     observers: [
-      ...getFunctionCallLogger(options?.logging ?? getGlobalFunctionLogging()),
-      ...getGlobalFunctionObservers(),
+      ...getFunctionCallLogger(options?.logging ?? getLogFormat()),
+      ...getFunctionObservers(),
       ...(run?.functionObserver != null ? [run.functionObserver] : []),
       ...(options?.observers ?? []),
     ],
