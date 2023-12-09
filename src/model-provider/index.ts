@@ -9,3 +9,4 @@ export * from "./ollama/index.js";
 export * from "./openai/index.js";
 export * from "./openai-compatible/index.js";
 export * from "./stability/index.js";
+export * from "./whispercpp/index.js";

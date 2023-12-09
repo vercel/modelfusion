@@ -27,6 +27,7 @@
     "reprioritizing",
     "Retryable",
     "Tiktoken",
-    "upsert"
+    "upsert",
+    "whispercpp"
   ]
 }
