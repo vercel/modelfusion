@@ -40,7 +40,7 @@ Or use a template:
 
 ## Usage Examples
 
-> 💡
+> [!TIP]
 > The basic examples are a great way to get started and to explore in parallel with the [documentation](https://modelfusion.dev/). You can find them in the [examples/basic](https://github.com/lgrammel/modelfusion/tree/main/examples/basic) folder.
 
 You can provide API keys for the different [integrations](https://modelfusion.dev/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or pass them into the model constructors as options.
