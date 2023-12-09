@@ -1,3 +1,5 @@
+import { ZodSchema } from "../schema/ZodSchema.js";
+import { safeParseJSON } from "../schema/parseJSON.js";
 import { z } from "zod";
 import { ApiCallError } from "./ApiCallError.js";
 
@@ -10,13 +12,19 @@ export type ResponseHandler<T> = (options: {
 export const createJsonResponseHandler =
   <T>(responseSchema: z.ZodSchema<T>): ResponseHandler<T> =>
   async ({ response, url, requestBodyValues }) => {
-    const parsedResult = responseSchema.safeParse(await response.json());
+    const responseBody = await response.text();
+
+    const parsedResult = safeParseJSON({
+      text: responseBody,
+      schema: new ZodSchema(responseSchema),
+    });
 
     if (!parsedResult.success) {
       throw new ApiCallError({
         message: "Invalid JSON response",
         cause: parsedResult.error,
         statusCode: response.status,
+        responseBody,
         url,
         requestBodyValues,
       });

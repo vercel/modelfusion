@@ -2,6 +2,7 @@ export class ApiCallError extends Error {
   public readonly url: string;
   public readonly requestBodyValues: unknown;
   public readonly statusCode?: number;
+  public readonly responseBody?: string;
   public readonly cause?: unknown;
   public readonly isRetryable: boolean;
 
@@ -10,6 +11,7 @@ export class ApiCallError extends Error {
     url,
     requestBodyValues,
     statusCode,
+    responseBody,
     cause,
     isRetryable = statusCode != null &&
       (statusCode === 429 || statusCode >= 500),
@@ -18,6 +20,7 @@ export class ApiCallError extends Error {
     url: string;
     requestBodyValues: unknown;
     statusCode?: number;
+    responseBody?: string;
     cause?: unknown;
     isRetryable?: boolean;
   }) {
@@ -28,6 +31,7 @@ export class ApiCallError extends Error {
     this.url = url;
     this.requestBodyValues = requestBodyValues;
     this.statusCode = statusCode;
+    this.responseBody = responseBody;
     this.cause = cause;
     this.isRetryable = isRetryable;
   }
@@ -39,6 +43,7 @@ export class ApiCallError extends Error {
       url: this.url,
       requestBodyValues: this.requestBodyValues,
       statusCode: this.statusCode,
+      responseBody: this.responseBody,
       cause: this.cause,
       isRetryable: this.isRetryable,
     };

@@ -1,9 +1,9 @@
 import { getErrorMessage } from "../../util/getErrorMessage.js";
 
 export class JSONParseError extends Error {
-  readonly structureName: string;
-  readonly cause: unknown;
+  // note: property order determines debugging output
   readonly text: string;
+  readonly cause: unknown;
 
   constructor({ text, cause }: { text: string; cause: unknown }) {
     super(
