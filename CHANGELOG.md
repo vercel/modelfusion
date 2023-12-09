@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.91.0 - 2023-12-09
+
+### Added
+
+- `Whisper.cpp` [transcription (speech-to-text) model](https://modelfusion.dev/integration/model-provider/whispercpp) support.
+
+  ```ts
+  import { generateTranscription, whispercpp } from "modelfusion";
+
+  const data = await fs.promises.readFile("data/test.wav");
+
+  const transcription = await generateTranscription(whispercpp.Transcriber(), {
+    type: "wav",
+    data,
+  });
+  ```
+
+### Improved
+
+- Better error reporting.
+
 ## v0.90.0 - 2023-12-03
 
 ### Added
