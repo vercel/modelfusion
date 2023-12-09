@@ -15,11 +15,11 @@ sidebar_position: 0
 - **Resilience and Robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
 - **Server**: ModelFusion provides a Fastify plugin that exposes a ModelFusion flow as a REST endpoint that uses server-sent events.
 
-## Installation
-
 :::note
 ModelFusion is in its initial development phase. The main API is now mostly stable, but until version 1.0 there may be breaking changes. Feedback and suggestions are welcome.
 :::
+
+## Installation
 
 ```sh
 npm install modelfusion
@@ -31,13 +31,9 @@ Or use a template:
 - [Next.js, Vercel AI SDK, Llama.cpp & ModelFusion starter](https://github.com/lgrammel/modelfusion-llamacpp-nextjs-starter)
 - [Next.js, Vercel AI SDK, Ollama & ModelFusion starter](https://github.com/lgrammel/modelfusion-ollama-nextjs-starter)
 
-## API Keys
-
-You can provide API keys for the different [providers](/integration/model-provider/) using environment variables (e.g., `OPENAI_API_KEY`) or by passing them in as options to the model constructors.
-
-## Requirements
-
-- [Node.js](https://nodejs.org/en/download/) version 18 or above. ModelFusion uses the Node.js fetch API and parts of the Web Streams API, which were not enabled by default before Node 18.
+:::tip
+The basic examples are a great way to get started and to explore in parallel with the documentation. You can find them in the [examples/basic](https://github.com/lgrammel/modelfusion/tree/main/examples/basic) folder.
+:::
 
 ## Getting Support
 
