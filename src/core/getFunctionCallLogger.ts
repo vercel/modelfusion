@@ -59,13 +59,35 @@ const detailedObjectObserver: FunctionObserver = {
       };
     }
 
-    // filter all undefined properties from event for cleaner console output:
-    event = Object.fromEntries(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      Object.entries(event).filter(([_, v]) => v !== undefined)
-    ) as FunctionEvent;
+    // filter all hard-to-read properties from event for cleaner console output:
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function cleanObject(obj: any): any {
+      if (obj instanceof Date || typeof obj === "string") {
+        return obj;
+      }
 
-    console.log(event);
+      if (obj !== null && typeof obj === "object") {
+        return Object.fromEntries(
+          Object.entries(obj)
+            .filter(
+              (
+                [_, v] // eslint-disable-line @typescript-eslint/no-unused-vars
+              ) =>
+                v !== undefined && // filter all undefined properties
+                !(v instanceof Buffer) // remove all buffers
+            )
+            .map(([k, v]) => [k, cleanObject(v)])
+            .filter(([_, v]) => v !== undefined) // eslint-disable-line @typescript-eslint/no-unused-vars
+        );
+      }
+
+      return obj;
+    }
+
+    // Clean the event object
+    const cleanedEvent = cleanObject(event);
+
+    console.log(cleanedEvent);
   },
 };
 
