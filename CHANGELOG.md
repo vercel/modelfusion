@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.92.1 - 2023-12-10
+
+### Changed
+
+- Improved Ollama error handling.
+
 ## v0.92.0 - 2023-12-09
 
 ### Changed
