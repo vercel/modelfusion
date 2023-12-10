@@ -30,10 +30,11 @@ export const failedOpenAICallResponseHandler: ResponseHandler<
     });
 
     return new ApiCallError({
+      message: parsedError.error.message,
       url,
       requestBodyValues,
       statusCode: response.status,
-      message: parsedError.error.message,
+      responseBody,
       data: parsedError,
       isRetryable:
         (response.status === 429 &&
@@ -43,10 +44,11 @@ export const failedOpenAICallResponseHandler: ResponseHandler<
     });
   } catch (parseError) {
     return new ApiCallError({
+      message: responseBody.trim() !== "" ? responseBody : response.statusText,
       url,
       requestBodyValues,
       statusCode: response.status,
-      message: responseBody.trim() !== "" ? responseBody : response.statusText,
+      responseBody,
     });
   }
 };
