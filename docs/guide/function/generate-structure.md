@@ -89,7 +89,7 @@ const model = ollama
     raw: true, // prevent Ollama from adding its own prompts
     stopSequences: ["\n\n"], // prevent infinite generation
   })
-  .withPromptFormat(ChatMLPromptFormat.instruction())
+  .withPromptTemplate(ChatMLPrompt.instruction())
   .asStructureGenerationModel(
     // Instruct the model to generate a JSON object that matches the given schema.
     jsonStructurePrompt((instruction: string, schema) => ({

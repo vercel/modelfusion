@@ -1,4 +1,4 @@
-import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
 import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
 import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
@@ -20,7 +20,7 @@ const END_SYSTEM = "\n<</SYS>>\n\n";
  *
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
  */
-export function text(): TextGenerationPromptFormat<string, string> {
+export function text(): TextGenerationPromptTemplate<string, string> {
   return {
     stopSequences: [END_SEGMENT],
     format(prompt) {
@@ -44,7 +44,7 @@ export function text(): TextGenerationPromptFormat<string, string> {
  *
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
  */
-export function instruction(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptTemplate<
   TextInstructionPrompt,
   string
 > {
@@ -72,7 +72,7 @@ export function instruction(): TextGenerationPromptFormat<
  * ${ user msg 1 } [/INST] ${ model response 1 } </s><s>[INST] ${ user msg 2 } [/INST] ${ model response 2 } </s><s>[INST] ${ user msg 3 } [/INST]
  * ```
  */
-export function chat(): TextGenerationPromptFormat<TextChatPrompt, string> {
+export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
   return {
     format(prompt) {
       validateChatPrompt(prompt);

@@ -4,42 +4,45 @@ import { JsonSchemaProducer } from "../../../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../../../core/schema/Schema.js";
 import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
 import { StructureParseError } from "../../../model-function/generate-structure/StructureParseError.js";
-import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
   OpenAIChatPrompt,
   OpenAIChatResponseFormat,
 } from "./AbstractOpenAIChatModel.js";
 import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel";
-import { chat, instruction, text } from "./OpenAIChatPromptFormat.js";
+import { chat, instruction, text } from "./OpenAIChatPromptTemplate.js";
 
 export class OpenAIChatFunctionCallStructureGenerationModel<
-  PROMPT_FORMAT extends TextGenerationPromptFormat<unknown, OpenAIChatPrompt>,
+  PROMPT_TEMPLATE extends TextGenerationPromptTemplate<
+    unknown,
+    OpenAIChatPrompt
+  >,
 > implements
     StructureGenerationModel<
-      Parameters<PROMPT_FORMAT["format"]>[0], // first argument of the function
+      Parameters<PROMPT_TEMPLATE["format"]>[0], // first argument of the function
       OpenAIChatSettings
     >
 {
   readonly model: OpenAIChatModel;
   readonly fnName: string;
   readonly fnDescription?: string;
-  readonly promptFormat: PROMPT_FORMAT;
+  readonly promptTemplate: PROMPT_TEMPLATE;
 
   constructor({
     model,
     fnName,
     fnDescription,
-    promptFormat,
+    promptTemplate,
   }: {
     model: OpenAIChatModel;
     fnName: string;
     fnDescription?: string;
-    promptFormat: PROMPT_FORMAT;
+    promptTemplate: PROMPT_TEMPLATE;
   }) {
     this.model = model;
     this.fnName = fnName;
     this.fnDescription = fnDescription;
-    this.promptFormat = promptFormat;
+    this.promptTemplate = promptTemplate;
   }
 
   get modelInformation() {
@@ -55,39 +58,39 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
   }
 
   /**
-   * Returns this model with a text prompt format.
+   * Returns this model with a text prompt template.
    */
   withTextPrompt() {
-    return this.withPromptFormat(text());
+    return this.withPromptTemplate(text());
   }
 
   /**
-   * Returns this model with an instruction prompt format.
+   * Returns this model with an instruction prompt template.
    */
   withInstructionPrompt() {
-    return this.withPromptFormat(instruction());
+    return this.withPromptTemplate(instruction());
   }
 
   /**
-   * Returns this model with a chat prompt format.
+   * Returns this model with a chat prompt template.
    */
   withChatPrompt() {
-    return this.withPromptFormat(chat());
+    return this.withPromptTemplate(chat());
   }
 
-  withPromptFormat<
-    TARGET_PROMPT_FORMAT extends TextGenerationPromptFormat<
+  withPromptTemplate<
+    TARGET_PROMPT_FORMAT extends TextGenerationPromptTemplate<
       unknown,
       OpenAIChatPrompt
     >,
   >(
-    promptFormat: TARGET_PROMPT_FORMAT
+    promptTemplate: TARGET_PROMPT_FORMAT
   ): OpenAIChatFunctionCallStructureGenerationModel<TARGET_PROMPT_FORMAT> {
     return new OpenAIChatFunctionCallStructureGenerationModel({
       model: this.model,
       fnName: this.fnName,
       fnDescription: this.fnDescription,
-      promptFormat,
+      promptTemplate,
     });
   }
 
@@ -96,7 +99,7 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
       model: this.model.withSettings(additionalSettings),
       fnName: this.fnName,
       fnDescription: this.fnDescription,
-      promptFormat: this.promptFormat,
+      promptTemplate: this.promptTemplate,
     }) as this;
   }
 
@@ -109,16 +112,16 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
    */
   async doGenerateStructure(
     schema: Schema<unknown> & JsonSchemaProducer,
-    prompt: Parameters<PROMPT_FORMAT["format"]>[0], // first argument of the function
+    prompt: Parameters<PROMPT_TEMPLATE["format"]>[0], // first argument of the function
     options?: FunctionOptions
   ) {
-    const expandedPrompt = this.promptFormat.format(prompt);
+    const expandedPrompt = this.promptTemplate.format(prompt);
 
     const response = await this.model
       .withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
-          ...this.promptFormat.stopSequences,
+          ...this.promptTemplate.stopSequences,
         ],
       })
       .callAPI(expandedPrompt, {
@@ -153,10 +156,10 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
 
   async doStreamStructure(
     schema: Schema<unknown> & JsonSchemaProducer,
-    prompt: Parameters<PROMPT_FORMAT["format"]>[0], // first argument of the function
+    prompt: Parameters<PROMPT_TEMPLATE["format"]>[0], // first argument of the function
     options?: FunctionOptions
   ) {
-    const expandedPrompt = this.promptFormat.format(prompt);
+    const expandedPrompt = this.promptTemplate.format(prompt);
 
     return this.model.callAPI(expandedPrompt, {
       ...options,

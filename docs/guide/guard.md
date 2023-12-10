@@ -72,7 +72,7 @@ const result = await guard(
         .TextGenerator({
           // ...
         })
-        .withTextPromptFormat(Llama2PromptFormat.instruction()),
+        .withTextPromptTemplate(Llama2Prompt.instruction()),
       input,
       options // pass through options (for tracing)
     ),

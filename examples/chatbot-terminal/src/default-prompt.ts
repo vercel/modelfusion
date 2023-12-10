@@ -1,6 +1,6 @@
 import {
   TextChatPrompt,
-  TextPromptFormat,
+  TextPrompt,
   llamacpp,
   streamText,
   trimChatPrompt,
@@ -27,7 +27,7 @@ async function main() {
         contextWindowSize: 4096,
         maxCompletionTokens: 512,
       })
-      .withTextPromptFormat(TextPromptFormat.chat());
+      .withTextPromptTemplate(TextPrompt.chat());
 
     const textStream = await streamText(
       model,

@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { LlamaCppBakLLaVA1Format, llamacpp, streamText } from "modelfusion";
+import { LlamaCppBakLLaVA1Prompt, llamacpp, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -19,7 +19,7 @@ async function main() {
         maxCompletionTokens: 1024,
         temperature: 0,
       })
-      .withPromptFormat(LlamaCppBakLLaVA1Format.chat()),
+      .withPromptTemplate(LlamaCppBakLLaVA1Prompt.chat()),
 
     {
       messages: [

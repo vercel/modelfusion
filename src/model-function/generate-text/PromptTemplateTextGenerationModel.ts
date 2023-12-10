@@ -1,21 +1,21 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { StructureFromTextGenerationModel } from "../../model-function/generate-structure/StructureFromTextGenerationModel.js";
-import { StructureFromTextPromptFormat } from "../../model-function/generate-structure/StructureFromTextPromptFormat.js";
 import {
   TextGenerationToolCallModel,
-  ToolCallPromptFormat,
+  ToolCallPromptTemplate,
 } from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
 import {
   TextGenerationToolCallsOrGenerateTextModel,
-  ToolCallsOrGenerateTextPromptFormat,
+  ToolCallsOrGenerateTextPromptTemplate,
 } from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
+import { StructureFromTextGenerationModel } from "../generate-structure/StructureFromTextGenerationModel.js";
+import { StructureFromTextPromptTemplate } from "../generate-structure/StructureFromTextPromptTemplate.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
-import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate.js";
 
-export class PromptFormatTextGenerationModel<
+export class PromptTemplateTextGenerationModel<
   PROMPT,
   MODEL_PROMPT,
   SETTINGS extends TextGenerationModelSettings,
@@ -23,17 +23,17 @@ export class PromptFormatTextGenerationModel<
 > implements TextGenerationModel<PROMPT, SETTINGS>
 {
   readonly model: MODEL;
-  readonly promptFormat: TextGenerationPromptFormat<PROMPT, MODEL_PROMPT>;
+  readonly promptTemplate: TextGenerationPromptTemplate<PROMPT, MODEL_PROMPT>;
 
   constructor({
     model,
-    promptFormat,
+    promptTemplate,
   }: {
     model: MODEL;
-    promptFormat: TextGenerationPromptFormat<PROMPT, MODEL_PROMPT>;
+    promptTemplate: TextGenerationPromptTemplate<PROMPT, MODEL_PROMPT>;
   }) {
     this.model = model;
-    this.promptFormat = promptFormat;
+    this.promptTemplate = promptTemplate;
   }
 
   get modelInformation() {
@@ -67,14 +67,14 @@ export class PromptFormatTextGenerationModel<
 
     return ((prompt: PROMPT) =>
       originalCountPromptTokens(
-        this.promptFormat.format(prompt)
+        this.promptTemplate.format(prompt)
       )) as MODEL["countPromptTokens"] extends undefined
       ? undefined
       : (prompt: PROMPT) => PromiseLike<number>;
   }
 
   doGenerateText(prompt: PROMPT, options?: FunctionOptions) {
-    const mappedPrompt = this.promptFormat.format(prompt);
+    const mappedPrompt = this.promptTemplate.format(prompt);
     return this.model.doGenerateText(mappedPrompt, options);
   }
 
@@ -83,36 +83,36 @@ export class PromptFormatTextGenerationModel<
   }
 
   asToolCallGenerationModel<INPUT_PROMPT>(
-    promptFormat: ToolCallPromptFormat<INPUT_PROMPT, PROMPT>
+    promptTemplate: ToolCallPromptTemplate<INPUT_PROMPT, PROMPT>
   ) {
     return new TextGenerationToolCallModel({
       model: this,
-      format: promptFormat,
+      format: promptTemplate,
     });
   }
 
   asToolCallsOrTextGenerationModel<INPUT_PROMPT>(
-    promptFormat: ToolCallsOrGenerateTextPromptFormat<INPUT_PROMPT, PROMPT>
+    promptTemplate: ToolCallsOrGenerateTextPromptTemplate<INPUT_PROMPT, PROMPT>
   ) {
     return new TextGenerationToolCallsOrGenerateTextModel({
       model: this,
-      format: promptFormat,
+      template: promptTemplate,
     });
   }
 
   asStructureGenerationModel<INPUT_PROMPT>(
-    promptFormat: StructureFromTextPromptFormat<INPUT_PROMPT, PROMPT>
+    promptTemplate: StructureFromTextPromptTemplate<INPUT_PROMPT, PROMPT>
   ) {
     return new StructureFromTextGenerationModel({
       model: this,
-      format: promptFormat,
+      template: promptTemplate,
     });
   }
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, PROMPT>
-  ): PromptFormatTextGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this> {
-    return new PromptFormatTextGenerationModel<
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>
+  ): PromptTemplateTextGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this> {
+    return new PromptTemplateTextGenerationModel<
       INPUT_PROMPT,
       PROMPT,
       SETTINGS,
@@ -121,17 +121,17 @@ export class PromptFormatTextGenerationModel<
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
-          ...promptFormat.stopSequences,
+          ...promptTemplate.stopSequences,
         ],
       } as Partial<SETTINGS>),
-      promptFormat,
+      promptTemplate,
     });
   }
 
   withSettings(additionalSettings: Partial<SETTINGS>): this {
-    return new PromptFormatTextGenerationModel({
+    return new PromptTemplateTextGenerationModel({
       model: this.model.withSettings(additionalSettings),
-      promptFormat: this.promptFormat,
+      promptTemplate: this.promptTemplate,
     }) as this;
   }
 }

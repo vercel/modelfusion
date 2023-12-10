@@ -1,11 +1,11 @@
-import { StructureFromTextPromptFormat } from "../../model-function/generate-structure/StructureFromTextPromptFormat.js";
+import { StructureFromTextPromptTemplate } from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
 import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
-import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel.js";
 import { ToolCallsOrTextGenerationModel } from "../../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
 import {
@@ -17,7 +17,7 @@ import {
   chat,
   instruction,
   text,
-} from "../openai/chat/OpenAIChatPromptFormat.js";
+} from "../openai/chat/OpenAIChatPromptTemplate.js";
 
 export type OpenAICompatibleProviderName =
   | `openaicompatible`
@@ -89,51 +89,54 @@ export class OpenAICompatibleChatModel
   }
 
   asStructureGenerationModel<INPUT_PROMPT>(
-    promptFormat: StructureFromTextPromptFormat<INPUT_PROMPT, OpenAIChatPrompt>
+    promptTemplate: StructureFromTextPromptTemplate<
+      INPUT_PROMPT,
+      OpenAIChatPrompt
+    >
   ) {
     return new StructureFromTextStreamingModel({
       model: this,
-      format: promptFormat,
+      template: promptTemplate,
     });
   }
 
   /**
-   * Returns this model with a text prompt format.
+   * Returns this model with a text prompt template.
    */
   withTextPrompt() {
-    return this.withPromptFormat(text());
+    return this.withPromptTemplate(text());
   }
 
   /**
-   * Returns this model with an instruction prompt format.
+   * Returns this model with an instruction prompt template.
    */
   withInstructionPrompt() {
-    return this.withPromptFormat(instruction());
+    return this.withPromptTemplate(instruction());
   }
 
   /**
-   * Returns this model with a chat prompt format.
+   * Returns this model with a chat prompt template.
    */
   withChatPrompt() {
-    return this.withPromptFormat(chat());
+    return this.withPromptTemplate(chat());
   }
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, OpenAIChatPrompt>
-  ): PromptFormatTextStreamingModel<
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, OpenAIChatPrompt>
+  ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
     OpenAIChatPrompt,
     OpenAICompatibleChatSettings,
     this
   > {
-    return new PromptFormatTextStreamingModel({
+    return new PromptTemplateTextStreamingModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
-          ...promptFormat.stopSequences,
+          ...promptTemplate.stopSequences,
         ],
       }),
-      promptFormat,
+      promptTemplate,
     });
   }
 

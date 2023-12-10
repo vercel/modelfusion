@@ -1,4 +1,4 @@
-import { chat, instruction, text } from "./AnthropicPromptFormat.js";
+import { chat, instruction, text } from "./AnthropicPromptTemplate.js";
 
 describe("text prompt", () => {
   it("should format prompt", () => {

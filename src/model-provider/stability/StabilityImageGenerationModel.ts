@@ -7,12 +7,12 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { PromptFormat } from "../../model-function/PromptFormat.js";
+import { PromptTemplate } from "../../model-function/PromptTemplate.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
-import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
+import { PromptTemplateImageGenerationModel } from "../../model-function/generate-image/PromptTemplateImageGenerationModel.js";
 import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 import { failedStabilityCallResponseHandler } from "./StabilityError.js";
 import {
@@ -111,20 +111,20 @@ export class StabilityImageGenerationModel
   }
 
   withTextPrompt() {
-    return this.withPromptFormat(mapBasicPromptToStabilityFormat());
+    return this.withPromptTemplate(mapBasicPromptToStabilityFormat());
   }
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: PromptFormat<INPUT_PROMPT, StabilityImageGenerationPrompt>
-  ): PromptFormatImageGenerationModel<
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: PromptTemplate<INPUT_PROMPT, StabilityImageGenerationPrompt>
+  ): PromptTemplateImageGenerationModel<
     INPUT_PROMPT,
     StabilityImageGenerationPrompt,
     StabilityImageGenerationSettings,
     this
   > {
-    return new PromptFormatImageGenerationModel({
+    return new PromptTemplateImageGenerationModel({
       model: this,
-      promptFormat,
+      promptTemplate,
     });
   }
 

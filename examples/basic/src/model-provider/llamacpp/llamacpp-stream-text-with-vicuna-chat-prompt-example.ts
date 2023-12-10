@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { VicunaPromptFormat, llamacpp, streamText } from "modelfusion";
+import { VicunaPrompt, llamacpp, streamText } from "modelfusion";
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ async function main() {
         contextWindowSize: 2048, // Vicuna v1.5 context window size
         maxCompletionTokens: 512,
       })
-      .withTextPromptFormat(VicunaPromptFormat.chat()),
+      .withTextPromptTemplate(VicunaPrompt.chat()),
     {
       system: "You are a celebrated poet.",
       messages: [

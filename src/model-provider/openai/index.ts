@@ -12,6 +12,6 @@ export * from "./TikTokenTokenizer.js";
 export * from "./chat/AbstractOpenAIChatModel.js";
 export * from "./chat/OpenAIChatMessage.js";
 export * from "./chat/OpenAIChatModel.js";
-export * as OpenAIChatPromptFormat from "./chat/OpenAIChatPromptFormat.js";
+export * as OpenAIChatPrompt from "./chat/OpenAIChatPromptTemplate.js";
 export { OpenAIChatDelta } from "./chat/OpenAIChatStreamIterable.js";
 export * from "./chat/countOpenAIChatMessageTokens.js";

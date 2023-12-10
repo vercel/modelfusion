@@ -1,19 +1,19 @@
-import { TextGenerationPromptFormat } from "../../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
   MultiModalChatPrompt,
   TextChatPrompt,
-} from "../../../model-function/generate-text/prompt-format/ChatPrompt.js";
+} from "../../../model-function/generate-text/prompt-template/ChatPrompt.js";
 import {
   MultiModalInstructionPrompt,
   TextInstructionPrompt,
-} from "../../../model-function/generate-text/prompt-format/InstructionPrompt.js";
-import { validateChatPrompt } from "../../../model-function/generate-text/prompt-format/ChatPrompt.js";
+} from "../../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { validateChatPrompt } from "../../../model-function/generate-text/prompt-template/ChatPrompt.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 
 /**
  * OpenAIMessage[] identity chat format.
  */
-export function identity(): TextGenerationPromptFormat<
+export function identity(): TextGenerationPromptTemplate<
   Array<OpenAIChatMessage>,
   Array<OpenAIChatMessage>
 > {
@@ -23,7 +23,7 @@ export function identity(): TextGenerationPromptFormat<
 /**
  * Formats a text prompt as an OpenAI chat prompt.
  */
-export function text(): TextGenerationPromptFormat<
+export function text(): TextGenerationPromptTemplate<
   string,
   Array<OpenAIChatMessage>
 > {
@@ -36,7 +36,7 @@ export function text(): TextGenerationPromptFormat<
 /**
  * Formats an instruction prompt as an OpenAI chat prompt.
  */
-export function instruction(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptTemplate<
   MultiModalInstructionPrompt | TextInstructionPrompt,
   Array<OpenAIChatMessage>
 > {
@@ -59,7 +59,7 @@ export function instruction(): TextGenerationPromptFormat<
 /**
  * Formats a chat prompt as an OpenAI chat prompt.
  */
-export function chat(): TextGenerationPromptFormat<
+export function chat(): TextGenerationPromptTemplate<
   MultiModalChatPrompt | TextChatPrompt,
   Array<OpenAIChatMessage>
 > {

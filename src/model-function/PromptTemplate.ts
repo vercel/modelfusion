@@ -1,7 +1,7 @@
 /**
- * Prompt formats format a source prompt into the structure of a target prompt.
+ * Prompt templates format a source prompt into the structure of a target prompt.
  */
-export interface PromptFormat<SOURCE_PROMPT, TARGET_PROMPT> {
+export interface PromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> {
   /**
    * Formats the source prompt into the structure of the target prompt.
    */

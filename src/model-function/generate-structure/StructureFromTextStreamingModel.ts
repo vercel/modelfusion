@@ -10,7 +10,7 @@ import {
 } from "../generate-text/TextGenerationModel.js";
 import { generateText } from "../generate-text/generateText.js";
 import { StructureFromTextGenerationModel } from "./StructureFromTextGenerationModel.js";
-import { StructureFromTextPromptFormat } from "./StructureFromTextPromptFormat.js";
+import { StructureFromTextPromptTemplate } from "./StructureFromTextPromptTemplate.js";
 import { StructureStreamingModel } from "./StructureGenerationModel.js";
 import { StructureParseError } from "./StructureParseError.js";
 import { parsePartialJson } from "./parsePartialJson.js";
@@ -28,7 +28,7 @@ export class StructureFromTextStreamingModel<
 {
   constructor(options: {
     model: MODEL;
-    format: StructureFromTextPromptFormat<SOURCE_PROMPT, TARGET_PROMPT>;
+    template: StructureFromTextPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT>;
   }) {
     super(options);
   }
@@ -40,7 +40,7 @@ export class StructureFromTextStreamingModel<
   ) {
     const textStream = await streamText(
       this.model,
-      this.format.createPrompt(prompt, schema),
+      this.template.createPrompt(prompt, schema),
       options
     );
 
@@ -81,7 +81,7 @@ export class StructureFromTextStreamingModel<
   ) {
     const { response, value } = await generateText(
       this.model,
-      this.format.createPrompt(prompt, schema),
+      this.template.createPrompt(prompt, schema),
       {
         ...options,
         returnType: "full",
@@ -91,7 +91,7 @@ export class StructureFromTextStreamingModel<
     try {
       return {
         response,
-        value: this.format.extractStructure(value),
+        value: this.template.extractStructure(value),
         valueText: value,
       };
     } catch (error) {
@@ -105,7 +105,7 @@ export class StructureFromTextStreamingModel<
   withSettings(additionalSettings: Partial<MODEL["settings"]>): this {
     return new StructureFromTextStreamingModel({
       model: this.model.withSettings(additionalSettings),
-      format: this.format,
+      template: this.template,
     }) as this;
   }
 }

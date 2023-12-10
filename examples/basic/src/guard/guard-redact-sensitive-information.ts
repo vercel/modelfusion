@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import {
-  Llama2PromptFormat,
+  Llama2Prompt,
   generateText,
   guard,
   llamacpp,
@@ -23,7 +23,7 @@ async function main() {
             temperature: 0.7,
             maxCompletionTokens: 500,
           })
-          .withTextPromptFormat(Llama2PromptFormat.instruction()),
+          .withTextPromptTemplate(Llama2Prompt.instruction()),
         input,
         options
       ),

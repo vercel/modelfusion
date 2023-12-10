@@ -8,12 +8,12 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { PromptFormat } from "../../model-function/PromptFormat.js";
+import { PromptTemplate } from "../../model-function/PromptTemplate.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "../../model-function/generate-image/ImageGenerationModel.js";
-import { PromptFormatImageGenerationModel } from "../../model-function/generate-image/PromptFormatImageGenerationModel.js";
+import { PromptTemplateImageGenerationModel } from "../../model-function/generate-image/PromptTemplateImageGenerationModel.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 
@@ -172,17 +172,17 @@ export class OpenAIImageGenerationModel
       base64Image: response.data[0].b64_json,
     };
   }
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: PromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatImageGenerationModel<
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: PromptTemplate<INPUT_PROMPT, string>
+  ): PromptTemplateImageGenerationModel<
     INPUT_PROMPT,
     string,
     OpenAIImageGenerationSettings,
     this
   > {
-    return new PromptFormatImageGenerationModel({
+    return new PromptTemplateImageGenerationModel({
       model: this,
-      promptFormat,
+      promptTemplate,
     });
   }
 

@@ -1,5 +1,5 @@
 import {
-  ToolCallPromptFormat,
+  ToolCallPromptTemplate,
   ToolDefinition,
   zodSchema,
   parseJSON,
@@ -7,7 +7,7 @@ import {
 import { nanoid } from "nanoid";
 import { z } from "zod";
 
-export const mistralSingleToolCallPromptFormat: ToolCallPromptFormat<
+export const mistralSingleToolCallPromptTemplate: ToolCallPromptTemplate<
   string,
   string
 > = {

@@ -1,4 +1,4 @@
-import { AlpacaPromptFormat, llamacpp, streamText } from "modelfusion";
+import { AlpacaPrompt, llamacpp, streamText } from "modelfusion";
 
 // example assumes you are running https://huggingface.co/TheBloke/chronos-13b-v2-GGUF with llama.cpp
 async function main() {
@@ -8,7 +8,7 @@ async function main() {
         contextWindowSize: 2048, // context window size of Chronos-13B-v2
         maxCompletionTokens: 1024,
       })
-      .withTextPromptFormat(AlpacaPromptFormat.instruction()),
+      .withTextPromptTemplate(AlpacaPrompt.instruction()),
     {
       instruction: "You are a celebrated poet. Write a short story about:",
       input: "a robot learning to love.", // Alpaca format supports optional input

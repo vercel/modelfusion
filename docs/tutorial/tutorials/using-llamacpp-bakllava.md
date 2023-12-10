@@ -45,7 +45,7 @@ const image = fs.readFileSync(path.join("data", "example-image.png"), {
 Now that we have our image encoded, we can call the BakLLaVA model with an instruction prompt to process the image and provide a detailed description:
 
 ```ts
-import { LlamaCppBakLLaVA1Format, llamacpp, streamText } from "modelfusion";
+import { LlamaCppBakLLaVA1Prompt, llamacpp, streamText } from "modelfusion";
 
 const textStream = await streamText(
   llamacpp
@@ -53,7 +53,7 @@ const textStream = await streamText(
       maxCompletionTokens: 1024,
       temperature: 0,
     })
-    .withPromptFormat(LlamaCppBakLLaVA1Format.instruction()),
+    .withPromptTemplate(LlamaCppBakLLaVA1Prompt.instruction()),
   {
     instruction: [
       { type: "text", text: "Describe the image in detail:\n\n" },

@@ -1,4 +1,4 @@
-const { streamText, Llama2PromptFormat, llamaCpp } = require("modelfusion");
+const { streamText, Llama2Prompt, llamaCpp } = require("modelfusion");
 
 require("dotenv").config();
 
@@ -10,7 +10,7 @@ require("dotenv").config();
         contextWindowSize: 4096, // Llama 2 context window size
         maxCompletionTokens: 512,
       })
-      .withTextPromptFormat(Llama2PromptFormat.chat()),
+      .withTextPromptTemplate(Llama2Prompt.chat()),
     {
       system: "You are a celebrated poet.",
       messages: [

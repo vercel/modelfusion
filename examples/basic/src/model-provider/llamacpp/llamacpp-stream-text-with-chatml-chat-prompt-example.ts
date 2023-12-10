@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { ChatMLPromptFormat, llamacpp, streamText } from "modelfusion";
+import { ChatMLPrompt, llamacpp, streamText } from "modelfusion";
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ async function main() {
         contextWindowSize: 4096,
         maxCompletionTokens: 512,
       })
-      .withTextPromptFormat(ChatMLPromptFormat.chat()),
+      .withTextPromptTemplate(ChatMLPrompt.chat()),
     {
       system: "You are a celebrated poet.",
       messages: [

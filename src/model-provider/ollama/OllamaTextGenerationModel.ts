@@ -8,19 +8,19 @@ import { ZodSchema } from "../../core/schema/ZodSchema.js";
 import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
-import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
   TextGenerationToolCallModel,
-  ToolCallPromptFormat,
+  ToolCallPromptTemplate,
 } from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
 import {
   TextGenerationToolCallsOrGenerateTextModel,
-  ToolCallsOrGenerateTextPromptFormat,
+  ToolCallsOrGenerateTextPromptTemplate,
 } from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
@@ -253,39 +253,39 @@ export class OllamaTextGenerationModel<
   }
 
   asToolCallGenerationModel<INPUT_PROMPT>(
-    promptFormat: ToolCallPromptFormat<INPUT_PROMPT, string>
+    promptTemplate: ToolCallPromptTemplate<INPUT_PROMPT, string>
   ) {
     return new TextGenerationToolCallModel({
       model: this,
-      format: promptFormat,
+      format: promptTemplate,
     });
   }
 
   asToolCallsOrTextGenerationModel<INPUT_PROMPT>(
-    promptFormat: ToolCallsOrGenerateTextPromptFormat<INPUT_PROMPT, string>
+    promptTemplate: ToolCallsOrGenerateTextPromptTemplate<INPUT_PROMPT, string>
   ) {
     return new TextGenerationToolCallsOrGenerateTextModel({
       model: this,
-      format: promptFormat,
+      template: promptTemplate,
     });
   }
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatTextStreamingModel<
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
+  ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
     string,
     OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
-    return new PromptFormatTextStreamingModel({
+    return new PromptTemplateTextStreamingModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
-          ...promptFormat.stopSequences,
+          ...promptTemplate.stopSequences,
         ],
       }),
-      promptFormat,
+      promptTemplate,
     });
   }
 

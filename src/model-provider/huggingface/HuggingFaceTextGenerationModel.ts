@@ -7,12 +7,12 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { PromptFormatTextGenerationModel } from "../../model-function/generate-text/PromptFormatTextGenerationModel.js";
+import { PromptTemplateTextGenerationModel } from "../../model-function/generate-text/PromptTemplateTextGenerationModel.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
 import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
 
@@ -124,17 +124,17 @@ export class HuggingFaceTextGenerationModel
     };
   }
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatTextGenerationModel<
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
+  ): PromptTemplateTextGenerationModel<
     INPUT_PROMPT,
     string,
     HuggingFaceTextGenerationModelSettings,
     this
   > {
-    return new PromptFormatTextGenerationModel({
+    return new PromptTemplateTextGenerationModel({
       model: this, // stop tokens are not supported by this model
-      promptFormat,
+      promptTemplate,
     });
   }
 

@@ -1,4 +1,4 @@
-import { Llama2PromptFormat, llamacpp, streamText } from "modelfusion";
+import { Llama2Prompt, llamacpp, streamText } from "modelfusion";
 
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
 async function main() {
@@ -8,7 +8,7 @@ async function main() {
         contextWindowSize: 4096, // Llama 2 context window size
         maxCompletionTokens: 512,
       })
-      .withTextPromptFormat(Llama2PromptFormat.text()),
+      .withTextPromptTemplate(Llama2Prompt.text()),
     "Write a short story about a robot learning to love."
   );
 

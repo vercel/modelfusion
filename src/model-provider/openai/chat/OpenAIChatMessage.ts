@@ -1,4 +1,4 @@
-import { MultiModalInput } from "../../../model-function/generate-text/prompt-format/Content.js";
+import { MultiModalInput } from "../../../model-function/generate-text/prompt-template/Content.js";
 import { ToolCall } from "../../../tool/ToolCall.js";
 
 export type OpenAIChatMessage =

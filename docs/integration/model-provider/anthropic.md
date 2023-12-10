@@ -70,14 +70,14 @@ for await (const textPart of textStream) {
 }
 ```
 
-## Prompt Format
+## Prompt Template
 
-Anthropic requires a very specific prompt format with "Human: " and "Assistant: " sections.
+Anthropic requires a very specific prompt template with "Human: " and "Assistant: " sections.
 Using a prompt mapping can make the interaction with Anthropic models easier.
 
 ### Text prompt
 
-[AnthropicPromptFormat.text()](/api/namespaces/AnthropicPromptFormat) lets you use basic text prompts with Anthropic models. It is available as a shorthand method:
+[AnthropicPromptTemplate.text()](/api/namespaces/AnthropicPromptTemplate) lets you use basic text prompts with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -92,7 +92,7 @@ const textStream = await streamText(
 
 ### Instruction prompt
 
-[AnthropicPromptFormat.instruction()](/api/namespaces/AnthropicPromptFormat) lets you use [text instruction prompts](/api/interfaces/TextInstructionPrompt) with Anthropic models. It is available as a shorthand method:
+[AnthropicPromptTemplate.instruction()](/api/namespaces/AnthropicPromptTemplate) lets you use [text instruction prompts](/api/interfaces/TextInstructionPrompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -107,7 +107,7 @@ const textStream = await streamText(
 
 ### Chat prompt
 
-[AnthropicPromptFormat.chat()](/api/namespaces/AnthropicPromptFormat) lets you use use [text chat prompts](/api/interfaces/TextChatPrompt) with Anthropic models. It is available as a shorthand method:
+[AnthropicPromptTemplate.chat()](/api/namespaces/AnthropicPromptTemplate) lets you use use [text chat prompts](/api/interfaces/TextChatPrompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(

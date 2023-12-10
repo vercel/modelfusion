@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import { ollama, useTool } from "modelfusion";
-import { mistralSingleToolCallPromptFormat } from "../../tool/prompts/mistral";
+import { mistralSingleToolCallPromptTemplate } from "../../tool/prompts/mistral";
 import { calculator } from "../../tool/tools/calculator-tool";
 
 dotenv.config();
@@ -14,7 +14,7 @@ async function main() {
         temperature: 0,
         raw: true,
       })
-      .asToolCallGenerationModel(mistralSingleToolCallPromptFormat),
+      .asToolCallGenerationModel(mistralSingleToolCallPromptTemplate),
     calculator,
     "What's fourteen times twelve?"
   );

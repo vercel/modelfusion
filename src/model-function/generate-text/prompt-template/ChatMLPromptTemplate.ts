@@ -1,4 +1,4 @@
-import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
 import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
 import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
@@ -19,7 +19,7 @@ function chatMLSegment(
 /**
  * Formats a text prompt using the ChatML format.
  */
-export function text(): TextGenerationPromptFormat<string, string> {
+export function text(): TextGenerationPromptTemplate<string, string> {
   return {
     stopSequences: [END_SEGMENT],
     format(prompt) {
@@ -42,7 +42,7 @@ export function text(): TextGenerationPromptFormat<string, string> {
  * ${response prefix}
  * ```
  */
-export function instruction(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptTemplate<
   TextInstructionPrompt,
   string
 > {
@@ -72,7 +72,7 @@ export function instruction(): TextGenerationPromptFormat<
  * Paris<|im_end|>
  * ```
  */
-export function chat(): TextGenerationPromptFormat<TextChatPrompt, string> {
+export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
   return {
     format(prompt) {
       validateChatPrompt(prompt);

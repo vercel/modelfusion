@@ -1,10 +1,6 @@
 import dotenv from "dotenv";
-import {
-  ChatMLPromptFormat,
-  llamacpp,
-  useToolsOrGenerateText,
-} from "modelfusion";
-import { openHermesToolCallsPromptFormat } from "../../tool/prompts/open-hermes";
+import { ChatMLPrompt, llamacpp, useToolsOrGenerateText } from "modelfusion";
+import { openHermesToolCallsPromptTemplate } from "../../tool/prompts/open-hermes";
 import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
 
@@ -15,8 +11,8 @@ async function main() {
   const { text, toolResults } = await useToolsOrGenerateText(
     llamacpp
       .TextGenerator({ temperature: 0 })
-      .withTextPromptFormat(ChatMLPromptFormat.instruction())
-      .asToolCallsOrTextGenerationModel(openHermesToolCallsPromptFormat),
+      .withTextPromptTemplate(ChatMLPrompt.instruction())
+      .asToolCallsOrTextGenerationModel(openHermesToolCallsPromptTemplate),
     [calculator, weather],
     "What's fourteen times twelve?"
     // "What's the weather like in Boston?"

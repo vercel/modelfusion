@@ -15,12 +15,7 @@ This is an example for a Next.js app router API route. It uses the ModelFusion [
 ```ts
 // app/api/chat/route.ts
 import { Message, StreamingTextResponse } from "ai";
-import {
-  TextChatMessage,
-  TextPromptFormat,
-  ollama,
-  streamText,
-} from "modelfusion";
+import { TextChatMessage, TextPrompt, ollama, streamText } from "modelfusion";
 import { ModelFusionTextStream } from "@modelfusion/vercel-ai";
 
 export const runtime = "edge";
@@ -35,9 +30,9 @@ export async function POST(req: Request) {
         model: "mistral:text",
         maxCompletionTokens: -1, // infinite generation
         temperature: 0,
-        raw: true, // use raw inputs and map to prompt format below
+        raw: true, // use raw inputs and map to prompt template below
       })
-      .withPromptFormat(TextPromptFormat.chat()), // Plain text prompt
+      .withPromptTemplate(TextPrompt.chat()), // Plain text prompt
     {
       system:
         "You are an AI chat bot. " +

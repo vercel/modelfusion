@@ -67,7 +67,7 @@ const model = llamacpp.TextGenerator({
 
 [LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
 
-Consider [mapping the prompt to the prompt format](#prompt-formats) that your model was trained on.
+Consider [mapping the prompt to the prompt template](#prompt-formats) that your model was trained on.
 
 ```ts
 import { llamacpp, generateText } from "modelfusion";
@@ -86,7 +86,7 @@ const text = await generateText(
 
 [LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
 
-Consider [mapping the prompt to the prompt format](#prompt-formats) that your model was trained on.
+Consider [mapping the prompt to the prompt template](#prompt-formats) that your model was trained on.
 
 ```ts
 import { llamacpp, streamText } from "modelfusion";
@@ -154,20 +154,20 @@ const model = llamacpp.TextGenerator({
 });
 ```
 
-## Prompt Formats
+## Prompt Templates
 
 Many models are trained on specific prompts.
-You can use [prompt formats](#prompt-format) to use higher-level prompt formats such
+You can use [prompt templates](#prompt-format) to use higher-level prompt templates such
 as instruction and chat prompts and map them to the correct format for your model.
-The prompt format that the model expected is usually described on the model card on HuggingFace.
+The prompt template that the model expected is usually described on the model card on HuggingFace.
 
-### Llama 2 prompt format
+### Llama 2 prompt template
 
-Llama 2 uses a special prompt format (see "[How to prompt Llama 2 chat](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat)"):
+Llama 2 uses a special prompt template (see "[How to prompt Llama 2 chat](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat)"):
 
-#### Text prompt format
+#### Text prompt template
 
-You can use [Llama2PromptFormat.text()](/api/namespaces/Llama2PromptFormat#text) to create basic text prompts.
+You can use [Llama2Prompt.text()](/api/namespaces/Llama2Prompt#text) to create basic text prompts.
 
 ```ts
 const textStream = await streamText(
@@ -175,14 +175,14 @@ const textStream = await streamText(
     .TextGenerator({
       // ...
     })
-    .withTextPromptFormat(Llama2PromptFormat.text()),
+    .withTextPromptTemplate(Llama2Prompt.text()),
   "Write a short story about a robot learning to love."
 );
 ```
 
-#### Instruction prompt format
+#### Instruction prompt template
 
-You can use [Llama2PromptFormat.instruction()](/api/namespaces/Llama2PromptFormat#instruction) to create instruction prompts.
+You can use [Llama2Prompt.instruction()](/api/namespaces/Llama2Prompt#instruction) to create instruction prompts.
 
 ```ts
 const textStream = await streamText(
@@ -190,7 +190,7 @@ const textStream = await streamText(
     .TextGenerator({
       // ...
     })
-    .withTextPromptFormat(Llama2PromptFormat.instruction()),
+    .withTextPromptTemplate(Llama2Prompt.instruction()),
   {
     system: "You are a celebrated poet.",
     instruction: "Write a short story about a robot learning to love.",
@@ -198,9 +198,9 @@ const textStream = await streamText(
 );
 ```
 
-#### Chat prompt format
+#### Chat prompt template
 
-You can use [Llama2PromptFormat.chat()](/api/namespaces/Llama2PromptFormat#chat) to create chat prompts.
+You can use [Llama2Prompt.chat()](/api/namespaces/Llama2Prompt#chat) to create chat prompts.
 
 ```ts
 const textStream = await streamText(
@@ -208,7 +208,7 @@ const textStream = await streamText(
     .TextGenerator({
       // ...
     })
-    .withTextPromptFormat(Llama2PromptFormat.chat()),
+    .withTextPromptTemplate(Llama2Prompt.chat()),
   {
     system: "You are a celebrated poet.",
     messages: [
@@ -229,13 +229,13 @@ const textStream = await streamText(
 );
 ```
 
-### ChatML prompt format
+### ChatML prompt template
 
-ChatML is a prompt format that is used by several models, e.g. [OpenHermes-2.5-Mistral](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF).
+ChatML is a prompt template that is used by several models, e.g. [OpenHermes-2.5-Mistral](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF).
 
-#### Text prompt format
+#### Text prompt template
 
-You can use [ChatMLPromptFormat.text()](/api/namespaces/ChatMLPromptFormat#text) to create basic text prompts.
+You can use [ChatMLPrompt.text()](/api/namespaces/ChatMLPrompt#text) to create basic text prompts.
 
 ```ts
 const textStream = await streamText(
@@ -243,14 +243,14 @@ const textStream = await streamText(
     .TextGenerator({
       // ...
     })
-    .withTextPromptFormat(ChatMLPromptFormat.text()),
+    .withTextPromptTemplate(ChatMLPrompt.text()),
   "Write a short story about a robot learning to love."
 );
 ```
 
-#### Instruction prompt format
+#### Instruction prompt template
 
-You can use [ChatMLPromptFormat.instruction()](/api/namespaces/ChatMLPromptFormat#instruction) to create instruction prompts.
+You can use [ChatMLPrompt.instruction()](/api/namespaces/ChatMLPrompt#instruction) to create instruction prompts.
 
 ```ts
 const textStream = await streamText(
@@ -258,16 +258,16 @@ const textStream = await streamText(
     .TextGenerator({
       // ...
     })
-    .withTextPromptFormat(ChatMLPromptFormat.instruction()),
+    .withTextPromptTemplate(ChatMLPrompt.instruction()),
   {
     instruction: "Write a short story about a robot learning to love.",
   }
 );
 ```
 
-#### Chat prompt format
+#### Chat prompt template
 
-You can use [ChatMLPromptFormat.chat()](/api/namespaces/ChatMLPromptFormat#chat) to create chat prompts.
+You can use [ChatMLPrompt.chat()](/api/namespaces/ChatMLPrompt#chat) to create chat prompts.
 
 ```ts
 const textStream = await streamText(
@@ -275,7 +275,7 @@ const textStream = await streamText(
     .TextGenerator({
       // ...
     })
-    .withTextPromptFormat(ChatMLPromptFormat.chat()),
+    .withTextPromptTemplate(ChatMLPrompt.chat()),
   {
     messages: [
       {
@@ -295,13 +295,13 @@ const textStream = await streamText(
 );
 ```
 
-### Alpaca prompt format
+### Alpaca prompt template
 
-Alpaca and several other models use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release):
+Alpaca and several other models use the [Alpaca prompt template](https://github.com/tatsu-lab/stanford_alpaca#data-release):
 
-#### text prompt format
+#### text prompt template
 
-You can use [AlpacaPromptFormat.text()](/api/namespaces/AlpacaPromptFormat#text) to create basic text prompts.
+You can use [AlpacaPrompt.text()](/api/namespaces/AlpacaPrompt#text) to create basic text prompts.
 
 ```ts
 const textStream = await streamText(
@@ -309,14 +309,14 @@ const textStream = await streamText(
     .TextGenerator({
       // ...
     })
-    .withTextPromptFormat(AlpacaPromptFormat.text()),
+    .withTextPromptTemplate(AlpacaPrompt.text()),
   "Write a short story about a robot learning to love."
 );
 ```
 
-#### instruction prompt format
+#### instruction prompt template
 
-You can use [AlpacaPromptFormat.instruction()](/api/namespaces/AlpacaPromptFormat#instruction) to create instruction prompts.
+You can use [AlpacaPrompt.instruction()](/api/namespaces/AlpacaPrompt#instruction) to create instruction prompts.
 
 :::note
 Setting the system property overrides the Alpaca system prompt and can impact the model responses.
@@ -328,7 +328,7 @@ const textStream = await streamText(
     .TextGenerator({
       // ...
     })
-    .withTextPromptFormat(AlpacaPromptFormat.instruction()),
+    .withTextPromptTemplate(AlpacaPrompt.instruction()),
   {
     instruction: "You are a celebrated poet. Write a short story about:",
     input: "a robot learning to love.", // Alpaca supports optional input field
@@ -336,13 +336,13 @@ const textStream = await streamText(
 );
 ```
 
-### Vicuna prompt format
+### Vicuna prompt template
 
-Vicuna and several other models use the Vicuna prompt format.
+Vicuna and several other models use the Vicuna prompt template.
 
-#### Chat prompt format
+#### Chat prompt template
 
-You can use [VicunaPromptFormat.chat()](/api/namespaces/VicunaPromptFormat#chat) to create chat prompts.
+You can use [VicunaPrompt.chat()](/api/namespaces/VicunaPrompt#chat) to create chat prompts.
 
 :::note
 Setting the system property overrides the Vicuna system prompt and can impact the model responses.
@@ -354,7 +354,7 @@ const textStream = await streamText(
     .TextGenerator({
       // ...
     })
-    .withTextPromptFormat(VicunaPromptFormat.chat()),
+    .withTextPromptTemplate(VicunaPrompt.chat()),
   {
     system: "You are a celebrated poet.",
     messages: [

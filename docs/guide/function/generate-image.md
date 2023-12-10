@@ -4,7 +4,7 @@ sidebar_position: 20
 
 # Generate Image
 
-Generates an image using a prompt. The prompt format depends on the model.
+Generates an image using a prompt. The prompt template depends on the model.
 For example, OpenAI image models expect a string prompt, and Stability AI models expect an array of text prompts with optional weights.
 
 By default, the image is a binary buffer. You can use set the returnType option to `base64` to get a base-64 encoded string instead.
@@ -49,13 +49,13 @@ const imageBuffer = await generateImage(stability.ImageGenerator(/* ... */), [
 ]);
 ```
 
-## Prompt Format
+## Prompt Template
 
-[Prompt formats](/api/interfaces/PromptFormat) change the prompt format that an image generation model accepts.
+[Prompt templates](/api/interfaces/PromptTemplate) change the prompt template that an image generation model accepts.
 This enables the use of abstracted prompts, e.g. basic prompts that are just text.
 
-You can map the prompt of an [ImageGenerationModel](/api/interfaces/ImageGenerationModel) using the `withPromptFormat()` method.
-For convenience, models with clear prompt formats have a `withTextPrompt()` method that returns a model with a simple text prompt.
+You can map the prompt of an [ImageGenerationModel](/api/interfaces/ImageGenerationModel) using the `withPromptTemplate()` method.
+For convenience, models with clear prompt templates have a `withTextPrompt()` method that returns a model with a simple text prompt.
 
 ### Basic Prompts
 
@@ -80,35 +80,36 @@ const image = await generateImage(
 );
 ```
 
-#### Prompt Formats
+#### Prompt Templates
 
-The following prompt formats are available for basic text prompts:
+The following prompt templates are available for basic text prompts:
 
 - **Automatic1111**: [mapBasicPromptToAutomatic1111Format()](/api/modules#mapbasicprompttoautomatic1111format)
 - **Stability AI**: [mapBasicPromptToStabilityFormat()](/api/modules#mapbasicprompttostabilityformat)
 
-### Custom Prompt Formats
+### Custom Prompt Templates
 
-You can also create your own custom prompt formats and prompt formats.
+You can also create your own custom prompt templates and prompt templates.
 
 For this, you need to:
 
-1. create an interface/type for your prompt format, and
-2. create prompt formats that map your prompt format to the prompt formats of the models that you want to use.
+1. create an interface/type for your prompt template, and
+2. create prompt templates that map your prompt template to the prompt templates of the models that you want to use.
 
-The interface for [prompt format](/api/interfaces/PromptFormat) consists of a map function
+The interface for [prompt template](/api/interfaces/PromptTemplate) consists of a map function
 and a list of stop tokens.
 
 ```ts
-interface PromptFormat<SOURCE_PROMPT, TARGET_PROMPT> {
+interface PromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> {
   map(sourcePrompt: SOURCE_PROMPT): TARGET_PROMPT;
 }
 ```
 
-When you have a prompt format that matches the prompt format of a model, you can apply it as follows:
+When you have a prompt template that matches the prompt template of a model, you can apply it as follows:
 
 ```ts
-const modelWithMyCustomPromptFormat = model.withPromptFormat(myPromptFormat);
+const modelWithMyCustomPromptTemplate =
+  model.withPromptTemplate(myPromptTemplate);
 ```
 
 ## Available Providers

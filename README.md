@@ -48,7 +48,7 @@ You can provide API keys for the different [integrations](https://modelfusion.de
 ### [Generate Text](https://modelfusion.dev/guide/function/generate-text)
 
 Generate text using a language model and a prompt. You can stream the text if it is supported by the model. You can use images for multi-modal prompting if the model supports it (e.g. with [llama.cpp](https://modelfusion.dev/guide/)).
-You can use [prompt formats](https://modelfusion.dev/guide/function/generate-text#prompt-format) to change the prompt format of a model.
+You can use [prompt templates](https://modelfusion.dev/guide/function/generate-text#prompt-format) to change the prompt template of a model.
 
 #### generateText
 
@@ -509,9 +509,9 @@ const retrievedTexts = await retrieve(
 
 Available Vector Stores: [Memory](https://modelfusion.dev/integration/vector-index/memory), [SQLite VSS](https://modelfusion.dev/integration/vector-index/sqlite-vss), [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
 
-### [Text Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-text#prompt-format)
+### [Text Generation Prompt Templates](https://modelfusion.dev/guide/function/generate-text#prompt-format)
 
-Prompt formats let you use higher level prompt structures (such as text, instruction or chat prompts) for different models.
+Prompt templates let you use higher level prompt structures (such as text, instruction or chat prompts) for different models.
 
 #### Text Prompt Example
 
@@ -536,7 +536,7 @@ const text = await generateText(
       contextWindowSize: 4096, // Llama 2 context window size
       maxCompletionTokens: 1000,
     })
-    .withTextPromptFormat(Llama2PromptFormat.instruction()),
+    .withTextPromptTemplate(Llama2Prompt.instruction()),
   {
     system: "You are a story writer.",
     instruction: "Write a short story about a robot learning to love.",
@@ -575,19 +575,19 @@ const textStream = await streamText(
 );
 ```
 
-| Prompt Format | Text Prompt | Instruction Prompt | Chat Prompt |
-| ------------- | ----------- | ------------------ | ----------- |
-| OpenAI Chat   | ✅          | ✅                 | ✅          |
-| Anthropic     | ✅          | ✅                 | ✅          |
-| Llama 2       | ✅          | ✅                 | ✅          |
-| ChatML        | ✅          | ✅                 | ✅          |
-| Alpaca        | ✅          | ✅                 | ❌          |
-| Vicuna        | ❌          | ❌                 | ✅          |
-| Generic Text  | ✅          | ✅                 | ✅          |
+| Prompt Template | Text Prompt | Instruction Prompt | Chat Prompt |
+| --------------- | ----------- | ------------------ | ----------- |
+| OpenAI Chat     | ✅          | ✅                 | ✅          |
+| Anthropic       | ✅          | ✅                 | ✅          |
+| Llama 2         | ✅          | ✅                 | ✅          |
+| ChatML          | ✅          | ✅                 | ✅          |
+| Alpaca          | ✅          | ✅                 | ❌          |
+| Vicuna          | ❌          | ❌                 | ✅          |
+| Generic Text    | ✅          | ✅                 | ✅          |
 
-### [Image Generation Prompt Formats](https://modelfusion.dev/guide/function/generate-image/prompt-format)
+### [Image Generation Prompt Templates](https://modelfusion.dev/guide/function/generate-image/prompt-format)
 
-You an use prompt formats with image models as well, e.g. to use a basic text prompt. It is available as a shorthand method:
+You an use prompt templates with image models as well, e.g. to use a basic text prompt. It is available as a shorthand method:
 
 ```ts
 const image = await generateImage(
@@ -600,10 +600,10 @@ const image = await generateImage(
 );
 ```
 
-| Prompt Format | Text Prompt |
-| ------------- | ----------- |
-| Automatic1111 | ✅          |
-| Stability     | ✅          |
+| Prompt Template | Text Prompt |
+| --------------- | ----------- |
+| Automatic1111   | ✅          |
+| Stability       | ✅          |
 
 ### Metadata and original responses
 

@@ -1,9 +1,9 @@
-import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
   TextChatPrompt,
   validateChatPrompt,
-} from "../../model-function/generate-text/prompt-format/ChatPrompt.js";
-import { TextInstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
+} from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { TextInstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 
 const HUMAN_PREFIX = "\n\nHuman:";
 const ASSISTANT_PREFIX = "\n\nAssistant:";
@@ -11,7 +11,7 @@ const ASSISTANT_PREFIX = "\n\nAssistant:";
 /**
  * Formats a text prompt as an Anthropic prompt.
  */
-export function text(): TextGenerationPromptFormat<string, string> {
+export function text(): TextGenerationPromptTemplate<string, string> {
   return {
     format(prompt) {
       let text = "";
@@ -27,7 +27,7 @@ export function text(): TextGenerationPromptFormat<string, string> {
 /**
  * Formats an instruction prompt as an Anthropic prompt.
  */
-export function instruction(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptTemplate<
   TextInstructionPrompt,
   string
 > {
@@ -54,7 +54,7 @@ export function instruction(): TextGenerationPromptFormat<
  *
  * @see https://docs.anthropic.com/claude/docs/constructing-a-prompt
  */
-export function chat(): TextGenerationPromptFormat<TextChatPrompt, string> {
+export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
   return {
     format(prompt) {
       validateChatPrompt(prompt);

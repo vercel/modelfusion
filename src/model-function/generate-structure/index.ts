@@ -1,5 +1,5 @@
 export * from "./StructureFromTextGenerationModel.js";
-export * from "./StructureFromTextPromptFormat.js";
+export * from "./StructureFromTextPromptTemplate.js";
 export * from "./StructureFromTextStreamingModel.js";
 export * from "./StructureGenerationEvent.js";
 export * from "./StructureGenerationModel.js";

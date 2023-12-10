@@ -1,6 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
-import { PromptFormat } from "../PromptFormat.js";
+import { PromptTemplate } from "../PromptTemplate.js";
 
 export interface ImageGenerationModelSettings extends ModelSettings {}
 
@@ -16,7 +16,7 @@ export interface ImageGenerationModel<
     base64Image: string;
   }>;
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: PromptTemplate<INPUT_PROMPT, PROMPT>
   ): ImageGenerationModel<INPUT_PROMPT, SETTINGS>;
 }

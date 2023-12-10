@@ -6,7 +6,7 @@ import {
   TextGenerationModelSettings,
 } from "../generate-text/TextGenerationModel.js";
 import { generateText } from "../generate-text/generateText.js";
-import { StructureFromTextPromptFormat } from "./StructureFromTextPromptFormat.js";
+import { StructureFromTextPromptTemplate } from "./StructureFromTextPromptTemplate.js";
 import { StructureGenerationModel } from "./StructureGenerationModel.js";
 import { StructureParseError } from "./StructureParseError.js";
 
@@ -17,20 +17,20 @@ export class StructureFromTextGenerationModel<
 > implements StructureGenerationModel<SOURCE_PROMPT, MODEL["settings"]>
 {
   protected readonly model: MODEL;
-  protected readonly format: StructureFromTextPromptFormat<
+  protected readonly template: StructureFromTextPromptTemplate<
     SOURCE_PROMPT,
     TARGET_PROMPT
   >;
 
   constructor({
     model,
-    format,
+    template,
   }: {
     model: MODEL;
-    format: StructureFromTextPromptFormat<SOURCE_PROMPT, TARGET_PROMPT>;
+    template: StructureFromTextPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT>;
   }) {
     this.model = model;
-    this.format = format;
+    this.template = template;
   }
 
   get modelInformation() {
@@ -52,7 +52,7 @@ export class StructureFromTextGenerationModel<
   ) {
     const { response, value } = await generateText(
       this.model,
-      this.format.createPrompt(prompt, schema),
+      this.template.createPrompt(prompt, schema),
       {
         ...options,
         returnType: "full",
@@ -62,7 +62,7 @@ export class StructureFromTextGenerationModel<
     try {
       return {
         response,
-        value: this.format.extractStructure(value),
+        value: this.template.extractStructure(value),
         valueText: value,
       };
     } catch (error) {
@@ -76,7 +76,7 @@ export class StructureFromTextGenerationModel<
   withSettings(additionalSettings: Partial<MODEL["settings"]>): this {
     return new StructureFromTextGenerationModel({
       model: this.model.withSettings(additionalSettings),
-      format: this.format,
+      template: this.template,
     }) as this;
   }
 }

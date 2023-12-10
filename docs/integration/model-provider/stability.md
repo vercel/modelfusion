@@ -55,7 +55,7 @@ const imageBase64 = await generateImage(
 );
 ```
 
-## Prompt Format
+## Prompt Template
 
 ### Basic text prompt
 

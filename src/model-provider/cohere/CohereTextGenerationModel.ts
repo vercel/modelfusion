@@ -10,16 +10,16 @@ import {
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
-import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
   chat,
   instruction,
-} from "../../model-function/generate-text/prompt-format/TextPromptFormat.js";
+} from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
@@ -185,35 +185,35 @@ export class CohereTextGenerationModel
   }
 
   /**
-   * Returns this model with an instruction prompt format.
+   * Returns this model with an instruction prompt template.
    */
   withInstructionPrompt() {
-    return this.withPromptFormat(instruction());
+    return this.withPromptTemplate(instruction());
   }
 
   /**
-   * Returns this model with a chat prompt format.
+   * Returns this model with a chat prompt template.
    */
   withChatPrompt(options?: { user?: string; assistant?: string }) {
-    return this.withPromptFormat(chat(options));
+    return this.withPromptTemplate(chat(options));
   }
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatTextStreamingModel<
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
+  ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
     string,
     CohereTextGenerationModelSettings,
     this
   > {
-    return new PromptFormatTextStreamingModel({
+    return new PromptTemplateTextStreamingModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
-          ...promptFormat.stopSequences,
+          ...promptTemplate.stopSequences,
         ],
       }),
-      promptFormat,
+      promptTemplate,
     });
   }
 

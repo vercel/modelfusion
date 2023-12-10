@@ -47,7 +47,7 @@ const textStream = await streamText(
 
 #### Alternative: Use an instruction prompt
 
-Alternatively, you can use the `withInstructionPrompt()` method which allows you to use an abstracted prompt format for a single instruction:
+Alternatively, you can use the `withInstructionPrompt()` method which allows you to use an abstracted prompt template for a single instruction:
 
 ```ts
 const textStream = await streamText(

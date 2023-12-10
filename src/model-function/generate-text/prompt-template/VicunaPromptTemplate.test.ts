@@ -1,4 +1,4 @@
-import { chat } from "./VicunaPromptFormat.js";
+import { chat } from "./VicunaPromptTemplate.js";
 
 describe("chat prompt", () => {
   it("should format prompt with user message", () => {

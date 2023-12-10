@@ -1,9 +1,9 @@
-import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
   MultiModalChatPrompt,
   validateChatPrompt,
-} from "../../model-function/generate-text/prompt-format/ChatPrompt.js";
-import { MultiModalInstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
+} from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { MultiModalInstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { LlamaCppTextGenerationPrompt } from "./LlamaCppTextGenerationModel.js";
 
 // default Vicuna 1 system message
@@ -16,7 +16,7 @@ const DEFAULT_SYSTEM_MESSAGE =
  *
  * @see https://github.com/SkunkworksAI/BakLLaVA
  */
-export function instruction(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptTemplate<
   MultiModalInstructionPrompt,
   LlamaCppTextGenerationPrompt
 > {
@@ -56,7 +56,7 @@ export function instruction(): TextGenerationPromptFormat<
   };
 }
 
-export function chat(): TextGenerationPromptFormat<
+export function chat(): TextGenerationPromptTemplate<
   MultiModalChatPrompt,
   LlamaCppTextGenerationPrompt
 > {

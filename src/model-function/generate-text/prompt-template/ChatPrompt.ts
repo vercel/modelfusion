@@ -11,7 +11,7 @@ import { InvalidPromptError } from "./InvalidPromptError.js";
  *
  * You can use a ChatPrompt without an final user message when you e.g. want to display the current state of a conversation.
  *
- * The type checking is done at runtime when you submit a chat prompt to a model with a prompt format.
+ * The type checking is done at runtime when you submit a chat prompt to a model with a prompt template.
  *
  * @example
  * ```ts

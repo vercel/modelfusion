@@ -1,11 +1,7 @@
 import dotenv from "dotenv";
-import {
-  ChatMLPromptFormat,
-  ollama,
-  useToolsOrGenerateText,
-} from "modelfusion";
+import { ChatMLPrompt, ollama, useToolsOrGenerateText } from "modelfusion";
 import { calculator } from "../../tool/tools/calculator-tool";
-import { openHermesToolCallsPromptFormat } from "../../tool/prompts/open-hermes";
+import { openHermesToolCallsPromptTemplate } from "../../tool/prompts/open-hermes";
 import { weather } from "../../tool/tools/weather-tool";
 
 dotenv.config();
@@ -18,8 +14,8 @@ async function main() {
         temperature: 0,
         raw: true,
       })
-      .withPromptFormat(ChatMLPromptFormat.instruction())
-      .asToolCallsOrTextGenerationModel(openHermesToolCallsPromptFormat),
+      .withPromptTemplate(ChatMLPrompt.instruction())
+      .asToolCallsOrTextGenerationModel(openHermesToolCallsPromptTemplate),
     [calculator, weather],
     // "What's fourteen times twelve?"
     "What's the weather like in Boston?"

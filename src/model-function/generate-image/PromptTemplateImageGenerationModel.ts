@@ -1,11 +1,11 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { PromptFormat } from "../PromptFormat.js";
+import { PromptTemplate } from "../PromptTemplate.js";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
 } from "./ImageGenerationModel.js";
 
-export class PromptFormatImageGenerationModel<
+export class PromptTemplateImageGenerationModel<
   PROMPT,
   MODEL_PROMPT,
   SETTINGS extends ImageGenerationModelSettings,
@@ -13,17 +13,17 @@ export class PromptFormatImageGenerationModel<
 > implements ImageGenerationModel<PROMPT, SETTINGS>
 {
   readonly model: MODEL;
-  readonly promptFormat: PromptFormat<PROMPT, MODEL_PROMPT>;
+  readonly promptTemplate: PromptTemplate<PROMPT, MODEL_PROMPT>;
 
   constructor({
     model,
-    promptFormat,
+    promptTemplate,
   }: {
     model: MODEL;
-    promptFormat: PromptFormat<PROMPT, MODEL_PROMPT>;
+    promptTemplate: PromptTemplate<PROMPT, MODEL_PROMPT>;
   }) {
     this.model = model;
-    this.promptFormat = promptFormat;
+    this.promptTemplate = promptTemplate;
   }
 
   get modelInformation() {
@@ -41,7 +41,7 @@ export class PromptFormatImageGenerationModel<
     response: unknown;
     base64Image: string;
   }> {
-    const mappedPrompt = this.promptFormat.format(prompt);
+    const mappedPrompt = this.promptTemplate.format(prompt);
     return this.model.doGenerateImage(mappedPrompt, options);
   }
 
@@ -49,21 +49,21 @@ export class PromptFormatImageGenerationModel<
     return this.model.settingsForEvent;
   }
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: PromptFormat<INPUT_PROMPT, PROMPT>
-  ): PromptFormatImageGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this> {
-    return new PromptFormatImageGenerationModel<
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: PromptTemplate<INPUT_PROMPT, PROMPT>
+  ): PromptTemplateImageGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this> {
+    return new PromptTemplateImageGenerationModel<
       INPUT_PROMPT,
       PROMPT,
       SETTINGS,
       this
-    >({ model: this, promptFormat });
+    >({ model: this, promptTemplate: promptTemplate });
   }
 
   withSettings(additionalSettings: Partial<SETTINGS>): this {
-    return new PromptFormatImageGenerationModel({
+    return new PromptTemplateImageGenerationModel({
       model: this.model.withSettings(additionalSettings),
-      promptFormat: this.promptFormat,
+      promptTemplate: this.promptTemplate,
     }) as this;
   }
 }

@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import {
-  ChatMLPromptFormat,
+  ChatMLPrompt,
   zodSchema,
   jsonStructurePrompt,
   ollama,
@@ -21,7 +21,7 @@ async function main() {
         raw: true,
         stopSequences: ["\n\n"], // prevent infinite generation
       })
-      .withPromptFormat(ChatMLPromptFormat.instruction())
+      .withPromptTemplate(ChatMLPrompt.instruction())
       .asStructureGenerationModel(
         jsonStructurePrompt((instruction: string, schema) => ({
           system:

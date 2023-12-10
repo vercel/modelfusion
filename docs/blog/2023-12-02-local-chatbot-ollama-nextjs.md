@@ -116,12 +116,7 @@ The API route requires several important imports from the `ai`, `modelfusion`, a
 ```ts
 import { ModelFusionTextStream } from "@modelfusion/vercel-ai";
 import { Message, StreamingTextResponse } from "ai";
-import {
-  ChatMLPromptFormat,
-  TextChatMessage,
-  ollama,
-  streamText,
-} from "modelfusion";
+import { ChatMLPrompt, TextChatMessage, ollama, streamText } from "modelfusion";
 ```
 
 We will use the [edge runtime](https://edge-runtime.vercel.app/):
@@ -141,7 +136,7 @@ export async function POST(req: Request) {
 }
 ```
 
-We initialize a ModelFusion text generation model for calling Ollama and using the OpenHermes 2.5 Mistral model. We set the `maxCompletionTokens` to `-1` to allow for infinite generation, and the `temperature` to `0` to disable randomness. The `raw` option is set to `true`, because we apply the ChatML prompt format (for the OpenHermes model) to the messages using ModelFusion:
+We initialize a ModelFusion text generation model for calling Ollama and using the OpenHermes 2.5 Mistral model. We set the `maxCompletionTokens` to `-1` to allow for infinite generation, and the `temperature` to `0` to disable randomness. The `raw` option is set to `true`, because we apply the ChatML prompt template (for the OpenHermes model) to the messages using ModelFusion:
 
 ```ts
 const model = ollama
@@ -149,13 +144,13 @@ const model = ollama
     model: "openhermes2.5-mistral",
     maxCompletionTokens: -1, // infinite generation
     temperature: 0,
-    raw: true, // use raw inputs and map to prompt format below
+    raw: true, // use raw inputs and map to prompt template below
   })
-  .withPromptFormat(ChatMLPromptFormat.chat()); // ChatML prompt format
+  .withPromptTemplate(ChatMLPrompt.chat()); // ChatML prompt
 ```
 
 :::note
-Different AI models use other prompt formats. The prompt format for a given model is often found in the model card. Using an incorrect prompt format can lead to unexpected results because models are specifically trained to work with a specific prompt format.
+Different AI models use other prompt templates. The prompt template for a given model is often found in the model card. Using an incorrect prompt template can lead to unexpected results because models are specifically trained to work with a specific prompt template.
 :::
 
 Next, we create a [ModelFusion chat prompt](https://modelfusion.dev/guide/function/generate-text#chat-prompts) from the AI SDK messages:

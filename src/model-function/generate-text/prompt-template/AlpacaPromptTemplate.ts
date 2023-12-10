@@ -1,4 +1,4 @@
-import { TextGenerationPromptFormat } from "../TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
 import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
 const DEFAULT_SYSTEM_PROMPT_INPUT =
@@ -9,7 +9,7 @@ const DEFAULT_SYSTEM_PROMPT_NO_INPUT =
 /**
  * Formats a text prompt as an Alpaca prompt.
  */
-export function text(): TextGenerationPromptFormat<string, string> {
+export function text(): TextGenerationPromptTemplate<string, string> {
   return {
     stopSequences: [],
     format(prompt) {
@@ -29,7 +29,7 @@ export function text(): TextGenerationPromptFormat<string, string> {
  * If the instruction has a system prompt, it overrides the default system prompt
  * (which can impact the results, because the model may be trained on the default system prompt).
  *
- * Prompt format with input:
+ * Prompt template with input:
  * ```
  * Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
  *
@@ -45,7 +45,7 @@ export function text(): TextGenerationPromptFormat<string, string> {
  *
  * ```
  *
- * Prompt format without input:
+ * Prompt template without input:
  * ```
  * Below is an instruction that describes a task. Write a response that appropriately completes the request.
  *
@@ -59,7 +59,7 @@ export function text(): TextGenerationPromptFormat<string, string> {
  *
  * @see https://github.com/tatsu-lab/stanford_alpaca#data-release
  */
-export function instruction(): TextGenerationPromptFormat<
+export function instruction(): TextGenerationPromptTemplate<
   TextInstructionPrompt & { input?: string }, // optional input supported by Alpaca
   string
 > {

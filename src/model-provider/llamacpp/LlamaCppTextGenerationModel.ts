@@ -10,12 +10,12 @@ import {
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
-import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseJSON } from "../../core/schema/parseJSON.js";
 import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
@@ -187,13 +187,13 @@ export class LlamaCppTextGenerationModel<
     });
   }
 
-  withTextPrompt(): PromptFormatTextStreamingModel<
+  withTextPrompt(): PromptTemplateTextStreamingModel<
     string,
     LlamaCppTextGenerationPrompt,
     LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
-    return this.withPromptFormat({
+    return this.withPromptTemplate({
       format(prompt: string) {
         return { text: prompt };
       },
@@ -202,54 +202,54 @@ export class LlamaCppTextGenerationModel<
   }
 
   /**
-   * Maps the prompt for a text version of the Llama.cpp prompt format (without image support).
+   * Maps the prompt for a text version of the Llama.cpp prompt template (without image support).
    */
-  withTextPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatTextStreamingModel<
+  withTextPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
+  ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
     string,
     LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
-    PromptFormatTextStreamingModel<
+    PromptTemplateTextStreamingModel<
       string,
       LlamaCppTextGenerationPrompt,
       LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
       this
     >
   > {
-    return new PromptFormatTextStreamingModel({
+    return new PromptTemplateTextStreamingModel({
       model: this.withTextPrompt().withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
-          ...promptFormat.stopSequences,
+          ...promptTemplate.stopSequences,
         ],
       }),
-      promptFormat,
+      promptTemplate,
     });
   }
 
   /**
-   * Maps the prompt for the full Llama.cpp prompt format (incl. image support).
+   * Maps the prompt for the full Llama.cpp prompt template (incl. image support).
    */
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<
       INPUT_PROMPT,
       LlamaCppTextGenerationPrompt
     >
-  ): PromptFormatTextStreamingModel<
+  ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
     LlamaCppTextGenerationPrompt,
     LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
-    return new PromptFormatTextStreamingModel({
+    return new PromptTemplateTextStreamingModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
-          ...promptFormat.stopSequences,
+          ...promptTemplate.stopSequences,
         ],
       }),
-      promptFormat,
+      promptTemplate,
     });
   }
 

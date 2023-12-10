@@ -7,9 +7,9 @@ sidebar_position: 10
 Generates text using a [TextGenerationModel](/api/interfaces/TextGenerationModel) and a prompt.
 You can also stream the text if it is supported by the model.
 
-The prompt format depends on the model.
+The prompt template depends on the model.
 For example, OpenAI text models expect a string prompt, and OpenAI chat models expect an array of chat messages.
-You can use [prompt formats](#prompt-format) to change the prompt format of a model.
+You can use [prompt templates](#prompt-format) to change the prompt template of a model.
 
 ## Usage
 
@@ -90,29 +90,29 @@ for await (const textPart of textStream) {
 }
 ```
 
-## Prompt Format
+## Prompt Template
 
-[Text generation prompt formats](/api/interfaces/TextGenerationPromptFormat) change the prompt format that a text generation model accepts. This enables the use of abstracted prompts such as text, instruction or chat prompts.
+[Text generation prompt templates](/api/interfaces/TextGenerationPromptTemplate) change the prompt template that a text generation model accepts. This enables the use of abstracted prompts such as text, instruction or chat prompts.
 
-You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `withPromptFormat()` method.
+You can map the prompt of a [TextGenerationModel](/api/interfaces/TextGenerationModel) using the `withPromptTemplate()` method.
 
-For convenience, models with clear prompt formats provide `withTextPrompt()`, `withChatPrompt()`, and `withInstructionPrompt()` methods that automatically apply the correct prompt format.
+For convenience, models with clear prompt templates provide `withTextPrompt()`, `withChatPrompt()`, and `withInstructionPrompt()` methods that automatically apply the correct prompt template.
 
 ### Text Prompts
 
-Text prompts are a simple string prompts. They are useful for mapping a simple prompt into the specific prompt format that a model expects.
+Text prompts are a simple string prompts. They are useful for mapping a simple prompt into the specific prompt template that a model expects.
 
-#### Example: OpenAIChatPromptFormat
+#### Example: OpenAIChatPrompt
 
 ```ts
 const model = openai
   .ChatTextGenerator({
     // ...
   })
-  .withPromptFormat(OpenAIChatPromptFormat.text());
+  .withPromptTemplate(OpenAIChatPrompt.text());
 ```
 
-[OpenAIChatPromptFormat.text()](/api/namespaces/OpenAIChatPromptFormat#text) formats the instruction as an OpenAI message prompt, which is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel).
+[OpenAIChatPrompt.text()](/api/namespaces/OpenAIChatPrompt#text) formats the instruction as an OpenAI message prompt, which is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel).
 
 Alternatively you can use the shorthand method:
 
@@ -133,28 +133,28 @@ const text = await generateText(
 );
 ```
 
-#### Prompt Formats
+#### Prompt Templates
 
-The following prompt formats are available for text prompts:
+The following prompt templates are available for text prompts:
 
-- **OpenAI chat**: [OpenAIChatPromptFormat.text()](/api/namespaces/OpenAIChatPromptFormat#text)
+- **OpenAI chat**: [OpenAIChatPrompt.text()](/api/namespaces/OpenAIChatPrompt#text)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [AnthropicPromptFormat.text()](/api/namespaces/AnthropicPromptFormat#text)
+- **Anthropic**: [AnthropicPromptTemplate.text()](/api/namespaces/AnthropicPromptTemplate#text)
   for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
-- **Llama 2**: [Llama2PromptFormat.text()](/api/namespaces/Llama2PromptFormat#text)
-  for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
-- **Alpaca**: [AlpacaPromptFormat.text()](/api/namespaces/AlpacaPromptFormat#text)
-  for models that use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release).
-- **ChatML**: [ChatMLPromptFormat.text()](/api/namespaces/ChatMLPromptFormat#text)
-  for models that use the ChatML prompt format.
-- **Basic text**: [TextPromptFormat.text()](/api/namespaces/TextPromptFormat#text)
+- **Llama 2**: [Llama2Prompt.text()](/api/namespaces/Llama2Prompt#text)
+  for models that use the [Llama 2 prompt template](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
+- **Alpaca**: [AlpacaPrompt.text()](/api/namespaces/AlpacaPrompt#text)
+  for models that use the [Alpaca prompt template](https://github.com/tatsu-lab/stanford_alpaca#data-release).
+- **ChatML**: [ChatMLPrompt.text()](/api/namespaces/ChatMLPrompt#text)
+  for models that use the ChatML prompt template.
+- **Basic text**: [TextPrompt.text()](/api/namespaces/TextPromptTemplate#text)
   for other models that expect a generic text prompt.
 
 ### Instruction Prompts
 
-Instruction prompts are a higher-level prompt formats that contains an instruction and an optional system message. Instruction prompts can be [text instruction prompts](/api/interfaces/TextInstructionPrompt) or [multi-modal instruction prompts](/api/interfaces/MultiModalInstructionPrompt).
+Instruction prompts are a higher-level prompt templates that contains an instruction and an optional system message. Instruction prompts can be [text instruction prompts](/api/interfaces/TextInstructionPrompt) or [multi-modal instruction prompts](/api/interfaces/MultiModalInstructionPrompt).
 
-The supported instruction prompt type depends on the prompt format that you use. For text instruction prompts, the `instruction` property is a `string`, and for multi-modal instruction prompts it is a [MultiModalInput](/api/modules#multimodalinput). Multi-modal inputs are arrays that can contain text or image content.
+The supported instruction prompt type depends on the prompt template that you use. For text instruction prompts, the `instruction` property is a `string`, and for multi-modal instruction prompts it is a [MultiModalInput](/api/modules#multimodalinput). Multi-modal inputs are arrays that can contain text or image content.
 
 #### Example: Cohere text generation
 
@@ -163,10 +163,10 @@ const model = cohere
   .TextGenerator({
     // ...
   })
-  .withPromptFormat(TextPromptFormat.instruction());
+  .withPromptTemplate(TextPrompt.instruction());
 ```
 
-[TextPromptFormat.instruction()](/api/namespaces/TextPromptFormat#instruction) formats the instruction prompt as a basic text prompt, which is expected by the [CohereTextGenerationModel](/api/classes/CohereTextGenerationModel).
+[TextPrompt.instruction()](/api/namespaces/TextPromptTemplate#instruction) formats the instruction prompt as a basic text prompt, which is expected by the [CohereTextGenerationModel](/api/classes/CohereTextGenerationModel).
 
 Alternatively you can use the shorthand method:
 
@@ -207,26 +207,26 @@ const textStream = await streamText(
 );
 ```
 
-#### Prompt Formats
+#### Prompt Templates
 
-The following prompt formats are available for instruction prompts:
+The following prompt templates are available for instruction prompts:
 
-- **OpenAI chat**: [OpenAIChatPromptFormat.instruction()](/api/namespaces/OpenAIChatPromptFormat#instruction)
+- **OpenAI chat**: [OpenAIChatPrompt.instruction()](/api/namespaces/OpenAIChatPrompt#instruction)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [AnthropicPromptFormat.instruction()](/api/namespaces/AnthropicPromptFormat#instruction)
+- **Anthropic**: [AnthropicPromptTemplate.instruction()](/api/namespaces/AnthropicPromptTemplate#instruction)
   for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
-- **Llama 2**: [Llama2PromptFormat.instruction()](/api/namespaces/Llama2PromptFormat#instruction)
-  for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
-- **Alpaca**: [AlpacaPromptFormat.instruction()](/api/namespaces/AlpacaPromptFormat#instruction)
-  for models that use the [Alpaca prompt format](https://github.com/tatsu-lab/stanford_alpaca#data-release).
-- **ChatML**: [ChatMLPromptFormat.instruction()](/api/namespaces/ChatMLPromptFormat#instruction)
-  for models that use the ChatML prompt format.
-- **Basic text**: [TextPromptFormat.instruction()](/api/namespaces/TextPromptFormat#instruction)
+- **Llama 2**: [Llama2Prompt.instruction()](/api/namespaces/Llama2Prompt#instruction)
+  for models that use the [Llama 2 prompt template](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
+- **Alpaca**: [AlpacaPrompt.instruction()](/api/namespaces/AlpacaPrompt#instruction)
+  for models that use the [Alpaca prompt template](https://github.com/tatsu-lab/stanford_alpaca#data-release).
+- **ChatML**: [ChatMLPrompt.instruction()](/api/namespaces/ChatMLPrompt#instruction)
+  for models that use the ChatML prompt template.
+- **Basic text**: [TextPrompt.instruction()](/api/namespaces/TextPromptTemplate#instruction)
   for other models that expect a generic text prompt.
 
 ### Chat Prompts
 
-Chat prompts are a higher-level prompt format that contains a list of chat messages. They can be either a [TextChatPrompt](/api/interfaces/TextChatPrompt) or a [MultiModalChatPrompt](/api/interfaces/MultiModalChatPrompt).
+Chat prompts are a higher-level prompt template that contains a list of chat messages. They can be either a [TextChatPrompt](/api/interfaces/TextChatPrompt) or a [MultiModalChatPrompt](/api/interfaces/MultiModalChatPrompt).
 
 Chat prompts are a combination of a system message and a list of messages with the following constraints:
 
@@ -235,7 +235,7 @@ Chat prompts are a combination of a system message and a list of messages with t
 - Then it must be alternating between an assistant message and a user message.
 - The last message must always be a user message (when submitting to a model).
 
-You can use a ChatPrompt without an final user message when you e.g. want to display the current state of a conversation. The type checking is done at runtime when you submit a chat prompt to a model with a prompt format.
+You can use a ChatPrompt without an final user message when you e.g. want to display the current state of a conversation. The type checking is done at runtime when you submit a chat prompt to a model with a prompt template.
 
 #### Example
 
@@ -246,10 +246,10 @@ const model = openai
   .ChatTextGenerator({
     model: "gpt-3.5-turbo",
   })
-  .withPromptFormat(OpenAIChatPromptFormat.chat());
+  .withPromptTemplate(OpenAIChatPrompt.chat());
 ```
 
-The [OpenAIChatPromptFormat.chat()](/api/namespaces/OpenAIChatPromptFormat#chat) maps the chat prompt to an OpenAI chat prompt (that is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel)).
+The [OpenAIChatPrompt.chat()](/api/namespaces/OpenAIChatPrompt#chat) maps the chat prompt to an OpenAI chat prompt (that is expected by the [OpenAIChatModel](/api/classes/OpenAIChatModel)).
 
 ```ts
 const model = openai
@@ -281,21 +281,21 @@ const textStream = await streamText(model, {
 });
 ```
 
-#### Prompt Formats
+#### Prompt Templates
 
-The following prompt formats are available for chat prompts:
+The following prompt templates are available for chat prompts:
 
-- **OpenAI chat**: [OpenAIChatPromptFormat.chat()](/api/namespaces/OpenAIChatPromptFormat#chat)
+- **OpenAI chat**: [OpenAIChatPrompt.chat()](/api/namespaces/OpenAIChatPrompt#chat)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [AnthropicPromptFormat.chat()](/api/namespaces/AnthropicPromptFormat#chat)
+- **Anthropic**: [AnthropicPromptTemplate.chat()](/api/namespaces/AnthropicPromptTemplate#chat)
   for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
-- **Llama 2**: [Llama2PromptFormat.chat()](/api/namespaces/Llama2PromptFormat#chat)
-  for models that use the [Llama 2 prompt format](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
-- **Vicuna**: [VicunaPromptFormat.chat()](/api/namespaces/VicunaPromptFormat#chat)
-  for models that use the [Vicuna prompt format](
-- **ChatML**: [ChatMLPromptFormat.chat()](/api/namespaces/ChatMLPromptFormat#chat)
-  for models that use the ChatML prompt format.
-- **Basic text**: [TextPromptFormat.chat()](/api/namespaces/TextPromptFormat#chat)
+- **Llama 2**: [Llama2Prompt.chat()](/api/namespaces/Llama2Prompt#chat)
+  for models that use the [Llama 2 prompt template](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
+- **Vicuna**: [VicunaPromptTemplate.chat()](/api/namespaces/VicunaPromptTemplate#chat)
+  for models that use the [Vicuna prompt template](
+- **ChatML**: [ChatMLPrompt.chat()](/api/namespaces/ChatMLPrompt#chat)
+  for models that use the ChatML prompt template.
+- **Basic text**: [TextPrompt.chat()](/api/namespaces/TextPromptTemplate#chat)
   for other models that expect a generic text prompt.
   You can change the prefixes for the user, assistant, and system messages.
 
@@ -324,29 +324,30 @@ const textStream = await streamText(
 );
 ```
 
-### Custom Prompt Formats
+### Custom Prompt Templates
 
-You can also create your own custom prompt formats and prompt formats.
+You can also create your own custom prompt templates and prompt templates.
 
 For this, you need to:
 
-1. create an interface/type for your prompt format, and
-2. create prompt formats that map your prompt format to the prompt formats of the models that you want to use.
+1. create an interface/type for your prompt template, and
+2. create prompt templates that map your prompt template to the prompt templates of the models that you want to use.
 
-The interface for [prompt format](/api/interfaces/TextGenerationPromptFormat) consists of a map function
+The interface for [prompt template](/api/interfaces/TextGenerationPromptTemplate) consists of a map function
 and a list of stop tokens.
 
 ```ts
-interface TextGenerationPromptFormat<SOURCE_PROMPT, TARGET_PROMPT> {
+interface TextGenerationPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> {
   map(sourcePrompt: SOURCE_PROMPT): TARGET_PROMPT;
   stopSequences: string[];
 }
 ```
 
-When you have a prompt format that matches the prompt format of a model, you can apply it as follows:
+When you have a prompt template that matches the prompt template of a model, you can apply it as follows:
 
 ```ts
-const modelWithMyCustomPromptFormat = model.withPromptFormat(myPromptFormat);
+const modelWithMyCustomPromptTemplate =
+  model.withPromptTemplate(myPromptTemplate);
 ```
 
 ## Available Providers

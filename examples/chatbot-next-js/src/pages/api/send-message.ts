@@ -1,5 +1,5 @@
 import {
-  Llama2PromptFormat,
+  Llama2Prompt,
   OpenAIApiConfiguration,
   cohere,
   createEventSourceStream,
@@ -38,7 +38,7 @@ const llama2Model = llamacpp
     contextWindowSize: 4096, // Llama 2 context window size
     maxCompletionTokens: 512,
   })
-  .withTextPromptFormat(Llama2PromptFormat.chat());
+  .withTextPromptTemplate(Llama2Prompt.chat());
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const cohereModel = cohere

@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { Llama2PromptFormat, llamacpp, streamText } from "modelfusion";
+import { Llama2Prompt, llamacpp, streamText } from "modelfusion";
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ async function main() {
         contextWindowSize: 4096, // Llama 2 context window size
         maxCompletionTokens: 512,
       })
-      .withTextPromptFormat(Llama2PromptFormat.chat()),
+      .withTextPromptTemplate(Llama2Prompt.chat()),
     {
       system: "You are a celebrated poet.",
       messages: [

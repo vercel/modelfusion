@@ -8,7 +8,7 @@ import {
 } from "./ToolCallsOrTextGenerationModel.js";
 import { ToolCallsOrTextParseError } from "./ToolCallsOrTextParseError.js";
 
-export interface ToolCallsOrGenerateTextPromptFormat<
+export interface ToolCallsOrGenerateTextPromptTemplate<
   SOURCE_PROMPT,
   TARGET_PROMPT,
 > {
@@ -32,20 +32,23 @@ export class TextGenerationToolCallsOrGenerateTextModel<
 > implements ToolCallsOrTextGenerationModel<SOURCE_PROMPT, MODEL["settings"]>
 {
   private readonly model: MODEL;
-  private readonly format: ToolCallsOrGenerateTextPromptFormat<
+  private readonly template: ToolCallsOrGenerateTextPromptTemplate<
     SOURCE_PROMPT,
     TARGET_PROMPT
   >;
 
   constructor({
     model,
-    format,
+    template,
   }: {
     model: MODEL;
-    format: ToolCallsOrGenerateTextPromptFormat<SOURCE_PROMPT, TARGET_PROMPT>;
+    template: ToolCallsOrGenerateTextPromptTemplate<
+      SOURCE_PROMPT,
+      TARGET_PROMPT
+    >;
   }) {
     this.model = model;
-    this.format = format;
+    this.template = template;
   }
 
   get modelInformation() {
@@ -67,7 +70,7 @@ export class TextGenerationToolCallsOrGenerateTextModel<
   ) {
     const { response, value, metadata } = await generateText(
       this.model,
-      this.format.createPrompt(prompt, tools),
+      this.template.createPrompt(prompt, tools),
       {
         ...options,
         returnType: "full",
@@ -75,7 +78,7 @@ export class TextGenerationToolCallsOrGenerateTextModel<
     );
 
     try {
-      const { text, toolCalls } = this.format.extractToolCallsAndText(value);
+      const { text, toolCalls } = this.template.extractToolCallsAndText(value);
 
       return {
         response,
@@ -100,7 +103,7 @@ export class TextGenerationToolCallsOrGenerateTextModel<
   withSettings(additionalSettings: Partial<MODEL["settings"]>): this {
     return new TextGenerationToolCallsOrGenerateTextModel({
       model: this.model.withSettings(additionalSettings),
-      format: this.format,
+      template: this.template,
     }) as this;
   }
 }

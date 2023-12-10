@@ -296,13 +296,13 @@ const path = `./openai-speech-example.mp3`;
 fs.writeFileSync(path, speech);
 ```
 
-## Prompt Formats
+## Prompt Templates
 
 ### OpenAI Chat Format
 
 #### Text prompt
 
-[OpenAIChatPromptFormat.text()](/api/namespaces/OpenAIChatPromptFormat) lets you use basic text prompts with OpenAI chat models. It is available as a shorthand method:
+[OpenAIChatPrompt.text()](/api/namespaces/OpenAIChatPrompt) lets you use basic text prompts with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -315,7 +315,7 @@ const textStream = await streamText(
 
 #### Instruction prompt
 
-[OpenAIChatPromptFormat.instruction()](/api/namespaces/OpenAIChatPromptFormat) lets you use [multi-modal instruction prompts](/api/interfaces/MultiModalInstructionPrompt) with OpenAI chat models. It is available as a shorthand method:
+[OpenAIChatPrompt.instruction()](/api/namespaces/OpenAIChatPrompt) lets you use [multi-modal instruction prompts](/api/interfaces/MultiModalInstructionPrompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -331,7 +331,7 @@ const textStream = await streamText(
 
 #### Chat prompt
 
-[OpenAIChatPromptFormat.chat()](/api/namespaces/OpenAIChatPromptFormat) lets you use [text chat prompts](/api/interfaces/TextChatPrompt) and [multi-modal chat prompts](/api/interfaces/MultiModalChatPrompt) with OpenAI chat models. It is available as a shorthand method:
+[OpenAIChatPrompt.chat()](/api/namespaces/OpenAIChatPrompt) lets you use [text chat prompts](/api/interfaces/TextChatPrompt) and [multi-modal chat prompts](/api/interfaces/MultiModalChatPrompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(

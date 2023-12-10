@@ -1,6 +1,6 @@
 import {
   TextInstructionPrompt,
-  ToolCallsOrGenerateTextPromptFormat,
+  ToolCallsOrGenerateTextPromptTemplate,
   ToolDefinition,
   zodSchema,
   parseJSON,
@@ -8,7 +8,7 @@ import {
 import { nanoid } from "nanoid";
 import { z } from "zod";
 
-export const openHermesToolCallsPromptFormat: ToolCallsOrGenerateTextPromptFormat<
+export const openHermesToolCallsPromptTemplate: ToolCallsOrGenerateTextPromptTemplate<
   string,
   TextInstructionPrompt
 > = {

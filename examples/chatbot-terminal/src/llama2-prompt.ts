@@ -1,5 +1,5 @@
 import {
-  Llama2PromptFormat,
+  Llama2Prompt,
   TextChatPrompt,
   llamacpp,
   streamText,
@@ -27,7 +27,7 @@ async function main() {
         contextWindowSize: 4096, // Llama 2 context window size
         maxCompletionTokens: 512,
       })
-      .withTextPromptFormat(Llama2PromptFormat.chat());
+      .withTextPromptTemplate(Llama2Prompt.chat());
 
     const textStream = await streamText(
       model,

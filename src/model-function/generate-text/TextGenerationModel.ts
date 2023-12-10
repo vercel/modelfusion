@@ -2,7 +2,7 @@ import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Delta } from "../Delta.js";
 import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
-import { TextGenerationPromptFormat } from "./TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate.js";
 
 export interface TextGenerationModelSettings extends ModelSettings {
   /**
@@ -62,8 +62,8 @@ export interface TextGenerationModel<
     };
   }>;
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, PROMPT>
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>
   ): TextGenerationModel<INPUT_PROMPT, SETTINGS>;
 }
 
@@ -76,7 +76,7 @@ export interface TextStreamingModel<
     options?: FunctionOptions
   ): PromiseLike<AsyncIterable<Delta<string>>>;
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, PROMPT>
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>
   ): TextStreamingModel<INPUT_PROMPT, SETTINGS>;
 }

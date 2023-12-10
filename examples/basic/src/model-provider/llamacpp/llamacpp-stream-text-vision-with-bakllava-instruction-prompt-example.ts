@@ -1,4 +1,4 @@
-import { LlamaCppBakLLaVA1Format, llamacpp, streamText } from "modelfusion";
+import { LlamaCppBakLLaVA1Prompt, llamacpp, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -15,7 +15,7 @@ async function main() {
         maxCompletionTokens: 1024,
         temperature: 0,
       })
-      .withPromptFormat(LlamaCppBakLLaVA1Format.instruction()),
+      .withPromptTemplate(LlamaCppBakLLaVA1Prompt.instruction()),
 
     {
       instruction: [

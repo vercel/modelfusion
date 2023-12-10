@@ -10,18 +10,18 @@ import {
 import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
-import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptFormat } from "../../model-function/generate-text/TextGenerationPromptFormat.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../core/schema/parseJSON.js";
 import { AnthropicApiConfiguration } from "./AnthropicApiConfiguration.js";
 import { failedAnthropicCallResponseHandler } from "./AnthropicError.js";
-import { instruction, chat, text } from "./AnthropicPromptFormat.js";
+import { instruction, chat, text } from "./AnthropicPromptTemplate.js";
 
 export const ANTHROPIC_TEXT_GENERATION_MODELS = {
   "claude-instant-1": {
@@ -142,42 +142,42 @@ export class AnthropicTextGenerationModel
   }
 
   /**
-   * Returns this model with a text prompt format.
+   * Returns this model with a text prompt template.
    */
   withTextPrompt() {
-    return this.withPromptFormat(text());
+    return this.withPromptTemplate(text());
   }
 
   /**
-   * Returns this model with an instruction prompt format.
+   * Returns this model with an instruction prompt template.
    */
   withInstructionPrompt() {
-    return this.withPromptFormat(instruction());
+    return this.withPromptTemplate(instruction());
   }
 
   /**
-   * Returns this model with a chat prompt format.
+   * Returns this model with a chat prompt template.
    */
   withChatPrompt() {
-    return this.withPromptFormat(chat());
+    return this.withPromptTemplate(chat());
   }
 
-  withPromptFormat<INPUT_PROMPT>(
-    promptFormat: TextGenerationPromptFormat<INPUT_PROMPT, string>
-  ): PromptFormatTextStreamingModel<
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
+  ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
     string,
     AnthropicTextGenerationModelSettings,
     this
   > {
-    return new PromptFormatTextStreamingModel({
+    return new PromptTemplateTextStreamingModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
-          ...promptFormat.stopSequences,
+          ...promptTemplate.stopSequences,
         ],
       }),
-      promptFormat,
+      promptTemplate,
     });
   }
 
