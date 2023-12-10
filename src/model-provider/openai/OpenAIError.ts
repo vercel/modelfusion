@@ -4,7 +4,7 @@ import { ResponseHandler } from "../../core/api/postToApi.js";
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../core/schema/parseJSON.js";
 
-export const openAIErrorDataSchema = new ZodSchema(
+const openAIErrorDataSchema = new ZodSchema(
   z.object({
     error: z.object({
       message: z.string(),
@@ -16,38 +16,6 @@ export const openAIErrorDataSchema = new ZodSchema(
 );
 
 export type OpenAIErrorData = (typeof openAIErrorDataSchema)["_type"];
-
-export class OpenAIError extends ApiCallError {
-  public readonly data?: OpenAIErrorData;
-
-  constructor({
-    data,
-    statusCode,
-    url,
-    requestBodyValues,
-    message,
-  }: {
-    message: string;
-    statusCode: number;
-    url: string;
-    requestBodyValues: unknown;
-    data?: OpenAIErrorData;
-  }) {
-    super({
-      message,
-      statusCode,
-      requestBodyValues,
-      url,
-      isRetryable:
-        (statusCode === 429 &&
-          // insufficient_quota is also reported as a 429, but it's not retryable:
-          data?.error.type !== "insufficient_quota") ||
-        statusCode >= 500,
-    });
-
-    this.data = data;
-  }
-}
 
 export const failedOpenAICallResponseHandler: ResponseHandler<
   ApiCallError
@@ -61,15 +29,20 @@ export const failedOpenAICallResponseHandler: ResponseHandler<
       schema: openAIErrorDataSchema,
     });
 
-    return new OpenAIError({
+    return new ApiCallError({
       url,
       requestBodyValues,
       statusCode: response.status,
       message: parsedError.error.message,
       data: parsedError,
+      isRetryable:
+        (response.status === 429 &&
+          // insufficient_quota is also reported as a 429, but it's not retryable:
+          parsedError?.error.type !== "insufficient_quota") ||
+        response.status >= 500,
     });
   } catch (parseError) {
-    return new OpenAIError({
+    return new ApiCallError({
       url,
       requestBodyValues,
       statusCode: response.status,

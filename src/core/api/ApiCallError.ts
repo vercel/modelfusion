@@ -1,10 +1,11 @@
 export class ApiCallError extends Error {
-  public readonly url: string;
-  public readonly requestBodyValues: unknown;
-  public readonly statusCode?: number;
-  public readonly responseBody?: string;
-  public readonly cause?: unknown;
-  public readonly isRetryable: boolean;
+  readonly url: string;
+  readonly requestBodyValues: unknown;
+  readonly statusCode?: number;
+  readonly responseBody?: string;
+  readonly cause?: unknown;
+  readonly isRetryable: boolean;
+  readonly data?: unknown;
 
   constructor({
     message,
@@ -15,6 +16,7 @@ export class ApiCallError extends Error {
     cause,
     isRetryable = statusCode != null &&
       (statusCode === 429 || statusCode >= 500),
+    data,
   }: {
     message: string;
     url: string;
@@ -23,6 +25,7 @@ export class ApiCallError extends Error {
     responseBody?: string;
     cause?: unknown;
     isRetryable?: boolean;
+    data?: unknown;
   }) {
     super(message);
 
@@ -34,6 +37,7 @@ export class ApiCallError extends Error {
     this.responseBody = responseBody;
     this.cause = cause;
     this.isRetryable = isRetryable;
+    this.data = data;
   }
 
   toJSON() {
@@ -46,6 +50,7 @@ export class ApiCallError extends Error {
       responseBody: this.responseBody,
       cause: this.cause,
       isRetryable: this.isRetryable,
+      data: this.data,
     };
   }
 }
