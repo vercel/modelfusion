@@ -34,7 +34,11 @@ export interface LlamaCppTextGenerationModelSettings<
    */
   contextWindowSize?: CONTEXT_WINDOW_SIZE;
 
+  /**
+   * Save the prompt and generation for avoid reprocess entire prompt if a part of this isn't change (default: false)
+   */
   cachePrompt?: boolean;
+
   temperature?: number;
   topK?: number;
   topP?: number;

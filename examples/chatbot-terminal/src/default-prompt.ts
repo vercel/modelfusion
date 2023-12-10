@@ -26,6 +26,7 @@ async function main() {
       .TextGenerator({
         contextWindowSize: 4096,
         maxCompletionTokens: 512,
+        cachePrompt: true,
       })
       .withTextPromptTemplate(TextPrompt.chat());
 
