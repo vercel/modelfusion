@@ -77,7 +77,7 @@ Using a prompt mapping can make the interaction with Anthropic models easier.
 
 ### Text prompt
 
-[AnthropicPromptTemplate.text()](/api/namespaces/AnthropicPromptTemplate) lets you use basic text prompts with Anthropic models. It is available as a shorthand method:
+[AnthropicPrompt.text()](/api/namespaces/AnthropicPrompt) lets you use basic text prompts with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -92,7 +92,7 @@ const textStream = await streamText(
 
 ### Instruction prompt
 
-[AnthropicPromptTemplate.instruction()](/api/namespaces/AnthropicPromptTemplate) lets you use [text instruction prompts](/api/interfaces/TextInstructionPrompt) with Anthropic models. It is available as a shorthand method:
+[AnthropicPrompt.instruction()](/api/namespaces/AnthropicPrompt) lets you use [text instruction prompts](/api/interfaces/TextInstructionPrompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -107,7 +107,7 @@ const textStream = await streamText(
 
 ### Chat prompt
 
-[AnthropicPromptTemplate.chat()](/api/namespaces/AnthropicPromptTemplate) lets you use use [text chat prompts](/api/interfaces/TextChatPrompt) with Anthropic models. It is available as a shorthand method:
+[AnthropicPrompt.chat()](/api/namespaces/AnthropicPrompt) lets you use use [text chat prompts](/api/interfaces/TextChatPrompt) with Anthropic models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(

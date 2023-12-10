@@ -139,7 +139,7 @@ The following prompt templates are available for text prompts:
 
 - **OpenAI chat**: [OpenAIChatPrompt.text()](/api/namespaces/OpenAIChatPrompt#text)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [AnthropicPromptTemplate.text()](/api/namespaces/AnthropicPromptTemplate#text)
+- **Anthropic**: [AnthropicPrompt.text()](/api/namespaces/AnthropicPrompt#text)
   for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
 - **Llama 2**: [Llama2Prompt.text()](/api/namespaces/Llama2Prompt#text)
   for models that use the [Llama 2 prompt template](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
@@ -147,7 +147,7 @@ The following prompt templates are available for text prompts:
   for models that use the [Alpaca prompt template](https://github.com/tatsu-lab/stanford_alpaca#data-release).
 - **ChatML**: [ChatMLPrompt.text()](/api/namespaces/ChatMLPrompt#text)
   for models that use the ChatML prompt template.
-- **Basic text**: [TextPrompt.text()](/api/namespaces/TextPromptTemplate#text)
+- **Basic text**: [TextPrompt.text()](/api/namespaces/TextPrompt#text)
   for other models that expect a generic text prompt.
 
 ### Instruction Prompts
@@ -166,7 +166,7 @@ const model = cohere
   .withPromptTemplate(TextPrompt.instruction());
 ```
 
-[TextPrompt.instruction()](/api/namespaces/TextPromptTemplate#instruction) formats the instruction prompt as a basic text prompt, which is expected by the [CohereTextGenerationModel](/api/classes/CohereTextGenerationModel).
+[TextPrompt.instruction()](/api/namespaces/TextPrompt#instruction) formats the instruction prompt as a basic text prompt, which is expected by the [CohereTextGenerationModel](/api/classes/CohereTextGenerationModel).
 
 Alternatively you can use the shorthand method:
 
@@ -213,7 +213,7 @@ The following prompt templates are available for instruction prompts:
 
 - **OpenAI chat**: [OpenAIChatPrompt.instruction()](/api/namespaces/OpenAIChatPrompt#instruction)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [AnthropicPromptTemplate.instruction()](/api/namespaces/AnthropicPromptTemplate#instruction)
+- **Anthropic**: [AnthropicPrompt.instruction()](/api/namespaces/AnthropicPrompt#instruction)
   for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
 - **Llama 2**: [Llama2Prompt.instruction()](/api/namespaces/Llama2Prompt#instruction)
   for models that use the [Llama 2 prompt template](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
@@ -221,7 +221,7 @@ The following prompt templates are available for instruction prompts:
   for models that use the [Alpaca prompt template](https://github.com/tatsu-lab/stanford_alpaca#data-release).
 - **ChatML**: [ChatMLPrompt.instruction()](/api/namespaces/ChatMLPrompt#instruction)
   for models that use the ChatML prompt template.
-- **Basic text**: [TextPrompt.instruction()](/api/namespaces/TextPromptTemplate#instruction)
+- **Basic text**: [TextPrompt.instruction()](/api/namespaces/TextPrompt#instruction)
   for other models that expect a generic text prompt.
 
 ### Chat Prompts
@@ -287,15 +287,15 @@ The following prompt templates are available for chat prompts:
 
 - **OpenAI chat**: [OpenAIChatPrompt.chat()](/api/namespaces/OpenAIChatPrompt#chat)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [AnthropicPromptTemplate.chat()](/api/namespaces/AnthropicPromptTemplate#chat)
+- **Anthropic**: [AnthropicPrompt.chat()](/api/namespaces/AnthropicPrompt#chat)
   for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
 - **Llama 2**: [Llama2Prompt.chat()](/api/namespaces/Llama2Prompt#chat)
   for models that use the [Llama 2 prompt template](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
-- **Vicuna**: [VicunaPromptTemplate.chat()](/api/namespaces/VicunaPromptTemplate#chat)
+- **Vicuna**: [VicunaPromptTemplate.chat()](/api/namespaces/VicunaPrompt#chat)
   for models that use the [Vicuna prompt template](
 - **ChatML**: [ChatMLPrompt.chat()](/api/namespaces/ChatMLPrompt#chat)
   for models that use the ChatML prompt template.
-- **Basic text**: [TextPrompt.chat()](/api/namespaces/TextPromptTemplate#chat)
+- **Basic text**: [TextPrompt.chat()](/api/namespaces/TextPrompt#chat)
   for other models that expect a generic text prompt.
   You can change the prefixes for the user, assistant, and system messages.
 
