@@ -41,4 +41,12 @@ export interface TextInstructionPrompt {
    * The text instruction for the model.
    */
   instruction: string;
+
+  /**
+   * Response prefix that will be injected in the prompt at the beginning of the response.
+   * This is useful for guiding the model by starting its response with a specific text.
+   *
+   * Note: Not all models support this feature. E.g. it is not supported by OpenAI chat models.
+   */
+  responsePrefix?: string;
 }

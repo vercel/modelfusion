@@ -35,11 +35,11 @@ export function text(): TextGenerationPromptFormat<string, string> {
  * ChatML prompt template:
  * ```
  * <|im_start|>system
- * You are a helpful assistant that answers questions about the world.<|im_end|>
+ * ${ system prompt }<|im_end|>
  * <|im_start|>user
- * What is the capital of France?<|im_end|>
+ * ${ instruction }<|im_end|>
  * <|im_start|>assistant
- * Paris<|im_end|>
+ * ${response prefix}
  * ```
  */
 export function instruction(): TextGenerationPromptFormat<
@@ -52,7 +52,8 @@ export function instruction(): TextGenerationPromptFormat<
       return (
         chatMLSegment("system", prompt.system) +
         chatMLSegment("user", prompt.instruction) +
-        chatMLStart("assistant") // prefix start of assistant response
+        chatMLStart("assistant") +
+        (prompt.responsePrefix ?? "")
       );
     },
   };

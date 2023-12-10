@@ -1,0 +1,39 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`chat prompt > should format prompt with user message 1`] = `
+"user:
+user message
+
+assistant:
+"
+`;
+
+exports[`chat prompt > should format prompt with user-assistant-user messages 1`] = `
+"user:
+1st user message
+
+assistant:
+assistant message
+
+user:
+2nd user message
+
+assistant:
+"
+`;
+
+exports[`instruction prompt > should format prompt with instruction 1`] = `"instruction"`;
+
+exports[`instruction prompt > should format prompt with instruction and response prefix 1`] = `
+"instruction
+
+response prefix"
+`;
+
+exports[`instruction prompt > should format prompt with system and instruction 1`] = `
+"system
+
+instruction"
+`;
+
+exports[`text prompt > should format prompt 1`] = `"prompt"`;

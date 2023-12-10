@@ -86,6 +86,10 @@ export function instruction(): TextGenerationPromptFormat<
 
       text += "\n\n### Response:\n";
 
+      if (prompt.responsePrefix != null) {
+        text += `${prompt.responsePrefix}\n`;
+      }
+
       return text;
     },
   };

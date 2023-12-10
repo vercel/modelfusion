@@ -5,6 +5,9 @@ import {
 } from "../../model-function/generate-text/prompt-format/ChatPrompt.js";
 import { TextInstructionPrompt } from "../../model-function/generate-text/prompt-format/InstructionPrompt.js";
 
+const HUMAN_PREFIX = "\n\nHuman:";
+const ASSISTANT_PREFIX = "\n\nAssistant:";
+
 /**
  * Formats a text prompt as an Anthropic prompt.
  */
@@ -12,9 +15,9 @@ export function text(): TextGenerationPromptFormat<string, string> {
   return {
     format(prompt) {
       let text = "";
-      text += "\n\nHuman:";
+      text += HUMAN_PREFIX;
       text += prompt;
-      text += "\n\nAssistant:";
+      text += ASSISTANT_PREFIX;
       return text;
     },
     stopSequences: [],
@@ -32,9 +35,13 @@ export function instruction(): TextGenerationPromptFormat<
     format(prompt) {
       let text = prompt.system ?? "";
 
-      text += "\n\nHuman:";
+      text += HUMAN_PREFIX;
       text += prompt.instruction;
-      text += "\n\nAssistant:";
+      text += ASSISTANT_PREFIX;
+
+      if (prompt.responsePrefix != null) {
+        text += prompt.responsePrefix;
+      }
 
       return text;
     },
@@ -57,11 +64,13 @@ export function chat(): TextGenerationPromptFormat<TextChatPrompt, string> {
       for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
-            text += `\n\nHuman:${content}`;
+            text += HUMAN_PREFIX;
+            text += content;
             break;
           }
           case "assistant": {
-            text += `\n\nAssistant:${content}`;
+            text += ASSISTANT_PREFIX;
+            text += content;
             break;
           }
           default: {
@@ -72,7 +81,7 @@ export function chat(): TextGenerationPromptFormat<TextChatPrompt, string> {
       }
 
       // AI message prefix:
-      text += `\n\nAssistant:`;
+      text += ASSISTANT_PREFIX;
 
       return text;
     },

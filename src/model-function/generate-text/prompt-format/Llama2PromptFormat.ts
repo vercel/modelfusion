@@ -4,9 +4,9 @@ import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
 // see https://github.com/facebookresearch/llama/blob/6c7fe276574e78057f917549435a2554000a876d/llama/generation.py#L44
 const BEGIN_SEGMENT = "<s>";
-const END_SEGMENT = "</s>";
-const BEGIN_INSTRUCTION = "[INST]";
-const END_INSTRUCTION = "[/INST]";
+const END_SEGMENT = " </s>";
+const BEGIN_INSTRUCTION = "[INST] ";
+const END_INSTRUCTION = " [/INST] ";
 const BEGIN_SYSTEM = "<<SYS>>\n";
 const END_SYSTEM = "\n<</SYS>>\n\n";
 
@@ -37,8 +37,9 @@ export function text(): TextGenerationPromptFormat<string, string> {
  * <s>[INST] <<SYS>>
  * ${ system prompt }
  * <</SYS>>
- *
- * { instruction } [/INST]
+ * ${ instruction }
+ * [/INST]
+ * ${ response prefix }
  * ```
  *
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
@@ -52,9 +53,9 @@ export function instruction(): TextGenerationPromptFormat<
     format(prompt) {
       return `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${
         prompt.system != null
-          ? ` ${BEGIN_SYSTEM}${prompt.system}${END_SYSTEM}`
+          ? `${BEGIN_SYSTEM}${prompt.system}${END_SYSTEM}`
           : ""
-      }${prompt.instruction}${END_INSTRUCTION}\n`;
+      }${prompt.instruction}${END_INSTRUCTION}${prompt.responsePrefix ?? ""}`;
     },
   };
 }

@@ -27,6 +27,10 @@ export const instruction: () => TextGenerationPromptFormat<
 
     text += prompt.instruction;
 
+    if (prompt.responsePrefix != null) {
+      text += `\n\n${prompt.responsePrefix}`;
+    }
+
     return text;
   },
 });
