@@ -17,16 +17,28 @@ export const failedOllamaCallResponseHandler: ResponseHandler<
 > = async ({ response, url, requestBodyValues }) => {
   const responseBody = await response.text();
 
-  const parsedError = parseJSON({
-    text: responseBody,
-    schema: ollamaErrorDataSchema,
-  });
+  // resilient parsing in case the response is not JSON or does not match the schema:
+  try {
+    const parsedError = parseJSON({
+      text: responseBody,
+      schema: ollamaErrorDataSchema,
+    });
 
-  return new ApiCallError({
-    message: parsedError.error,
-    url,
-    requestBodyValues,
-    statusCode: response.status,
-    data: parsedError,
-  });
+    return new ApiCallError({
+      message: parsedError.error,
+      url,
+      requestBodyValues,
+      statusCode: response.status,
+      responseBody,
+      data: parsedError,
+    });
+  } catch (parseError) {
+    return new ApiCallError({
+      message: responseBody.trim() !== "" ? responseBody : response.statusText,
+      url,
+      requestBodyValues,
+      statusCode: response.status,
+      responseBody,
+    });
+  }
 };
