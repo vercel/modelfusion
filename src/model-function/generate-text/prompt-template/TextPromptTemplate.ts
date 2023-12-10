@@ -25,10 +25,10 @@ export const instruction: () => TextGenerationPromptTemplate<
       text += `${prompt.system}\n\n`;
     }
 
-    text += prompt.instruction;
+    text += `${prompt.instruction}\n\n`;
 
     if (prompt.responsePrefix != null) {
-      text += `\n\n${prompt.responsePrefix}`;
+      text += prompt.responsePrefix;
     }
 
     return text;

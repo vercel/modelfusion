@@ -147,6 +147,8 @@ The following prompt templates are available for text prompts:
   for models that use the [Alpaca prompt template](https://github.com/tatsu-lab/stanford_alpaca#data-release).
 - **ChatML**: [ChatMLPrompt.text()](/api/namespaces/ChatMLPrompt#text)
   for models that use the ChatML prompt template.
+- **NeuralChat**: [NeuralChatPrompt.text()](/api/namespaces/NeuralChatPrompt#text)
+  for models that use the neural chat prompt template.
 - **Basic text**: [TextPrompt.text()](/api/namespaces/TextPrompt#text)
   for other models that expect a generic text prompt.
 
@@ -221,6 +223,8 @@ The following prompt templates are available for instruction prompts:
   for models that use the [Alpaca prompt template](https://github.com/tatsu-lab/stanford_alpaca#data-release).
 - **ChatML**: [ChatMLPrompt.instruction()](/api/namespaces/ChatMLPrompt#instruction)
   for models that use the ChatML prompt template.
+- **NeuralChat**: [NeuralChatPrompt.instruction()](/api/namespaces/NeuralChatPrompt#instruction)
+  for models that use the neural chat prompt template.
 - **Basic text**: [TextPrompt.instruction()](/api/namespaces/TextPrompt#instruction)
   for other models that expect a generic text prompt.
 
@@ -295,6 +299,8 @@ The following prompt templates are available for chat prompts:
   for models that use the [Vicuna prompt template](
 - **ChatML**: [ChatMLPrompt.chat()](/api/namespaces/ChatMLPrompt#chat)
   for models that use the ChatML prompt template.
+- **NeuralChat**: [NeuralChatPrompt.chat()](/api/namespaces/NeuralChatPrompt#chat)
+  for models that use the neural chat prompt template.
 - **Basic text**: [TextPrompt.chat()](/api/namespaces/TextPrompt#chat)
   for other models that expect a generic text prompt.
   You can change the prefixes for the user, assistant, and system messages.

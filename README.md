@@ -581,6 +581,7 @@ const textStream = await streamText(
 | Anthropic       | ✅          | ✅                 | ✅          |
 | Llama 2         | ✅          | ✅                 | ✅          |
 | ChatML          | ✅          | ✅                 | ✅          |
+| NeuralChat      | ✅          | ✅                 | ✅          |
 | Alpaca          | ✅          | ✅                 | ❌          |
 | Vicuna          | ❌          | ❌                 | ✅          |
 | Generic Text    | ✅          | ✅                 | ✅          |

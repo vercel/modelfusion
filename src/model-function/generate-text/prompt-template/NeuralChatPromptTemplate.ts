@@ -2,26 +2,31 @@ import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js
 import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
 import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
-const START_SEGMENT = "<|im_start|>";
-const END_SEGMENT = "<|im_end|>";
+const roleNames = {
+  system: "System",
+  user: "User",
+  assistant: "Assistant",
+};
 
 function segmentStart(role: "system" | "user" | "assistant") {
-  return `${START_SEGMENT}${role}\n`;
+  return `### ${roleNames[role]}:\n`;
 }
 
 function segment(
   role: "system" | "user" | "assistant",
   text: string | undefined
 ) {
-  return text == null ? "" : `${segmentStart(role)}${text}${END_SEGMENT}\n`;
+  return text == null ? "" : `${segmentStart(role)}${text}\n`;
 }
 
 /**
- * Formats a text prompt using the ChatML format.
+ * Formats a text prompt as a neural chat prompt.
+ *
+ * @see https://huggingface.co/Intel/neural-chat-7b-v3-1#prompt-template
  */
 export function text(): TextGenerationPromptTemplate<string, string> {
   return {
-    stopSequences: [END_SEGMENT],
+    stopSequences: [],
     format(prompt) {
       // prompt and then prefix start of assistant response:
       return segment("user", prompt) + segmentStart("assistant");
@@ -30,47 +35,31 @@ export function text(): TextGenerationPromptTemplate<string, string> {
 }
 
 /**
- * Formats an instruction prompt using the ChatML format.
+ * Formats an instruction prompt as a neural chat prompt.
  *
- * ChatML prompt template:
- * ```
- * <|im_start|>system
- * ${ system prompt }<|im_end|>
- * <|im_start|>user
- * ${ instruction }<|im_end|>
- * <|im_start|>assistant
- * ${response prefix}
- * ```
+ * @see https://huggingface.co/Intel/neural-chat-7b-v3-1#prompt-template
  */
-export function instruction(): TextGenerationPromptTemplate<
+export const instruction: () => TextGenerationPromptTemplate<
   TextInstructionPrompt,
   string
-> {
-  return {
-    stopSequences: [END_SEGMENT],
-    format(prompt) {
-      return (
-        segment("system", prompt.system) +
-        segment("user", prompt.instruction) +
-        segmentStart("assistant") +
-        (prompt.responsePrefix ?? "")
-      );
-    },
-  };
-}
+> = () => ({
+  stopSequences: [],
+  format(prompt) {
+    return (
+      segment("system", prompt.system) +
+      segment("user", prompt.instruction) +
+      segmentStart("assistant") +
+      (prompt.responsePrefix ?? "")
+    );
+  },
+});
 
 /**
- * Formats a chat prompt using the ChatML format.
+ * Formats a chat prompt as a basic text prompt.
  *
- * ChatML prompt template:
- * ```
- * <|im_start|>system
- * You are a helpful assistant that answers questions about the world.<|im_end|>
- * <|im_start|>user
- * What is the capital of France?<|im_end|>
- * <|im_start|>assistant
- * Paris<|im_end|>
- * ```
+ * @param user The label of the user in the chat. Default to "user".
+ * @param assistant The label of the assistant in the chat. Default to "assistant".
+ * @param system The label of the system in the chat. Optional, defaults to no prefix.
  */
 export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
   return {
@@ -101,6 +90,6 @@ export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
 
       return text;
     },
-    stopSequences: [END_SEGMENT],
+    stopSequences: [`\n${roleNames.user}:`],
   };
 }
