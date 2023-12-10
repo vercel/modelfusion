@@ -10,29 +10,7 @@ const ollamaErrorDataSchema = new ZodSchema(
   })
 );
 
-type OllamaErrorData = (typeof ollamaErrorDataSchema)["_type"];
-
-export class OllamaError extends ApiCallError {
-  public readonly data: OllamaErrorData;
-
-  constructor({
-    statusCode,
-    url,
-    requestBodyValues,
-    data,
-    message = data.error,
-  }: {
-    message?: string;
-    statusCode: number;
-    url: string;
-    requestBodyValues: unknown;
-    data: OllamaErrorData;
-  }) {
-    super({ message, statusCode, requestBodyValues, url });
-
-    this.data = data;
-  }
-}
+export type OllamaErrorData = (typeof ollamaErrorDataSchema)["_type"];
 
 export const failedOllamaCallResponseHandler: ResponseHandler<
   ApiCallError
@@ -44,7 +22,8 @@ export const failedOllamaCallResponseHandler: ResponseHandler<
     schema: ollamaErrorDataSchema,
   });
 
-  return new OllamaError({
+  return new ApiCallError({
+    message: parsedError.error,
     url,
     requestBodyValues,
     statusCode: response.status,
