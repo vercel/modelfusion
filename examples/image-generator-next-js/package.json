@@ -19,7 +19,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
-    "modelfusion": "0.92.1",
+    "modelfusion": "0.93.0",
     "next": "13.4.2",
     "react": "18.2.0",
     "react-dom": "18.2.0"
