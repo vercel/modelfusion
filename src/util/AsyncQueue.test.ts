@@ -1,8 +1,7 @@
-import { expect, test } from "vitest";
 import { delay } from "./delay.js";
 import { AsyncQueue } from "./AsyncQueue.js";
 
-test("receive values in order for single iterator created before pushing", async () => {
+it("should receive values in order for single iterator created before pushing", async () => {
   const asyncQueue = new AsyncQueue<number>();
 
   const receivedValues: number[] = [];
@@ -22,7 +21,7 @@ test("receive values in order for single iterator created before pushing", async
   expect(receivedValues).toEqual([1, 2, 3]);
 });
 
-test("receive values in order for single iterator created after closing", async () => {
+it("should receive values in order for single iterator created after closing", async () => {
   const asyncQueue = new AsyncQueue<number>();
 
   asyncQueue.push(1);
@@ -42,7 +41,7 @@ test("receive values in order for single iterator created after closing", async 
   expect(receivedValues).toEqual([1, 2, 3]);
 });
 
-test("handle delayed pushing", async () => {
+it("should handle delayed pushing", async () => {
   const asyncQueue = new AsyncQueue<number>();
 
   setTimeout(() => {
@@ -59,7 +58,7 @@ test("handle delayed pushing", async () => {
   expect(receivedValues).toEqual([1, 2]);
 });
 
-test("error handling in consumer", async () => {
+it("should error handling in consumer", async () => {
   const asyncQueue = new AsyncQueue<number>();
   asyncQueue.push(1);
 
@@ -84,7 +83,7 @@ test("error handling in consumer", async () => {
   expect(receivedValues).toEqual([1, 2]);
 });
 
-test("behavior on empty queue closing", async () => {
+it("should behavior on empty queue closing", async () => {
   const asyncQueue = new AsyncQueue<number>();
   asyncQueue.close();
 
@@ -96,13 +95,13 @@ test("behavior on empty queue closing", async () => {
   expect(receivedValues).toEqual([]);
 });
 
-test("multiple closings", async () => {
+it("should multiple closings", async () => {
   const asyncQueue = new AsyncQueue<number>();
   asyncQueue.close();
   expect(() => asyncQueue.close()).not.toThrow();
 });
 
-test("receive all values in multiple independent consumers", async () => {
+it("should receive all values in multiple independent consumers", async () => {
   const asyncQueue = new AsyncQueue<number>();
 
   const consumerPromises = [1, 2].map(async () => {
@@ -129,7 +128,7 @@ test("receive all values in multiple independent consumers", async () => {
   });
 });
 
-test("each consumer receives all pushed values under varying conditions", async () => {
+it("should each consumer receives all pushed values under varying conditions", async () => {
   const asyncQueue = new AsyncQueue<number>();
 
   // Start the first consumer, which will await values.
@@ -168,7 +167,7 @@ test("each consumer receives all pushed values under varying conditions", async 
   expect(receivedValues2).toEqual([1, 2, 3]); // This will likely fail because consumer2 started late.
 });
 
-test("throw error when pushing to a closed queue", async () => {
+it("should throw error when pushing to a closed queue", async () => {
   const asyncQueue = new AsyncQueue<number>();
   asyncQueue.close();
   expect(() => asyncQueue.push(1)).toThrowError(

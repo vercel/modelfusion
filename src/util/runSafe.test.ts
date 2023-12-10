@@ -1,7 +1,6 @@
-import { expect, test } from "vitest";
 import { runSafe } from "./runSafe.js";
 
-test("catch thrown error in sync function", async () => {
+it("should catch thrown error in sync function", async () => {
   const error = new Error("test error");
 
   const result = await runSafe(() => {
@@ -14,7 +13,7 @@ test("catch thrown error in sync function", async () => {
   });
 });
 
-test("catch thrown string in sync function", async () => {
+it("should catch thrown string in sync function", async () => {
   const result = await runSafe(() => {
     throw "test error";
   });
@@ -25,7 +24,7 @@ test("catch thrown string in sync function", async () => {
   });
 });
 
-test("catch thrown error in async function", async () => {
+it("should catch thrown error in async function", async () => {
   const error = new Error("test error");
 
   const result = await runSafe(async () => {
@@ -38,7 +37,7 @@ test("catch thrown error in async function", async () => {
   });
 });
 
-test("catch thrown string in async function", async () => {
+it("should catch thrown string in async function", async () => {
   const result = await runSafe(async () => {
     throw "test error";
   });
@@ -49,7 +48,7 @@ test("catch thrown string in async function", async () => {
   });
 });
 
-test("catch rejected Promise", async () => {
+it("should catch rejected Promise", async () => {
   const error = new Error("test error");
 
   const result = await runSafe(async () => {
@@ -62,7 +61,7 @@ test("catch rejected Promise", async () => {
   });
 });
 
-test("no error", async () => {
+it("should not throw error", async () => {
   const result = await runSafe(async () => "result");
 
   expect(result).toEqual({

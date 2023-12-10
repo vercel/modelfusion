@@ -1,8 +1,7 @@
 import assert from "node:assert";
-import { test } from "vitest";
 import { isDeepEqualData } from "./isDeepEqualData.js";
 
-test("checks if two primitives are equal", async () => {
+it("should check if two primitives are equal", async () => {
   let x = 1;
   let y = 1;
   let result = isDeepEqualData(x, y);
@@ -14,55 +13,55 @@ test("checks if two primitives are equal", async () => {
   assert.equal(result, false);
 });
 
-test("returns false for different types", async () => {
+it("should return false for different types", async () => {
   const obj = { a: 1 };
   const num = 1;
   const result = isDeepEqualData(obj, num);
   assert.equal(result, false);
 });
 
-test("returns false for null values compared with objects", async () => {
+it("should return false for null values compared with objects", async () => {
   const obj = { a: 1 };
   const result = isDeepEqualData(obj, null);
   assert.equal(result, false);
 });
 
-test("identifies two equal objects", async () => {
+it("should identify two equal objects", async () => {
   const obj1 = { a: 1, b: 2 };
   const obj2 = { a: 1, b: 2 };
   const result = isDeepEqualData(obj1, obj2);
   assert.equal(result, true);
 });
 
-test("identifies two objects with different values", async () => {
+it("should identify two objects with different values", async () => {
   const obj1 = { a: 1, b: 2 };
   const obj2 = { a: 1, b: 3 };
   const result = isDeepEqualData(obj1, obj2);
   assert.equal(result, false);
 });
 
-test("identifies two objects with different number of keys", async () => {
+it("should identify two objects with different number of keys", async () => {
   const obj1 = { a: 1, b: 2 };
   const obj2 = { a: 1, b: 2, c: 3 };
   const result = isDeepEqualData(obj1, obj2);
   assert.equal(result, false);
 });
 
-test("handles nested objects", async () => {
+it("should handle nested objects", async () => {
   const obj1 = { a: { c: 1 }, b: 2 };
   const obj2 = { a: { c: 1 }, b: 2 };
   const result = isDeepEqualData(obj1, obj2);
   assert.equal(result, true);
 });
 
-test("detects inequality in nested objects", async () => {
+it("should detect inequality in nested objects", async () => {
   const obj1 = { a: { c: 1 }, b: 2 };
   const obj2 = { a: { c: 2 }, b: 2 };
   const result = isDeepEqualData(obj1, obj2);
   assert.equal(result, false);
 });
 
-test("compares arrays correctly", async () => {
+it("should compare arrays correctly", async () => {
   const arr1 = [1, 2, 3];
   const arr2 = [1, 2, 3];
   const result = isDeepEqualData(arr1, arr2);
@@ -74,20 +73,20 @@ test("compares arrays correctly", async () => {
   assert.equal(result2, false);
 });
 
-test("returns false for null comparison with object", () => {
+it("should return false for null comparison with object", () => {
   const obj = { a: 1 };
   const result = isDeepEqualData(obj, null);
   assert.equal(result, false);
 });
 
-test("distinguishes between array and object with same enumerable properties", () => {
+it("should distinguish between array and object with same enumerable properties", () => {
   const obj = { 0: "one", 1: "two", length: 2 };
   const arr = ["one", "two"];
   const result = isDeepEqualData(obj, arr);
   assert.equal(result, false);
 });
 
-test("returns false when comparing objects with different prototypes", () => {
+it("should return false when comparing objects with different prototypes", () => {
   const obj1 = Object.create({ a: 1 });
   const obj2 = Object.create(null);
   obj1.b = 2;
@@ -96,7 +95,7 @@ test("returns false when comparing objects with different prototypes", () => {
   assert.equal(result, false);
 });
 
-test("handles date object comparisons correctly", () => {
+it("should handle date object comparisons correctly", () => {
   const date1 = new Date(2000, 0, 1);
   const date2 = new Date(2000, 0, 1);
   const date3 = new Date(2000, 0, 2);
@@ -104,7 +103,7 @@ test("handles date object comparisons correctly", () => {
   assert.equal(isDeepEqualData(date1, date3), false);
 });
 
-test("handles function comparisons", () => {
+it("should handle function comparisons", () => {
   const func1 = () => {
     console.log("hello");
   };
