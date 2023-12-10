@@ -99,10 +99,9 @@ export class WhisperCppTranscriptionModel
   }
 }
 
-const whisperCppTranscriptionJsonSchema = z.union([
-  z.object({ text: z.string() }),
-  z.object({ error: z.string() }),
-]);
+const whisperCppTranscriptionJsonSchema = new ZodSchema(
+  z.union([z.object({ text: z.string() }), z.object({ error: z.string() })])
+);
 
 const successfulResponseHandler: ResponseHandler<{
   text: string;
@@ -111,7 +110,7 @@ const successfulResponseHandler: ResponseHandler<{
 
   const parsedResult = safeParseJSON({
     text: responseBody,
-    schema: new ZodSchema(whisperCppTranscriptionJsonSchema),
+    schema: whisperCppTranscriptionJsonSchema,
   });
 
   if (!parsedResult.success) {
@@ -145,12 +144,13 @@ const failedResponseHandler: ResponseHandler<ApiCallError> = async ({
   url,
   requestBodyValues,
 }) => {
-  const message = await response.text();
+  const responseBody = await response.text();
+
   return new ApiCallError({
-    message,
+    message: responseBody,
     url,
     requestBodyValues,
     statusCode: response.status,
-    responseBody: message,
+    responseBody,
   });
 };
