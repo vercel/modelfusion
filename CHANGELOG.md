@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.95.0 - 2023-12-10
+
+### Added
+
+- `cachePrompt` parameter for llama.cpp models. Thanks [@djwhitt](https://github.com/djwhitt) for the contribution!
+
 ## v0.94.0 - 2023-12-10
 
 ### Added
