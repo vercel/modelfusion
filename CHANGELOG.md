@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.94.0 - 2023-12-10
+
+### Added
+
+- Prompt template for neural-chat models.
+
 ## v0.93.0 - 2023-12-10
 
 ### Added
