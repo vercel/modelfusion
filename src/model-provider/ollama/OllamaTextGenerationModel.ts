@@ -1,13 +1,11 @@
 import { z } from "zod";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
-import {
-  ResponseHandler,
-  createJsonResponseHandler,
-  postJsonToApi,
-} from "../../core/api/postToApi.js";
+import { ResponseHandler, postJsonToApi } from "../../core/api/postToApi.js";
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import { PromptFormatTextStreamingModel } from "../../model-function/generate-text/PromptFormatTextStreamingModel.js";
@@ -473,7 +471,48 @@ export const OllamaTextGenerationResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(ollamaTextGenerationResponseSchema),
+    handler: (async ({ response, url, requestBodyValues }) => {
+      const responseBody = await response.text();
+
+      const parsedResult = safeParseJSON({
+        text: responseBody,
+        schema: new ZodSchema(
+          z.union([
+            ollamaTextGenerationResponseSchema,
+            z.object({
+              done: z.literal(false),
+              model: z.string(),
+              created_at: z.string(),
+              response: z.string(),
+            }),
+          ])
+        ),
+      });
+
+      if (!parsedResult.success) {
+        throw new ApiCallError({
+          message: "Invalid JSON response",
+          cause: parsedResult.error,
+          statusCode: response.status,
+          responseBody,
+          url,
+          requestBodyValues,
+        });
+      }
+
+      if (parsedResult.data.done === false) {
+        throw new ApiCallError({
+          message: "Incomplete Ollama response received",
+          statusCode: response.status,
+          responseBody,
+          url,
+          requestBodyValues,
+          isRetryable: true,
+        });
+      }
+
+      return parsedResult.data;
+    }) satisfies ResponseHandler<OllamaTextGenerationResponse>,
   } satisfies OllamaTextGenerationResponseFormatType<OllamaTextGenerationResponse>,
 
   /**

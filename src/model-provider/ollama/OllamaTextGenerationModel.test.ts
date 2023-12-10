@@ -1,6 +1,10 @@
+import { fail } from "assert";
 import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
+import { ApiCallError } from "../../core/api/ApiCallError.js";
+import { retryNever } from "../../core/api/retryNever.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
+import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { OllamaTextGenerationModel } from "./OllamaTextGenerationModel.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,5 +49,30 @@ describe("generateText", () => {
     );
 
     expect(result).toEqual("test response");
+  });
+
+  it("should throw retryable ApiCallError when Ollama is overloaded", async () => {
+    responseBodyJson = {
+      model: "",
+      created_at: "0001-01-01T00:00:00Z",
+      response: "",
+      done: false,
+    };
+
+    try {
+      await generateText(
+        new OllamaTextGenerationModel({
+          api: new OllamaApiConfiguration({
+            retry: retryNever(),
+          }),
+          model: "test-model",
+        }),
+        "test prompt"
+      );
+      fail("Should have thrown ApiCallError");
+    } catch (expectedError) {
+      expect(expectedError).toBeInstanceOf(ApiCallError);
+      expect((expectedError as ApiCallError).isRetryable).toBe(true);
+    }
   });
 });
