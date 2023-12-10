@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.93.0 - 2023-12-10
+
+### Added
+
+- Optional response prefix for instruction prompts to guide the LLM response.
+
+### Changed
+
+- **breaking change**: Renamed prompt format to prompt template to align with the commonly used language (e.g. from model cards).
+
 ## v0.92.1 - 2023-12-10
 
 ### Changed
