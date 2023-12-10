@@ -34,6 +34,7 @@ export interface LlamaCppTextGenerationModelSettings<
    */
   contextWindowSize?: CONTEXT_WINDOW_SIZE;
 
+  cachePrompt?: boolean;
   temperature?: number;
   topK?: number;
   topP?: number;
@@ -126,6 +127,7 @@ export class LlamaCppTextGenerationModel<
       "stopSequences",
 
       "contextWindowSize",
+      "cachePrompt",
       "temperature",
       "topK",
       "topP",
@@ -333,6 +335,7 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
   abortSignal,
   responseFormat,
   prompt,
+  cachePrompt,
   temperature,
   topK,
   topP,
@@ -355,6 +358,7 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
   abortSignal?: AbortSignal;
   responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
   prompt: LlamaCppTextGenerationPrompt;
+  cachePrompt?: boolean;
   temperature?: number;
   topK?: number;
   topP?: number;
@@ -379,6 +383,7 @@ async function callLlamaCppTextGenerationAPI<RESPONSE>({
     body: {
       stream: responseFormat.stream,
       prompt: prompt.text,
+      cache_prompt: cachePrompt,
       temperature,
       top_k: topK,
       top_p: topP,
