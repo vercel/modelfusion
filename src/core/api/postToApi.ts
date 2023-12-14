@@ -1,6 +1,7 @@
-import { ZodSchema } from "../schema/ZodSchema.js";
-import { safeParseJSON } from "../schema/parseJSON.js";
 import { z } from "zod";
+import { Schema } from "../schema/Schema.js";
+import { ZodSchema } from "../schema/ZodSchema.js";
+import { parseJSON, safeParseJSON } from "../schema/parseJSON.js";
 import { ApiCallError } from "./ApiCallError.js";
 
 export type ResponseHandler<T> = (options: {
@@ -8,6 +9,47 @@ export type ResponseHandler<T> = (options: {
   requestBodyValues: unknown;
   response: Response;
 }) => PromiseLike<T>;
+
+export const createJsonErrorResponseHandler =
+  <T>({
+    errorSchema,
+    errorToMessage,
+    isRetryable,
+  }: {
+    errorSchema: Schema<T>;
+    errorToMessage: (error: T) => string;
+    isRetryable?: (error: T, response: Response) => boolean;
+  }): ResponseHandler<ApiCallError> =>
+  async ({ response, url, requestBodyValues }) => {
+    const responseBody = await response.text();
+
+    // resilient parsing in case the response is not JSON or does not match the schema:
+    try {
+      const parsedError = parseJSON({
+        text: responseBody,
+        schema: errorSchema,
+      });
+
+      return new ApiCallError({
+        message: errorToMessage(parsedError),
+        url,
+        requestBodyValues,
+        statusCode: response.status,
+        responseBody,
+        data: parsedError,
+        isRetryable: isRetryable?.(parsedError, response),
+      });
+    } catch (parseError) {
+      return new ApiCallError({
+        message:
+          responseBody.trim() !== "" ? responseBody : response.statusText,
+        url,
+        requestBodyValues,
+        statusCode: response.status,
+        responseBody,
+      });
+    }
+  };
 
 export const createJsonResponseHandler =
   <T>(responseSchema: z.ZodSchema<T>): ResponseHandler<T> =>

@@ -58,6 +58,7 @@ export class WhisperCppTranscriptionModel
   async callAPI(data: WhisperCppTranscriptionInput, options: FunctionOptions) {
     const { temperature } = this.settings;
     const api = this.settings.api ?? new WhisperCppApiConfiguration();
+    const abortSignal = options.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -80,7 +81,7 @@ export class WhisperCppTranscriptionModel
           },
           failedResponseHandler,
           successfulResponseHandler,
-          abortSignal: options?.run?.abortSignal,
+          abortSignal,
         });
       },
     });

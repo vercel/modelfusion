@@ -40,7 +40,6 @@ export class OllamaTextEmbeddingModel
     return this.settings.isParallelizable ?? false;
   }
 
-  readonly contextWindowSize = undefined;
   get embeddingDimensions() {
     return this.settings.embeddingDimensions;
   }
@@ -51,7 +50,7 @@ export class OllamaTextEmbeddingModel
   ): Promise<OllamaTextEmbeddingResponse> {
     if (texts.length > this.maxValuesPerCall) {
       throw new Error(
-        `The Llama.cpp embedding API only supports ${this.maxValuesPerCall} texts per API call.`
+        `The Ollama embedding API only supports ${this.maxValuesPerCall} texts per API call.`
       );
     }
 

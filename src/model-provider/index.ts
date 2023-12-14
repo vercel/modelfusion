@@ -5,6 +5,7 @@ export * from "./elevenlabs/index.js";
 export * from "./huggingface/index.js";
 export * from "./llamacpp/index.js";
 export * from "./lmnt/index.js";
+export * as mistral from "./mistral/index.js";
 export * from "./ollama/index.js";
 export * from "./openai/index.js";
 export * from "./openai-compatible/index.js";
