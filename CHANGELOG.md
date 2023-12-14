@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.97.0 - 2023-12-14
+
+### Added
+
+- **breaking change**: Ollama image (vision) support. This changes the Ollama prompt format. You can add `.withTextPrompt()` to existing Ollama text generators to get a text prompt like before.
+
+  Vision example:
+
+  ```ts
+  import { ollama, streamText } from "modelfusion";
+
+  const textStream = await streamText(
+    ollama.TextGenerator({
+      model: "bakllava",
+      maxCompletionTokens: 1024,
+      temperature: 0,
+    }),
+    {
+      prompt: "Describe the image in detail",
+      images: [image], // base-64 encoded png or jpeg
+    }
+  );
+  ```
+
+### Changed
+
+- **breaking change**: Switch Ollama settings to camelCase to align with the rest of the library.
+
 ## v0.96.0 - 2023-12-14
 
 ### Added
