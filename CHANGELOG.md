@@ -4,7 +4,7 @@
 
 ### Added
 
-- [Mistral platform support]((https://modelfusion.dev/integration/model-provider/mistral)
+- [Mistral platform support](https://modelfusion.dev/integration/model-provider/mistral)
 
 ## v0.95.0 - 2023-12-10
 
