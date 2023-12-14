@@ -47,6 +47,46 @@ const text = await generateText(
     temperature: 0.7,
     maxCompletionTokens: 120,
   }),
+  { prompt: "Write a short story about a robot learning to love:\n\n" }
+);
+```
+
+The Ollama prompt also supports base64-encoded png and jpeg images:
+
+```ts
+import { ollama, generateText } from "modelfusion";
+
+const image = fs.readFileSync(path.join("data", "comic-mouse.png"), {
+  encoding: "base64",
+});
+
+const text = await generateText(
+  ollama.TextGenerator({
+    model: "bakllava",
+    maxCompletionTokens: 1024,
+    temperature: 0,
+  }),
+  {
+    prompt: "Describe the image in detail",
+    images: [image],
+  }
+);
+```
+
+If you want a simpler text prompt, you can use the `withTextPrompt` helper:
+
+```ts
+import { ollama, generateText } from "modelfusion";
+
+const text = await generateText(
+  ollama
+    .TextGenerator({
+      model: "mistral",
+      temperature: 0.7,
+      maxCompletionTokens: 120,
+    })
+    .withTextPrompt(),
+
   "Write a short story about a robot learning to love:\n\n"
 );
 ```
@@ -59,11 +99,13 @@ const text = await generateText(
 import { ollama, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  ollama.TextGenerator({
-    model: "mistral",
-    temperature: 0.7,
-    maxCompletionTokens: 500,
-  }),
+  ollama
+    .TextGenerator({
+      model: "mistral",
+      temperature: 0.7,
+      maxCompletionTokens: 500,
+    })
+    .withTextPrompt(),
   "Write a short story about a robot learning to love:\n\n"
 );
 
@@ -89,6 +131,7 @@ const model = ollama
     raw: true, // prevent Ollama from adding its own prompts
     stopSequences: ["\n\n"], // prevent infinite generation
   })
+  .withTextPrompt()
   .withPromptTemplate(ChatMLPrompt.instruction())
   .asStructureGenerationModel(
     // Instruct the model to generate a JSON object that matches the given schema.

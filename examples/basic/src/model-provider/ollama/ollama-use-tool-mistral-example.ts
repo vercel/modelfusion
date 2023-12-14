@@ -14,7 +14,9 @@ async function main() {
         temperature: 0,
         raw: true,
       })
+      .withTextPrompt()
       .asToolCallGenerationModel(mistralSingleToolCallPromptTemplate),
+
     calculator,
     "What's fourteen times twelve?"
   );

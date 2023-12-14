@@ -5,16 +5,11 @@ dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    ollama
-      .TextGenerator({
-        model: "mistral",
-        maxCompletionTokens: 500,
-        format: "json",
-      })
-      .withTextPrompt(),
-
-    "Generate 3 character descriptions for a fantasy role playing game. " +
-      "Respond using JSON."
+    ollama.TextGenerator({
+      model: "mistral:text",
+      maxCompletionTokens: 500,
+    }),
+    { prompt: "Write a short story about a robot learning to love:\n\n" }
   );
 
   for await (const textPart of textStream) {

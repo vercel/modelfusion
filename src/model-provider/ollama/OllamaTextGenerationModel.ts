@@ -150,13 +150,25 @@ export interface OllamaTextGenerationModelSettings<
   context?: number[];
 }
 
+export interface OllamaTextGenerationPrompt {
+  /**
+   * Text prompt.
+   */
+  prompt: string;
+
+  /**
+   Images. Supports base64-encoded `png` and `jpeg` images up to 100MB in size.
+   */
+  images?: Record<number, string>;
+}
+
 export class OllamaTextGenerationModel<
     CONTEXT_WINDOW_SIZE extends number | undefined,
   >
   extends AbstractModel<OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>>
   implements
     TextStreamingModel<
-      string,
+      OllamaTextGenerationPrompt,
       OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
     >
 {
@@ -179,7 +191,7 @@ export class OllamaTextGenerationModel<
   }
 
   async callAPI<RESPONSE>(
-    prompt: string,
+    prompt: OllamaTextGenerationPrompt,
     options: {
       responseFormat: OllamaTextGenerationResponseFormatType<RESPONSE>;
     } & FunctionOptions
@@ -233,7 +245,10 @@ export class OllamaTextGenerationModel<
     );
   }
 
-  async doGenerateText(prompt: string, options?: FunctionOptions) {
+  async doGenerateText(
+    prompt: OllamaTextGenerationPrompt,
+    options?: FunctionOptions
+  ) {
     const response = await this.callAPI(prompt, {
       ...options,
       responseFormat: OllamaTextGenerationResponseFormat.json,
@@ -245,7 +260,7 @@ export class OllamaTextGenerationModel<
     };
   }
 
-  doStreamText(prompt: string, options?: FunctionOptions) {
+  doStreamText(prompt: OllamaTextGenerationPrompt, options?: FunctionOptions) {
     return this.callAPI(prompt, {
       ...options,
       responseFormat: OllamaTextGenerationResponseFormat.deltaIterable,
@@ -253,7 +268,10 @@ export class OllamaTextGenerationModel<
   }
 
   asToolCallGenerationModel<INPUT_PROMPT>(
-    promptTemplate: ToolCallPromptTemplate<INPUT_PROMPT, string>
+    promptTemplate: ToolCallPromptTemplate<
+      INPUT_PROMPT,
+      OllamaTextGenerationPrompt
+    >
   ) {
     return new TextGenerationToolCallModel({
       model: this,
@@ -262,7 +280,10 @@ export class OllamaTextGenerationModel<
   }
 
   asToolCallsOrTextGenerationModel<INPUT_PROMPT>(
-    promptTemplate: ToolCallsOrGenerateTextPromptTemplate<INPUT_PROMPT, string>
+    promptTemplate: ToolCallsOrGenerateTextPromptTemplate<
+      INPUT_PROMPT,
+      OllamaTextGenerationPrompt
+    >
   ) {
     return new TextGenerationToolCallsOrGenerateTextModel({
       model: this,
@@ -270,11 +291,28 @@ export class OllamaTextGenerationModel<
     });
   }
 
+  withTextPrompt(): PromptTemplateTextStreamingModel<
+    string,
+    OllamaTextGenerationPrompt,
+    OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+    this
+  > {
+    return this.withPromptTemplate({
+      format(prompt: string) {
+        return { prompt: prompt };
+      },
+      stopSequences: [],
+    });
+  }
+
   withPromptTemplate<INPUT_PROMPT>(
-    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
+    promptTemplate: TextGenerationPromptTemplate<
+      INPUT_PROMPT,
+      OllamaTextGenerationPrompt
+    >
   ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
-    string,
+    OllamaTextGenerationPrompt,
     OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
@@ -305,7 +343,7 @@ const ollamaTextGenerationResponseSchema = z.object({
   model: z.string(),
   response: z.string(),
   total_duration: z.number(),
-  load_duration: z.number(),
+  load_duration: z.number().optional(),
   prompt_eval_count: z.number(),
   eval_count: z.number(),
   eval_duration: z.number(),
@@ -329,7 +367,7 @@ const ollamaTextStreamingResponseSchema = new ZodSchema(
       model: z.string(),
       created_at: z.string(),
       total_duration: z.number(),
-      load_duration: z.number(),
+      load_duration: z.number().optional(),
       sample_count: z.number().optional(),
       sample_duration: z.number().optional(),
       prompt_eval_count: z.number(),
@@ -371,7 +409,7 @@ async function callOllamaTextGenerationAPI<RESPONSE>({
 }: OllamaTextGenerationModelSettings<number> & {
   abortSignal?: AbortSignal;
   responseFormat: OllamaTextGenerationResponseFormatType<RESPONSE>;
-  prompt: string;
+  prompt: OllamaTextGenerationPrompt;
 }): Promise<RESPONSE> {
   return postJsonToApi({
     url: api.assembleUrl(`/api/generate`),
@@ -379,7 +417,8 @@ async function callOllamaTextGenerationAPI<RESPONSE>({
     body: {
       stream: responseFormat.stream,
       model,
-      prompt,
+      prompt: prompt.prompt,
+      images: prompt.images,
       format,
       options: {
         mirostat,

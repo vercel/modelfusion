@@ -44,7 +44,7 @@ describe("generateText", () => {
     const result = await generateText(
       new OllamaTextGenerationModel({
         model: "test-model",
-      }),
+      }).withTextPrompt(),
       "test prompt"
     );
 
@@ -66,7 +66,7 @@ describe("generateText", () => {
             retry: retryNever(),
           }),
           model: "test-model",
-        }),
+        }).withTextPrompt(),
         "test prompt"
       );
       fail("Should have thrown ApiCallError");

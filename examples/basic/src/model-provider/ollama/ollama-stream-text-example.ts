@@ -5,10 +5,13 @@ dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    ollama.TextGenerator({
-      model: "mistral",
-      maxCompletionTokens: 500,
-    }),
+    ollama
+      .TextGenerator({
+        model: "mistral:text",
+        maxCompletionTokens: 500,
+      })
+      .withTextPrompt(),
+
     "Write a short story about a robot learning to love:\n\n"
   );
 

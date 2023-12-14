@@ -14,9 +14,12 @@ async function main() {
         temperature: 0,
         raw: true,
       })
+      .withTextPrompt()
       .withPromptTemplate(ChatMLPrompt.instruction())
       .asToolCallsOrTextGenerationModel(openHermesToolCallsPromptTemplate),
+
     [calculator, weather],
+
     // "What's fourteen times twelve?"
     "What's the weather like in Boston?"
   );

@@ -1,4 +1,4 @@
-import { llamacpp, streamText } from "modelfusion";
+import { ollama, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -8,13 +8,14 @@ async function main() {
   });
 
   const textStream = await streamText(
-    llamacpp.TextGenerator({
+    ollama.TextGenerator({
+      model: "bakllava",
       maxCompletionTokens: 1024,
       temperature: 0,
     }),
     {
-      text: "[img-1]\n\nDescribe the image in detail:\n\n",
-      images: { "1": image },
+      prompt: "Describe the image in detail",
+      images: [image],
     }
   );
 
