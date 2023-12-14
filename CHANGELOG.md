@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.96.0 - 2023-12-14
+
+### Added
+
+- [Mistral platform support]((https://modelfusion.dev/integration/model-provider/mistral)
+
 ## v0.95.0 - 2023-12-10
 
 ### Added
