@@ -21,7 +21,7 @@ Generate text and embeddings using the [Mistral platform](https://mistral.ai).
 import { mistral } from "modelfusion";
 
 const api = mistral.Api({
-  apiKey: "my-api-key", // optional; default: process.env.OPENAI_API_KEY
+  apiKey: "my-api-key", // optional; default: process.env.MISTRAL_API_KEY
   // ...
 });
 
