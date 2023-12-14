@@ -61,7 +61,7 @@ const text = await generateText(
 );
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Mistral](https://modelfusion.dev/integration/model-provider/mistral), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic)
 
 #### streamText
 
@@ -78,7 +78,7 @@ for await (const textPart of textStream) {
 }
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Mistral](https://modelfusion.dev/integration/model-provider/mistral), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic)
 
 #### streamText with multi-modal prompt
 
@@ -299,7 +299,7 @@ const embeddings = await embedMany(
 );
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface), [Cohere](https://modelfusion.dev/integration/model-provider/cohere)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Mistral](https://modelfusion.dev/integration/model-provider/mistral), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface), [Cohere](https://modelfusion.dev/integration/model-provider/cohere)
 
 ### [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
 

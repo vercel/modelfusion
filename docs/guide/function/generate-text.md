@@ -362,6 +362,7 @@ const modelWithMyCustomPromptTemplate =
 - [OpenAI compatible](/integration/model-provider/openaicompatible)
 - [Llama.cpp](/integration/model-provider/llamacpp)
 - [Ollama](/integration/model-provider/ollama)
+- [Mistral](/integration/model-provider/mistral)
 - [Hugging Face](/integration/model-provider/huggingface) (no streaming)
 - [Cohere](/integration/model-provider/cohere)
 - [Anthropic](/integration/model-provider/anthropic)
