@@ -6,7 +6,7 @@ dotenv.config();
 async function main() {
   const text = await generateText(
     mistral.TextGenerator({
-      model: "mistral-tiny",
+      model: "mistral-medium",
       maxCompletionTokens: 120,
     }),
     [

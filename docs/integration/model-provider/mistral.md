@@ -44,7 +44,7 @@ import { generateText, mistral } from "modelfusion";
 
 const text = await generateText(
   mistral.TextGenerator({
-    model: "mistral-tiny",
+    model: "mistral-medium",
     maxCompletionTokens: 120,
   }),
   [
@@ -65,7 +65,7 @@ import { mistral, streamText } from "modelfusion";
 
 const textStream = await streamText(
   mistral.TextGenerator({
-    model: "mistral-tiny",
+    model: "mistral-medium",
     maxCompletionTokens: 120,
   }),
   [
@@ -94,5 +94,73 @@ const embeddings = await embedMany(
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
   ]
+);
+```
+
+## Prompt Template
+
+### Mistral Prompt Format
+
+#### Text prompt
+
+[MistralPrompt.text()](/api/namespaces/MistralPrompt) lets you use basic text prompts with Mistral text generation models. It is available as a shorthand method:
+
+```ts
+const textStream = await streamText(
+  mistral
+    .TextGenerator({
+      // ...
+    })
+    .withTextPrompt(),
+  "Write a short story about a robot learning to love."
+);
+```
+
+#### Instruction prompt
+
+[MistralPrompt.instruction()](/api/namespaces/MistralPrompt) lets you use [text instruction prompts](/api/interfaces/TextInstructionPrompt) with Mistral text generation models. It is available as a shorthand method:
+
+```ts
+const textStream = await streamText(
+  mistral
+    .TextGenerator({
+      // ...
+    })
+    .withInstructionPrompt(),
+  {
+    system: "You are a celebrated poet.",
+    instruction: "Write a short story about a robot learning to love.",
+  }
+);
+```
+
+#### Chat prompt
+
+[MistralPrompt.chat()](/api/namespaces/MistralPrompt) lets you use [text chat prompts](/api/interfaces/TextChatPrompt) with Mistral text generation models. It is available as a shorthand method:
+
+```ts
+const textStream = await streamText(
+  mistral
+    .TextGenerator({
+      // ...
+    })
+    .withChatPrompt(),
+  {
+    system: "You are a celebrated poet.",
+    messages: [
+      {
+        role: "user",
+        content: "Suggest a name for a robot.",
+      },
+      {
+        role: "assistant",
+        content: "I suggest the name Robbie",
+      },
+      {
+        role: "user",
+        content: "Write a short story about Robbie learning to love",
+      },
+    ],
+  }
 );
 ```

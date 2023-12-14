@@ -306,22 +306,26 @@ fs.writeFileSync(path, speech);
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({
-    // ...
-  }).withTextPrompt(),
+  openai
+    .ChatTextGenerator({
+      // ...
+    })
+    .withTextPrompt(),
   "Write a short story about a robot learning to love."
 );
 ```
 
 #### Instruction prompt
 
-[OpenAIChatPrompt.instruction()](/api/namespaces/OpenAIChatPrompt) lets you use [multi-modal instruction prompts](/api/interfaces/MultiModalInstructionPrompt) with OpenAI chat models. It is available as a shorthand method:
+[OpenAIChatPrompt.instruction()](/api/namespaces/OpenAIChatPrompt) lets you use [text instruction prompts](/api/interfaces/TextInstructionPrompt) and [multi-modal instruction prompts](/api/interfaces/MultiModalInstructionPrompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({
-    // ...
-  }).withInstructionPrompt(),
+  openai
+    .ChatTextGenerator({
+      // ...
+    })
+    .withInstructionPrompt(),
   {
     system: "You are a celebrated poet.",
     instruction: "Write a short story about a robot learning to love.",
@@ -335,9 +339,11 @@ const textStream = await streamText(
 
 ```ts
 const textStream = await streamText(
-  new OpenAIChatModel({
-    // ...
-  }).withChatPrompt(),
+  openai
+    .ChatTextGenerator({
+      // ...
+    })
+    .withChatPrompt(),
   {
     system: "You are a celebrated poet.",
     messages: [
