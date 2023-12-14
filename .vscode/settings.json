@@ -19,6 +19,7 @@
     "Lmnt",
     "logit",
     "Millicents",
+    "mirostat",
     "modelfusion",
     "Ollama",
     "openai",
