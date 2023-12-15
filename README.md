@@ -85,11 +85,10 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 Multi-modal vision models such as GPT 4 Vision can process images as part of the prompt.
 
 ```ts
-// Ensure OPENAI_API_KEY is set in environment variables
 import { streamText, openai, OpenAIChatMessage } from "modelfusion";
 import { readFileSync } from "fs";
 
-const image = readFileSync('./image.png').toString('base64');
+const image = readFileSync("./image.png").toString("base64");
 const textStream = await streamText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
