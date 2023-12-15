@@ -39,31 +39,76 @@ export interface AbstractOpenAIChatCallSettings {
     };
   }>;
   toolChoice?:
-    | "none"
-    | "auto"
-    | { type: "function"; function: { name: string } };
-
+  | "none"
+  | "auto"
+  | { type: "function"; function: { name: string } };
+  /**
+   * An array of strings or a single string that the model will recognize as end-of-text indicators. 
+   * The model stops generating more content when it encounters any of these strings.
+   * This is particularly useful in scripted or formatted text generation, where a specific end point is required.
+   * Example: stop: ['\n', 'END']
+  */
   stop?: string | string[];
+  /**
+   * Specifies the maximum number of tokens (words, punctuation, parts of words) that the model can generate in a single response.
+   * It helps to control the length of the output, this can help prevent wasted time and tokens when tweaker topP or temperature.
+   * Example: maxTokens: 1000
+  */
   maxTokens?: number;
-
+  /**
+   * `temperature`: Controls the randomness and creativity in the model's responses. 
+   * A lower temperature (close to 0) results in more predictable, conservative text, while a higher temperature (close to 1) produces more varied and creative output.
+   * Adjust this to balance between consistency and creativity in the model's replies.
+   * Example: temperature: 0.5
+  */
   temperature?: number;
+  /**
+   *  This parameter sets a threshold for token selection based on probability.
+   * The model will only consider the most likely tokens that cumulatively exceed this threshold while generating a response.
+   * It's a way to control the randomness of the output, balancing between diverse responses and sticking to more likely words.
+   * This means a topP of .1 will be far less random than one at .9
+   * Example: topP: 0.2
+   */
   topP?: number;
-
+  /**
+   * Used to set the initial state for the random number generator in the model. 
+   * Providing a specific seed value ensures consistent outputs for the same inputs across different runs - useful for testing and reproducibility.
+   * A `null` value (or not setting it) results in varied, non-repeatable outputs each time.
+   * Example: seed: 89 (or) seed: null
+   */
   seed?: number | null;
-
   responseFormat?: {
     type?: "text" | "json_object";
   };
 
+  /**
+   * Specifies the number of responses or completions the model should generate for a given prompt.
+   * This is useful when you need multiple different outputs or ideas for a single prompt.
+   * The model will generate 'n' distinct responses, each based on the same initial prompt.
+   * In a streaming model this will result in both responses streamed back in real time.
+   * Example: n: 3 // The model will produce 3 different responses.
+   */
   n?: number;
+  /**
+   * Discourages the model from repeating the same information or context already mentioned in the conversation or prompt.
+   * Increasing this value encourages the model to introduce new topics or ideas, rather than reiterating what has been said.
+   * This is useful for maintaining a diverse and engaging conversation or for brainstorming sessions where varied ideas are needed.
+   * Example: presencePenalty: 1.0 // Strongly discourages repeating the same content.
+   */
   presencePenalty?: number;
+  /**
+   * This parameter reduces the likelihood of the model repeatedly using the same words or phrases in its responses.
+   * A higher frequency penalty promotes a wider variety of language and expressions in the output.
+   * This is particularly useful in creative writing or content generation tasks where diversity in language is desirable.
+   * Example: frequencyPenalty: 0.5 // Moderately discourages repetitive language.
+   */
   frequencyPenalty?: number;
   logitBias?: Record<number, number>;
 }
 
 export interface AbstractOpenAIChatSettings
   extends TextGenerationModelSettings,
-    Omit<AbstractOpenAIChatCallSettings, "stop" | "maxTokens"> {
+  Omit<AbstractOpenAIChatCallSettings, "stop" | "maxTokens"> {
   isUserIdForwardingEnabled?: boolean;
 }
 
@@ -86,11 +131,11 @@ export abstract class AbstractOpenAIChatModel<
     options: {
       responseFormat: OpenAIChatResponseFormatType<RESULT>;
     } & FunctionOptions & {
-        functions?: AbstractOpenAIChatCallSettings["functions"];
-        functionCall?: AbstractOpenAIChatCallSettings["functionCall"];
-        tools?: AbstractOpenAIChatCallSettings["tools"];
-        toolChoice?: AbstractOpenAIChatCallSettings["toolChoice"];
-      }
+      functions?: AbstractOpenAIChatCallSettings["functions"];
+      functionCall?: AbstractOpenAIChatCallSettings["functionCall"];
+      tools?: AbstractOpenAIChatCallSettings["tools"];
+      toolChoice?: AbstractOpenAIChatCallSettings["toolChoice"];
+    }
   ): Promise<RESULT> {
     return callWithRetryAndThrottle({
       retry: this.settings.api?.retry,
@@ -174,9 +219,9 @@ export abstract class AbstractOpenAIChatModel<
         toolCalls == null || toolCalls.length === 0
           ? null
           : {
-              id: toolCalls[0].id,
-              args: parseJSON({ text: toolCalls[0].function.arguments }),
-            },
+            id: toolCalls[0].id,
+            args: parseJSON({ text: toolCalls[0].function.arguments }),
+          },
       usage: this.extractUsage(response),
     };
   }
