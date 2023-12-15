@@ -89,6 +89,7 @@ import { streamText, openai, OpenAIChatMessage } from "modelfusion";
 import { readFileSync } from "fs";
 
 const image = readFileSync("./image.png").toString("base64");
+
 const textStream = await streamText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
@@ -98,6 +99,7 @@ const textStream = await streamText(
     ]),
   ]
 );
+
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
 }
