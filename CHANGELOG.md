@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased
+
+- You can now specify `numberOfGenerations` on text generation models and access multiple generations by using the `fullResponse: true` option. Example:
+
+  ```ts
+  // generate 2 texts:
+  const { texts } = await generateText(
+    openai.CompletionTextGenerator({
+      model: "gpt-3.5-turbo-instruct",
+      numberOfGenerations: 2,
+      maxCompletionTokens: 1000,
+    }),
+    "Write a short story about a robot learning to love:\n\n",
+    { fullResponse: true }
+  );
+  ```
+
+### Added
+
+- **breaking change**: Text generation models now use a generalized `numberOfGenerations` parameter (instead of model specific parameters) to specify the number of generations.
+
 ## v0.98.0 - 2023-12-16
 
 ### Changed

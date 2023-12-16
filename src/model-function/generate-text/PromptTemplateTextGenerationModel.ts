@@ -73,9 +73,9 @@ export class PromptTemplateTextGenerationModel<
       : (prompt: PROMPT) => PromiseLike<number>;
   }
 
-  doGenerateText(prompt: PROMPT, options?: FunctionOptions) {
+  doGenerateTexts(prompt: PROMPT, options?: FunctionOptions) {
     const mappedPrompt = this.promptTemplate.format(prompt);
-    return this.model.doGenerateText(mappedPrompt, options);
+    return this.model.doGenerateTexts(mappedPrompt, options);
   }
 
   get settingsForEvent(): Partial<SETTINGS> {

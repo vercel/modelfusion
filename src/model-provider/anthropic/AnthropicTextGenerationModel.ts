@@ -87,20 +87,34 @@ export class AnthropicTextGenerationModel
       responseFormat: AnthropicTextGenerationResponseFormatType<RESPONSE>;
     } & FunctionOptions
   ): Promise<RESPONSE> {
+    const api = this.settings.api ?? new AnthropicApiConfiguration();
+    const responseFormat = options.responseFormat;
+    const abortSignal = options.run?.abortSignal;
+    const userId = this.settings.userId;
+
     return callWithRetryAndThrottle({
       retry: this.settings.api?.retry,
       throttle: this.settings.api?.throttle,
-      call: async () =>
-        callAnthropicTextGenerationAPI({
-          ...this.settings,
-
-          stopSequences: this.settings.stopSequences,
-          maxTokens: this.settings.maxCompletionTokens,
-
-          abortSignal: options.run?.abortSignal,
-          responseFormat: options.responseFormat,
-          prompt,
-        }),
+      call: async () => {
+        return postJsonToApi({
+          url: api.assembleUrl(`/complete`),
+          headers: api.headers,
+          body: {
+            model: this.settings.model,
+            prompt,
+            stream: responseFormat.stream,
+            max_tokens_to_sample: this.settings.maxCompletionTokens,
+            temperature: this.settings.temperature,
+            top_k: this.settings.topK,
+            top_p: this.settings.topP,
+            stop_sequences: this.settings.stopSequences,
+            metadata: userId != null ? { user_id: userId } : undefined,
+          },
+          failedResponseHandler: failedAnthropicCallResponseHandler,
+          successfulResponseHandler: responseFormat.handler,
+          abortSignal,
+        });
+      },
     });
   }
 
@@ -122,7 +136,7 @@ export class AnthropicTextGenerationModel
     );
   }
 
-  async doGenerateText(prompt: string, options?: FunctionOptions) {
+  async doGenerateTexts(prompt: string, options?: FunctionOptions) {
     const response = await this.callAPI(prompt, {
       ...options,
       responseFormat: AnthropicTextGenerationResponseFormat.json,
@@ -130,7 +144,7 @@ export class AnthropicTextGenerationModel
 
     return {
       response,
-      text: response.completion,
+      texts: [response.completion],
     };
   }
 
@@ -199,51 +213,6 @@ const anthropicTextGenerationResponseSchema = z.object({
 export type AnthropicTextGenerationResponse = z.infer<
   typeof anthropicTextGenerationResponseSchema
 >;
-
-async function callAnthropicTextGenerationAPI<RESPONSE>({
-  api = new AnthropicApiConfiguration(),
-  abortSignal,
-  responseFormat,
-  model,
-  prompt,
-  maxTokens,
-  stopSequences,
-  temperature,
-  topK,
-  topP,
-  userId,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  responseFormat: AnthropicTextGenerationResponseFormatType<RESPONSE>;
-  model: AnthropicTextGenerationModelType;
-  prompt: string;
-  maxTokens?: number;
-  stopSequences?: string[];
-  temperature?: number;
-  topP?: number;
-  topK?: number;
-  userId?: number;
-}): Promise<RESPONSE> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/complete`),
-    headers: api.headers,
-    body: {
-      model,
-      prompt,
-      stream: responseFormat.stream,
-      max_tokens_to_sample: maxTokens,
-      temperature,
-      top_k: topK,
-      top_p: topP,
-      stop_sequences: stopSequences,
-      metadata: userId != null ? { user_id: userId } : undefined,
-    },
-    failedResponseHandler: failedAnthropicCallResponseHandler,
-    successfulResponseHandler: responseFormat.handler,
-    abortSignal,
-  });
-}
 
 const anthropicTextStreamingResponseSchema = new ZodSchema(
   z.object({

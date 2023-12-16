@@ -51,7 +51,6 @@ export interface CohereTextGenerationModelSettings
 
   model: CohereTextGenerationModelType;
 
-  numGenerations?: number;
   temperature?: number;
   k?: number;
   p?: number;
@@ -115,25 +114,39 @@ export class CohereTextGenerationModel
       responseFormat: CohereTextGenerationResponseFormatType<RESPONSE>;
     } & FunctionOptions
   ): Promise<RESPONSE> {
+    const api = this.settings.api ?? new CohereApiConfiguration();
+    const responseFormat = options.responseFormat;
+    const abortSignal = options.run?.abortSignal;
+
     return callWithRetryAndThrottle({
       retry: this.settings.api?.retry,
       throttle: this.settings.api?.throttle,
-      call: async () =>
-        callCohereTextGenerationAPI({
-          ...this.settings,
-
-          // use endSequences instead of stopSequences
-          // to exclude stop tokens from the generated text
-          endSequences: this.settings.stopSequences,
-          maxTokens: this.settings.maxCompletionTokens,
-
-          // mapped name because of conflict with stopSequences:
-          stopSequences: this.settings.cohereStopSequences,
-
-          abortSignal: options.run?.abortSignal,
-          responseFormat: options.responseFormat,
-          prompt,
-        }),
+      call: async () => {
+        return postJsonToApi({
+          url: api.assembleUrl(`/generate`),
+          headers: api.headers,
+          body: {
+            stream: responseFormat.stream,
+            model: this.settings.model,
+            prompt,
+            num_generations: this.settings.numberOfGenerations,
+            max_tokens: this.settings.maxCompletionTokens,
+            temperature: this.settings.temperature,
+            k: this.settings.k,
+            p: this.settings.p,
+            frequency_penalty: this.settings.frequencyPenalty,
+            presence_penalty: this.settings.presencePenalty,
+            end_sequences: this.settings.stopSequences,
+            stop_sequences: this.settings.cohereStopSequences,
+            return_likelihoods: this.settings.returnLikelihoods,
+            logit_bias: this.settings.logitBias,
+            truncate: this.settings.truncate,
+          },
+          failedResponseHandler: failedCohereCallResponseHandler,
+          successfulResponseHandler: responseFormat.handler,
+          abortSignal,
+        });
+      },
     });
   }
 
@@ -141,8 +154,8 @@ export class CohereTextGenerationModel
     const eventSettingProperties: Array<string> = [
       "maxCompletionTokens",
       "stopSequences",
+      "numberOfGenerations",
 
-      "numGenerations",
       "temperature",
       "k",
       "p",
@@ -161,7 +174,7 @@ export class CohereTextGenerationModel
     );
   }
 
-  async doGenerateText(prompt: string, options?: FunctionOptions) {
+  async doGenerateTexts(prompt: string, options?: FunctionOptions) {
     const response = await this.callAPI(prompt, {
       ...options,
       responseFormat: CohereTextGenerationResponseFormat.json,
@@ -169,7 +182,7 @@ export class CohereTextGenerationModel
 
     return {
       response,
-      text: response.generations[0].text,
+      texts: response.generations.map((generation) => generation.text),
     };
   }
 
@@ -246,69 +259,6 @@ const cohereTextGenerationResponseSchema = z.object({
 export type CohereTextGenerationResponse = z.infer<
   typeof cohereTextGenerationResponseSchema
 >;
-
-async function callCohereTextGenerationAPI<RESPONSE>({
-  api = new CohereApiConfiguration(),
-  abortSignal,
-  responseFormat,
-  model,
-  prompt,
-  numGenerations,
-  maxTokens,
-  temperature,
-  k,
-  p,
-  frequencyPenalty,
-  presencePenalty,
-  endSequences,
-  stopSequences,
-  returnLikelihoods,
-  logitBias,
-  truncate,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  responseFormat: CohereTextGenerationResponseFormatType<RESPONSE>;
-  model: CohereTextGenerationModelType;
-  prompt: string;
-  numGenerations?: number;
-  maxTokens?: number;
-  temperature?: number;
-  k?: number;
-  p?: number;
-  frequencyPenalty?: number;
-  presencePenalty?: number;
-  endSequences?: string[];
-  stopSequences?: string[];
-  returnLikelihoods?: "GENERATION" | "ALL" | "NONE";
-  logitBias?: Record<string, number>;
-  truncate?: "NONE" | "START" | "END";
-}): Promise<RESPONSE> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/generate`),
-    headers: api.headers,
-    body: {
-      stream: responseFormat.stream,
-      model,
-      prompt,
-      num_generations: numGenerations,
-      max_tokens: maxTokens,
-      temperature,
-      k,
-      p,
-      frequency_penalty: frequencyPenalty,
-      presence_penalty: presencePenalty,
-      end_sequences: endSequences,
-      stop_sequences: stopSequences,
-      return_likelihoods: returnLikelihoods,
-      logit_bias: logitBias,
-      truncate,
-    },
-    failedResponseHandler: failedCohereCallResponseHandler,
-    successfulResponseHandler: responseFormat.handler,
-    abortSignal,
-  });
-}
 
 export type CohereTextGenerationDelta = {
   content: string;

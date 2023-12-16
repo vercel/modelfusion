@@ -193,13 +193,10 @@ export interface OpenAICompletionCallSettings {
   model: OpenAICompletionModelType;
 
   suffix?: string;
-  maxTokens?: number;
   temperature?: number;
   topP?: number;
-  n?: number;
   logprobs?: number;
   echo?: boolean;
-  stop?: string | string[];
   presencePenalty?: number;
   frequencyPenalty?: number;
   bestOf?: number;
@@ -266,28 +263,54 @@ export class OpenAICompletionModel
       responseFormat: OpenAITextResponseFormatType<RESULT>;
     } & FunctionOptions
   ): Promise<RESULT> {
-    const { run, responseFormat } = options;
-
-    const callSettings = {
-      user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
-
-      // Copied settings:
-      ...this.settings,
-
-      // map to OpenAI API names:
-      stop: this.settings.stopSequences,
-      maxTokens: this.settings.maxCompletionTokens,
-
-      // other settings:
-      abortSignal: run?.abortSignal,
-      prompt,
-      responseFormat,
-    };
+    const api = this.settings.api ?? new OpenAIApiConfiguration();
+    const user = this.settings.isUserIdForwardingEnabled
+      ? options.run?.userId
+      : undefined;
+    const abortSignal = options.run?.abortSignal;
+    let { stopSequences } = this.settings;
+    const openaiResponseFormat = options.responseFormat;
 
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callOpenAICompletionAPI(callSettings),
+      retry: api.retry,
+      throttle: api.throttle,
+      call: async () => {
+        // empty arrays are not allowed for stop:
+        if (
+          stopSequences != null &&
+          Array.isArray(stopSequences) &&
+          stopSequences.length === 0
+        ) {
+          stopSequences = undefined;
+        }
+
+        return postJsonToApi({
+          url: api.assembleUrl("/completions"),
+          headers: api.headers,
+          body: {
+            stream: openaiResponseFormat.stream,
+            model: this.settings.model,
+            prompt,
+            suffix: this.settings.suffix,
+            max_tokens: this.settings.maxCompletionTokens,
+            temperature: this.settings.temperature,
+            top_p: this.settings.topP,
+            n: this.settings.numberOfGenerations,
+            logprobs: this.settings.logprobs,
+            echo: this.settings.echo,
+            stop: this.settings.stopSequences,
+            seed: this.settings.seed,
+            presence_penalty: this.settings.presencePenalty,
+            frequency_penalty: this.settings.frequencyPenalty,
+            best_of: this.settings.bestOf,
+            logit_bias: this.settings.logitBias,
+            user,
+          },
+          failedResponseHandler: failedOpenAICallResponseHandler,
+          successfulResponseHandler: openaiResponseFormat.handler,
+          abortSignal,
+        });
+      },
     });
   }
 
@@ -295,11 +318,11 @@ export class OpenAICompletionModel
     const eventSettingProperties: Array<string> = [
       "maxCompletionTokens",
       "stopSequences",
+      "numberOfGenerations",
 
       "suffix",
       "temperature",
       "topP",
-      "n",
       "logprobs",
       "echo",
       "presencePenalty",
@@ -316,7 +339,7 @@ export class OpenAICompletionModel
     );
   }
 
-  async doGenerateText(prompt: string, options?: FunctionOptions) {
+  async doGenerateTexts(prompt: string, options?: FunctionOptions) {
     const response = await this.callAPI(prompt, {
       ...options,
       responseFormat: OpenAITextResponseFormat.json,
@@ -324,7 +347,7 @@ export class OpenAICompletionModel
 
     return {
       response,
-      text: response.choices[0]!.text,
+      texts: response.choices.map((choice) => choice.text),
       usage: {
         promptTokens: response.usage.prompt_tokens,
         completionTokens: response.usage.completion_tokens,
@@ -403,66 +426,6 @@ const OpenAICompletionResponseSchema = z.object({
     total_tokens: z.number(),
   }),
 });
-
-async function callOpenAICompletionAPI<RESPONSE>({
-  api = new OpenAIApiConfiguration(),
-  abortSignal,
-  responseFormat,
-  model,
-  prompt,
-  suffix,
-  maxTokens,
-  temperature,
-  topP,
-  n,
-  logprobs,
-  echo,
-  stop,
-  presencePenalty,
-  frequencyPenalty,
-  bestOf,
-  logitBias,
-  seed,
-  user,
-}: OpenAICompletionCallSettings & {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  responseFormat: OpenAITextResponseFormatType<RESPONSE>;
-  prompt: string;
-  user?: string;
-}): Promise<RESPONSE> {
-  // empty arrays are not allowed for stop:
-  if (stop != null && Array.isArray(stop) && stop.length === 0) {
-    stop = undefined;
-  }
-
-  return postJsonToApi({
-    url: api.assembleUrl("/completions"),
-    headers: api.headers,
-    body: {
-      stream: responseFormat.stream,
-      model,
-      prompt,
-      suffix,
-      max_tokens: maxTokens,
-      temperature,
-      top_p: topP,
-      n,
-      logprobs,
-      echo,
-      stop,
-      seed,
-      presence_penalty: presencePenalty,
-      frequency_penalty: frequencyPenalty,
-      best_of: bestOf,
-      logit_bias: logitBias,
-      user,
-    },
-    failedResponseHandler: failedOpenAICallResponseHandler,
-    successfulResponseHandler: responseFormat.handler,
-    abortSignal,
-  });
-}
 
 export type OpenAICompletionResponse = z.infer<
   typeof OpenAICompletionResponseSchema

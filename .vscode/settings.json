@@ -18,6 +18,7 @@
     "llamacpp",
     "Lmnt",
     "logit",
+    "logprobs",
     "Millicents",
     "mirostat",
     "modelfusion",

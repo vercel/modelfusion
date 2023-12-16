@@ -18,8 +18,13 @@ You can use [prompt templates](#prompt-format) to change the prompt template of 
 The different [TextGenerationModel](/api/interfaces/TextGenerationModel) implementations (see [available providers](#available-providers)) share some common settings:
 
 - **maxCompletionTokens**: The maximum number of tokens to generate, or undefined to generate an unlimited number of tokens.
+- **numberOfGenerations**: The number of completions to generate.
 - **stopSequences**: An array of text sequences that will stop the text generation when they are generated. The sequences are not included in the generated text. The default is an empty array.
 - **trimWhitespace**: When true (default), the leading and trailing white space and line terminator characters are removed from the generated text. Only applies to `generateText`.
+
+:::note
+Not all models support all common settings. E.g., the `numberOfGenerations` setting is not supported by some local models.
+:::
 
 In addition to these common settings, each model exposes its own settings.
 The settings can be set in the constructor of the model, or in the `withSettings` method.
@@ -49,6 +54,21 @@ const text = await generateText(openai.ChatTextGenerator(/* ... */), [
     "Write a short story about a robot learning to love:"
   ),
 ]);
+```
+
+#### Example: Generate multiple completions
+
+```ts
+import { generateText, openai } from "modelfusion";
+
+const { texts } = await generateText(
+  openai.CompletionTextGenerator({
+    model: "gpt-3.5-turbo-instruct",
+    numberOfGenerations: 2,
+  }),
+  "Write a short story about a robot learning to love:",
+  { fullResponse: true }
+);
 ```
 
 #### Example: OpenAI chat model with multi-modal input

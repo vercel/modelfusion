@@ -277,7 +277,7 @@ export class OllamaTextGenerationModel<
     );
   }
 
-  async doGenerateText(
+  async doGenerateTexts(
     prompt: OllamaTextGenerationPrompt,
     options?: FunctionOptions
   ) {
@@ -288,7 +288,7 @@ export class OllamaTextGenerationModel<
 
     return {
       response,
-      text: response.response,
+      texts: [response.response],
     };
   }
 

@@ -269,14 +269,14 @@ export class OpenAIChatModel
 
   get settingsForEvent(): Partial<OpenAIChatSettings> {
     const eventSettingProperties: Array<string> = [
-      "stopSequences",
       "maxCompletionTokens",
+      "stopSequences",
+      "numberOfGenerations",
 
       "functions",
       "functionCall",
       "temperature",
       "topP",
-      "n",
       "presencePenalty",
       "frequencyPenalty",
       "logitBias",

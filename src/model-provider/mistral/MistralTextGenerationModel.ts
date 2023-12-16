@@ -150,7 +150,7 @@ export class MistralTextGenerationModel
     );
   }
 
-  async doGenerateText(
+  async doGenerateTexts(
     prompt: MistralTextGenerationPrompt,
     options?: FunctionOptions
   ) {
@@ -161,7 +161,7 @@ export class MistralTextGenerationModel
 
     return {
       response,
-      text: response.choices[0].message.content,
+      texts: response.choices.map((choice) => choice.message.content),
     };
   }
 

@@ -163,7 +163,7 @@ export class LlamaCppTextGenerationModel<
     return tokens.length;
   }
 
-  async doGenerateText(
+  async doGenerateTexts(
     prompt: LlamaCppTextGenerationPrompt,
     options?: FunctionOptions
   ) {
@@ -174,7 +174,7 @@ export class LlamaCppTextGenerationModel<
 
     return {
       response,
-      text: response.content,
+      texts: [response.content],
       usage: {
         promptTokens: response.tokens_evaluated,
         completionTokens: response.tokens_predicted,

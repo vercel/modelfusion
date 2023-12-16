@@ -36,13 +36,24 @@ export async function generateText<PROMPT>(
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
   prompt: PROMPT,
   options: FunctionOptions & { fullResponse: true }
-): Promise<{ text: string; response: unknown; metadata: ModelCallMetadata }>;
+): Promise<{
+  text: string;
+  texts: string[];
+  response: unknown;
+  metadata: ModelCallMetadata;
+}>;
 export async function generateText<PROMPT>(
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
   prompt: PROMPT,
   options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
-  string | { text: string; response: unknown; metadata: ModelCallMetadata }
+  | string
+  | {
+      text: string;
+      texts: string[];
+      response: unknown;
+      metadata: ModelCallMetadata;
+    }
 > {
   const fullResponse = await executeStandardCall({
     functionType: "generate-text",
@@ -50,22 +61,30 @@ export async function generateText<PROMPT>(
     model,
     options,
     generateResponse: async (options) => {
-      const result = await model.doGenerateText(prompt, options);
+      const result = await model.doGenerateTexts(prompt, options);
       const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
+
+      const texts = shouldTrimWhitespace
+        ? result.texts.map((text) => text.trim())
+        : result.texts;
 
       return {
         response: result.response,
-        extractedValue: shouldTrimWhitespace ? result.text.trim() : result.text,
+        extractedValue: texts,
         usage: result.usage,
       };
     },
   });
 
+  const texts = fullResponse.value;
+  const text = texts[0];
+
   return options?.fullResponse
     ? {
-        text: fullResponse.value,
+        text,
+        texts,
         response: fullResponse.response,
         metadata: fullResponse.metadata,
       }
-    : fullResponse.value;
+    : text;
 }

@@ -56,7 +56,7 @@ describe("streamText", () => {
       new OpenAIChatModel({
         api: new OpenAIApiConfiguration({ apiKey: "test" }),
         model: "gpt-3.5-turbo",
-        n: 2,
+        numberOfGenerations: 2,
       }).withTextPrompt(),
       "test prompt"
     );
