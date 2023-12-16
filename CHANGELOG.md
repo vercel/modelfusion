@@ -1302,7 +1302,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. Hugging Face text generation support
 1. Memory vector DB
 
-## vv0.0.6 - 2023-05-31
+## v0.0.6 - 2023-05-31
 
 ### New
 
@@ -1313,7 +1313,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. Restructured retry logic
 1. `embed` embeds many texts at once
 
-## vv0.0.5 - 2023-05-30
+## v0.0.5 - 2023-05-30
 
 ### New
 
@@ -1321,7 +1321,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. OpenAI chat streams can be returned as delta async iterables
 1. Documentation of integration APIs and models
 
-## vv0.0.4 - 2023-05-29
+## v0.0.4 - 2023-05-29
 
 ### New
 
@@ -1331,14 +1331,14 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. Basic examples under `examples/basic`
 1. Initial documentation available at [modelfusion.dev](https://modelfusion.dev)
 
-## vv0.0.3 - 2023-05-28
+## v0.0.3 - 2023-05-28
 
 ### New
 
 1. Voice recording and transcription Next.js app example.
 1. OpenAI transcription support (Whisper).
 
-## vv0.0.2 - 2023-05-27
+## v0.0.2 - 2023-05-27
 
 ### New
 
@@ -1347,7 +1347,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. Tokenization-based Recursive Splitter: A new splitter that operates recursively using tokenization.
 1. Prompt Management Utility: An enhancement to fit recent chat messages into the context window.
 
-## vv0.0.1 - 2023-05-26
+## v0.0.1 - 2023-05-26
 
 ### New
 
