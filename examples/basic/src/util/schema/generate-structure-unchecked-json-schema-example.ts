@@ -9,7 +9,7 @@ async function main() {
       .ChatTextGenerator({
         model: "gpt-3.5-turbo",
         temperature: 0,
-        maxCompletionTokens: 50,
+        maxGenerationTokens: 50,
       })
       .asFunctionCallStructureGenerationModel({
         fnName: "sentiment",

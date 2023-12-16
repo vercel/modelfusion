@@ -9,7 +9,7 @@ async function main() {
     llamacpp
       .TextGenerator({
         contextWindowSize: 2048, // Vicuna v1.5 context window size
-        maxCompletionTokens: 512,
+        maxGenerationTokens: 512,
       })
       .withTextPromptTemplate(VicunaPrompt.chat()),
     {

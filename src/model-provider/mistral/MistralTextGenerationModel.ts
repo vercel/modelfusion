@@ -103,7 +103,7 @@ export class MistralTextGenerationModel
       topP,
       safeMode,
       randomSeed,
-      maxCompletionTokens,
+      maxGenerationTokens,
     } = this.settings;
     const api = this.settings.api ?? new MistralApiConfiguration();
     const abortSignal = options.run?.abortSignal;
@@ -123,7 +123,7 @@ export class MistralTextGenerationModel
             model,
             temperature,
             top_p: topP,
-            max_tokens: maxCompletionTokens,
+            max_tokens: maxGenerationTokens,
             safe_mode: safeMode,
             random_seed: randomSeed,
           },
@@ -136,7 +136,7 @@ export class MistralTextGenerationModel
 
   get settingsForEvent(): Partial<MistralTextGenerationModelSettings> {
     const eventSettingProperties: Array<string> = [
-      "maxCompletionTokens",
+      "maxGenerationTokens",
       "temperature",
       "topP",
       "safeMode",

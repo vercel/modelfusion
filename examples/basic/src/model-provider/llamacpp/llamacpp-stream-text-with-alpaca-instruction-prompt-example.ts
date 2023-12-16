@@ -6,7 +6,7 @@ async function main() {
     llamacpp
       .TextGenerator({
         contextWindowSize: 2048, // context window size of Chronos-13B-v2
-        maxCompletionTokens: 1024,
+        maxGenerationTokens: 1024,
       })
       .withTextPromptTemplate(AlpacaPrompt.instruction()),
     {

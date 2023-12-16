@@ -136,13 +136,13 @@ export async function POST(req: Request) {
 }
 ```
 
-We initialize a ModelFusion text generation model for calling Ollama and using the OpenHermes 2.5 Mistral model. We set the `maxCompletionTokens` to `-1` to allow for infinite generation, and the `temperature` to `0` to disable randomness. The `raw` option is set to `true`, because we apply the ChatML prompt template (for the OpenHermes model) to the messages using ModelFusion:
+We initialize a ModelFusion text generation model for calling Ollama and using the OpenHermes 2.5 Mistral model. We set the `maxGenerationTokens` to `-1` to allow for infinite generation, and the `temperature` to `0` to disable randomness. The `raw` option is set to `true`, because we apply the ChatML prompt template (for the OpenHermes model) to the messages using ModelFusion:
 
 ```ts
 const model = ollama
   .TextGenerator({
     model: "openhermes2.5-mistral",
-    maxCompletionTokens: -1, // infinite generation
+    maxGenerationTokens: -1, // infinite generation
     temperature: 0,
     raw: true, // use raw inputs and map to prompt template below
   })

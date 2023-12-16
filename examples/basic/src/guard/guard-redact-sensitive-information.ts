@@ -21,7 +21,7 @@ async function main() {
         llamacpp
           .TextGenerator({
             temperature: 0.7,
-            maxCompletionTokens: 500,
+            maxGenerationTokens: 500,
           })
           .withTextPromptTemplate(Llama2Prompt.instruction()),
         input,

@@ -24,7 +24,7 @@ const model = openai
   .ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0,
-    maxCompletionTokens: 50,
+    maxGenerationTokens: 50,
   })
   .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
   .withInstructionPrompt();
@@ -58,7 +58,7 @@ const model = openai
   .ChatTextGenerator({
     model: "gpt-4-1106-preview",
     temperature: 0,
-    maxCompletionTokens: 1024,
+    maxGenerationTokens: 1024,
     responseFormat: { type: "json_object" }, // force JSON output
   })
   .asStructureGenerationModel(
@@ -83,7 +83,7 @@ Structure generation is also possible with capable open-source models like [Open
 const model = ollama
   .TextGenerator({
     model: "openhermes2.5-mistral",
-    maxCompletionTokens: 1024,
+    maxGenerationTokens: 1024,
     temperature: 0,
     format: "json", // force JSON output
     raw: true, // prevent Ollama from adding its own prompts

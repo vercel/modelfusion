@@ -7,7 +7,7 @@ async function main() {
   const textStream = await streamText(
     mistral.TextGenerator({
       model: "mistral-medium",
-      maxCompletionTokens: 120,
+      maxGenerationTokens: 120,
     }),
     [
       {

@@ -15,7 +15,7 @@ async function main() {
     ollama
       .TextGenerator({
         model: "openhermes2.5-mistral",
-        maxCompletionTokens: 1024,
+        maxGenerationTokens: 1024,
         temperature: 0,
         format: "json",
         raw: true,

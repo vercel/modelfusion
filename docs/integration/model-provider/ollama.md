@@ -45,7 +45,7 @@ const text = await generateText(
   ollama.TextGenerator({
     model: "mistral",
     temperature: 0.7,
-    maxCompletionTokens: 120,
+    maxGenerationTokens: 120,
   }),
   { prompt: "Write a short story about a robot learning to love:\n\n" }
 );
@@ -63,7 +63,7 @@ const image = fs.readFileSync(path.join("data", "comic-mouse.png"), {
 const text = await generateText(
   ollama.TextGenerator({
     model: "bakllava",
-    maxCompletionTokens: 1024,
+    maxGenerationTokens: 1024,
     temperature: 0,
   }),
   {
@@ -83,7 +83,7 @@ const text = await generateText(
     .TextGenerator({
       model: "mistral",
       temperature: 0.7,
-      maxCompletionTokens: 120,
+      maxGenerationTokens: 120,
     })
     .withTextPrompt(),
 
@@ -103,7 +103,7 @@ const textStream = await streamText(
     .TextGenerator({
       model: "mistral",
       temperature: 0.7,
-      maxCompletionTokens: 500,
+      maxGenerationTokens: 500,
     })
     .withTextPrompt(),
   "Write a short story about a robot learning to love:\n\n"
@@ -125,7 +125,7 @@ import { z } from "zod";
 const model = ollama
   .TextGenerator({
     model: "openhermes2.5-mistral",
-    maxCompletionTokens: 1024,
+    maxGenerationTokens: 1024,
     temperature: 0,
     format: "json", // force JSON output
     raw: true, // prevent Ollama from adding its own prompts

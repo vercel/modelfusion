@@ -7,7 +7,7 @@ async function main() {
   const text = await generateText(
     mistral.TextGenerator({
       model: "mistral-medium",
-      maxCompletionTokens: 120,
+      maxGenerationTokens: 120,
     }),
     [
       {

@@ -27,7 +27,7 @@ const gpt35turboModel = openai
       apiKey: process.env.OPENAI_API_KEY,
     }),
     model: "gpt-3.5-turbo",
-    maxCompletionTokens: 512,
+    maxGenerationTokens: 512,
   })
   .withChatPrompt();
 
@@ -36,7 +36,7 @@ const gpt35turboModel = openai
 const llama2Model = llamacpp
   .TextGenerator({
     contextWindowSize: 4096, // Llama 2 context window size
-    maxCompletionTokens: 512,
+    maxGenerationTokens: 512,
   })
   .withTextPromptTemplate(Llama2Prompt.chat());
 
@@ -49,7 +49,7 @@ const cohereModel = cohere
     //   apiKey: process.env.COHERE_API_KEY,
     // }),
     model: "command",
-    maxCompletionTokens: 512,
+    maxGenerationTokens: 512,
   })
   .withChatPrompt();
 

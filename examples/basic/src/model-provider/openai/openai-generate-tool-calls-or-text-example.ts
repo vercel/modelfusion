@@ -13,7 +13,7 @@ async function main() {
   const { text, toolCalls } = await generateToolCallsOrText(
     openai.ChatTextGenerator({
       model: "gpt-4-1106-preview",
-      maxCompletionTokens: 200,
+      maxGenerationTokens: 200,
     }),
     [
       {

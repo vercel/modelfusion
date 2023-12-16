@@ -13,7 +13,7 @@ async function main() {
   const textStream = await streamText(
     openai.ChatTextGenerator({
       model: "gpt-4-vision-preview",
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
     }),
     [
       OpenAIChatMessage.user([

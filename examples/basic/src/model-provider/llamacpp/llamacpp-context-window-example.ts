@@ -4,7 +4,7 @@ async function main() {
   const text = await generateText(
     llamacpp
       .TextGenerator({
-        maxCompletionTokens: 512,
+        maxGenerationTokens: 512,
         temperature: 0.7,
 
         // Assuming the default Llama2 7B model is loaded, the context window size is 4096 tokens.

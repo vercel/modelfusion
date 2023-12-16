@@ -7,7 +7,7 @@ async function main() {
   const textStream = await streamText(
     openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
       logitBias: {
         1169: -100, // 'the'
         262: -100, // ' the'

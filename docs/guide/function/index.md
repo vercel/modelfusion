@@ -40,7 +40,7 @@ Model functions return rich results that include the original response and metad
 const { text, texts, response, metadata } = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
-    maxCompletionTokens: 1000,
+    maxGenerationTokens: 1000,
     n: 2, // generate 2 completions
   }),
   "Write a short story about a robot learning to love:\n\n"
@@ -73,7 +73,7 @@ Models are created using a constructor call. The constructors take a single conf
 ```ts
 const model = openai.CompletionTextGenerator({
   model: "gpt-3.5-turbo-instruct",
-  maxCompletionTokens: 500,
+  maxGenerationTokens: 500,
 });
 ```
 
@@ -98,6 +98,6 @@ The `withSettings` method creates a new model with the same configuration as the
 
 ```ts
 const modelWithMoreTokens = model.withSettings({
-  maxCompletionTokens: 1000,
+  maxGenerationTokens: 1000,
 });
 ```

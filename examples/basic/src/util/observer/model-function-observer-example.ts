@@ -9,7 +9,7 @@ async function main() {
   const text = await generateText(
     openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
-      maxCompletionTokens: 50,
+      maxGenerationTokens: 50,
       observers: [customObserver],
     }),
     "Write a short story about a robot name Bud:\n\n"

@@ -7,7 +7,7 @@ async function main() {
   const textStream = await streamText(
     openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
     }),
     "You are a story writer. Write a story about a robot learning to love"
   );

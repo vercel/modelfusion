@@ -25,7 +25,7 @@ async function main() {
     const model = llamacpp
       .TextGenerator({
         contextWindowSize: 4096,
-        maxCompletionTokens: 512,
+        maxGenerationTokens: 512,
         cachePrompt: true,
       })
       .withTextPromptTemplate(TextPrompt.chat());

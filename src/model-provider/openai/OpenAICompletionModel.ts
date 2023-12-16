@@ -219,7 +219,7 @@ export interface OpenAICompletionModelSettings
  * const model = new OpenAICompletionModel({
  *   model: "gpt-3.5-turbo-instruct",
  *   temperature: 0.7,
- *   maxCompletionTokens: 500,
+ *   maxGenerationTokens: 500,
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
@@ -292,7 +292,7 @@ export class OpenAICompletionModel
             model: this.settings.model,
             prompt,
             suffix: this.settings.suffix,
-            max_tokens: this.settings.maxCompletionTokens,
+            max_tokens: this.settings.maxGenerationTokens,
             temperature: this.settings.temperature,
             top_p: this.settings.topP,
             n: this.settings.numberOfGenerations,
@@ -316,7 +316,7 @@ export class OpenAICompletionModel
 
   get settingsForEvent(): Partial<OpenAICompletionModelSettings> {
     const eventSettingProperties: Array<string> = [
-      "maxCompletionTokens",
+      "maxGenerationTokens",
       "stopSequences",
       "numberOfGenerations",
 

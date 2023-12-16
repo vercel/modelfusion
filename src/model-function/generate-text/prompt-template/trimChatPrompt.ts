@@ -20,7 +20,7 @@ export async function trimChatPrompt({
   prompt,
   model,
   tokenLimit = model.contextWindowSize -
-    (model.settings.maxCompletionTokens ?? model.contextWindowSize / 4),
+    (model.settings.maxGenerationTokens ?? model.contextWindowSize / 4),
 }: {
   prompt: TextChatPrompt;
   model: TextGenerationModel<TextChatPrompt, TextGenerationModelSettings> &

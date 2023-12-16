@@ -8,7 +8,7 @@ async function main() {
     openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       numberOfGenerations: 2,
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
     }),
     "Write a short story about a robot learning to love:\n\n",
     { fullResponse: true }

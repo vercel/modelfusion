@@ -14,7 +14,7 @@ async function main() {
     openai.ChatTextGenerator({
       model: "gpt-4-1106-preview",
       temperature: 0,
-      maxCompletionTokens: 200,
+      maxGenerationTokens: 200,
     }),
     {
       name: "getTemperature",

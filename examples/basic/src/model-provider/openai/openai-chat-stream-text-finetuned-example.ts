@@ -7,7 +7,7 @@ async function main() {
   const textStream = await streamText(
     openai.ChatTextGenerator({
       model: "ft:gpt-3.5-turbo-0613:COMPANY_ID::IDSTRING", // You need to provide your own fine-tuned model here
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
     }),
     [
       // Adjust the prompt below to fit your fine-tuned model:

@@ -34,7 +34,7 @@ import { OpenAIChatModel, streamText } from "modelfusion";
 const textStream = await streamText(
   openai.ChatTextGenerator({
     model: "gpt-4-vision-preview",
-    maxCompletionTokens: 1000,
+    maxGenerationTokens: 1000,
   }),
   [
     OpenAIChatMessage.user([
@@ -54,7 +54,7 @@ const textStream = await streamText(
   openai
     .ChatTextGenerator({
       model: "gpt-4-vision-preview",
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
     })
     .withInstructionPrompt(),
   {

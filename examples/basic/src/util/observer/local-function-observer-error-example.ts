@@ -12,7 +12,7 @@ async function main() {
         baseUrl: "invalid-url",
       }),
       model: "gpt-3.5-turbo-instruct",
-      maxCompletionTokens: 50,
+      maxGenerationTokens: 50,
     }),
     "Write a short story about a robot named Nox:\n\n",
     { observers: [customObserver] }

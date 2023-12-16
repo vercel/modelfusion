@@ -7,7 +7,7 @@ async function main() {
   const textStream = await streamText(
     openai.ChatTextGenerator({
       model: "gpt-3.5-turbo",
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
     }),
     [
       OpenAIChatMessage.system("You are a story writer. Write a story about:"),

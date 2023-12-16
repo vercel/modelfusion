@@ -45,7 +45,7 @@ import { generateText, mistral } from "modelfusion";
 const text = await generateText(
   mistral.TextGenerator({
     model: "mistral-medium",
-    maxCompletionTokens: 120,
+    maxGenerationTokens: 120,
   }),
   [
     {
@@ -66,7 +66,7 @@ import { mistral, streamText } from "modelfusion";
 const textStream = await streamText(
   mistral.TextGenerator({
     model: "mistral-medium",
-    maxCompletionTokens: 120,
+    maxGenerationTokens: 120,
   }),
   [
     {

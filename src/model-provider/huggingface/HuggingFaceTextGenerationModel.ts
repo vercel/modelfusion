@@ -44,7 +44,7 @@ export interface HuggingFaceTextGenerationModelSettings
  * const model = new HuggingFaceTextGenerationModel({
  *   model: "tiiuae/falcon-7b",
  *   temperature: 0.7,
- *   maxCompletionTokens: 500,
+ *   maxGenerationTokens: 500,
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
@@ -91,7 +91,7 @@ export class HuggingFaceTextGenerationModel
             top_p: this.settings.topP,
             temperature: this.settings.temperature,
             repetition_penalty: this.settings.repetitionPenalty,
-            max_new_tokens: this.settings.maxCompletionTokens,
+            max_new_tokens: this.settings.maxGenerationTokens,
             max_time: this.settings.maxTime,
             num_return_sequences: this.settings.numberOfGenerations,
             do_sample: this.settings.doSample,
@@ -113,7 +113,7 @@ export class HuggingFaceTextGenerationModel
   get settingsForEvent(): Partial<HuggingFaceTextGenerationModelSettings> {
     const eventSettingProperties: Array<string> = [
       "stopSequences",
-      "maxCompletionTokens",
+      "maxGenerationTokens",
       "numberOfGenerations",
 
       "topK",

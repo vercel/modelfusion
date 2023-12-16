@@ -18,7 +18,7 @@ async function main() {
         deploymentId: "my-deployment-id",
         apiVersion: "my-api-version",
       }),
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
     }),
     [
       OpenAIChatMessage.system("You are a story writer. Write a story about:"),

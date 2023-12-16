@@ -17,7 +17,7 @@ You can use [prompt templates](#prompt-format) to change the prompt template of 
 
 The different [TextGenerationModel](/api/interfaces/TextGenerationModel) implementations (see [available providers](#available-providers)) share some common settings:
 
-- **maxCompletionTokens**: The maximum number of tokens to generate, or undefined to generate an unlimited number of tokens.
+- **maxGenerationTokens**: The maximum number of tokens to generate, or undefined to generate an unlimited number of tokens.
 - **numberOfGenerations**: The number of completions to generate.
 - **stopSequences**: An array of text sequences that will stop the text generation when they are generated. The sequences are not included in the generated text. The default is an empty array.
 - **trimWhitespace**: When true (default), the leading and trailing white space and line terminator characters are removed from the generated text. Only applies to `generateText`.
@@ -332,7 +332,7 @@ After a while, including all messages from a chat in the prompt can become infea
 When you use chat prompts, you can limit the included messages with the [trimChatPrompt()](/api/modules#trimchatprompt) function.
 It keeps only the most recent messages in the prompt, while leaving enough space for the completion.
 
-It automatically uses the [context window size](/api/interfaces/TextGenerationModel#contextwindowsize), the [maximum number of completion tokens](/api/interfaces/TextGenerationModel#maxcompletiontokens) and the [tokenizer](/api/interfaces/TextGenerationModel#tokenizer) of the model to determine how many messages to keep. The system message is always included.
+It automatically uses the [context window size](/api/interfaces/TextGenerationModel#contextwindowsize), the [maximum number of completion tokens](/api/interfaces/TextGenerationModel#maxGenerationTokens) and the [tokenizer](/api/interfaces/TextGenerationModel#tokenizer) of the model to determine how many messages to keep. The system message is always included.
 
 #### Example
 

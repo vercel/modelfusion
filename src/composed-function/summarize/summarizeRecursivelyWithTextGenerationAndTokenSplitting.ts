@@ -18,7 +18,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
     model,
     prompt,
     tokenLimit = model.contextWindowSize -
-      (model.settings.maxCompletionTokens ?? model.contextWindowSize / 4),
+      (model.settings.maxGenerationTokens ?? model.contextWindowSize / 4),
     join,
   }: {
     text: string;

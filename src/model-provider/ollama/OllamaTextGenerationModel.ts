@@ -220,7 +220,7 @@ export class OllamaTextGenerationModel<
               num_ctx: this.settings.contextWindowSize,
               num_gpu: this.settings.numGpu,
               num_gqa: this.settings.numGqa,
-              num_predict: this.settings.maxCompletionTokens,
+              num_predict: this.settings.maxGenerationTokens,
               num_threads: this.settings.numThreads,
               repeat_last_n: this.settings.repeatLastN,
               repeat_penalty: this.settings.repeatPenalty,
@@ -247,7 +247,7 @@ export class OllamaTextGenerationModel<
     OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
   > {
     const eventSettingProperties: Array<string> = [
-      "maxCompletionTokens",
+      "maxGenerationTokens",
       "stopSequences",
       "contextWindowSize",
       "temperature",

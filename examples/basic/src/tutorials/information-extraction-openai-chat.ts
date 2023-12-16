@@ -10,7 +10,7 @@ async function main() {
       openai.ChatTextGenerator({
         model: "gpt-4",
         temperature: 0, // remove randomness as much as possible
-        maxCompletionTokens: 500,
+        maxGenerationTokens: 500,
       }),
       [
         OpenAIChatMessage.system(

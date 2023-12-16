@@ -20,7 +20,7 @@ You can execute the tool with [useToolsOrGenerateText](/guide/tools/use-tools-or
 const { text, toolCalls } = await generateToolCallsOrText(
   openai.ChatTextGenerator({
     model: "gpt-4-1106-preview",
-    maxCompletionTokens: 200,
+    maxGenerationTokens: 200,
   }),
   [
     {

@@ -12,7 +12,7 @@ async function main() {
         .ChatTextGenerator({
           model: "gpt-4",
           temperature: 0, // remove randomness as much as possible
-          maxCompletionTokens: 200, // only a few tokens needed for the response
+          maxGenerationTokens: 200, // only a few tokens needed for the response
         })
         .asFunctionCallStructureGenerationModel({
           fnName: "storeCity",

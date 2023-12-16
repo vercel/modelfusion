@@ -11,9 +11,9 @@ export interface TextGenerationModelSettings extends ModelSettings {
    *
    * Does nothing if the model does not support this setting.
    *
-   * Example: `maxCompletionTokens: 1000`
+   * Example: `maxGenerationTokens: 1000`
    */
-  maxCompletionTokens?: number | undefined;
+  maxGenerationTokens?: number | undefined;
 
   /**
    * Stop sequences to use.

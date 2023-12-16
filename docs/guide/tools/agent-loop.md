@@ -32,7 +32,7 @@ while (true) {
     openai.ChatTextGenerator({
       model: "gpt-4-1106-preview",
       temperature: 0,
-      maxCompletionTokens: 500,
+      maxGenerationTokens: 500,
     }),
     [calculator],
     messages

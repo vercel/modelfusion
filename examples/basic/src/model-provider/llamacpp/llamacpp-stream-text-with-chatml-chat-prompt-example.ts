@@ -9,7 +9,7 @@ async function main() {
     llamacpp
       .TextGenerator({
         contextWindowSize: 4096,
-        maxCompletionTokens: 512,
+        maxGenerationTokens: 512,
       })
       .withTextPromptTemplate(ChatMLPrompt.chat()),
     {

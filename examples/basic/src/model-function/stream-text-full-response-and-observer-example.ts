@@ -20,7 +20,7 @@ async function main() {
     openai
       .CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
-        maxCompletionTokens: 500,
+        maxGenerationTokens: 500,
       })
       .withInstructionPrompt(),
     { instruction: "Write a story about a robot learning to love" },

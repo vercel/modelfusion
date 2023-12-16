@@ -65,7 +65,7 @@ const text = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     temperature: 0.7,
-    maxCompletionTokens: 500,
+    maxGenerationTokens: 500,
   }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -88,7 +88,7 @@ const text = await generateText(
   openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0.7,
-    maxCompletionTokens: 500,
+    maxGenerationTokens: 500,
   }),
   [
     OpenAIChatMessage.user(
@@ -130,7 +130,7 @@ import { OpenAICompletionModel, streamText } from "modelfusion";
 const textStream = await streamText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
-    maxCompletionTokens: 1000,
+    maxGenerationTokens: 1000,
   }),
   "You are a story writer. Write a story about a robot learning to love"
 );
@@ -150,7 +150,7 @@ import { OpenAIChatMessage, openai, streamText } from "modelfusion";
 const textStream = await streamText(
   openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
-    maxCompletionTokens: 1000,
+    maxGenerationTokens: 1000,
   }),
   [
     OpenAIChatMessage.system("You are a story writer. Write a story about:"),
@@ -182,7 +182,7 @@ const sentiment = await generateStructure(
     .ChatTextGenerator({
       model: "gpt-3.5-turbo",
       temperature: 0,
-      maxCompletionTokens: 50,
+      maxGenerationTokens: 50,
     })
     .asFunctionCallStructureGenerationModel({
       fnName: "sentiment",

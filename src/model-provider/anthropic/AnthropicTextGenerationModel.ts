@@ -103,7 +103,7 @@ export class AnthropicTextGenerationModel
             model: this.settings.model,
             prompt,
             stream: responseFormat.stream,
-            max_tokens_to_sample: this.settings.maxCompletionTokens,
+            max_tokens_to_sample: this.settings.maxGenerationTokens,
             temperature: this.settings.temperature,
             top_k: this.settings.topK,
             top_p: this.settings.topP,
@@ -120,7 +120,7 @@ export class AnthropicTextGenerationModel
 
   get settingsForEvent(): Partial<AnthropicTextGenerationModelSettings> {
     const eventSettingProperties: Array<string> = [
-      "maxCompletionTokens",
+      "maxGenerationTokens",
       "stopSequences",
 
       "temperature",

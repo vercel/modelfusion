@@ -26,7 +26,7 @@ export const duplexStreamingFlow = new DefaultFlow({
         .ChatTextGenerator({
           model: "gpt-4",
           temperature: 0.7,
-          maxCompletionTokens: 50,
+          maxGenerationTokens: 50,
         })
         .withInstructionPrompt(),
       { instruction: input.prompt }

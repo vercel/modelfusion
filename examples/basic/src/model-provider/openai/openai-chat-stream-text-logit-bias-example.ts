@@ -7,7 +7,7 @@ async function main() {
   const textStream = await streamText(
     openai.ChatTextGenerator({
       model: "gpt-3.5-turbo",
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
       logitBias: {
         1820: -100, // 'the'
         279: -100, // ' the'

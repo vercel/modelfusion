@@ -8,7 +8,7 @@ async function main() {
     ollama
       .TextGenerator({
         model: "mistral",
-        maxCompletionTokens: 120,
+        maxGenerationTokens: 120,
       })
       .withTextPrompt(),
 

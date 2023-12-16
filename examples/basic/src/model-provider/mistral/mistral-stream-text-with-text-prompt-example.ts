@@ -8,7 +8,7 @@ async function main() {
     mistral
       .TextGenerator({
         model: "mistral-medium",
-        maxCompletionTokens: 120,
+        maxGenerationTokens: 120,
       })
       .withTextPrompt(),
 

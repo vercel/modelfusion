@@ -112,7 +112,7 @@ export class LlamaCppTextGenerationModel<
           ...this.settings,
 
           // mapping
-          nPredict: this.settings.maxCompletionTokens,
+          nPredict: this.settings.maxGenerationTokens,
           stop: this.settings.stopSequences,
 
           // other
@@ -127,7 +127,7 @@ export class LlamaCppTextGenerationModel<
     LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
   > {
     const eventSettingProperties: Array<string> = [
-      "maxCompletionTokens",
+      "maxGenerationTokens",
       "stopSequences",
 
       "contextWindowSize",

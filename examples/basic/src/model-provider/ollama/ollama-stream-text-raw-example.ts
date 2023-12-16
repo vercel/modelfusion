@@ -7,7 +7,7 @@ async function main() {
   const textStream = await streamText(
     ollama.TextGenerator({
       model: "mistral:text",
-      maxCompletionTokens: 500,
+      maxGenerationTokens: 500,
     }),
     { prompt: "Write a short story about a robot learning to love:\n\n" }
   );

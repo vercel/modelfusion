@@ -166,7 +166,7 @@ export abstract class AbstractOpenAIChatModel<
             top_p: this.settings.topP,
             n: this.settings.numberOfGenerations,
             stop: this.settings.stopSequences,
-            max_tokens: this.settings.maxCompletionTokens,
+            max_tokens: this.settings.maxGenerationTokens,
             presence_penalty: this.settings.presencePenalty,
             frequency_penalty: this.settings.frequencyPenalty,
             logit_bias: this.settings.logitBias,

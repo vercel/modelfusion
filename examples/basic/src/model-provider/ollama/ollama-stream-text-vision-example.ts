@@ -10,7 +10,7 @@ async function main() {
   const textStream = await streamText(
     ollama.TextGenerator({
       model: "bakllava",
-      maxCompletionTokens: 1024,
+      maxGenerationTokens: 1024,
       temperature: 0,
     }),
     {

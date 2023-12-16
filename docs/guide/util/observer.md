@@ -91,7 +91,7 @@ modelfusion.setFunctionObservers([customObserver]);
 const text = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
-    maxCompletionTokens: 50,
+    maxGenerationTokens: 50,
   }),
   "Write a short story about a robot name Evo:\n\n"
 );
@@ -107,7 +107,7 @@ You can set function observers for specific functions in the function options.
 const text = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
-    maxCompletionTokens: 50,
+    maxGenerationTokens: 50,
   }),
   "Write a short story about a robot named Nox:\n\n",
   { observers: [observer] }
@@ -128,7 +128,7 @@ const run = new DefaultRun({
 const text = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
-    maxCompletionTokens: 50,
+    maxGenerationTokens: 50,
   }),
   "Write a short story about a robot named Pam:\n\n",
   { run }
@@ -145,7 +145,7 @@ You can set function observers for all functions calls that use a model instance
 const text = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
-    maxCompletionTokens: 50,
+    maxGenerationTokens: 50,
     observers: [observer],
   }),
   "Write a short story about a robot name Bud:\n\n"

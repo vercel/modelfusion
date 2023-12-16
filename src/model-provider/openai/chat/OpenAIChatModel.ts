@@ -220,7 +220,7 @@ export interface OpenAIChatSettings
  * const model = new OpenAIChatModel({
  *   model: "gpt-3.5-turbo",
  *   temperature: 0.7,
- *   maxCompletionTokens: 500,
+ *   maxGenerationTokens: 500,
  * });
  *
  * const text = await generateText([
@@ -269,7 +269,7 @@ export class OpenAIChatModel
 
   get settingsForEvent(): Partial<OpenAIChatSettings> {
     const eventSettingProperties: Array<string> = [
-      "maxCompletionTokens",
+      "maxGenerationTokens",
       "stopSequences",
       "numberOfGenerations",
 

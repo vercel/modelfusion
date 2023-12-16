@@ -211,7 +211,7 @@ const sentiment = await generateStructure(
     .ChatTextGenerator({
       model: "gpt-3.5-turbo",
       temperature: 0,
-      maxCompletionTokens: 50,
+      maxGenerationTokens: 50,
     })
     .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
     .withInstructionPrompt(),
@@ -541,7 +541,7 @@ const text = await generateText(
   llamacpp
     .TextGenerator({
       contextWindowSize: 4096, // Llama 2 context window size
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
     })
     .withTextPromptTemplate(Llama2Prompt.instruction()),
   {
@@ -622,7 +622,7 @@ ModelFusion model functions return rich responses that include the original resp
 const { text, response, metadata } = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
-    maxCompletionTokens: 1000,
+    maxGenerationTokens: 1000,
     n: 2, // generate 2 completions
   }),
   "Write a short story about a robot learning to love:\n\n",

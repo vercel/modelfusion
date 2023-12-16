@@ -72,7 +72,7 @@ export interface CohereTextGenerationModelSettings
  * const model = new CohereTextGenerationModel({
  *   model: "command-nightly",
  *   temperature: 0.7,
- *   maxCompletionTokens: 500,
+ *   maxGenerationTokens: 500,
  * });
  *
  * const text = await generateText(
@@ -130,7 +130,7 @@ export class CohereTextGenerationModel
             model: this.settings.model,
             prompt,
             num_generations: this.settings.numberOfGenerations,
-            max_tokens: this.settings.maxCompletionTokens,
+            max_tokens: this.settings.maxGenerationTokens,
             temperature: this.settings.temperature,
             k: this.settings.k,
             p: this.settings.p,
@@ -152,7 +152,7 @@ export class CohereTextGenerationModel
 
   get settingsForEvent(): Partial<CohereTextGenerationModelSettings> {
     const eventSettingProperties: Array<string> = [
-      "maxCompletionTokens",
+      "maxGenerationTokens",
       "stopSequences",
       "numberOfGenerations",
 

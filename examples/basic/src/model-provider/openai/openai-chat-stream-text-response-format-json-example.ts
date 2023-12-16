@@ -9,7 +9,7 @@ async function main() {
       .ChatTextGenerator({
         model: "gpt-4-1106-preview",
         responseFormat: { type: "json_object" },
-        maxCompletionTokens: 500,
+        maxGenerationTokens: 500,
       })
       .withInstructionPrompt(),
     {
