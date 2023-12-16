@@ -407,7 +407,7 @@ export const OpenAIChatResponseFormat = {
     handler: async ({ response }: { response: Response }) =>
       createOpenAIChatDeltaIterableQueue(
         response.body!,
-        (delta) => delta[0]?.delta.content ?? ""
+        (delta) => delta[0]?.delta?.content ?? ""
       ),
   } satisfies OpenAIChatResponseFormatType<AsyncIterable<Delta<string>>>,
 
