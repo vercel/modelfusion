@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "modelfusion": "0.94.0",
+    "modelfusion": "0.98.0",
     "dotenv": "16.0.3"
   },
   "devDependencies": {
