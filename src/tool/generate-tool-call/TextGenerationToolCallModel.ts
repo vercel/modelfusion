@@ -53,19 +53,19 @@ export class TextGenerationToolCallModel<
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
-    const { response, value, metadata } = await generateText(
+    const { response, text, metadata } = await generateText(
       this.model,
       this.format.createPrompt(prompt, tool),
       {
         ...options,
-        returnType: "full",
+        fullResponse: true,
       }
     );
 
     try {
       return {
         response,
-        toolCall: this.format.extractToolCall(value),
+        toolCall: this.format.extractToolCall(text),
         usage: metadata?.usage as
           | {
               promptTokens: number;
@@ -77,7 +77,7 @@ export class TextGenerationToolCallModel<
     } catch (error) {
       throw new ToolCallParseError({
         toolName: tool.name,
-        valueText: value,
+        valueText: text,
         cause: error,
       });
     }

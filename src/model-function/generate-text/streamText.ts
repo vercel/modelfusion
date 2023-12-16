@@ -31,24 +31,24 @@ import { TextStreamingModel } from "./TextGenerationModel.js";
 export async function streamText<PROMPT>(
   model: TextStreamingModel<PROMPT>,
   prompt: PROMPT,
-  options?: FunctionOptions & { returnType?: "text-stream" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<AsyncIterable<string>>;
 export async function streamText<PROMPT>(
   model: TextStreamingModel<PROMPT>,
   prompt: PROMPT,
-  options: FunctionOptions & { returnType: "full" }
+  options: FunctionOptions & { fullResponse: true }
 ): Promise<{
-  value: AsyncIterable<string>;
+  textStream: AsyncIterable<string>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
 export async function streamText<PROMPT>(
   model: TextStreamingModel<PROMPT>,
   prompt: PROMPT,
-  options?: FunctionOptions & { returnType?: "text-stream" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
   | AsyncIterable<string>
   | {
-      value: AsyncIterable<string>;
+      textStream: AsyncIterable<string>;
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }
 > {
@@ -101,5 +101,10 @@ export async function streamText<PROMPT>(
     }),
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  return options?.fullResponse
+    ? {
+        textStream: fullResponse.value,
+        metadata: fullResponse.metadata,
+      }
+    : fullResponse.value;
 }

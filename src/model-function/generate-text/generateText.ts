@@ -30,19 +30,19 @@ import {
 export async function generateText<PROMPT>(
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
   prompt: PROMPT,
-  options?: FunctionOptions & { returnType?: "text" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<string>;
 export async function generateText<PROMPT>(
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
   prompt: PROMPT,
-  options: FunctionOptions & { returnType: "full" }
-): Promise<{ value: string; response: unknown; metadata: ModelCallMetadata }>;
+  options: FunctionOptions & { fullResponse: true }
+): Promise<{ text: string; response: unknown; metadata: ModelCallMetadata }>;
 export async function generateText<PROMPT>(
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
   prompt: PROMPT,
-  options?: FunctionOptions & { returnType?: "text" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
-  string | { value: string; response: unknown; metadata: ModelCallMetadata }
+  string | { text: string; response: unknown; metadata: ModelCallMetadata }
 > {
   const fullResponse = await executeStandardCall({
     functionType: "generate-text",
@@ -61,5 +61,11 @@ export async function generateText<PROMPT>(
     },
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  return options?.fullResponse
+    ? {
+        text: fullResponse.value,
+        response: fullResponse.response,
+        metadata: fullResponse.metadata,
+      }
+    : fullResponse.value;
 }

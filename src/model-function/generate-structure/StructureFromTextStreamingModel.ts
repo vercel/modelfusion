@@ -79,24 +79,24 @@ export class StructureFromTextStreamingModel<
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
-    const { response, value } = await generateText(
+    const { response, text } = await generateText(
       this.model,
       this.template.createPrompt(prompt, schema),
       {
         ...options,
-        returnType: "full",
+        fullResponse: true,
       }
     );
 
     try {
       return {
         response,
-        value: this.template.extractStructure(value),
-        valueText: value,
+        value: this.template.extractStructure(text),
+        valueText: text,
       };
     } catch (error) {
       throw new StructureParseError({
-        valueText: value,
+        valueText: text,
         cause: error,
       });
     }

@@ -33,7 +33,7 @@ Some model functions have a streaming variant, e.g. `streamText` or `streamSpeec
 ## Rich Responses
 
 For more advanced use cases, you might want to access the full response from the model, or the metadata about the call.
-Model functions return rich results that include the original response and metadata when you set the `returnType` option to `full`.
+Model functions return rich results that include the original response and metadata when you set the `fullResponse` option to `true`.
 
 ```ts
 // access the full response (needs to be typed) and the metadata:
@@ -44,7 +44,7 @@ const { value, response, metadata } = await generateText(
     n: 2, // generate 2 completions
   }),
   "Write a short story about a robot learning to love:\n\n"
-  { returnType: "full" }
+  { fullResponse: true }
 );
 
 console.log(metadata);

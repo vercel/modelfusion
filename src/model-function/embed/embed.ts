@@ -27,25 +27,25 @@ import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel.js";
 export async function embedMany<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   values: VALUE[],
-  options?: FunctionOptions & { returnType?: "vectors" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<Vector[]>;
 export async function embedMany<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   values: VALUE[],
-  options: FunctionOptions & { returnType: "full" }
+  options: FunctionOptions & { fullResponse: true }
 ): Promise<{
-  value: Vector[];
+  embeddings: Vector[];
   response: unknown;
   metadata: ModelCallMetadata;
 }>;
 export async function embedMany<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   values: VALUE[],
-  options?: FunctionOptions & { returnType?: "vectors" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
   | Vector[]
   | {
-      value: Vector[];
+      embeddings: Vector[];
       response: unknown;
       metadata: ModelCallMetadata;
     }
@@ -97,7 +97,13 @@ export async function embedMany<VALUE>(
     },
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  return options?.fullResponse
+    ? {
+        embeddings: fullResponse.value,
+        response: fullResponse.response,
+        metadata: fullResponse.metadata,
+      }
+    : fullResponse.value;
 }
 
 /**
@@ -120,19 +126,23 @@ export async function embedMany<VALUE>(
 export async function embed<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   value: VALUE,
-  options?: FunctionOptions & { returnType?: "vector" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<Vector>;
 export async function embed<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   value: VALUE,
-  options: FunctionOptions & { returnType: "full" }
-): Promise<{ value: Vector; response: unknown; metadata: ModelCallMetadata }>;
+  options: FunctionOptions & { fullResponse: true }
+): Promise<{
+  embedding: Vector;
+  response: unknown;
+  metadata: ModelCallMetadata;
+}>;
 export async function embed<VALUE>(
   model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
   value: VALUE,
-  options?: FunctionOptions & { returnType?: "vector" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
-  Vector | { value: Vector; response: unknown; metadata: ModelCallMetadata }
+  Vector | { embedding: Vector; response: unknown; metadata: ModelCallMetadata }
 > {
   const fullResponse = await executeStandardCall({
     functionType: "embed",
@@ -148,5 +158,11 @@ export async function embed<VALUE>(
     },
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  return options?.fullResponse
+    ? {
+        embedding: fullResponse.value,
+        response: fullResponse.response,
+        metadata: fullResponse.metadata,
+      }
+    : fullResponse.value;
 }

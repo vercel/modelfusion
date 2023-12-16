@@ -34,24 +34,24 @@ import {
 export async function streamSpeech(
   model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>,
   text: AsyncIterable<string> | string,
-  options?: FunctionOptions & { returnType?: "buffer-stream" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<AsyncIterable<Buffer>>;
 export async function streamSpeech(
   model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>,
   text: AsyncIterable<string> | string,
-  options: FunctionOptions & { returnType: "full" }
+  options: FunctionOptions & { fullResponse: true }
 ): Promise<{
-  value: AsyncIterable<Buffer>;
+  speechStream: AsyncIterable<Buffer>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
 export async function streamSpeech(
   model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>,
   text: AsyncIterable<string> | string,
-  options?: FunctionOptions & { returnType?: "buffer-stream" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
   | AsyncIterable<Buffer>
   | {
-      value: AsyncIterable<Buffer>;
+      speechStream: AsyncIterable<Buffer>;
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }
 > {
@@ -78,5 +78,10 @@ export async function streamSpeech(
     getResult: () => ({}),
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  return options?.fullResponse
+    ? {
+        speechStream: fullResponse.value,
+        metadata: fullResponse.metadata,
+      }
+    : fullResponse.value;
 }

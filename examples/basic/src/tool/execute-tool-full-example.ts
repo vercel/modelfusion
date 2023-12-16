@@ -12,7 +12,7 @@ async function main() {
       b: 12,
       operator: "*" as const,
     },
-    { returnType: "full" }
+    { fullResponse: true }
   );
 
   console.log(`Result: ${output}`);

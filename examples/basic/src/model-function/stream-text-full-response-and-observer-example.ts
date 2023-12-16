@@ -16,7 +16,7 @@ const customObserver: FunctionObserver = {
 };
 
 async function main() {
-  const { value: textStream, metadata } = await streamText(
+  const { textStream, metadata } = await streamText(
     openai
       .CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
@@ -26,7 +26,7 @@ async function main() {
     { instruction: "Write a story about a robot learning to love" },
     {
       functionId: "generate-story",
-      returnType: "full",
+      fullResponse: true,
       observers: [customObserver],
     }
   );

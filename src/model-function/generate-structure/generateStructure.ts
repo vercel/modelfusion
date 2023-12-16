@@ -51,7 +51,7 @@ export async function generateStructure<
   model: StructureGenerationModel<PROMPT, SETTINGS>,
   schema: Schema<STRUCTURE> & JsonSchemaProducer,
   prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options?: FunctionOptions & { returnType?: "structure" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<STRUCTURE>;
 export async function generateStructure<
   STRUCTURE,
@@ -61,9 +61,9 @@ export async function generateStructure<
   model: StructureGenerationModel<PROMPT, SETTINGS>,
   schema: Schema<STRUCTURE> & JsonSchemaProducer,
   prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options: FunctionOptions & { returnType: "full" }
+  options: FunctionOptions & { fullResponse: true }
 ): Promise<{
-  value: STRUCTURE;
+  structure: STRUCTURE;
   response: unknown;
   metadata: ModelCallMetadata;
 }>;
@@ -75,10 +75,14 @@ export async function generateStructure<
   model: StructureGenerationModel<PROMPT, SETTINGS>,
   schema: Schema<STRUCTURE> & JsonSchemaProducer,
   prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options?: FunctionOptions & { returnType?: "structure" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
   | STRUCTURE
-  | { value: STRUCTURE; response: unknown; metadata: ModelCallMetadata }
+  | {
+      structure: STRUCTURE;
+      response: unknown;
+      metadata: ModelCallMetadata;
+    }
 > {
   // Note: PROMPT must not be a function.
   const expandedPrompt =
@@ -119,5 +123,11 @@ export async function generateStructure<
     },
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  return options?.fullResponse
+    ? {
+        structure: fullResponse.value,
+        response: fullResponse.response,
+        metadata: fullResponse.metadata,
+      }
+    : fullResponse.value;
 }

@@ -68,17 +68,22 @@ export class TextGenerationToolCallsOrGenerateTextModel<
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
-    const { response, value, metadata } = await generateText(
+    const {
+      response,
+      text: generatedText,
+      metadata,
+    } = await generateText(
       this.model,
       this.template.createPrompt(prompt, tools),
       {
         ...options,
-        returnType: "full",
+        fullResponse: true,
       }
     );
 
     try {
-      const { text, toolCalls } = this.template.extractToolCallsAndText(value);
+      const { text, toolCalls } =
+        this.template.extractToolCallsAndText(generatedText);
 
       return {
         response,
@@ -94,7 +99,7 @@ export class TextGenerationToolCallsOrGenerateTextModel<
       };
     } catch (error) {
       throw new ToolCallsOrTextParseError({
-        valueText: value,
+        valueText: generatedText,
         cause: error,
       });
     }
