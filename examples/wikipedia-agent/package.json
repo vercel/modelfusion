@@ -9,7 +9,7 @@
     "dotenv": "16.0.3",
     "html-to-text": "9.0.5",
     "jsdom": "^22.1.0",
-    "modelfusion": "0.98.0",
+    "modelfusion": "0.99.0",
     "@modelfusion/google-custom-search-tool": "^0.9.0"
   },
   "devDependencies": {
