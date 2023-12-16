@@ -5,7 +5,7 @@ dotenv.config();
 
 async function main() {
   // access the full response and the metadata:
-  const { response, metadata } = await generateText(
+  const { text, response, metadata } = await generateText(
     openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       maxCompletionTokens: 1000,

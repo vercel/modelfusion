@@ -619,7 +619,7 @@ ModelFusion model functions return rich responses that include the original resp
 
 ```ts
 // access the full response (needs to be typed) and the metadata:
-const { value, response, metadata } = await generateText(
+const { text, response, metadata } = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxCompletionTokens: 1000,
