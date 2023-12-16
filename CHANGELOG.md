@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.98.0 - 2023-12-16
+
+### Changed
+
+- **breaking change**: `responseType` option was changed into `fullResponse` option and now uses a boolean value to make discovery easy. The response values from the full response have been renamed for clarity. For base64 image generation, you can use the `imageBase64` value from the full response:
+
+  ```ts
+  const { imageBase64 } = await generateImage(model, prompt, {
+    fullResponse: true,
+  });
+  ```
+
+### Improved
+
+- Better docs for the OpenAI chat settings. Thanks [@bearjaws](https://github.com/bearjaws) for the contribution!
+
+### Fixed
+
+- Streaming OpenAI chat text generation when setting `n:2` or higher now returns only the stream from the first choice.
+
 ## v0.97.0 - 2023-12-14
 
 ### Added
