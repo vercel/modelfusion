@@ -14,6 +14,7 @@ const terminal = readline.createInterface({
   output: process.stdout,
 });
 
+// use llama-2-7b-chat.GGUF.q4_0.bin
 async function main() {
   const chat: TextChatPrompt = { system: systemPrompt, messages: [] };
 

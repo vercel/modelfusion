@@ -767,12 +767,6 @@ Examples for almost all of the individual functions and objects. Highly recommen
 
 StoryTeller is an exploratory web application that creates short audio stories for pre-school kids.
 
-### [Chatbot (Terminal)](https://github.com/lgrammel/modelfusion/tree/main/examples/chatbot-terminal)
-
-> _Terminal app_, _chat_, _llama.cpp_
-
-A chat with an AI assistant, implemented as a terminal app.
-
 ### [Chatbot (Next.JS)](https://github.com/lgrammel/modelfusion/tree/main/examples/chatbot-next-js)
 
 > _Next.js app_, _OpenAI GPT-3.5-turbo_, _streaming_, _abort handling_
