@@ -9,7 +9,7 @@ dotenv.config();
 async function main() {
   const { text, toolResults } = await useToolsOrGenerateText(
     ollama
-      .TextGenerator({
+      .CompletionTextGenerator({
         model: "openhermes2.5-mistral",
         temperature: 0,
         raw: true,

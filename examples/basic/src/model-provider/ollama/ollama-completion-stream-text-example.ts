@@ -1,21 +1,23 @@
 import dotenv from "dotenv";
-import { generateText, ollama } from "modelfusion";
+import { ollama, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const text = await generateText(
+  const textStream = await streamText(
     ollama
-      .TextGenerator({
+      .CompletionTextGenerator({
         model: "mistral:text",
-        maxGenerationTokens: 120,
+        maxGenerationTokens: 500,
       })
       .withTextPrompt(),
 
     "Write a short story about a robot learning to love:\n\n"
   );
 
-  console.log(text);
+  for await (const textPart of textStream) {
+    process.stdout.write(textPart);
+  }
 }
 
 main().catch(console.error);

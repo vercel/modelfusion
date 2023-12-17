@@ -13,7 +13,7 @@ dotenv.config();
 async function main() {
   const structureStream = await streamStructure(
     ollama
-      .TextGenerator({
+      .CompletionTextGenerator({
         model: "openhermes2.5-mistral",
         maxGenerationTokens: 1024,
         temperature: 0,

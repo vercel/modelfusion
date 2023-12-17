@@ -5,7 +5,7 @@ dotenv.config();
 
 async function main() {
   const textStream = await streamText(
-    ollama.TextGenerator({
+    ollama.CompletionTextGenerator({
       model: "mistral:text",
       maxGenerationTokens: 500,
     }),

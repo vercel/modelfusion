@@ -27,7 +27,7 @@ import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
 
-export interface OllamaTextGenerationPrompt {
+export interface OllamaCompletionPrompt {
   /**
    * Text prompt.
    */
@@ -40,9 +40,11 @@ export interface OllamaTextGenerationPrompt {
 }
 
 /**
+ * Text generation model that uses the Ollama completion API.
+ *
  * @see https://github.com/jmorganca/ollama/blob/main/docs/api.md#generate-a-completion
  */
-export interface OllamaTextGenerationModelSettings<
+export interface OllamaCompletionModelSettings<
   CONTEXT_WINDOW_SIZE extends number | undefined,
 > extends TextGenerationModelSettings {
   api?: ApiConfiguration;
@@ -162,19 +164,17 @@ export interface OllamaTextGenerationModelSettings<
   context?: number[];
 }
 
-export class OllamaTextGenerationModel<
+export class OllamaCompletionModel<
     CONTEXT_WINDOW_SIZE extends number | undefined,
   >
-  extends AbstractModel<OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>>
+  extends AbstractModel<OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>>
   implements
     TextStreamingModel<
-      OllamaTextGenerationPrompt,
-      OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+      OllamaCompletionPrompt,
+      OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>
     >
 {
-  constructor(
-    settings: OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
-  ) {
+  constructor(settings: OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>) {
     super({ settings });
   }
 
@@ -191,9 +191,9 @@ export class OllamaTextGenerationModel<
   }
 
   async callAPI<RESPONSE>(
-    prompt: OllamaTextGenerationPrompt,
+    prompt: OllamaCompletionPrompt,
     options: {
-      responseFormat: OllamaTextGenerationResponseFormatType<RESPONSE>;
+      responseFormat: OllamaCompletionResponseFormatType<RESPONSE>;
     } & FunctionOptions
   ): Promise<RESPONSE> {
     const { responseFormat } = options;
@@ -244,7 +244,7 @@ export class OllamaTextGenerationModel<
   }
 
   get settingsForEvent(): Partial<
-    OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>
   > {
     const eventSettingProperties: Array<string> = [
       "maxGenerationTokens",
@@ -268,7 +268,7 @@ export class OllamaTextGenerationModel<
       "context",
       "format",
       "raw",
-    ] satisfies (keyof OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>)[];
+    ] satisfies (keyof OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>)[];
 
     return Object.fromEntries(
       Object.entries(this.settings).filter(([key]) =>
@@ -278,12 +278,12 @@ export class OllamaTextGenerationModel<
   }
 
   async doGenerateTexts(
-    prompt: OllamaTextGenerationPrompt,
+    prompt: OllamaCompletionPrompt,
     options?: FunctionOptions
   ) {
     const response = await this.callAPI(prompt, {
       ...options,
-      responseFormat: OllamaTextGenerationResponseFormat.json,
+      responseFormat: OllamaCompletionResponseFormat.json,
     });
 
     return {
@@ -292,18 +292,15 @@ export class OllamaTextGenerationModel<
     };
   }
 
-  doStreamText(prompt: OllamaTextGenerationPrompt, options?: FunctionOptions) {
+  doStreamText(prompt: OllamaCompletionPrompt, options?: FunctionOptions) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: OllamaTextGenerationResponseFormat.deltaIterable,
+      responseFormat: OllamaCompletionResponseFormat.deltaIterable,
     });
   }
 
   asToolCallGenerationModel<INPUT_PROMPT>(
-    promptTemplate: ToolCallPromptTemplate<
-      INPUT_PROMPT,
-      OllamaTextGenerationPrompt
-    >
+    promptTemplate: ToolCallPromptTemplate<INPUT_PROMPT, OllamaCompletionPrompt>
   ) {
     return new TextGenerationToolCallModel({
       model: this,
@@ -314,7 +311,7 @@ export class OllamaTextGenerationModel<
   asToolCallsOrTextGenerationModel<INPUT_PROMPT>(
     promptTemplate: ToolCallsOrGenerateTextPromptTemplate<
       INPUT_PROMPT,
-      OllamaTextGenerationPrompt
+      OllamaCompletionPrompt
     >
   ) {
     return new TextGenerationToolCallsOrGenerateTextModel({
@@ -325,8 +322,8 @@ export class OllamaTextGenerationModel<
 
   withTextPrompt(): PromptTemplateTextStreamingModel<
     string,
-    OllamaTextGenerationPrompt,
-    OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+    OllamaCompletionPrompt,
+    OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
     return this.withPromptTemplate({
@@ -340,12 +337,12 @@ export class OllamaTextGenerationModel<
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<
       INPUT_PROMPT,
-      OllamaTextGenerationPrompt
+      OllamaCompletionPrompt
     >
   ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
-    OllamaTextGenerationPrompt,
-    OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+    OllamaCompletionPrompt,
+    OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
     return new PromptTemplateTextStreamingModel({
@@ -361,16 +358,16 @@ export class OllamaTextGenerationModel<
 
   withSettings(
     additionalSettings: Partial<
-      OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+      OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>
     >
   ) {
-    return new OllamaTextGenerationModel(
+    return new OllamaCompletionModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
 }
 
-const ollamaTextGenerationResponseSchema = z.object({
+const ollamaCompletionResponseSchema = z.object({
   done: z.literal(true),
   model: z.string(),
   created_at: z.string(),
@@ -384,11 +381,11 @@ const ollamaTextGenerationResponseSchema = z.object({
   context: z.array(z.number()).optional(),
 });
 
-export type OllamaTextGenerationResponse = z.infer<
-  typeof ollamaTextGenerationResponseSchema
+export type OllamaCompletionResponse = z.infer<
+  typeof ollamaCompletionResponseSchema
 >;
 
-const ollamaTextStreamingResponseSchema = new ZodSchema(
+const ollamaCompletionStreamSchema = new ZodSchema(
   z.discriminatedUnion("done", [
     z.object({
       done: z.literal(false),
@@ -413,7 +410,7 @@ const ollamaTextStreamingResponseSchema = new ZodSchema(
   ])
 );
 
-export type OllamaTextGenerationDelta = {
+export type OllamaCompletionDelta = {
   content: string;
   isComplete: boolean;
   delta: string;
@@ -429,7 +426,7 @@ async function createOllamaFullDeltaIterableQueue(
   // process the stream asynchonously (no 'await' on purpose):
   parseJsonStream({
     stream,
-    schema: ollamaTextStreamingResponseSchema,
+    schema: ollamaCompletionStreamSchema,
     process(event) {
       if (event.done === true) {
         queue.push({
@@ -463,12 +460,12 @@ async function createOllamaFullDeltaIterableQueue(
   return queue;
 }
 
-export type OllamaTextGenerationResponseFormatType<T> = {
+export type OllamaCompletionResponseFormatType<T> = {
   stream: boolean;
   handler: ResponseHandler<T>;
 };
 
-export const OllamaTextGenerationResponseFormat = {
+export const OllamaCompletionResponseFormat = {
   /**
    * Returns the response as a JSON object.
    */
@@ -481,7 +478,7 @@ export const OllamaTextGenerationResponseFormat = {
         text: responseBody,
         schema: new ZodSchema(
           z.union([
-            ollamaTextGenerationResponseSchema,
+            ollamaCompletionResponseSchema,
             z.object({
               done: z.literal(false),
               model: z.string(),
@@ -515,8 +512,8 @@ export const OllamaTextGenerationResponseFormat = {
       }
 
       return parsedResult.data;
-    }) satisfies ResponseHandler<OllamaTextGenerationResponse>,
-  } satisfies OllamaTextGenerationResponseFormatType<OllamaTextGenerationResponse>,
+    }) satisfies ResponseHandler<OllamaCompletionResponse>,
+  } satisfies OllamaCompletionResponseFormatType<OllamaCompletionResponse>,
 
   /**
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
@@ -526,7 +523,5 @@ export const OllamaTextGenerationResponseFormat = {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
       createOllamaFullDeltaIterableQueue(response.body!),
-  } satisfies OllamaTextGenerationResponseFormatType<
-    AsyncIterable<Delta<string>>
-  >,
+  } satisfies OllamaCompletionResponseFormatType<AsyncIterable<Delta<string>>>,
 };

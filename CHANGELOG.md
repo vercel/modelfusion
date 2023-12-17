@@ -6,6 +6,10 @@
 
 - `ollama.ChatTextGenerator` model that calls the Ollama chat API.
 
+### Changed
+
+- **breaking change**: renamed `ollama.TextGenerator` to `ollama.CompletionTextGenerator`
+
 ## v0.99.0 - 2023-12-16
 
 ### Added

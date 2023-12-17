@@ -8,7 +8,7 @@ dotenv.config();
 async function main() {
   const { tool, args, toolCall, result } = await useTool(
     ollama
-      .TextGenerator({
+      .CompletionTextGenerator({
         model: "mistral",
         format: "json",
         temperature: 0,

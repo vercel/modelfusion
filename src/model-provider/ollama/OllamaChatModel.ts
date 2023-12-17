@@ -144,6 +144,9 @@ export interface OllamaChatModelSettings extends TextGenerationModelSettings {
   template?: string;
 }
 
+/**
+ * Text generation model that uses the Ollama chat API.
+ */
 export class OllamaChatModel
   extends AbstractModel<OllamaChatModelSettings>
   implements TextStreamingModel<OllamaChatPrompt, OllamaChatModelSettings>
@@ -342,7 +345,7 @@ const ollamaChatResponseSchema = z.object({
 
 export type OllamaChatResponse = z.infer<typeof ollamaChatResponseSchema>;
 
-const ollamaChatStreamingResponseSchema = new ZodSchema(
+const ollamaChatStreamSchema = new ZodSchema(
   z.discriminatedUnion("done", [
     z.object({
       done: z.literal(false),
@@ -383,7 +386,7 @@ async function createOllamaFullDeltaIterableQueue(
   // process the stream asynchonously (no 'await' on purpose):
   parseJsonStream({
     stream,
-    schema: ollamaChatStreamingResponseSchema,
+    schema: ollamaChatStreamSchema,
     process(event) {
       if (event.done === true) {
         queue.push({

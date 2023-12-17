@@ -4,14 +4,14 @@ import {
   OllamaTextEmbeddingModelSettings,
 } from "./OllamaTextEmbeddingModel.js";
 import {
-  OllamaTextGenerationModel,
-  OllamaTextGenerationModelSettings,
-} from "./OllamaTextGenerationModel.js";
+  OllamaCompletionModel,
+  OllamaCompletionModelSettings,
+} from "./OllamaCompletionModel.js";
 
-export function TextGenerator<CONTEXT_WINDOW_SIZE extends number>(
-  settings: OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+export function CompletionTextGenerator<CONTEXT_WINDOW_SIZE extends number>(
+  settings: OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>
 ) {
-  return new OllamaTextGenerationModel(settings);
+  return new OllamaCompletionModel(settings);
 }
 
 export function ChatTextGenerator(settings: OllamaChatModelSettings) {

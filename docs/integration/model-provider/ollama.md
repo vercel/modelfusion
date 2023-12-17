@@ -24,7 +24,7 @@ const api = new OllamaApiConfiguration({
   // ...
 });
 
-const model = ollama.TextGenerator({
+const model = ollama.CompletionTextGenerator({
   api,
   // ...
 });
@@ -36,13 +36,13 @@ const model = ollama.TextGenerator({
 
 ### Generate Text
 
-[OllamaTextGenerationModel API](/api/classes/OllamaTextGenerationModel)
+[OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
 
 ```ts
 import { ollama, generateText } from "modelfusion";
 
 const text = await generateText(
-  ollama.TextGenerator({
+  ollama.CompletionTextGenerator({
     model: "mistral",
     temperature: 0.7,
     maxGenerationTokens: 120,
@@ -61,7 +61,7 @@ const image = fs.readFileSync(path.join("data", "comic-mouse.png"), {
 });
 
 const text = await generateText(
-  ollama.TextGenerator({
+  ollama.CompletionTextGenerator({
     model: "bakllava",
     maxGenerationTokens: 1024,
     temperature: 0,
@@ -93,7 +93,7 @@ const text = await generateText(
 
 ### Stream Text
 
-[OllamaTextGenerationModel API](/api/classes/OllamaTextGenerationModel)
+[OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
 
 ```ts
 import { ollama, streamText } from "modelfusion";

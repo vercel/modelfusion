@@ -5,7 +5,7 @@ import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { retryNever } from "../../core/api/retryNever.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
-import { OllamaTextGenerationModel } from "./OllamaTextGenerationModel.js";
+import { OllamaCompletionModel } from "./OllamaCompletionModel.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let responseBodyJson: any = {};
@@ -42,7 +42,7 @@ describe("generateText", () => {
     };
 
     const result = await generateText(
-      new OllamaTextGenerationModel({
+      new OllamaCompletionModel({
         model: "test-model",
       }).withTextPrompt(),
       "test prompt"
@@ -61,7 +61,7 @@ describe("generateText", () => {
 
     try {
       await generateText(
-        new OllamaTextGenerationModel({
+        new OllamaCompletionModel({
           api: new OllamaApiConfiguration({
             retry: retryNever(),
           }),
