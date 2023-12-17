@@ -23,13 +23,14 @@ import { MistralApiConfiguration } from "./MistralApiConfiguration.js";
 import { failedMistralCallResponseHandler } from "./MistralError.js";
 import { chat, instruction, text } from "./MistralPromptTemplate.js";
 
-export type MistralTextGenerationPrompt = Array<{
+export type MistralChatMessage = {
   role: "system" | "user" | "assistant";
   content: string;
-}>;
+};
 
-export interface MistralTextGenerationModelSettings
-  extends TextGenerationModelSettings {
+export type MistralChatPrompt = Array<MistralChatMessage>;
+
+export interface MistralChatModelSettings extends TextGenerationModelSettings {
   api?: ApiConfiguration;
 
   model: "mistral-tiny" | "mistral-small" | "mistral-medium";
@@ -70,15 +71,11 @@ export interface MistralTextGenerationModelSettings
   randomSeed?: number | null;
 }
 
-export class MistralTextGenerationModel
-  extends AbstractModel<MistralTextGenerationModelSettings>
-  implements
-    TextStreamingModel<
-      MistralTextGenerationPrompt,
-      MistralTextGenerationModelSettings
-    >
+export class MistralChatModel
+  extends AbstractModel<MistralChatModelSettings>
+  implements TextStreamingModel<MistralChatPrompt, MistralChatModelSettings>
 {
-  constructor(settings: MistralTextGenerationModelSettings) {
+  constructor(settings: MistralChatModelSettings) {
     super({ settings });
   }
 
@@ -92,9 +89,9 @@ export class MistralTextGenerationModel
   readonly countPromptTokens = undefined;
 
   async callAPI<RESULT>(
-    prompt: MistralTextGenerationPrompt,
+    prompt: MistralChatPrompt,
     options: {
-      responseFormat: MistralTextGenerationResponseFormatType<RESULT>;
+      responseFormat: MistralChatResponseFormatType<RESULT>;
     } & FunctionOptions
   ) {
     const {
@@ -134,14 +131,14 @@ export class MistralTextGenerationModel
     });
   }
 
-  get settingsForEvent(): Partial<MistralTextGenerationModelSettings> {
+  get settingsForEvent(): Partial<MistralChatModelSettings> {
     const eventSettingProperties: Array<string> = [
       "maxGenerationTokens",
       "temperature",
       "topP",
       "safeMode",
       "randomSeed",
-    ] satisfies (keyof MistralTextGenerationModelSettings)[];
+    ] satisfies (keyof MistralChatModelSettings)[];
 
     return Object.fromEntries(
       Object.entries(this.settings).filter(([key]) =>
@@ -150,13 +147,10 @@ export class MistralTextGenerationModel
     );
   }
 
-  async doGenerateTexts(
-    prompt: MistralTextGenerationPrompt,
-    options?: FunctionOptions
-  ) {
+  async doGenerateTexts(prompt: MistralChatPrompt, options?: FunctionOptions) {
     const response = await this.callAPI(prompt, {
       ...options,
-      responseFormat: MistralTextGenerationResponseFormat.json,
+      responseFormat: MistralChatResponseFormat.json,
     });
 
     return {
@@ -165,10 +159,10 @@ export class MistralTextGenerationModel
     };
   }
 
-  doStreamText(prompt: MistralTextGenerationPrompt, options?: FunctionOptions) {
+  doStreamText(prompt: MistralChatPrompt, options?: FunctionOptions) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: MistralTextGenerationResponseFormat.textDeltaIterable,
+      responseFormat: MistralChatResponseFormat.textDeltaIterable,
     });
   }
 
@@ -196,12 +190,12 @@ export class MistralTextGenerationModel
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<
       INPUT_PROMPT,
-      MistralTextGenerationPrompt
+      MistralChatPrompt
     >
   ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
-    MistralTextGenerationPrompt,
-    MistralTextGenerationModelSettings,
+    MistralChatPrompt,
+    MistralChatModelSettings,
     this
   > {
     return new PromptTemplateTextStreamingModel({
@@ -210,16 +204,14 @@ export class MistralTextGenerationModel
     });
   }
 
-  withSettings(
-    additionalSettings: Partial<MistralTextGenerationModelSettings>
-  ) {
-    return new MistralTextGenerationModel(
+  withSettings(additionalSettings: Partial<MistralChatModelSettings>) {
+    return new MistralChatModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
 }
 
-const mistralTextGenerationResponseSchema = z.object({
+const mistralChatResponseSchema = z.object({
   id: z.string(),
   object: z.string(),
   created: z.number(),
@@ -241,23 +233,21 @@ const mistralTextGenerationResponseSchema = z.object({
   }),
 });
 
-export type MistralTextGenerationResponse = z.infer<
-  typeof mistralTextGenerationResponseSchema
->;
+export type MistralChatResponse = z.infer<typeof mistralChatResponseSchema>;
 
-export type MistralTextGenerationResponseFormatType<T> = {
+export type MistralChatResponseFormatType<T> = {
   stream: boolean;
   handler: ResponseHandler<T>;
 };
 
-export const MistralTextGenerationResponseFormat = {
+export const MistralChatResponseFormat = {
   /**
    * Returns the response as a JSON object.
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(mistralTextGenerationResponseSchema),
-  } satisfies MistralTextGenerationResponseFormatType<MistralTextGenerationResponse>,
+    handler: createJsonResponseHandler(mistralChatResponseSchema),
+  } satisfies MistralChatResponseFormatType<MistralChatResponse>,
 
   /**
    * Returns an async iterable over the text deltas (only the tex different of the first choice).
@@ -265,16 +255,14 @@ export const MistralTextGenerationResponseFormat = {
   textDeltaIterable: {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
-      createMistralTextGenerationDeltaIterableQueue(
+      createMistralChatDeltaIterableQueue(
         response.body!,
         (delta) => delta[0]?.delta.content ?? ""
       ),
-  } satisfies MistralTextGenerationResponseFormatType<
-    AsyncIterable<Delta<string>>
-  >,
+  } satisfies MistralChatResponseFormatType<AsyncIterable<Delta<string>>>,
 };
 
-export type MistralTextGenerationDelta = Array<{
+export type MistralChatDelta = Array<{
   role: "assistant" | "user" | undefined;
   content: string;
   isComplete: boolean;
@@ -284,7 +272,7 @@ export type MistralTextGenerationDelta = Array<{
   };
 }>;
 
-const mistralTextGenerationChunkSchema = new ZodSchema(
+const mistralChatChunkSchema = new ZodSchema(
   z.object({
     id: z.string(),
     object: z.string().optional(),
@@ -306,12 +294,12 @@ const mistralTextGenerationChunkSchema = new ZodSchema(
   })
 );
 
-async function createMistralTextGenerationDeltaIterableQueue<VALUE>(
+async function createMistralChatDeltaIterableQueue<VALUE>(
   stream: ReadableStream<Uint8Array>,
-  extractDeltaValue: (delta: MistralTextGenerationDelta) => VALUE
+  extractDeltaValue: (delta: MistralChatDelta) => VALUE
 ): Promise<AsyncIterable<Delta<VALUE>>> {
   const queue = new AsyncQueue<Delta<VALUE>>();
-  const streamDelta: MistralTextGenerationDelta = [];
+  const streamDelta: MistralChatDelta = [];
 
   // process the stream asynchonously (no 'await' on purpose):
   parseEventSourceStream({ stream })
@@ -327,7 +315,7 @@ async function createMistralTextGenerationDeltaIterableQueue<VALUE>(
 
           const parseResult = safeParseJSON({
             text: data,
-            schema: mistralTextGenerationChunkSchema,
+            schema: mistralChatChunkSchema,
           });
 
           if (!parseResult.success) {
@@ -374,7 +362,7 @@ async function createMistralTextGenerationDeltaIterableQueue<VALUE>(
 
           // Since we're mutating the choices array in an async scenario,
           // we need to make a deep copy:
-          const streamDeltaDeepCopy: MistralTextGenerationDelta = JSON.parse(
+          const streamDeltaDeepCopy: MistralChatDelta = JSON.parse(
             JSON.stringify(streamDelta)
           );
 

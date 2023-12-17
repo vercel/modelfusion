@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
-import { mistral, streamText } from "modelfusion";
+import { generateText, mistral } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const textStream = await streamText(
-    mistral.TextGenerator({
+  const text = await generateText(
+    mistral.ChatTextGenerator({
       model: "mistral-medium",
       maxGenerationTokens: 120,
     }),
@@ -17,9 +17,7 @@ async function main() {
     ]
   );
 
-  for await (const textPart of textStream) {
-    process.stdout.write(textPart);
-  }
+  console.log(text);
 }
 
 main().catch(console.error);

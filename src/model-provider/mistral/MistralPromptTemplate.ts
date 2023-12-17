@@ -4,14 +4,14 @@ import {
   validateChatPrompt,
 } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
 import { TextInstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
-import { MistralTextGenerationPrompt } from "./MistralTextGenerationModel.js";
+import { MistralChatPrompt } from "./MistralChatModel.js";
 
 /**
  * Formats a text prompt as a Mistral prompt.
  */
 export function text(): TextGenerationPromptTemplate<
   string,
-  MistralTextGenerationPrompt
+  MistralChatPrompt
 > {
   return {
     format: (prompt) => [{ role: "user", content: prompt }],
@@ -24,11 +24,11 @@ export function text(): TextGenerationPromptTemplate<
  */
 export function instruction(): TextGenerationPromptTemplate<
   TextInstructionPrompt,
-  MistralTextGenerationPrompt
+  MistralChatPrompt
 > {
   return {
     format(prompt) {
-      const messages: MistralTextGenerationPrompt = [];
+      const messages: MistralChatPrompt = [];
 
       if (prompt.system != null) {
         messages.push({ role: "system", content: prompt.system });
@@ -47,13 +47,13 @@ export function instruction(): TextGenerationPromptTemplate<
  */
 export function chat(): TextGenerationPromptTemplate<
   TextChatPrompt,
-  MistralTextGenerationPrompt
+  MistralChatPrompt
 > {
   return {
     format(prompt) {
       validateChatPrompt(prompt);
 
-      const messages: MistralTextGenerationPrompt = [];
+      const messages: MistralChatPrompt = [];
 
       if (prompt.system != null) {
         messages.push({ role: "system", content: prompt.system });

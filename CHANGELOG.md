@@ -9,6 +9,7 @@
 ### Changed
 
 - **breaking change**: renamed `ollama.TextGenerator` to `ollama.CompletionTextGenerator`
+- **breaking change**: renamed `mistral.TextGenerator` to `mistral.ChatTextGenerator`
 
 ## v0.99.0 - 2023-12-16
 

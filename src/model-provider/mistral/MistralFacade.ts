@@ -7,18 +7,23 @@ import {
   MistralTextEmbeddingModelSettings,
 } from "./MistralTextEmbeddingModel.js";
 import {
-  MistralTextGenerationModel,
-  MistralTextGenerationModelSettings,
-} from "./MistralTextGenerationModel.js";
+  MistralChatModel,
+  MistralChatModelSettings,
+} from "./MistralChatModel.js";
 
 export function Api(settings: MistralApiConfigurationSettings) {
   return new MistralApiConfiguration(settings);
 }
 
-export function TextGenerator(settings: MistralTextGenerationModelSettings) {
-  return new MistralTextGenerationModel(settings);
+export function ChatTextGenerator(settings: MistralChatModelSettings) {
+  return new MistralChatModel(settings);
 }
 
 export function TextEmbedder(settings: MistralTextEmbeddingModelSettings) {
   return new MistralTextEmbeddingModel(settings);
 }
+
+export {
+  MistralChatMessage as ChatMessage,
+  MistralChatPrompt as ChatPrompt,
+} from "./MistralChatModel.js";
