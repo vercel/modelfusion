@@ -7,7 +7,7 @@
   },
   "private": true,
   "dependencies": {
-    "modelfusion": "0.99.0",
+    "modelfusion": "0.100.0",
     "commander": "10.0.1",
     "dotenv": "16.0.3",
     "pdfjs-dist": "3.6.172",
