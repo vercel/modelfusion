@@ -25,6 +25,7 @@ import {
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
+import { chat, instruction, text } from "./OllamaChatPromptTemplate.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
 
 export type OllamaChatMessage = {
@@ -274,6 +275,27 @@ export class OllamaChatModel
       model: this,
       template: promptTemplate,
     });
+  }
+
+  /**
+   * Returns this model with a text prompt template.
+   */
+  withTextPrompt() {
+    return this.withPromptTemplate(text());
+  }
+
+  /**
+   * Returns this model with an instruction prompt template.
+   */
+  withInstructionPrompt() {
+    return this.withPromptTemplate(instruction());
+  }
+
+  /**
+   * Returns this model with a chat prompt template.
+   */
+  withChatPrompt() {
+    return this.withPromptTemplate(chat());
   }
 
   withPromptTemplate<INPUT_PROMPT>(
