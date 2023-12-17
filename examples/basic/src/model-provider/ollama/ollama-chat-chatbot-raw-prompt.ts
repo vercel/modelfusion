@@ -21,12 +21,14 @@ async function main() {
       chat
     );
 
-    let fullResponse = "";
     process.stdout.write("\nAssistant : ");
+
+    let fullResponse = "";
     for await (const textPart of textStream) {
       fullResponse += textPart;
       process.stdout.write(textPart);
     }
+
     process.stdout.write("\n\n");
 
     chat.push({ role: "assistant", content: fullResponse });
