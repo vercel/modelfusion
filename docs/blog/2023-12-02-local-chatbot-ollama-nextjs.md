@@ -140,7 +140,7 @@ We initialize a ModelFusion text generation model for calling Ollama and using t
 
 ```ts
 const model = ollama
-  .TextGenerator({
+  .CompletionTextGenerator({
     model: "openhermes2.5-mistral",
     maxGenerationTokens: -1, // infinite generation
     temperature: 0,
@@ -250,5 +250,3 @@ Below is a screenshot of what you can expect your chatbot interface to look like
 And there you have it—a fully functional local chatbot built with Next.js, Ollama, and ModelFusion at your fingertips. We've traversed the path from setting up our development environment, integrating a robust language model, and spinning up a user-friendly chat interface.
 
 The code is intended as a starting point for your projects. Have fun exploring!
-
-For the complete source code and further examples to fuel your creativity, visit: [github.com/lgrammel/modelfusion-ollama-nextjs-starter](https://github.com/lgrammel/modelfusion-ollama-nextjs-starter)
