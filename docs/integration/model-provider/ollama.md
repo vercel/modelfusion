@@ -20,7 +20,8 @@ Generate text and embeddings using [Ollama](https://github.com/jmorganca/ollama)
 [Ollama API Configuration](/api/classes/OllamaApiConfiguration)
 
 ```ts
-const api = new OllamaApiConfiguration({
+const api = ollama.Api({
+  baseUrl: "http://127.0.0.1:11434",
   // ...
 });
 
@@ -34,9 +35,11 @@ const model = ollama.CompletionTextGenerator({
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/ollama)
 
-### Generate Text
+### Generate Text (Completion)
 
 [OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
+
+The `OllamaCompletionModel` uses the Ollama completion API to generate text.
 
 ```ts
 import { ollama, generateText } from "modelfusion";
@@ -80,7 +83,7 @@ import { ollama, generateText } from "modelfusion";
 
 const text = await generateText(
   ollama
-    .TextGenerator({
+    .CompletionTextGenerator({
       model: "mistral",
       temperature: 0.7,
       maxGenerationTokens: 120,
@@ -91,7 +94,7 @@ const text = await generateText(
 );
 ```
 
-### Stream Text
+### Stream Text (Completion)
 
 [OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
 
@@ -100,7 +103,7 @@ import { ollama, streamText } from "modelfusion";
 
 const textStream = await streamText(
   ollama
-    .TextGenerator({
+    .CompletionTextGenerator({
       model: "mistral",
       temperature: 0.7,
       maxGenerationTokens: 500,
@@ -114,7 +117,7 @@ for await (const textPart of textStream) {
 }
 ```
 
-### Generate Structure
+### Generate Structure (Completion)
 
 Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B).
 
@@ -123,7 +126,7 @@ import { ollama, zodSchema, generateStructure } from "modelfusion";
 import { z } from "zod";
 
 const model = ollama
-  .TextGenerator({
+  .CompletionTextGenerator({
     model: "openhermes2.5-mistral",
     maxGenerationTokens: 1024,
     temperature: 0,
