@@ -94,6 +94,46 @@ const text = await generateText(
 );
 ```
 
+### Generate Text (Chat)
+
+[OllamaChatModel API](/api/classes/OllamaChatModel)
+
+The `OllamaChatModel` uses the Ollama chat API to generate text.
+
+```ts
+import { ollama, generateText } from "modelfusion";
+
+const text = await generateText(
+  ollama.ChatTextGenerator({
+    model: "llama2:chat",
+    maxGenerationTokens: 500,
+  }),
+  [
+    {
+      role: "user",
+      content: "Write a short story about a robot learning to love:",
+    },
+  ]
+);
+```
+
+You can use [prompt templates](/guide/function/generate-text#prompt-template), e.g. using the `.withTextPrompt()` helper:
+
+```ts
+import { ollama, generateText } from "modelfusion";
+
+const text = await generateText(
+  ollama
+    .ChatTextGenerator({
+      model: "llama2:chat",
+      maxGenerationTokens: 500,
+    })
+    .withTextPrompt(),
+
+  "Write a short story about a robot learning to love:"
+);
+```
+
 ### Stream Text (Completion)
 
 [OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
@@ -115,6 +155,27 @@ const textStream = await streamText(
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
 }
+```
+
+### Stream Text (Chat)
+
+[OllamaChatModel API](/api/classes/OllamaChatModel)
+
+```ts
+import { ollama, streamText } from "modelfusion";
+
+const textStream = await streamText(
+  ollama.ChatTextGenerator({
+    model: "llama2:chat",
+    maxGenerationTokens: 500,
+  }),
+  [
+    {
+      role: "user",
+      content: "Write a short story about a robot learning to love:",
+    },
+  ]
+);
 ```
 
 ### Generate Structure (Completion)
