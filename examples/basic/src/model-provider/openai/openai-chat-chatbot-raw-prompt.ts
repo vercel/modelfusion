@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { mistral, streamText } from "modelfusion";
+import { openai, streamText } from "modelfusion";
 import * as readline from "node:readline/promises";
 
 dotenv.config();
@@ -12,7 +12,7 @@ const terminal = readline.createInterface({
 });
 
 async function main() {
-  const chat: mistral.ChatPrompt = [{ role: "system", content: systemPrompt }];
+  const chat: openai.ChatPrompt = [{ role: "system", content: systemPrompt }];
 
   while (true) {
     const userInput = await terminal.question("You: ");
@@ -20,7 +20,7 @@ async function main() {
     chat.push({ role: "user", content: userInput });
 
     const textStream = await streamText(
-      mistral.ChatTextGenerator({ model: "mistral-medium" }),
+      openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
       chat
     );
 

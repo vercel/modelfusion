@@ -165,3 +165,6 @@ export function ImageGenerator(settings: OpenAIImageGenerationSettings) {
 export function Tokenizer(settings: TikTokenTokenizerSettings) {
   return new TikTokenTokenizer(settings);
 }
+
+export { OpenAIChatMessage as ChatMessage } from "./chat/OpenAIChatMessage.js";
+export { OpenAIChatPrompt as ChatPrompt } from "./chat/AbstractOpenAIChatModel.js";

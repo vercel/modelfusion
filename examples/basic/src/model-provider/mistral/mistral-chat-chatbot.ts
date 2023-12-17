@@ -1,5 +1,8 @@
+import dotenv from "dotenv";
 import { TextChatPrompt, mistral, streamText } from "modelfusion";
 import * as readline from "node:readline/promises";
+
+dotenv.config();
 
 const systemPrompt = `You are a helpful, respectful and honest assistant.`;
 

@@ -112,7 +112,7 @@ export abstract class AbstractOpenAIChatModel<
   }
 
   async callAPI<RESULT>(
-    messages: Array<OpenAIChatMessage>,
+    messages: OpenAIChatPrompt,
     options: {
       responseFormat: OpenAIChatResponseFormatType<RESULT>;
     } & FunctionOptions & {

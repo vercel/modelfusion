@@ -2,20 +2,21 @@ import { TextGenerationPromptTemplate } from "../../../model-function/generate-t
 import {
   MultiModalChatPrompt,
   TextChatPrompt,
+  validateChatPrompt,
 } from "../../../model-function/generate-text/prompt-template/ChatPrompt.js";
 import {
   MultiModalInstructionPrompt,
   TextInstructionPrompt,
 } from "../../../model-function/generate-text/prompt-template/InstructionPrompt.js";
-import { validateChatPrompt } from "../../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { OpenAIChatPrompt } from "./AbstractOpenAIChatModel.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 
 /**
  * OpenAIMessage[] identity chat format.
  */
 export function identity(): TextGenerationPromptTemplate<
-  Array<OpenAIChatMessage>,
-  Array<OpenAIChatMessage>
+  OpenAIChatPrompt,
+  OpenAIChatPrompt
 > {
   return { format: (prompt) => prompt, stopSequences: [] };
 }
@@ -23,10 +24,7 @@ export function identity(): TextGenerationPromptTemplate<
 /**
  * Formats a text prompt as an OpenAI chat prompt.
  */
-export function text(): TextGenerationPromptTemplate<
-  string,
-  Array<OpenAIChatMessage>
-> {
+export function text(): TextGenerationPromptTemplate<string, OpenAIChatPrompt> {
   return {
     format: (prompt) => [OpenAIChatMessage.user(prompt)],
     stopSequences: [],
@@ -38,11 +36,11 @@ export function text(): TextGenerationPromptTemplate<
  */
 export function instruction(): TextGenerationPromptTemplate<
   MultiModalInstructionPrompt | TextInstructionPrompt,
-  Array<OpenAIChatMessage>
+  OpenAIChatPrompt
 > {
   return {
     format(prompt) {
-      const messages: Array<OpenAIChatMessage> = [];
+      const messages: OpenAIChatPrompt = [];
 
       if (prompt.system != null) {
         messages.push(OpenAIChatMessage.system(prompt.system));
@@ -61,7 +59,7 @@ export function instruction(): TextGenerationPromptTemplate<
  */
 export function chat(): TextGenerationPromptTemplate<
   MultiModalChatPrompt | TextChatPrompt,
-  Array<OpenAIChatMessage>
+  OpenAIChatPrompt
 > {
   return {
     format(prompt) {
