@@ -21,3 +21,8 @@ export function ChatTextGenerator(settings: OllamaChatModelSettings) {
 export function TextEmbedder(settings: OllamaTextEmbeddingModelSettings) {
   return new OllamaTextEmbeddingModel(settings);
 }
+
+export {
+  OllamaChatMessage as ChatMessage,
+  OllamaChatPrompt as ChatPrompt,
+} from "./OllamaChatModel.js";
