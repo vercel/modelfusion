@@ -1,3 +1,4 @@
+import { OllamaChatModel, OllamaChatModelSettings } from "./OllamaChatModel.js";
 import {
   OllamaTextEmbeddingModel,
   OllamaTextEmbeddingModelSettings,
@@ -11,6 +12,10 @@ export function TextGenerator<CONTEXT_WINDOW_SIZE extends number>(
   settings: OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
 ) {
   return new OllamaTextGenerationModel(settings);
+}
+
+export function ChatTextGenerator(settings: OllamaChatModelSettings) {
+  return new OllamaChatModel(settings);
 }
 
 export function TextEmbedder(settings: OllamaTextEmbeddingModelSettings) {

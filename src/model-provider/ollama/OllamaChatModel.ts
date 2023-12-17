@@ -27,24 +27,19 @@ import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
 
-export interface OllamaTextGenerationPrompt {
-  /**
-   * Text prompt.
-   */
-  prompt: string;
+export type OllamaChatMessage = {
+  role: "system" | "user" | "assistant";
+  content: string;
 
   /**
    Images. Supports base64-encoded `png` and `jpeg` images up to 100MB in size.
    */
   images?: Array<string>;
-}
+};
 
-/**
- * @see https://github.com/jmorganca/ollama/blob/main/docs/api.md#generate-a-completion
- */
-export interface OllamaTextGenerationModelSettings<
-  CONTEXT_WINDOW_SIZE extends number | undefined,
-> extends TextGenerationModelSettings {
+export type OllamaChatPrompt = Array<OllamaChatMessage>;
+
+export interface OllamaChatModelSettings extends TextGenerationModelSettings {
   api?: ApiConfiguration;
 
   /**
@@ -59,12 +54,6 @@ export interface OllamaTextGenerationModelSettings<
    * answer more creatively. (Default: 0.8)
    */
   temperature?: number;
-
-  /**
-   * Specify the context window size of the model that you have loaded in your
-   * Ollama server. (Default: 2048)
-   */
-  contextWindowSize?: CONTEXT_WINDOW_SIZE;
 
   /**
    * Enable Mirostat sampling for controlling perplexity.
@@ -146,35 +135,19 @@ export interface OllamaTextGenerationModelSettings<
   topP?: number;
 
   /**
-   * When set to true, no formatting will be applied to the prompt and no context
-   * will be returned.
-   */
-  raw?: boolean;
-
-  /**
    * The format to return a response in. Currently the only accepted value is 'json'.
    * Leave undefined to return a string.
    */
   format?: "json";
 
-  system?: string;
   template?: string;
-  context?: number[];
 }
 
-export class OllamaTextGenerationModel<
-    CONTEXT_WINDOW_SIZE extends number | undefined,
-  >
-  extends AbstractModel<OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>>
-  implements
-    TextStreamingModel<
-      OllamaTextGenerationPrompt,
-      OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
-    >
+export class OllamaChatModel
+  extends AbstractModel<OllamaChatModelSettings>
+  implements TextStreamingModel<OllamaChatPrompt, OllamaChatModelSettings>
 {
-  constructor(
-    settings: OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
-  ) {
+  constructor(settings: OllamaChatModelSettings) {
     super({ settings });
   }
 
@@ -185,15 +158,12 @@ export class OllamaTextGenerationModel<
 
   readonly tokenizer = undefined;
   readonly countPromptTokens = undefined;
-
-  get contextWindowSize(): CONTEXT_WINDOW_SIZE {
-    return this.settings.contextWindowSize as CONTEXT_WINDOW_SIZE;
-  }
+  readonly contextWindowSize = undefined;
 
   async callAPI<RESPONSE>(
-    prompt: OllamaTextGenerationPrompt,
+    prompt: OllamaChatPrompt,
     options: {
-      responseFormat: OllamaTextGenerationResponseFormatType<RESPONSE>;
+      responseFormat: OllamaChatResponseFormatType<RESPONSE>;
     } & FunctionOptions
   ): Promise<RESPONSE> {
     const { responseFormat } = options;
@@ -205,19 +175,17 @@ export class OllamaTextGenerationModel<
       throttle: api.throttle,
       call: async () =>
         postJsonToApi({
-          url: api.assembleUrl(`/api/generate`),
+          url: api.assembleUrl(`/api/chat`),
           headers: api.headers,
           body: {
             stream: responseFormat.stream,
             model: this.settings.model,
-            prompt: prompt.prompt,
-            images: prompt.images,
+            messages: prompt,
             format: this.settings.format,
             options: {
               mirostat: this.settings.mirostat,
               mirostat_eta: this.settings.mirostatEta,
               mirostat_tau: this.settings.mirostatTau,
-              num_ctx: this.settings.contextWindowSize,
               num_gpu: this.settings.numGpu,
               num_gqa: this.settings.numGqa,
               num_predict: this.settings.maxGenerationTokens,
@@ -231,10 +199,7 @@ export class OllamaTextGenerationModel<
               top_k: this.settings.topK,
               top_p: this.settings.topP,
             },
-            system: this.settings.system,
             template: this.settings.template,
-            context: this.settings.context,
-            raw: this.settings.raw,
           },
           failedResponseHandler: failedOllamaCallResponseHandler,
           successfulResponseHandler: responseFormat.handler,
@@ -243,13 +208,10 @@ export class OllamaTextGenerationModel<
     });
   }
 
-  get settingsForEvent(): Partial<
-    OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
-  > {
+  get settingsForEvent(): Partial<OllamaChatModelSettings> {
     const eventSettingProperties: Array<string> = [
       "maxGenerationTokens",
       "stopSequences",
-      "contextWindowSize",
       "temperature",
       "mirostat",
       "mirostatEta",
@@ -263,12 +225,9 @@ export class OllamaTextGenerationModel<
       "tfsZ",
       "topK",
       "topP",
-      "system",
       "template",
-      "context",
       "format",
-      "raw",
-    ] satisfies (keyof OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>)[];
+    ] satisfies (keyof OllamaChatModelSettings)[];
 
     return Object.fromEntries(
       Object.entries(this.settings).filter(([key]) =>
@@ -277,33 +236,27 @@ export class OllamaTextGenerationModel<
     );
   }
 
-  async doGenerateTexts(
-    prompt: OllamaTextGenerationPrompt,
-    options?: FunctionOptions
-  ) {
+  async doGenerateTexts(prompt: OllamaChatPrompt, options?: FunctionOptions) {
     const response = await this.callAPI(prompt, {
       ...options,
-      responseFormat: OllamaTextGenerationResponseFormat.json,
+      responseFormat: OllamaChatResponseFormat.json,
     });
 
     return {
       response,
-      texts: [response.response],
+      texts: [response.message.content],
     };
   }
 
-  doStreamText(prompt: OllamaTextGenerationPrompt, options?: FunctionOptions) {
+  doStreamText(prompt: OllamaChatPrompt, options?: FunctionOptions) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: OllamaTextGenerationResponseFormat.deltaIterable,
+      responseFormat: OllamaChatResponseFormat.deltaIterable,
     });
   }
 
   asToolCallGenerationModel<INPUT_PROMPT>(
-    promptTemplate: ToolCallPromptTemplate<
-      INPUT_PROMPT,
-      OllamaTextGenerationPrompt
-    >
+    promptTemplate: ToolCallPromptTemplate<INPUT_PROMPT, OllamaChatPrompt>
   ) {
     return new TextGenerationToolCallModel({
       model: this,
@@ -314,7 +267,7 @@ export class OllamaTextGenerationModel<
   asToolCallsOrTextGenerationModel<INPUT_PROMPT>(
     promptTemplate: ToolCallsOrGenerateTextPromptTemplate<
       INPUT_PROMPT,
-      OllamaTextGenerationPrompt
+      OllamaChatPrompt
     >
   ) {
     return new TextGenerationToolCallsOrGenerateTextModel({
@@ -323,29 +276,12 @@ export class OllamaTextGenerationModel<
     });
   }
 
-  withTextPrompt(): PromptTemplateTextStreamingModel<
-    string,
-    OllamaTextGenerationPrompt,
-    OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
-    this
-  > {
-    return this.withPromptTemplate({
-      format(prompt: string) {
-        return { prompt: prompt };
-      },
-      stopSequences: [],
-    });
-  }
-
   withPromptTemplate<INPUT_PROMPT>(
-    promptTemplate: TextGenerationPromptTemplate<
-      INPUT_PROMPT,
-      OllamaTextGenerationPrompt
-    >
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, OllamaChatPrompt>
   ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
-    OllamaTextGenerationPrompt,
-    OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+    OllamaChatPrompt,
+    OllamaChatModelSettings,
     this
   > {
     return new PromptTemplateTextStreamingModel({
@@ -359,40 +295,41 @@ export class OllamaTextGenerationModel<
     });
   }
 
-  withSettings(
-    additionalSettings: Partial<
-      OllamaTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
-    >
-  ) {
-    return new OllamaTextGenerationModel(
+  withSettings(additionalSettings: Partial<OllamaChatModelSettings>) {
+    return new OllamaChatModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
 }
 
-const ollamaTextGenerationResponseSchema = z.object({
-  done: z.literal(true),
+const ollamaChatResponseSchema = z.object({
   model: z.string(),
-  response: z.string(),
+  created_at: z.string(),
+  done: z.literal(true),
+  message: z.object({
+    role: z.string(),
+    content: z.string(),
+  }),
   total_duration: z.number(),
   load_duration: z.number().optional(),
   prompt_eval_count: z.number(),
+  prompt_eval_duration: z.number().optional(),
   eval_count: z.number(),
   eval_duration: z.number(),
-  context: z.array(z.number()).optional(),
 });
 
-export type OllamaTextGenerationResponse = z.infer<
-  typeof ollamaTextGenerationResponseSchema
->;
+export type OllamaChatResponse = z.infer<typeof ollamaChatResponseSchema>;
 
-const ollamaTextStreamingResponseSchema = new ZodSchema(
+const ollamaChatStreamingResponseSchema = new ZodSchema(
   z.discriminatedUnion("done", [
     z.object({
       done: z.literal(false),
       model: z.string(),
       created_at: z.string(),
-      response: z.string(),
+      message: z.object({
+        role: z.string(),
+        content: z.string(),
+      }),
     }),
     z.object({
       done: z.literal(true),
@@ -400,18 +337,15 @@ const ollamaTextStreamingResponseSchema = new ZodSchema(
       created_at: z.string(),
       total_duration: z.number(),
       load_duration: z.number().optional(),
-      sample_count: z.number().optional(),
-      sample_duration: z.number().optional(),
       prompt_eval_count: z.number(),
       prompt_eval_duration: z.number().optional(),
       eval_count: z.number(),
       eval_duration: z.number(),
-      context: z.array(z.number()).optional(),
     }),
   ])
 );
 
-export type OllamaTextGenerationDelta = {
+export type OllamaChatDelta = {
   content: string;
   isComplete: boolean;
   delta: string;
@@ -427,7 +361,7 @@ async function createOllamaFullDeltaIterableQueue(
   // process the stream asynchonously (no 'await' on purpose):
   parseJsonStream({
     stream,
-    schema: ollamaTextStreamingResponseSchema,
+    schema: ollamaChatStreamingResponseSchema,
     process(event) {
       if (event.done === true) {
         queue.push({
@@ -440,16 +374,18 @@ async function createOllamaFullDeltaIterableQueue(
           valueDelta: "",
         });
       } else {
-        accumulatedText += event.response;
+        const deltaText = event.message.content;
+
+        accumulatedText += deltaText;
 
         queue.push({
           type: "delta",
           fullDelta: {
             content: accumulatedText,
             isComplete: false,
-            delta: event.response,
+            delta: deltaText,
           },
-          valueDelta: event.response,
+          valueDelta: deltaText,
         });
       }
     },
@@ -461,12 +397,12 @@ async function createOllamaFullDeltaIterableQueue(
   return queue;
 }
 
-export type OllamaTextGenerationResponseFormatType<T> = {
+export type OllamaChatResponseFormatType<T> = {
   stream: boolean;
   handler: ResponseHandler<T>;
 };
 
-export const OllamaTextGenerationResponseFormat = {
+export const OllamaChatResponseFormat = {
   /**
    * Returns the response as a JSON object.
    */
@@ -479,12 +415,11 @@ export const OllamaTextGenerationResponseFormat = {
         text: responseBody,
         schema: new ZodSchema(
           z.union([
-            ollamaTextGenerationResponseSchema,
+            ollamaChatResponseSchema,
             z.object({
               done: z.literal(false),
               model: z.string(),
               created_at: z.string(),
-              response: z.string(),
             }),
           ])
         ),
@@ -513,8 +448,8 @@ export const OllamaTextGenerationResponseFormat = {
       }
 
       return parsedResult.data;
-    }) satisfies ResponseHandler<OllamaTextGenerationResponse>,
-  } satisfies OllamaTextGenerationResponseFormatType<OllamaTextGenerationResponse>,
+    }) satisfies ResponseHandler<OllamaChatResponse>,
+  } satisfies OllamaChatResponseFormatType<OllamaChatResponse>,
 
   /**
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
@@ -524,7 +459,5 @@ export const OllamaTextGenerationResponseFormat = {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
       createOllamaFullDeltaIterableQueue(response.body!),
-  } satisfies OllamaTextGenerationResponseFormatType<
-    AsyncIterable<Delta<string>>
-  >,
+  } satisfies OllamaChatResponseFormatType<AsyncIterable<Delta<string>>>,
 };
