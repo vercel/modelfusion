@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { Command } from "commander";
 import dotenv from "dotenv";
-import { OpenAICompletionModel, generateText } from "modelfusion";
+import { openai, generateText } from "modelfusion";
 
 dotenv.config();
 

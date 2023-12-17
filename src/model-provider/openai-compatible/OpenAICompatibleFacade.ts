@@ -20,7 +20,7 @@ import {
  *
  * const text = await generateText([
  *   model,
- *   OpenAIChatMessage.system(
+ *   openai.ChatMessage.system(
  *     "Write a short story about a robot learning to love:"
  *   ),
  * ]);

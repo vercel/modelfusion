@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import {
   HeliconeOpenAIApiConfiguration,
-  OpenAIChatMessage,
   generateText,
   openai,
 } from "modelfusion";
@@ -17,7 +16,7 @@ async function main() {
       maxGenerationTokens: 500,
     }),
     [
-      OpenAIChatMessage.system(
+      openai.ChatMessage.system(
         "Write a short story about a robot learning to love:"
       ),
     ]

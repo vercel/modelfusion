@@ -1,9 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  OpenAIChatResponseFormat,
-  openai,
-} from "modelfusion";
+import { OpenAIChatResponseFormat, openai } from "modelfusion";
 
 dotenv.config();
 
@@ -16,8 +12,8 @@ async function main() {
 
   const deltas = await model.callAPI(
     [
-      OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-      OpenAIChatMessage.user("A robot learning to love"),
+      openai.ChatMessage.system("You are a story writer. Write a story about:"),
+      openai.ChatMessage.user("A robot learning to love"),
     ],
     {
       responseFormat: OpenAIChatResponseFormat.structureDeltaIterable,

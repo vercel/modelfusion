@@ -20,7 +20,7 @@ An essential behavior of chat agents is to be able to choose from different tool
 const { text, toolResults } = await useToolsOrGenerateText(
   openai.ChatTextGenerator({ model: "gpt-4-1106-preview" }),
   [toolA, toolB, toolC],
-  [OpenAIChatMessage.user(query)]
+  [openai.ChatMessage.user(query)]
 );
 
 if (text != null) {

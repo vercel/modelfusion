@@ -50,7 +50,7 @@ const text = await generateText(
 import { generateText, openai } from "modelfusion";
 
 const text = await generateText(openai.ChatTextGenerator(/* ... */), [
-  OpenAIChatMessage.system(
+  openai.ChatMessage.system(
     "Write a short story about a robot learning to love:"
   ),
 ]);
@@ -81,7 +81,7 @@ import { generateText, openai } from "modelfusion";
 const text = await generateText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
-    OpenAIChatMessage.user([
+    openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
@@ -101,8 +101,8 @@ You can use most text generation models in streaming mode. Just use the `streamT
 import { streamText, openai } from "modelfusion";
 
 const textStream = await streamText(openai.ChatTextGenerator(/* ... */), [
-  OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-  OpenAIChatMessage.user("A robot learning to love"),
+  openai.ChatMessage.system("You are a story writer. Write a story about:"),
+  openai.ChatMessage.user("A robot learning to love"),
 ]);
 
 for await (const textPart of textStream) {

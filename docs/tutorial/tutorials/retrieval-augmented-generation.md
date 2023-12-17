@@ -47,7 +47,7 @@ const answer = await generateText(
     maxGenerationTokens: 500,
   }),
   [
-    OpenAIChatMessage.system(
+    openai.ChatMessage.system(
       [
         // Instruct the model on how to answer:
         `Answer the user's question using only the provided information.`,
@@ -57,8 +57,8 @@ const answer = await generateText(
           `respond with "I don't know".`,
       ].join("\n")
     ),
-    OpenAIChatMessage.user(`## QUESTION\n${question}`),
-    OpenAIChatMessage.user(`## INFORMATION\n${JSON.stringify(chunks)}`),
+    openai.ChatMessage.user(`## QUESTION\n${question}`),
+    openai.ChatMessage.user(`## INFORMATION\n${JSON.stringify(chunks)}`),
   ]
 );
 ```

@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { OpenAIChatMessage, openai, useToolsOrGenerateText } from "modelfusion";
+import { openai, useToolsOrGenerateText } from "modelfusion";
 import { calculator } from "./tools/calculator-tool";
 
 dotenv.config();
@@ -8,7 +8,7 @@ async function main() {
   const { text, toolResults } = await useToolsOrGenerateText(
     openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
     [calculator /* ... */],
-    [OpenAIChatMessage.user("What's fourteen times twelve?")]
+    [openai.ChatMessage.user("What's fourteen times twelve?")]
   );
 
   if (text != null) {

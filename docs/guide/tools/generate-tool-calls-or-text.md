@@ -46,8 +46,8 @@ const { text, toolCalls } = await generateToolCallsOrText(
     },
   ],
   [
-    OpenAIChatMessage.system("You are home automation system."),
-    OpenAIChatMessage.user("Show me the kitchen temperature"),
+    openai.ChatMessage.system("You are home automation system."),
+    openai.ChatMessage.user("Show me the kitchen temperature"),
   ]
 );
 ```

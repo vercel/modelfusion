@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { OpenAIChatMessage, openai, streamText } from "modelfusion";
+import { openai, streamText } from "modelfusion";
 
 dotenv.config();
 
@@ -16,8 +16,8 @@ async function main() {
       },
     }),
     [
-      OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-      OpenAIChatMessage.user("A robot learning to love"),
+      openai.ChatMessage.system("You are a story writer. Write a story about:"),
+      openai.ChatMessage.user("A robot learning to love"),
     ]
   );
 

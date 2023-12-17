@@ -2,21 +2,21 @@ import { ChatInputArea } from "@/component/ChatInputArea";
 import { ChatMessageView } from "@/component/ChatMessageView";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
-import { ChatMessage, zodSchema } from "modelfusion";
+import { TextChatMessage, zodSchema } from "modelfusion";
 import { readEventSourceStream } from "modelfusion/browser";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 
 export default function Home() {
-  const [messages, setMessages] = useState<Array<ChatMessage>>([]);
+  const [messages, setMessages] = useState<Array<TextChatMessage>>([]);
   const [isSending, setIsSending] = useState<boolean>(false);
 
   const abortController = useRef<AbortController | null>(null);
 
   const handleSend = async (message: string) => {
     try {
-      const userMessage: ChatMessage = { role: "user", content: message };
+      const userMessage: TextChatMessage = { role: "user", content: message };
       const messagesToSend = [...messages, userMessage];
 
       setIsSending(true);

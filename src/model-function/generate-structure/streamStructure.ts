@@ -38,7 +38,7 @@ export type StructureStreamPart<STRUCTURE> =
  *       })
  *     ),
  *   [
- *     OpenAIChatMessage.user(
+ *     openai.ChatMessage.user(
  *       "Generate 3 character descriptions for a fantasy role playing game."
  *     ),
  *   ]

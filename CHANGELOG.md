@@ -5,6 +5,7 @@
 ### Added
 
 - `ollama.ChatTextGenerator` model that calls the Ollama chat API.
+- OpenAI chat messages and prompts are now exposed through `openai.ChatMessage` and `openai.ChatPrompt`
 
 ### Changed
 

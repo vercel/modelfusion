@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { OpenAIChatMessage, generateText, openai } from "modelfusion";
+import { generateText, openai } from "modelfusion";
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ async function main() {
       maxGenerationTokens: 500,
     }),
     [
-      OpenAIChatMessage.system(
+      openai.ChatMessage.system(
         "Write a short story about a robot learning to love:"
       ),
     ]

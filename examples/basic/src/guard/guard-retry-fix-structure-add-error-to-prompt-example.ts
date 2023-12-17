@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatMessage,
   fixStructure,
   generateStructure,
   guard,
@@ -40,11 +39,11 @@ async function main() {
         options
       ),
     [
-      OpenAIChatMessage.system(
+      openai.ChatMessage.system(
         "You are a sentiment evaluator. " +
           "Analyze the sentiment of the following product review:"
       ),
-      OpenAIChatMessage.user(
+      openai.ChatMessage.user(
         "After I opened the package, I was met by a very unpleasant smell " +
           "that did not disappear even after washing. Never again!"
       ),
@@ -52,14 +51,14 @@ async function main() {
     fixStructure({
       modifyInputForRetry: async ({ input, error }) => [
         ...input,
-        OpenAIChatMessage.assistant(null, {
+        openai.ChatMessage.assistant(null, {
           functionCall: {
             name: "sentiment",
             arguments: JSON.stringify(error.valueText),
           },
         }),
-        OpenAIChatMessage.user(error.message),
-        OpenAIChatMessage.user("Please fix the error and try again."),
+        openai.ChatMessage.user(error.message),
+        openai.ChatMessage.user("Please fix the error and try again."),
       ],
     })
   );

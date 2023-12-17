@@ -82,7 +82,7 @@ The OpenAI chat models include GPT-3.5-turbo and GPT-4.
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
 ```ts
-import { OpenAIChatMessage, openai, generateText } from "modelfusion";
+import { openai, generateText } from "modelfusion";
 
 const text = await generateText(
   openai.ChatTextGenerator({
@@ -91,7 +91,7 @@ const text = await generateText(
     maxGenerationTokens: 500,
   }),
   [
-    OpenAIChatMessage.user(
+    openai.ChatMessage.user(
       "Write a short story about a robot learning to love:"
     ),
   ]
@@ -108,7 +108,7 @@ You can provide an image reference in the user message when you are using vision
 const text = await generateText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
-    OpenAIChatMessage.user([
+    openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
@@ -145,7 +145,7 @@ for await (const textPart of textStream) {
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
 ```ts
-import { OpenAIChatMessage, openai, streamText } from "modelfusion";
+import { openai, streamText } from "modelfusion";
 
 const textStream = await streamText(
   openai.ChatTextGenerator({
@@ -153,8 +153,8 @@ const textStream = await streamText(
     maxGenerationTokens: 1000,
   }),
   [
-    OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-    OpenAIChatMessage.user("A robot learning to love"),
+    openai.ChatMessage.system("You are a story writer. Write a story about:"),
+    openai.ChatMessage.user("A robot learning to love"),
   ]
 );
 

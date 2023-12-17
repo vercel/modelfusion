@@ -153,14 +153,14 @@ const result = await guard(
   fixStructure({
     modifyInputForRetry: async ({ input, error }) => [
       ...input,
-      OpenAIChatMessage.assistant(null, {
+      openai.ChatMessage.assistant(null, {
         functionCall: {
           name: "sentiment",
           arguments: JSON.stringify(error.valueText),
         },
       }),
-      OpenAIChatMessage.user(error.message),
-      OpenAIChatMessage.user("Please fix the error and try again."),
+      openai.ChatMessage.user(error.message),
+      openai.ChatMessage.user("Please fix the error and try again."),
     ],
   })
 );
@@ -174,10 +174,7 @@ In this example, `gpt-3.5-turbo` is used initially. If structure parsing fails, 
 
 ```ts
 const result = await guard(
-  (
-    input: { model: OpenAIChatModelType; prompt: OpenAIChatMessage[] },
-    options
-  ) =>
+  (input: { model: OpenAIChatModelType; prompt: openai.ChatPrompt }, options) =>
     generateStructure(
       openai
         .ChatTextGenerator({ model: input.model })

@@ -85,7 +85,7 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 Multi-modal vision models such as GPT 4 Vision can process images as part of the prompt.
 
 ```ts
-import { streamText, openai, OpenAIChatMessage } from "modelfusion";
+import { streamText, openai } from "modelfusion";
 import { readFileSync } from "fs";
 
 const image = readFileSync("./image.png").toString("base64");
@@ -93,7 +93,7 @@ const image = readFileSync("./image.png").toString("base64");
 const textStream = await streamText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
-    OpenAIChatMessage.user([
+    openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
@@ -355,14 +355,14 @@ const result = await guard(
   fixStructure({
     modifyInputForRetry: async ({ input, error }) => [
       ...input,
-      OpenAIChatMessage.assistant(null, {
+      openai.ChatMessage.assistant(null, {
         functionCall: {
           name: "sentiment",
           arguments: JSON.stringify(error.valueText),
         },
       }),
-      OpenAIChatMessage.user(error.message),
-      OpenAIChatMessage.user("Please fix the error and try again."),
+      openai.ChatMessage.user(error.message),
+      openai.ChatMessage.user("Please fix the error and try again."),
     ],
   })
 );
@@ -418,7 +418,7 @@ With `generateToolCall`, you can generate a tool call for a specific tool with a
 const { id, name, args } = await generateToolCall(
   openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   calculator,
-  [OpenAIChatMessage.user("What's fourteen times twelve?")]
+  [openai.ChatMessage.user("What's fourteen times twelve?")]
 );
 ```
 
@@ -430,7 +430,7 @@ With `generateToolCallsOrText`, you can ask a language model to generate several
 const { text, toolCalls } = await generateToolCallsOrText(
   openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   [toolA, toolB, toolC],
-  [OpenAIChatMessage.user(query)]
+  [openai.ChatMessage.user(query)]
 );
 ```
 
@@ -454,7 +454,7 @@ With `useTool`, you can use a tool with a language model that supports tools cal
 const { tool, toolCall, args, ok, result } = await useTool(
   openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   calculator,
-  [OpenAIChatMessage.user("What's fourteen times twelve?")]
+  [openai.ChatMessage.user("What's fourteen times twelve?")]
 );
 
 console.log(`Tool call:`, toolCall);
@@ -472,7 +472,7 @@ With `useToolsOrGenerateText`, you can ask a language model to generate several 
 const { text, toolResults } = await useToolsOrGenerateText(
   openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   [calculator /* ... */],
-  [OpenAIChatMessage.user("What's fourteen times twelve?")]
+  [openai.ChatMessage.user("What's fourteen times twelve?")]
 );
 ```
 

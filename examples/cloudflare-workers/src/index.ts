@@ -1,4 +1,4 @@
-import { generateText, OpenAIApiConfiguration, OpenAICompletionModel } from 'modelfusion';
+import { OpenAIApiConfiguration, generateText, openai } from 'modelfusion';
 
 export interface Env {
 	OPENAI_API_KEY: string;

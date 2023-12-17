@@ -23,11 +23,11 @@ import { StructureValidationError } from "./StructureValidationError.js";
  *       .describe("Sentiment."),
  *   })),
  *   [
- *     OpenAIChatMessage.system(
+ *     openai.ChatMessage.system(
  *       "You are a sentiment evaluator. " +
  *         "Analyze the sentiment of the following product review:"
  *     ),
- *     OpenAIChatMessage.user(
+ *     openai.ChatMessage.user(
  *       "After I opened the package, I was met by a very unpleasant smell " +
  *         "that did not disappear even after washing. Never again!"
  *     ),

@@ -2,7 +2,7 @@ import chalk from "chalk";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import { JSDOM } from "jsdom";
-import { OpenAIChatMessage, generateText, openai } from "modelfusion";
+import { generateText, openai } from "modelfusion";
 import { getJson } from "serpapi";
 
 dotenv.config();
@@ -212,8 +212,8 @@ async function runBabyBeeAGI({
         temperature: 0.2,
       }),
       [
-        OpenAIChatMessage.system("You are a task manager AI."),
-        OpenAIChatMessage.user(prompt),
+        openai.ChatMessage.system("You are a task manager AI."),
+        openai.ChatMessage.user(prompt),
       ]
     );
 

@@ -64,13 +64,13 @@ const model = openai
   .asStructureGenerationModel(
     // Instruct the model to generate a JSON object that matches the given schema.
     jsonStructurePrompt((instruction: string, schema) => [
-      OpenAIChatMessage.system(
+      openai.ChatMessage.system(
         "JSON schema: \n" +
           JSON.stringify(schema.getJsonSchema()) +
           "\n\n" +
           "Respond only using JSON that matches the above schema."
       ),
-      OpenAIChatMessage.user(instruction),
+      openai.ChatMessage.user(instruction),
     ])
   );
 ```

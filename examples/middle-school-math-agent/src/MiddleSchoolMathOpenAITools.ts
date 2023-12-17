@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { OpenAIChatMessage, openai, useToolsOrGenerateText } from "modelfusion";
+import { openai, useToolsOrGenerateText } from "modelfusion";
 import { calculator } from "./CalculatorTool";
 import { questions } from "./Questions";
 
@@ -9,14 +9,14 @@ const problem = questions[Math.floor(Math.random() * questions.length)];
 
 async function main() {
   const messages = [
-    OpenAIChatMessage.system(
+    openai.ChatMessage.system(
       "You are solving math problems. " +
         "Reason step by step. " +
         "Use the calculator when necessary. " +
         "The calculator can only do simple additions, subtractions, multiplications, and divisions. " +
         "When you give the final answer, provide an explanation for how you got it."
     ),
-    OpenAIChatMessage.user(problem),
+    openai.ChatMessage.user(problem),
   ];
 
   console.log(`PROBLEM: ${problem}\n`);
@@ -34,7 +34,7 @@ async function main() {
 
     // add the agent response to the messages:
     messages.push(
-      OpenAIChatMessage.assistant(text, {
+      openai.ChatMessage.assistant(text, {
         toolCalls: toolResults?.map((result) => result.toolCall),
       })
     );
@@ -53,7 +53,7 @@ async function main() {
     for (const { tool, result, ok, args, toolCall } of toolResults ?? []) {
       // add the tool results to the messages:
       messages.push(
-        OpenAIChatMessage.tool({ toolCallId: toolCall.id, content: result })
+        openai.ChatMessage.tool({ toolCallId: toolCall.id, content: result })
       );
 
       if (!ok) {

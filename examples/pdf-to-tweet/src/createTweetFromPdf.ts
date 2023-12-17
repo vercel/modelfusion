@@ -1,6 +1,5 @@
 import {
   MemoryVectorIndex,
-  OpenAIChatMessage,
   VectorIndexRetriever,
   generateText,
   openai,
@@ -35,8 +34,8 @@ export async function createTweetFromPdf({
           maxGenerationTokens: 1024,
         }),
         prompt: async ({ text }: { text: string }) => [
-          OpenAIChatMessage.user(`## TOPIC\n${topic}`),
-          OpenAIChatMessage.system(
+          openai.ChatMessage.user(`## TOPIC\n${topic}`),
+          openai.ChatMessage.system(
             [
               `## ROLE`,
               `You are an expert at extracting information.`,
@@ -44,7 +43,7 @@ export async function createTweetFromPdf({
               `Only include information that is directly relevant for the topic.`,
             ].join("\n")
           ),
-          OpenAIChatMessage.user(`## TEXT\n${text}`),
+          openai.ChatMessage.user(`## TEXT\n${text}`),
         ],
       },
       { functionId: "extract-information" }
@@ -54,8 +53,8 @@ export async function createTweetFromPdf({
   const draftTweet = await generateText(
     model.withSettings({ temperature: 0.5 }),
     [
-      OpenAIChatMessage.user(`## TOPIC\n${topic}`),
-      OpenAIChatMessage.system(
+      openai.ChatMessage.user(`## TOPIC\n${topic}`),
+      openai.ChatMessage.system(
         [
           `## TASK`,
           `Rewrite the content below into coherent tweet on the topic above.`,
@@ -63,7 +62,7 @@ export async function createTweetFromPdf({
           `Discard all irrelevant information.`,
         ].join("\n")
       ),
-      OpenAIChatMessage.user(`## CONTENT\n${informationOnTopic}`),
+      openai.ChatMessage.user(`## CONTENT\n${informationOnTopic}`),
     ],
     { functionId: "draft-tweet" }
   );
@@ -93,11 +92,11 @@ export async function createTweetFromPdf({
   return await generateText(
     model.withSettings({ temperature: 0.5 }),
     [
-      OpenAIChatMessage.system(
+      openai.ChatMessage.system(
         `## TASK\nRewrite the draft tweet on ${topic} using the style from the example tweet.`
       ),
-      OpenAIChatMessage.user(`## DRAFT TWEET\n${draftTweet}`),
-      OpenAIChatMessage.user(`## STYLE EXAMPLE\n${similarTweets[0]}`),
+      openai.ChatMessage.user(`## DRAFT TWEET\n${draftTweet}`),
+      openai.ChatMessage.user(`## STYLE EXAMPLE\n${similarTweets[0]}`),
     ],
     { functionId: "rewrite-tweet" }
   );
