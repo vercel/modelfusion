@@ -14,7 +14,14 @@ npm install
 
 ## Usage
 
-### Ollama Chat with raw prompt
+### Ollama Chat with ModelFusion chat prompt
+
+See the [ModelFusion docs for llama.cpp](https://modelfusion.dev/integration/model-provider/ollama) for details on Ollama.
+
+1. Start Ollama and pull the `llama2:chat` model
+2. Run `npx tsx src/ollama-chat.ts`
+
+### Ollama Chat with raw Ollama chat prompt
 
 See the [ModelFusion docs for llama.cpp](https://modelfusion.dev/integration/model-provider/ollama) for details on Ollama.
 
