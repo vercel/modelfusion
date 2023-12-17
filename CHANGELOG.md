@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.100.0 - UNRELEASED
+
+### Added
+
+- `ollama.ChatTextGenerator` model that calls the Ollama chat API.
+
 ## v0.99.0 - 2023-12-16
 
 ### Added
