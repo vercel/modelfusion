@@ -1,11 +1,13 @@
 # Changelog
 
-## v0.100.0 - UNRELEASED
+## v0.100.0 - 2023-12-17
 
 ### Added
 
 - `ollama.ChatTextGenerator` model that calls the Ollama chat API.
-- OpenAI chat messages and prompts are now exposed through `openai.ChatMessage` and `openai.ChatPrompt`
+- Ollama chat messages and prompts are exposed through `ollama.ChatMessage` and `ollama.ChatPrompt`
+- OpenAI chat messages and prompts are exposed through `openai.ChatMessage` and `openai.ChatPrompt`
+- Mistral chat messages and prompts are exposed through `mistral.ChatMessage` and `mistral.ChatPrompt`
 
 ### Changed
 
