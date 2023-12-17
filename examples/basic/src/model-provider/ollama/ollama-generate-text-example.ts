@@ -7,7 +7,7 @@ async function main() {
   const text = await generateText(
     ollama
       .TextGenerator({
-        model: "mistral",
+        model: "mistral:text",
         maxGenerationTokens: 120,
       })
       .withTextPrompt(),

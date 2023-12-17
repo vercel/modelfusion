@@ -373,10 +373,12 @@ export class OllamaTextGenerationModel<
 const ollamaTextGenerationResponseSchema = z.object({
   done: z.literal(true),
   model: z.string(),
+  created_at: z.string(),
   response: z.string(),
   total_duration: z.number(),
   load_duration: z.number().optional(),
   prompt_eval_count: z.number(),
+  prompt_eval_duration: z.number().optional(),
   eval_count: z.number(),
   eval_duration: z.number(),
   context: z.array(z.number()).optional(),
