@@ -71,14 +71,16 @@ export type OpenAIChatDelta = Array<{
     arguments: string;
   };
   isComplete: boolean;
-  delta: {
-    role?: "assistant" | "user";
-    content?: string | null;
-    function_call?: {
-      name?: string;
-      arguments?: string;
-    };
-  };
+  delta:
+    | {
+        role?: "assistant" | "user";
+        content?: string | null;
+        function_call?: {
+          name?: string;
+          arguments?: string;
+        };
+      }
+    | undefined;
 }>;
 
 export async function createOpenAIChatDeltaIterableQueue<VALUE>(
@@ -125,12 +127,19 @@ export async function createOpenAIChatDeltaIterableQueue<VALUE>(
 
           const completionChunk = eventData as ChatCompletionChunk;
 
+          // reset delta for all existing streamDeltas
+          for (const delta of streamDelta) {
+            delta.delta = undefined;
+          }
+
           for (let i = 0; i < completionChunk.choices.length; i++) {
             const eventChoice = completionChunk.choices[i];
+            const index = eventChoice.index;
+
             const delta = eventChoice.delta;
 
-            if (streamDelta[i] == null) {
-              streamDelta[i] = {
+            if (streamDelta[index] == null) {
+              streamDelta[index] = {
                 role: undefined,
                 content: "",
                 isComplete: false,
@@ -138,7 +147,7 @@ export async function createOpenAIChatDeltaIterableQueue<VALUE>(
               };
             }
 
-            const choice = streamDelta[i];
+            const choice = streamDelta[index];
 
             choice.delta = delta;
 

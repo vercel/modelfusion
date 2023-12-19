@@ -27,7 +27,6 @@ export interface HuggingFaceTextGenerationModelSettings
   temperature?: number;
   repetitionPenalty?: number;
   maxTime?: number;
-  numReturnSequences?: number;
   doSample?: boolean;
 
   options?: {
@@ -45,7 +44,7 @@ export interface HuggingFaceTextGenerationModelSettings
  * const model = new HuggingFaceTextGenerationModel({
  *   model: "tiiuae/falcon-7b",
  *   temperature: 0.7,
- *   maxCompletionTokens: 500,
+ *   maxGenerationTokens: 500,
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
@@ -76,34 +75,52 @@ export class HuggingFaceTextGenerationModel
     prompt: string,
     options?: FunctionOptions
   ): Promise<HuggingFaceTextGenerationResponse> {
+    const api = this.settings.api ?? new HuggingFaceApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
+
     return callWithRetryAndThrottle({
       retry: this.settings.api?.retry,
       throttle: this.settings.api?.throttle,
-      call: async () =>
-        callHuggingFaceTextGenerationAPI({
-          options: {
-            useCache: true,
-            waitForModel: true,
+      call: async () => {
+        return postJsonToApi({
+          url: api.assembleUrl(`/${this.settings.model}`),
+          headers: api.headers,
+          body: {
+            inputs: prompt,
+            top_k: this.settings.topK,
+            top_p: this.settings.topP,
+            temperature: this.settings.temperature,
+            repetition_penalty: this.settings.repetitionPenalty,
+            max_new_tokens: this.settings.maxGenerationTokens,
+            max_time: this.settings.maxTime,
+            num_return_sequences: this.settings.numberOfGenerations,
+            do_sample: this.settings.doSample,
+            options: {
+              use_cache: true,
+              wait_for_model: true,
+            },
           },
-          ...this.settings,
-          maxNewTokens: this.settings.maxCompletionTokens,
-          abortSignal: options?.run?.abortSignal,
-          inputs: prompt,
-        }),
+          failedResponseHandler: failedHuggingFaceCallResponseHandler,
+          successfulResponseHandler: createJsonResponseHandler(
+            huggingFaceTextGenerationResponseSchema
+          ),
+          abortSignal,
+        });
+      },
     });
   }
 
   get settingsForEvent(): Partial<HuggingFaceTextGenerationModelSettings> {
     const eventSettingProperties: Array<string> = [
       "stopSequences",
-      "maxCompletionTokens",
+      "maxGenerationTokens",
+      "numberOfGenerations",
 
       "topK",
       "topP",
       "temperature",
       "repetitionPenalty",
       "maxTime",
-      "numReturnSequences",
       "doSample",
       "options",
     ] satisfies (keyof HuggingFaceTextGenerationModelSettings)[];
@@ -115,12 +132,12 @@ export class HuggingFaceTextGenerationModel
     );
   }
 
-  async doGenerateText(prompt: string, options?: FunctionOptions) {
+  async doGenerateTexts(prompt: string, options?: FunctionOptions) {
     const response = await this.callAPI(prompt, options);
 
     return {
       response,
-      text: response[0].generated_text,
+      texts: response.map((response) => response.generated_text),
     };
   }
 
@@ -156,63 +173,3 @@ const huggingFaceTextGenerationResponseSchema = z.array(
 export type HuggingFaceTextGenerationResponse = z.infer<
   typeof huggingFaceTextGenerationResponseSchema
 >;
-
-async function callHuggingFaceTextGenerationAPI({
-  api = new HuggingFaceApiConfiguration(),
-  abortSignal,
-  model,
-  inputs,
-  topK,
-  topP,
-  temperature,
-  repetitionPenalty,
-  maxNewTokens,
-  maxTime,
-  numReturnSequences,
-  doSample,
-  options,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  model: string;
-  inputs: string;
-  topK?: number;
-  topP?: number;
-  temperature?: number;
-  repetitionPenalty?: number;
-  maxNewTokens?: number;
-  maxTime?: number;
-  numReturnSequences?: number;
-  doSample?: boolean;
-  options?: {
-    useCache?: boolean;
-    waitForModel?: boolean;
-  };
-}): Promise<HuggingFaceTextGenerationResponse> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/${model}`),
-    headers: api.headers,
-    body: {
-      inputs,
-      top_k: topK,
-      top_p: topP,
-      temperature,
-      repetition_penalty: repetitionPenalty,
-      max_new_tokens: maxNewTokens,
-      max_time: maxTime,
-      num_return_sequences: numReturnSequences,
-      do_sample: doSample,
-      options: options
-        ? {
-            use_cache: options?.useCache,
-            wait_for_model: options?.waitForModel,
-          }
-        : undefined,
-    },
-    failedResponseHandler: failedHuggingFaceCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      huggingFaceTextGenerationResponseSchema
-    ),
-    abortSignal,
-  });
-}

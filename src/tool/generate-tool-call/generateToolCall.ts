@@ -19,7 +19,7 @@ export async function generateToolCall<
   model: ToolCallGenerationModel<PROMPT, SETTINGS>,
   tool: ToolDefinition<NAME, PARAMETERS>,
   prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT),
-  options?: FunctionOptions & { returnType?: "structure" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<ToolCall<NAME, PARAMETERS>>;
 export async function generateToolCall<
   PARAMETERS,
@@ -30,9 +30,9 @@ export async function generateToolCall<
   model: ToolCallGenerationModel<PROMPT, SETTINGS>,
   tool: ToolDefinition<NAME, PARAMETERS>,
   prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT),
-  options: FunctionOptions & { returnType: "full" }
+  options: FunctionOptions & { fullResponse: true }
 ): Promise<{
-  value: ToolCall<NAME, PARAMETERS>;
+  toolCall: ToolCall<NAME, PARAMETERS>;
   response: unknown;
   metadata: ModelCallMetadata;
 }>;
@@ -45,11 +45,11 @@ export async function generateToolCall<
   model: ToolCallGenerationModel<PROMPT, SETTINGS>,
   tool: ToolDefinition<NAME, PARAMETERS>,
   prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT),
-  options?: FunctionOptions & { returnType?: "structure" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
   | ToolCall<NAME, PARAMETERS>
   | {
-      value: ToolCall<NAME, PARAMETERS>;
+      toolCall: ToolCall<NAME, PARAMETERS>;
       response: unknown;
       metadata: ModelCallMetadata;
     }
@@ -117,5 +117,11 @@ export async function generateToolCall<
     },
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  return options?.fullResponse
+    ? {
+        toolCall: fullResponse.value,
+        response: fullResponse.response,
+        metadata: fullResponse.metadata,
+      }
+    : fullResponse.value;
 }

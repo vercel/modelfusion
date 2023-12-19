@@ -28,17 +28,17 @@ import {
 export async function generateTranscription<DATA>(
   model: TranscriptionModel<DATA, TranscriptionModelSettings>,
   data: DATA,
-  options?: FunctionOptions & { returnType?: "text" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<string>;
 export async function generateTranscription<DATA>(
   model: TranscriptionModel<DATA, TranscriptionModelSettings>,
   data: DATA,
-  options: FunctionOptions & { returnType: "full" }
+  options: FunctionOptions & { fullResponse: true }
 ): Promise<{ value: string; response: unknown; metadata: ModelCallMetadata }>;
 export async function generateTranscription<DATA>(
   model: TranscriptionModel<DATA, TranscriptionModelSettings>,
   data: DATA,
-  options?: FunctionOptions & { returnType?: "text" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
   string | { value: string; response: unknown; metadata: ModelCallMetadata }
 > {
@@ -56,5 +56,5 @@ export async function generateTranscription<DATA>(
     },
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  return options?.fullResponse ? fullResponse : fullResponse.value;
 }

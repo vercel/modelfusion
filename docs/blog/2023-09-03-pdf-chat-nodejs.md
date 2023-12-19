@@ -239,8 +239,8 @@ while (true) {
   const hypotheticalAnswer = await generateText(
     openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
     [
-      OpenAIChatMessage.system(`Answer the user's question.`),
-      OpenAIChatMessage.user(question),
+      openai.ChatMessage.system(`Answer the user's question.`),
+      openai.ChatMessage.user(question),
     ]
   );
 
@@ -257,14 +257,14 @@ while (true) {
   const textStream = await streamText(
     openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
     [
-      OpenAIChatMessage.system(
+      openai.ChatMessage.system(
         `Answer the user's question using only the provided information.\n` +
           `Include the page number of the information that you are using.\n` +
           `If the user's question cannot be answered using the provided information, ` +
           `respond with "I don't know".`
       ),
-      OpenAIChatMessage.user(question),
-      OpenAIChatMessage.fn({
+      openai.ChatMessage.user(question),
+      openai.ChatMessage.fn({
         fnName: "getInformation",
         content: JSON.stringify(information),
       }),
@@ -304,8 +304,8 @@ We use the Node.js `readline` package for collecting user input from the termina
 const hypotheticalAnswer = await generateText(
   openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
   [
-    OpenAIChatMessage.system(`Answer the user's question.`),
-    OpenAIChatMessage.user(question),
+    openai.ChatMessage.system(`Answer the user's question.`),
+    openai.ChatMessage.user(question),
   ]
 );
 ```
@@ -339,14 +339,14 @@ We limit the results to 5 and set a similarity threshold of 0.75. You can play w
 const textStream = await streamText(
   openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
   [
-    OpenAIChatMessage.system(
+    openai.ChatMessage.system(
       `Answer the user's question using only the provided information.\n` +
         `Include the page number of the information that you are using.\n` +
         `If the user's question cannot be answered using the provided information, ` +
         `respond with "I don't know".`
     ),
-    OpenAIChatMessage.user(question),
-    OpenAIChatMessage.functionResult(
+    openai.ChatMessage.user(question),
+    openai.ChatMessage.functionResult(
       "getInformation",
       JSON.stringify(information)
     ),

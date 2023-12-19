@@ -31,7 +31,7 @@ async function main() {
         openai
           .ChatTextGenerator({
             model: "gpt-4-vision-preview",
-            maxCompletionTokens: 128,
+            maxGenerationTokens: 128,
           })
           .withInstructionPrompt(),
         {

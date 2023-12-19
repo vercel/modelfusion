@@ -30,19 +30,30 @@ import {
 export async function generateText<PROMPT>(
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
   prompt: PROMPT,
-  options?: FunctionOptions & { returnType?: "text" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<string>;
 export async function generateText<PROMPT>(
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
   prompt: PROMPT,
-  options: FunctionOptions & { returnType: "full" }
-): Promise<{ value: string; response: unknown; metadata: ModelCallMetadata }>;
+  options: FunctionOptions & { fullResponse: true }
+): Promise<{
+  text: string;
+  texts: string[];
+  response: unknown;
+  metadata: ModelCallMetadata;
+}>;
 export async function generateText<PROMPT>(
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
   prompt: PROMPT,
-  options?: FunctionOptions & { returnType?: "text" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
-  string | { value: string; response: unknown; metadata: ModelCallMetadata }
+  | string
+  | {
+      text: string;
+      texts: string[];
+      response: unknown;
+      metadata: ModelCallMetadata;
+    }
 > {
   const fullResponse = await executeStandardCall({
     functionType: "generate-text",
@@ -50,16 +61,30 @@ export async function generateText<PROMPT>(
     model,
     options,
     generateResponse: async (options) => {
-      const result = await model.doGenerateText(prompt, options);
+      const result = await model.doGenerateTexts(prompt, options);
       const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
+
+      const texts = shouldTrimWhitespace
+        ? result.texts.map((text) => text.trim())
+        : result.texts;
 
       return {
         response: result.response,
-        extractedValue: shouldTrimWhitespace ? result.text.trim() : result.text,
+        extractedValue: texts,
         usage: result.usage,
       };
     },
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  const texts = fullResponse.value;
+  const text = texts[0];
+
+  return options?.fullResponse
+    ? {
+        text,
+        texts,
+        response: fullResponse.response,
+        metadata: fullResponse.metadata,
+      }
+    : text;
 }

@@ -1,9 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  OpenAIChatResponseFormat,
-  openai,
-} from "modelfusion";
+import { OpenAIChatResponseFormat, openai } from "modelfusion";
 
 dotenv.config();
 
@@ -11,13 +7,13 @@ async function main() {
   const model = openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0.7,
-    maxCompletionTokens: 500,
+    maxGenerationTokens: 500,
   });
 
   const deltas = await model.callAPI(
     [
-      OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-      OpenAIChatMessage.user("A robot learning to love"),
+      openai.ChatMessage.system("You are a story writer. Write a story about:"),
+      openai.ChatMessage.user("A robot learning to love"),
     ],
     {
       responseFormat: OpenAIChatResponseFormat.structureDeltaIterable,

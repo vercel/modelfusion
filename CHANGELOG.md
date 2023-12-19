@@ -1,5 +1,64 @@
 # Changelog
 
+## v0.100.0 - 2023-12-17
+
+### Added
+
+- `ollama.ChatTextGenerator` model that calls the Ollama chat API.
+- Ollama chat messages and prompts are exposed through `ollama.ChatMessage` and `ollama.ChatPrompt`
+- OpenAI chat messages and prompts are exposed through `openai.ChatMessage` and `openai.ChatPrompt`
+- Mistral chat messages and prompts are exposed through `mistral.ChatMessage` and `mistral.ChatPrompt`
+
+### Changed
+
+- **breaking change**: renamed `ollama.TextGenerator` to `ollama.CompletionTextGenerator`
+- **breaking change**: renamed `mistral.TextGenerator` to `mistral.ChatTextGenerator`
+
+## v0.99.0 - 2023-12-16
+
+### Added
+
+- You can now specify `numberOfGenerations` on text generation models and access multiple generations by using the `fullResponse: true` option. Example:
+
+  ```ts
+  // generate 2 texts:
+  const { texts } = await generateText(
+    openai.CompletionTextGenerator({
+      model: "gpt-3.5-turbo-instruct",
+      numberOfGenerations: 2,
+      maxGenerationTokens: 1000,
+    }),
+    "Write a short story about a robot learning to love:\n\n",
+    { fullResponse: true }
+  );
+  ```
+
+- **breaking change**: Text generation models now use a generalized `numberOfGenerations` parameter (instead of model specific parameters) to specify the number of generations.
+
+### Changed
+
+- **breaking change**: Renamed `maxCompletionTokens` text generation model setting to `maxGenerationTokens`.
+
+## v0.98.0 - 2023-12-16
+
+### Changed
+
+- **breaking change**: `responseType` option was changed into `fullResponse` option and now uses a boolean value to make discovery easy. The response values from the full response have been renamed for clarity. For base64 image generation, you can use the `imageBase64` value from the full response:
+
+  ```ts
+  const { imageBase64 } = await generateImage(model, prompt, {
+    fullResponse: true,
+  });
+  ```
+
+### Improved
+
+- Better docs for the OpenAI chat settings. Thanks [@bearjaws](https://github.com/bearjaws) for the contribution!
+
+### Fixed
+
+- Streaming OpenAI chat text generation when setting `n:2` or higher now returns only the stream from the first choice.
+
 ## v0.97.0 - 2023-12-14
 
 ### Added
@@ -1282,7 +1341,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. Hugging Face text generation support
 1. Memory vector DB
 
-## vv0.0.6 - 2023-05-31
+## v0.0.6 - 2023-05-31
 
 ### New
 
@@ -1293,7 +1352,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. Restructured retry logic
 1. `embed` embeds many texts at once
 
-## vv0.0.5 - 2023-05-30
+## v0.0.5 - 2023-05-30
 
 ### New
 
@@ -1301,7 +1360,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. OpenAI chat streams can be returned as delta async iterables
 1. Documentation of integration APIs and models
 
-## vv0.0.4 - 2023-05-29
+## v0.0.4 - 2023-05-29
 
 ### New
 
@@ -1311,14 +1370,14 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. Basic examples under `examples/basic`
 1. Initial documentation available at [modelfusion.dev](https://modelfusion.dev)
 
-## vv0.0.3 - 2023-05-28
+## v0.0.3 - 2023-05-28
 
 ### New
 
 1. Voice recording and transcription Next.js app example.
 1. OpenAI transcription support (Whisper).
 
-## vv0.0.2 - 2023-05-27
+## v0.0.2 - 2023-05-27
 
 ### New
 
@@ -1327,7 +1386,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. Tokenization-based Recursive Splitter: A new splitter that operates recursively using tokenization.
 1. Prompt Management Utility: An enhancement to fit recent chat messages into the context window.
 
-## vv0.0.1 - 2023-05-26
+## v0.0.1 - 2023-05-26
 
 ### New
 

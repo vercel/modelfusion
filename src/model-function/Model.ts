@@ -24,11 +24,11 @@ export interface Model<SETTINGS extends ModelSettings> {
    * @example
    * const model = new OpenAICompletionModel({
    *   model: "gpt-3.5-turbo-instruct",
-   *   maxCompletionTokens: 500,
+   *   maxGenerationTokens: 500,
    * });
    *
    * const modelWithMoreTokens = model.withSettings({
-   *   maxCompletionTokens: 1000,
+   *   maxGenerationTokens: 1000,
    * });
    */
   withSettings(additionalSettings: Partial<SETTINGS>): this;

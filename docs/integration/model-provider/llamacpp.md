@@ -75,7 +75,7 @@ import { llamacpp, generateText } from "modelfusion";
 const text = await generateText(
   llamacpp
     .TextGenerator({
-      maxCompletionTokens: 256,
+      maxGenerationTokens: 256,
     })
     .withTextPrompt(),
   "Write a short story about a robot learning to love:\n\n"
@@ -94,7 +94,7 @@ import { llamacpp, streamText } from "modelfusion";
 const textStream = await streamText(
   llamacpp
     .TextGenerator({
-      maxCompletionTokens: 1024,
+      maxGenerationTokens: 1024,
       temperature: 0.7,
     })
     .withTextPrompt(),

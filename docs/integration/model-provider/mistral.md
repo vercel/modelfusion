@@ -15,7 +15,7 @@ Generate text and embeddings using the [Mistral platform](https://mistral.ai).
 
 ### API Configuration
 
-[Ollama API Configuration](/api/classes/OllamaApiConfiguration)
+[Mistral API Configuration](/api/classes/MistralApiConfiguration)
 
 ```ts
 import { mistral } from "modelfusion";
@@ -25,7 +25,7 @@ const api = mistral.Api({
   // ...
 });
 
-const model = mistral.TextGenerator({
+const model = mistral.ChatTextGenerator({
   api,
   // ...
 });
@@ -37,15 +37,15 @@ const model = mistral.TextGenerator({
 
 ### Generate Text
 
-[MistralTextGenerationModel API](/api/classes/MistralTextGenerationModel)
+[MistralChatModel API](/api/classes/MistralChatModel)
 
 ```ts
 import { generateText, mistral } from "modelfusion";
 
 const text = await generateText(
-  mistral.TextGenerator({
+  mistral.ChatTextGenerator({
     model: "mistral-medium",
-    maxCompletionTokens: 120,
+    maxGenerationTokens: 120,
   }),
   [
     {
@@ -58,15 +58,15 @@ const text = await generateText(
 
 ### Stream Text
 
-[MistralTextGenerationModel API](/api/classes/MistralTextGenerationModel)
+[MistralChatModel API](/api/classes/MistralChatModel)
 
 ```ts
 import { mistral, streamText } from "modelfusion";
 
 const textStream = await streamText(
-  mistral.TextGenerator({
+  mistral.ChatTextGenerator({
     model: "mistral-medium",
-    maxCompletionTokens: 120,
+    maxGenerationTokens: 120,
   }),
   [
     {
@@ -108,7 +108,7 @@ const embeddings = await embedMany(
 ```ts
 const textStream = await streamText(
   mistral
-    .TextGenerator({
+    .ChatTextGenerator({
       // ...
     })
     .withTextPrompt(),
@@ -123,7 +123,7 @@ const textStream = await streamText(
 ```ts
 const textStream = await streamText(
   mistral
-    .TextGenerator({
+    .ChatTextGenerator({
       // ...
     })
     .withInstructionPrompt(),
@@ -141,7 +141,7 @@ const textStream = await streamText(
 ```ts
 const textStream = await streamText(
   mistral
-    .TextGenerator({
+    .ChatTextGenerator({
       // ...
     })
     .withChatPrompt(),

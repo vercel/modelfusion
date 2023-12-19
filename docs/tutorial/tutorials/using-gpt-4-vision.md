@@ -29,15 +29,15 @@ const image = fs.readFileSync(path.join("data", "example-image.png"), {
 Now that we have our image encoded, we can call the OpenAI GPT-4 Vision model to process the image and provide a detailed description:
 
 ```ts
-import { OpenAIChatModel, streamText } from "modelfusion";
+import { openai, streamText } from "modelfusion";
 
 const textStream = await streamText(
   openai.ChatTextGenerator({
     model: "gpt-4-vision-preview",
-    maxCompletionTokens: 1000,
+    maxGenerationTokens: 1000,
   }),
   [
-    OpenAIChatMessage.user([
+    openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
@@ -54,7 +54,7 @@ const textStream = await streamText(
   openai
     .ChatTextGenerator({
       model: "gpt-4-vision-preview",
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
     })
     .withInstructionPrompt(),
   {

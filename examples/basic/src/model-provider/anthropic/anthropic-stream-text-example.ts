@@ -8,7 +8,7 @@ async function main() {
     anthropic.TextGenerator({
       model: "claude-instant-1",
       temperature: 0.7,
-      maxCompletionTokens: 500,
+      maxGenerationTokens: 500,
     }),
     `\n\nHuman: Write a short story about a robot learning to love\n\nAssistant: `
   );

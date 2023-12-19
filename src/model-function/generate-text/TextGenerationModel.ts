@@ -6,20 +6,47 @@ import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate.js"
 
 export interface TextGenerationModelSettings extends ModelSettings {
   /**
-   * Maximum number of tokens to generate.
+   * Specifies the maximum number of tokens (words, punctuation, parts of words) that the model can generate in a single response.
+   * It helps to control the length of the output.
+   *
    * Does nothing if the model does not support this setting.
+   *
+   * Example: `maxGenerationTokens: 1000`
    */
-  maxCompletionTokens?: number | undefined;
+  maxGenerationTokens?: number | undefined;
 
   /**
-   * Stop sequences to use. Stop sequences are not included in the generated text.
+   * Stop sequences to use.
+   * Stop sequences are an array of strings or a single string that the model will recognize as end-of-text indicators.
+   * The model stops generating more content when it encounters any of these strings.
+   * This is particularly useful in scripted or formatted text generation, where a specific end point is required.
+   * Stop sequences not included in the generated text.
+   *
    * Does nothing if the model does not support this setting.
+   *
+   * Example: `stopSequences: ['\n', 'END']`
    */
   stopSequences?: string[] | undefined;
 
   /**
+   * Number of texts to generate.
+   *
+   * Specifies the number of responses or completions the model should generate for a given prompt.
+   * This is useful when you need multiple different outputs or ideas for a single prompt.
+   * The model will generate 'n' distinct responses, each based on the same initial prompt.
+   * In a streaming model this will result in both responses streamed back in real time.
+   *
+   * Does nothing if the model does not support this setting.
+   *
+   * Example: `numberOfGenerations: 3` // The model will produce 3 different responses.
+   */
+  numberOfGenerations?: number;
+
+  /**
    * When true, the leading and trailing white space and line terminator characters
    * are removed from the generated text.
+   *
+   * Default: true.
    */
   trimWhitespace?: boolean;
 }
@@ -49,12 +76,12 @@ export interface TextGenerationModel<
     | ((prompt: PROMPT) => PromiseLike<number>)
     | undefined;
 
-  doGenerateText(
+  doGenerateTexts(
     prompt: PROMPT,
     options?: FunctionOptions
   ): PromiseLike<{
     response: unknown;
-    text: string;
+    texts: string[];
     usage?: {
       promptTokens: number;
       completionTokens: number;

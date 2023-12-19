@@ -38,7 +38,7 @@ export type StructureStreamPart<STRUCTURE> =
  *       })
  *     ),
  *   [
- *     OpenAIChatMessage.user(
+ *     openai.ChatMessage.user(
  *       "Generate 3 character descriptions for a fantasy role playing game."
  *     ),
  *   ]
@@ -72,26 +72,26 @@ export async function streamStructure<STRUCTURE, PROMPT>(
   model: StructureStreamingModel<PROMPT>,
   schema: Schema<STRUCTURE> & JsonSchemaProducer,
   prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options?: FunctionOptions & { returnType?: "structure-stream" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<AsyncIterable<StructureStreamPart<STRUCTURE>>>;
 export async function streamStructure<STRUCTURE, PROMPT>(
   model: StructureStreamingModel<PROMPT>,
   schema: Schema<STRUCTURE> & JsonSchemaProducer,
   prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options: FunctionOptions & { returnType: "full" }
+  options: FunctionOptions & { fullResponse: true }
 ): Promise<{
-  value: AsyncIterable<StructureStreamPart<STRUCTURE>>;
+  structureStream: AsyncIterable<StructureStreamPart<STRUCTURE>>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
 export async function streamStructure<STRUCTURE, PROMPT>(
   model: StructureStreamingModel<PROMPT>,
   schema: Schema<STRUCTURE> & JsonSchemaProducer,
   prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options?: FunctionOptions & { returnType?: "structure-stream" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
   | AsyncIterable<StructureStreamPart<STRUCTURE>>
   | {
-      value: AsyncIterable<StructureStreamPart<STRUCTURE>>;
+      structureStream: AsyncIterable<StructureStreamPart<STRUCTURE>>;
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }
 > {
@@ -152,5 +152,10 @@ export async function streamStructure<STRUCTURE, PROMPT>(
     }),
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  return options?.fullResponse
+    ? {
+        structureStream: fullResponse.value,
+        metadata: fullResponse.metadata,
+      }
+    : fullResponse.value;
 }

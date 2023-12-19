@@ -65,7 +65,7 @@ const text = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     temperature: 0.7,
-    maxCompletionTokens: 500,
+    maxGenerationTokens: 500,
   }),
   "Write a short story about a robot learning to love:\n\n"
 );
@@ -82,16 +82,16 @@ The OpenAI chat models include GPT-3.5-turbo and GPT-4.
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
 ```ts
-import { OpenAIChatMessage, openai, generateText } from "modelfusion";
+import { openai, generateText } from "modelfusion";
 
 const text = await generateText(
   openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0.7,
-    maxCompletionTokens: 500,
+    maxGenerationTokens: 500,
   }),
   [
-    OpenAIChatMessage.user(
+    openai.ChatMessage.user(
       "Write a short story about a robot learning to love:"
     ),
   ]
@@ -108,7 +108,7 @@ You can provide an image reference in the user message when you are using vision
 const text = await generateText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
-    OpenAIChatMessage.user([
+    openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
@@ -130,7 +130,7 @@ import { OpenAICompletionModel, streamText } from "modelfusion";
 const textStream = await streamText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
-    maxCompletionTokens: 1000,
+    maxGenerationTokens: 1000,
   }),
   "You are a story writer. Write a story about a robot learning to love"
 );
@@ -145,16 +145,16 @@ for await (const textPart of textStream) {
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
 ```ts
-import { OpenAIChatMessage, openai, streamText } from "modelfusion";
+import { openai, streamText } from "modelfusion";
 
 const textStream = await streamText(
   openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
-    maxCompletionTokens: 1000,
+    maxGenerationTokens: 1000,
   }),
   [
-    OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-    OpenAIChatMessage.user("A robot learning to love"),
+    openai.ChatMessage.system("You are a story writer. Write a story about:"),
+    openai.ChatMessage.user("A robot learning to love"),
   ]
 );
 
@@ -182,7 +182,7 @@ const sentiment = await generateStructure(
     .ChatTextGenerator({
       model: "gpt-3.5-turbo",
       temperature: 0,
-      maxCompletionTokens: 50,
+      maxGenerationTokens: 50,
     })
     .asFunctionCallStructureGenerationModel({
       fnName: "sentiment",

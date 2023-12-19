@@ -67,13 +67,13 @@ export class OpenAICompatibleChatModel
   get settingsForEvent(): Partial<OpenAICompatibleChatSettings> {
     const eventSettingProperties: Array<string> = [
       "stopSequences",
-      "maxCompletionTokens",
+      "maxGenerationTokens",
+      "numberOfGenerations",
 
       "functions",
       "functionCall",
       "temperature",
       "topP",
-      "n",
       "presencePenalty",
       "frequencyPenalty",
       "logitBias",

@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import fs from "fs/promises";
 import {
   MemoryVectorIndex,
-  OpenAIChatMessage,
   VectorIndexRetriever,
   generateText,
   openai,
@@ -73,8 +72,8 @@ async function main() {
       // use cheaper model to generate hypothetical answer:
       openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
       [
-        OpenAIChatMessage.system(`Answer the user's question.`),
-        OpenAIChatMessage.user(question),
+        openai.ChatMessage.system(`Answer the user's question.`),
+        openai.ChatMessage.user(question),
       ]
     );
 
@@ -94,7 +93,7 @@ async function main() {
       // use stronger model to answer the question:
       openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
       [
-        OpenAIChatMessage.system(
+        openai.ChatMessage.system(
           // Instruct the model on how to answer:
           `Answer the user's question using only the provided information.\n` +
             // Provide some context:
@@ -104,8 +103,8 @@ async function main() {
             `If the user's question cannot be answered using the provided information, ` +
             `respond with "I don't know".`
         ),
-        OpenAIChatMessage.user(question),
-        OpenAIChatMessage.fn({
+        openai.ChatMessage.user(question),
+        openai.ChatMessage.fn({
           fnName: "getInformation",
           content: JSON.stringify(information),
         }),

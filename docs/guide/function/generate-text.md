@@ -17,9 +17,14 @@ You can use [prompt templates](#prompt-format) to change the prompt template of 
 
 The different [TextGenerationModel](/api/interfaces/TextGenerationModel) implementations (see [available providers](#available-providers)) share some common settings:
 
-- **maxCompletionTokens**: The maximum number of tokens to generate, or undefined to generate an unlimited number of tokens.
+- **maxGenerationTokens**: The maximum number of tokens to generate, or undefined to generate an unlimited number of tokens.
+- **numberOfGenerations**: The number of completions to generate.
 - **stopSequences**: An array of text sequences that will stop the text generation when they are generated. The sequences are not included in the generated text. The default is an empty array.
 - **trimWhitespace**: When true (default), the leading and trailing white space and line terminator characters are removed from the generated text. Only applies to `generateText`.
+
+:::note
+Not all models support all common settings. E.g., the `numberOfGenerations` setting is not supported by some local models.
+:::
 
 In addition to these common settings, each model exposes its own settings.
 The settings can be set in the constructor of the model, or in the `withSettings` method.
@@ -45,10 +50,25 @@ const text = await generateText(
 import { generateText, openai } from "modelfusion";
 
 const text = await generateText(openai.ChatTextGenerator(/* ... */), [
-  OpenAIChatMessage.system(
+  openai.ChatMessage.system(
     "Write a short story about a robot learning to love:"
   ),
 ]);
+```
+
+#### Example: Generate multiple completions
+
+```ts
+import { generateText, openai } from "modelfusion";
+
+const { texts } = await generateText(
+  openai.CompletionTextGenerator({
+    model: "gpt-3.5-turbo-instruct",
+    numberOfGenerations: 2,
+  }),
+  "Write a short story about a robot learning to love:",
+  { fullResponse: true }
+);
 ```
 
 #### Example: OpenAI chat model with multi-modal input
@@ -61,7 +81,7 @@ import { generateText, openai } from "modelfusion";
 const text = await generateText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
-    OpenAIChatMessage.user([
+    openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
@@ -81,8 +101,8 @@ You can use most text generation models in streaming mode. Just use the `streamT
 import { streamText, openai } from "modelfusion";
 
 const textStream = await streamText(openai.ChatTextGenerator(/* ... */), [
-  OpenAIChatMessage.system("You are a story writer. Write a story about:"),
-  OpenAIChatMessage.user("A robot learning to love"),
+  openai.ChatMessage.system("You are a story writer. Write a story about:"),
+  openai.ChatMessage.user("A robot learning to love"),
 ]);
 
 for await (const textPart of textStream) {
@@ -312,7 +332,7 @@ After a while, including all messages from a chat in the prompt can become infea
 When you use chat prompts, you can limit the included messages with the [trimChatPrompt()](/api/modules#trimchatprompt) function.
 It keeps only the most recent messages in the prompt, while leaving enough space for the completion.
 
-It automatically uses the [context window size](/api/interfaces/TextGenerationModel#contextwindowsize), the [maximum number of completion tokens](/api/interfaces/TextGenerationModel#maxcompletiontokens) and the [tokenizer](/api/interfaces/TextGenerationModel#tokenizer) of the model to determine how many messages to keep. The system message is always included.
+It automatically uses the [context window size](/api/interfaces/TextGenerationModel#contextwindowsize), the [maximum number of completion tokens](/api/interfaces/TextGenerationModel#maxGenerationTokens) and the [tokenizer](/api/interfaces/TextGenerationModel#tokenizer) of the model to determine how many messages to keep. The system message is always included.
 
 #### Example
 

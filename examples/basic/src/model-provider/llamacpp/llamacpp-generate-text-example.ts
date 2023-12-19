@@ -3,7 +3,7 @@ import { generateText, llamacpp } from "modelfusion";
 async function main() {
   const text = await generateText(
     llamacpp.TextGenerator({
-      maxCompletionTokens: 256,
+      maxGenerationTokens: 256,
       temperature: 0.7,
     }),
     {

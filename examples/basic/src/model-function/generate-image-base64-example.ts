@@ -5,7 +5,7 @@ import fs from "node:fs";
 dotenv.config();
 
 async function main() {
-  const imageBase64 = await generateImage(
+  const { imageBase64 } = await generateImage(
     stability.ImageGenerator({
       model: "stable-diffusion-512-v2-1",
       cfgScale: 7,
@@ -19,7 +19,7 @@ async function main() {
       { text: "the wicked witch of the west" },
       { text: "style of early 19th century painting", weight: 0.5 },
     ],
-    { returnType: "base64" }
+    { fullResponse: true }
   );
 
   const path = `./stability-image-example.png`;

@@ -103,7 +103,7 @@ const text = await generateText(
 //   functionType: 'text-generation',
 //   callId: 'call-ediZCZG0-vu0WcjYvkEF8',
 //   model: { provider: 'openai', modelName: 'gpt-3.5-turbo-instruct' },
-//   settings: { maxCompletionTokens: 50 },
+//   settings: { maxGenerationTokens: 50 },
 //   input: 'Write a short story about a robot learning to love:\n\n',
 //   timestamp: 2023-08-31T13:29:20.000Z,
 //   startTimestamp: 2023-08-31T13:29:20.000Z
@@ -113,7 +113,7 @@ const text = await generateText(
 //   functionType: 'text-generation',
 //   callId: 'call-ediZCZG0-vu0WcjYvkEF8',
 //   model: { provider: 'openai', modelName: 'gpt-3.5-turbo-instruct' },
-//   settings: { maxCompletionTokens: 50 },
+//   settings: { maxGenerationTokens: 50 },
 //   input: 'Write a short story about a robot learning to love:\n\n',
 //   timestamp: 2023-08-31T13:29:20.000Z,
 //   startTimestamp: 2023-08-31T13:29:20.000Z,
@@ -140,8 +140,8 @@ const text = await generateText(
   { logging: "detailed-json" }
 );
 
-// {"eventType":"started","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"gpt-3.5-turbo-instruct"},"settings":{"maxCompletionTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z"}
-// {"eventType":"finished","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"gpt-3.5-turbo-instruct"},"settings":{"maxCompletionTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z","finishTimestamp":"2023-08-31T13:31:56.373Z","durationInMs":1890,"result":{"status":"success","usage":{"promptTokens":12,"completionTokens":50,"totalTokens":62},"output":"The robot lay in the corner of the bedroom, alone with its thoughts for the first time in what felt like an eternity. It had been activated years ago, given an array of instructions to follow, and it had done so diligently and efficiently until"}}
+// {"eventType":"started","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"gpt-3.5-turbo-instruct"},"settings":{"maxGenerationTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z"}
+// {"eventType":"finished","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"gpt-3.5-turbo-instruct"},"settings":{"maxGenerationTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z","finishTimestamp":"2023-08-31T13:31:56.373Z","durationInMs":1890,"result":{"status":"success","usage":{"promptTokens":12,"completionTokens":50,"totalTokens":62},"output":"The robot lay in the corner of the bedroom, alone with its thoughts for the first time in what felt like an eternity. It had been activated years ago, given an array of instructions to follow, and it had done so diligently and efficiently until"}}
 ```
 
 ### off

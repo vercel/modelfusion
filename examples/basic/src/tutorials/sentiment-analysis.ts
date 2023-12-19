@@ -11,7 +11,7 @@ async function main() {
         .ChatTextGenerator({
           model: "gpt-4",
           temperature: 0, // remove randomness
-          maxCompletionTokens: 500, // enough tokens for reasoning and sentiment
+          maxGenerationTokens: 500, // enough tokens for reasoning and sentiment
         })
         .asFunctionCallStructureGenerationModel({
           fnName: "sentiment",

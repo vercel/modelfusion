@@ -20,11 +20,12 @@ Generate text and embeddings using [Ollama](https://github.com/jmorganca/ollama)
 [Ollama API Configuration](/api/classes/OllamaApiConfiguration)
 
 ```ts
-const api = new OllamaApiConfiguration({
+const api = ollama.Api({
+  baseUrl: "http://127.0.0.1:11434",
   // ...
 });
 
-const model = ollama.TextGenerator({
+const model = ollama.CompletionTextGenerator({
   api,
   // ...
 });
@@ -34,18 +35,20 @@ const model = ollama.TextGenerator({
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/ollama)
 
-### Generate Text
+### Generate Text (Completion)
 
-[OllamaTextGenerationModel API](/api/classes/OllamaTextGenerationModel)
+[OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
+
+The `OllamaCompletionModel` uses the Ollama completion API to generate text.
 
 ```ts
 import { ollama, generateText } from "modelfusion";
 
 const text = await generateText(
-  ollama.TextGenerator({
+  ollama.CompletionTextGenerator({
     model: "mistral",
     temperature: 0.7,
-    maxCompletionTokens: 120,
+    maxGenerationTokens: 120,
   }),
   { prompt: "Write a short story about a robot learning to love:\n\n" }
 );
@@ -61,9 +64,9 @@ const image = fs.readFileSync(path.join("data", "comic-mouse.png"), {
 });
 
 const text = await generateText(
-  ollama.TextGenerator({
+  ollama.CompletionTextGenerator({
     model: "bakllava",
-    maxCompletionTokens: 1024,
+    maxGenerationTokens: 1024,
     temperature: 0,
   }),
   {
@@ -80,10 +83,10 @@ import { ollama, generateText } from "modelfusion";
 
 const text = await generateText(
   ollama
-    .TextGenerator({
+    .CompletionTextGenerator({
       model: "mistral",
       temperature: 0.7,
-      maxCompletionTokens: 120,
+      maxGenerationTokens: 120,
     })
     .withTextPrompt(),
 
@@ -91,19 +94,59 @@ const text = await generateText(
 );
 ```
 
-### Stream Text
+### Generate Text (Chat)
 
-[OllamaTextGenerationModel API](/api/classes/OllamaTextGenerationModel)
+[OllamaChatModel API](/api/classes/OllamaChatModel)
+
+The `OllamaChatModel` uses the Ollama chat API to generate text.
+
+```ts
+import { ollama, generateText } from "modelfusion";
+
+const text = await generateText(
+  ollama.ChatTextGenerator({
+    model: "llama2:chat",
+    maxGenerationTokens: 500,
+  }),
+  [
+    {
+      role: "user",
+      content: "Write a short story about a robot learning to love:",
+    },
+  ]
+);
+```
+
+You can use [prompt templates](/guide/function/generate-text#prompt-template), e.g. using the `.withTextPrompt()` helper:
+
+```ts
+import { ollama, generateText } from "modelfusion";
+
+const text = await generateText(
+  ollama
+    .ChatTextGenerator({
+      model: "llama2:chat",
+      maxGenerationTokens: 500,
+    })
+    .withTextPrompt(),
+
+  "Write a short story about a robot learning to love:"
+);
+```
+
+### Stream Text (Completion)
+
+[OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
 
 ```ts
 import { ollama, streamText } from "modelfusion";
 
 const textStream = await streamText(
   ollama
-    .TextGenerator({
+    .CompletionTextGenerator({
       model: "mistral",
       temperature: 0.7,
-      maxCompletionTokens: 500,
+      maxGenerationTokens: 500,
     })
     .withTextPrompt(),
   "Write a short story about a robot learning to love:\n\n"
@@ -114,7 +157,28 @@ for await (const textPart of textStream) {
 }
 ```
 
-### Generate Structure
+### Stream Text (Chat)
+
+[OllamaChatModel API](/api/classes/OllamaChatModel)
+
+```ts
+import { ollama, streamText } from "modelfusion";
+
+const textStream = await streamText(
+  ollama.ChatTextGenerator({
+    model: "llama2:chat",
+    maxGenerationTokens: 500,
+  }),
+  [
+    {
+      role: "user",
+      content: "Write a short story about a robot learning to love:",
+    },
+  ]
+);
+```
+
+### Generate Structure (Completion)
 
 Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B).
 
@@ -123,9 +187,9 @@ import { ollama, zodSchema, generateStructure } from "modelfusion";
 import { z } from "zod";
 
 const model = ollama
-  .TextGenerator({
+  .CompletionTextGenerator({
     model: "openhermes2.5-mistral",
-    maxCompletionTokens: 1024,
+    maxGenerationTokens: 1024,
     temperature: 0,
     format: "json", // force JSON output
     raw: true, // prevent Ollama from adding its own prompts

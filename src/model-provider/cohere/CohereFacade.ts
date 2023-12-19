@@ -17,7 +17,7 @@ import { CohereTokenizer, CohereTokenizerSettings } from "./CohereTokenizer.js";
  * const model = cohere.TextGenerator({
  *   model: "command-nightly",
  *   temperature: 0.7,
- *   maxCompletionTokens: 500,
+ *   maxGenerationTokens: 500,
  * });
  *
  * const text = await generateText(

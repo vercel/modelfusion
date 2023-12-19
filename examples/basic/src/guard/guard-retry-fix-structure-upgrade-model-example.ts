@@ -26,7 +26,7 @@ async function main() {
           .ChatTextGenerator({
             model: input.model,
             temperature: 0,
-            maxCompletionTokens: 50,
+            maxGenerationTokens: 50,
           })
           .asFunctionCallStructureGenerationModel({
             fnName: "sentiment",

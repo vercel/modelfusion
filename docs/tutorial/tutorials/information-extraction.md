@@ -21,7 +21,7 @@ const extractNameAndPopulation = async (text: string) =>
       .ChatTextGenerator({
         model: "gpt-4",
         temperature: 0, // remove randomness as much as possible
-        maxCompletionTokens: 200, // only a few tokens needed for the response
+        maxGenerationTokens: 200, // only a few tokens needed for the response
       })
       .asFunctionCallStructureGenerationModel({
         fnName: "storeCity",
@@ -77,10 +77,10 @@ function extractText({ text, topic }: { text: string; topic: string }) {
     openai.ChatTextGenerator({
       model: "gpt-4",
       temperature: 0,
-      maxCompletionTokens: 500,
+      maxGenerationTokens: 500,
     }),
     [
-      OpenAIChatMessage.system(
+      openai.ChatMessage.system(
         [
           `## ROLE`,
           `You are an expert at extracting information.`,
@@ -88,8 +88,8 @@ function extractText({ text, topic }: { text: string; topic: string }) {
           `Only include information that is directly relevant for the topic.`,
         ].join("\n")
       ),
-      OpenAIChatMessage.user(`## TOPIC\n${topic}`),
-      OpenAIChatMessage.user(`## TEXT\n${text}`),
+      openai.ChatMessage.user(`## TOPIC\n${topic}`),
+      openai.ChatMessage.user(`## TEXT\n${text}`),
     ]
   );
 }

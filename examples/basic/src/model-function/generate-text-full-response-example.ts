@@ -5,14 +5,14 @@ dotenv.config();
 
 async function main() {
   // access the full response and the metadata:
-  const { response, metadata } = await generateText(
+  const { text, texts, response, metadata } = await generateText(
     openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
-      maxCompletionTokens: 1000,
-      n: 2, // generate 2 completions
+      numberOfGenerations: 2,
+      maxGenerationTokens: 1000,
     }),
     "Write a short story about a robot learning to love:\n\n",
-    { returnType: "full" }
+    { fullResponse: true }
   );
 
   console.log(metadata);
@@ -20,6 +20,7 @@ async function main() {
   // cast to the response type:
   for (const choice of (response as OpenAICompletionResponse).choices) {
     console.log(choice.text);
+    console.log(choice.finish_reason);
     console.log();
     console.log();
   }

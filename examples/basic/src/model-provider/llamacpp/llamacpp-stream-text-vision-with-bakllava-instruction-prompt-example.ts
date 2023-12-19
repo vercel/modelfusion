@@ -12,7 +12,7 @@ async function main() {
   const textStream = await streamText(
     llamacpp
       .TextGenerator({
-        maxCompletionTokens: 1024,
+        maxGenerationTokens: 1024,
         temperature: 0,
       })
       .withPromptTemplate(LlamaCppBakLLaVA1Prompt.instruction()),

@@ -5,16 +5,12 @@ import { z } from "zod";
 dotenv.config();
 
 async function main() {
-  const {
-    value: sentiment,
-    metadata,
-    response,
-  } = await generateStructure(
+  const { structure, metadata, response } = await generateStructure(
     openai
       .ChatTextGenerator({
         model: "gpt-3.5-turbo",
         temperature: 0,
-        maxCompletionTokens: 2000,
+        maxGenerationTokens: 2000,
       })
       .asFunctionCallStructureGenerationModel({
         fnName: "generateCharacter",
@@ -44,10 +40,11 @@ async function main() {
         "After I opened the package, I was met by a very unpleasant smell " +
         "that did not disappear even after washing. Never again!",
     },
-    { returnType: "full" }
+
+    { fullResponse: true }
   );
 
-  console.log(JSON.stringify(sentiment, null, 2));
+  console.log(JSON.stringify(structure, null, 2));
 }
 
 main().catch(console.error);

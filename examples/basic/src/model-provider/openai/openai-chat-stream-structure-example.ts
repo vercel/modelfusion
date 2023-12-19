@@ -1,10 +1,9 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatMessage,
-  zodSchema,
   jsonStructurePrompt,
   openai,
   streamStructure,
+  zodSchema,
 } from "modelfusion";
 import { z } from "zod";
 
@@ -16,18 +15,18 @@ async function main() {
       .ChatTextGenerator({
         model: "gpt-4-1106-preview",
         temperature: 0,
-        maxCompletionTokens: 1024,
+        maxGenerationTokens: 1024,
         responseFormat: { type: "json_object" },
       })
       .asStructureGenerationModel(
         jsonStructurePrompt((instruction: string, schema) => [
-          OpenAIChatMessage.system(
+          openai.ChatMessage.system(
             "JSON schema: \n" +
               JSON.stringify(schema.getJsonSchema()) +
               "\n\n" +
               "Respond only using JSON that matches the above schema."
           ),
-          OpenAIChatMessage.user(instruction),
+          openai.ChatMessage.user(instruction),
         ])
       ),
 

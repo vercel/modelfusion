@@ -7,7 +7,7 @@ sidebar_position: 20
 Generates an image using a prompt. The prompt template depends on the model.
 For example, OpenAI image models expect a string prompt, and Stability AI models expect an array of text prompts with optional weights.
 
-By default, the image is a binary buffer. You can use set the returnType option to `base64` to get a base-64 encoded string instead.
+By default, the image is a binary buffer. You can use set the `fullResponse` option to `true` and use the `imageBase64` property from the result to get a base-64 encoded string instead.
 
 ## Usage
 
@@ -31,10 +31,10 @@ const imageBuffer = await generateImage(
 ```ts
 import { generateImage, openai } from "modelfusion";
 
-const imageBase64 = await generateImage(
+const { imageBase64 } = await generateImage(
   openai.ImageGenerator(/* ... */),
   "the wicked witch of the west in the style of early 19th century painting",
-  { returnType: "base64" }
+  { fullResponse: true }
 );
 ```
 

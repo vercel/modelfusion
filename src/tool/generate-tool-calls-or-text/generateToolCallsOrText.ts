@@ -44,7 +44,7 @@ export async function generateToolCallsOrText<
   >,
   tools: TOOLS,
   prompt: PROMPT | ((tools: TOOLS) => PROMPT),
-  options?: FunctionOptions & { returnType?: "structure" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<{
   text: string | null;
   toolCalls: Array<ToOutputValue<TOOLS>> | null;
@@ -59,7 +59,7 @@ export async function generateToolCallsOrText<
   >,
   tools: TOOLS,
   prompt: PROMPT | ((tools: TOOLS) => PROMPT),
-  options: FunctionOptions & { returnType?: "full" }
+  options: FunctionOptions & { fullResponse?: boolean }
 ): Promise<{
   value: { text: string | null; toolCalls: Array<ToOutputValue<TOOLS>> };
   response: unknown;
@@ -75,7 +75,7 @@ export async function generateToolCallsOrText<
   >,
   tools: TOOLS,
   prompt: PROMPT | ((tools: TOOLS) => PROMPT),
-  options?: FunctionOptions & { returnType?: "structure" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
   | { text: string | null; toolCalls: Array<ToOutputValue<TOOLS>> | null }
   | {
@@ -164,5 +164,5 @@ export async function generateToolCallsOrText<
     },
   });
 
-  return options?.returnType === "full" ? fullResponse : fullResponse.value;
+  return options?.fullResponse ? fullResponse : fullResponse.value;
 }

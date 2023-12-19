@@ -70,7 +70,7 @@ export async function useToolsOrGenerateText<
         model,
         tools,
         expandedPrompt,
-        { ...options, returnType: "structure" }
+        { ...options, fullResponse: false }
       );
 
       const { toolCalls, text } = modelResponse;

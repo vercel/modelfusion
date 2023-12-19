@@ -4,12 +4,11 @@ import { Command } from "commander";
 import dotenv from "dotenv";
 import { convert as convertHtmlToText } from "html-to-text";
 import {
-  OpenAIChatMessage,
   Tool,
-  zodSchema,
   openai,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
   useToolsOrGenerateText,
+  zodSchema,
 } from "modelfusion";
 import { z } from "zod";
 
@@ -57,27 +56,27 @@ const readWikipediaArticle = new Tool({
       }),
       text,
       prompt: async ({ text }) => [
-        OpenAIChatMessage.system(
+        openai.ChatMessage.system(
           [
             `Extract and keep all the information about ${topic} from the following text.`,
             `Only include information that is directly relevant for ${topic}.`,
           ].join("\n")
         ),
-        OpenAIChatMessage.user(text),
+        openai.ChatMessage.user(text),
       ],
     });
   },
 });
 
 async function main() {
-  const messages: Array<OpenAIChatMessage> = [
-    OpenAIChatMessage.system(
+  const messages: openai.ChatPrompt = [
+    openai.ChatMessage.system(
       "You are researching the answer to the user's question on Wikipedia. " +
         "Reason step by step. " +
         "Search Wikipedia and extract information from relevant articles as needed. " +
         "All facts for your answer must be from Wikipedia articles that you have read."
     ),
-    OpenAIChatMessage.user(question),
+    openai.ChatMessage.user(question),
   ];
 
   console.log();
@@ -93,7 +92,7 @@ async function main() {
     );
 
     messages.push(
-      OpenAIChatMessage.assistant(text, {
+      openai.ChatMessage.assistant(text, {
         toolCalls: toolResults?.map((result) => result.toolCall),
       })
     );
@@ -114,7 +113,7 @@ async function main() {
 
     for (const { tool, result, args, ok, toolCall } of toolResults ?? []) {
       messages.push(
-        OpenAIChatMessage.tool({ toolCallId: toolCall.id, content: result })
+        openai.ChatMessage.tool({ toolCallId: toolCall.id, content: result })
       );
 
       if (!ok) {

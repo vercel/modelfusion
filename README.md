@@ -86,19 +86,26 @@ Multi-modal vision models such as GPT 4 Vision can process images as part of the
 
 ```ts
 import { streamText, openai } from "modelfusion";
+import { readFileSync } from "fs";
+
+const image = readFileSync("./image.png").toString("base64");
 
 const textStream = await streamText(
   openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
   [
-    OpenAIChatMessage.user([
+    openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
   ]
 );
+
+for await (const textPart of textStream) {
+  process.stdout.write(textPart);
+}
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama)
 
 ### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
 
@@ -204,7 +211,7 @@ const sentiment = await generateStructure(
     .ChatTextGenerator({
       model: "gpt-3.5-turbo",
       temperature: 0,
-      maxCompletionTokens: 50,
+      maxGenerationTokens: 50,
     })
     .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
     .withInstructionPrompt(),
@@ -348,14 +355,14 @@ const result = await guard(
   fixStructure({
     modifyInputForRetry: async ({ input, error }) => [
       ...input,
-      OpenAIChatMessage.assistant(null, {
+      openai.ChatMessage.assistant(null, {
         functionCall: {
           name: "sentiment",
           arguments: JSON.stringify(error.valueText),
         },
       }),
-      OpenAIChatMessage.user(error.message),
-      OpenAIChatMessage.user("Please fix the error and try again."),
+      openai.ChatMessage.user(error.message),
+      openai.ChatMessage.user("Please fix the error and try again."),
     ],
   })
 );
@@ -411,7 +418,7 @@ With `generateToolCall`, you can generate a tool call for a specific tool with a
 const { id, name, args } = await generateToolCall(
   openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   calculator,
-  [OpenAIChatMessage.user("What's fourteen times twelve?")]
+  [openai.ChatMessage.user("What's fourteen times twelve?")]
 );
 ```
 
@@ -423,7 +430,7 @@ With `generateToolCallsOrText`, you can ask a language model to generate several
 const { text, toolCalls } = await generateToolCallsOrText(
   openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   [toolA, toolB, toolC],
-  [OpenAIChatMessage.user(query)]
+  [openai.ChatMessage.user(query)]
 );
 ```
 
@@ -447,7 +454,7 @@ With `useTool`, you can use a tool with a language model that supports tools cal
 const { tool, toolCall, args, ok, result } = await useTool(
   openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   calculator,
-  [OpenAIChatMessage.user("What's fourteen times twelve?")]
+  [openai.ChatMessage.user("What's fourteen times twelve?")]
 );
 
 console.log(`Tool call:`, toolCall);
@@ -465,7 +472,7 @@ With `useToolsOrGenerateText`, you can ask a language model to generate several 
 const { text, toolResults } = await useToolsOrGenerateText(
   openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   [calculator /* ... */],
-  [OpenAIChatMessage.user("What's fourteen times twelve?")]
+  [openai.ChatMessage.user("What's fourteen times twelve?")]
 );
 ```
 
@@ -534,7 +541,7 @@ const text = await generateText(
   llamacpp
     .TextGenerator({
       contextWindowSize: 4096, // Llama 2 context window size
-      maxCompletionTokens: 1000,
+      maxGenerationTokens: 1000,
     })
     .withTextPromptTemplate(Llama2Prompt.instruction()),
   {
@@ -608,18 +615,18 @@ const image = await generateImage(
 
 ### Metadata and original responses
 
-ModelFusion model functions return rich results that include the original response and metadata when you set the `returnType` option to `full`.
+ModelFusion model functions return rich responses that include the original response and metadata when you set the `fullResponse` option to `true`.
 
 ```ts
 // access the full response (needs to be typed) and the metadata:
-const { value, response, metadata } = await generateText(
+const { text, response, metadata } = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
-    maxCompletionTokens: 1000,
+    maxGenerationTokens: 1000,
     n: 2, // generate 2 completions
   }),
   "Write a short story about a robot learning to love:\n\n",
-  { returnType: "full" }
+  { fullResponse: true }
 );
 
 console.log(metadata);
@@ -759,12 +766,6 @@ Examples for almost all of the individual functions and objects. Highly recommen
 > _multi-modal_, _structure streaming_, _image generation_, _text to speech_, _speech to text_, _text generation_, _structure generation_, _embeddings_
 
 StoryTeller is an exploratory web application that creates short audio stories for pre-school kids.
-
-### [Chatbot (Terminal)](https://github.com/lgrammel/modelfusion/tree/main/examples/chatbot-terminal)
-
-> _Terminal app_, _chat_, _llama.cpp_
-
-A chat with an AI assistant, implemented as a terminal app.
 
 ### [Chatbot (Next.JS)](https://github.com/lgrammel/modelfusion/tree/main/examples/chatbot-next-js)
 

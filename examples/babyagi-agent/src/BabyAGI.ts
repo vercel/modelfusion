@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { Command } from "commander";
 import dotenv from "dotenv";
-import { OpenAICompletionModel, generateText } from "modelfusion";
+import { openai, generateText } from "modelfusion";
 
 dotenv.config();
 
@@ -41,7 +41,7 @@ async function runBabyAGI({
     task: string;
   }) {
     return await generateText(
-      model.withSettings({ temperature: 0.7, maxCompletionTokens: 2000 }),
+      model.withSettings({ temperature: 0.7, maxGenerationTokens: 2000 }),
       [
         `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}`,
         `Response:`,
@@ -61,7 +61,7 @@ async function runBabyAGI({
     existingTasks: string[];
   }) {
     const newTasksText = await generateText(
-      model.withSettings({ temperature: 0.5, maxCompletionTokens: 100 }),
+      model.withSettings({ temperature: 0.5, maxGenerationTokens: 100 }),
       [
         `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.`,
         `The last completed task has the result: ${completedTaskResult}.`,
@@ -85,7 +85,7 @@ async function runBabyAGI({
     nextTaskId: number;
   }) {
     const prioritizedTasksText = await generateText(
-      model.withSettings({ temperature: 0.5, maxCompletionTokens: 1000 }),
+      model.withSettings({ temperature: 0.5, maxGenerationTokens: 1000 }),
       [
         `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:`,
         tasks.join(", "),

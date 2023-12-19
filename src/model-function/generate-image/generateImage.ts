@@ -34,33 +34,36 @@ export async function generateImage<PROMPT>(
   model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>,
   prompt: PROMPT,
   options?: FunctionOptions & {
-    returnType?: "buffer";
+    fullResponse?: false;
   }
 ): Promise<Buffer>;
 export async function generateImage<PROMPT>(
   model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>,
   prompt: PROMPT,
   options: FunctionOptions & {
-    returnType: "base64";
+    fullResponse: true;
   }
-): Promise<string>;
-export async function generateImage<PROMPT>(
-  model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>,
-  prompt: PROMPT,
-  options: FunctionOptions & {
-    returnType: "full";
-  }
-): Promise<{ value: string; response: unknown; metadata: ModelCallMetadata }>;
+): Promise<{
+  image: Buffer;
+  imageBase64: string;
+  response: unknown;
+  metadata: ModelCallMetadata;
+}>;
 export async function generateImage<PROMPT>(
   model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>,
   prompt: PROMPT,
   options?: FunctionOptions & {
-    returnType?: "base64" | "buffer" | "full";
+    fullResponse?: boolean;
   }
 ): Promise<
   | Buffer
   | string
-  | { value: string; response: unknown; metadata: ModelCallMetadata }
+  | {
+      image: Buffer;
+      imageBase64: string;
+      response: unknown;
+      metadata: ModelCallMetadata;
+    }
 > {
   const fullResponse = await executeStandardCall({
     functionType: "generate-image",
@@ -76,13 +79,15 @@ export async function generateImage<PROMPT>(
     },
   });
 
-  switch (options?.returnType) {
-    case "full":
-      return fullResponse;
-    case "base64":
-      return fullResponse.value;
-    case "buffer":
-    default:
-      return Buffer.from(fullResponse.value, "base64");
-  }
+  const imageBase64 = fullResponse.value;
+  const image = Buffer.from(imageBase64, "base64");
+
+  return options?.fullResponse
+    ? {
+        image,
+        imageBase64,
+        response: fullResponse.response,
+        metadata: fullResponse.metadata,
+      }
+    : image;
 }

@@ -15,14 +15,14 @@ This example agent ([Source Code](https://github.com/lgrammel/modelfusion/tree/m
 ```ts
 // initial messages:
 const messages = [
-  OpenAIChatMessage.system(
+  openai.ChatMessage.system(
     "You are solving math problems. " +
       "Reason step by step. " +
       "Use the calculator when necessary. " +
       "The calculator can only do simple additions, subtractions, multiplications, and divisions. " +
       "When you give the final answer, provide an explanation for how you got it."
   ),
-  OpenAIChatMessage.user(problem),
+  openai.ChatMessage.user(problem),
 ];
 
 // agent loop:
@@ -32,7 +32,7 @@ while (true) {
     openai.ChatTextGenerator({
       model: "gpt-4-1106-preview",
       temperature: 0,
-      maxCompletionTokens: 500,
+      maxGenerationTokens: 500,
     }),
     [calculator],
     messages
@@ -40,7 +40,7 @@ while (true) {
 
   // add the result to the messages for the next iteration:
   messages.push(
-    OpenAIChatMessage.assistant(text, {
+    openai.ChatMessage.assistant(text, {
       toolCalls: toolResults?.map((result) => result.toolCall),
     })
   );
@@ -57,7 +57,7 @@ while (true) {
   for (const { tool, result, ok, args, toolCall } of toolResults ?? []) {
     // add the tool results to the messages for the next iteration:
     messages.push(
-      OpenAIChatMessage.tool({ toolCallId: toolCall.id, content: result })
+      openai.ChatMessage.tool({ toolCallId: toolCall.id, content: result })
     );
 
     if (!ok) {

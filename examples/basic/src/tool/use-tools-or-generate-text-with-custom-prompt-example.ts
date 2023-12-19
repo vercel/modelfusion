@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { OpenAIChatMessage, openai, useToolsOrGenerateText } from "modelfusion";
+import { openai, useToolsOrGenerateText } from "modelfusion";
 import { setLogFormat } from "modelfusion/core/ModelFusionConfiguration";
 import { calculator } from "./tools/calculator-tool";
 
@@ -14,16 +14,16 @@ async function main() {
     // Instead of using a curried function,
     // you can also work with the tools directly:
     (tools) => [
-      OpenAIChatMessage.system(
+      openai.ChatMessage.system(
         // Here the available tools are used to create
         // a more precise prompt that reduces errors:
         `You have ${tools.length} tools available (${tools
           .map((tool) => tool.name)
           .join(", ")}).`
       ),
-      OpenAIChatMessage.user("What's fourteen times twelve?"),
-      // OpenAIChatMessage.user("What's twelve plus 1234?"),
-      // OpenAIChatMessage.user("Tell me about Berlin"),
+      openai.ChatMessage.user("What's fourteen times twelve?"),
+      // openai.ChatMessage.user("What's twelve plus 1234?"),
+      // openai.ChatMessage.user("Tell me about Berlin"),
     ]
   );
 

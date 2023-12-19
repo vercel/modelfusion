@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatMessage,
   openai,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
 } from "modelfusion";
@@ -13,8 +12,8 @@ const summarize = ({ text }: { text: string }) =>
     model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
     text,
     prompt: async ({ text }) => [
-      OpenAIChatMessage.system("Summarize the following text:"),
-      OpenAIChatMessage.user(text),
+      openai.ChatMessage.system("Summarize the following text:"),
+      openai.ChatMessage.user(text),
     ],
   });
 

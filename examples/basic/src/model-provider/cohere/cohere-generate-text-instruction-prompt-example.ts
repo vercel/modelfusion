@@ -8,7 +8,7 @@ async function main() {
     cohere
       .TextGenerator({
         model: "command",
-        maxCompletionTokens: 500,
+        maxGenerationTokens: 500,
       })
       .withInstructionPrompt(),
     {

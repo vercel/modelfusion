@@ -18,7 +18,7 @@ async function main() {
         openai.CompletionTextGenerator({
           model: "gpt-3.5-turbo-instruct",
           temperature: 0.7,
-          maxCompletionTokens: 250,
+          maxGenerationTokens: 250,
         }),
         input,
         options

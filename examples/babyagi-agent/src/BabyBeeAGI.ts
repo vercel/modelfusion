@@ -2,7 +2,7 @@ import chalk from "chalk";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import { JSDOM } from "jsdom";
-import { OpenAIChatMessage, generateText, openai } from "modelfusion";
+import { generateText, openai } from "modelfusion";
 import { getJson } from "serpapi";
 
 dotenv.config();
@@ -69,7 +69,7 @@ async function runBabyBeeAGI({
       openai.CompletionTextGenerator({
         model: "text-davinci-003",
         temperature: 0.5,
-        maxCompletionTokens: 1500,
+        maxGenerationTokens: 1500,
       }),
       prompt
     );
@@ -212,8 +212,8 @@ async function runBabyBeeAGI({
         temperature: 0.2,
       }),
       [
-        OpenAIChatMessage.system("You are a task manager AI."),
-        OpenAIChatMessage.user(prompt),
+        openai.ChatMessage.system("You are a task manager AI."),
+        openai.ChatMessage.user(prompt),
       ]
     );
 
@@ -249,7 +249,7 @@ async function runBabyBeeAGI({
       openai.CompletionTextGenerator({
         model: "text-davinci-003",
         temperature: 0.5,
-        maxCompletionTokens: 100,
+        maxGenerationTokens: 100,
       }),
       [
         `Please summarize the following text:`,
@@ -273,7 +273,7 @@ async function runBabyBeeAGI({
       openai.CompletionTextGenerator({
         model: "text-davinci-003",
         temperature: 0.5,
-        maxCompletionTokens: 200,
+        maxGenerationTokens: 200,
       }),
       [
         `Here is the current session summary:`,

@@ -30,12 +30,12 @@ export type ExecuteToolMetadata = {
 export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
   tool: TOOL,
   args: TOOL["parameters"]["_type"],
-  options?: FunctionOptions & { returnType?: "output" }
+  options?: FunctionOptions & { fullResponse?: false }
 ): Promise<ReturnType<TOOL["execute"]>>;
 export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
   tool: TOOL,
   args: TOOL["parameters"]["_type"],
-  options: FunctionOptions & { returnType: "full" }
+  options: FunctionOptions & { fullResponse: true }
 ): Promise<{
   output: Awaited<ReturnType<TOOL["execute"]>>;
   metadata: ExecuteToolMetadata;
@@ -43,7 +43,7 @@ export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-d
 export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
   tool: TOOL,
   args: TOOL["parameters"]["_type"],
-  options?: FunctionOptions & { returnType?: "output" | "full" }
+  options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
   | ReturnType<TOOL["execute"]>
   | {
@@ -52,7 +52,7 @@ export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-d
     }
 > {
   const fullResponse = await doExecuteTool(tool, args, options);
-  return options?.returnType === "full" ? fullResponse : fullResponse.output;
+  return options?.fullResponse ? fullResponse : fullResponse.output;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

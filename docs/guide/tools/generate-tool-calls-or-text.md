@@ -20,7 +20,7 @@ You can execute the tool with [useToolsOrGenerateText](/guide/tools/use-tools-or
 const { text, toolCalls } = await generateToolCallsOrText(
   openai.ChatTextGenerator({
     model: "gpt-4-1106-preview",
-    maxCompletionTokens: 200,
+    maxGenerationTokens: 200,
   }),
   [
     {
@@ -46,8 +46,8 @@ const { text, toolCalls } = await generateToolCallsOrText(
     },
   ],
   [
-    OpenAIChatMessage.system("You are home automation system."),
-    OpenAIChatMessage.user("Show me the kitchen temperature"),
+    openai.ChatMessage.system("You are home automation system."),
+    openai.ChatMessage.user("Show me the kitchen temperature"),
   ]
 );
 ```

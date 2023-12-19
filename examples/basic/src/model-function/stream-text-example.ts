@@ -8,7 +8,7 @@ async function main() {
     openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,
-      maxCompletionTokens: 500,
+      maxGenerationTokens: 500,
     }),
     "Write a short story about a robot learning to love:\n\n"
   );

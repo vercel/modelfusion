@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { OpenAIChatMessage, generateText, openai } from "modelfusion";
+import { generateText, openai } from "modelfusion";
 import fs from "node:fs";
 
 dotenv.config();
@@ -10,10 +10,10 @@ async function main() {
       openai.ChatTextGenerator({
         model: "gpt-4",
         temperature: 0, // remove randomness as much as possible
-        maxCompletionTokens: 500,
+        maxGenerationTokens: 500,
       }),
       [
-        OpenAIChatMessage.system(
+        openai.ChatMessage.system(
           [
             `## ROLE`,
             `You are an expert at extracting information.`,
@@ -21,8 +21,8 @@ async function main() {
             `Only include information that is directly relevant for the topic.`,
           ].join("\n")
         ),
-        OpenAIChatMessage.user(`## TOPIC\n${topic}`),
-        OpenAIChatMessage.user(`## TEXT\n${text}`),
+        openai.ChatMessage.user(`## TOPIC\n${topic}`),
+        openai.ChatMessage.user(`## TEXT\n${text}`),
       ]
     );
   }

@@ -15,12 +15,12 @@ import {
  * const model = openaicompatible.ChatTextGenerator({
  *   model: "provider-specific-model-name",
  *   temperature: 0.7,
- *   maxCompletionTokens: 500,
+ *   maxGenerationTokens: 500,
  * });
  *
  * const text = await generateText([
  *   model,
- *   OpenAIChatMessage.system(
+ *   openai.ChatMessage.system(
  *     "Write a short story about a robot learning to love:"
  *   ),
  * ]);

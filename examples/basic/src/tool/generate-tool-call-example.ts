@@ -1,10 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIChatMessage,
-  zodSchema,
-  generateToolCall,
-  openai,
-} from "modelfusion";
+import { generateToolCall, openai, zodSchema } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
@@ -14,7 +9,7 @@ async function main() {
     openai.ChatTextGenerator({
       model: "gpt-4-1106-preview",
       temperature: 0,
-      maxCompletionTokens: 200,
+      maxGenerationTokens: 200,
     }),
     {
       name: "getTemperature",
@@ -27,8 +22,10 @@ async function main() {
       ),
     },
     [
-      OpenAIChatMessage.system("You are home automation system."),
-      OpenAIChatMessage.user("Show me the temperature for kitchen in Celsius."),
+      openai.ChatMessage.system("You are home automation system."),
+      openai.ChatMessage.user(
+        "Show me the temperature for kitchen in Celsius."
+      ),
     ]
   );
 

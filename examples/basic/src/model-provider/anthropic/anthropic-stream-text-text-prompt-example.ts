@@ -9,7 +9,7 @@ async function main() {
       .TextGenerator({
         model: "claude-instant-1",
         temperature: 0.7,
-        maxCompletionTokens: 500,
+        maxGenerationTokens: 500,
       })
       .withTextPrompt(),
     "Write a short story about a robot learning to love"
