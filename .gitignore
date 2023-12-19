@@ -6,3 +6,4 @@ dist
 runs
 node_modules
 package-lock.json
+coverage/
