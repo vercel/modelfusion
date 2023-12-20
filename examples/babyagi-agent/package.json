@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf build"
+  },
   "dependencies": {
     "chalk": "^4",
     "commander": "10.0.1",
@@ -13,7 +17,6 @@
   },
   "devDependencies": {
     "@types/jsdom": "^21.1.1",
-    "@types/node": "20.2.3",
-    "ts-node": "10.9.1"
+    "@types/node": "20.2.3"
   }
 }

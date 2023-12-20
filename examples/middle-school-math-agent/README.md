@@ -17,11 +17,11 @@ OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 2. Setup:
 
 ```sh
-npm install
+pnpm install
 ```
 
 3. Run:
 
 ```sh
-npx tsx src/MiddleSchoolMathOpenAITools.ts
+pnpm tsx src/MiddleSchoolMathOpenAITools.ts
 ```

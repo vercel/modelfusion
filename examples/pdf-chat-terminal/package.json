@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/main.ts"
+    "build": "tsc",
+    "clean": "rimraf build",
+    "start": "tsx src/main.ts"
   },
   "private": true,
   "dependencies": {
@@ -13,7 +15,6 @@
     "pdfjs-dist": "3.6.172"
   },
   "devDependencies": {
-    "@types/node": "20.2.3",
-    "ts-node": "10.9.1"
+    "@types/node": "20.2.3"
   }
 }

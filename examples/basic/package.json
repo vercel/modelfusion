@@ -4,24 +4,26 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "dotenv": "16.0.3",
-    "secure-json-parse": "2.7.0",
-    "modelfusion": "0.100.0",
     "@modelfusion/serpapi-tools": "0.9.0",
     "@modelfusion/google-custom-search-tool": "0.9.0",
     "@modelfusion/pinecone": "0.3.0",
     "@modelfusion/sqlite-vss": "0.3.0",
     "@pinecone-database/pinecone": "0.1.6",
+    "dotenv": "16.0.3",
+    "secure-json-parse": "2.7.0",
+    "modelfusion": "0.100.0",
+    "nanoid": "3.3.6",
     "better-sqlite3": "9.0.0",
     "sqlite-vss": "0.1.2",
-    "sqlite-vss-darwin-arm64": "0.1.2"
+    "sqlite-vss-darwin-arm64": "0.1.2",
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@types/node": "20.2.3",
-    "@types/better-sqlite3": "7.6.6",
-    "tsx": "3.14.0"
+    "@types/better-sqlite3": "7.6.6"
   },
   "scripts": {
-    "build": "tsc --outDir build/"
+    "build": "tsc",
+    "clean": "rimraf build"
   }
 }

@@ -17,7 +17,7 @@ OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 3. Run the following commands:
 
 ```sh
-npm install
-npx ts-node src/indexTweets.ts -i data/example-tweets.txt -o data/example-tweet-index.json
-npx ts-node src/main.ts -f my.pdf -t "my topic" -e data/example-tweet-index.json
+pnpm install
+pnpm tsx src/indexTweets.ts -i data/example-tweets.txt -o data/example-tweet-index.json
+pnpm tsx src/main.ts -f my.pdf -t "my topic" -e data/example-tweet-index.json
 ```

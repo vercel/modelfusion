@@ -1,0 +1,64 @@
+{
+  "name": "@modelfusion/vercel-ai",
+  "description": "ModelFusion stream for Vercel AI SDK",
+  "version": "1.0.0",
+  "author": "Lars Grammel",
+  "license": "MIT",
+  "keywords": [
+    "ai",
+    "modelfusion",
+    "vercel"
+  ],
+  "homepage": "https://modelfusion.dev/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lgrammel/modelfusion"
+  },
+  "bugs": {
+    "url": "https://github.com/lgrammel/modelfusion/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "private": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "directory": "dist",
+    "linkDirectory": true
+  },
+  "files": [
+    "./*"
+  ],
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  },
+  "scripts": {
+    "lint": "eslint --ext .ts src",
+    "clean": "rimraf build dist .turbo",
+    "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
+    "build:esm": "tsc --outDir dist/",
+    "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
+    "build:copy-files": "copyfiles --flat package.json README.md ../../LICENSE dist",
+    "dist": "pnpm clean && pnpm lint && pnpm test && pnpm build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.6",
+    "@types/node": "18.11.9",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
+    "ai": ">= 2.2.27",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "9.0.0",
+    "modelfusion": ">=0.89.0 <1.0.0-0"
+  },
+  "peerDependencies": {
+    "modelfusion": ">=0.89.0 <1.0.0-0",
+    "ai": ">= 2.2.27"
+  }
+}

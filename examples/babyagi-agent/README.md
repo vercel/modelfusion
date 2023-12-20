@@ -19,8 +19,8 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 2. Run the following commands:
 
    ```sh
-   npm install
-   npx ts-node src/BabyAGI.ts --objective "Solve world hunger."
+   pnpm install
+   pnpm tsx src/BabyAGI.ts --objective "Solve world hunger."
    ```
 
 ## BabyBeeAGI
@@ -39,6 +39,6 @@ TypeScript implementation of [BabyBeeAGI](https://github.com/yoheinakajima/babya
 2. Run the following commands:
 
    ```sh
-   npm install
-   npx ts-node src/BabyBeeAGI.ts --objective "Research and write a short text about the BabyAGI project"
+   pnpm install
+   pnpm tsx src/BabyBeeAGI.ts --objective "Research and write a short text about the BabyAGI project"
    ```

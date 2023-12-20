@@ -1,9 +1,9 @@
 import { MediaSourceAppender, invokeFlow } from "modelfusion/browser";
 import { useState } from "react";
 import "./App.css";
-import { duplexStreamingFlowSchema } from "./flow/duplexStreamingFlow";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
+import { duplexStreamingFlowSchema } from "./flow/duplexStreamingFlowSchema";
 
 const BASE_URL = "http://localhost:3001";
 

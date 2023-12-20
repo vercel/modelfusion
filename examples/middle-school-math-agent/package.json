@@ -3,15 +3,16 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf build"
+  },
   "dependencies": {
     "modelfusion": "0.100.0",
-    "dotenv": "16.0.3"
+    "dotenv": "16.0.3",
+    "zod": "3.22.4"
   },
   "devDependencies": {
-    "@types/node": "20.2.3",
-    "tsx": "3.14.0"
-  },
-  "scripts": {
-    "build": "tsc --outDir build/"
+    "@types/node": "20.10.5"
   }
 }

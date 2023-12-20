@@ -15,6 +15,6 @@ OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 2. Run the following commands:
 
 ```sh
-npm install
-npx ts-node src/main.ts -f my.pdf
+pnpm install
+pnpm tsx src/main.ts -f my.pdf
 ```

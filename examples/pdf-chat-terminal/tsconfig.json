@@ -11,7 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "rootDir": "./src",
-    "outDir": "./.build/js"
+    "outDir": "./build"
   },
   "include": ["src/**/*.ts"]
 }

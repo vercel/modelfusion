@@ -9,8 +9,8 @@ Generate text on a Cloudflare Worker using ModelFusion and OpenAI.
 1. Configure `OPENAI_API_KEY`
 
    - For local environment: Add to `.dev.vars`
-   - For cloudflare workers: Use `npx wrangler secret put OPENAI_API_KEY`
+   - For cloudflare workers: Use `pnpm wrangler secret put OPENAI_API_KEY`
 
 1. Run
-   - Local environment: `npm run dev`
-   - Cloud (deployment): `npm run deploy`
+   - Local environment: `pnpm dev`
+   - Cloud (deployment): `pnpm deploy`

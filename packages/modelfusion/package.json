@@ -1,0 +1,99 @@
+{
+  "name": "modelfusion",
+  "description": "The TypeScript library for building multi-modal AI applications.",
+  "version": "0.100.0",
+  "author": "Lars Grammel",
+  "license": "MIT",
+  "keywords": [
+    "llm",
+    "embedding",
+    "openai",
+    "huggingface",
+    "gpt-3",
+    "gpt-4",
+    "whisper",
+    "chatbot",
+    "ai",
+    "multimodal"
+  ],
+  "homepage": "https://modelfusion.dev/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lgrammel/modelfusion"
+  },
+  "bugs": {
+    "url": "https://github.com/lgrammel/modelfusion/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "private": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "directory": "dist",
+    "linkDirectory": true
+  },
+  "files": [
+    "./*"
+  ],
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    },
+    "./extension": {
+      "types": "./extension/index.d.ts",
+      "import": "./extension/index.js",
+      "require": "./extension/index.cjs"
+    },
+    "./browser": {
+      "types": "./browser/index.d.ts",
+      "import": "./browser/index.js",
+      "require": "./browser/index.cjs"
+    },
+    "./fastify-server": {
+      "types": "./server/fastify/index.d.ts",
+      "import": "./server/fastify/index.js",
+      "require": "./server/fastify/index.cjs"
+    }
+  },
+  "scripts": {
+    "setup": "husky install",
+    "lint": "eslint --ext .ts src",
+    "clean": "rimraf build dist .turbo",
+    "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
+    "build:esm": "tsc --outDir dist/",
+    "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
+    "build:copy-files": "copyfiles --flat package.json ../../README.md ../../LICENSE dist",
+    "test": "vitest --config vitest.config.js --run src",
+    "test:watch": "vitest watch--config vitest.config.js",
+    "test:coverage": "vitest run --coverage",
+    "dist": "pnpm clean && pnpm lint && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "eventsource-parser": "1.1.1",
+    "js-tiktoken": "1.0.7",
+    "nanoid": "3.3.6",
+    "secure-json-parse": "2.7.0",
+    "ws": "8.14.2",
+    "zod": "3.22.4",
+    "zod-to-json-schema": "3.22.1"
+  },
+  "devDependencies": {
+    "@types/node": "18.11.9",
+    "@types/ws": "^8.5.7",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
+    "@vitest/coverage-v8": "^1.1.0",
+    "@vitest/ui": "1.1.0",
+    "copyfiles": "2.4.1",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "9.0.0",
+    "fastify": "^4.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "15.1.0",
+    "msw": "2.0.10"
+  }
+}

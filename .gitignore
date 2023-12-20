@@ -1,8 +1,11 @@
 .DS_STORE
 .env
 .dev.vars
-build
-dist
+.turbo
+examples/*/build/**
+packages/*/build/**
+packages/*/coverage/**
+packages/*/dist/**
 runs
 node_modules
 package-lock.json

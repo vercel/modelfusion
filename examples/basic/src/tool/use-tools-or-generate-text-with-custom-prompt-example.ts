@@ -1,11 +1,10 @@
 import dotenv from "dotenv";
-import { openai, useToolsOrGenerateText } from "modelfusion";
-import { setLogFormat } from "modelfusion/core/ModelFusionConfiguration";
+import { modelfusion, openai, useToolsOrGenerateText } from 'modelfusion';
 import { calculator } from "./tools/calculator-tool";
 
 dotenv.config();
 
-setLogFormat("basic-text");
+modelfusion.setLogFormat('basic-text');
 
 async function main() {
   const { text, toolResults } = await useToolsOrGenerateText(

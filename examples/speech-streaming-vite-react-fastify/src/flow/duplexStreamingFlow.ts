@@ -1,22 +1,6 @@
-import { elevenlabs, openai, streamSpeech, streamText } from "modelfusion";
-import { DefaultFlow } from "modelfusion/fastify-server";
-import { z } from "zod";
-
-export const duplexStreamingFlowSchema = {
-  input: z.object({
-    prompt: z.string(),
-  }),
-  events: z.discriminatedUnion("type", [
-    z.object({
-      type: z.literal("text-chunk"),
-      delta: z.string(),
-    }),
-    z.object({
-      type: z.literal("speech-chunk"),
-      base64Audio: z.string(),
-    }),
-  ]),
-};
+import { elevenlabs, openai, streamSpeech, streamText } from 'modelfusion';
+import { DefaultFlow } from 'modelfusion/fastify-server';
+import { duplexStreamingFlowSchema } from './duplexStreamingFlowSchema';
 
 export const duplexStreamingFlow = new DefaultFlow({
   schema: duplexStreamingFlowSchema,
@@ -24,18 +8,18 @@ export const duplexStreamingFlow = new DefaultFlow({
     const textStream = await streamText(
       openai
         .ChatTextGenerator({
-          model: "gpt-4",
+          model: 'gpt-4',
           temperature: 0.7,
           maxGenerationTokens: 50,
         })
         .withInstructionPrompt(),
-      { instruction: input.prompt }
+      { instruction: input.prompt },
     );
 
     const speechStream = await streamSpeech(
       elevenlabs.SpeechGenerator({
-        model: "eleven_turbo_v2",
-        voice: "pNInz6obpgDQGcFmaJgB", // Adam
+        model: 'eleven_turbo_v2',
+        voice: 'pNInz6obpgDQGcFmaJgB', // Adam
         optimizeStreamingLatency: 1,
         voiceSettings: {
           stability: 1,
@@ -45,7 +29,7 @@ export const duplexStreamingFlow = new DefaultFlow({
           chunkLengthSchedule: [50, 90, 120, 150, 200],
         },
       }),
-      textStream
+      textStream,
     );
 
     // Run in parallel:
@@ -53,7 +37,7 @@ export const duplexStreamingFlow = new DefaultFlow({
       (async () => {
         // stream text to client:
         for await (const textPart of textStream) {
-          run.publishEvent({ type: "text-chunk", delta: textPart });
+          run.publishEvent({ type: 'text-chunk', delta: textPart });
         }
       })(),
 
@@ -61,8 +45,8 @@ export const duplexStreamingFlow = new DefaultFlow({
         // stream tts audio to client:
         for await (const speechPart of speechStream) {
           run.publishEvent({
-            type: "speech-chunk",
-            base64Audio: speechPart.toString("base64"),
+            type: 'speech-chunk',
+            base64Audio: speechPart.toString('base64'),
           });
         }
       })(),

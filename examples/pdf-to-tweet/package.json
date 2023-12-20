@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "build": "tsc",
+    "clean": "rimraf build",
     "start": "ts-node src/main.ts"
   },
   "private": true,
@@ -14,7 +16,6 @@
     "zod": "3.22.4"
   },
   "devDependencies": {
-    "@types/node": "20.2.3",
-    "ts-node": "10.9.1"
+    "@types/node": "20.2.3"
   }
 }

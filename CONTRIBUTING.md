@@ -4,7 +4,7 @@ Feedback, bug reports and other contributions are welcome.
 
 ## Getting Started
 
-> Pre-requisite: you have installed [git][install-git], [node][install-node] and [npm][install-npm].
+> Pre-requisite: you have installed [git][install-git], [node][install-node] and [pnpm][install-pnpm].
 
 1. Clone the ModelFusion repository: `git clone https://github.com/lgrammel/modelfusion.git``
 2. Go into the cloned repository: `cd modelfusion`
@@ -49,4 +49,4 @@ cd ..
 
 [install-git]: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 [install-node]: https://nodejs.org/en/download/
-[install-npm]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+[install-pnpm]: https://pnpm.io/

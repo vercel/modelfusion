@@ -1,96 +1,26 @@
 {
-  "name": "modelfusion",
-  "description": "The TypeScript library for building multi-modal AI applications.",
-  "version": "0.100.0",
-  "author": "Lars Grammel",
-  "license": "MIT",
-  "keywords": [
-    "llm",
-    "embedding",
-    "openai",
-    "huggingface",
-    "gpt-3",
-    "gpt-4",
-    "whisper",
-    "chatbot",
-    "ai",
-    "multimodal"
-  ],
-  "homepage": "https://modelfusion.dev/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lgrammel/modelfusion"
-  },
-  "bugs": {
-    "url": "https://github.com/lgrammel/modelfusion/issues"
-  },
-  "type": "module",
-  "sideEffects": false,
-  "private": false,
-  "engines": {
-    "node": ">=18"
-  },
-  "files": [
-    "./*"
-  ],
-  "exports": {
-    ".": {
-      "types": "./index.d.ts",
-      "import": "./index.js",
-      "require": "./index.cjs"
-    },
-    "./extension": {
-      "types": "./extension/index.d.ts",
-      "import": "./extension/index.js",
-      "require": "./extension/index.cjs"
-    },
-    "./browser": {
-      "types": "./browser/index.d.ts",
-      "import": "./browser/index.js",
-      "require": "./browser/index.cjs"
-    },
-    "./fastify-server": {
-      "types": "./server/fastify/index.d.ts",
-      "import": "./server/fastify/index.js",
-      "require": "./server/fastify/index.cjs"
-    }
+  "private": true,
+  "prettier": {
+    "tabWidth": 2,
+    "useTabs": false,
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "trailingComma": "all"
   },
   "scripts": {
-    "setup": "husky install",
-    "lint": "eslint --ext .ts src",
-    "clean": "rimraf build dist",
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc --outDir dist/",
-    "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
-    "test": "vitest --config vitest.config.js --run src",
-    "test:watch": "vitest watch--config vitest.config.js",
-    "dist": "npm run clean && npm run lint && npm run test && npm run build && npm run dist:copy-files",
-    "dist:copy-files": "copyfiles package.json README.md LICENSE dist"
-  },
-  "dependencies": {
-    "eventsource-parser": "1.1.1",
-    "js-tiktoken": "1.0.7",
-    "nanoid": "3.3.6",
-    "secure-json-parse": "2.7.0",
-    "ws": "8.14.2",
-    "zod": "3.22.4",
-    "zod-to-json-schema": "3.22.1"
+    "build": "turbo build",
+    "clean": "rimraf .turbo node_modules/.cache/turbo && pnpm --filter \"./packages/**\" clean && pnpm --filter \"./examples/**\" clean",
+    "lint": "turbo lint",
+    "test": "turbo test"
   },
   "devDependencies": {
-    "@types/node": "18.11.9",
-    "@types/ws": "^8.5.7",
-    "@typescript-eslint/eslint-plugin": "^6.1.0",
-    "@typescript-eslint/parser": "^6.1.0",
     "copyfiles": "2.4.1",
-    "eslint": "^8.45.0",
-    "eslint-config-prettier": "9.0.0",
-    "fastify": "^4.0.0",
-    "husky": "^8.0.3",
-    "lint-staged": "15.1.0",
-    "msw": "2.0.10",
-    "prettier": "3.1.0",
+    "prettier": "3.1.1",
     "rimraf": "5.0.5",
+    "tsx": "4.7.0",
+    "turbo": "1.11.2",
     "typescript": "5.2.2",
+    "vite": "5.0.10",
     "vitest": "1.0.4"
   }
 }

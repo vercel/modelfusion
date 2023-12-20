@@ -1,0 +1,65 @@
+{
+  "name": "@modelfusion/google-custom-search-tool",
+  "description": "Google Custom Search tool for ModelFusion",
+  "version": "0.9.0",
+  "author": "Lars Grammel",
+  "license": "MIT",
+  "keywords": [
+    "agent",
+    "tool",
+    "serpapi",
+    "modelfusion",
+    "websearch"
+  ],
+  "homepage": "https://modelfusion.dev/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lgrammel/modelfusion"
+  },
+  "bugs": {
+    "url": "https://github.com/lgrammel/modelfusion/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "private": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "directory": "dist",
+    "linkDirectory": true
+  },
+  "files": [
+    "./*"
+  ],
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  },
+  "scripts": {
+    "lint": "eslint --ext .ts src",
+    "clean": "rimraf build dist .turbo",
+    "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
+    "build:esm": "tsc --outDir dist/",
+    "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
+    "build:copy-files": "copyfiles --flat package.json README.md ../../LICENSE dist",
+    "dist": "pnpm clean && pnpm lint && pnpm test && pnpm build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "18.11.9",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "9.0.0",
+    "modelfusion": "0.100.0",
+    "zod": "3.22.4"
+  },
+  "peerDependencies": {
+    "zod": "^3.22",
+    "modelfusion": ">=0.72.0 <1.0.0-0"
+  }
+}

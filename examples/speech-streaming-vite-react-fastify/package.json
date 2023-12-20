@@ -19,7 +19,6 @@
     "dotenv": "16.0.3",
     "fastify": "^4.23.2",
     "modelfusion": "0.100.0",
-    "tsx": "^3.12.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwind-merge": "^1.14.0",
@@ -28,7 +27,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.8.7",
-    "@types/react": "^18.2.15",
+    "@types/react": "18.2.15",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -39,8 +38,6 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3",
-    "ts-node": "10.9.1",
-    "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }
 }

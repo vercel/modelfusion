@@ -3,19 +3,23 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf build"
+  },
   "dependencies": {
+    "@modelfusion/google-custom-search-tool": "^0.9.0",
     "chalk": "^4",
     "commander": "10.0.1",
     "dotenv": "16.0.3",
     "html-to-text": "9.0.5",
     "jsdom": "^22.1.0",
     "modelfusion": "0.100.0",
-    "@modelfusion/google-custom-search-tool": "^0.9.0"
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@types/html-to-text": "^9.0.0",
     "@types/jsdom": "^21.1.1",
-    "@types/node": "20.2.3",
-    "tsx": "3.14.0"
+    "@types/node": "20.2.3"
   }
 }
