@@ -8,41 +8,14 @@ Feedback, bug reports and other contributions are welcome.
 
 1. Clone the ModelFusion repository: `git clone https://github.com/lgrammel/modelfusion.git``
 2. Go into the cloned repository: `cd modelfusion`
-3. Install dependencies: `npm install`
-4. Setup pre-commit hook: `npm setup`. The precommit hook will lint, format, build and test ModelFusion each time you commit.
-5. Build: `npm run build`
-
-## Linking for examples
-
-In ModelFusion's root directory:
-
-```sh
-npm run dist
-cd dist
-npm link
-cd ..
-```
-
-Then under e.g. `examples/basic` to setup the example:
-
-```sh
-npm install
-npm link modelfusion
-```
+3. Install dependencies: `pnpm install`
+4. Setup pre-commit hook: `pnpm run setup`. The precommit hook will format your changes ModelFusion each time you commit.
+5. Build: `pnpm build`
 
 ## Build
 
 ```sh
-npm run build
-```
-
-## Publishing
-
-```sh
-npm run dist
-cd dist
-npm publish
-cd ..
+pnpm build
 ```
 
 <!-- Links -->

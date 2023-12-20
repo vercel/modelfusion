@@ -11,6 +11,12 @@ importers:
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
+      husky:
+        specifier: 8.0.3
+        version: 8.0.3
+      lint-staged:
+        specifier: 15.1.0
+        version: 15.1.0
       prettier:
         specifier: 3.1.1
         version: 3.1.1
@@ -571,9 +577,6 @@ importers:
       '@vitest/ui':
         specifier: 1.1.0
         version: 1.1.0(vitest@1.0.4)
-      copyfiles:
-        specifier: 2.4.1
-        version: 2.4.1
       eslint:
         specifier: ^8.45.0
         version: 8.56.0
@@ -583,12 +586,6 @@ importers:
       fastify:
         specifier: ^4.0.0
         version: 4.25.1
-      husky:
-        specifier: ^8.0.3
-        version: 8.0.3
-      lint-staged:
-        specifier: 15.1.0
-        version: 15.1.0
       msw:
         specifier: 2.0.10
         version: 2.0.10(typescript@5.2.2)

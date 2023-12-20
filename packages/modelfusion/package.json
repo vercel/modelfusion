@@ -60,7 +60,6 @@
     }
   },
   "scripts": {
-    "setup": "husky install",
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist .turbo",
     "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
@@ -89,12 +88,9 @@
     "@typescript-eslint/parser": "^6.1.0",
     "@vitest/coverage-v8": "^1.1.0",
     "@vitest/ui": "1.1.0",
-    "copyfiles": "2.4.1",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.0.0",
     "fastify": "^4.0.0",
-    "husky": "^8.0.3",
-    "lint-staged": "15.1.0",
     "msw": "2.0.10"
   }
 }

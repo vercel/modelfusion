@@ -1,7 +1,5 @@
 module.exports = {
-  "src/**/*.ts": ["eslint --fix", "prettier --write"],
-  "src/**/*.{json,md}": "prettier --write",
-  "extensions/**/*.ts": ["eslint --fix", "prettier --write"],
-  "examples/**/*.ts": ["prettier --write"],
-  "test-environments/**/*.{ts,js}": ["prettier --write"],
+  'examples/**/*.{ts,tsx,json,md}': 'prettier --write',
+  'packages/**/*.{ts,tsx,json,md}': 'prettier --write',
+  'test-environments/**/*.{ts,js,json}': 'prettier --write',
 };
