@@ -1,4 +1,5 @@
 packages:
-  - 'packages/*'
+  - 'docs'
   - 'examples/*'
+  - 'packages/*'
   - 'test-environments/*'
