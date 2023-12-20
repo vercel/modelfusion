@@ -605,8 +605,8 @@ importers:
         specifier: 3.22.4
         version: 3.22.4
       zod-to-json-schema:
-        specifier: 3.22.1
-        version: 3.22.1(zod@3.22.4)
+        specifier: 3.22.3
+        version: 3.22.3(zod@3.22.4)
     devDependencies:
       '@types/node':
         specifier: 18.11.9
@@ -15208,8 +15208,8 @@ packages:
       stacktracey: 2.1.8
     dev: true
 
-  /zod-to-json-schema@3.22.1(zod@3.22.4):
-    resolution: {integrity: sha512-bVSWQ2JF3ZglQefafkM+Kk9KQ2fqqSi4VhxWaup1NJX9FS5jDg0EkEioVCWui0PiIQvcXJUjmN71bg672+a+tA==}
+  /zod-to-json-schema@3.22.3(zod@3.22.4):
+    resolution: {integrity: sha512-9isG8SqRe07p+Aio2ruBZmLm2Q6Sq4EqmXOiNpDxp+7f0LV6Q/LX65fs5Nn+FV/CzfF3NLBoksXbS2jNYIfpKw==}
     peerDependencies:
       zod: ^3.22.4
     dependencies:
