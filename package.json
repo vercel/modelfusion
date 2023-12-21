@@ -1,12 +1,5 @@
 {
   "private": true,
-  "prettier": {
-    "tabWidth": 2,
-    "useTabs": false,
-    "singleQuote": true,
-    "arrowParens": "avoid",
-    "trailingComma": "all"
-  },
   "scripts": {
     "build": "turbo build",
     "clean": "rimraf .turbo node_modules/.cache/turbo && pnpm --filter \"./packages/**\" clean && pnpm --filter \"./examples/**\" clean",
