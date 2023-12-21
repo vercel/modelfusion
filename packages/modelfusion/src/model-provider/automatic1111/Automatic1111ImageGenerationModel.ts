@@ -64,10 +64,10 @@ export class Automatic1111ImageGenerationModel
     const abortSignal = options?.run?.abortSignal;
 
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
-      call: async () => {
-        return postJsonToApi({
+      retry: api.retry,
+      throttle: api.throttle,
+      call: async () =>
+        postJsonToApi({
           url: api.assembleUrl(`/txt2img`),
           headers: api.headers,
           body: {
@@ -87,8 +87,7 @@ export class Automatic1111ImageGenerationModel
             Automatic1111ImageGenerationResponseSchema
           ),
           abortSignal,
-        });
-      },
+        }),
     });
   }
 
@@ -98,6 +97,7 @@ export class Automatic1111ImageGenerationModel
       width: this.settings.width,
       sampler: this.settings.sampler,
       steps: this.settings.steps,
+      seed: this.settings.seed,
     };
   }
 
