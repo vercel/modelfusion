@@ -11,6 +11,7 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 
 1. Install [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) using the instructions in the `stable-diffusion-webui` repository.
 2. Start the web UI with the API enabled: `./webui.sh --api` (Mac)
+   - Tip: `--nowebui` disables the UI.
 
 ## Configuration
 
