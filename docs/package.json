@@ -31,7 +31,7 @@
     "typedoc": "0.25.1",
     "typedoc-plugin-markdown": "3.16.0",
     "typedoc-plugin-zod": "1.1.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.3"
   },
   "browserslist": {
     "production": [
