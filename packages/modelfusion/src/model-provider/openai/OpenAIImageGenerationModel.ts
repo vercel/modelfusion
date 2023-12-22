@@ -78,14 +78,13 @@ export const calculateOpenAIImageGenerationCostInMillicents = ({
     return null;
   }
 
-  return (settings.n ?? 1) * cost;
+  return (settings.numberOfGenerations ?? 1) * cost;
 };
 
 export type OpenAIImageModelType = keyof typeof OPENAI_IMAGE_MODELS;
 
 export interface OpenAIImageGenerationCallSettings {
   model: OpenAIImageModelType;
-  n?: number;
   size?: "256x256" | "512x512" | "1024x1024" | "1792x1024" | "1024x1792";
   quality?: "standard" | "hd";
   style?: "vivid" | "natural";
@@ -142,7 +141,7 @@ export class OpenAIImageGenerationModel
           headers: api.headers,
           body: {
             prompt,
-            n: this.settings.n,
+            n: this.settings.numberOfGenerations,
             size: this.settings.size,
             response_format: responseFormat.type,
             user: this.settings.isUserIdForwardingEnabled ? userId : undefined,
@@ -157,7 +156,7 @@ export class OpenAIImageGenerationModel
 
   get settingsForEvent(): Partial<OpenAIImageGenerationSettings> {
     const eventSettingProperties: Array<string> = [
-      "n",
+      "numberOfGenerations",
       "size",
       "quality",
       "style",
@@ -170,7 +169,7 @@ export class OpenAIImageGenerationModel
     );
   }
 
-  async doGenerateImage(prompt: string, options?: FunctionOptions) {
+  async doGenerateImages(prompt: string, options?: FunctionOptions) {
     const response = await this.callAPI(prompt, {
       responseFormat: OpenAIImageGenerationResponseFormat.base64Json,
       ...options,
@@ -178,7 +177,7 @@ export class OpenAIImageGenerationModel
 
     return {
       response,
-      base64Image: response.data[0].b64_json,
+      base64Images: response.data.map((item) => item.b64_json),
     };
   }
   withPromptTemplate<INPUT_PROMPT>(

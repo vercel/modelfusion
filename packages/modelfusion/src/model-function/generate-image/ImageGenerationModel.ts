@@ -2,18 +2,29 @@ import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 import { PromptTemplate } from "../PromptTemplate.js";
 
-export interface ImageGenerationModelSettings extends ModelSettings {}
+export interface ImageGenerationModelSettings extends ModelSettings {
+  /**
+   * Number of images to generate.
+   *
+   * Specifies the number of images the model should generate for a given prompt.
+   *
+   * Does nothing if the model does not support this setting.
+   *
+   * Example: `numberOfGenerations: 2` // The model will produce 2 images
+   */
+  numberOfGenerations?: number;
+}
 
 export interface ImageGenerationModel<
   PROMPT,
   SETTINGS extends ImageGenerationModelSettings = ImageGenerationModelSettings,
 > extends Model<SETTINGS> {
-  doGenerateImage(
+  doGenerateImages(
     prompt: PROMPT,
     options?: FunctionOptions
   ): PromiseLike<{
     response: unknown;
-    base64Image: string;
+    base64Images: string[];
   }>;
 
   withPromptTemplate<INPUT_PROMPT>(

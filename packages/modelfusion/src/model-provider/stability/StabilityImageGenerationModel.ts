@@ -95,11 +95,6 @@ export interface StabilityImageGenerationSettings
   sampler?: StabilityImageGenerationSampler;
 
   /**
-   * Number of images to generate
-   */
-  samples?: number;
-
-  /**
    * Random noise seed (omit this option or use 0 for a random seed).
    */
   seed?: number;
@@ -178,7 +173,7 @@ export class StabilityImageGenerationModel
             cfg_scale: this.settings.cfgScale,
             clip_guidance_preset: this.settings.clipGuidancePreset,
             sampler: this.settings.sampler,
-            samples: this.settings.samples,
+            samples: this.settings.numberOfGenerations,
             seed: this.settings.seed,
             steps: this.settings.steps,
             style_preset: this.settings.stylePreset,
@@ -193,27 +188,20 @@ export class StabilityImageGenerationModel
   }
 
   get settingsForEvent(): Partial<StabilityImageGenerationSettings> {
-    const eventSettingProperties = [
-      "baseUrl",
-      "height",
-      "width",
-      "cfgScale",
-      "clipGuidancePreset",
-      "sampler",
-      "samples",
-      "seed",
-      "steps",
-      "stylePreset",
-    ];
-
-    return Object.fromEntries(
-      Object.entries(this.settings).filter(([key]) =>
-        eventSettingProperties.includes(key)
-      )
-    );
+    return {
+      numberOfGenerations: this.settings.numberOfGenerations,
+      height: this.settings.height,
+      width: this.settings.width,
+      cfgScale: this.settings.cfgScale,
+      clipGuidancePreset: this.settings.clipGuidancePreset,
+      sampler: this.settings.sampler,
+      seed: this.settings.seed,
+      steps: this.settings.steps,
+      stylePreset: this.settings.stylePreset,
+    };
   }
 
-  async doGenerateImage(
+  async doGenerateImages(
     prompt: StabilityImageGenerationPrompt,
     options?: FunctionOptions
   ) {
@@ -221,7 +209,7 @@ export class StabilityImageGenerationModel
 
     return {
       response,
-      base64Image: response.artifacts[0].base64,
+      base64Images: response.artifacts.map((artifact) => artifact.base64),
     };
   }
 

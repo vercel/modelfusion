@@ -89,6 +89,7 @@ export class Automatic1111ImageGenerationModel
             prompt: input.prompt,
             negative_prompt: input.negativePrompt,
             seed: input.seed,
+            batch_size: this.settings.numberOfGenerations,
             height: this.settings.height,
             width: this.settings.width,
             cfg_scale: this.settings.cfgScale,
@@ -116,7 +117,7 @@ export class Automatic1111ImageGenerationModel
     };
   }
 
-  async doGenerateImage(
+  async doGenerateImages(
     prompt: Automatic1111ImageGenerationPrompt,
     options?: FunctionOptions
   ) {
@@ -124,7 +125,7 @@ export class Automatic1111ImageGenerationModel
 
     return {
       response,
-      base64Image: response.images[0],
+      base64Images: response.images,
     };
   }
 

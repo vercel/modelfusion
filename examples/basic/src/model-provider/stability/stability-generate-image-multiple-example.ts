@@ -5,9 +5,10 @@ import fs from "node:fs";
 dotenv.config();
 
 async function main() {
-  const image = await generateImage(
+  const { images } = await generateImage(
     stability.ImageGenerator({
       model: "stable-diffusion-v1-6",
+      numberOfGenerations: 2,
       cfgScale: 7,
       clipGuidancePreset: "FAST_BLUE",
       height: 512,
@@ -17,12 +18,15 @@ async function main() {
     [
       { text: "the wicked witch of the west" },
       { text: "style of early 19th century painting", weight: 0.5 },
-    ]
+    ],
+    { fullResponse: true }
   );
 
-  const path = `./stability-image-example.png`;
-  fs.writeFileSync(path, image);
-  console.log(`Image saved to ${path}`);
+  for (let i = 0; i < images.length; i++) {
+    const path = `./stability-image-example-${i}.png`;
+    fs.writeFileSync(path, images[i]);
+    console.log(`Image saved to ${path}`);
+  }
 }
 
 main().catch(console.error);

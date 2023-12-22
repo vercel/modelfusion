@@ -46,6 +46,8 @@ export async function generateImage<PROMPT>(
 ): Promise<{
   image: Buffer;
   imageBase64: string;
+  images: Buffer[];
+  imagesBase64: string[];
   response: unknown;
   metadata: ModelCallMetadata;
 }>;
@@ -61,6 +63,8 @@ export async function generateImage<PROMPT>(
   | {
       image: Buffer;
       imageBase64: string;
+      images: Buffer[];
+      imagesBase64: string[];
       response: unknown;
       metadata: ModelCallMetadata;
     }
@@ -71,23 +75,28 @@ export async function generateImage<PROMPT>(
     model,
     options,
     generateResponse: async (options) => {
-      const result = await model.doGenerateImage(prompt, options);
+      const result = await model.doGenerateImages(prompt, options);
+
       return {
         response: result.response,
-        extractedValue: result.base64Image,
+        extractedValue: result.base64Images,
       };
     },
   });
 
-  const imageBase64 = fullResponse.value;
-  const image = Buffer.from(imageBase64, "base64");
+  const imagesBase64 = fullResponse.value;
+  const images = imagesBase64.map((imageBase64) =>
+    Buffer.from(imageBase64, "base64")
+  );
 
   return options?.fullResponse
     ? {
-        image,
-        imageBase64,
+        image: images[0],
+        imageBase64: imagesBase64[0],
+        images,
+        imagesBase64,
         response: fullResponse.response,
         metadata: fullResponse.metadata,
       }
-    : image;
+    : images[0];
 }

@@ -34,15 +34,9 @@ export class PromptTemplateImageGenerationModel<
     return this.model.settings;
   }
 
-  doGenerateImage(
-    prompt: PROMPT,
-    options?: FunctionOptions
-  ): PromiseLike<{
-    response: unknown;
-    base64Image: string;
-  }> {
+  doGenerateImages(prompt: PROMPT, options?: FunctionOptions) {
     const mappedPrompt = this.promptTemplate.format(prompt);
-    return this.model.doGenerateImage(mappedPrompt, options);
+    return this.model.doGenerateImages(mappedPrompt, options);
   }
 
   get settingsForEvent(): Partial<SETTINGS> {
@@ -57,7 +51,7 @@ export class PromptTemplateImageGenerationModel<
       PROMPT,
       SETTINGS,
       this
-    >({ model: this, promptTemplate: promptTemplate });
+    >({ model: this, promptTemplate });
   }
 
   withSettings(additionalSettings: Partial<SETTINGS>): this {
