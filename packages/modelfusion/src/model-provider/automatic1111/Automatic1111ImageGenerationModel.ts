@@ -24,12 +24,28 @@ export interface Automatic1111ImageGenerationSettings
   extends ImageGenerationModelSettings {
   api?: ApiConfiguration;
 
+  /**
+   * Stable Diffusion checkpoint.
+   */
   model: string;
 
   height?: number;
   width?: number;
+
+  /**
+   * Sampling method.
+   */
   sampler?: string;
+
+  /**
+   * Sampling steps.
+   */
   steps?: number;
+
+  /**
+   * CFG Scale.
+   */
+  cfgScale?: number;
 }
 
 /**
@@ -70,13 +86,14 @@ export class Automatic1111ImageGenerationModel
           url: api.assembleUrl(`/txt2img`),
           headers: api.headers,
           body: {
-            height: this.settings.height,
-            width: this.settings.width,
             prompt: input.prompt,
             negative_prompt: input.negativePrompt,
+            seed: input.seed,
+            height: this.settings.height,
+            width: this.settings.width,
+            cfg_scale: this.settings.cfgScale,
             sampler_index: this.settings.sampler,
             steps: this.settings.steps,
-            seed: input.seed,
             override_settings: {
               sd_model_checkpoint: this.settings.model,
             },
