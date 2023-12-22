@@ -11,11 +11,20 @@ By default, the image is a binary buffer. You can use set the `fullResponse` opt
 
 ## Usage
 
+### ImageGenerationModel
+
+The different [ImageGenerationModel](/api/interfaces/ImageGenerationModel) implementations (see [available providers](#available-providers)) share common settings:
+
+- **numberOfGenerations**: The number of images to generate.
+
+In addition to these common settings, each model exposes its own settings.
+The settings can be set in the constructor of the model, or in the `withSettings` method.
+
 ### generateImage
 
 [generateImage API](/api/modules#generateimage)
 
-#### OpenAI DALL·E buffer
+#### OpenAI DALL·E image buffer
 
 ```ts
 import { generateImage, openai } from "modelfusion";
@@ -26,7 +35,20 @@ const imageBuffer = await generateImage(
 );
 ```
 
-#### OpenAI DALL·E base64
+#### Stability AI image buffer
+
+```ts
+import { generateImage, stability } from "modelfusion";
+
+const imageBuffer = await generateImage(stability.ImageGenerator(/* ... */), [
+  { text: "the wicked witch of the west" },
+  { text: "style of early 19th century painting", weight: 0.5 },
+]);
+```
+
+#### OpenAI DALL·E base64 image
+
+You can use the `fullResponse` setting to get a base-64 encoded string instead of a binary buffer.
 
 ```ts
 import { generateImage, openai } from "modelfusion";
@@ -38,15 +60,24 @@ const { imageBase64 } = await generateImage(
 );
 ```
 
-#### Stability AI buffer
+#### Stability AI multiple image buffers
+
+You can use the `numberOfGenerations` setting to generate multiple images. The result will be an array of image buffers in the `images` respose property that is available when you set the `fullResponse` setting to `true`.
 
 ```ts
 import { generateImage, stability } from "modelfusion";
 
-const imageBuffer = await generateImage(stability.ImageGenerator(/* ... */), [
-  { text: "the wicked witch of the west" },
-  { text: "style of early 19th century painting", weight: 0.5 },
-]);
+const { images } = await generateImage(
+  stability.ImageGenerator({
+    numberOfGenerations: 2,
+    // ...
+  }),
+  [
+    { text: "the wicked witch of the west" },
+    { text: "style of early 19th century painting", weight: 0.5 },
+  ],
+  { fullResponse: true }
+);
 ```
 
 ## Prompt Template

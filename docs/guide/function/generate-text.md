@@ -15,7 +15,7 @@ You can use [prompt templates](#prompt-format) to change the prompt template of 
 
 ### TextGenerationModel
 
-The different [TextGenerationModel](/api/interfaces/TextGenerationModel) implementations (see [available providers](#available-providers)) share some common settings:
+The different [TextGenerationModel](/api/interfaces/TextGenerationModel) implementations (see [available providers](#available-providers)) share common settings:
 
 - **maxGenerationTokens**: The maximum number of tokens to generate, or undefined to generate an unlimited number of tokens.
 - **numberOfGenerations**: The number of completions to generate.
