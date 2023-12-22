@@ -32,5 +32,6 @@
     "Tiktoken",
     "upsert",
     "whispercpp"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
