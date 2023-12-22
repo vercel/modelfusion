@@ -30,7 +30,6 @@ export interface Automatic1111ImageGenerationSettings
   width?: number;
   sampler?: string;
   steps?: number;
-  seed?: number;
 }
 
 /**
@@ -77,7 +76,7 @@ export class Automatic1111ImageGenerationModel
             negative_prompt: input.negativePrompt,
             sampler_index: this.settings.sampler,
             steps: this.settings.steps,
-            seed: this.settings.seed,
+            seed: input.seed,
             override_settings: {
               sd_model_checkpoint: this.settings.model,
             },
@@ -97,7 +96,6 @@ export class Automatic1111ImageGenerationModel
       width: this.settings.width,
       sampler: this.settings.sampler,
       steps: this.settings.steps,
-      seed: this.settings.seed,
     };
   }
 

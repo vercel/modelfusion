@@ -4,7 +4,8 @@ import fs from "node:fs";
 async function main() {
   const image = await generateImage(
     automatic1111.ImageGenerator({
-      model: "aZovyaRPGArtistTools_v4.safetensors [4b99e70c19]",
+      api: automatic1111.Api({ port: "7861" }),
+      model: "aZovyaRPGArtistTools_v4.safetensors",
       steps: 30,
       sampler: "DPM++ 2M Karras",
       width: 512,
@@ -12,9 +13,16 @@ async function main() {
     }),
     {
       prompt:
-        "zprgstyle, lonely inn at the edge of a forest and at the side of a lake, late spring evening before sunset, clear sky, plains, nordic climate, german early medieval architecture, fantasy, Best quality, masterpiece, highly intricate details, ultra realistic",
+        "zprgstyle, lonely inn at the edge of a forest and at the side of a lake, " +
+        "late spring evening before sunset, clear sky, plains, nordic climate, " +
+        "german early medieval architecture, fantasy, Best quality, masterpiece, " +
+        "highly intricate details, ultra realistic",
       negativePrompt:
-        "(worst quality, low quality, bad_pictures) (deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected limbs, mutation, mutated, ugly, blurry, amputation, (watermark) (label) (signature) (text) (cropped) (castle) (mountain) (monastery)",
+        "worst quality, low quality, bad_pictures, deformed, distorted, (disfigured:1.3), poorly drawn, " +
+        "bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), " +
+        "disconnected limbs, mutation, mutated, ugly, blurry, amputation, (watermark), (label), (signature), " +
+        "(text), (cropped), (castle), (mountain), (monastery)", // optional negative prompt
+      seed: 123, // optional seed
     }
   );
 

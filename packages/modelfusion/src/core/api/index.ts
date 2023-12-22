@@ -2,6 +2,7 @@ export * from "./AbortError.js";
 export * from "./ApiCallError.js";
 export * from "./ApiConfiguration.js";
 export * from "./BaseUrlApiConfiguration.js";
+export * from "./BaseUrlPartsApiConfiguration.js";
 export * from "./RetryError.js";
 export * from "./RetryFunction.js";
 export * from "./ThrottleFunction.js";

@@ -2,6 +2,13 @@ import { AbstractApiConfiguration } from "./AbstractApiConfiguration.js";
 import { RetryFunction } from "./RetryFunction.js";
 import { ThrottleFunction } from "./ThrottleFunction.js";
 
+export type BaseUrlApiConfigurationOptions = {
+  baseUrl: string;
+  headers: Record<string, string>;
+  retry?: RetryFunction;
+  throttle?: ThrottleFunction;
+};
+
 /**
  * An API configuration that uses a base URL and a set of headers.
  *
@@ -16,12 +23,7 @@ export class BaseUrlApiConfiguration extends AbstractApiConfiguration {
     headers,
     retry,
     throttle,
-  }: {
-    baseUrl: string;
-    headers: Record<string, string>;
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  }) {
+  }: BaseUrlApiConfigurationOptions) {
     super({ retry, throttle });
     this.baseUrl = baseUrl;
     this.headers = headers;

@@ -11,7 +11,7 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 
 1. Install [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) using the instructions in the `stable-diffusion-webui` repository.
 2. Start the web UI with the API enabled: `./webui.sh --api` (Mac)
-   - Tip: `--nowebui` disables the UI.
+   - Tip: `--nowebui` disables the UI (port changes to 7861)
 
 ## Configuration
 
@@ -20,7 +20,8 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 [Automatic1111 API Configuration](/api/classes/Automatic1111ApiConfiguration)
 
 ```ts
-const api = new Automatic1111ApiConfiguration({
+const api = automatic1111.Api({
+  port: "7861", // example: set port for --nowebui mode
   // ...
 });
 
@@ -43,15 +44,18 @@ import { automatic1111, generateImage } from "modelfusion";
 
 const image = await generateImage(
   automatic1111.ImageGenerator({
-    model: "aZovyaRPGArtistTools_v3.safetensors [25ba966c5d]",
+    model: "aZovyaRPGArtistTools_v4.safetensors",
     steps: 30,
     sampler: "DPM++ 2M Karras",
+    width: 512,
+    height: 512,
   }),
   {
     prompt:
       "(the wicked witch of the west) (style of early 19th century painting)",
     negativePrompt:
-      "poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb", // ...
+      "poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb", // optional negative prompt
+    seed: 123, // optional seed
   }
 );
 ```
