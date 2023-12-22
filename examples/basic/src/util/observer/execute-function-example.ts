@@ -50,10 +50,9 @@ async function main() {
 
       return generateImage(
         stability.ImageGenerator({
-          model: "stable-diffusion-512-v2-1",
+          model: "stable-diffusion-v1-6",
           height: 512,
           width: 512,
-          samples: 1,
           steps: 30,
         }),
         [{ text: imageGenerationPrompt }],

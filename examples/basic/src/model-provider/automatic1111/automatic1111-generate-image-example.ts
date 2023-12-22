@@ -22,7 +22,6 @@ async function main() {
         "bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), " +
         "disconnected limbs, mutation, mutated, ugly, blurry, amputation, (watermark), (label), (signature), " +
         "(text), (cropped), (castle), (mountain), (monastery)", // optional negative prompt
-      seed: 123, // optional seed
     }
   );
 

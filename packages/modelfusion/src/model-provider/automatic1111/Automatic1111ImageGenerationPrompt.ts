@@ -3,7 +3,6 @@ import { PromptTemplate } from "../../model-function/PromptTemplate.js";
 export type Automatic1111ImageGenerationPrompt = {
   prompt: string;
   negativePrompt?: string;
-  seed?: number;
 };
 
 /**

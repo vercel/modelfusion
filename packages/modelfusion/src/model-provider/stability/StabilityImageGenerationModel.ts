@@ -118,12 +118,11 @@ export interface StabilityImageGenerationSettings
  * @example
  * const image = await generateImage(
  *   stability.ImageGenerator({
- *     model: "stable-diffusion-512-v2-1",
+ *     model: "stable-diffusion-v1-6",
  *     cfgScale: 7,
  *     clipGuidancePreset: "FAST_BLUE",
  *     height: 512,
  *     width: 512,
- *     samples: 1,
  *     steps: 30,
  *   })
  *   [

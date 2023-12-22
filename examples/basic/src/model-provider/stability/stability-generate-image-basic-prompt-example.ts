@@ -13,7 +13,6 @@ async function main() {
         clipGuidancePreset: "FAST_BLUE",
         height: 512,
         width: 512,
-        samples: 1,
         steps: 30,
       })
       .withTextPrompt(),

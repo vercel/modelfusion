@@ -46,6 +46,8 @@ export interface Automatic1111ImageGenerationSettings
    * CFG Scale.
    */
   cfgScale?: number;
+
+  seed?: number;
 }
 
 /**
@@ -88,7 +90,7 @@ export class Automatic1111ImageGenerationModel
           body: {
             prompt: input.prompt,
             negative_prompt: input.negativePrompt,
-            seed: input.seed,
+            seed: this.settings.seed,
             batch_size: this.settings.numberOfGenerations,
             height: this.settings.height,
             width: this.settings.width,
