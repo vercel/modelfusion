@@ -20,6 +20,101 @@ import {
   mapBasicPromptToStabilityFormat,
 } from "./StabilityImageGenerationPrompt.js";
 
+const stabilityImageGenerationModels = [
+  "stable-diffusion-v1-6",
+  "stable-diffusion-xl-1024-v1-0",
+] as const;
+
+export type StabilityImageGenerationModelType =
+  | (typeof stabilityImageGenerationModels)[number]
+  // string & {} is used to enable auto-completion of literals
+  // while also allowing strings:
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | (string & {});
+
+export type StabilityImageGenerationStylePreset =
+  | "3d-model"
+  | "analog-film"
+  | "anime"
+  | "cinematic"
+  | "comic-book"
+  | "digital-art"
+  | "enhance"
+  | "fantasy-art"
+  | "isometric"
+  | "line-art"
+  | "low-poly"
+  | "modeling-compound"
+  | "neon-punk"
+  | "origami"
+  | "photographic"
+  | "pixel-art"
+  | "tile-texture";
+
+export type StabilityImageGenerationSampler =
+  | "DDIM"
+  | "DDPM"
+  | "K_DPMPP_2M"
+  | "K_DPMPP_2S_ANCESTRAL"
+  | "K_DPM_2"
+  | "K_DPM_2_ANCESTRAL"
+  | "K_EULER"
+  | "K_EULER_ANCESTRAL"
+  | "K_HEUN"
+  | "K_LMS";
+
+export type StabilityClipGuidancePreset =
+  | "FAST_BLUE"
+  | "FAST_GREEN"
+  | "NONE"
+  | "SIMPLE"
+  | "SLOW"
+  | "SLOWER"
+  | "SLOWEST";
+
+export interface StabilityImageGenerationSettings
+  extends ImageGenerationModelSettings {
+  api?: ApiConfiguration;
+
+  model: StabilityImageGenerationModelType;
+
+  height?: number;
+  width?: number;
+
+  /**
+   * How strictly the diffusion process adheres to the prompt text (higher values keep your image closer to your prompt)
+   */
+  cfgScale?: number;
+
+  clipGuidancePreset?: StabilityClipGuidancePreset;
+
+  /**
+   * Which sampler to use for the diffusion process.
+   * If this value is omitted we'll automatically select an appropriate sampler for you.
+   */
+  sampler?: StabilityImageGenerationSampler;
+
+  /**
+   * Number of images to generate
+   */
+  samples?: number;
+
+  /**
+   * Random noise seed (omit this option or use 0 for a random seed).
+   */
+  seed?: number;
+
+  /**
+   * Number of diffusion steps to run.
+   */
+  steps?: number;
+
+  /**
+   * Pass in a style preset to guide the image model towards a particular style.
+   */
+  stylePreset?: StabilityImageGenerationStylePreset;
+}
+
 /**
  * Create an image generation model that calls the Stability AI image generation API.
  *
@@ -27,7 +122,7 @@ import {
  *
  * @example
  * const image = await generateImage(
- *   new StabilityImageGenerationModel({
+ *   stability.ImageGenerator({
  *     model: "stable-diffusion-512-v2-1",
  *     cfgScale: 7,
  *     clipGuidancePreset: "FAST_BLUE",
@@ -64,15 +159,35 @@ export class StabilityImageGenerationModel
     input: StabilityImageGenerationPrompt,
     options?: FunctionOptions
   ): Promise<StabilityImageGenerationResponse> {
+    const api = this.settings.api ?? new StabilityApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
+
     return callWithRetryAndThrottle({
       retry: this.settings.api?.retry,
       throttle: this.settings.api?.throttle,
       call: async () =>
-        callStabilityImageGenerationAPI({
-          ...this.settings,
-          abortSignal: options?.run?.abortSignal,
-          engineId: this.settings.model,
-          textPrompts: input,
+        postJsonToApi({
+          url: api.assembleUrl(
+            `/generation/${this.settings.model}/text-to-image`
+          ),
+          headers: api.headers,
+          body: {
+            height: this.settings.height,
+            width: this.settings.width,
+            text_prompts: input,
+            cfg_scale: this.settings.cfgScale,
+            clip_guidance_preset: this.settings.clipGuidancePreset,
+            sampler: this.settings.sampler,
+            samples: this.settings.samples,
+            seed: this.settings.seed,
+            steps: this.settings.steps,
+            style_preset: this.settings.stylePreset,
+          },
+          failedResponseHandler: failedStabilityCallResponseHandler,
+          successfulResponseHandler: createJsonResponseHandler(
+            stabilityImageGenerationResponseSchema
+          ),
+          abortSignal,
         }),
     });
   }
@@ -135,37 +250,6 @@ export class StabilityImageGenerationModel
   }
 }
 
-const stabilityImageGenerationModels = [
-  "stable-diffusion-v1-5",
-  "stable-diffusion-512-v2-1",
-  "stable-diffusion-xl-1024-v0-9",
-  "stable-diffusion-xl-1024-v1-0",
-] as const;
-
-export type StabilityImageGenerationModelType =
-  | (typeof stabilityImageGenerationModels)[number]
-  // string & {} is used to enable auto-completion of literals
-  // while also allowing strings:
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | (string & {});
-
-export interface StabilityImageGenerationSettings
-  extends ImageGenerationModelSettings {
-  api?: ApiConfiguration;
-
-  model: StabilityImageGenerationModelType;
-
-  height?: number;
-  width?: number;
-  cfgScale?: number;
-  clipGuidancePreset?: string;
-  sampler?: StabilityImageGenerationSampler;
-  samples?: number;
-  seed?: number;
-  steps?: number;
-  stylePreset?: StabilityImageGenerationStylePreset;
-}
-
 const stabilityImageGenerationResponseSchema = z.object({
   artifacts: z.array(
     z.object({
@@ -179,86 +263,3 @@ const stabilityImageGenerationResponseSchema = z.object({
 export type StabilityImageGenerationResponse = z.infer<
   typeof stabilityImageGenerationResponseSchema
 >;
-
-export type StabilityImageGenerationStylePreset =
-  | "enhance"
-  | "anime"
-  | "photographic"
-  | "digital-art"
-  | "comic-book"
-  | "fantasy-art"
-  | "line-art"
-  | "analog-film"
-  | "neon-punk"
-  | "isometric"
-  | "low-poly"
-  | "origami"
-  | "modeling-compound"
-  | "cinematic"
-  | "3d-model"
-  | "pixel-art"
-  | "tile-texture";
-
-export type StabilityImageGenerationSampler =
-  | "DDIM"
-  | "DDPM"
-  | "K_DPMPP_2M"
-  | "K_DPMPP_2S_ANCESTRAL"
-  | "K_DPM_2"
-  | "K_DPM_2_ANCESTRAL"
-  | "K_EULER"
-  | "K_EULER_ANCESTRAL"
-  | "K_HEUN"
-  | "K_LMS";
-
-async function callStabilityImageGenerationAPI({
-  api = new StabilityApiConfiguration(),
-  abortSignal,
-  engineId,
-  height,
-  width,
-  textPrompts,
-  cfgScale,
-  clipGuidancePreset,
-  sampler,
-  samples,
-  seed,
-  steps,
-  stylePreset,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  engineId: string;
-  height?: number;
-  width?: number;
-  textPrompts: StabilityImageGenerationPrompt;
-  cfgScale?: number;
-  clipGuidancePreset?: string;
-  sampler?: StabilityImageGenerationSampler;
-  samples?: number;
-  seed?: number;
-  steps?: number;
-  stylePreset?: StabilityImageGenerationStylePreset;
-}): Promise<StabilityImageGenerationResponse> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/generation/${engineId}/text-to-image`),
-    headers: api.headers,
-    body: {
-      height,
-      width,
-      text_prompts: textPrompts,
-      cfg_scale: cfgScale,
-      clip_guidance_preset: clipGuidancePreset,
-      sampler,
-      samples,
-      seed,
-      steps,
-      style_preset: stylePreset,
-    },
-    failedResponseHandler: failedStabilityCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      stabilityImageGenerationResponseSchema
-    ),
-    abortSignal,
-  });
-}

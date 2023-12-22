@@ -17,7 +17,8 @@ title: Stability AI
 [Stability API Configuration](/api/classes/StabilityApiConfiguration)
 
 ```ts
-const api = new StabilityApiConfiguration({
+const api = stability.Api({
+  host: "myproxy.host",
   // ...
 });
 

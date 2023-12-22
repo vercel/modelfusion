@@ -1,3 +1,5 @@
+import { BaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlPartsApiConfiguration.js";
+import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 import {
   StabilityImageGenerationModel,
   StabilityImageGenerationSettings,
@@ -29,4 +31,16 @@ import {
  */
 export function ImageGenerator(settings: StabilityImageGenerationSettings) {
   return new StabilityImageGenerationModel(settings);
+}
+
+/**
+ * Creates an API configuration for the Stability AI API.
+ * It calls the API at https://api.stability.ai/v1 by default.
+ */
+export function Api(
+  settings: Partial<BaseUrlPartsApiConfigurationOptions> & {
+    apiKey?: string;
+  }
+) {
+  return new StabilityApiConfiguration(settings);
 }

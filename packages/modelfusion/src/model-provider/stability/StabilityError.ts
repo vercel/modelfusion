@@ -1,10 +1,12 @@
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
-import { ResponseHandler } from "../../core/api/postToApi.js";
+import {
+  ResponseHandler,
+  createJsonErrorResponseHandler,
+} from "../../core/api/postToApi.js";
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
 
-export const stabilityErrorDataSchema = new ZodSchema(
+const stabilityErrorDataSchema = new ZodSchema(
   z.object({
     message: z.string(),
   })
@@ -12,41 +14,8 @@ export const stabilityErrorDataSchema = new ZodSchema(
 
 export type StabilityErrorData = (typeof stabilityErrorDataSchema)["_type"];
 
-export class StabilityError extends ApiCallError {
-  public readonly data: StabilityErrorData;
-
-  constructor({
-    data,
-    statusCode,
-    url,
-    requestBodyValues,
-    message = data.message,
-  }: {
-    message?: string;
-    statusCode: number;
-    url: string;
-    requestBodyValues: unknown;
-    data: StabilityErrorData;
-  }) {
-    super({ message, statusCode, requestBodyValues, url });
-
-    this.data = data;
-  }
-}
-
-export const failedStabilityCallResponseHandler: ResponseHandler<
-  ApiCallError
-> = async ({ response, url, requestBodyValues }) => {
-  const responseBody = await response.text();
-  const parsedError = parseJSON({
-    text: responseBody,
-    schema: stabilityErrorDataSchema,
+export const failedStabilityCallResponseHandler: ResponseHandler<ApiCallError> =
+  createJsonErrorResponseHandler({
+    errorSchema: stabilityErrorDataSchema,
+    errorToMessage: (error) => error.message,
   });
-
-  return new StabilityError({
-    url,
-    requestBodyValues,
-    statusCode: response.status,
-    data: parsedError,
-  });
-};

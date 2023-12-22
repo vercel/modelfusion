@@ -1,23 +1,32 @@
-import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration.js";
-import { RetryFunction } from "../../core/api/RetryFunction.js";
-import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
+import {
+  BaseUrlPartsApiConfiguration,
+  BaseUrlPartsApiConfigurationOptions,
+} from "../../core/api/BaseUrlPartsApiConfiguration.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
 
-export class StabilityApiConfiguration extends BaseUrlApiConfiguration {
+/**
+ * Creates an API configuration for the Stability AI API.
+ * It calls the API at https://api.stability.ai/v1 by default.
+ */
+export class StabilityApiConfiguration extends BaseUrlPartsApiConfiguration {
   constructor({
-    baseUrl = "https://api.stability.ai/v1",
+    protocol = "https",
+    host = "api.stability.ai",
+    port = "443",
+    path = "/v1",
     apiKey,
+    headers,
     retry,
     throttle,
-  }: {
-    baseUrl?: string;
+  }: Partial<BaseUrlPartsApiConfigurationOptions> & {
     apiKey?: string;
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
   } = {}) {
     super({
-      baseUrl,
-      headers: {
+      protocol,
+      host,
+      port,
+      path,
+      headers: headers ?? {
         Authorization: `Bearer ${loadApiKey({
           apiKey,
           environmentVariableName: "STABILITY_API_KEY",
