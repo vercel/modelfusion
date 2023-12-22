@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.102.0 - 2023-12-22
+
+### Added
+
+- You can specify `numberOfGenerations` on image generation models and create multiple images by using the `fullResponse: true` option. Example:
+
+  ```ts
+  // generate 2 images:
+  const { images } = await generateImage(
+    openai.ImageGenerator({
+      model: "dall-e-3",
+      numberOfGenerations: 2,
+      size: "1024x1024",
+    }),
+    "the wicked witch of the west in the style of early 19th century painting",
+    { fullResponse: true }
+  );
+  ```
+
+- **breaking change**: Image generation models use a generalized `numberOfGenerations` parameter (instead of model specific parameters) to specify the number of generations.
+
 ## v0.101.0 - 2023-12-22
 
 ### Changed
