@@ -1,7 +1,7 @@
 {
   "name": "modelfusion",
   "description": "The TypeScript library for building multi-modal AI applications.",
-  "version": "0.100.0",
+  "version": "0.101.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
@@ -65,7 +65,7 @@
     "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
-    "build:copy-files": "copyfiles --flat package.json ../../README.md ../../LICENSE dist",
+    "build:copy-files": "copyfiles --flat package.json ../../README.md ../../LICENSE ../../CHANGELOG.md dist",
     "test": "vitest --config vitest.config.js --run src",
     "test:watch": "vitest watch--config vitest.config.js",
     "test:coverage": "vitest run --coverage",

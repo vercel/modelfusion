@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.101.0 - 2023-12-22
+
+### Changed
+
+- Automatic1111 Stable Diffusion Web UI configuration has separate configuration of host, port, and path.
+
+### Fixed
+
+- Automatic1111 Stable Diffusion Web UI uses negative prompt and seed.
+
 ## v0.100.0 - 2023-12-17
 
 ### Added
@@ -18,7 +28,7 @@
 
 ### Added
 
-- You can now specify `numberOfGenerations` on text generation models and access multiple generations by using the `fullResponse: true` option. Example:
+- You can specify `numberOfGenerations` on text generation models and access multiple generations by using the `fullResponse: true` option. Example:
 
   ```ts
   // generate 2 texts:
@@ -33,7 +43,7 @@
   );
   ```
 
-- **breaking change**: Text generation models now use a generalized `numberOfGenerations` parameter (instead of model specific parameters) to specify the number of generations.
+- **breaking change**: Text generation models use a generalized `numberOfGenerations` parameter (instead of model specific parameters) to specify the number of generations.
 
 ### Changed
 
@@ -43,7 +53,7 @@
 
 ### Changed
 
-- **breaking change**: `responseType` option was changed into `fullResponse` option and now uses a boolean value to make discovery easy. The response values from the full response have been renamed for clarity. For base64 image generation, you can use the `imageBase64` value from the full response:
+- **breaking change**: `responseType` option was changed into `fullResponse` option and uses a boolean value to make discovery easy. The response values from the full response have been renamed for clarity. For base64 image generation, you can use the `imageBase64` value from the full response:
 
   ```ts
   const { imageBase64 } = await generateImage(model, prompt, {
@@ -57,7 +67,7 @@
 
 ### Fixed
 
-- Streaming OpenAI chat text generation when setting `n:2` or higher now returns only the stream from the first choice.
+- Streaming OpenAI chat text generation when setting `n:2` or higher returns only the stream from the first choice.
 
 ## v0.97.0 - 2023-12-14
 
@@ -126,7 +136,7 @@
 ### Changed
 
 - **breaking change**: setting global function observers and global logging has changed.
-  You can now call methods on a `modelfusion` import:
+  You can call methods on a `modelfusion` import:
 
   ```ts
   import { modelfusion } from "modelfusion";
@@ -240,7 +250,7 @@
 
 ## v0.81.0 - 2023-11-25
 
-**breaking change**: `generateStructure` and `streamStructure` redesign. The new API does not require function calling and `StructureDefinition` objects any more. This makes it more flexible and it can now be used in 3 ways:
+**breaking change**: `generateStructure` and `streamStructure` redesign. The new API does not require function calling and `StructureDefinition` objects any more. This makes it more flexible and it can be used in 3 ways:
 
 - with OpenAI function calling:
 
@@ -357,7 +367,7 @@ const image = await generateImage(
 
 ### Added
 
-- Model provider facades. You can e.g. now use `ollama.TextGenerator(...)` instead of `new OllamaTextGenerationModel(...)`.
+- Model provider facades. You can e.g. use `ollama.TextGenerator(...)` instead of `new OllamaTextGenerationModel(...)`.
 
 ### Changed
 
@@ -421,9 +431,9 @@ Ollama edge case and error handling improvements.
 
 ### Changed
 
-- `Tool` now has `parameters` and `returnType` schemas (instead of `inputSchema` and `outputSchema`).
+- `Tool` has `parameters` and `returnType` schemas (instead of `inputSchema` and `outputSchema`).
 - `useTool` uses `generateToolCall` under the hood. The return value and error handling has changed.
-- `useToolOrGenerateText` has been renamed to `useToolsOrGenerateText`. It now uses `generateToolCallsOrText` under the hood. The return value and error handling has changed. It can now invoke several tools in parallel and returns an array of tool results.
+- `useToolOrGenerateText` has been renamed to `useToolsOrGenerateText`. It uses `generateToolCallsOrText` under the hood. The return value and error handling has changed. It can invoke several tools in parallel and returns an array of tool results.
 - The `maxRetries` parameter in `guard` has been replaced by a `maxAttempt` parameter.
 
 ### Removed
@@ -445,7 +455,7 @@ Ollama edge case and error handling improvements.
 ### Changed
 
 - **breaking change**: `ChatPrompt` structure and terminology has changed to align more closely with OpenAI and similar chat prompts. This is also in preparation for integrating images and function calls results into chat prompts.
-- **breaking change**: Prompt formats are now namespaced. Use e.g. `Llama2PromptFormat.chat()` instead of `mapChatPromptToLlama2Format()`. See [Prompt Format](https://modelfusion.dev/guide/function/generate-text#prompt-format) for documentation of the new prompt formats.
+- **breaking change**: Prompt formats are namespaced. Use e.g. `Llama2PromptFormat.chat()` instead of `mapChatPromptToLlama2Format()`. See [Prompt Format](https://modelfusion.dev/guide/function/generate-text#prompt-format) for documentation of the new prompt formats.
 
 ## v0.69.0 - 2023-11-15
 
@@ -457,7 +467,7 @@ Ollama edge case and error handling improvements.
 
 ### Changed
 
-- Refactored JSON parsing to use abstracted schemas. You can now use `parseJSON` and `safeParseJSON` to securely parse JSON objects and optionally type-check them using any schema (e.g. a Zod schema).
+- Refactored JSON parsing to use abstracted schemas. You can use `parseJSON` and `safeParseJSON` to securely parse JSON objects and optionally type-check them using any schema (e.g. a Zod schema).
 
 ## v0.67.0 - 2023-11-12
 
@@ -512,7 +522,7 @@ Ollama edge case and error handling improvements.
 
 ### Changed
 
-- **breaking change**: `OpenAIImageGenerationModel` now requires a `model` parameter.
+- **breaking change**: `OpenAIImageGenerationModel` requires a `model` parameter.
 
 ## v0.60.0 - 2023-11-06
 
@@ -534,7 +544,7 @@ Ollama edge case and error handling improvements.
 
 ### Fixed
 
-- **breaking change**: Uncaught errors were caused by custom Promises. ModelFusion now uses only standard Promises. To get full responses from model function, you now need to use the `{ returnType: "full" }` option instead of calling `.asFullResponse()` on the result.
+- **breaking change**: Uncaught errors were caused by custom Promises. ModelFusion uses only standard Promises. To get full responses from model function, you need to use the `{ returnType: "full" }` option instead of calling `.asFullResponse()` on the result.
 
 ## v0.57.1 - 2023-11-05
 
@@ -582,7 +592,7 @@ Adding experimental ModelFusion server, flows, and browser utils.
 
 ### Changed
 
-- **breaking change**: `readEventSource` and `readEventSourceStream` are now part of 'modelfusion/browser'.
+- **breaking change**: `readEventSource` and `readEventSourceStream` are part of 'modelfusion/browser'.
 
 ## v0.53.2 - 2023-10-26
 
@@ -833,7 +843,7 @@ ElevenLabs improvements.
 
 ### Added
 
-- You can now directly pass JSON schemas into `generateStructure` and `generateStructureOrText` calls without validation using `UncheckedJsonSchemaStructureDefinition`. This is useful when you need more flexility and don't require type inference. See `examples/basic/src/util/schema/generate-structure-unchecked-json-schema-example.ts`.
+- You can directly pass JSON schemas into `generateStructure` and `generateStructureOrText` calls without validation using `UncheckedJsonSchemaStructureDefinition`. This is useful when you need more flexility and don't require type inference. See `examples/basic/src/util/schema/generate-structure-unchecked-json-schema-example.ts`.
 
 ### Changed
 
@@ -948,7 +958,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 
 ### Changed
 
-- Introduced unified `stopSequences` and `maxCompletionTokens` properties for all text generation models. **Breaking change**: `maxCompletionTokens` and `stopSequences` are part of the base TextGenerationModel. Specific names for these properties in models have been replaced by this, e.g. `maxTokens` in OpenAI models is now `maxCompletionTokens`.
+- Introduced unified `stopSequences` and `maxCompletionTokens` properties for all text generation models. **Breaking change**: `maxCompletionTokens` and `stopSequences` are part of the base TextGenerationModel. Specific names for these properties in models have been replaced by this, e.g. `maxTokens` in OpenAI models is `maxCompletionTokens`.
 
 ## v0.14.0 - 2023-08-17
 
@@ -1168,7 +1178,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 
 ### Fixed
 
-- Bugs related to performance.now not being available.
+- Bugs related to performance. not being available.
 
 ## v0.0.29 - 2023-07-13
 
