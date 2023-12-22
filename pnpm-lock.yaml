@@ -103,7 +103,7 @@ importers:
         specifier: ^22.1.0
         version: 22.1.0
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
       serpapi:
         specifier: ^2.0.0
@@ -140,7 +140,7 @@ importers:
         specifier: 16.0.3
         version: 16.0.3
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
       nanoid:
         specifier: 3.3.6
@@ -180,7 +180,7 @@ importers:
         specifier: 5.12.2
         version: 5.12.2(@emotion/react@11.10.8)(@emotion/styled@11.10.8)(@types/react@18.2.15)(react-dom@18.2.0)(react@18.2.0)
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
       next:
         specifier: 13.5.1
@@ -217,7 +217,7 @@ importers:
   examples/cloudflare-workers:
     dependencies:
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
     devDependencies:
       '@cloudflare/workers-types':
@@ -239,7 +239,7 @@ importers:
         specifier: ^11.11.0
         version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.15)(react@18.2.0)
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
       next:
         specifier: 13.5.1
@@ -276,7 +276,7 @@ importers:
         specifier: 16.0.3
         version: 16.0.3
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
       zod:
         specifier: 3.22.4
@@ -295,7 +295,7 @@ importers:
         specifier: 16.0.3
         version: 16.0.3
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
       pdfjs-dist:
         specifier: 3.6.172
@@ -314,7 +314,7 @@ importers:
         specifier: 16.0.3
         version: 16.0.3
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
       pdfjs-dist:
         specifier: 3.6.172
@@ -351,7 +351,7 @@ importers:
         specifier: ^4.23.2
         version: 4.25.1
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
       react:
         specifier: ^18.2.0
@@ -430,7 +430,7 @@ importers:
         specifier: ^22.1.0
         version: 22.1.0
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
       zod:
         specifier: 3.22.4
@@ -464,7 +464,7 @@ importers:
         specifier: 9.0.0
         version: 9.0.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../modelfusion/dist
       zod:
         specifier: 3.22.4
@@ -492,7 +492,7 @@ importers:
         specifier: 9.0.0
         version: 9.0.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../modelfusion/dist
     publishDirectory: dist
 
@@ -518,7 +518,7 @@ importers:
         specifier: 9.0.0
         version: 9.0.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../modelfusion/dist
       zod:
         specifier: 3.22.4
@@ -549,7 +549,7 @@ importers:
         specifier: 9.0.0
         version: 9.0.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../modelfusion/dist
       sqlite-vss:
         specifier: ^0.1.2
@@ -646,7 +646,7 @@ importers:
         specifier: 16.0.3
         version: 16.0.3
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
 
   test-environments/esm:
@@ -655,7 +655,7 @@ importers:
         specifier: 16.0.3
         version: 16.0.3
       modelfusion:
-        specifier: 0.100.0
+        specifier: 0.101.0
         version: link:../../packages/modelfusion/dist
 
 packages:

@@ -15,6 +15,6 @@
     "wrangler": "^3.0.0"
   },
   "dependencies": {
-    "modelfusion": "0.100.0"
+    "modelfusion": "0.101.0"
   }
 }
