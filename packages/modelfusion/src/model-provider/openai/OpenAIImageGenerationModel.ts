@@ -128,21 +128,30 @@ export class OpenAIImageGenerationModel
       responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
     } & FunctionOptions
   ): Promise<RESULT> {
-    const run = options?.run;
+    const api = this.settings.api ?? new OpenAIApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
+    const userId = options?.run?.userId;
     const responseFormat = options?.responseFormat;
 
-    const callSettings = {
-      ...this.settings,
-      user: this.settings.isUserIdForwardingEnabled ? run?.userId : undefined,
-      abortSignal: run?.abortSignal,
-      responseFormat,
-      prompt,
-    };
-
     return callWithRetryAndThrottle({
-      retry: callSettings.api?.retry,
-      throttle: callSettings.api?.throttle,
-      call: async () => callOpenAIImageGenerationAPI(callSettings),
+      retry: api.retry,
+      throttle: api.throttle,
+      call: async () => {
+        return postJsonToApi({
+          url: api.assembleUrl("/images/generations"),
+          headers: api.headers,
+          body: {
+            prompt,
+            n: this.settings.n,
+            size: this.settings.size,
+            response_format: responseFormat.type,
+            user: this.settings.isUserIdForwardingEnabled ? userId : undefined,
+          },
+          failedResponseHandler: failedOpenAICallResponseHandler,
+          successfulResponseHandler: responseFormat?.handler,
+          abortSignal,
+        });
+      },
     });
   }
 
@@ -234,34 +243,3 @@ export const OpenAIImageGenerationResponseFormat = {
     handler: createJsonResponseHandler(openAIImageGenerationBase64JsonSchema),
   },
 };
-
-async function callOpenAIImageGenerationAPI<RESPONSE>({
-  api = new OpenAIApiConfiguration(),
-  abortSignal,
-  prompt,
-  n,
-  size,
-  responseFormat,
-  user,
-}: OpenAIImageGenerationCallSettings & {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  prompt: string;
-  responseFormat: OpenAIImageGenerationResponseFormatType<RESPONSE>;
-  user?: string;
-}): Promise<RESPONSE> {
-  return postJsonToApi({
-    url: api.assembleUrl("/images/generations"),
-    headers: api.headers,
-    body: {
-      prompt,
-      n,
-      size,
-      response_format: responseFormat.type,
-      user,
-    },
-    failedResponseHandler: failedOpenAICallResponseHandler,
-    successfulResponseHandler: responseFormat?.handler,
-    abortSignal,
-  });
-}
