@@ -461,8 +461,8 @@ importers:
         specifier: ^8.45.0
         version: 8.56.0
       eslint-config-prettier:
-        specifier: 9.0.0
-        version: 9.0.0(eslint@8.56.0)
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
       modelfusion:
         specifier: 0.102.0
         version: link:../modelfusion/dist
@@ -489,8 +489,8 @@ importers:
         specifier: ^8.45.0
         version: 8.56.0
       eslint-config-prettier:
-        specifier: 9.0.0
-        version: 9.0.0(eslint@8.56.0)
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
       modelfusion:
         specifier: 0.102.0
         version: link:../modelfusion/dist
@@ -515,8 +515,8 @@ importers:
         specifier: ^8.45.0
         version: 8.56.0
       eslint-config-prettier:
-        specifier: 9.0.0
-        version: 9.0.0(eslint@8.56.0)
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
       modelfusion:
         specifier: 0.102.0
         version: link:../modelfusion/dist
@@ -546,8 +546,8 @@ importers:
         specifier: ^8.45.0
         version: 8.56.0
       eslint-config-prettier:
-        specifier: 9.0.0
-        version: 9.0.0(eslint@8.56.0)
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
       modelfusion:
         specifier: 0.102.0
         version: link:../modelfusion/dist
@@ -577,8 +577,8 @@ importers:
         specifier: ^8.45.0
         version: 8.56.0
       eslint-config-prettier:
-        specifier: 9.0.0
-        version: 9.0.0(eslint@8.56.0)
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
       modelfusion:
         specifier: '>=0.89.0 <1.0.0-0'
         version: link:../modelfusion/dist
@@ -630,8 +630,8 @@ importers:
         specifier: ^8.45.0
         version: 8.56.0
       eslint-config-prettier:
-        specifier: 9.0.0
-        version: 9.0.0(eslint@8.56.0)
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
       fastify:
         specifier: ^4.0.0
         version: 4.25.1
@@ -7891,8 +7891,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /eslint-config-prettier@9.0.0(eslint@8.56.0):
-    resolution: {integrity: sha512-IcJsTkJae2S35pRsRAwoCE+925rJJStOdkKnLVgtE+tEpqU0EVVM7OqrwxqgptKdX29NUwC82I5pXsGFIgSevw==}
+  /eslint-config-prettier@9.1.0(eslint@8.56.0):
+    resolution: {integrity: sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
