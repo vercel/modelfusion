@@ -33,6 +33,8 @@ The settings can be set in the constructor of the model, or in the `withSettings
 
 [generateText API](/api/modules#generatetext)
 
+You can generate text and get a single completion string response by using the `generateText` function. `generateText` takes a [TextGenerationModel](/api/interfaces/TextGenerationModel), a prompt that matches the format accepted by the model, and optional options as arguments.
+
 #### Example: OpenAI text model
 
 ```ts
@@ -56,21 +58,6 @@ const text = await generateText(openai.ChatTextGenerator(/* ... */), [
 ]);
 ```
 
-#### Example: Generate multiple completions
-
-```ts
-import { generateText, openai } from "modelfusion";
-
-const { texts } = await generateText(
-  openai.CompletionTextGenerator({
-    model: "gpt-3.5-turbo-instruct",
-    numberOfGenerations: 2,
-  }),
-  "Write a short story about a robot learning to love:",
-  { fullResponse: true }
-);
-```
-
 #### Example: OpenAI chat model with multi-modal input
 
 Multi-modal vision models such as GPT 4 Vision can process images as part of the prompt.
@@ -86,6 +73,42 @@ const text = await generateText(
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
   ]
+);
+```
+
+When you set the `fullResponse` option to `true`, you get get a rich response object with the following properties:
+
+- **text**: The generated of the first result.
+- **finishReason**: The finish reason of the first result. It can be `stop` (the model stopped because it generated a stop sequence), `length` (the model stopped because it generated the maximum number of tokens), `content-filter` (the model stopped because the content filter detected a violation), `tool-calls` (the model stopped because it triggered a tool call), `error` (the model stopped because of an error), `other` (the model stopped for another reason), or `unknown` (the model stop reason is not know or the model does not support finish reasons).
+- **texts**: The generated texts of all results. Useful when you set `numberOfGenerations` to a value greater than 1.
+- **textGenerationResults**: The generated text generation results of all results and their finish reasons. Useful when you set `numberOfGenerations` to a value greater than 1.
+- **response**: The raw response of the model.
+- **metadata**: The metadata for model call.
+
+#### Example: Generate multiple completions
+
+```ts
+import { generateText, openai } from "modelfusion";
+
+const { texts } = await generateText(
+  openai.CompletionTextGenerator({
+    model: "gpt-3.5-turbo-instruct",
+    numberOfGenerations: 2,
+  }),
+  "Write a short story about a robot learning to love:",
+  { fullResponse: true }
+);
+```
+
+#### Example: Accessing the finish reason
+
+```ts
+import { generateText, openai } from "modelfusion";
+
+const { text, finishReason } = await generateText(
+  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  "Write a short story about a robot learning to love:",
+  { fullResponse: true }
 );
 ```
 
