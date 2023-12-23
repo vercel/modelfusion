@@ -152,7 +152,9 @@ export class Automatic1111ImageGenerationModel
     });
   }
 
-  withSettings(additionalSettings: Automatic1111ImageGenerationSettings) {
+  withSettings(
+    additionalSettings: Partial<Automatic1111ImageGenerationSettings>
+  ) {
     return new Automatic1111ImageGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
