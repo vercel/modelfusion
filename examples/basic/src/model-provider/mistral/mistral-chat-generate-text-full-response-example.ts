@@ -23,10 +23,12 @@ async function main() {
     { fullResponse: true }
   );
 
-  console.log(JSON.stringify(response));
+  console.log("RESPONSE:");
+  console.log(JSON.stringify(response, null, 2));
   console.log();
 
   // cast to the response type:
+  console.log("CHOICES:");
   for (const choice of (response as MistralChatResponse).choices) {
     console.log(choice.message);
     console.log(choice.finish_reason);
