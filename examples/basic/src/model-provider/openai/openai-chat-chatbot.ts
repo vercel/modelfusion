@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { TextChatPrompt, openai, streamText } from "modelfusion";
+import { ChatPrompt, openai, streamText } from "modelfusion";
 import * as readline from "node:readline/promises";
 
 dotenv.config();
@@ -12,7 +12,7 @@ const terminal = readline.createInterface({
 });
 
 async function main() {
-  const chat: TextChatPrompt = { system: systemPrompt, messages: [] };
+  const chat: ChatPrompt = { system: systemPrompt, messages: [] };
 
   while (true) {
     const userInput = await terminal.question("You: ");

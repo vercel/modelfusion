@@ -1,7 +1,11 @@
-import { MultiModalInput } from "./Content.js";
+import { Content } from "./Content.js";
 
 /**
- * A textual chat prompt is a combination of a system message and a list of user and assistant messages.
+ * A chat prompt is a combination of a system message and a list of user and assistant messages.
+ *
+ * The user messages can contain multi-modal content.
+ *
+ * Note: Not all models and prompt formats support multi-modal inputs.
  *
  * @example
  * ```ts
@@ -15,24 +19,16 @@ import { MultiModalInput } from "./Content.js";
  * };
  * ```
  */
-export interface TextChatPrompt {
+export interface ChatPrompt {
   system?: string;
-  messages: Array<TextChatMessage>;
+  messages: Array<ChatMessage>;
 }
 
 /**
- * A text message in a chat prompt.
- * @see TextChatPrompt
+ * A message in a chat prompt.
+ *
+ * @see ChatPrompt
  */
-export type TextChatMessage =
-  | { role: "user"; content: string }
-  | { role: "assistant"; content: string };
-
-export interface MultiModalChatPrompt {
-  system?: string;
-  messages: Array<MultiModalChatMessage>;
-}
-
-export type MultiModalChatMessage =
-  | { role: "user"; content: MultiModalInput }
+export type ChatMessage =
+  | { role: "user"; content: Content }
   | { role: "assistant"; content: string };

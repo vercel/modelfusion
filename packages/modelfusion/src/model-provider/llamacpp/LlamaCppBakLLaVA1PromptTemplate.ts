@@ -1,6 +1,6 @@
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { MultiModalChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { MultiModalInstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { LlamaCppTextGenerationPrompt } from "./LlamaCppTextGenerationModel.js";
 
 // default Vicuna 1 system message
@@ -14,7 +14,7 @@ const DEFAULT_SYSTEM_MESSAGE =
  * @see https://github.com/SkunkworksAI/BakLLaVA
  */
 export function instruction(): TextGenerationPromptTemplate<
-  MultiModalInstructionPrompt,
+  InstructionPrompt,
   LlamaCppTextGenerationPrompt
 > {
   return {
@@ -25,24 +25,29 @@ export function instruction(): TextGenerationPromptTemplate<
 
       text += `USER: `;
 
-      // construct text and image mapping:
-      let imageCounter = 1;
       const images: Record<string, string> = {};
-      for (const content of prompt.instruction) {
-        switch (content.type) {
-          case "text": {
-            text += content.text;
-            break;
-          }
-          case "image": {
-            text += `[img-${imageCounter}]`;
-            images[imageCounter.toString()] = content.base64Image;
-            imageCounter++;
-            break;
-          }
-        }
 
-        text += `${content}\n`;
+      if (typeof prompt.instruction === "string") {
+        text += `${prompt.instruction}\n`;
+      } else {
+        // construct text and image mapping:
+        let imageCounter = 1;
+        for (const content of prompt.instruction) {
+          switch (content.type) {
+            case "text": {
+              text += content.text;
+              break;
+            }
+            case "image": {
+              text += `[img-${imageCounter}]`;
+              images[imageCounter.toString()] = content.base64Image;
+              imageCounter++;
+              break;
+            }
+          }
+
+          text += `${content}\n`;
+        }
       }
 
       text += `\nASSISTANT: `;
@@ -54,7 +59,7 @@ export function instruction(): TextGenerationPromptTemplate<
 }
 
 export function chat(): TextGenerationPromptTemplate<
-  MultiModalChatPrompt,
+  ChatPrompt,
   LlamaCppTextGenerationPrompt
 > {
   return {
@@ -71,6 +76,11 @@ export function chat(): TextGenerationPromptTemplate<
         switch (role) {
           case "user": {
             text += `USER: `;
+
+            if (typeof content === "string") {
+              text += content;
+              break;
+            }
 
             for (const part of content) {
               switch (part.type) {

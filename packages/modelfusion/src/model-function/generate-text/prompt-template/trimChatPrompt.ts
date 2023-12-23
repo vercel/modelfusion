@@ -4,7 +4,7 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../TextGenerationModel.js";
-import { TextChatPrompt } from "./ChatPrompt.js";
+import { ChatPrompt } from "./ChatPrompt.js";
 
 /**
  * Keeps only the most recent messages in the prompt, while leaving enough space for the completion.
@@ -22,12 +22,12 @@ export async function trimChatPrompt({
   tokenLimit = model.contextWindowSize -
     (model.settings.maxGenerationTokens ?? model.contextWindowSize / 4),
 }: {
-  prompt: TextChatPrompt;
-  model: TextGenerationModel<TextChatPrompt, TextGenerationModelSettings> &
-    HasTokenizer<TextChatPrompt> &
+  prompt: ChatPrompt;
+  model: TextGenerationModel<ChatPrompt, TextGenerationModelSettings> &
+    HasTokenizer<ChatPrompt> &
     HasContextWindowSize;
   tokenLimit?: number;
-}): Promise<TextChatPrompt> {
+}): Promise<ChatPrompt> {
   let minimalPrompt = {
     system: prompt.system,
     messages: [prompt.messages[prompt.messages.length - 1]], // last user message

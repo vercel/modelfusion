@@ -1,6 +1,7 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { TextChatPrompt } from "./ChatPrompt.js";
-import { TextInstructionPrompt } from "./InstructionPrompt.js";
+import { ChatPrompt } from "./ChatPrompt.js";
+import { validateContentIsString } from "./Content.js";
+import { InstructionPrompt } from "./InstructionPrompt.js";
 
 const roleNames = {
   system: "System",
@@ -40,14 +41,16 @@ export function text(): TextGenerationPromptTemplate<string, string> {
  * @see https://huggingface.co/Intel/neural-chat-7b-v3-1#prompt-template
  */
 export const instruction: () => TextGenerationPromptTemplate<
-  TextInstructionPrompt,
+  InstructionPrompt,
   string
 > = () => ({
   stopSequences: [],
   format(prompt) {
+    const instruction = validateContentIsString(prompt.instruction, prompt);
+
     return (
       segment("system", prompt.system) +
-      segment("user", prompt.instruction) +
+      segment("user", instruction) +
       segmentStart("assistant") +
       (prompt.responsePrefix ?? "")
     );
@@ -61,7 +64,7 @@ export const instruction: () => TextGenerationPromptTemplate<
  * @param assistant The label of the assistant in the chat. Default to "assistant".
  * @param system The label of the system in the chat. Optional, defaults to no prefix.
  */
-export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
+export function chat(): TextGenerationPromptTemplate<ChatPrompt, string> {
   return {
     format(prompt) {
       let text = prompt.system != null ? segment("system", prompt.system) : "";
@@ -69,7 +72,8 @@ export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
       for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
-            text += segment("user", content);
+            const textContent = validateContentIsString(content, prompt);
+            text += segment("user", textContent);
             break;
           }
           case "assistant": {

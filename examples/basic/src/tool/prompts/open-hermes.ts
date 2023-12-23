@@ -1,5 +1,5 @@
 import {
-  TextInstructionPrompt,
+  InstructionPrompt,
   ToolCallsOrGenerateTextPromptTemplate,
   ToolDefinition,
   zodSchema,
@@ -10,7 +10,7 @@ import { z } from "zod";
 
 export const openHermesToolCallsPromptTemplate: ToolCallsOrGenerateTextPromptTemplate<
   string,
-  TextInstructionPrompt
+  InstructionPrompt
 > = {
   createPrompt(prompt: string, tools: Array<ToolDefinition<string, unknown>>) {
     // prompt inspired by https://github.com/abacaj/openhermes-function-calling/

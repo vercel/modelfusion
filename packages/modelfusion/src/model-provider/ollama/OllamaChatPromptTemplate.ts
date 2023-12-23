@@ -1,13 +1,7 @@
-import { MultiModalInput } from "index.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import {
-  MultiModalChatPrompt,
-  TextChatPrompt,
-} from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import {
-  MultiModalInstructionPrompt,
-  TextInstructionPrompt,
-} from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { Content } from "../../model-function/generate-text/prompt-template/Content.js";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { OllamaChatPrompt } from "./OllamaChatModel.js";
 
 /**
@@ -34,7 +28,7 @@ export function text(): TextGenerationPromptTemplate<string, OllamaChatPrompt> {
  * Formats an instruction prompt as an Ollama chat prompt.
  */
 export function instruction(): TextGenerationPromptTemplate<
-  MultiModalInstructionPrompt | TextInstructionPrompt,
+  InstructionPrompt,
   OllamaChatPrompt
 > {
   return {
@@ -57,7 +51,7 @@ export function instruction(): TextGenerationPromptTemplate<
  * Formats a chat prompt as an Ollama chat prompt.
  */
 export function chat(): TextGenerationPromptTemplate<
-  MultiModalChatPrompt | TextChatPrompt,
+  ChatPrompt,
   OllamaChatPrompt
 > {
   return {
@@ -78,21 +72,21 @@ export function chat(): TextGenerationPromptTemplate<
   };
 }
 
-function extractContent(input: string | MultiModalInput) {
+function extractContent(input: Content) {
   if (typeof input === "string") {
     return { content: input, images: undefined };
-  } else {
-    const images: string[] = [];
-    let content = "";
-
-    for (const part of input) {
-      if (part.type === "text") {
-        content += part.text;
-      } else {
-        images.push(part.base64Image);
-      }
-    }
-
-    return { content, images };
   }
+
+  const images: string[] = [];
+  let content = "";
+
+  for (const part of input) {
+    if (part.type === "text") {
+      content += part.text;
+    } else {
+      images.push(part.base64Image);
+    }
+  }
+
+  return { content, images };
 }

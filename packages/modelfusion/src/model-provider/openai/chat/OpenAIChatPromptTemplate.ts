@@ -1,12 +1,6 @@
 import { TextGenerationPromptTemplate } from "../../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import {
-  MultiModalChatPrompt,
-  TextChatPrompt,
-} from "../../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import {
-  MultiModalInstructionPrompt,
-  TextInstructionPrompt,
-} from "../../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { ChatPrompt } from "../../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { InstructionPrompt } from "../../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { OpenAIChatPrompt } from "./AbstractOpenAIChatModel.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 
@@ -34,7 +28,7 @@ export function text(): TextGenerationPromptTemplate<string, OpenAIChatPrompt> {
  * Formats an instruction prompt as an OpenAI chat prompt.
  */
 export function instruction(): TextGenerationPromptTemplate<
-  MultiModalInstructionPrompt | TextInstructionPrompt,
+  InstructionPrompt,
   OpenAIChatPrompt
 > {
   return {
@@ -57,7 +51,7 @@ export function instruction(): TextGenerationPromptTemplate<
  * Formats a chat prompt as an OpenAI chat prompt.
  */
 export function chat(): TextGenerationPromptTemplate<
-  MultiModalChatPrompt | TextChatPrompt,
+  ChatPrompt,
   OpenAIChatPrompt
 > {
   return {

@@ -1,6 +1,7 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { TextChatPrompt } from "./ChatPrompt.js";
-import { TextInstructionPrompt } from "./InstructionPrompt.js";
+import { ChatPrompt } from "./ChatPrompt.js";
+import { validateContentIsString } from "./Content.js";
+import { InstructionPrompt } from "./InstructionPrompt.js";
 import { InvalidPromptError } from "./InvalidPromptError.js";
 
 // see https://github.com/facebookresearch/llama/blob/6c7fe276574e78057f917549435a2554000a876d/llama/generation.py#L44
@@ -46,17 +47,19 @@ export function text(): TextGenerationPromptTemplate<string, string> {
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
  */
 export function instruction(): TextGenerationPromptTemplate<
-  TextInstructionPrompt,
+  InstructionPrompt,
   string
 > {
   return {
     stopSequences: [END_SEGMENT],
     format(prompt) {
+      const instruction = validateContentIsString(prompt.instruction, prompt);
+
       return `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${
         prompt.system != null
           ? `${BEGIN_SYSTEM}${prompt.system}${END_SYSTEM}`
           : ""
-      }${prompt.instruction}${END_INSTRUCTION}${prompt.responsePrefix ?? ""}`;
+      }${instruction}${END_INSTRUCTION}${prompt.responsePrefix ?? ""}`;
     },
   };
 }
@@ -73,10 +76,10 @@ export function instruction(): TextGenerationPromptTemplate<
  * ${ user msg 1 } [/INST] ${ model response 1 } </s><s>[INST] ${ user msg 2 } [/INST] ${ model response 2 } </s><s>[INST] ${ user msg 3 } [/INST]
  * ```
  */
-export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
+export function chat(): TextGenerationPromptTemplate<ChatPrompt, string> {
   return {
     format(prompt) {
-      validateLlama2hatPrompt(prompt);
+      validateLlama2Prompt(prompt);
 
       let text =
         prompt.system != null
@@ -88,7 +91,8 @@ export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
       for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
-            text += `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${content}${END_INSTRUCTION}`;
+            const textContent = validateContentIsString(content, prompt);
+            text += `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${textContent}${END_INSTRUCTION}`;
             break;
           }
           case "assistant": {
@@ -119,7 +123,7 @@ export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
  *
  * @throws {@link ChatPromptValidationError}
  */
-export function validateLlama2hatPrompt(chatPrompt: TextChatPrompt) {
+export function validateLlama2Prompt(chatPrompt: ChatPrompt) {
   const messages = chatPrompt.messages;
 
   if (messages.length < 1) {
