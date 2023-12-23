@@ -1,8 +1,5 @@
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import {
-  TextChatPrompt,
-  validateChatPrompt,
-} from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { TextChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
 import { TextInstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 
 const HUMAN_PREFIX = "\n\nHuman:";
@@ -57,8 +54,6 @@ export function instruction(): TextGenerationPromptTemplate<
 export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
-
       let text = prompt.system ?? "";
 
       for (const { role, content } of prompt.messages) {

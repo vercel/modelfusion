@@ -275,12 +275,7 @@ The following prompt templates are available for instruction prompts:
 
 Chat prompts are a higher-level prompt template that contains a list of chat messages. They can be either a [TextChatPrompt](/api/interfaces/TextChatPrompt) or a [MultiModalChatPrompt](/api/interfaces/MultiModalChatPrompt).
 
-Chat prompts are a combination of a system message and a list of messages with the following constraints:
-
-- A chat prompt can optionally have a system message.
-- The first message of the chat must be a user message.
-- Then it must be alternating between an assistant message and a user message.
-- The last message must always be a user message (when submitting to a model).
+Chat prompts are a combination of a system message and a list of user and assistant messages.
 
 You can use a ChatPrompt without an final user message when you e.g. want to display the current state of a conversation. The type checking is done at runtime when you submit a chat prompt to a model with a prompt template.
 

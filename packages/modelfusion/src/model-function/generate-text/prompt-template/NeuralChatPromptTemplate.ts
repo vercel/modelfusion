@@ -1,5 +1,5 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { TextChatPrompt } from "./ChatPrompt.js";
 import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
 const roleNames = {
@@ -64,8 +64,6 @@ export const instruction: () => TextGenerationPromptTemplate<
 export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
-
       let text = prompt.system != null ? segment("system", prompt.system) : "";
 
       for (const { role, content } of prompt.messages) {

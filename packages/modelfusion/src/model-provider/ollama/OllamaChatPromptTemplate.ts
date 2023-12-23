@@ -3,7 +3,6 @@ import { TextGenerationPromptTemplate } from "../../model-function/generate-text
 import {
   MultiModalChatPrompt,
   TextChatPrompt,
-  validateChatPrompt,
 } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
 import {
   MultiModalInstructionPrompt,
@@ -63,8 +62,6 @@ export function chat(): TextGenerationPromptTemplate<
 > {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
-
       const messages: OllamaChatPrompt = [];
 
       if (prompt.system != null) {

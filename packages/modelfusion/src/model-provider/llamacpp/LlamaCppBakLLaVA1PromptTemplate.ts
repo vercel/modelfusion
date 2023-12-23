@@ -1,8 +1,5 @@
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import {
-  MultiModalChatPrompt,
-  validateChatPrompt,
-} from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { MultiModalChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
 import { MultiModalInstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { LlamaCppTextGenerationPrompt } from "./LlamaCppTextGenerationModel.js";
 
@@ -62,8 +59,6 @@ export function chat(): TextGenerationPromptTemplate<
 > {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
-
       let text = "";
 
       text += `${prompt.system ?? DEFAULT_SYSTEM_MESSAGE}\n\n`;

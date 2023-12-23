@@ -1,8 +1,5 @@
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import {
-  TextChatPrompt,
-  validateChatPrompt,
-} from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { TextChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
 import { TextInstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { MistralChatPrompt } from "./MistralChatModel.js";
 
@@ -51,8 +48,6 @@ export function chat(): TextGenerationPromptTemplate<
 > {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
-
       const messages: MistralChatPrompt = [];
 
       if (prompt.system != null) {

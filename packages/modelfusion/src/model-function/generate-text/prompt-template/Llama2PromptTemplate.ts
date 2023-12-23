@@ -1,6 +1,7 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { TextChatPrompt } from "./ChatPrompt.js";
 import { TextInstructionPrompt } from "./InstructionPrompt.js";
+import { InvalidPromptError } from "./InvalidPromptError.js";
 
 // see https://github.com/facebookresearch/llama/blob/6c7fe276574e78057f917549435a2554000a876d/llama/generation.py#L44
 const BEGIN_SEGMENT = "<s>";
@@ -75,7 +76,7 @@ export function instruction(): TextGenerationPromptTemplate<
 export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
+      validateLlama2hatPrompt(prompt);
 
       let text =
         prompt.system != null
@@ -105,4 +106,45 @@ export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
     },
     stopSequences: [END_SEGMENT],
   };
+}
+
+/**
+ * Checks if a Llama2 chat prompt is valid. Throws a {@link ChatPromptValidationError} if it's not.
+ *
+ * - The first message of the chat must be a user message.
+ * - Then it must be alternating between an assistant message and a user message.
+ * - The last message must always be a user message (when submitting to a model).
+ *
+ * The type checking is done at runtime when you submit a chat prompt to a model with a prompt template.
+ *
+ * @throws {@link ChatPromptValidationError}
+ */
+export function validateLlama2hatPrompt(chatPrompt: TextChatPrompt) {
+  const messages = chatPrompt.messages;
+
+  if (messages.length < 1) {
+    throw new InvalidPromptError(
+      "ChatPrompt should have at least one message.",
+      chatPrompt
+    );
+  }
+
+  for (let i = 0; i < messages.length; i++) {
+    const expectedRole = i % 2 === 0 ? "user" : "assistant";
+    const role = messages[i].role;
+
+    if (role !== expectedRole) {
+      throw new InvalidPromptError(
+        `Message at index ${i} should have role '${expectedRole}', but has role '${role}'.`,
+        chatPrompt
+      );
+    }
+  }
+
+  if (messages.length % 2 === 0) {
+    throw new InvalidPromptError(
+      "The last message must be a user message.",
+      chatPrompt
+    );
+  }
 }

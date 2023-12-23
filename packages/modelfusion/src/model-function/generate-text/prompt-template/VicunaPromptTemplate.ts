@@ -1,5 +1,5 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { TextChatPrompt } from "./ChatPrompt.js";
 
 // default Vicuna 1 system message
 const DEFAULT_SYSTEM_MESSAGE =
@@ -22,8 +22,6 @@ const DEFAULT_SYSTEM_MESSAGE =
 export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
-
       let text =
         prompt.system != null
           ? `${prompt.system}\n\n`

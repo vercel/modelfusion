@@ -2,7 +2,6 @@ import { TextGenerationPromptTemplate } from "../../../model-function/generate-t
 import {
   MultiModalChatPrompt,
   TextChatPrompt,
-  validateChatPrompt,
 } from "../../../model-function/generate-text/prompt-template/ChatPrompt.js";
 import {
   MultiModalInstructionPrompt,
@@ -63,8 +62,6 @@ export function chat(): TextGenerationPromptTemplate<
 > {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
-
       const messages: Array<OpenAIChatMessage> = [];
 
       if (prompt.system != null) {

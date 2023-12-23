@@ -1,5 +1,5 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
+import { TextChatPrompt } from "./ChatPrompt.js";
 import { TextInstructionPrompt } from "./InstructionPrompt.js";
 
 /**
@@ -52,8 +52,6 @@ export const chat: (options?: {
   system,
 } = {}) => ({
   format(prompt) {
-    validateChatPrompt(prompt);
-
     let text =
       prompt.system != null
         ? `${system != null ? `${system}:` : ""}${prompt.system}\n\n`
