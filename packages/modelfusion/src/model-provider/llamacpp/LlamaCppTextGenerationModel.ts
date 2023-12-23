@@ -14,6 +14,7 @@ import { PromptTemplateTextStreamingModel } from "../../model-function/generate-
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
+  textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
@@ -104,21 +105,49 @@ export class LlamaCppTextGenerationModel<
       responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
     } & FunctionOptions
   ): Promise<RESPONSE> {
+    const api = this.settings.api ?? new LlamaCppApiConfiguration();
+    const responseFormat = options.responseFormat;
+    const abortSignal = options.run?.abortSignal;
+
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () =>
-        callLlamaCppTextGenerationAPI({
-          ...this.settings,
-
-          // mapping
-          nPredict: this.settings.maxGenerationTokens,
-          stop: this.settings.stopSequences,
-
-          // other
-          abortSignal: options.run?.abortSignal,
-          prompt,
-          responseFormat: options.responseFormat,
+        postJsonToApi({
+          url: api.assembleUrl(`/completion`),
+          headers: api.headers,
+          body: {
+            stream: responseFormat.stream,
+            prompt: prompt.text,
+            image_data:
+              prompt.images != null
+                ? Object.entries(prompt.images).map(([id, data]) => ({
+                    id: +id,
+                    data,
+                  }))
+                : undefined,
+            cache_prompt: this.settings.cachePrompt,
+            temperature: this.settings.temperature,
+            top_k: this.settings.topK,
+            top_p: this.settings.topP,
+            n_predict: this.settings.maxGenerationTokens,
+            n_keep: this.settings.nKeep,
+            stop: this.settings.stopSequences,
+            tfs_z: this.settings.tfsZ,
+            typical_p: this.settings.typicalP,
+            repeat_penalty: this.settings.repeatPenalty,
+            repeat_last_n: this.settings.repeatLastN,
+            penalize_nl: this.settings.penalizeNl,
+            mirostat: this.settings.mirostat,
+            mirostat_tau: this.settings.mirostatTau,
+            mirostat_eta: this.settings.mirostatEta,
+            seed: this.settings.seed,
+            ignore_eos: this.settings.ignoreEos,
+            logit_bias: this.settings.logitBias,
+          },
+          failedResponseHandler: failedLlamaCppCallResponseHandler,
+          successfulResponseHandler: responseFormat.handler,
+          abortSignal,
         }),
     });
   }
@@ -127,8 +156,7 @@ export class LlamaCppTextGenerationModel<
     LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
   > {
     const eventSettingProperties: Array<string> = [
-      "maxGenerationTokens",
-      "stopSequences",
+      ...textGenerationModelProperties,
 
       "contextWindowSize",
       "cachePrompt",
@@ -174,7 +202,17 @@ export class LlamaCppTextGenerationModel<
 
     return {
       response,
-      texts: [response.content],
+      textGenerationResults: [
+        {
+          text: response.content,
+          finishReason:
+            response.stopped_eos || response.stopped_word
+              ? ("stop" as const)
+              : response.stopped_limit
+                ? ("length" as const)
+                : ("unknown" as const),
+        },
+      ],
       usage: {
         promptTokens: response.tokens_evaluated,
         completionTokens: response.tokens_predicted,
@@ -333,91 +371,6 @@ const llamaCppTextStreamingResponseSchema = new ZodSchema(
     llamaCppTextGenerationResponseSchema,
   ])
 );
-
-async function callLlamaCppTextGenerationAPI<RESPONSE>({
-  api = new LlamaCppApiConfiguration(),
-  abortSignal,
-  responseFormat,
-  prompt,
-  cachePrompt,
-  temperature,
-  topK,
-  topP,
-  nPredict,
-  nKeep,
-  stop,
-  tfsZ,
-  typicalP,
-  repeatPenalty,
-  repeatLastN,
-  penalizeNl,
-  mirostat,
-  mirostatTau,
-  mirostatEta,
-  seed,
-  ignoreEos,
-  logitBias,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
-  prompt: LlamaCppTextGenerationPrompt;
-  cachePrompt?: boolean;
-  temperature?: number;
-  topK?: number;
-  topP?: number;
-  nPredict?: number;
-  nKeep?: number;
-  stop?: string[];
-  tfsZ?: number;
-  typicalP?: number;
-  repeatPenalty?: number;
-  repeatLastN?: number;
-  penalizeNl?: boolean;
-  mirostat?: number;
-  mirostatTau?: number;
-  mirostatEta?: number;
-  seed?: number;
-  ignoreEos?: boolean;
-  logitBias?: Array<[number, number | false]>;
-}): Promise<RESPONSE> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/completion`),
-    headers: api.headers,
-    body: {
-      stream: responseFormat.stream,
-      prompt: prompt.text,
-      cache_prompt: cachePrompt,
-      temperature,
-      top_k: topK,
-      top_p: topP,
-      n_predict: nPredict,
-      n_keep: nKeep,
-      stop,
-      tfs_z: tfsZ,
-      typical_p: typicalP,
-      repeat_penalty: repeatPenalty,
-      repeat_last_n: repeatLastN,
-      penalize_nl: penalizeNl,
-      mirostat,
-      mirostat_tau: mirostatTau,
-      mirostat_eta: mirostatEta,
-      seed,
-      ignore_eos: ignoreEos,
-      logit_bias: logitBias,
-      image_data:
-        prompt.images != null
-          ? Object.entries(prompt.images).map(([id, data]) => ({
-              id: +id,
-              data,
-            }))
-          : undefined,
-    },
-    failedResponseHandler: failedLlamaCppCallResponseHandler,
-    successfulResponseHandler: responseFormat.handler,
-    abortSignal,
-  });
-}
 
 export type LlamaCppTextGenerationDelta = {
   content: string;

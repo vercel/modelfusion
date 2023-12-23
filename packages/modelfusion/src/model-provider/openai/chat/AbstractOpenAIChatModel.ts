@@ -12,6 +12,7 @@ import { AbstractModel } from "../../../model-function/AbstractModel.js";
 import { Delta } from "../../../model-function/Delta.js";
 import { parsePartialJson } from "../../../model-function/generate-structure/parsePartialJson.js";
 import { TextGenerationModelSettings } from "../../../model-function/generate-text/TextGenerationModel.js";
+import { TextGenerationFinishReason } from "../../../model-function/generate-text/TextGenerationResult.js";
 import { ToolDefinition } from "../../../tool/ToolDefinition.js";
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
@@ -190,9 +191,30 @@ export abstract class AbstractOpenAIChatModel<
 
     return {
       response,
-      texts: response.choices.map((choice) => choice.message.content ?? ""),
+      textGenerationResults: response.choices.map((choice) => ({
+        text: choice.message.content ?? "",
+        finishReason: this.translateFinishReason(choice.finish_reason),
+      })),
       usage: this.extractUsage(response),
     };
+  }
+
+  private translateFinishReason(
+    finishReason: string | null | undefined
+  ): TextGenerationFinishReason {
+    switch (finishReason) {
+      case "stop":
+        return "stop";
+      case "length":
+        return "length";
+      case "content_filter":
+        return "content-filter";
+      case "function_call":
+      case "tool_calls":
+        return "tool-calls";
+      default:
+        return "unknown";
+    }
   }
 
   doStreamText(prompt: OpenAIChatPrompt, options?: FunctionOptions) {

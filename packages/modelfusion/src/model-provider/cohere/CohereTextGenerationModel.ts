@@ -14,8 +14,10 @@ import { PromptTemplateTextStreamingModel } from "../../model-function/generate-
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
+  textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
 import {
   chat,
   instruction,
@@ -119,8 +121,8 @@ export class CohereTextGenerationModel
     const abortSignal = options.run?.abortSignal;
 
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () => {
         return postJsonToApi({
           url: api.assembleUrl(`/generate`),
@@ -152,9 +154,7 @@ export class CohereTextGenerationModel
 
   get settingsForEvent(): Partial<CohereTextGenerationModelSettings> {
     const eventSettingProperties: Array<string> = [
-      "maxGenerationTokens",
-      "stopSequences",
-      "numberOfGenerations",
+      ...textGenerationModelProperties,
 
       "temperature",
       "k",
@@ -182,8 +182,28 @@ export class CohereTextGenerationModel
 
     return {
       response,
-      texts: response.generations.map((generation) => generation.text),
+      textGenerationResults: response.generations.map((generation) => ({
+        text: generation.text,
+        finishReason: this.translateFinishReason(generation.finish_reason),
+      })),
     };
+  }
+
+  private translateFinishReason(
+    finishReason: string | null | undefined
+  ): TextGenerationFinishReason {
+    switch (finishReason) {
+      case "COMPLETE":
+        return "stop";
+      case "MAX_TOKENS":
+        return "length";
+      case "ERROR_TOXIC":
+        return "content-filter";
+      case "ERROR":
+        return "error";
+      default:
+        return "unknown";
+    }
   }
 
   doStreamText(prompt: string, options?: FunctionOptions) {

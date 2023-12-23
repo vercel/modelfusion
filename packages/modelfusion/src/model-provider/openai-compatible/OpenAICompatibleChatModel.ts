@@ -4,6 +4,7 @@ import { PromptTemplateTextStreamingModel } from "../../model-function/generate-
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
+  textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel.js";
@@ -66,9 +67,7 @@ export class OpenAICompatibleChatModel
 
   get settingsForEvent(): Partial<OpenAICompatibleChatSettings> {
     const eventSettingProperties: Array<string> = [
-      "stopSequences",
-      "maxGenerationTokens",
-      "numberOfGenerations",
+      ...textGenerationModelProperties,
 
       "functions",
       "functionCall",

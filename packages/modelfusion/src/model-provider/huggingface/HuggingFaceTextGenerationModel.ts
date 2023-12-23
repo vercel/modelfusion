@@ -11,6 +11,7 @@ import { PromptTemplateTextGenerationModel } from "../../model-function/generate
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
+  textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
@@ -28,11 +29,6 @@ export interface HuggingFaceTextGenerationModelSettings
   repetitionPenalty?: number;
   maxTime?: number;
   doSample?: boolean;
-
-  options?: {
-    useCache?: boolean;
-    waitForModel?: boolean;
-  };
 }
 
 /**
@@ -79,8 +75,8 @@ export class HuggingFaceTextGenerationModel
     const abortSignal = options?.run?.abortSignal;
 
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () => {
         return postJsonToApi({
           url: api.assembleUrl(`/${this.settings.model}`),
@@ -112,9 +108,7 @@ export class HuggingFaceTextGenerationModel
 
   get settingsForEvent(): Partial<HuggingFaceTextGenerationModelSettings> {
     const eventSettingProperties: Array<string> = [
-      "stopSequences",
-      "maxGenerationTokens",
-      "numberOfGenerations",
+      ...textGenerationModelProperties,
 
       "topK",
       "topP",
@@ -122,7 +116,6 @@ export class HuggingFaceTextGenerationModel
       "repetitionPenalty",
       "maxTime",
       "doSample",
-      "options",
     ] satisfies (keyof HuggingFaceTextGenerationModelSettings)[];
 
     return Object.fromEntries(
@@ -137,7 +130,10 @@ export class HuggingFaceTextGenerationModel
 
     return {
       response,
-      texts: response.map((response) => response.generated_text),
+      textGenerationResults: response.map((response) => ({
+        text: response.generated_text,
+        finishReason: "unknown" as const,
+      })),
     };
   }
 

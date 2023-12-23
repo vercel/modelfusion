@@ -5,6 +5,10 @@ import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "./TextGenerationModel.js";
+import {
+  TextGenerationFinishReason,
+  TextGenerationResult,
+} from "./TextGenerationResult.js";
 
 /**
  * Generate text for a prompt and return it as a string.
@@ -38,7 +42,9 @@ export async function generateText<PROMPT>(
   options: FunctionOptions & { fullResponse: true }
 ): Promise<{
   text: string;
+  finishReason: TextGenerationFinishReason;
   texts: string[];
+  textGenerationResults: TextGenerationResult[];
   response: unknown;
   metadata: ModelCallMetadata;
 }>;
@@ -50,7 +56,9 @@ export async function generateText<PROMPT>(
   | string
   | {
       text: string;
+      finishReason: TextGenerationFinishReason;
       texts: string[];
+      textGenerationResults: TextGenerationResult[];
       response: unknown;
       metadata: ModelCallMetadata;
     }
@@ -64,27 +72,34 @@ export async function generateText<PROMPT>(
       const result = await model.doGenerateTexts(prompt, options);
       const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
 
-      const texts = shouldTrimWhitespace
-        ? result.texts.map((text) => text.trim())
-        : result.texts;
+      const textGenerationResults = shouldTrimWhitespace
+        ? result.textGenerationResults.map((textGeneration) => ({
+            text: textGeneration.text.trim(),
+            finishReason: textGeneration.finishReason,
+          }))
+        : result.textGenerationResults;
 
       return {
         response: result.response,
-        extractedValue: texts,
+        extractedValue: textGenerationResults,
         usage: result.usage,
       };
     },
   });
 
-  const texts = fullResponse.value;
-  const text = texts[0];
+  const textGenerationResults = fullResponse.value;
+  const firstResult = textGenerationResults[0];
 
   return options?.fullResponse
     ? {
-        text,
-        texts,
+        text: firstResult.text,
+        finishReason: firstResult.finishReason,
+        texts: textGenerationResults.map(
+          (textGeneration) => textGeneration.text
+        ),
+        textGenerationResults,
         response: fullResponse.response,
         metadata: fullResponse.metadata,
       }
-    : text;
+    : firstResult.text;
 }

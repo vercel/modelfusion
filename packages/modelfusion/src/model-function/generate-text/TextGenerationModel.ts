@@ -3,6 +3,14 @@ import { Delta } from "../Delta.js";
 import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
 import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate.js";
+import { TextGenerationResult } from "./TextGenerationResult.js";
+
+export const textGenerationModelProperties = [
+  "maxGenerationTokens",
+  "stopSequences",
+  "numberOfGenerations",
+  "trimWhitespace",
+] as const;
 
 export interface TextGenerationModelSettings extends ModelSettings {
   /**
@@ -81,7 +89,7 @@ export interface TextGenerationModel<
     options?: FunctionOptions
   ): PromiseLike<{
     response: unknown;
-    texts: string[];
+    textGenerationResults: TextGenerationResult[];
     usage?: {
       promptTokens: number;
       completionTokens: number;

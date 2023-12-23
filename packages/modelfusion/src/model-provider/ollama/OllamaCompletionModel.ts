@@ -9,7 +9,10 @@ import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
-import { TextStreamingModel } from "../../model-function/generate-text/TextGenerationModel.js";
+import {
+  TextStreamingModel,
+  textGenerationModelProperties,
+} from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
   TextGenerationToolCallModel,
@@ -146,8 +149,8 @@ export class OllamaCompletionModel<
     OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>
   > {
     const eventSettingProperties: Array<string> = [
-      "maxGenerationTokens",
-      "stopSequences",
+      ...textGenerationModelProperties,
+
       "contextWindowSize",
       "temperature",
       "mirostat",
@@ -187,7 +190,12 @@ export class OllamaCompletionModel<
 
     return {
       response,
-      texts: [response.response],
+      textGenerationResults: [
+        {
+          text: response.response,
+          finishReason: "unknown" as const,
+        },
+      ],
     };
   }
 

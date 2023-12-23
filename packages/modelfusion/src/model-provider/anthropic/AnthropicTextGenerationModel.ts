@@ -7,21 +7,23 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
+import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
+  textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
+import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { AnthropicApiConfiguration } from "./AnthropicApiConfiguration.js";
 import { failedAnthropicCallResponseHandler } from "./AnthropicError.js";
-import { instruction, chat, text } from "./AnthropicPromptTemplate.js";
+import { chat, instruction, text } from "./AnthropicPromptTemplate.js";
 
 export const ANTHROPIC_TEXT_GENERATION_MODELS = {
   "claude-instant-1": {
@@ -93,8 +95,8 @@ export class AnthropicTextGenerationModel
     const userId = this.settings.userId;
 
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () => {
         return postJsonToApi({
           url: api.assembleUrl(`/complete`),
@@ -120,8 +122,7 @@ export class AnthropicTextGenerationModel
 
   get settingsForEvent(): Partial<AnthropicTextGenerationModelSettings> {
     const eventSettingProperties: Array<string> = [
-      "maxGenerationTokens",
-      "stopSequences",
+      ...textGenerationModelProperties,
 
       "temperature",
       "topK",
@@ -144,8 +145,26 @@ export class AnthropicTextGenerationModel
 
     return {
       response,
-      texts: [response.completion],
+      textGenerationResults: [
+        {
+          text: response.completion,
+          finishReason: this.translateFinishReason(response.stop_reason),
+        },
+      ],
     };
+  }
+
+  private translateFinishReason(
+    finishReason: string | null | undefined
+  ): TextGenerationFinishReason {
+    switch (finishReason) {
+      case "stop_sequence":
+        return "stop";
+      case "max_tokens":
+        return "length";
+      default:
+        return "unknown";
+    }
   }
 
   doStreamText(prompt: string, options?: FunctionOptions) {

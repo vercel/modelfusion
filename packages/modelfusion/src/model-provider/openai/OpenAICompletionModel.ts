@@ -15,8 +15,10 @@ import { PromptTemplateTextStreamingModel } from "../../model-function/generate-
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
+  textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
 import {
   chat,
   instruction,
@@ -316,9 +318,7 @@ export class OpenAICompletionModel
 
   get settingsForEvent(): Partial<OpenAICompletionModelSettings> {
     const eventSettingProperties: Array<string> = [
-      "maxGenerationTokens",
-      "stopSequences",
-      "numberOfGenerations",
+      ...textGenerationModelProperties,
 
       "suffix",
       "temperature",
@@ -347,13 +347,33 @@ export class OpenAICompletionModel
 
     return {
       response,
-      texts: response.choices.map((choice) => choice.text),
+      textGenerationResults: response.choices.map((choice) => {
+        return {
+          finishReason: this.translateFinishReason(choice.finish_reason),
+          text: choice.text,
+        };
+      }),
       usage: {
         promptTokens: response.usage.prompt_tokens,
         completionTokens: response.usage.completion_tokens,
         totalTokens: response.usage.total_tokens,
       },
     };
+  }
+
+  private translateFinishReason(
+    finishReason: string | null | undefined
+  ): TextGenerationFinishReason {
+    switch (finishReason) {
+      case "stop":
+        return "stop";
+      case "length":
+        return "length";
+      case "content_filter":
+        return "content-filter";
+      default:
+        return "unknown";
+    }
   }
 
   doStreamText(prompt: string, options?: FunctionOptions) {

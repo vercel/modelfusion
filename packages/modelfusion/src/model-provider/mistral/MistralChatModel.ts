@@ -17,6 +17,7 @@ import {
   TextStreamingModel,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { MistralApiConfiguration } from "./MistralApiConfiguration.js";
@@ -134,6 +135,10 @@ export class MistralChatModel
   get settingsForEvent(): Partial<MistralChatModelSettings> {
     const eventSettingProperties: Array<string> = [
       "maxGenerationTokens",
+      "stopSequences",
+      "numberOfGenerations",
+      "trimWhitespace",
+
       "temperature",
       "topP",
       "safeMode",
@@ -155,8 +160,25 @@ export class MistralChatModel
 
     return {
       response,
-      texts: response.choices.map((choice) => choice.message.content),
+      textGenerationResults: response.choices.map((choice) => ({
+        text: choice.message.content,
+        finishReason: this.translateFinishReason(choice.finish_reason),
+      })),
     };
+  }
+
+  private translateFinishReason(
+    finishReason: string | null | undefined
+  ): TextGenerationFinishReason {
+    switch (finishReason) {
+      case "stop":
+        return "stop";
+      case "length":
+      case "model_length":
+        return "length";
+      default:
+        return "unknown";
+    }
   }
 
   doStreamText(prompt: MistralChatPrompt, options?: FunctionOptions) {
