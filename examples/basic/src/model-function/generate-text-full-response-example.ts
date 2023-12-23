@@ -4,8 +4,15 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function main() {
-  // access the full response and the metadata:
-  const { text, texts, response, metadata } = await generateText(
+  // access the full result and the metadata:
+  const {
+    text,
+    finishReason,
+    texts,
+    textGenerationResults,
+    response,
+    metadata,
+  } = await generateText(
     openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       numberOfGenerations: 2,
