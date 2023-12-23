@@ -11,7 +11,7 @@
     "@pinecone-database/pinecone": "0.1.6",
     "dotenv": "16.0.3",
     "secure-json-parse": "2.7.0",
-    "modelfusion": "0.102.0",
+    "modelfusion": "0.103.0",
     "nanoid": "3.3.6",
     "better-sqlite3": "9.0.0",
     "sqlite-vss": "0.1.2",

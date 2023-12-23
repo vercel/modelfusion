@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.103.0 - 2023-12-23
+
+### Added
+
+- `finishReason` support for `generateText`.
+
+  The finish reason can be `stop` (the model stopped because it generated a stop sequence), `length` (the model stopped because it generated the maximum number of tokens), `content-filter` (the model stopped because the content filter detected a violation), `tool-calls` (the model stopped because it triggered a tool call), `error` (the model stopped because of an error), `other` (the model stopped for another reason), or `unknown` (the model stop reason is not know or the model does not support finish reasons).
+
+  You can extract it from the full response when using `fullResponse: true`:
+
+  ```ts
+  const { text, finishReason } = await generateText(
+    openai
+      .ChatTextGenerator({ model: "gpt-3.5-turbo", maxGenerationTokens: 200 })
+      .withTextPrompt(),
+    "Write a short story about a robot learning to love:",
+    { fullResponse: true }
+  );
+  ```
+
 ## v0.102.0 - 2023-12-22
 
 ### Added
