@@ -67,9 +67,9 @@
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
     "build:copy-files": "copyfiles --flat package.json ../../README.md ../../LICENSE ../../CHANGELOG.md dist",
     "test": "vitest --config vitest.config.js --run src",
-    "test:watch": "vitest watch--config vitest.config.js",
-    "test:coverage": "vitest run --coverage",
-    "test:coverage:ui": "vitest run --coverage --ui",
+    "test:watch": "vitest watch --config vitest.config.js",
+    "test:coverage": "vitest run --config vitest.config.js --coverage",
+    "test:coverage:ui": "vitest --config vitest.config.js --coverage --ui",
     "dist": "pnpm clean && pnpm lint && pnpm test && pnpm build"
   },
   "dependencies": {
