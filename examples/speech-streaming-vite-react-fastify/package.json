@@ -18,7 +18,7 @@
     "clsx": "^2.0.0",
     "dotenv": "16.0.3",
     "fastify": "^4.23.2",
-    "modelfusion": "0.103.0",
+    "modelfusion": "0.104.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwind-merge": "^1.14.0",

@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.104.0 - 2023-12-24
+
+### Changed
+
+- **breaking change**: Unified text and multimodal prompt templates. `[Text/MultiModal]InstructionPrompt` is now `InstructionPrompt`, and `[Text/MultiModalChatPrompt]` is now `ChatPrompt`.
+- More flexible chat prompts: The chat prompt validation is now chat template specific and validated at runtime. E.g. the Llama2 prompt template only supports turns of user and assistant messages, whereas other formats are more flexible.
+
 ## v0.103.0 - 2023-12-23
 
 ### Added
