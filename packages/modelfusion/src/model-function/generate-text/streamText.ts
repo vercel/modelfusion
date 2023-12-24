@@ -39,6 +39,7 @@ export async function streamText<PROMPT>(
   options: FunctionOptions & { fullResponse: true }
 ): Promise<{
   textStream: AsyncIterable<string>;
+  text: PromiseLike<string>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
 export async function streamText<PROMPT>(
@@ -49,15 +50,20 @@ export async function streamText<PROMPT>(
   | AsyncIterable<string>
   | {
       textStream: AsyncIterable<string>;
+      text: PromiseLike<string>;
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }
 > {
   const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
 
   let accumulatedText = "";
-  let lastFullDelta: unknown | undefined;
   let isFirstDelta = true;
   let trailingWhitespace = "";
+
+  let resolveText: (value: string) => void;
+  const textPromise = new Promise<string>((resolve) => {
+    resolveText = resolve;
+  });
 
   const fullResponse = await executeStreamCall({
     functionType: "stream-text",
@@ -66,19 +72,17 @@ export async function streamText<PROMPT>(
     options,
     startStream: async (options) => model.doStreamText(prompt, options),
     processDelta: (delta) => {
-      lastFullDelta = delta.fullDelta;
+      const valueDelta = delta.deltaValue;
 
-      let textDelta = delta.valueDelta;
+      let textDelta = model.extractTextDelta(valueDelta);
 
       if (textDelta != null && textDelta.length > 0) {
         if (shouldTrimWhitespace) {
-          if (isFirstDelta) {
-            // remove leading whitespace:
-            textDelta = textDelta.trimStart();
-          } else {
-            // restore trailing whitespace from previous chunk:
-            textDelta = trailingWhitespace + textDelta;
-          }
+          textDelta = isFirstDelta
+            ? // remove leading whitespace:
+              textDelta.trimStart()
+            : // restore trailing whitespace from previous chunk:
+              trailingWhitespace + textDelta;
 
           // trim trailing whitespace and store it for the next chunk:
           const trailingWhitespaceMatch = textDelta.match(/\s+$/);
@@ -95,15 +99,15 @@ export async function streamText<PROMPT>(
 
       return undefined;
     },
-    getResult: () => ({
-      response: lastFullDelta,
-      value: accumulatedText,
-    }),
+    onDone: () => {
+      resolveText(accumulatedText);
+    },
   });
 
   return options?.fullResponse
     ? {
         textStream: fullResponse.value,
+        text: textPromise,
         metadata: fullResponse.metadata,
       }
     : fullResponse.value;

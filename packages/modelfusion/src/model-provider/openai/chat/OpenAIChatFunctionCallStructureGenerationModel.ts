@@ -2,10 +2,13 @@ import SecureJSON from "secure-json-parse";
 import { FunctionOptions } from "../../../core/FunctionOptions.js";
 import { JsonSchemaProducer } from "../../../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../../../core/schema/Schema.js";
-import { StructureGenerationModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
+import { StructureStreamingModel } from "../../../model-function/generate-structure/StructureGenerationModel.js";
 import { StructureParseError } from "../../../model-function/generate-structure/StructureParseError.js";
+import { parsePartialJson } from "../../../model-function/generate-structure/parsePartialJson.js";
 import { TextGenerationPromptTemplate } from "../../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
+  OpenAIChatChunk,
+  OpenAIChatCompletionChunk,
   OpenAIChatPrompt,
   OpenAIChatResponseFormat,
 } from "./AbstractOpenAIChatModel.js";
@@ -18,7 +21,7 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
     OpenAIChatPrompt
   >,
 > implements
-    StructureGenerationModel<
+    StructureStreamingModel<
       Parameters<PROMPT_TEMPLATE["format"]>[0], // first argument of the function
       OpenAIChatSettings
     >
@@ -163,7 +166,7 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
 
     return this.model.callAPI(expandedPrompt, {
       ...options,
-      responseFormat: OpenAIChatResponseFormat.structureDeltaIterable,
+      responseFormat: OpenAIChatResponseFormat.deltaIterable,
       functionCall: { name: this.fnName },
       functions: [
         {
@@ -173,5 +176,27 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
         },
       ],
     });
+  }
+
+  extractStructureTextDelta(delta: unknown) {
+    const chunk = delta as OpenAIChatChunk;
+
+    if (chunk.object !== "chat.completion.chunk") {
+      return ""; // TODO undefined
+    }
+
+    const chatChunk = chunk as OpenAIChatCompletionChunk;
+
+    const firstChoice = chatChunk.choices[0];
+
+    if (firstChoice.index > 0) {
+      return ""; // TODO undefined
+    }
+
+    return firstChoice.delta.function_call?.arguments ?? "";
+  }
+
+  parseAccumulatedStructureText(accumulatedText: string) {
+    return parsePartialJson(accumulatedText);
   }
 }

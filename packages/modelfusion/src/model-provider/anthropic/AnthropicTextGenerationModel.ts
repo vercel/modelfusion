@@ -105,7 +105,7 @@ export class AnthropicTextGenerationModel
             model: this.settings.model,
             prompt,
             stream: responseFormat.stream,
-            max_tokens_to_sample: this.settings.maxGenerationTokens,
+            max_tokens_to_sample: this.settings.maxGenerationTokens ?? 100,
             temperature: this.settings.temperature,
             top_k: this.settings.topK,
             top_p: this.settings.topP,
@@ -174,6 +174,11 @@ export class AnthropicTextGenerationModel
     });
   }
 
+  extractTextDelta(delta: unknown): string {
+    const chunk = delta as AnthropicTextStreamChunk;
+    return chunk.completion;
+  }
+
   /**
    * Returns this model with a text prompt template.
    */
@@ -233,7 +238,7 @@ export type AnthropicTextGenerationResponse = z.infer<
   typeof anthropicTextGenerationResponseSchema
 >;
 
-const anthropicTextStreamingResponseSchema = new ZodSchema(
+const anthropicTextStreamChunkSchema = new ZodSchema(
   z.object({
     completion: z.string(),
     stop_reason: z.string().nullable(),
@@ -241,12 +246,13 @@ const anthropicTextStreamingResponseSchema = new ZodSchema(
   })
 );
 
+type AnthropicTextStreamChunk =
+  (typeof anthropicTextStreamChunkSchema)["_type"];
+
 async function createAnthropicFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<Delta<string>>> {
-  const queue = new AsyncQueue<Delta<string>>();
-
-  let content = "";
+): Promise<AsyncIterable<Delta<AnthropicTextStreamChunk>>> {
+  const queue = new AsyncQueue<Delta<AnthropicTextStreamChunk>>();
 
   // process the stream asynchonously (no 'await' on purpose):
   parseEventSourceStream({ stream })
@@ -267,20 +273,10 @@ async function createAnthropicFullDeltaIterableQueue(
 
           const eventData = parseJSON({
             text: data,
-            schema: anthropicTextStreamingResponseSchema,
+            schema: anthropicTextStreamChunkSchema,
           });
 
-          content += eventData.completion;
-
-          queue.push({
-            type: "delta",
-            fullDelta: {
-              content,
-              isComplete: eventData.stop_reason != null,
-              delta: eventData.completion,
-            },
-            valueDelta: eventData.completion,
-          });
+          queue.push({ type: "delta", deltaValue: eventData });
 
           if (eventData.stop_reason != null) {
             queue.close();
@@ -322,6 +318,6 @@ export const AnthropicTextGenerationResponseFormat = {
     handler: async ({ response }: { response: Response }) =>
       createAnthropicFullDeltaIterableQueue(response.body!),
   } satisfies AnthropicTextGenerationResponseFormatType<
-    AsyncIterable<Delta<string>>
+    AsyncIterable<Delta<AnthropicTextStreamChunk>>
   >,
 };

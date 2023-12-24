@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import { CodeBlock } from "./CodeBlock";
 import remarkGfm from "remark-gfm";
+import { CodeBlock } from "./CodeBlock";
 
 export const ChatMessageView: React.FC<{
   message: {

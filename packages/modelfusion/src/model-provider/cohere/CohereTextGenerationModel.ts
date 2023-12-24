@@ -7,9 +7,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { Delta } from "../../model-function/Delta.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
@@ -23,8 +22,7 @@ import {
   instruction,
 } from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
+import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler.js";
 import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTokenizer } from "./CohereTokenizer.js";
@@ -213,8 +211,9 @@ export class CohereTextGenerationModel
     });
   }
 
-  extractTextDelta(fullDelta: CohereTextGenerationDelta): string | undefined {
-    return fullDelta.delta;
+  extractTextDelta(delta: unknown): string {
+    const chunk = delta as CohereTextStreamChunk;
+    return chunk.is_finished === true ? "" : chunk.text;
   }
 
   /**
@@ -280,13 +279,7 @@ export type CohereTextGenerationResponse = z.infer<
   typeof cohereTextGenerationResponseSchema
 >;
 
-export type CohereTextGenerationDelta = {
-  content: string;
-  isComplete: boolean;
-  delta: string;
-};
-
-const cohereTextStreamingResponseSchema = new ZodSchema(
+const cohereTextStreamChunkSchema = zodSchema(
   z.discriminatedUnion("is_finished", [
     z.object({
       text: z.string(),
@@ -300,49 +293,7 @@ const cohereTextStreamingResponseSchema = new ZodSchema(
   ])
 );
 
-async function createCohereTextGenerationFullDeltaIterableQueue(
-  stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<Delta<string>>> {
-  const queue = new AsyncQueue<Delta<string>>();
-
-  let accumulatedText = "";
-
-  // process the stream asynchonously (no 'await' on purpose):
-  parseJsonStream({
-    stream,
-    schema: cohereTextStreamingResponseSchema,
-    process(event) {
-      if (event.is_finished === true) {
-        queue.push({
-          type: "delta",
-          fullDelta: {
-            content: accumulatedText,
-            isComplete: true,
-            delta: "",
-          },
-          valueDelta: "",
-        });
-      } else {
-        accumulatedText += event.text;
-
-        queue.push({
-          type: "delta",
-          fullDelta: {
-            content: accumulatedText,
-            isComplete: false,
-            delta: event.text,
-          },
-          valueDelta: event.text,
-        });
-      }
-    },
-    onDone() {
-      queue.close();
-    },
-  });
-
-  return queue;
-}
+type CohereTextStreamChunk = (typeof cohereTextStreamChunkSchema)["_type"];
 
 export type CohereTextGenerationResponseFormatType<T> = {
   stream: boolean;
@@ -356,7 +307,7 @@ export const CohereTextGenerationResponseFormat = {
   json: {
     stream: false,
     handler: createJsonResponseHandler(cohereTextGenerationResponseSchema),
-  } satisfies CohereTextGenerationResponseFormatType<CohereTextGenerationResponse>,
+  },
 
   /**
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
@@ -364,9 +315,6 @@ export const CohereTextGenerationResponseFormat = {
    */
   deltaIterable: {
     stream: true,
-    handler: async ({ response }: { response: Response }) =>
-      createCohereTextGenerationFullDeltaIterableQueue(response.body!),
-  } satisfies CohereTextGenerationResponseFormatType<
-    AsyncIterable<Delta<string>>
-  >,
+    handler: createJsonStreamResponseHandler(cohereTextStreamChunkSchema),
+  },
 };

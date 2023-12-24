@@ -33,47 +33,6 @@ export class StructureFromTextStreamingModel<
     super(options);
   }
 
-  async doStreamStructure(
-    schema: Schema<unknown> & JsonSchemaProducer,
-    prompt: SOURCE_PROMPT,
-    options?: FunctionOptions
-  ) {
-    const textStream = await streamText(
-      this.model,
-      this.template.createPrompt(prompt, schema),
-      options
-    );
-
-    const queue = new AsyncQueue<Delta<unknown>>();
-
-    // run async on purpose:
-    (async () => {
-      try {
-        let fullText = "";
-        for await (const deltaText of textStream) {
-          fullText += deltaText;
-
-          const deltaStructure = parsePartialJson(fullText);
-
-          // only publish parsable structures
-          if (deltaStructure != null) {
-            queue.push({
-              type: "delta",
-              fullDelta: fullText,
-              valueDelta: deltaStructure,
-            });
-          }
-        }
-      } catch (error) {
-        queue.push({ type: "error", error });
-      } finally {
-        queue.close();
-      }
-    })();
-
-    return queue;
-  }
-
   async doGenerateStructure(
     schema: Schema<unknown> & JsonSchemaProducer,
     prompt: SOURCE_PROMPT,
@@ -100,6 +59,43 @@ export class StructureFromTextStreamingModel<
         cause: error,
       });
     }
+  }
+
+  async doStreamStructure(
+    schema: Schema<unknown> & JsonSchemaProducer,
+    prompt: SOURCE_PROMPT,
+    options?: FunctionOptions
+  ) {
+    const textStream = await streamText(
+      this.model,
+      this.template.createPrompt(prompt, schema),
+      options
+    );
+
+    const queue = new AsyncQueue<Delta<string>>();
+
+    // run async on purpose:
+    (async () => {
+      try {
+        for await (const deltaText of textStream) {
+          queue.push({ type: "delta", deltaValue: deltaText });
+        }
+      } catch (error) {
+        queue.push({ type: "error", error });
+      } finally {
+        queue.close();
+      }
+    })();
+
+    return queue;
+  }
+
+  extractStructureTextDelta(delta: unknown): string {
+    return delta as string;
+  }
+
+  parseAccumulatedStructureText(accumulatedText: string): unknown {
+    return parsePartialJson(accumulatedText);
   }
 
   withSettings(additionalSettings: Partial<MODEL["settings"]>): this {

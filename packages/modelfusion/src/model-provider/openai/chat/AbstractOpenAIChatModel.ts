@@ -7,17 +7,16 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../../core/api/postToApi.js";
+import { zodSchema } from "../../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../../model-function/AbstractModel.js";
-import { Delta } from "../../../model-function/Delta.js";
-import { parsePartialJson } from "../../../model-function/generate-structure/parsePartialJson.js";
 import { TextGenerationModelSettings } from "../../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationFinishReason } from "../../../model-function/generate-text/TextGenerationResult.js";
 import { ToolDefinition } from "../../../tool/ToolDefinition.js";
+import { createEventSourceResponseHandler } from "../../../util/streaming/createEventSourceResponseHandler.js";
 import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import { createOpenAIChatDeltaIterableQueue } from "./OpenAIChatStreamIterable.js";
 
 export interface AbstractOpenAIChatCallSettings {
   api?: ApiConfiguration;
@@ -220,8 +219,26 @@ export abstract class AbstractOpenAIChatModel<
   doStreamText(prompt: OpenAIChatPrompt, options?: FunctionOptions) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: OpenAIChatResponseFormat.textDeltaIterable,
+      responseFormat: OpenAIChatResponseFormat.deltaIterable,
     });
+  }
+
+  extractTextDelta(delta: unknown): string {
+    const chunk = delta as OpenAIChatChunk;
+
+    if (chunk.object !== "chat.completion.chunk") {
+      return ""; // TODO undefined
+    }
+
+    const chatChunk = chunk as OpenAIChatCompletionChunk;
+
+    const firstChoice = chatChunk.choices[0];
+
+    if (firstChoice.index > 0) {
+      return ""; // TODO undefined
+    }
+
+    return firstChoice.delta.content ?? "";
   }
 
   async doGenerateToolCall(
@@ -359,6 +376,68 @@ const openAIChatResponseSchema = z.object({
 
 export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
 
+const chatCompletionChunkSchema = z.object({
+  object: z.literal("chat.completion.chunk"),
+  id: z.string(),
+  choices: z.array(
+    z.object({
+      delta: z.object({
+        role: z.enum(["assistant", "user"]).optional(),
+        content: z.string().nullable().optional(),
+        function_call: z
+          .object({
+            name: z.string().optional(),
+            arguments: z.string().optional(),
+          })
+          .optional(),
+        tool_calls: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.literal("function"),
+              function: z.object({
+                name: z.string(),
+                arguments: z.string(),
+              }),
+            })
+          )
+          .optional(),
+      }),
+      finish_reason: z
+        .enum([
+          "stop",
+          "length",
+          "tool_calls",
+          "content_filter",
+          "function_call",
+        ])
+        .nullable()
+        .optional(),
+      index: z.number(),
+    })
+  ),
+  created: z.number(),
+  model: z.string(),
+  system_fingerprint: z.string().optional().nullable(),
+});
+
+export type OpenAIChatCompletionChunk = z.infer<
+  typeof chatCompletionChunkSchema
+>;
+
+const openaiChatChunkSchema = zodSchema(
+  z.union([
+    chatCompletionChunkSchema,
+    z.object({
+      object: z.string().refine((obj) => obj !== "chat.completion.chunk", {
+        message: "Object must be 'chat.completion.chunk'",
+      }),
+    }),
+  ])
+);
+
+export type OpenAIChatChunk = (typeof openaiChatChunkSchema)["_type"];
+
 export type OpenAIChatResponseFormatType<T> = {
   stream: boolean;
   handler: ResponseHandler<T>;
@@ -371,25 +450,13 @@ export const OpenAIChatResponseFormat = {
   json: {
     stream: false,
     handler: createJsonResponseHandler(openAIChatResponseSchema),
-  } satisfies OpenAIChatResponseFormatType<OpenAIChatResponse>,
+  },
 
   /**
    * Returns an async iterable over the text deltas (only the tex different of the first choice).
    */
-  textDeltaIterable: {
+  deltaIterable: {
     stream: true,
-    handler: async ({ response }: { response: Response }) =>
-      createOpenAIChatDeltaIterableQueue(
-        response.body!,
-        (delta) => delta[0]?.delta?.content ?? ""
-      ),
-  } satisfies OpenAIChatResponseFormatType<AsyncIterable<Delta<string>>>,
-
-  structureDeltaIterable: {
-    stream: true,
-    handler: async ({ response }: { response: Response }) =>
-      createOpenAIChatDeltaIterableQueue(response.body!, (delta) =>
-        parsePartialJson(delta[0]?.function_call?.arguments)
-      ),
-  } satisfies OpenAIChatResponseFormatType<AsyncIterable<Delta<unknown>>>,
+    handler: createEventSourceResponseHandler(openaiChatChunkSchema),
+  },
 };

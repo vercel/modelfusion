@@ -116,7 +116,7 @@ The API route requires several important imports from the `ai`, `modelfusion`, a
 ```ts
 import { ModelFusionTextStream } from "@modelfusion/vercel-ai";
 import { Message, StreamingTextResponse } from "ai";
-import { ChatMLPrompt, TextChatMessage, ollama, streamText } from "modelfusion";
+import { ChatMLPrompt, ChatMessage, ollama, streamText } from "modelfusion";
 ```
 
 We will use the [edge runtime](https://edge-runtime.vercel.app/):
@@ -159,11 +159,11 @@ Next, we create a [ModelFusion chat prompt](https://modelfusion.dev/guide/functi
 const prompt = {
   system: "You are an AI chatbot. Follow the user's instructions carefully.",
 
-  // map Vercel AI SDK Message to ModelFusion TextChatMessage:
+  // map Vercel AI SDK Message to ModelFusion ChatMessage:
   messages: messages.filter(
     // only user and assistant roles are supported:
     (message) => message.role === "user" || message.role === "assistant"
-  ) as TextChatMessage[],
+  ) as ChatMessage[],
 };
 ```
 

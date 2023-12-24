@@ -27,7 +27,7 @@ export type StructureStreamPart<STRUCTURE> =
  * @example
  * const structureStream = await streamStructure(
  *   openai.ChatTextGenerator(...).asFunctionCallStructureGenerationModel(...),
- *   new ZodSchema(
+ *   zodSchema(
  *     z.array(
  *       z.object({
  *         name: z.string(),
@@ -101,8 +101,8 @@ export async function streamStructure<STRUCTURE, PROMPT>(
       ? (prompt as (schema: Schema<STRUCTURE>) => PROMPT)(schema)
       : prompt;
 
+  let accumulatedText = "";
   let lastStructure: unknown | undefined;
-  let lastFullDelta: unknown | undefined;
 
   const fullResponse = await executeStreamCall<
     unknown,
@@ -116,12 +116,20 @@ export async function streamStructure<STRUCTURE, PROMPT>(
     startStream: async (options) =>
       model.doStreamStructure(schema, expandedPrompt, options),
     processDelta: (delta) => {
-      const latestFullDelta = delta.fullDelta;
-      const latestStructure = delta.valueDelta;
+      const valueDelta = delta.deltaValue;
+      const textDelta = model.extractStructureTextDelta(valueDelta);
+
+      if (textDelta == null) {
+        return undefined;
+      }
+
+      accumulatedText += textDelta;
+
+      const latestStructure =
+        model.parseAccumulatedStructureText(accumulatedText);
 
       // only send a new part into the stream when the partial structure has changed:
       if (!isDeepEqualData(lastStructure, latestStructure)) {
-        lastFullDelta = latestFullDelta;
         lastStructure = latestStructure;
 
         return {
@@ -146,10 +154,6 @@ export async function streamStructure<STRUCTURE, PROMPT>(
         value: parseResult.data,
       };
     },
-    getResult: () => ({
-      response: lastFullDelta,
-      value: lastStructure,
-    }),
   });
 
   return options?.fullResponse

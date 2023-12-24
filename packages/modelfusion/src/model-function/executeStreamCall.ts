@@ -29,7 +29,7 @@ export async function executeStreamCall<
   startStream,
   processDelta,
   processFinished,
-  getResult,
+  onDone,
 }: {
   model: MODEL;
   options?: FunctionOptions;
@@ -42,7 +42,7 @@ export async function executeStreamCall<
     delta: Delta<DELTA_VALUE> & { type: "delta" }
   ) => VALUE | undefined;
   processFinished?: () => VALUE | undefined;
-  getResult: () => Record<string, unknown>;
+  onDone?: () => void;
 }): Promise<{
   value: AsyncIterable<VALUE>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
@@ -182,6 +182,8 @@ export async function executeStreamCall<
           return; // error is handled through queue
         }
 
+        onDone?.();
+
         const finishMetadata = {
           eventType: "finished" as const,
           ...startMetadata,
@@ -193,7 +195,6 @@ export async function executeStreamCall<
           ...finishMetadata,
           result: {
             status: "success",
-            ...getResult(),
           },
         } as ModelCallFinishedEvent);
       } finally {
@@ -202,7 +203,9 @@ export async function executeStreamCall<
       }
     })();
 
-    return responseQueue;
+    return {
+      stream: responseQueue,
+    };
   });
 
   if (!result.ok) {
@@ -238,7 +241,7 @@ export async function executeStreamCall<
   }
 
   return {
-    value: result.value,
+    value: result.value.stream,
     metadata: startMetadata,
   };
 }

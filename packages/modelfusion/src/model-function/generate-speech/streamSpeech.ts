@@ -74,8 +74,7 @@ export async function streamSpeech(
     options,
     startStream: async (options) =>
       model.doGenerateSpeechStreamDuplex(textStream, options),
-    processDelta: (delta) => delta.valueDelta,
-    getResult: () => ({}),
+    processDelta: (delta) => delta.deltaValue,
   });
 
   return options?.fullResponse

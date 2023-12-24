@@ -231,8 +231,7 @@ export class ElevenLabsSpeechModel
       if (!response.isFinal) {
         queue.push({
           type: "delta",
-          fullDelta: event,
-          valueDelta: Buffer.from(response.audio, "base64"),
+          deltaValue: Buffer.from(response.audio, "base64"),
         });
       }
     };

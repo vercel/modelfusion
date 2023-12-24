@@ -2,21 +2,21 @@ import { ChatInputArea } from "@/component/ChatInputArea";
 import { ChatMessageView } from "@/component/ChatMessageView";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
 import { Box, Button } from "@mui/material";
-import { TextChatMessage, zodSchema } from "modelfusion";
+import { ChatMessage, zodSchema } from "modelfusion";
 import { readEventSourceStream } from "modelfusion/browser";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 
 export default function Home() {
-  const [messages, setMessages] = useState<Array<TextChatMessage>>([]);
+  const [messages, setMessages] = useState<Array<ChatMessage>>([]);
   const [isSending, setIsSending] = useState<boolean>(false);
 
   const abortController = useRef<AbortController | null>(null);
 
   const handleSend = async (message: string) => {
     try {
-      const userMessage: TextChatMessage = { role: "user", content: message };
+      const userMessage: ChatMessage = { role: "user", content: message };
       const messagesToSend = [...messages, userMessage];
 
       setIsSending(true);
@@ -90,9 +90,15 @@ export default function Home() {
           }}
         >
           <Box sx={{ height: "100%", overflowY: "auto", marginTop: 2 }}>
-            {messages.map((message, index) => (
-              <ChatMessageView key={index} message={message} />
-            ))}
+            {messages.map(
+              (message, index) =>
+                typeof message.content === "string" && (
+                  <ChatMessageView
+                    key={index}
+                    message={{ role: message.role, content: message.content }}
+                  />
+                )
+            )}
             <Box sx={{ height: "160px" }} />
           </Box>
         </Box>

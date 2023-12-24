@@ -7,10 +7,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { Delta } from "../../model-function/Delta.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
@@ -24,8 +22,7 @@ import {
   instruction,
 } from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
+import { createEventSourceResponseHandler } from "../../util/streaming/createEventSourceResponseHandler.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
@@ -383,6 +380,12 @@ export class OpenAICompletionModel
     });
   }
 
+  extractTextDelta(delta: unknown): string {
+    const chunk = delta as OpenAICompletionStreamChunk;
+    // TODO correct index resolution using index property
+    return chunk.choices[0].text;
+  }
+
   /**
    * Returns this model with an instruction prompt template.
    */
@@ -451,32 +454,7 @@ export type OpenAICompletionResponse = z.infer<
   typeof OpenAICompletionResponseSchema
 >;
 
-export type OpenAITextResponseFormatType<T> = {
-  stream: boolean;
-  handler: ResponseHandler<T>;
-};
-
-export const OpenAITextResponseFormat = {
-  /**
-   * Returns the response as a JSON object.
-   */
-  json: {
-    stream: false,
-    handler: createJsonResponseHandler(OpenAICompletionResponseSchema),
-  } satisfies OpenAITextResponseFormatType<OpenAICompletionResponse>,
-
-  /**
-   * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
-   * of the response stream.
-   */
-  deltaIterable: {
-    stream: true,
-    handler: async ({ response }: { response: Response }) =>
-      createOpenAITextFullDeltaIterableQueue(response.body!),
-  } satisfies OpenAITextResponseFormatType<AsyncIterable<Delta<string>>>,
-};
-
-const textResponseStreamEventSchema = new ZodSchema(
+const openaiCompletionStreamChunkSchema = zodSchema(
   z.object({
     choices: z.array(
       z.object({
@@ -496,79 +474,31 @@ const textResponseStreamEventSchema = new ZodSchema(
   })
 );
 
-export type OpenAICompletionDelta = Array<{
-  content: string;
-  isComplete: boolean;
-  delta: string;
-}>;
+type OpenAICompletionStreamChunk =
+  (typeof openaiCompletionStreamChunkSchema)["_type"];
 
-async function createOpenAITextFullDeltaIterableQueue(
-  stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<Delta<string>>> {
-  const queue = new AsyncQueue<Delta<string>>();
-  const streamDelta: OpenAICompletionDelta = [];
+export type OpenAITextResponseFormatType<T> = {
+  stream: boolean;
+  handler: ResponseHandler<T>;
+};
 
-  // process the stream asynchonously (no 'await' on purpose):
-  parseEventSourceStream({ stream })
-    .then(async (events) => {
-      try {
-        for await (const event of events) {
-          const data = event.data;
+export const OpenAITextResponseFormat = {
+  /**
+   * Returns the response as a JSON object.
+   */
+  json: {
+    stream: false,
+    handler: createJsonResponseHandler(OpenAICompletionResponseSchema),
+  },
 
-          if (data === "[DONE]") {
-            queue.close();
-            return;
-          }
-
-          const eventData = parseJSON({
-            text: data,
-            schema: textResponseStreamEventSchema,
-          });
-
-          for (let i = 0; i < eventData.choices.length; i++) {
-            const eventChoice = eventData.choices[i];
-            const delta = eventChoice.text;
-
-            if (streamDelta[i] == null) {
-              streamDelta[i] = {
-                content: "",
-                isComplete: false,
-                delta: "",
-              };
-            }
-
-            const choice = streamDelta[i];
-
-            choice.delta = delta;
-
-            if (eventChoice.finish_reason != null) {
-              choice.isComplete = true;
-            }
-
-            choice.content += delta;
-          }
-
-          // Since we're mutating the choices array in an async scenario,
-          // we need to make a deep copy:
-          const streamDeltaDeepCopy = JSON.parse(JSON.stringify(streamDelta));
-
-          queue.push({
-            type: "delta",
-            fullDelta: streamDeltaDeepCopy,
-            valueDelta: streamDeltaDeepCopy[0].delta,
-          });
-        }
-      } catch (error) {
-        queue.push({ type: "error", error });
-        queue.close();
-        return;
-      }
-    })
-    .catch((error) => {
-      queue.push({ type: "error", error });
-      queue.close();
-      return;
-    });
-
-  return queue;
-}
+  /**
+   * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
+   * of the response stream.
+   */
+  deltaIterable: {
+    stream: true,
+    handler: createEventSourceResponseHandler(
+      openaiCompletionStreamChunkSchema
+    ),
+  },
+};

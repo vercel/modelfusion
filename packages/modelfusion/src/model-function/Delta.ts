@@ -1,8 +1,7 @@
 export type Delta<T> =
   | {
       type: "delta";
-      fullDelta: unknown;
-      valueDelta: T;
+      deltaValue: T;
     }
   | {
       type: "error";

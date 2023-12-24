@@ -24,13 +24,13 @@ Given a prompt, the server returns both a text and a speech stream response.
 3. Start the server:
 
    ```sh
-   npm run server
+   pnpm run server
    ```
 
 4. Start the client:
 
    ```sh
-   npm run client
+   pnpm run client
    ```
 
 5. Go to the URL from the client run

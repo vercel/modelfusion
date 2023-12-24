@@ -34,6 +34,10 @@ export class PromptTemplateTextStreamingModel<
     return this.model.doStreamText(mappedPrompt, options);
   }
 
+  extractTextDelta(delta: unknown): string {
+    return this.model.extractTextDelta(delta);
+  }
+
   asStructureGenerationModel<INPUT_PROMPT>(
     promptTemplate: StructureFromTextPromptTemplate<INPUT_PROMPT, PROMPT>
   ) {

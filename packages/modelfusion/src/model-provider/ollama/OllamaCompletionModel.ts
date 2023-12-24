@@ -4,10 +4,9 @@ import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import { ResponseHandler, postJsonToApi } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { ZodSchema, zodSchema } from "../../core/schema/ZodSchema.js";
 import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { Delta } from "../../model-function/Delta.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextStreamingModel,
@@ -22,8 +21,7 @@ import {
   TextGenerationToolCallsOrGenerateTextModel,
   ToolCallsOrGenerateTextPromptTemplate,
 } from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
+import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
 import { OllamaTextGenerationSettings } from "./OllamaTextGenerationSettings.js";
@@ -206,6 +204,11 @@ export class OllamaCompletionModel<
     });
   }
 
+  extractTextDelta(delta: unknown): string {
+    const chunk = delta as OllamaCompletionStreamChunk;
+    return chunk.done === true ? "" : chunk.response;
+  }
+
   asToolCallGenerationModel<INPUT_PROMPT>(
     promptTemplate: ToolCallPromptTemplate<INPUT_PROMPT, OllamaCompletionPrompt>
   ) {
@@ -292,7 +295,7 @@ export type OllamaCompletionResponse = z.infer<
   typeof ollamaCompletionResponseSchema
 >;
 
-const ollamaCompletionStreamSchema = new ZodSchema(
+const ollamaCompletionStreamChunkSchema = zodSchema(
   z.discriminatedUnion("done", [
     z.object({
       done: z.literal(false),
@@ -317,55 +320,8 @@ const ollamaCompletionStreamSchema = new ZodSchema(
   ])
 );
 
-export type OllamaCompletionDelta = {
-  content: string;
-  isComplete: boolean;
-  delta: string;
-};
-
-async function createOllamaFullDeltaIterableQueue(
-  stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<Delta<string>>> {
-  const queue = new AsyncQueue<Delta<string>>();
-
-  let accumulatedText = "";
-
-  // process the stream asynchonously (no 'await' on purpose):
-  parseJsonStream({
-    stream,
-    schema: ollamaCompletionStreamSchema,
-    process(event) {
-      if (event.done === true) {
-        queue.push({
-          type: "delta",
-          fullDelta: {
-            content: accumulatedText,
-            isComplete: true,
-            delta: "",
-          },
-          valueDelta: "",
-        });
-      } else {
-        accumulatedText += event.response;
-
-        queue.push({
-          type: "delta",
-          fullDelta: {
-            content: accumulatedText,
-            isComplete: false,
-            delta: event.response,
-          },
-          valueDelta: event.response,
-        });
-      }
-    },
-    onDone() {
-      queue.close();
-    },
-  });
-
-  return queue;
-}
+export type OllamaCompletionStreamChunk =
+  (typeof ollamaCompletionStreamChunkSchema)["_type"];
 
 export type OllamaCompletionResponseFormatType<T> = {
   stream: boolean;
@@ -428,7 +384,6 @@ export const OllamaCompletionResponseFormat = {
    */
   deltaIterable: {
     stream: true,
-    handler: async ({ response }: { response: Response }) =>
-      createOllamaFullDeltaIterableQueue(response.body!),
-  } satisfies OllamaCompletionResponseFormatType<AsyncIterable<Delta<string>>>,
+    handler: createJsonStreamResponseHandler(ollamaCompletionStreamChunkSchema),
+  },
 };

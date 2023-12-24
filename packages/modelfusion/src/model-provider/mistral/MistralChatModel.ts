@@ -8,18 +8,16 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
-import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { Delta } from "../../model-function/Delta.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
+  textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
+import { createEventSourceResponseHandler } from "../../util/streaming/createEventSourceResponseHandler.js";
 import { MistralApiConfiguration } from "./MistralApiConfiguration.js";
 import { failedMistralCallResponseHandler } from "./MistralError.js";
 import { chat, instruction, text } from "./MistralPromptTemplate.js";
@@ -95,14 +93,6 @@ export class MistralChatModel
       responseFormat: MistralChatResponseFormatType<RESULT>;
     } & FunctionOptions
   ) {
-    const {
-      model,
-      temperature,
-      topP,
-      safeMode,
-      randomSeed,
-      maxGenerationTokens,
-    } = this.settings;
     const api = this.settings.api ?? new MistralApiConfiguration();
     const abortSignal = options.run?.abortSignal;
     const stream = options.responseFormat.stream;
@@ -118,12 +108,12 @@ export class MistralChatModel
           body: {
             stream,
             messages: prompt,
-            model,
-            temperature,
-            top_p: topP,
-            max_tokens: maxGenerationTokens,
-            safe_mode: safeMode,
-            random_seed: randomSeed,
+            model: this.settings.model,
+            temperature: this.settings.temperature,
+            top_p: this.settings.topP,
+            max_tokens: this.settings.maxGenerationTokens,
+            safe_mode: this.settings.safeMode,
+            random_seed: this.settings.randomSeed,
           },
           failedResponseHandler: failedMistralCallResponseHandler,
           successfulResponseHandler,
@@ -134,10 +124,7 @@ export class MistralChatModel
 
   get settingsForEvent(): Partial<MistralChatModelSettings> {
     const eventSettingProperties: Array<string> = [
-      "maxGenerationTokens",
-      "stopSequences",
-      "numberOfGenerations",
-      "trimWhitespace",
+      ...textGenerationModelProperties,
 
       "temperature",
       "topP",
@@ -186,6 +173,11 @@ export class MistralChatModel
       ...options,
       responseFormat: MistralChatResponseFormat.textDeltaIterable,
     });
+  }
+
+  extractTextDelta(delta: unknown): string {
+    const chunk = delta as MistralChatStreamChunk;
+    return chunk.choices[0].delta.content ?? "";
   }
 
   /**
@@ -257,44 +249,7 @@ const mistralChatResponseSchema = z.object({
 
 export type MistralChatResponse = z.infer<typeof mistralChatResponseSchema>;
 
-export type MistralChatResponseFormatType<T> = {
-  stream: boolean;
-  handler: ResponseHandler<T>;
-};
-
-export const MistralChatResponseFormat = {
-  /**
-   * Returns the response as a JSON object.
-   */
-  json: {
-    stream: false,
-    handler: createJsonResponseHandler(mistralChatResponseSchema),
-  } satisfies MistralChatResponseFormatType<MistralChatResponse>,
-
-  /**
-   * Returns an async iterable over the text deltas (only the tex different of the first choice).
-   */
-  textDeltaIterable: {
-    stream: true,
-    handler: async ({ response }: { response: Response }) =>
-      createMistralChatDeltaIterableQueue(
-        response.body!,
-        (delta) => delta[0]?.delta.content ?? ""
-      ),
-  } satisfies MistralChatResponseFormatType<AsyncIterable<Delta<string>>>,
-};
-
-export type MistralChatDelta = Array<{
-  role: "assistant" | "user" | undefined;
-  content: string;
-  isComplete: boolean;
-  delta: {
-    role?: "assistant" | "user" | null;
-    content?: string | null;
-  };
-}>;
-
-const mistralChatChunkSchema = new ZodSchema(
+const mistralChatStreamChunkSchema = new ZodSchema(
   z.object({
     id: z.string(),
     object: z.string().optional(),
@@ -316,95 +271,28 @@ const mistralChatChunkSchema = new ZodSchema(
   })
 );
 
-async function createMistralChatDeltaIterableQueue<VALUE>(
-  stream: ReadableStream<Uint8Array>,
-  extractDeltaValue: (delta: MistralChatDelta) => VALUE
-): Promise<AsyncIterable<Delta<VALUE>>> {
-  const queue = new AsyncQueue<Delta<VALUE>>();
-  const streamDelta: MistralChatDelta = [];
+export type MistralChatStreamChunk =
+  (typeof mistralChatStreamChunkSchema)["_type"];
 
-  // process the stream asynchonously (no 'await' on purpose):
-  parseEventSourceStream({ stream })
-    .then(async (events) => {
-      try {
-        for await (const event of events) {
-          const data = event.data;
+export type MistralChatResponseFormatType<T> = {
+  stream: boolean;
+  handler: ResponseHandler<T>;
+};
 
-          if (data === "[DONE]") {
-            queue.close();
-            return;
-          }
+export const MistralChatResponseFormat = {
+  /**
+   * Returns the response as a JSON object.
+   */
+  json: {
+    stream: false,
+    handler: createJsonResponseHandler(mistralChatResponseSchema),
+  },
 
-          const parseResult = safeParseJSON({
-            text: data,
-            schema: mistralChatChunkSchema,
-          });
-
-          if (!parseResult.success) {
-            queue.push({
-              type: "error",
-              error: parseResult.error,
-            });
-            // Note: the queue is not closed on purpose. Some providers might add additional
-            // chunks that are not parsable, and ModelFusion should be resilient to that.
-            continue;
-          }
-
-          const completionChunk = parseResult.data;
-
-          for (let i = 0; i < completionChunk.choices.length; i++) {
-            const eventChoice = completionChunk.choices[i];
-            const delta = eventChoice.delta;
-
-            if (streamDelta[i] == null) {
-              streamDelta[i] = {
-                role: undefined,
-                content: "",
-                isComplete: false,
-                delta,
-              };
-            }
-
-            const choice = streamDelta[i];
-
-            choice.delta = delta;
-
-            if (eventChoice.finish_reason != null) {
-              choice.isComplete = true;
-            }
-
-            if (delta.content != undefined) {
-              choice.content += delta.content;
-            }
-
-            if (delta.role != undefined) {
-              choice.role = delta.role;
-            }
-          }
-
-          // Since we're mutating the choices array in an async scenario,
-          // we need to make a deep copy:
-          const streamDeltaDeepCopy: MistralChatDelta = JSON.parse(
-            JSON.stringify(streamDelta)
-          );
-
-          queue.push({
-            type: "delta",
-            fullDelta: streamDeltaDeepCopy,
-            valueDelta: extractDeltaValue(streamDeltaDeepCopy),
-          });
-        }
-      } catch (error) {
-        queue.push({ type: "error", error });
-        queue.close();
-        return;
-      }
-    })
-    .catch((error) => {
-      queue.push({ type: "error", error });
-      queue.close();
-      return;
-    });
-
-  return queue;
-}
+  /**
+   * Returns an async iterable over the text deltas (only the tex different of the first choice).
+   */
+  textDeltaIterable: {
+    stream: true,
+    handler: createEventSourceResponseHandler(mistralChatStreamChunkSchema),
+  },
+};

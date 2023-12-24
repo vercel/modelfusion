@@ -7,7 +7,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
@@ -18,7 +19,6 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
 import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
@@ -231,6 +231,10 @@ export class LlamaCppTextGenerationModel<
     });
   }
 
+  extractTextDelta(delta: unknown): string {
+    return (delta as LlamaCppTextStreamChunk).content;
+  }
+
   withTextPrompt(): PromptTemplateTextStreamingModel<
     string,
     LlamaCppTextGenerationPrompt,
@@ -362,7 +366,7 @@ export type LlamaCppTextGenerationResponse = z.infer<
   typeof llamaCppTextGenerationResponseSchema
 >;
 
-const llamaCppTextStreamingResponseSchema = new ZodSchema(
+const llamaCppTextStreamChunkSchema = zodSchema(
   z.discriminatedUnion("stop", [
     z.object({
       content: z.string(),
@@ -372,18 +376,13 @@ const llamaCppTextStreamingResponseSchema = new ZodSchema(
   ])
 );
 
-export type LlamaCppTextGenerationDelta = {
-  content: string;
-  isComplete: boolean;
-  delta: string;
-};
+export type LlamaCppTextStreamChunk =
+  (typeof llamaCppTextStreamChunkSchema)["_type"];
 
 async function createLlamaCppFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<Delta<string>>> {
-  const queue = new AsyncQueue<Delta<string>>();
-
-  let content = "";
+): Promise<AsyncIterable<Delta<LlamaCppTextStreamChunk>>> {
+  const queue = new AsyncQueue<Delta<LlamaCppTextStreamChunk>>();
 
   // process the stream asynchonously (no 'await' on purpose):
   parseEventSourceStream({ stream })
@@ -394,20 +393,10 @@ async function createLlamaCppFullDeltaIterableQueue(
 
           const eventData = parseJSON({
             text: data,
-            schema: llamaCppTextStreamingResponseSchema,
+            schema: llamaCppTextStreamChunkSchema,
           });
 
-          content += eventData.content;
-
-          queue.push({
-            type: "delta",
-            fullDelta: {
-              content,
-              isComplete: eventData.stop,
-              delta: eventData.content,
-            },
-            valueDelta: eventData.content,
-          });
+          queue.push({ type: "delta", deltaValue: eventData });
 
           if (eventData.stop) {
             queue.close();
@@ -449,6 +438,6 @@ export const LlamaCppTextGenerationResponseFormat = {
     handler: async ({ response }: { response: Response }) =>
       createLlamaCppFullDeltaIterableQueue(response.body!),
   } satisfies LlamaCppTextGenerationResponseFormatType<
-    AsyncIterable<Delta<string>>
+    AsyncIterable<Delta<LlamaCppTextStreamChunk>>
   >,
 };

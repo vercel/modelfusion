@@ -7,7 +7,6 @@ import { ResponseHandler, postJsonToApi } from "../../core/api/postToApi.js";
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
 import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { Delta } from "../../model-function/Delta.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextStreamingModel,
@@ -22,8 +21,7 @@ import {
   TextGenerationToolCallsOrGenerateTextModel,
   ToolCallsOrGenerateTextPromptTemplate,
 } from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseJsonStream } from "../../util/streaming/parseJsonStream.js";
+import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { chat, instruction, text } from "./OllamaChatPromptTemplate.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
@@ -165,6 +163,11 @@ export class OllamaChatModel
     });
   }
 
+  extractTextDelta(delta: unknown): string {
+    const chunk = delta as OllamaChatStreamChunk;
+    return chunk.done === true ? "" : chunk.message.content;
+  }
+
   asToolCallGenerationModel<INPUT_PROMPT>(
     promptTemplate: ToolCallPromptTemplate<INPUT_PROMPT, OllamaChatPrompt>
   ) {
@@ -251,7 +254,7 @@ const ollamaChatResponseSchema = z.object({
 
 export type OllamaChatResponse = z.infer<typeof ollamaChatResponseSchema>;
 
-const ollamaChatStreamSchema = new ZodSchema(
+const ollamaChatStreamChunkSchema = new ZodSchema(
   z.discriminatedUnion("done", [
     z.object({
       done: z.literal(false),
@@ -276,57 +279,8 @@ const ollamaChatStreamSchema = new ZodSchema(
   ])
 );
 
-export type OllamaChatDelta = {
-  content: string;
-  isComplete: boolean;
-  delta: string;
-};
-
-async function createOllamaFullDeltaIterableQueue(
-  stream: ReadableStream<Uint8Array>
-): Promise<AsyncIterable<Delta<string>>> {
-  const queue = new AsyncQueue<Delta<string>>();
-
-  let accumulatedText = "";
-
-  // process the stream asynchonously (no 'await' on purpose):
-  parseJsonStream({
-    stream,
-    schema: ollamaChatStreamSchema,
-    process(event) {
-      if (event.done === true) {
-        queue.push({
-          type: "delta",
-          fullDelta: {
-            content: accumulatedText,
-            isComplete: true,
-            delta: "",
-          },
-          valueDelta: "",
-        });
-      } else {
-        const deltaText = event.message.content;
-
-        accumulatedText += deltaText;
-
-        queue.push({
-          type: "delta",
-          fullDelta: {
-            content: accumulatedText,
-            isComplete: false,
-            delta: deltaText,
-          },
-          valueDelta: deltaText,
-        });
-      }
-    },
-    onDone() {
-      queue.close();
-    },
-  });
-
-  return queue;
-}
+export type OllamaChatStreamChunk =
+  (typeof ollamaChatStreamChunkSchema)["_type"];
 
 export type OllamaChatResponseFormatType<T> = {
   stream: boolean;
@@ -388,7 +342,6 @@ export const OllamaChatResponseFormat = {
    */
   deltaIterable: {
     stream: true,
-    handler: async ({ response }: { response: Response }) =>
-      createOllamaFullDeltaIterableQueue(response.body!),
-  } satisfies OllamaChatResponseFormatType<AsyncIterable<Delta<string>>>,
+    handler: createJsonStreamResponseHandler(ollamaChatStreamChunkSchema),
+  },
 };
