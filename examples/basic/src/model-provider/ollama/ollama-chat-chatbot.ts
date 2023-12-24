@@ -1,4 +1,4 @@
-import { TextChatPrompt, ollama, streamText } from "modelfusion";
+import { ChatPrompt, ollama, streamText } from "modelfusion";
 import * as readline from "node:readline/promises";
 
 const systemPrompt = `You are a helpful, respectful and honest assistant.`;
@@ -9,7 +9,7 @@ const terminal = readline.createInterface({
 });
 
 async function main() {
-  const chat: TextChatPrompt = { system: systemPrompt, messages: [] };
+  const chat: ChatPrompt = { system: systemPrompt, messages: [] };
 
   while (true) {
     const userInput = await terminal.question("You: ");

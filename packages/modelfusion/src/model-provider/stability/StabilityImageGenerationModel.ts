@@ -230,7 +230,7 @@ export class StabilityImageGenerationModel
     });
   }
 
-  withSettings(additionalSettings: StabilityImageGenerationSettings) {
+  withSettings(additionalSettings: Partial<StabilityImageGenerationSettings>) {
     return new StabilityImageGenerationModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;

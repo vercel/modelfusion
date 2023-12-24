@@ -317,7 +317,7 @@ const textStream = await streamText(
 
 #### Instruction prompt
 
-[OpenAIChatPrompt.instruction()](/api/namespaces/OpenAIChatPrompt) lets you use [text instruction prompts](/api/interfaces/TextInstructionPrompt) and [multi-modal instruction prompts](/api/interfaces/MultiModalInstructionPrompt) with OpenAI chat models. It is available as a shorthand method:
+[OpenAIChatPrompt.instruction()](/api/namespaces/OpenAIChatPrompt) lets you use [instruction prompts](/api/interfaces/InstructionPrompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -335,7 +335,7 @@ const textStream = await streamText(
 
 #### Chat prompt
 
-[OpenAIChatPrompt.chat()](/api/namespaces/OpenAIChatPrompt) lets you use [text chat prompts](/api/interfaces/TextChatPrompt) and [multi-modal chat prompts](/api/interfaces/MultiModalChatPrompt) with OpenAI chat models. It is available as a shorthand method:
+[OpenAIChatPrompt.chat()](/api/namespaces/OpenAIChatPrompt) lets you use [chat prompts](/api/interfaces/ChatPrompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(

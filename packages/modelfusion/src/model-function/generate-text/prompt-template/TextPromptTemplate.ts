@@ -1,6 +1,7 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
-import { TextInstructionPrompt } from "./InstructionPrompt.js";
+import { ChatPrompt } from "./ChatPrompt.js";
+import { validateContentIsString } from "./Content.js";
+import { InstructionPrompt } from "./InstructionPrompt.js";
 
 /**
  * Formats a text prompt as a basic text prompt. Does not change the text prompt in any way.
@@ -14,7 +15,7 @@ export const text: () => TextGenerationPromptTemplate<string, string> = () => ({
  * Formats an instruction prompt as a basic text prompt.
  */
 export const instruction: () => TextGenerationPromptTemplate<
-  TextInstructionPrompt,
+  InstructionPrompt,
   string
 > = () => ({
   stopSequences: [],
@@ -25,7 +26,7 @@ export const instruction: () => TextGenerationPromptTemplate<
       text += `${prompt.system}\n\n`;
     }
 
-    text += `${prompt.instruction}\n\n`;
+    text += `${validateContentIsString(prompt.instruction, prompt)}\n\n`;
 
     if (prompt.responsePrefix != null) {
       text += prompt.responsePrefix;
@@ -46,14 +47,12 @@ export const chat: (options?: {
   user?: string;
   assistant?: string;
   system?: string;
-}) => TextGenerationPromptTemplate<TextChatPrompt, string> = ({
+}) => TextGenerationPromptTemplate<ChatPrompt, string> = ({
   user = "user",
   assistant = "assistant",
   system,
 } = {}) => ({
   format(prompt) {
-    validateChatPrompt(prompt);
-
     let text =
       prompt.system != null
         ? `${system != null ? `${system}:` : ""}${prompt.system}\n\n`
@@ -62,7 +61,7 @@ export const chat: (options?: {
     for (const { role, content } of prompt.messages) {
       switch (role) {
         case "user": {
-          text += `${user}:\n${content}\n\n`;
+          text += `${user}:\n${validateContentIsString(content, prompt)}\n\n`;
           break;
         }
         case "assistant": {

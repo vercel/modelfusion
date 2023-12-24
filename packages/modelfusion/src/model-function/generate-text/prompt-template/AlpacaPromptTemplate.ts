@@ -1,5 +1,6 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { TextInstructionPrompt } from "./InstructionPrompt.js";
+import { validateContentIsString } from "./Content.js";
+import { InstructionPrompt } from "./InstructionPrompt.js";
 
 const DEFAULT_SYSTEM_PROMPT_INPUT =
   "Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.";
@@ -60,7 +61,7 @@ export function text(): TextGenerationPromptTemplate<string, string> {
  * @see https://github.com/tatsu-lab/stanford_alpaca#data-release
  */
 export function instruction(): TextGenerationPromptTemplate<
-  TextInstructionPrompt & { input?: string }, // optional input supported by Alpaca
+  InstructionPrompt & { input?: string }, // optional input supported by Alpaca
   string
 > {
   return {
@@ -78,7 +79,7 @@ export function instruction(): TextGenerationPromptTemplate<
         text += `${prompt.system}\n`;
       }
 
-      text += prompt.instruction;
+      text += validateContentIsString(prompt.instruction, prompt);
 
       if (prompt.input != null) {
         text += `\n\n### Input:\n${prompt.input}`;

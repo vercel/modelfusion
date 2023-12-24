@@ -1,9 +1,7 @@
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import {
-  TextChatPrompt,
-  validateChatPrompt,
-} from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { TextInstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { validateContentIsString } from "../../model-function/generate-text/prompt-template/Content.js";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { MistralChatPrompt } from "./MistralChatModel.js";
 
 /**
@@ -23,7 +21,7 @@ export function text(): TextGenerationPromptTemplate<
  * Formats an instruction prompt as a Mistral prompt.
  */
 export function instruction(): TextGenerationPromptTemplate<
-  TextInstructionPrompt,
+  InstructionPrompt,
   MistralChatPrompt
 > {
   return {
@@ -34,7 +32,8 @@ export function instruction(): TextGenerationPromptTemplate<
         messages.push({ role: "system", content: prompt.system });
       }
 
-      messages.push({ role: "user", content: prompt.instruction });
+      const instruction = validateContentIsString(prompt.instruction, prompt);
+      messages.push({ role: "user", content: instruction });
 
       return messages;
     },
@@ -46,13 +45,11 @@ export function instruction(): TextGenerationPromptTemplate<
  * Formats a chat prompt as a Mistral prompt.
  */
 export function chat(): TextGenerationPromptTemplate<
-  TextChatPrompt,
+  ChatPrompt,
   MistralChatPrompt
 > {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
-
       const messages: MistralChatPrompt = [];
 
       if (prompt.system != null) {
@@ -62,7 +59,8 @@ export function chat(): TextGenerationPromptTemplate<
       for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
-            messages.push({ role: "user", content });
+            const textContent = validateContentIsString(content, prompt);
+            messages.push({ role: "user", content: textContent });
             break;
           }
           case "assistant": {

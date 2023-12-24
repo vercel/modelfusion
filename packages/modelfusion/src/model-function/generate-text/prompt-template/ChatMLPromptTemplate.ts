@@ -1,6 +1,7 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { TextChatPrompt, validateChatPrompt } from "./ChatPrompt.js";
-import { TextInstructionPrompt } from "./InstructionPrompt.js";
+import { ChatPrompt } from "./ChatPrompt.js";
+import { validateContentIsString } from "./Content.js";
+import { InstructionPrompt } from "./InstructionPrompt.js";
 
 const START_SEGMENT = "<|im_start|>";
 const END_SEGMENT = "<|im_end|>";
@@ -43,15 +44,17 @@ export function text(): TextGenerationPromptTemplate<string, string> {
  * ```
  */
 export function instruction(): TextGenerationPromptTemplate<
-  TextInstructionPrompt,
+  InstructionPrompt,
   string
 > {
   return {
     stopSequences: [END_SEGMENT],
     format(prompt) {
+      const instruction = validateContentIsString(prompt.instruction, prompt);
+
       return (
         segment("system", prompt.system) +
-        segment("user", prompt.instruction) +
+        segment("user", instruction) +
         segmentStart("assistant") +
         (prompt.responsePrefix ?? "")
       );
@@ -72,17 +75,16 @@ export function instruction(): TextGenerationPromptTemplate<
  * Paris<|im_end|>
  * ```
  */
-export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
+export function chat(): TextGenerationPromptTemplate<ChatPrompt, string> {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
-
       let text = prompt.system != null ? segment("system", prompt.system) : "";
 
       for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
-            text += segment("user", content);
+            const textContent = validateContentIsString(content, prompt);
+            text += segment("user", textContent);
             break;
           }
           case "assistant": {

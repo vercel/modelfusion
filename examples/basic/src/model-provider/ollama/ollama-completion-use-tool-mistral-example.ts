@@ -1,9 +1,11 @@
 import dotenv from "dotenv";
-import { ollama, useTool } from "modelfusion";
+import { modelfusion, ollama, useTool } from "modelfusion";
 import { mistralSingleToolCallPromptTemplate } from "../../tool/prompts/mistral";
 import { calculator } from "../../tool/tools/calculator-tool";
 
 dotenv.config();
+
+modelfusion.setLogFormat("detailed-object");
 
 async function main() {
   const { tool, args, toolCall, result } = await useTool(

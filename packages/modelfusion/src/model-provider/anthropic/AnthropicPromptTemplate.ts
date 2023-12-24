@@ -1,9 +1,7 @@
+import { validateContentIsString } from "../../model-function/generate-text/prompt-template/Content.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import {
-  TextChatPrompt,
-  validateChatPrompt,
-} from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { TextInstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 
 const HUMAN_PREFIX = "\n\nHuman:";
 const ASSISTANT_PREFIX = "\n\nAssistant:";
@@ -28,15 +26,17 @@ export function text(): TextGenerationPromptTemplate<string, string> {
  * Formats an instruction prompt as an Anthropic prompt.
  */
 export function instruction(): TextGenerationPromptTemplate<
-  TextInstructionPrompt,
+  InstructionPrompt,
   string
 > {
   return {
     format(prompt) {
+      const instruction = validateContentIsString(prompt.instruction, prompt);
+
       let text = prompt.system ?? "";
 
       text += HUMAN_PREFIX;
-      text += prompt.instruction;
+      text += instruction;
       text += ASSISTANT_PREFIX;
 
       if (prompt.responsePrefix != null) {
@@ -54,18 +54,18 @@ export function instruction(): TextGenerationPromptTemplate<
  *
  * @see https://docs.anthropic.com/claude/docs/constructing-a-prompt
  */
-export function chat(): TextGenerationPromptTemplate<TextChatPrompt, string> {
+export function chat(): TextGenerationPromptTemplate<ChatPrompt, string> {
   return {
     format(prompt) {
-      validateChatPrompt(prompt);
-
       let text = prompt.system ?? "";
 
       for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
+            const textContent = validateContentIsString(content, prompt);
+
             text += HUMAN_PREFIX;
-            text += content;
+            text += textContent;
             break;
           }
           case "assistant": {

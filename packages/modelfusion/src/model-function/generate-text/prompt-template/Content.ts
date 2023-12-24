@@ -1,8 +1,13 @@
-export type MultiModalInput = Array<Content>;
+import { InvalidPromptError } from "./InvalidPromptError.js";
 
-export type Content = TextContent | ImageContent;
+/**
+ * Content can either be a simple text content (`string`) or a
+ * complex multi-modal content that is a mix of text parts and
+ * image parts.
+ */
+export type Content = string | Array<TextPart | ImagePart>;
 
-export interface TextContent {
+export interface TextPart {
   type: "text";
 
   /**
@@ -11,7 +16,7 @@ export interface TextContent {
   text: string;
 }
 
-export interface ImageContent {
+export interface ImagePart {
   type: "image";
 
   /**
@@ -23,4 +28,18 @@ export interface ImageContent {
    * Optional mime type of the image.
    */
   mimeType?: string;
+}
+
+export function validateContentIsString(
+  content: Content,
+  prompt: unknown
+): string {
+  if (typeof content !== "string") {
+    throw new InvalidPromptError(
+      "only text prompts are are supported by this prompt template",
+      prompt
+    );
+  }
+
+  return content;
 }
