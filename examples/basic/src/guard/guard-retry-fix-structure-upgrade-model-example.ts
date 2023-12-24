@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
   OpenAIChatModelType,
-  TextInstructionPrompt,
+  InstructionPrompt,
   fixStructure,
   generateStructure,
   guard,
@@ -18,7 +18,7 @@ modelfusion.setLogFormat("detailed-object");
 async function main() {
   const sentiment = await guard(
     (
-      input: { model: OpenAIChatModelType; prompt: TextInstructionPrompt },
+      input: { model: OpenAIChatModelType; prompt: InstructionPrompt },
       options
     ) =>
       generateStructure(

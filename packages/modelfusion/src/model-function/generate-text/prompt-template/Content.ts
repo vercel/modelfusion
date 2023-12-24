@@ -2,7 +2,7 @@ import { InvalidPromptError } from "./InvalidPromptError.js";
 
 /**
  * Content can either be a simple text content (`string`) or a
- * complex multimodal content that is a mix of text parts and
+ * complex multi-modal content that is a mix of text parts and
  * image parts.
  */
 export type Content = string | Array<TextPart | ImagePart>;

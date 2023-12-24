@@ -118,7 +118,7 @@ const textStream = await streamText(
 
 #### Instruction prompt
 
-[MistralPrompt.instruction()](/api/namespaces/MistralPrompt) lets you use [text instruction prompts](/api/interfaces/TextInstructionPrompt) with Mistral text generation models. It is available as a shorthand method:
+[MistralPrompt.instruction()](/api/namespaces/MistralPrompt) lets you use [instruction prompts](/api/interfaces/InstructionPrompt) with Mistral text generation models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(
@@ -136,7 +136,7 @@ const textStream = await streamText(
 
 #### Chat prompt
 
-[MistralPrompt.chat()](/api/namespaces/MistralPrompt) lets you use [text chat prompts](/api/interfaces/TextChatPrompt) with Mistral text generation models. It is available as a shorthand method:
+[MistralPrompt.chat()](/api/namespaces/MistralPrompt) lets you use [chat prompts](/api/interfaces/ChatPrompt) with Mistral text generation models. It is available as a shorthand method:
 
 ```ts
 const textStream = await streamText(

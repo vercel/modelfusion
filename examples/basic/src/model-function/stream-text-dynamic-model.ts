@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import {
-  TextInstructionPrompt,
+  InstructionPrompt,
   TextStreamingModel,
   openai,
   streamText,
@@ -8,7 +8,7 @@ import {
 
 dotenv.config();
 
-async function callModel(model: TextStreamingModel<TextInstructionPrompt>) {
+async function callModel(model: TextStreamingModel<InstructionPrompt>) {
   return streamText(model, {
     instruction: "Write a short story about a robot learning to love.",
   });

@@ -197,9 +197,9 @@ The following prompt templates are available for text prompts:
 
 ### Instruction Prompts
 
-Instruction prompts are a higher-level prompt templates that contains an instruction and an optional system message. Instruction prompts can be [text instruction prompts](/api/interfaces/TextInstructionPrompt) or [multi-modal instruction prompts](/api/interfaces/MultiModalInstructionPrompt).
+[Instruction prompts](/api/interfaces/InstructionPrompt) are a higher-level prompt templates that contains an instruction and an optional system message.
 
-The supported instruction prompt type depends on the prompt template that you use. For text instruction prompts, the `instruction` property is a `string`, and for multi-modal instruction prompts it is a [MultiModalInput](/api/modules#multimodalinput). Multi-modal inputs are arrays that can contain text or image content.
+The supported instruction prompt type depends on the prompt template that you use. The `instruction` property supports strings and arrays of text or image content.
 
 #### Example: Cohere text generation
 
@@ -273,7 +273,7 @@ The following prompt templates are available for instruction prompts:
 
 ### Chat Prompts
 
-Chat prompts are a higher-level prompt template that contains a list of chat messages. They can be either a [TextChatPrompt](/api/interfaces/TextChatPrompt) or a [MultiModalChatPrompt](/api/interfaces/MultiModalChatPrompt).
+[Chat prompts](/api/interfaces/ChatPrompt) are a higher-level prompt template that contains a list of chat messages.
 
 Chat prompts are a combination of a system message and a list of user and assistant messages.
 
@@ -355,7 +355,7 @@ It automatically uses the [context window size](/api/interfaces/TextGenerationMo
 #### Example
 
 ```ts
-const chat: TextChatPrompt = {
+const chat: ChatPrompt = {
   system: `You are a helpful, respectful and honest assistant.`,
   messages: [
     //...

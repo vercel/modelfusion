@@ -1,14 +1,14 @@
 import dotenv from "dotenv";
 import {
   TextGenerationModel,
-  TextInstructionPrompt,
+  InstructionPrompt,
   generateText,
   openai,
 } from "modelfusion";
 
 dotenv.config();
 
-async function callModel(model: TextGenerationModel<TextInstructionPrompt>) {
+async function callModel(model: TextGenerationModel<InstructionPrompt>) {
   return generateText(model, {
     instruction: "Write a short story about a robot learning to love.",
   });
