@@ -238,7 +238,7 @@ export class OllamaCompletionModel<
   > {
     return this.withPromptTemplate({
       format(prompt: string) {
-        return { prompt: prompt };
+        return { prompt };
       },
       stopSequences: [],
     });
