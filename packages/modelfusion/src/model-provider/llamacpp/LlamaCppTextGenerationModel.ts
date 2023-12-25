@@ -231,7 +231,7 @@ export class LlamaCppTextGenerationModel<
     });
   }
 
-  extractTextDelta(delta: unknown): string {
+  extractTextDelta(delta: unknown) {
     return (delta as LlamaCppTextStreamChunk).content;
   }
 

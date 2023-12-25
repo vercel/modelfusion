@@ -223,11 +223,11 @@ export abstract class AbstractOpenAIChatModel<
     });
   }
 
-  extractTextDelta(delta: unknown): string {
+  extractTextDelta(delta: unknown) {
     const chunk = delta as OpenAIChatChunk;
 
     if (chunk.object !== "chat.completion.chunk") {
-      return ""; // TODO undefined
+      return undefined;
     }
 
     const chatChunk = chunk as OpenAIChatCompletionChunk;
@@ -235,10 +235,10 @@ export abstract class AbstractOpenAIChatModel<
     const firstChoice = chatChunk.choices[0];
 
     if (firstChoice.index > 0) {
-      return ""; // TODO undefined
+      return undefined;
     }
 
-    return firstChoice.delta.content ?? "";
+    return firstChoice.delta.content ?? undefined;
   }
 
   async doGenerateToolCall(

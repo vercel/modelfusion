@@ -182,7 +182,7 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
     const chunk = delta as OpenAIChatChunk;
 
     if (chunk.object !== "chat.completion.chunk") {
-      return ""; // TODO undefined
+      return undefined;
     }
 
     const chatChunk = chunk as OpenAIChatCompletionChunk;
@@ -190,10 +190,10 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
     const firstChoice = chatChunk.choices[0];
 
     if (firstChoice.index > 0) {
-      return ""; // TODO undefined
+      return undefined;
     }
 
-    return firstChoice.delta.function_call?.arguments ?? "";
+    return firstChoice.delta.function_call?.arguments;
   }
 
   parseAccumulatedStructureText(accumulatedText: string) {

@@ -175,9 +175,9 @@ export class MistralChatModel
     });
   }
 
-  extractTextDelta(delta: unknown): string {
+  extractTextDelta(delta: unknown) {
     const chunk = delta as MistralChatStreamChunk;
-    return chunk.choices[0].delta.content ?? "";
+    return chunk.choices[0].delta.content ?? undefined;
   }
 
   /**

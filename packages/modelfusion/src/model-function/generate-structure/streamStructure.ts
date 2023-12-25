@@ -116,8 +116,7 @@ export async function streamStructure<STRUCTURE, PROMPT>(
     startStream: async (options) =>
       model.doStreamStructure(schema, expandedPrompt, options),
     processDelta: (delta) => {
-      const valueDelta = delta.deltaValue;
-      const textDelta = model.extractStructureTextDelta(valueDelta);
+      const textDelta = model.extractStructureTextDelta(delta.deltaValue);
 
       if (textDelta == null) {
         return undefined;

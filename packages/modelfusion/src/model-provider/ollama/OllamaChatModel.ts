@@ -163,9 +163,9 @@ export class OllamaChatModel
     });
   }
 
-  extractTextDelta(delta: unknown): string {
+  extractTextDelta(delta: unknown) {
     const chunk = delta as OllamaChatStreamChunk;
-    return chunk.done === true ? "" : chunk.message.content;
+    return chunk.done === true ? undefined : chunk.message.content;
   }
 
   asToolCallGenerationModel<INPUT_PROMPT>(

@@ -174,7 +174,7 @@ export class AnthropicTextGenerationModel
     });
   }
 
-  extractTextDelta(delta: unknown): string {
+  extractTextDelta(delta: unknown) {
     const chunk = delta as AnthropicTextStreamChunk;
     return chunk.completion;
   }

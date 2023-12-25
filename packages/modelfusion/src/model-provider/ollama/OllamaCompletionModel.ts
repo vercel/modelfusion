@@ -204,9 +204,9 @@ export class OllamaCompletionModel<
     });
   }
 
-  extractTextDelta(delta: unknown): string {
+  extractTextDelta(delta: unknown) {
     const chunk = delta as OllamaCompletionStreamChunk;
-    return chunk.done === true ? "" : chunk.response;
+    return chunk.done === true ? undefined : chunk.response;
   }
 
   asToolCallGenerationModel<INPUT_PROMPT>(

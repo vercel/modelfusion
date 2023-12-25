@@ -111,7 +111,7 @@ export interface TextStreamingModel<
     options?: FunctionOptions
   ): PromiseLike<AsyncIterable<Delta<unknown>>>;
 
-  extractTextDelta(delta: unknown): string;
+  extractTextDelta(delta: unknown): string | undefined;
 
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>

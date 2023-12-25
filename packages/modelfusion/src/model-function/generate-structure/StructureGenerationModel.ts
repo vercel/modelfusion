@@ -38,7 +38,7 @@ export interface StructureStreamingModel<
     options?: FunctionOptions
   ): PromiseLike<AsyncIterable<Delta<unknown>>>;
 
-  extractStructureTextDelta(delta: unknown): string;
+  extractStructureTextDelta(delta: unknown): string | undefined;
 
   parseAccumulatedStructureText(accumulatedText: string): unknown;
 }

@@ -34,7 +34,7 @@ export class PromptTemplateTextStreamingModel<
     return this.model.doStreamText(mappedPrompt, options);
   }
 
-  extractTextDelta(delta: unknown): string {
+  extractTextDelta(delta: unknown) {
     return this.model.extractTextDelta(delta);
   }
 

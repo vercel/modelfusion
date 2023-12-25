@@ -72,32 +72,31 @@ export async function streamText<PROMPT>(
     options,
     startStream: async (options) => model.doStreamText(prompt, options),
     processDelta: (delta) => {
-      const valueDelta = delta.deltaValue;
+      let textDelta = model.extractTextDelta(delta.deltaValue);
 
-      let textDelta = model.extractTextDelta(valueDelta);
-
-      if (textDelta != null && textDelta.length > 0) {
-        if (shouldTrimWhitespace) {
-          textDelta = isFirstDelta
-            ? // remove leading whitespace:
-              textDelta.trimStart()
-            : // restore trailing whitespace from previous chunk:
-              trailingWhitespace + textDelta;
-
-          // trim trailing whitespace and store it for the next chunk:
-          const trailingWhitespaceMatch = textDelta.match(/\s+$/);
-          trailingWhitespace = trailingWhitespaceMatch
-            ? trailingWhitespaceMatch[0]
-            : "";
-          textDelta = textDelta.trimEnd();
-        }
-
-        isFirstDelta = false;
-        accumulatedText += textDelta;
-        return textDelta;
+      if (textDelta == null || textDelta.length === 0) {
+        return undefined;
       }
 
-      return undefined;
+      if (shouldTrimWhitespace) {
+        textDelta = isFirstDelta
+          ? // remove leading whitespace:
+            textDelta.trimStart()
+          : // restore trailing whitespace from previous chunk:
+            trailingWhitespace + textDelta;
+
+        // trim trailing whitespace and store it for the next chunk:
+        const trailingWhitespaceMatch = textDelta.match(/\s+$/);
+        trailingWhitespace = trailingWhitespaceMatch
+          ? trailingWhitespaceMatch[0]
+          : "";
+        textDelta = textDelta.trimEnd();
+      }
+
+      isFirstDelta = false;
+      accumulatedText += textDelta;
+
+      return textDelta;
     },
     onDone: () => {
       resolveText(accumulatedText);

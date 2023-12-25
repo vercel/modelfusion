@@ -380,7 +380,7 @@ export class OpenAICompletionModel
     });
   }
 
-  extractTextDelta(delta: unknown): string {
+  extractTextDelta(delta: unknown) {
     const chunk = delta as OpenAICompletionStreamChunk;
     // TODO correct index resolution using index property
     return chunk.choices[0].text;

@@ -211,7 +211,7 @@ export class CohereTextGenerationModel
     });
   }
 
-  extractTextDelta(delta: unknown): string {
+  extractTextDelta(delta: unknown) {
     const chunk = delta as CohereTextStreamChunk;
     return chunk.is_finished === true ? "" : chunk.text;
   }
