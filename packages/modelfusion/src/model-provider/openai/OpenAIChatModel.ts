@@ -1,15 +1,15 @@
-import { StructureFromTextPromptTemplate } from "../../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
-import { StructureFromTextStreamingModel } from "../../../model-function/generate-structure/StructureFromTextStreamingModel.js";
-import { PromptTemplateTextStreamingModel } from "../../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
+import { StructureFromTextPromptTemplate } from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
+import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
   textGenerationModelProperties,
-} from "../../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "../../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { ToolCallGenerationModel } from "../../../tool/generate-tool-call/ToolCallGenerationModel.js";
-import { ToolCallsOrTextGenerationModel } from "../../../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
-import { TikTokenTokenizer } from "../TikTokenTokenizer.js";
+} from "../../model-function/generate-text/TextGenerationModel.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel.js";
+import { ToolCallsOrTextGenerationModel } from "../../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
+import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 import {
   AbstractOpenAIChatCallSettings,
   AbstractOpenAIChatModel,

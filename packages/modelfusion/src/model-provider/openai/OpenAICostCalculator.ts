@@ -24,11 +24,11 @@ import {
   OpenAITranscriptionVerboseJsonResponse,
   calculateOpenAITranscriptionCostInMillicents,
 } from "./OpenAITranscriptionModel.js";
-import { OpenAIChatResponse } from "./chat/AbstractOpenAIChatModel.js";
+import { OpenAIChatResponse } from "./AbstractOpenAIChatModel.js";
 import {
   calculateOpenAIChatCostInMillicents,
   isOpenAIChatModel,
-} from "./chat/OpenAIChatModel.js";
+} from "./OpenAIChatModel.js";
 
 export class OpenAICostCalculator implements CostCalculator {
   readonly provider = "openai";

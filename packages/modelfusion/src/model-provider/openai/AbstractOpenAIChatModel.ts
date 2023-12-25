@@ -1,21 +1,21 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../../core/api/callWithRetryAndThrottle.js";
+import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../../core/api/postToApi.js";
-import { zodSchema } from "../../../core/schema/ZodSchema.js";
-import { parseJSON } from "../../../core/schema/parseJSON.js";
-import { AbstractModel } from "../../../model-function/AbstractModel.js";
-import { TextGenerationModelSettings } from "../../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationFinishReason } from "../../../model-function/generate-text/TextGenerationResult.js";
-import { ToolDefinition } from "../../../tool/ToolDefinition.js";
-import { createEventSourceResponseHandler } from "../../../util/streaming/createEventSourceResponseHandler.js";
-import { OpenAIApiConfiguration } from "../OpenAIApiConfiguration.js";
-import { failedOpenAICallResponseHandler } from "../OpenAIError.js";
+} from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { TextGenerationModelSettings } from "../../model-function/generate-text/TextGenerationModel.js";
+import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
+import { ToolDefinition } from "../../tool/ToolDefinition.js";
+import { createEventSourceResponseHandler } from "../../util/streaming/createEventSourceResponseHandler.js";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
+import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 
 export interface AbstractOpenAIChatCallSettings {

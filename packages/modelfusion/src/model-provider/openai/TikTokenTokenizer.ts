@@ -6,7 +6,7 @@ import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { never } from "../../util/never.js";
 import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
 import { OpenAICompletionBaseModelType } from "./OpenAICompletionModel.js";
-import { OpenAIChatBaseModelType } from "./chat/OpenAIChatModel.js";
+import { OpenAIChatBaseModelType } from "./OpenAIChatModel.js";
 
 export type TikTokenTokenizerSettings = {
   model:

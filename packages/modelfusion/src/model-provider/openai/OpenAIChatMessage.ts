@@ -1,5 +1,5 @@
-import { Content } from "../../../model-function/generate-text/prompt-template/Content.js";
-import { ToolCall } from "../../../tool/ToolCall.js";
+import { Content } from "../../model-function/generate-text/prompt-template/Content.js";
+import { ToolCall } from "../../tool/ToolCall.js";
 
 export type OpenAIChatMessage =
   | {

@@ -13,12 +13,8 @@ import {
   AbstractOpenAIChatCallSettings,
   AbstractOpenAIChatModel,
   OpenAIChatPrompt,
-} from "../openai/chat/AbstractOpenAIChatModel.js";
-import {
-  chat,
-  instruction,
-  text,
-} from "../openai/chat/OpenAIChatPromptTemplate.js";
+} from "../openai/AbstractOpenAIChatModel.js";
+import { chat, instruction, text } from "../openai/OpenAIChatPromptTemplate.js";
 
 export type OpenAICompatibleProviderName =
   | `openaicompatible`

@@ -1,6 +1,6 @@
-import { TextGenerationPromptTemplate } from "../../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { ChatPrompt } from "../../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { InstructionPrompt } from "../../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { OpenAIChatPrompt } from "./AbstractOpenAIChatModel.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
 

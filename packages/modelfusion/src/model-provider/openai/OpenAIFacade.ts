@@ -22,7 +22,7 @@ import {
   TikTokenTokenizer,
   TikTokenTokenizerSettings,
 } from "./TikTokenTokenizer.js";
-import { OpenAIChatModel, OpenAIChatSettings } from "./chat/OpenAIChatModel.js";
+import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel.js";
 
 /**
  * Create a text generation model that calls the OpenAI text completion API.
@@ -166,5 +166,5 @@ export function Tokenizer(settings: TikTokenTokenizerSettings) {
   return new TikTokenTokenizer(settings);
 }
 
-export { OpenAIChatMessage as ChatMessage } from "./chat/OpenAIChatMessage.js";
-export { OpenAIChatPrompt as ChatPrompt } from "./chat/AbstractOpenAIChatModel.js";
+export { OpenAIChatMessage as ChatMessage } from "./OpenAIChatMessage.js";
+export { OpenAIChatPrompt as ChatPrompt } from "./AbstractOpenAIChatModel.js";
