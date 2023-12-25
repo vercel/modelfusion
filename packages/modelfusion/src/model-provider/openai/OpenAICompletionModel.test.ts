@@ -26,9 +26,7 @@ describe("streamText", () => {
 
     const stream = await streamText(
       new OpenAICompletionModel({
-        api: new OpenAIApiConfiguration({
-          apiKey: "test-key",
-        }),
+        api: new OpenAIApiConfiguration({ apiKey: "test-key" }),
         model: "gpt-3.5-turbo-instruct",
       }),
       "hello"
@@ -40,5 +38,30 @@ describe("streamText", () => {
       ",",
       " world!",
     ]);
+  });
+
+  it("should return only values from the first choice when using streamText", async () => {
+    server.responseChunks = [
+      `data: {"id":"cmpl-8ZNls6dH7X2jUAJbY5joSWF9L0AD3","object":"text_completion","created":1703443548,` +
+        `"choices":[{"text":"A","index":0,"logprobs":null,"finish_reason":null}],"model":"gpt-3.5-turbo-instruct"}\n\n`,
+      `data: {"id":"cmpl-8ZNls6dH7X2jUAJbY5joSWF9L0AD3","object":"text_completion","created":1703443548,` +
+        `"choices":[{"text":"B","index":1,"logprobs":null,"finish_reason":null}],"model":"gpt-3.5-turbo-instruct"}\n\n`,
+      `data: {"id":"cmpl-8ZNls6dH7X2jUAJbY5joSWF9L0AD3","object":"text_completion","created":1703443548,` +
+        `"choices":[{"text":"","index":0,"logprobs":null,"finish_reason":"length"}],"model":"gpt-3.5-turbo-instruct"}\n\n`,
+      `data: {"id":"cmpl-8ZNls6dH7X2jUAJbY5joSWF9L0AD3","object":"text_completion","created":1703443548,` +
+        `"choices":[{"text":"","index":1,"logprobs":null,"finish_reason":"length"}],"model":"gpt-3.5-turbo-instruct"}\n\n`,
+      "data: [DONE]\n\n",
+    ];
+
+    const stream = await streamText(
+      new OpenAICompletionModel({
+        api: new OpenAIApiConfiguration({ apiKey: "test-key" }),
+        model: "gpt-3.5-turbo-instruct",
+        numberOfGenerations: 2,
+      }),
+      "test prompt"
+    );
+
+    expect(await arrayFromAsync(stream)).toStrictEqual(["A"]);
   });
 });
