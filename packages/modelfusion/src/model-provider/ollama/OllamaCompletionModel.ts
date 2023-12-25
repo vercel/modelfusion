@@ -244,6 +244,33 @@ export class OllamaCompletionModel<
     });
   }
 
+  /**
+   * Maps the prompt for a text version of the Ollama completion prompt template (without image support).
+   */
+  withTextPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
+  ): PromptTemplateTextStreamingModel<
+    INPUT_PROMPT,
+    string,
+    OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
+    PromptTemplateTextStreamingModel<
+      string,
+      OllamaCompletionPrompt,
+      OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
+      this
+    >
+  > {
+    return new PromptTemplateTextStreamingModel({
+      model: this.withTextPrompt().withSettings({
+        stopSequences: [
+          ...(this.settings.stopSequences ?? []),
+          ...promptTemplate.stopSequences,
+        ],
+      }),
+      promptTemplate,
+    });
+  }
+
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<
       INPUT_PROMPT,

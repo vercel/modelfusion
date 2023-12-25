@@ -131,8 +131,7 @@ describe("streamStructure", () => {
         format: "json",
         raw: true,
       })
-        .withTextPrompt()
-        .withPromptTemplate(TextPrompt.instruction())
+        .withTextPromptTemplate(TextPrompt.instruction())
         .asStructureGenerationModel(
           jsonStructurePrompt((instruction: string, schema) => ({
             system:
