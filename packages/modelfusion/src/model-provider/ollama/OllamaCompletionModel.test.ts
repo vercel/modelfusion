@@ -1,7 +1,12 @@
 import { fail } from "assert";
+import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { retryNever } from "../../core/api/retryNever.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { jsonStructurePrompt } from "../../model-function/generate-structure/jsonStructurePrompt.js";
+import { streamStructure } from "../../model-function/generate-structure/streamStructure.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
+import * as TextPrompt from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
 import { streamText } from "../../model-function/generate-text/streamText.js";
 import { JsonTestServer } from "../../test/JsonTestServer.js";
 import { StreamingTestServer } from "../../test/StreamingTestServer.js";
@@ -92,6 +97,64 @@ describe("streamText", () => {
       "Hello",
       ",",
       " world!",
+    ]);
+  });
+});
+
+describe("streamStructure", () => {
+  const server = new StreamingTestServer("http://127.0.0.1:11434/api/generate");
+
+  server.setupTestEnvironment();
+
+  it("should return a text stream", async () => {
+    server.responseChunks = [
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.253175Z","response":"{","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.273505Z","response":"\\n","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.293192Z","response":"   ","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.312446Z","response":" \\"","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.332021Z","response":"name","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.351128Z","response":"\\":","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.372082Z","response":" \\"","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.391903Z","response":"M","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.411056Z","response":"ike","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.430789Z","response":"\\"","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.450216Z","response":"\\n","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.47009Z","response":"}","done":false}\n`,
+      `{"model":"mistral:text","created_at":"2023-12-25T11:48:02.48885Z","response":"","done":true,` +
+        `"total_duration":521893000,"load_duration":957666,"prompt_eval_count":74,"prompt_eval_duration":302508000,` +
+        `"eval_count":12,"eval_duration":215282000}\n`,
+    ];
+
+    const stream = await streamStructure(
+      new OllamaCompletionModel({
+        model: "mistral:text",
+        format: "json",
+        raw: true,
+      })
+        .withTextPrompt()
+        .withPromptTemplate(TextPrompt.instruction())
+        .asStructureGenerationModel(
+          jsonStructurePrompt((instruction: string, schema) => ({
+            system:
+              "JSON schema: \n" +
+              JSON.stringify(schema.getJsonSchema()) +
+              "\n\n" +
+              "Respond only using JSON that matches the above schema.",
+            instruction,
+          }))
+        ),
+
+      zodSchema(z.object({ name: z.string() })),
+      "generate a name"
+    );
+
+    // note: space moved to last chunk bc of trimming
+    expect(await arrayFromAsync(stream)).toStrictEqual([
+      { isComplete: false, value: {} },
+      { isComplete: false, value: { name: "" } },
+      { isComplete: false, value: { name: "M" } },
+      { isComplete: false, value: { name: "Mike" } },
+      { isComplete: true, value: { name: "Mike" } },
     ]);
   });
 });
