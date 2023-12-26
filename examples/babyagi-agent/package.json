@@ -10,7 +10,7 @@
   "dependencies": {
     "chalk": "^4",
     "commander": "10.0.1",
-    "dotenv": "16.0.3",
+    "dotenv": "16.3.1",
     "jsdom": "^22.1.0",
     "modelfusion": "0.105.0",
     "serpapi": "^2.0.0"
