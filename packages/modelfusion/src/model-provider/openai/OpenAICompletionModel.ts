@@ -267,22 +267,20 @@ export class OpenAICompletionModel
       ? options.run?.userId
       : undefined;
     const abortSignal = options.run?.abortSignal;
-    let { stopSequences } = this.settings;
     const openaiResponseFormat = options.responseFormat;
+
+    // empty arrays are not allowed for stop:
+    const stopSequences =
+      this.settings.stopSequences != null &&
+      Array.isArray(this.settings.stopSequences) &&
+      this.settings.stopSequences.length === 0
+        ? undefined
+        : this.settings.stopSequences;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
       throttle: api.throttle,
       call: async () => {
-        // empty arrays are not allowed for stop:
-        if (
-          stopSequences != null &&
-          Array.isArray(stopSequences) &&
-          stopSequences.length === 0
-        ) {
-          stopSequences = undefined;
-        }
-
         return postJsonToApi({
           url: api.assembleUrl("/completions"),
           headers: api.headers,
@@ -297,7 +295,7 @@ export class OpenAICompletionModel
             n: this.settings.numberOfGenerations,
             logprobs: this.settings.logprobs,
             echo: this.settings.echo,
-            stop: this.settings.stopSequences,
+            stop: stopSequences,
             seed: this.settings.seed,
             presence_penalty: this.settings.presencePenalty,
             frequency_penalty: this.settings.frequencyPenalty,
