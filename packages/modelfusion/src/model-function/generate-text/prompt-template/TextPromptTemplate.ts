@@ -1,7 +1,8 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
 import { ChatPrompt } from "./ChatPrompt.js";
-import { validateContentIsString } from "./Content.js";
+import { validateContentIsString } from "./ContentPart.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
+import { InvalidPromptError } from "./InvalidPromptError.js";
 
 /**
  * Formats a text prompt as a basic text prompt. Does not change the text prompt in any way.
@@ -65,8 +66,17 @@ export const chat: (options?: {
           break;
         }
         case "assistant": {
-          text += `${assistant}:\n${content}\n\n`;
+          text += `${assistant}:\n${validateContentIsString(
+            content,
+            prompt
+          )}\n\n`;
           break;
+        }
+        case "tool": {
+          throw new InvalidPromptError(
+            "Tool messages are not supported.",
+            prompt
+          );
         }
         default: {
           const _exhaustiveCheck: never = role;

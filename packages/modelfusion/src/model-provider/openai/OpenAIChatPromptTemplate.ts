@@ -69,7 +69,57 @@ export function chat(): TextGenerationPromptTemplate<
             break;
           }
           case "assistant": {
-            messages.push(OpenAIChatMessage.assistant(content));
+            if (typeof content === "string") {
+              messages.push(OpenAIChatMessage.assistant(content));
+            } else {
+              let text = "";
+              const toolCalls: Array<{
+                id: string;
+                type: "function";
+                function: { name: string; arguments: string };
+              }> = [];
+
+              for (const part of content) {
+                switch (part.type) {
+                  case "text": {
+                    text += part.text;
+                    break;
+                  }
+                  case "tool-call": {
+                    toolCalls.push({
+                      id: part.id,
+                      type: "function",
+                      function: {
+                        name: part.name,
+                        arguments: JSON.stringify(part.args),
+                      },
+                    });
+                    break;
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = part;
+                    throw new Error(`Unsupported part: ${_exhaustiveCheck}`);
+                  }
+                }
+              }
+
+              messages.push({
+                role: "assistant",
+                content: text,
+                tool_calls: toolCalls,
+              });
+            }
+
+            break;
+          }
+          case "tool": {
+            for (const toolResponse of content) {
+              messages.push({
+                role: "tool",
+                tool_call_id: toolResponse.id,
+                content: JSON.stringify(toolResponse.response),
+              });
+            }
             break;
           }
           default: {

@@ -1,7 +1,8 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
 import { ChatPrompt } from "./ChatPrompt.js";
-import { validateContentIsString } from "./Content.js";
+import { validateContentIsString } from "./ContentPart.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
+import { InvalidPromptError } from "./InvalidPromptError.js";
 
 const START_SEGMENT = "<|im_start|>";
 const END_SEGMENT = "<|im_end|>";
@@ -83,13 +84,21 @@ export function chat(): TextGenerationPromptTemplate<ChatPrompt, string> {
       for (const { role, content } of prompt.messages) {
         switch (role) {
           case "user": {
-            const textContent = validateContentIsString(content, prompt);
-            text += segment("user", textContent);
+            text += segment("user", validateContentIsString(content, prompt));
             break;
           }
           case "assistant": {
-            text += segment("assistant", content);
+            text += segment(
+              "assistant",
+              validateContentIsString(content, prompt)
+            );
             break;
+          }
+          case "tool": {
+            throw new InvalidPromptError(
+              "Tool messages are not supported.",
+              prompt
+            );
           }
           default: {
             const _exhaustiveCheck: never = role;

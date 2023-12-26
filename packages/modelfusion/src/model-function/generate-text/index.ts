@@ -1,3 +1,4 @@
+export * from "./PromptTemplateFullTextModel.js";
 export * from "./PromptTemplateTextGenerationModel.js";
 export * from "./PromptTemplateTextStreamingModel.js";
 export * from "./TextGenerationEvent.js";

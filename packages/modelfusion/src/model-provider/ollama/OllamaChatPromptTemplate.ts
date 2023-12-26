@@ -1,7 +1,11 @@
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { Content } from "../../model-function/generate-text/prompt-template/Content.js";
+import {
+  ChatPrompt,
+  UserContent,
+} from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError.js";
 import { OllamaChatPrompt } from "./OllamaChatModel.js";
 
 /**
@@ -36,10 +40,16 @@ export function instruction(): TextGenerationPromptTemplate<
       const messages: OllamaChatPrompt = [];
 
       if (prompt.system != null) {
-        messages.push({ role: "system", content: prompt.system });
+        messages.push({
+          role: "system",
+          content: prompt.system,
+        });
       }
 
-      messages.push({ role: "user", ...extractContent(prompt.instruction) });
+      messages.push({
+        role: "user",
+        ...extractUserContent(prompt.instruction),
+      });
 
       return messages;
     },
@@ -63,7 +73,35 @@ export function chat(): TextGenerationPromptTemplate<
       }
 
       for (const { role, content } of prompt.messages) {
-        messages.push({ role, ...extractContent(content) });
+        switch (role) {
+          case "user": {
+            messages.push({
+              role: "user",
+              ...extractUserContent(content),
+            });
+            break;
+          }
+
+          case "assistant": {
+            messages.push({
+              role: "assistant",
+              content: validateContentIsString(content, prompt),
+            });
+            break;
+          }
+
+          case "tool": {
+            throw new InvalidPromptError(
+              "Tool messages are not supported.",
+              prompt
+            );
+          }
+
+          default: {
+            const _exhaustiveCheck: never = role;
+            throw new Error(`Unsupported role: ${_exhaustiveCheck}`);
+          }
+        }
       }
 
       return messages;
@@ -72,7 +110,7 @@ export function chat(): TextGenerationPromptTemplate<
   };
 }
 
-function extractContent(input: Content) {
+function extractUserContent(input: UserContent) {
   if (typeof input === "string") {
     return { content: input, images: undefined };
   }

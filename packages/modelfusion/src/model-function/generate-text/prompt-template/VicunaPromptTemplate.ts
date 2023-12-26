@@ -1,6 +1,7 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
 import { ChatPrompt } from "./ChatPrompt.js";
-import { validateContentIsString } from "./Content.js";
+import { validateContentIsString } from "./ContentPart.js";
+import { InvalidPromptError } from "./InvalidPromptError.js";
 
 // default Vicuna 1 system message
 const DEFAULT_SYSTEM_MESSAGE =
@@ -36,8 +37,14 @@ export function chat(): TextGenerationPromptTemplate<ChatPrompt, string> {
             break;
           }
           case "assistant": {
-            text += `ASSISTANT: ${content}\n`;
+            text += `ASSISTANT: ${validateContentIsString(content, prompt)}\n`;
             break;
+          }
+          case "tool": {
+            throw new InvalidPromptError(
+              "Tool messages are not supported.",
+              prompt
+            );
           }
           default: {
             const _exhaustiveCheck: never = role;

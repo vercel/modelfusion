@@ -1,5 +1,5 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { validateContentIsString } from "./Content.js";
+import { validateContentIsString } from "./ContentPart.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
 
 const DEFAULT_SYSTEM_PROMPT_INPUT =

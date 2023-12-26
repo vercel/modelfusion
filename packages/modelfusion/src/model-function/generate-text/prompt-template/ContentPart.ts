@@ -1,12 +1,5 @@
 import { InvalidPromptError } from "./InvalidPromptError.js";
 
-/**
- * Content can either be a simple text content (`string`) or a
- * complex multi-modal content that is a mix of text parts and
- * image parts.
- */
-export type Content = string | Array<TextPart | ImagePart>;
-
 export interface TextPart {
   type: "text";
 
@@ -30,13 +23,28 @@ export interface ImagePart {
   mimeType?: string;
 }
 
+export interface ToolCallPart {
+  type: "tool-call";
+
+  id: string;
+  name: string;
+  args: unknown;
+}
+
+export interface ToolResponsePart {
+  type: "tool-response";
+
+  id: string;
+  response: unknown;
+}
+
 export function validateContentIsString(
-  content: Content,
+  content: string | unknown,
   prompt: unknown
 ): string {
   if (typeof content !== "string") {
     throw new InvalidPromptError(
-      "only text prompts are are supported by this prompt template",
+      "Only text prompts are are supported by this prompt template.",
       prompt
     );
   }

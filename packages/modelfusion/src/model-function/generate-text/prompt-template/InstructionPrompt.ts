@@ -1,4 +1,4 @@
-import { Content } from "./Content.js";
+import { ImagePart, TextPart } from "./ContentPart";
 
 /**
  * A single text instruction prompt. It can contain an optional system message to define
@@ -24,7 +24,7 @@ export interface InstructionPrompt {
   /**
    * The instruction for the model.
    */
-  instruction: Content;
+  instruction: InstructionContent;
 
   /**
    * Response prefix that will be injected in the prompt at the beginning of the response.
@@ -32,3 +32,5 @@ export interface InstructionPrompt {
    */
   responsePrefix?: string;
 }
+
+export type InstructionContent = string | Array<TextPart | ImagePart>;

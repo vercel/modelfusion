@@ -1,6 +1,6 @@
 import { StructureFromTextPromptTemplate } from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
 import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
-import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
+import { PromptTemplateFullTextModel } from "../../model-function/generate-text/PromptTemplateFullTextModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
@@ -118,13 +118,13 @@ export class OpenAICompatibleChatModel
 
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, OpenAIChatPrompt>
-  ): PromptTemplateTextStreamingModel<
+  ): PromptTemplateFullTextModel<
     INPUT_PROMPT,
     OpenAIChatPrompt,
     OpenAICompatibleChatSettings,
     this
   > {
-    return new PromptTemplateTextStreamingModel({
+    return new PromptTemplateFullTextModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
