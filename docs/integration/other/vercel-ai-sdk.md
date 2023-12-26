@@ -22,9 +22,10 @@ npm install @modelfusion/vercel-ai
 Here is an example of a Next.js route that you can call from the Vercel AI `useChat` hook:
 
 ```ts
-import { ModelFusionTextStream } from "@modelfusion/vercel-ai";
+// app/api/chat/route.ts
+import { asChatMessages, ModelFusionTextStream } from "@modelfusion/vercel-ai";
 import { Message, StreamingTextResponse } from "ai";
-import { ChatMessage, TextPrompt, ollama, streamText } from "modelfusion";
+import { ollama, streamText } from "modelfusion";
 
 export const runtime = "edge";
 
@@ -33,29 +34,20 @@ export async function POST(req: Request) {
 
   // Use ModelFusion to call Ollama:
   const textStream = await streamText(
-    ollama
-      .TextGenerator({
-        model: "mistral:text",
-        maxGenerationTokens: -1, // infinite generation
-        temperature: 0,
-        raw: true, // use raw inputs and map to prompt template below
-      })
-      .withPromptTemplate(TextPrompt.chat()), // Plain text prompt
+    ollama.ChatTextGenerator({ model: "llama2:chat" }).withChatPrompt(),
     {
       system:
         "You are an AI chat bot. " +
         "Follow the user's instructions carefully.",
 
       // map Vercel AI SDK Message to ModelFusion ChatMessage:
-      messages: messages.filter(
-        // only user and assistant roles are supported:
-        (message) => message.role === "user" || message.role === "assistant"
-      ) as ChatMessage[],
+      messages: asChatMessages(messages),
     }
   );
 
   // Return the result using the Vercel AI SDK:
   return new StreamingTextResponse(
+    // Convert the text stream to a Vercel AI SDK compatible stream:
     ModelFusionTextStream(
       textStream,
       // optional callbacks:
