@@ -4,6 +4,8 @@ import { Command } from "commander";
 import dotenv from "dotenv";
 import { convert as convertHtmlToText } from "html-to-text";
 import {
+  ChatMessage,
+  ChatPrompt,
   Tool,
   openai,
   summarizeRecursivelyWithTextGenerationAndTokenSplitting,
@@ -50,34 +52,33 @@ const readWikipediaArticle = new Tool({
 
     // extract the topic from the text:
     return await summarizeRecursivelyWithTextGenerationAndTokenSplitting({
-      model: openai.ChatTextGenerator({
-        model: "gpt-3.5-turbo-16k",
-        temperature: 0,
-      }),
+      model: openai
+        .ChatTextGenerator({
+          model: "gpt-3.5-turbo-16k",
+          temperature: 0,
+        })
+        .withInstructionPrompt(),
       text,
-      prompt: async ({ text }) => [
-        openai.ChatMessage.system(
-          [
-            `Extract and keep all the information about ${topic} from the following text.`,
-            `Only include information that is directly relevant for ${topic}.`,
-          ].join("\n")
-        ),
-        openai.ChatMessage.user(text),
-      ],
+      prompt: async ({ text }) => ({
+        system: [
+          `Extract and keep all the information about ${topic} from the following text.`,
+          `Only include information that is directly relevant for ${topic}.`,
+        ].join("\n"),
+        instruction: text,
+      }),
     });
   },
 });
 
 async function main() {
-  const messages: openai.ChatPrompt = [
-    openai.ChatMessage.system(
+  const chat: ChatPrompt = {
+    system:
       "You are researching the answer to the user's question on Wikipedia. " +
-        "Reason step by step. " +
-        "Search Wikipedia and extract information from relevant articles as needed. " +
-        "All facts for your answer must be from Wikipedia articles that you have read."
-    ),
-    openai.ChatMessage.user(question),
-  ];
+      "Reason step by step. " +
+      "Search Wikipedia and extract information from relevant articles as needed. " +
+      "All facts for your answer must be from Wikipedia articles that you have read.",
+    messages: [ChatMessage.user({ text: question })],
+  };
 
   console.log();
   console.log(chalk.green.bold(`*****QUESTION*****`));
@@ -86,15 +87,16 @@ async function main() {
 
   while (true) {
     const { text, toolResults } = await useToolsOrGenerateText(
-      openai.ChatTextGenerator({ model: "gpt-4-1106-preview", temperature: 0 }),
+      openai
+        .ChatTextGenerator({ model: "gpt-4-1106-preview", temperature: 0 })
+        .withChatPrompt(),
       [searchWikipedia, readWikipediaArticle],
-      messages
+      chat
     );
 
-    messages.push(
-      openai.ChatMessage.assistant(text, {
-        toolCalls: toolResults?.map((result) => result.toolCall),
-      })
+    chat.messages.push(
+      ChatMessage.assistant({ text, toolResults }),
+      ChatMessage.tool({ toolResults })
     );
 
     if (toolResults == null) {
@@ -111,11 +113,7 @@ async function main() {
       console.log();
     }
 
-    for (const { tool, result, args, ok, toolCall } of toolResults ?? []) {
-      messages.push(
-        openai.ChatMessage.tool({ toolCallId: toolCall.id, content: result })
-      );
-
+    for (const { tool, result, args, ok } of toolResults ?? []) {
       if (!ok) {
         console.log(chalk.red.bold(`*****ERROR*****`));
         console.log(result);

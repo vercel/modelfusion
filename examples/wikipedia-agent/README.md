@@ -26,6 +26,6 @@ Get answers to questions from Wikipedia, e.g. "Who was born first, Einstein or P
 Run the following commands:
 
 ```sh
-npm install
-npx tsx src/WikipediaReactAgent.ts --question "Who was born first, Einstein or Picasso?"
+pnpm install
+pnpm tsx src/WikipediaReactAgent.ts --question "Who was born first, Einstein or Picasso?"
 ```
