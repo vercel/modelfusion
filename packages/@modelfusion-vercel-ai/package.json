@@ -55,7 +55,7 @@
     "ai": ">= 2.2.27",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
-    "modelfusion": "1.0.4"
+    "modelfusion": "0.104.0"
   },
   "peerDependencies": {
     "modelfusion": ">=0.89.0",

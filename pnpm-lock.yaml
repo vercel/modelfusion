@@ -583,7 +583,7 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
       modelfusion:
-        specifier: '>=0.89.0 <1.0.0-0'
+        specifier: 0.104.0
         version: link:../modelfusion/dist
     publishDirectory: dist
 
