@@ -8,15 +8,17 @@
 
 You can call `ModelFusionTextStream` with the result from [streamText](https://modelfusion.dev/guide/function/generate-text#streamtext). This stream is compatible with the Vercel AI SDK and supports the callbacks and stream data features.
 
+To convert Vercel AI SDK messages to ModelFusion messages, use the `asChatMessages` helper.
+
 ## Example: Ollama & Next.js
 
 This is an example for a Next.js app router API route. It uses the ModelFusion [Ollama](https://github.com/jmorganca/ollama) integration. For a full example app, check out the [Next.js, Vercel AI SDK, Ollama & ModelFusion starter](https://github.com/lgrammel/modelfusion-ollama-nextjs-starter).
 
 ```ts
 // app/api/chat/route.ts
-import { ModelFusionTextStream } from "@modelfusion/vercel-ai";
+import { asChatMessages, ModelFusionTextStream } from "@modelfusion/vercel-ai";
 import { Message, StreamingTextResponse } from "ai";
-import { ChatMessage, ollama, streamText } from "modelfusion";
+import { ollama, streamText } from "modelfusion";
 
 export const runtime = "edge";
 
@@ -32,10 +34,7 @@ export async function POST(req: Request) {
         "Follow the user's instructions carefully.",
 
       // map Vercel AI SDK Message to ModelFusion ChatMessage:
-      messages: messages.filter(
-        // only user and assistant roles are supported:
-        (message) => message.role === "user" || message.role === "assistant"
-      ) as ChatMessage[],
+      messages: asChatMessages(messages),
     }
   );
 
