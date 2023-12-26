@@ -1,5 +1,54 @@
 # Changelog
 
+## v0.105.0 - 2023-12-26
+
+### Added
+
+- Tool call support for chat prompts. Assistant messages can contain tool calls, and tool messages can contain tool call results. Tool calls can be used to implement e.g. agents:
+
+  ```ts
+  const chat: ChatPrompt = {
+    system: "You are ...",
+    messages: [ChatMessage.user({ text: instruction })],
+  };
+
+  while (true) {
+    const { text, toolResults } = await useToolsOrGenerateText(
+      openai
+        .ChatTextGenerator({ model: "gpt-4-1106-preview" })
+        .withChatPrompt(),
+      tools, // array of tools
+      chat
+    );
+
+    // add the assistant and tool messages to the chat:
+    chat.messages.push(
+      ChatMessage.assistant({ text, toolResults }),
+      ChatMessage.tool({ toolResults })
+    );
+
+    if (toolResults == null) {
+      return; // no more actions, break loop
+    }
+
+    // ... (handle tool results)
+  }
+  ```
+
+- `streamText` returns a `text` promise when invoked with `fullResponse: true`. After the streaming has finished, the promise resolves with the full text.
+
+  ```ts
+  const { text, textStream } = await streamText(
+    openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }).withTextPrompt(),
+    "Write a short story about a robot learning to love:",
+    { fullResponse: true }
+  );
+
+  // ... (handle streaming)
+
+  console.log(await text); // full text
+  ```
+
 ## v0.104.0 - 2023-12-24
 
 ### Changed

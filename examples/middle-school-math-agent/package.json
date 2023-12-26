@@ -8,7 +8,7 @@
     "clean": "rimraf build dist .turbo node_modules && pnpm clear"
   },
   "dependencies": {
-    "modelfusion": "0.104.0",
+    "modelfusion": "0.105.0",
     "dotenv": "16.0.3",
     "zod": "3.22.4"
   },
