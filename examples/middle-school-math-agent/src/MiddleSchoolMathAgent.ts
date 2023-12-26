@@ -13,6 +13,8 @@ dotenv.config();
 const problem = questions[Math.floor(Math.random() * questions.length)];
 
 async function main() {
+  console.log(`PROBLEM: ${problem}\n`);
+
   const chat: ChatPrompt = {
     system:
       "You are solving math problems. " +
@@ -22,8 +24,6 @@ async function main() {
       "When you give the final answer, provide an explanation for how you got it.",
     messages: [ChatMessage.user({ text: problem })],
   };
-
-  console.log(`PROBLEM: ${problem}\n`);
 
   while (true) {
     const { text, toolResults } = await useToolsOrGenerateText(

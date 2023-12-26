@@ -22,6 +22,11 @@ program
 const { question } = program.opts();
 
 async function main() {
+  console.log();
+  console.log(chalk.green.bold(`*****QUESTION*****`));
+  console.log(`${question}`);
+  console.log();
+
   const chat: ChatPrompt = {
     system:
       "You are researching the answer to the user's question on Wikipedia. " +
@@ -30,11 +35,6 @@ async function main() {
       "All facts for your answer must be from Wikipedia articles that you have read.",
     messages: [ChatMessage.user({ text: question })],
   };
-
-  console.log();
-  console.log(chalk.green.bold(`*****QUESTION*****`));
-  console.log(`${question}`);
-  console.log();
 
   while (true) {
     const { text, toolResults } = await useToolsOrGenerateText(
