@@ -1,7 +1,8 @@
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { validateContentIsString } from "../../model-function/generate-text/prompt-template/Content.js";
+import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError.js";
 import { MistralChatPrompt } from "./MistralChatModel.js";
 
 /**
@@ -64,8 +65,17 @@ export function chat(): TextGenerationPromptTemplate<
             break;
           }
           case "assistant": {
-            messages.push({ role: "assistant", content });
+            messages.push({
+              role: "assistant",
+              content: validateContentIsString(content, prompt),
+            });
             break;
+          }
+          case "tool": {
+            throw new InvalidPromptError(
+              "Tool messages are not supported.",
+              prompt
+            );
           }
           default: {
             const _exhaustiveCheck: never = role;

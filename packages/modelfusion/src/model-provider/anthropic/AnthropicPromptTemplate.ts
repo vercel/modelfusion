@@ -1,7 +1,8 @@
-import { validateContentIsString } from "../../model-function/generate-text/prompt-template/Content.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError.js";
 
 const HUMAN_PREFIX = "\n\nHuman:";
 const ASSISTANT_PREFIX = "\n\nAssistant:";
@@ -72,6 +73,12 @@ export function chat(): TextGenerationPromptTemplate<ChatPrompt, string> {
             text += ASSISTANT_PREFIX;
             text += content;
             break;
+          }
+          case "tool": {
+            throw new InvalidPromptError(
+              "Tool messages are not supported.",
+              prompt
+            );
           }
           default: {
             const _exhaustiveCheck: never = role;

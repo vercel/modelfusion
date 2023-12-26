@@ -1,4 +1,7 @@
-import { Content } from "../../model-function/generate-text/prompt-template/Content.js";
+import {
+  ImagePart,
+  TextPart,
+} from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { ToolCall } from "../../tool/ToolCall.js";
 
 export type OpenAIChatMessage =
@@ -64,7 +67,10 @@ export const OpenAIChatMessage = {
   /**
    * Creates a user chat message. The message can be a string or a multi-modal input.
    */
-  user(content: Content, options?: { name?: string }): OpenAIChatMessage {
+  user(
+    content: string | Array<TextPart | ImagePart>,
+    options?: { name?: string }
+  ): OpenAIChatMessage {
     return {
       role: "user",
       content:

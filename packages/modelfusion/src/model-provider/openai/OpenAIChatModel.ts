@@ -1,6 +1,6 @@
 import { StructureFromTextPromptTemplate } from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
 import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
-import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
+import { PromptTemplateFullTextModel } from "../../model-function/generate-text/PromptTemplateFullTextModel.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
@@ -9,7 +9,6 @@ import {
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel.js";
 import { ToolCallsOrTextGenerationModel } from "../../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
-import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 import {
   AbstractOpenAIChatCallSettings,
   AbstractOpenAIChatModel,
@@ -23,6 +22,7 @@ import {
   instruction,
   text,
 } from "./OpenAIChatPromptTemplate.js";
+import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
 
 /*
@@ -340,13 +340,13 @@ export class OpenAIChatModel
 
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, OpenAIChatPrompt>
-  ): PromptTemplateTextStreamingModel<
+  ): PromptTemplateFullTextModel<
     INPUT_PROMPT,
     OpenAIChatPrompt,
     OpenAIChatSettings,
     this
   > {
-    return new PromptTemplateTextStreamingModel({
+    return new PromptTemplateFullTextModel({
       model: this.withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
