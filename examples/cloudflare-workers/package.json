@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "tsc --outDir build/",
-    "clean": "rimraf build",
+    "clean": "rimraf build dist .turbo node_modules && pnpm clear",
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev"

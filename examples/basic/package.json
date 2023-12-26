@@ -24,6 +24,6 @@
   },
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf build"
+    "clean": "rimraf build dist .turbo node_modules && pnpm clear"
   }
 }

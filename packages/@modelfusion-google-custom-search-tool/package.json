@@ -41,7 +41,7 @@
   },
   "scripts": {
     "lint": "eslint --ext .ts src",
-    "clean": "rimraf build dist .turbo",
+    "clean": "rimraf build dist .turbo node_modules",
     "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",

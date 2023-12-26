@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf build",
+    "clean": "rimraf build dist .turbo node_modules && pnpm clear",
     "start": "ts-node src/main.ts"
   },
   "private": true,

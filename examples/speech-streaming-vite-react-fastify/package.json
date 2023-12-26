@@ -4,6 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "clean": "rimraf build dist .turbo node_modules && pnpm clear",
     "client": "vite",
     "server": "tsx src/server/server.ts",
     "build": "tsc && vite build",

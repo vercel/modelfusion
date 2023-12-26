@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "clean": "rimraf build dist .turbo node_modules .next && pnpm clear",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
