@@ -45,6 +45,7 @@ async function main() {
       chat
     );
 
+    // add the assistant and tool messages to the chat:
     chat.messages.push(
       ChatMessage.assistant({ text, toolResults }),
       ChatMessage.tool({ toolResults })

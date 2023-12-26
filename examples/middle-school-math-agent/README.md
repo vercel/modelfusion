@@ -23,5 +23,5 @@ pnpm install
 3. Run:
 
 ```sh
-pnpm tsx src/MiddleSchoolMathOpenAITools.ts
+pnpm tsx src/MiddleSchoolMathAgent.ts
 ```
