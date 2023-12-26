@@ -97,8 +97,8 @@ importers:
         specifier: 10.0.1
         version: 10.0.1
       dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
+        specifier: 16.3.1
+        version: 16.3.1
       jsdom:
         specifier: ^22.1.0
         version: 22.1.0
@@ -137,8 +137,8 @@ importers:
         specifier: 9.0.0
         version: 9.0.0
       dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
+        specifier: 16.3.1
+        version: 16.3.1
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
@@ -276,8 +276,8 @@ importers:
   examples/middle-school-math-agent:
     dependencies:
       dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
+        specifier: 16.3.1
+        version: 16.3.1
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
@@ -295,8 +295,8 @@ importers:
         specifier: 10.0.1
         version: 10.0.1
       dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
+        specifier: 16.3.1
+        version: 16.3.1
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
@@ -314,8 +314,8 @@ importers:
         specifier: 10.0.1
         version: 10.0.1
       dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
+        specifier: 16.3.1
+        version: 16.3.1
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
@@ -348,8 +348,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
+        specifier: 16.3.1
+        version: 16.3.1
       fastify:
         specifier: ^4.23.2
         version: 4.25.1
@@ -424,8 +424,8 @@ importers:
         specifier: 10.0.1
         version: 10.0.1
       dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
+        specifier: 16.3.1
+        version: 16.3.1
       html-to-text:
         specifier: 9.0.5
         version: 9.0.5
@@ -646,8 +646,8 @@ importers:
   test-environments/commonjs:
     dependencies:
       dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
+        specifier: 16.3.1
+        version: 16.3.1
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
@@ -655,8 +655,8 @@ importers:
   test-environments/esm:
     dependencies:
       dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
+        specifier: 16.3.1
+        version: 16.3.1
       modelfusion:
         specifier: 0.104.0
         version: 0.104.0
@@ -7701,8 +7701,8 @@ packages:
       is-obj: 2.0.0
     dev: false
 
-  /dotenv@16.0.3:
-    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+  /dotenv@16.3.1:
+    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
     dev: false
 
