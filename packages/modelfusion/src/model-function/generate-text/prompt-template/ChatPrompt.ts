@@ -7,11 +7,14 @@ import {
 } from "./ContentPart.js";
 
 /**
- * A chat prompt is a combination of a system message and a list of user and assistant messages.
+ * A chat prompt is a combination of a system message and a list
+ * of user, assistant, and tool messages.
  *
  * The user messages can contain multi-modal content.
+ * The assistant messages can contain tool calls.
  *
- * Note: Not all models and prompt formats support multi-modal inputs.
+ * Note: Not all models and prompt formats support multi-modal inputs and tool calls.
+ * The validation happens at runtime.
  *
  * @example
  * ```ts

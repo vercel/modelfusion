@@ -291,15 +291,17 @@ The following prompt templates are available for instruction prompts:
 
 ### Chat Prompts
 
-[Chat prompts](/api/interfaces/ChatPrompt) are a higher-level prompt template that contains a list of chat messages.
+[Chat prompts](/api/interfaces/ChatPrompt) are a higher-level prompts that
+consist of a combination of a system message and a list of user, assistant, and tool messages.
 
-Chat prompts are a combination of a system message and a list of user and assistant messages.
+The user messages can contain multi-modal content. The assistant messages can contain tool calls.
 
-You can use a ChatPrompt without an final user message when you e.g. want to display the current state of a conversation. The type checking is done at runtime when you submit a chat prompt to a model with a prompt template.
+:::note
+Not all models and prompt formats support multi-modal inputs and tool calls.
+The validation happens at runtime.
+:::
 
-#### Example
-
-openai.ChatTextGenerator
+#### Example: openai.ChatTextGenerator
 
 ```ts
 const model = openai
