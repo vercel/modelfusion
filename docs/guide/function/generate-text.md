@@ -133,6 +133,24 @@ for await (const textPart of textStream) {
 }
 ```
 
+When you set the `fullResponse` option to `true`, you get get a rich response object with the following properties:
+
+- **textStream**: The generated text stream of the first result.
+- **text**: The generated of the first result. It's a promise that resolves when the stream is finished.
+- **metadata**: The metadata for model call.
+
+#### Example: Full response
+
+```ts
+import { streamText, openai } from "modelfusion";
+
+const { textStream, text, metadata } = await streamText(
+  openai.CompletionTextGenerator(/* ... */),
+  "Write a story about a robot learning to love",
+  { fullResponse: true }
+);
+```
+
 ## Prompt Template
 
 [Text generation prompt templates](/api/interfaces/TextGenerationPromptTemplate) change the prompt template that a text generation model accepts. This enables the use of abstracted prompts such as text, instruction or chat prompts.
