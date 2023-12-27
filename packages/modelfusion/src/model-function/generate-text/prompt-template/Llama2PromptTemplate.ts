@@ -17,7 +17,7 @@ const END_SYSTEM = "\n<</SYS>>\n\n";
  *
  * Llama 2 prompt template:
  * ```
- * <s>[INST]{ instruction } [/INST]
+ * <s>[INST] { instruction } [/INST]
  * ```
  *
  * @see https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat
