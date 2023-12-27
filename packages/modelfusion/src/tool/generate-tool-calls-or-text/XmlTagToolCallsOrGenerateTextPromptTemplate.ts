@@ -46,48 +46,64 @@ export const XmlTagToolCallsOrGenerateTextPromptTemplate = {
     },
 
     extractToolCallsAndText(response: string) {
-      const functionCallStart = response.indexOf(`<${tagName}>`);
-      const functionCallEnd = response.indexOf(`</${tagName}>`);
-
-      if (
-        functionCallStart === -1 ||
-        functionCallEnd === -1 ||
-        functionCallEnd < functionCallStart
-      ) {
-        return {
-          text: response,
-          toolCalls: [],
-        };
-      }
-
-      // extract function call:
-      const functionCall = response.slice(
-        functionCallStart + `<${tagName}>`.length,
-        functionCallEnd
-      );
-
-      // parse function call:
-      const functionCallJson = parseJSON({
-        text: functionCall,
-        schema: zodSchema(z.object({ name: z.string(), args: z.any() })),
+      return parseToolCallAndText({
+        response,
+        tagName,
+        generateId,
       });
-
-      // extract text before and after function call, concatenate and trim:
-      const text = response
-        .slice(0, functionCallStart)
-        .concat(response.slice(functionCallEnd + `</${tagName}>`.length))
-        .trim();
-
-      return {
-        text: text.length > 0 ? text : null,
-        toolCalls: [
-          {
-            id: generateId(),
-            name: functionCallJson.name,
-            args: functionCallJson.args,
-          },
-        ],
-      };
     },
   }),
 };
+
+function parseToolCallAndText({
+  response,
+  tagName,
+  generateId,
+}: {
+  response: string;
+  tagName: string;
+  generateId: () => string;
+}) {
+  const functionCallStart = response.indexOf(`<${tagName}>`);
+  const functionCallEnd = response.indexOf(`</${tagName}>`);
+
+  if (
+    functionCallStart === -1 ||
+    functionCallEnd === -1 ||
+    functionCallEnd < functionCallStart
+  ) {
+    return {
+      text: response,
+      toolCalls: [],
+    };
+  }
+
+  // extract function call:
+  const functionCall = response.slice(
+    functionCallStart + `<${tagName}>`.length,
+    functionCallEnd
+  );
+
+  // parse function call:
+  const functionCallJson = parseJSON({
+    text: functionCall,
+    schema: zodSchema(z.object({ name: z.string(), args: z.any() })),
+  });
+
+  // extract text before and after function call, concatenate and trim:
+  const text = response
+    .slice(0, functionCallStart)
+    .concat(response.slice(functionCallEnd + `</${tagName}>`.length))
+    .trim();
+
+  return {
+    text: text.length > 0 ? text : null,
+    toolCalls: [
+      {
+        id: generateId(),
+        name: functionCallJson.name,
+        args: functionCallJson.args,
+      },
+    ],
+  };
+}
