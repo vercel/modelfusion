@@ -6,14 +6,20 @@ import { InstructionPrompt } from "../../model-function/generate-text/prompt-tem
 import { ToolDefinition } from "../ToolDefinition.js";
 import { ToolCallsOrGenerateTextPromptTemplate } from "./ToolCallsOrGenerateTextPromptTemplate.js";
 
+const DEFAULT_TAG_NAME = "functioncall";
+const DEFAULT_INSTRUCTION_PREFIX =
+  "You have access to the following functions:\n";
+const DEFAULT_INSTRUCTION = (tagName: string) =>
+  `\nTo use these functions respond with a JSON object inside <${tagName}> XML tags:\n` +
+  `<${tagName}> { "name": functionName, "args": functionArgs } </${tagName}>`;
+
 export const XmlTagToolCallsOrGenerateTextPromptTemplate = {
   text: ({
-    tagName = "functioncall",
-    generateId = nanoid,
-    instructionPrefix = "You have access to the following functions:\n",
-    instruction = `\nTo use these functions respond with a JSON object inside <${tagName}> XML tags:\n` +
-      `<${tagName}> { "name": functionName, "args": functionArgs } </${tagName}>`,
-    instructionSuffix = "",
+    tagName,
+    generateId,
+    instructionPrefix,
+    instruction,
+    instructionSuffix,
   }: {
     tagName?: string;
     generateId?: () => string;
@@ -29,40 +35,101 @@ export const XmlTagToolCallsOrGenerateTextPromptTemplate = {
       tools: Array<ToolDefinition<string, unknown>>
     ) {
       return {
-        system: [
+        system: createSystemPrompt({
+          tools,
+          tagName,
           instructionPrefix,
-          ...tools.map((tool) =>
-            JSON.stringify({
-              name: tool.name,
-              description: tool.description,
-              parameters: tool.parameters.getJsonSchema(),
-            })
-          ),
           instruction,
           instructionSuffix,
-        ].join("\n"),
+        }),
         instruction: prompt,
       };
     },
 
     extractToolCallsAndText(response: string) {
-      return parseToolCallAndText({
-        response,
-        tagName,
-        generateId,
-      });
+      return parseToolCallAndText({ response, tagName, generateId });
+    },
+  }),
+
+  instruction: ({
+    tagName,
+    generateId,
+    instructionPrefix,
+    instruction,
+    instructionSuffix,
+  }: {
+    tagName?: string;
+    generateId?: () => string;
+    instructionPrefix?: string;
+    instruction?: string;
+    instructionSuffix?: string;
+  } = {}): ToolCallsOrGenerateTextPromptTemplate<
+    InstructionPrompt,
+    InstructionPrompt
+  > => ({
+    createPrompt(
+      prompt: InstructionPrompt,
+      tools: Array<ToolDefinition<string, unknown>>
+    ) {
+      return {
+        system: createSystemPrompt({
+          originalSystemPrompt: prompt.system,
+          tools,
+          tagName,
+          instructionPrefix,
+          instruction,
+          instructionSuffix,
+        }),
+        instruction: prompt.instruction,
+      };
+    },
+
+    extractToolCallsAndText(response: string) {
+      return parseToolCallAndText({ response, tagName, generateId });
     },
   }),
 };
 
+function createSystemPrompt({
+  tools,
+  originalSystemPrompt,
+  tagName = DEFAULT_TAG_NAME,
+  instructionPrefix = DEFAULT_INSTRUCTION_PREFIX,
+  instruction = DEFAULT_INSTRUCTION(tagName),
+  instructionSuffix,
+}: {
+  tools: Array<ToolDefinition<string, unknown>>;
+  originalSystemPrompt?: string;
+  tagName?: string;
+  instructionPrefix?: string;
+  instruction?: string;
+  instructionSuffix?: string;
+}) {
+  return [
+    originalSystemPrompt,
+    instructionPrefix,
+    ...tools.map((tool) =>
+      JSON.stringify({
+        name: tool.name,
+        description: tool.description,
+        parameters: tool.parameters.getJsonSchema(),
+      })
+    ),
+    instruction,
+    instructionSuffix,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 function parseToolCallAndText({
   response,
-  tagName,
-  generateId,
+  tagName = DEFAULT_TAG_NAME,
+  generateId = nanoid,
 }: {
   response: string;
-  tagName: string;
-  generateId: () => string;
+  tagName?: string;
+  generateId?: () => string;
 }) {
   const functionCallStart = response.indexOf(`<${tagName}>`);
   const functionCallEnd = response.indexOf(`</${tagName}>`);
