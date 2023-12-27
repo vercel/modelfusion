@@ -2,25 +2,12 @@ import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { TextGenerationModel } from "../../model-function/generate-text/TextGenerationModel.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { ToolDefinition } from "../ToolDefinition.js";
+import { ToolCallsOrGenerateTextPromptTemplate } from "./ToolCallsOrGenerateTextPromptTemplate.js";
 import {
   ToolCallsOrTextGenerationModel,
   ToolCallsOrTextGenerationModelSettings,
 } from "./ToolCallsOrTextGenerationModel.js";
 import { ToolCallsOrTextParseError } from "./ToolCallsOrTextParseError.js";
-
-export interface ToolCallsOrGenerateTextPromptTemplate<
-  SOURCE_PROMPT,
-  TARGET_PROMPT,
-> {
-  createPrompt: (
-    prompt: SOURCE_PROMPT,
-    tools: Array<ToolDefinition<string, unknown>>
-  ) => TARGET_PROMPT;
-  extractToolCallsAndText: (response: string) => {
-    text: string | null;
-    toolCalls: Array<{ id: string; name: string; args: unknown }> | null;
-  };
-}
 
 export class TextGenerationToolCallsOrGenerateTextModel<
   SOURCE_PROMPT,

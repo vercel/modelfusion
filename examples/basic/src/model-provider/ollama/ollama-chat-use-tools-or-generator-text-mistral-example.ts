@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 import {
+  XmlTagToolCallsOrGenerateTextPromptTemplate,
   automatic1111,
   modelfusion,
   ollama,
   useToolsOrGenerateText,
 } from "modelfusion";
-import { openHermesToolCallsPromptTemplate } from "../../tool/prompts/open-hermes";
 import { ImageGeneratorTool } from "../../tool/tools/image-generator-tool";
 
 dotenv.config();
@@ -20,7 +20,9 @@ async function main() {
         temperature: 0,
       })
       .withInstructionPrompt()
-      .asToolCallsOrTextGenerationModel(openHermesToolCallsPromptTemplate),
+      .asToolCallsOrTextGenerationModel(
+        XmlTagToolCallsOrGenerateTextPromptTemplate.text()
+      ),
 
     [
       new ImageGeneratorTool({

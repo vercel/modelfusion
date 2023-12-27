@@ -1,27 +1,35 @@
 import dotenv from "dotenv";
-import { ChatMLPrompt, ollama, useToolsOrGenerateText } from "modelfusion";
+import {
+  Llama2Prompt,
+  XmlTagToolCallsOrGenerateTextPromptTemplate,
+  modelfusion,
+  ollama,
+  useToolsOrGenerateText,
+} from "modelfusion";
 import { calculator } from "../../tool/tools/calculator-tool";
-import { openHermesToolCallsPromptTemplate } from "../../tool/prompts/open-hermes";
 import { weather } from "../../tool/tools/weather-tool";
 
 dotenv.config();
+
+modelfusion.setLogFormat("detailed-object");
 
 async function main() {
   const { text, toolResults } = await useToolsOrGenerateText(
     ollama
       .CompletionTextGenerator({
-        model: "openhermes2.5-mistral",
+        model: "mixtral",
         temperature: 0,
         raw: true,
       })
-      .withTextPrompt()
-      .withPromptTemplate(ChatMLPrompt.instruction())
-      .asToolCallsOrTextGenerationModel(openHermesToolCallsPromptTemplate),
+      .withTextPromptTemplate(Llama2Prompt.instruction())
+      .asToolCallsOrTextGenerationModel(
+        XmlTagToolCallsOrGenerateTextPromptTemplate.text()
+      ),
 
     [calculator, weather],
 
-    // "What's fourteen times twelve?"
-    "What's the weather like in Boston?"
+    "What's fourteen times twelve?"
+    // "What's the weather like in Boston?"
   );
 
   if (text != null) {

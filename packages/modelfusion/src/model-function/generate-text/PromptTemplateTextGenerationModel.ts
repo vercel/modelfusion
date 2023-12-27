@@ -3,10 +3,8 @@ import {
   TextGenerationToolCallModel,
   ToolCallPromptTemplate,
 } from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
-import {
-  TextGenerationToolCallsOrGenerateTextModel,
-  ToolCallsOrGenerateTextPromptTemplate,
-} from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
+import { TextGenerationToolCallsOrGenerateTextModel } from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
+import { ToolCallsOrGenerateTextPromptTemplate } from "tool/generate-tool-calls-or-text/ToolCallsOrGenerateTextPromptTemplate.js";
 import { StructureFromTextGenerationModel } from "../generate-structure/StructureFromTextGenerationModel.js";
 import { StructureFromTextPromptTemplate } from "../generate-structure/StructureFromTextPromptTemplate.js";
 import {
