@@ -1,4 +1,4 @@
-import { SuccessfulModelCall } from "../model-function/SuccessfulModelCall.js";
+import { SuccessfulModelCall } from "./SuccessfulModelCall";
 
 export interface CostCalculator {
   readonly provider: string;

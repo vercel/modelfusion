@@ -1,34 +1,24 @@
-import { CostCalculator } from "../../cost/CostCalculator.js";
-import { SuccessfulModelCall } from "../../model-function/SuccessfulModelCall.js";
 import {
+  OpenAIChatResponse,
   OpenAICompletionResponse,
-  calculateOpenAICompletionCostInMillicents,
-  isOpenAICompletionModel,
-} from "./OpenAICompletionModel.js";
-import {
   OpenAIImageGenerationSettings,
   OpenAIImageModelType,
-  calculateOpenAIImageGenerationCostInMillicents,
-} from "./OpenAIImageGenerationModel.js";
-import {
   OpenAISpeechModelType,
-  calculateOpenAISpeechCostInMillicents,
-} from "./OpenAISpeechModel.js";
-import {
   OpenAITextEmbeddingResponse,
-  calculateOpenAIEmbeddingCostInMillicents,
-  isOpenAIEmbeddingModel,
-} from "./OpenAITextEmbeddingModel.js";
-import {
   OpenAITranscriptionModelType,
   OpenAITranscriptionVerboseJsonResponse,
-  calculateOpenAITranscriptionCostInMillicents,
-} from "./OpenAITranscriptionModel.js";
-import { OpenAIChatResponse } from "./AbstractOpenAIChatModel.js";
-import {
   calculateOpenAIChatCostInMillicents,
+  calculateOpenAICompletionCostInMillicents,
+  calculateOpenAIEmbeddingCostInMillicents,
+  calculateOpenAIImageGenerationCostInMillicents,
+  calculateOpenAISpeechCostInMillicents,
+  calculateOpenAITranscriptionCostInMillicents,
   isOpenAIChatModel,
-} from "./OpenAIChatModel.js";
+  isOpenAICompletionModel,
+  isOpenAIEmbeddingModel,
+} from "modelfusion";
+import { CostCalculator } from "../../cost/CostCalculator.js";
+import { SuccessfulModelCall } from "../SuccessfulModelCall.js";
 
 export class OpenAICostCalculator implements CostCalculator {
   readonly provider = "openai";

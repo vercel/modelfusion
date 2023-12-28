@@ -1,5 +1,4 @@
-import { FunctionEvent } from "../core/FunctionEvent.js";
-import { ModelCallFinishedEvent } from "./ModelCallEvent.js";
+import { FunctionEvent, ModelCallFinishedEvent } from "modelfusion";
 
 export type SuccessfulModelCall = ModelCallFinishedEvent & {
   result: { status: "success" };
