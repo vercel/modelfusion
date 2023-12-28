@@ -56,15 +56,12 @@
   "scripts": {
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist .turbo node_modules",
+    "clean:build": "rimraf build dist",
     "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
-    "build:copy-files": "copyfiles --flat package.json ../../README.md ../../LICENSE ../../CHANGELOG.md dist",
-    "test": "vitest --config vitest.config.js --run src",
-    "test:watch": "vitest watch --config vitest.config.js",
-    "test:coverage": "vitest run --config vitest.config.js --coverage",
-    "test:coverage:ui": "vitest --config vitest.config.js --coverage --ui",
-    "dist": "pnpm clean && pnpm lint && pnpm test && pnpm build"
+    "build:copy-files": "copyfiles --flat package.json ./README.md ../../LICENSE ./CHANGELOG.md dist",
+    "dist": "pnpm clean:build && pnpm lint && pnpm build"
   },
   "peerDependencies": {
     "modelfusion": ">=0.105.0"
