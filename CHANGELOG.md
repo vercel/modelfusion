@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.106.0 - 2023-12-28
+
+Experimental features that are unlikely to become stable before v1.0 have been moved to a separate `modelfusion-experimental` package.
+
+### Removed
+
+- Cost calculation
+- `guard` function
+- Browser and server features (incl. flow)
+- `summarizeRecursively` function
+
 ## v0.105.0 - 2023-12-26
 
 ### Added
