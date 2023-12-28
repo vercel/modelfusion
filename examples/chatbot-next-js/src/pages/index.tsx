@@ -1,9 +1,9 @@
 import { ChatInputArea } from "@/component/ChatInputArea";
-import { ChatMessageView } from "@/component/ChatMessageView";
 import { ChatMessageInput } from "@/component/ChatMessageInput";
+import { ChatMessageView } from "@/component/ChatMessageView";
 import { Box, Button } from "@mui/material";
 import { zodSchema } from "modelfusion";
-import { readEventSourceStream } from "modelfusion/browser";
+import { readEventSourceStream } from "modelfusion-experimental/browser";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";

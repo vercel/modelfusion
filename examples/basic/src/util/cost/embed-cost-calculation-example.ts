@@ -1,12 +1,10 @@
 import dotenv from "dotenv";
+import { DefaultRun, embed, embedMany, openai } from "modelfusion";
 import {
-  DefaultRun,
   OpenAICostCalculator,
   calculateCost,
-  embed,
-  embedMany,
-  openai,
-} from "modelfusion";
+  extractSuccessfulModelCalls,
+} from "modelfusion-experimental";
 
 dotenv.config();
 
@@ -29,7 +27,7 @@ async function main() {
   );
 
   const cost = await calculateCost({
-    calls: run.successfulModelCalls,
+    calls: extractSuccessfulModelCalls(run.events),
     costCalculators: [new OpenAICostCalculator()],
   });
 

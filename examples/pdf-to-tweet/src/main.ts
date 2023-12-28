@@ -1,11 +1,11 @@
 import { Command } from "commander";
 import dotenv from "dotenv";
+import { DefaultRun, withRun } from "modelfusion";
 import {
-  DefaultRun,
   OpenAICostCalculator,
   calculateCost,
-  withRun,
-} from "modelfusion";
+  extractSuccessfulModelCalls,
+} from "modelfusion-experimental";
 import { createTweetFromPdf } from "./createTweetFromPdf";
 
 dotenv.config();
@@ -56,7 +56,7 @@ withRun(run, async () => {
   })
     .then(async (result) => {
       const cost = await calculateCost({
-        calls: run.successfulModelCalls,
+        calls: extractSuccessfulModelCalls(run.events),
         costCalculators: [new OpenAICostCalculator()],
       });
 

@@ -185,6 +185,9 @@ importers:
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
+      modelfusion-experimental:
+        specifier: 0.1.0
+        version: link:../../packages/modelfusion-experimental/dist
       next:
         specifier: 13.5.1
         version: 13.5.1(react-dom@18.2.0)(react@18.2.0)
