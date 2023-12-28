@@ -21,7 +21,7 @@ async function main() {
         raw: true,
         stopSequences: ["\n\n"], // prevent infinite generation
       })
-      .withTextPromptTemplate(ChatMLPrompt.instruction())
+      .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
     zodSchema(
