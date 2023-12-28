@@ -81,7 +81,7 @@ Structure generation is also possible with capable open-source models like [Open
 
 ```ts
 const model = ollama
-  .TextGenerator({
+  .CompletionTextGenerator({
     model: "openhermes2.5-mistral",
     maxGenerationTokens: 1024,
     temperature: 0,
