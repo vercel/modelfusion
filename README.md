@@ -323,48 +323,6 @@ const reconstructedText = await tokenizer.detokenize(tokens);
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Cohere](https://modelfusion.dev/integration/model-provider/cohere)
 
-### [Guards](https://modelfusion.dev/guide/guard)
-
-Guard functions can be used to implement retry on error, redacting and changing reponses, etc.
-
-#### Retry structure parsing on error
-
-```ts
-const result = await guard(
-  (input, options) =>
-    generateStructure(
-      openai
-        .ChatTextGenerator({
-          // ...
-        })
-        .asFunctionCallStructureGenerationModel({
-          fnName: "myFunction",
-        }),
-      zodSchema({
-        // ...
-      }),
-      input,
-      options
-    ),
-  [
-    // ...
-  ],
-  fixStructure({
-    modifyInputForRetry: async ({ input, error }) => [
-      ...input,
-      openai.ChatMessage.assistant(null, {
-        functionCall: {
-          name: "sentiment",
-          arguments: JSON.stringify(error.valueText),
-        },
-      }),
-      openai.ChatMessage.user(error.message),
-      openai.ChatMessage.user("Please fix the error and try again."),
-    ],
-  })
-);
-```
-
 ### [Tools](https://modelfusion.dev/guide/tools)
 
 Tools are functions that can be executed by an AI model. They are useful for building chatbots and agents.
