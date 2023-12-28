@@ -13,7 +13,10 @@ export interface ToolCallPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> {
     prompt: SOURCE_PROMPT,
     tool: ToolDefinition<string, unknown>
   ) => TARGET_PROMPT;
-  extractToolCall: (response: string) => { id: string; args: unknown } | null;
+  extractToolCall: (
+    response: string,
+    tool: ToolDefinition<string, unknown>
+  ) => { id: string; args: unknown } | null;
 }
 
 export class TextGenerationToolCallModel<
@@ -65,7 +68,7 @@ export class TextGenerationToolCallModel<
     try {
       return {
         response,
-        toolCall: this.format.extractToolCall(text),
+        toolCall: this.format.extractToolCall(text, tool),
         usage: metadata?.usage as
           | {
               promptTokens: number;

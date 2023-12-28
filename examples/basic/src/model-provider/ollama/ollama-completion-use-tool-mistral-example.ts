@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
-import { modelfusion, ollama, useTool } from "modelfusion";
-import { mistralSingleToolCallPromptTemplate } from "../../tool/prompts/mistral";
+import { Llama2Prompt, modelfusion, ollama, useTool } from "modelfusion";
+import { jsonToolCallPrompt1 } from "../../tool/prompts/mistral";
 import { calculator } from "../../tool/tools/calculator-tool";
 
 dotenv.config();
 
-modelfusion.setLogFormat("detailed-object");
+// modelfusion.setLogFormat("detailed-object");
 
 async function main() {
   const { tool, args, toolCall, result } = await useTool(
@@ -16,8 +16,8 @@ async function main() {
         temperature: 0,
         raw: true,
       })
-      .withTextPrompt()
-      .asToolCallGenerationModel(mistralSingleToolCallPromptTemplate),
+      .withTextPromptTemplate(Llama2Prompt.instruction()) // TODO Mistral prompt template
+      .asToolCallGenerationModel(jsonToolCallPrompt1.text()),
 
     calculator,
     "What's fourteen times twelve?"

@@ -1,30 +1,58 @@
 import {
+  InstructionPrompt,
   ToolCallPromptTemplate,
   ToolDefinition,
-  zodSchema,
   parseJSON,
+  zodSchema,
 } from "modelfusion";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 
-export const mistralSingleToolCallPromptTemplate: ToolCallPromptTemplate<
+export const jsonToolCallPrompt1 = {
+  text: (): ToolCallPromptTemplate<string, InstructionPrompt> => ({
+    createPrompt(instruction: string, tool: ToolDefinition<string, unknown>) {
+      return {
+        system: [
+          `You are calling a function "${tool.name}".`,
+          tool.description != null
+            ? `  Function description: ${tool.description}`
+            : null,
+          `  Function parameters JSON schema: ${JSON.stringify(
+            tool.parameters.getJsonSchema()
+          )}`,
+          ``,
+          `You MUST answer with a JSON object matches the above schema for the arguments.`,
+        ]
+          .filter(Boolean)
+          .join("\n"),
+        instruction,
+      };
+    },
+
+    extractToolCall(response) {
+      return { id: nanoid(), args: parseJSON({ text: response }) };
+    },
+  }),
+};
+
+export const mistralMultiToolCallPromptTemplate: ToolCallPromptTemplate<
   string,
-  string
+  InstructionPrompt
 > = {
   createPrompt(instruction: string, tool: ToolDefinition<string, unknown>) {
-    return [
+    return {
+      system: [
+        `Select the most suitable function and parameters ` +
+          `from the list of available functions below, based on the user's input. ` +
+          `Provide your response in JSON format.`,
+        ``,
+        `Available functions:`,
+        `${tool.name}:`,
+        `  description: ${tool.description ?? ""}`,
+        `  parameters: ${JSON.stringify(tool.parameters.getJsonSchema())}`,
+      ].join("\n"),
       instruction,
-      ``,
-      `Select the most suitable function and parameters ` +
-        `from the list of available functions below, based on the user's input. ` +
-        `Provide your response in JSON format.`,
-      ``,
-      `Available functions:`,
-      `${tool.name}:`,
-      `  description: ${tool.description ?? ""}`,
-      `  parameters: ${JSON.stringify(tool.parameters.getJsonSchema())}`,
-      ``,
-    ].join("\n");
+    };
   },
 
   extractToolCall(response: string) {
