@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionOptions } from "modelfusion";
 
 export type SummarizationFunction = (
   input: {

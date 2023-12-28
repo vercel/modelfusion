@@ -1,8 +1,6 @@
 import dotenv from "dotenv";
-import {
-  openai,
-  summarizeRecursivelyWithTextGenerationAndTokenSplitting,
-} from "modelfusion";
+import { openai } from "modelfusion";
+import { summarizeRecursivelyWithTextGenerationAndTokenSplitting } from "modelfusion-experimental";
 import fs from "node:fs";
 
 dotenv.config();

@@ -1,8 +1,10 @@
-import { Run } from "../../core/Run.js";
-import { TextGenerationModel } from "../../model-function/generate-text/TextGenerationModel.js";
-import { generateText } from "../../model-function/generate-text/generateText.js";
-import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { splitAtToken } from "../../text-chunk/split/splitRecursively.js";
+import {
+  FullTokenizer,
+  Run,
+  TextGenerationModel,
+  generateText,
+  splitAtToken,
+} from "modelfusion";
 import { summarizeRecursively } from "./summarizeRecursively.js";
 
 /**

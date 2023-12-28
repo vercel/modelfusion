@@ -1,5 +1,4 @@
-import { Run } from "../../core/Run.js";
-import { SplitFunction } from "../../text-chunk/split/SplitFunction.js";
+import { Run, SplitFunction } from "modelfusion";
 import { SummarizationFunction } from "./SummarizationFunction.js";
 
 export async function summarizeRecursively(

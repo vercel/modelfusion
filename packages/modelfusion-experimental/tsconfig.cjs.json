@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": false,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "js-tiktoken/ranks/*": ["../node_modules/js-tiktoken/dist/ranks/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}
