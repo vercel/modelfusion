@@ -362,6 +362,9 @@ importers:
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
+      modelfusion-experimental:
+        specifier: 0.1.0
+        version: link:../../packages/modelfusion-experimental/dist
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -644,9 +647,6 @@ importers:
       eslint-config-prettier:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
-      fastify:
-        specifier: ^4.0.0
-        version: 4.25.1
       msw:
         specifier: 2.0.11
         version: 2.0.11(typescript@5.3.3)

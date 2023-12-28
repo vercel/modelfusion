@@ -1,6 +1,6 @@
 import { elevenlabs, openai, streamSpeech, streamText } from "modelfusion";
-import { DefaultFlow } from "modelfusion/fastify-server";
 import { duplexStreamingFlowSchema } from "./duplexStreamingFlowSchema";
+import { DefaultFlow } from "modelfusion-experimental/fastify-server";
 
 export const duplexStreamingFlow = new DefaultFlow({
   schema: duplexStreamingFlowSchema,

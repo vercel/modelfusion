@@ -1,11 +1,11 @@
 import type { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { z } from "zod";
-import { withRun } from "../../core/getRun.js";
 import type { AssetStorage } from "./AssetStorage.js";
 import { Flow } from "./Flow.js";
 import { FlowRun } from "./FlowRun.js";
 import { Logger } from "./Logger.js";
 import { PathProvider } from "./PathProvider.js";
+import { withRun } from "modelfusion";
 
 export interface ModelFusionFastifyPluginOptions {
   flow: Flow<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any

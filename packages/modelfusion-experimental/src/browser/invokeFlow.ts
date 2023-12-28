@@ -1,4 +1,4 @@
-import { ZodSchema } from "../core/schema/ZodSchema.js";
+import { zodSchema } from "modelfusion";
 import { FlowSchema } from "../server/fastify/FlowSchema.js";
 import { readEventSource } from "./readEventSource.js";
 
@@ -25,7 +25,7 @@ export async function invokeFlow<INPUT, EVENT>({
 
   readEventSource({
     url: eventSourceUrl,
-    schema: new ZodSchema(schema.events),
+    schema: zodSchema(schema.events),
     isStopEvent(event) {
       return event.data === "[DONE]";
     },

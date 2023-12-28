@@ -1,8 +1,5 @@
-import { Schema } from "../core/schema/Schema.js";
-import { ErrorHandler } from "../util/ErrorHandler.js";
-import { safeParseJSON } from "../core/schema/parseJSON.js";
-import { AsyncQueue } from "../util/AsyncQueue.js";
-import { parseEventSourceStream } from "../util/streaming/parseEventSourceStream.js";
+import { AsyncQueue, Schema, safeParseJSON } from "modelfusion";
+import { ErrorHandler, parseEventSourceStream } from "modelfusion/extension";
 
 export function readEventSourceStream<T>({
   stream,

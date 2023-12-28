@@ -1,11 +1,13 @@
 export { callWithRetryAndThrottle } from "../core/api/callWithRetryAndThrottle.js";
 export { loadApiKey } from "../core/api/loadApiKey.js";
 export {
-  postJsonToApi,
-  postToApi,
+  ResponseHandler,
   createAudioMpegResponseHandler,
   createJsonResponseHandler,
   createTextResponseHandler,
-  ResponseHandler,
+  postJsonToApi,
+  postToApi,
 } from "../core/api/postToApi.js";
 export { AbstractModel } from "../model-function/AbstractModel.js";
+export { ErrorHandler } from "../util/ErrorHandler.js";
+export { parseEventSourceStream } from "../util/streaming/parseEventSourceStream.js";

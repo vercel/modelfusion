@@ -1,4 +1,7 @@
-import { MediaSourceAppender, invokeFlow } from "modelfusion/browser";
+import {
+  MediaSourceAppender,
+  invokeFlow,
+} from "modelfusion-experimental/browser";
 import { useState } from "react";
 import "./App.css";
 import { Button } from "./ui/button";

@@ -1,5 +1,4 @@
-import { Schema } from "../core/schema/Schema.js";
-import { safeParseJSON } from "../core/schema/parseJSON.js";
+import { Schema, safeParseJSON } from "modelfusion";
 
 export function readEventSource<T>({
   url,
