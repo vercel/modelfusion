@@ -132,16 +132,7 @@ describe("streamStructure", () => {
         raw: true,
       })
         .withTextPromptTemplate(TextPrompt.instruction())
-        .asStructureGenerationModel(
-          jsonStructurePrompt((instruction: string, schema) => ({
-            system:
-              "JSON schema: \n" +
-              JSON.stringify(schema.getJsonSchema()) +
-              "\n\n" +
-              "Respond only using JSON that matches the above schema.",
-            instruction,
-          }))
-        ),
+        .asStructureGenerationModel(jsonStructurePrompt.text()),
 
       zodSchema(z.object({ name: z.string() })),
       "generate a name"

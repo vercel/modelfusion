@@ -18,17 +18,8 @@ async function main() {
         maxGenerationTokens: 1024,
         responseFormat: { type: "json_object" },
       })
-      .asStructureGenerationModel(
-        jsonStructurePrompt((instruction: string, schema) => [
-          openai.ChatMessage.system(
-            "JSON schema: \n" +
-              JSON.stringify(schema.getJsonSchema()) +
-              "\n\n" +
-              "Respond only using JSON that matches the above schema."
-          ),
-          openai.ChatMessage.user(instruction),
-        ])
-      ),
+      .withInstructionPrompt()
+      .asStructureGenerationModel(jsonStructurePrompt.text()),
 
     zodSchema(
       z.object({

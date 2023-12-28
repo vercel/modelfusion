@@ -22,16 +22,7 @@ async function main() {
         stopSequences: ["\n\n"], // prevent infinite generation
       })
       .withTextPromptTemplate(ChatMLPrompt.instruction())
-      .asStructureGenerationModel(
-        jsonStructurePrompt((instruction: string, schema) => ({
-          system:
-            "JSON schema: \n" +
-            JSON.stringify(schema.getJsonSchema()) +
-            "\n\n" +
-            "Respond only using JSON that matches the above schema.",
-          instruction,
-        }))
-      ),
+      .asStructureGenerationModel(jsonStructurePrompt.text()),
 
     zodSchema(
       z.object({
