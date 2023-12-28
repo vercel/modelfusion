@@ -1,10 +1,6 @@
 import { convert as convertHtmlToText } from "html-to-text";
-import {
-  Tool,
-  openai,
-  summarizeRecursivelyWithTextGenerationAndTokenSplitting,
-  zodSchema,
-} from "modelfusion";
+import { Tool, openai, zodSchema } from "modelfusion";
+import { summarizeRecursivelyWithTextGenerationAndTokenSplitting } from "modelfusion-experimental";
 import { z } from "zod";
 
 export const readWikipediaArticle = new Tool({

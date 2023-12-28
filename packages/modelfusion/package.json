@@ -5,16 +5,15 @@
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
+    "ai",
     "llm",
+    "multimodal",
     "embedding",
     "openai",
-    "huggingface",
-    "gpt-3",
     "gpt-4",
-    "whisper",
-    "chatbot",
-    "ai",
-    "multimodal"
+    "ollama",
+    "llamacpp",
+    "whisper"
   ],
   "homepage": "https://modelfusion.dev/",
   "repository": {
@@ -47,21 +46,12 @@
       "types": "./extension/index.d.ts",
       "import": "./extension/index.js",
       "require": "./extension/index.cjs"
-    },
-    "./browser": {
-      "types": "./browser/index.d.ts",
-      "import": "./browser/index.js",
-      "require": "./browser/index.cjs"
-    },
-    "./fastify-server": {
-      "types": "./server/fastify/index.d.ts",
-      "import": "./server/fastify/index.js",
-      "require": "./server/fastify/index.cjs"
     }
   },
   "scripts": {
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist .turbo node_modules",
+    "clean:build": "rimraf build dist",
     "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
@@ -70,7 +60,7 @@
     "test:watch": "vitest watch --config vitest.config.js",
     "test:coverage": "vitest run --config vitest.config.js --coverage",
     "test:coverage:ui": "vitest --config vitest.config.js --coverage --ui",
-    "dist": "pnpm clean && pnpm lint && pnpm test && pnpm build"
+    "dist": "pnpm clean:build && pnpm lint && pnpm test && pnpm build"
   },
   "dependencies": {
     "eventsource-parser": "1.1.1",
@@ -90,7 +80,6 @@
     "@vitest/ui": "1.1.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
-    "fastify": "^4.0.0",
     "msw": "2.0.11"
   }
 }

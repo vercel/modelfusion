@@ -11,4 +11,3 @@ sidebar_position: 50
 - [Observers](/guide/util/observer)
 - [Runs](/guide/util/run)
 - [Abort signals](/guide/util/abort)
-- [Cost calculation](/guide/util/cost-calculation)

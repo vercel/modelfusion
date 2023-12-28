@@ -142,6 +142,9 @@ importers:
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
+      modelfusion-experimental:
+        specifier: 0.1.0
+        version: link:../../packages/modelfusion-experimental/dist
       nanoid:
         specifier: 3.3.6
         version: 3.3.6
@@ -182,6 +185,9 @@ importers:
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
+      modelfusion-experimental:
+        specifier: 0.1.0
+        version: link:../../packages/modelfusion-experimental/dist
       next:
         specifier: 13.5.1
         version: 13.5.1(react-dom@18.2.0)(react@18.2.0)
@@ -319,6 +325,9 @@ importers:
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
+      modelfusion-experimental:
+        specifier: 0.1.0
+        version: link:../../packages/modelfusion-experimental/dist
       pdfjs-dist:
         specifier: 3.6.172
         version: 3.6.172
@@ -356,6 +365,9 @@ importers:
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
+      modelfusion-experimental:
+        specifier: 0.1.0
+        version: link:../../packages/modelfusion-experimental/dist
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -435,6 +447,9 @@ importers:
       modelfusion:
         specifier: 0.105.0
         version: link:../../packages/modelfusion/dist
+      modelfusion-experimental:
+        specifier: 0.1.0
+        version: link:../../packages/modelfusion-experimental/dist
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -635,12 +650,38 @@ importers:
       eslint-config-prettier:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
-      fastify:
-        specifier: ^4.0.0
-        version: 4.25.1
       msw:
         specifier: 2.0.11
         version: 2.0.11(typescript@5.3.3)
+    publishDirectory: dist
+
+  packages/modelfusion-experimental:
+    dependencies:
+      zod:
+        specifier: 3.22.4
+        version: 3.22.4
+    devDependencies:
+      '@types/node':
+        specifier: 18.11.9
+        version: 18.11.9
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.1.0
+        version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^6.1.0
+        version: 6.15.0(eslint@8.56.0)(typescript@5.3.3)
+      eslint:
+        specifier: ^8.45.0
+        version: 8.56.0
+      eslint-config-prettier:
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
+      fastify:
+        specifier: ^4.0.0
+        version: 4.25.1
+      modelfusion:
+        specifier: 0.105.0
+        version: link:../modelfusion/dist
     publishDirectory: dist
 
   test-environments/commonjs:

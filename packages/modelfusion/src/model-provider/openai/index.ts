@@ -5,7 +5,6 @@ export * from "./OpenAIChatMessage.js";
 export * from "./OpenAIChatModel.js";
 export * as OpenAIChatPrompt from "./OpenAIChatPromptTemplate.js";
 export * from "./OpenAICompletionModel.js";
-export * from "./OpenAICostCalculator.js";
 export { OpenAIErrorData } from "./OpenAIError.js";
 export * as openai from "./OpenAIFacade.js";
 export * from "./OpenAIImageGenerationModel.js";

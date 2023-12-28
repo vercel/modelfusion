@@ -4,9 +4,9 @@ import {
   generateText,
   openai,
   retrieve,
-  summarizeRecursivelyWithTextGenerationAndTokenSplitting,
   zodSchema,
 } from "modelfusion";
+import { summarizeRecursivelyWithTextGenerationAndTokenSplitting } from "modelfusion-experimental";
 import fs from "node:fs";
 import { z } from "zod";
 import { loadPdfAsText } from "./loadPdfAsText";

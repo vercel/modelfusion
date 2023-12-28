@@ -646,7 +646,7 @@ import { modelfusion } from "modelfusion";
 modelfusion.setLogFormat("detailed-object"); // log full events
 ```
 
-### [Server](https://modelfusion.dev/guide/server/)
+### [Server](https://modelfusion.dev/guide/experimental/server/)
 
 > [!WARNING]
 > ModelFusion Server is in its initial development phase and not feature-complete. The API is experimental and breaking changes are likely. Feedback and suggestions are welcome.
@@ -665,7 +665,7 @@ import {
   FileSystemAssetStorage,
   FileSystemLogger,
   modelFusionFastifyPlugin,
-} from "modelfusion/fastify-server"; // '/fastify-server' import path
+} from "modelfusion-experimental/fastify-server"; // '/fastify-server' import path
 
 // configurable logging for all runs using ModelFusion observability:
 const logger = new FileSystemLogger({
@@ -690,7 +690,7 @@ fastify.register(modelFusionFastifyPlugin, {
 Using `invokeFlow`, you can easily connect your client to a ModelFusion flow endpoint:
 
 ```ts
-import { invokeFlow } from "modelfusion/browser"; // '/browser' import path
+import { invokeFlow } from "modelfusion-experimental/browser"; // '/browser' import path
 
 invokeFlow({
   url: `${BASE_URL}/myFlow`,
@@ -724,14 +724,12 @@ invokeFlow({
   - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
-- [Guards](https://modelfusion.dev/guide/guard)
 - [Tools](https://modelfusion.dev/guide/tools)
 - [Vector Indices](https://modelfusion.dev/guide/vector-index)
   - [Upsert](https://modelfusion.dev/guide/vector-index/upsert)
   - [Retrieve](https://modelfusion.dev/guide/vector-index/retrieve)
 - [Text Chunks](https://modelfusion.dev/guide/text-chunk/)
   - [Split Text](https://modelfusion.dev/guide/text-chunk/split)
-- [Server](https://modelfusion.dev/guide/server/)
 - [Utilities](https://modelfusion.dev/guide/util/)
   - [API Configuration](https://modelfusion.dev/guide/util/api-configuration)
     - [Retry strategies](https://modelfusion.dev/guide/util/api-configuration/retry)
@@ -740,7 +738,10 @@ invokeFlow({
   - [Observers](https://modelfusion.dev/guide/util/observer)
   - [Runs](https://modelfusion.dev/guide/util/run)
   - [Abort signals](https://modelfusion.dev/guide/util/abort)
-  - [Cost calculation](https://modelfusion.dev/guide/util/cost-calculation)
+- [Experimental](https://modelfusion.dev/guide/experimental/)
+  - [Guards](https://modelfusion.dev/guide/experimental/guard)
+  - [Server](https://modelfusion.dev/guide/experimental/server/)
+  - [Cost calculation](https://modelfusion.dev/guide/experimental/cost-calculation)
 - [Troubleshooting](https://modelfusion.dev/guide/troubleshooting)
   - [Bundling](https://modelfusion.dev/guide/troubleshooting/bundling)
 

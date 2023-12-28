@@ -1,8 +1,4 @@
 import { nanoid as createId } from "nanoid";
-import {
-  SuccessfulModelCall,
-  extractSuccessfulModelCalls,
-} from "../model-function/SuccessfulModelCall.js";
 import { ErrorHandler } from "../util/ErrorHandler.js";
 import { FunctionEvent } from "./FunctionEvent.js";
 import { FunctionEventSource } from "./FunctionEventSource.js";
@@ -56,8 +52,4 @@ export class DefaultRun implements Run {
       this.functionEventSource.notify(event);
     },
   };
-
-  get successfulModelCalls(): Array<SuccessfulModelCall> {
-    return extractSuccessfulModelCalls(this.events);
-  }
 }
