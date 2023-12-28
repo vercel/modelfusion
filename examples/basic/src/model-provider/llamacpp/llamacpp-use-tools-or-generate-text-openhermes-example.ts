@@ -1,12 +1,8 @@
 import dotenv from "dotenv";
-import {
-  ChatMLPrompt,
-  XmlTagToolCallsOrGenerateTextPromptTemplate,
-  llamacpp,
-  useToolsOrGenerateText,
-} from "modelfusion";
+import { ChatMLPrompt, llamacpp, useToolsOrGenerateText } from "modelfusion";
 import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
+import { XmlTagToolCallsOrGenerateTextPromptTemplate } from "../../tool/prompts/XmlTagToolCallsOrGenerateTextPromptTemplate";
 
 dotenv.config();
 

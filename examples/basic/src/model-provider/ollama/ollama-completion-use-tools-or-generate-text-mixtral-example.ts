@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 import {
   Llama2Prompt,
-  XmlTagToolCallsOrGenerateTextPromptTemplate,
   modelfusion,
   ollama,
   useToolsOrGenerateText,
 } from "modelfusion";
+import { XmlTagToolCallsOrGenerateTextPromptTemplate } from "../../tool/prompts/XmlTagToolCallsOrGenerateTextPromptTemplate";
 import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
 

@@ -1,10 +1,12 @@
+import {
+  InstructionPrompt,
+  ToolCallsOrGenerateTextPromptTemplate,
+  ToolDefinition,
+  parseJSON,
+  zodSchema,
+} from "modelfusion";
 import { nanoid } from "nanoid";
 import { z } from "zod";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
-import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
-import { ToolDefinition } from "../ToolDefinition.js";
-import { ToolCallsOrGenerateTextPromptTemplate } from "./ToolCallsOrGenerateTextPromptTemplate.js";
 
 const DEFAULT_TAG_NAME = "functioncall";
 const DEFAULT_INSTRUCTION_PREFIX =

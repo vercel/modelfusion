@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 import {
-  XmlTagToolCallsOrGenerateTextPromptTemplate,
   automatic1111,
   modelfusion,
   ollama,
   useToolsOrGenerateText,
 } from "modelfusion";
+import { XmlTagToolCallsOrGenerateTextPromptTemplate } from "../../tool/prompts/XmlTagToolCallsOrGenerateTextPromptTemplate";
 import { ImageGeneratorTool } from "../../tool/tools/image-generator-tool";
 
 dotenv.config();
