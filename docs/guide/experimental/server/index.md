@@ -33,7 +33,7 @@ import {
   FileSystemAssetStorage,
   FileSystemLogger,
   modelFusionFastifyPlugin,
-} from "modelfusion/fastify-server"; // '/fastify-server' import path
+} from "modelfusion-experimental/fastify-server"; // '/fastify-server' import path
 
 // configurable logging for all runs using ModelFusion observability:
 const logger = new FileSystemLogger({
@@ -85,7 +85,7 @@ export const myFlowSchema = {
 Using `invokeFlow`, you can easily connect your client to a ModelFusion flow endpoint:
 
 ```ts
-import { invokeFlow } from "modelfusion/browser"; // '/browser' import path
+import { invokeFlow } from "modelfusion-experimental/browser"; // '/browser' import path
 
 invokeFlow({
   url: `${BASE_URL}/myFlow`,

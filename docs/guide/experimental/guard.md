@@ -6,7 +6,7 @@ sidebar_position: 18
 
 **Guards provide a powerful mechanism to enhance your functions' reliability and security by allowing control over retries, response modification, and error handling.** Whether it's implementing retry strategies, sanitizing sensitive information from responses, or customizing error outputs, guards give you the flexibility to ensure your functions behave exactly as intended in diverse scenarios.
 
-The [guard function](/api/modules/#guard) wraps any existing function, e.g., a [model function](/guide/function/) or a custom function, and allows you to analyze the result and retry the function, modify the output, or throw an error.
+The guard function wraps any existing function, e.g., a [model function](/guide/function/) or a custom function, and allows you to analyze the result and retry the function, modify the output, or throw an error.
 
 ## Understanding the Guard Function
 
@@ -63,6 +63,9 @@ Handling sensitive data, like API keys, requires careful attention to prevent un
 ```ts
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
 
+import { generateText, llamacpp } from "modelfusion";
+import { guard } from "modelfusion-experimental";
+
 const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
 
 const result = await guard(
@@ -100,6 +103,9 @@ const result = await guard(
 When using a model that may produce inappropriate content, you can use a guard to throw an error when the content is moderated.
 
 ```ts
+import { generateText, openai } from "modelfusion";
+import { guard } from "modelfusion-experimental";
+
 // This function checks if the content needs moderation by searching for specific strings (e.g., "Nox").
 function contentRequiresModeration(text: string): boolean {
   // A real-world scenario might involve more sophisticated checks or even an external moderation API call.
@@ -132,9 +138,12 @@ const story = await guard(
 ### Retry structure parsing with error message
 
 During structure generation, models may occasionally produce outputs that either cannot be parsed or do not pass certain validation checks.
-With the [`fixStructure`](/api/modules/#fixstructure) guard, you can retry generating the structure with a modified input that includes the error message.
+With the `fixStructure` guard, you can retry generating the structure with a modified input that includes the error message.
 
 ```ts
+import { generateStructure, openai, zodSchema } from "modelfusion";
+import { guard, fixStructure } from "modelfusion-experimental";
+
 const result = await guard(
   (input, options) =>
     generateStructure(
@@ -173,6 +182,14 @@ When structure parsing fails, you can use a stronger model to generate the struc
 In this example, `gpt-3.5-turbo` is used initially. If structure parsing fails, `gpt-4` is used instead.
 
 ```ts
+import {
+  generateStructure,
+  openai,
+  OpenAIChatModelType,
+  zodSchema,
+} from "modelfusion";
+import { guard, fixStructure } from "modelfusion-experimental";
+
 const result = await guard(
   (input: { model: OpenAIChatModelType; prompt: openai.ChatPrompt }, options) =>
     generateStructure(

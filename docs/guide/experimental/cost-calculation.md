@@ -11,6 +11,13 @@ Calls to generative models such as OpenAI's API can get expensive quickly. To ke
 ### Example
 
 ```ts
+import { DefaultRun, generateText, openai } from "modelfusion";
+import {
+  OpenAICostCalculator,
+  calculateCost,
+  extractSuccessfulModelCalls,
+} from "modelfusion-experimental";
+
 const run = new DefaultRun();
 
 const text = await generateText(
@@ -25,7 +32,7 @@ const text = await generateText(
 
 // calculate the overall cost of the run for the successful calls:
 const cost = await calculateCost({
-  calls: run.successfulModelCalls,
+  calls: extractSuccessfulModelCalls(run.events),
   costCalculators: [new OpenAICostCalculator()],
 });
 
