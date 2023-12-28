@@ -1,11 +1,6 @@
 import dotenv from "dotenv";
-import {
-  Llama2Prompt,
-  generateText,
-  guard,
-  llamacpp,
-  modelfusion,
-} from "modelfusion";
+import { Llama2Prompt, generateText, llamacpp, modelfusion } from "modelfusion";
+import { guard } from "modelfusion-experimental";
 
 dotenv.config();
 

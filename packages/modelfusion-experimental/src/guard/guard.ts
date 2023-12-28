@@ -1,5 +1,5 @@
-import { FunctionOptions } from "../core/FunctionOptions.js";
-import { executeFunctionCall } from "../core/executeFunctionCall.js";
+import { FunctionOptions } from "modelfusion";
+import { executeFunctionCall } from "modelfusion/extension";
 
 type OutputResult<INPUT, OUTPUT> =
   | {
@@ -47,7 +47,7 @@ export async function guard<INPUT, OUTPUT>(
   return executeFunctionCall({
     options,
     input,
-    functionType: "guard",
+    functionType: "extension",
     execute: async (options) => {
       let attempts = 0;
       while (attempts < maxAttempts) {

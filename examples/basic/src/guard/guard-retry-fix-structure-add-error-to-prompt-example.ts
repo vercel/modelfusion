@@ -1,12 +1,6 @@
 import dotenv from "dotenv";
-import {
-  fixStructure,
-  generateStructure,
-  guard,
-  modelfusion,
-  openai,
-  zodSchema,
-} from "modelfusion";
+import { generateStructure, modelfusion, openai, zodSchema } from "modelfusion";
+import { fixStructure, guard } from "modelfusion-experimental";
 import { z } from "zod";
 
 dotenv.config();

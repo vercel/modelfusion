@@ -1,6 +1,5 @@
 export * from "./core/index.js";
 export * from "./cost/index.js";
-export * from "./guard/index.js";
 export * from "./model-function/index.js";
 export * from "./model-provider/index.js";
 export * from "./observability/index.js";

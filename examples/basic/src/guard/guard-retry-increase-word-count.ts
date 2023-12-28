@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
-import { generateText, guard, modelfusion, openai } from "modelfusion";
+import { generateText, modelfusion, openai } from "modelfusion";
+import { guard } from "modelfusion-experimental";
 
 dotenv.config();
 

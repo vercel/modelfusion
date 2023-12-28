@@ -1,14 +1,13 @@
 import dotenv from "dotenv";
 import {
-  OpenAIChatModelType,
   InstructionPrompt,
-  fixStructure,
+  OpenAIChatModelType,
   generateStructure,
-  guard,
   modelfusion,
   openai,
   zodSchema,
 } from "modelfusion";
+import { fixStructure, guard } from "modelfusion-experimental";
 import { z } from "zod";
 
 dotenv.config();

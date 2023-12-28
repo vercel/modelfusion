@@ -1,5 +1,4 @@
-import { StructureParseError } from "../model-function/generate-structure/StructureParseError.js";
-import { StructureValidationError } from "../model-function/generate-structure/StructureValidationError.js";
+import { StructureParseError, StructureValidationError } from "modelfusion";
 import { Guard } from "./guard.js";
 
 /**
