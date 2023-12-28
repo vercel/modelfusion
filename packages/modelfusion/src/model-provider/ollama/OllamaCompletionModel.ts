@@ -18,7 +18,7 @@ import {
   ToolCallPromptTemplate,
 } from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
 import { TextGenerationToolCallsOrGenerateTextModel } from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
-import { ToolCallsOrGenerateTextPromptTemplate } from "tool/generate-tool-calls-or-text/ToolCallsOrGenerateTextPromptTemplate.js";
+import { ToolCallsOrGenerateTextPromptTemplate } from "../../tool/generate-tool-calls-or-text/ToolCallsOrGenerateTextPromptTemplate.js";
 import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
