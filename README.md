@@ -16,12 +16,13 @@
 
 - **Vendor-neutral**: ModelFusion is a non-commercial open source project that is community-driven. You can use it with any supported provider.
 - **Multi-modal**: ModelFusion supports a wide range of models including text generation, image generation, vision, text-to-speech, speech-to-text, and embedding models.
-- **Type inference and validation**: ModelFusion infers TypeScript types wherever possible and to validates model responses.
+- **Type inference and validation**: ModelFusion infers TypeScript types wherever possible and validates model responses.
 - **Observability and logging**: ModelFusion provides an observer framework and out-of-the-box logging support.
-- **Resilience and Robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
+- **Resilience and robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
+- **Built for production**: ModelFusion is fully tree-shakeable, can be used in serverless environments, and only uses a minimal set of dependencies.
 
 > [!NOTE]
-> ModelFusion is in its initial development phase. The main API is now mostly stable, but until version 1.0 there may be breaking changes. Feedback and suggestions are welcome.
+> ModelFusion is getting closer to a stable v1, which is expected in Q1/2024. The main API is now mostly stable, but until version 1.0 there may be breaking changes. Feedback and suggestions are welcome.
 
 ## Quick Install
 
