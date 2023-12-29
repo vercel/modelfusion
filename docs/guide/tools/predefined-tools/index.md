@@ -1,8 +1,8 @@
 ---
-sidebar_position: 5
+sidebar_position: 12
 ---
 
-# Tools
+# Predefined Tools
 
 When you work with tools, you do not need to implement every tool yourself.
 Several tools for common tasks are already available for you to use.
@@ -11,6 +11,6 @@ Several tools for common tasks are already available for you to use.
 
 The following tools are available as a separate packages:
 
-- [Math.js](/integration/tool/mathjs)
-- [SerpAPI websearch](/integration/tool/serpapi)
-- [Google Custom Search](/integration/tool/google-custom-search)
+- [Math.js](/guide/tools/predefined-tools/mathjs)
+- [SerpAPI websearch](/guide/tools/predefined-tools/serpapi)
+- [Google Custom Search](/guide/tools/predefined-tools/google-custom-search)

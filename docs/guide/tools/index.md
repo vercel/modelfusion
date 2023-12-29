@@ -11,7 +11,7 @@ ModelFusion provides several building blocks for working with tools:
 ### Tools
 
 - [Tools](/guide/tools/create-tools): an interface for defining tools
-- [Predefined Tools](/integration/tool): a set of predefined tools for common tasks
+- [Predefined Tools](/guide/tools/predefined-tools): a set of predefined tools for common tasks
 
 ### Generating Tool Calls
 

@@ -327,7 +327,7 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 
 Tools are functions that can be executed by an AI model. They are useful for building chatbots and agents.
 
-Predefined tools: [Math.js](https://modelfusion.dev/integration/tool/mathjs), [SerpAPI](https://modelfusion.dev/integration/tool/serpapi), [Google Custom Search](https://modelfusion.dev/integration/tool/google-custom-search)
+Predefined tools: [Math.js](https://modelfusion.dev/guide/tools/predefined-tools/mathjs), [SerpAPI](https://modelfusion.dev/guide/tools/predefined-tools/serpapi), [Google Custom Search](https://modelfusion.dev/guide/tools/predefined-tools/google-custom-search)
 
 #### [Creating Tools](https://modelfusion.dev/guide/tools/create-tools)
 
