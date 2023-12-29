@@ -5,7 +5,7 @@ import {
   ollama,
   useToolsOrGenerateText,
 } from "modelfusion";
-import { XmlTagToolCallsOrGenerateTextPromptTemplate } from "../../tool/prompts/XmlTagToolCallsOrGenerateTextPromptTemplate";
+import { mistralMultiToolCallPromptTemplate } from "../../tool/prompts/mistral";
 import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
 
@@ -21,15 +21,13 @@ async function main() {
         temperature: 0,
         raw: true,
       })
-      .withTextPromptTemplate(Llama2Prompt.instruction())
-      .asToolCallsOrTextGenerationModel(
-        XmlTagToolCallsOrGenerateTextPromptTemplate.text()
-      ),
+      .withTextPromptTemplate(Llama2Prompt.instruction()) // TODO mistral
+      .asToolCallsOrTextGenerationModel(mistralMultiToolCallPromptTemplate),
 
     [calculator, weather],
 
-    "What's fourteen times twelve?"
-    // "What's the weather like in Boston?"
+    // "What's fourteen times twelve?"
+    "What's the weather like in Boston?"
   );
 
   if (text != null) {

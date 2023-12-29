@@ -1,6 +1,6 @@
 import {
   InstructionPrompt,
-  ToolCallPromptTemplate,
+  ToolCallsOrGenerateTextPromptTemplate,
   ToolDefinition,
   parseJSON,
   zodSchema,
@@ -8,11 +8,14 @@ import {
 import { nanoid } from "nanoid";
 import { z } from "zod";
 
-export const mistralMultiToolCallPromptTemplate: ToolCallPromptTemplate<
+export const mistralMultiToolCallPromptTemplate: ToolCallsOrGenerateTextPromptTemplate<
   string,
   InstructionPrompt
 > = {
-  createPrompt(instruction: string, tool: ToolDefinition<string, unknown>) {
+  createPrompt(
+    instruction: string,
+    tools: Array<ToolDefinition<string, unknown>>
+  ) {
     return {
       system: [
         `Select the most suitable function and parameters ` +
@@ -20,21 +23,30 @@ export const mistralMultiToolCallPromptTemplate: ToolCallPromptTemplate<
           `Provide your response in JSON format.`,
         ``,
         `Available functions:`,
-        `${tool.name}:`,
-        `  description: ${tool.description ?? ""}`,
-        `  parameters: ${JSON.stringify(tool.parameters.getJsonSchema())}`,
+        ...tools.flatMap((tool) => [
+          ``,
+          `${tool.name}:`,
+          `  description: ${tool.description ?? ""}`,
+          `  parameters: ${JSON.stringify(tool.parameters.getJsonSchema())}`,
+        ]),
       ].join("\n"),
       instruction,
     };
   },
 
-  extractToolCall(response: string) {
+  extractToolCallsAndText(response: string) {
+    // Mistral models answer with a JSON object with the following structure
+    // (when forcing JSON output):
     const json = parseJSON({
       text: response,
       schema: zodSchema(
         z.object({ function: z.string(), parameters: z.any() })
       ),
     });
-    return { id: nanoid(), args: json.parameters };
+
+    return {
+      text: null,
+      toolCalls: [{ name: json.function, id: nanoid(), args: json.parameters }],
+    };
   },
 };
