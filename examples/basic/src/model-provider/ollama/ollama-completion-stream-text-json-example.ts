@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { ollama, streamText } from "modelfusion";
+import { MistralInstructPrompt, ollama, streamText } from "modelfusion";
 
 dotenv.config();
 
@@ -10,8 +10,9 @@ async function main() {
         model: "mistral",
         maxGenerationTokens: 500,
         format: "json",
+        raw: true, // use prompt template below
       })
-      .withTextPrompt(),
+      .withTextPromptTemplate(MistralInstructPrompt.text()),
 
     "Generate 3 character descriptions for a fantasy role playing game. " +
       "Respond using JSON."

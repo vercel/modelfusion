@@ -19,8 +19,8 @@ import { TextGenerationPromptTemplate } from "../../model-function/generate-text
 import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
 import { createEventSourceResponseHandler } from "../../util/streaming/createEventSourceResponseHandler.js";
 import { MistralApiConfiguration } from "./MistralApiConfiguration.js";
+import { chat, instruction, text } from "./MistralChatPromptTemplate.js";
 import { failedMistralCallResponseHandler } from "./MistralError.js";
-import { chat, instruction, text } from "./MistralPromptTemplate.js";
 
 export type MistralChatMessage = {
   role: "system" | "user" | "assistant";

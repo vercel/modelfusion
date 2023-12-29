@@ -27,9 +27,7 @@ async function main() {
     [
       new ImageGeneratorTool({
         model: automatic1111
-          .ImageGenerator({
-            model: "rpg_v5",
-          })
+          .ImageGenerator({ model: "rpg_v5" })
           .withTextPrompt(),
       }),
     ],

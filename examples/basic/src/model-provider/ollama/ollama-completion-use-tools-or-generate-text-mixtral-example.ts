@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import {
-  Llama2Prompt,
+  MistralInstructPrompt,
   modelfusion,
   ollama,
   useToolsOrGenerateText,
@@ -19,9 +19,10 @@ async function main() {
       .CompletionTextGenerator({
         model: "mixtral",
         temperature: 0,
-        raw: true,
+        raw: true, // use prompt template below
+        stopSequences: ["\n\n"], // prevent infinite generation
       })
-      .withTextPromptTemplate(Llama2Prompt.instruction()) // TODO mistral
+      .withTextPromptTemplate(MistralInstructPrompt.instruction())
       .asToolCallsOrTextGenerationModel(mistralMultiToolCallPromptTemplate),
 
     [calculator, weather],

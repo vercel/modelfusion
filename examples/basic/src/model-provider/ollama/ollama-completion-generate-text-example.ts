@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { generateText, ollama } from "modelfusion";
+import { MistralInstructPrompt, generateText, ollama } from "modelfusion";
 
 dotenv.config();
 
@@ -7,12 +7,13 @@ async function main() {
   const text = await generateText(
     ollama
       .CompletionTextGenerator({
-        model: "mistral:text",
+        model: "mistral",
         maxGenerationTokens: 120,
+        raw: true, // use prompt template below
       })
-      .withTextPrompt(),
+      .withTextPromptTemplate(MistralInstructPrompt.text()),
 
-    "Write a short story about a robot learning to love:\n\n"
+    "Write a short story about a robot learning to love."
   );
 
   console.log(text);

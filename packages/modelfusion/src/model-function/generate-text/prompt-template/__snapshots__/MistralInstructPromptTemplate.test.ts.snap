@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`chat prompt > should format prompt with system message and user-assistant-user messages 1`] = `"<s>[INST] you are a chatbot [/INST] </s>[INST] 1st user message [/INST] assistant message[INST] 2nd user message [/INST] "`;
+
+exports[`chat prompt > should format prompt with user message 1`] = `"<s>[INST] user message [/INST] "`;
+
+exports[`chat prompt > should format prompt with user-assistant-user messages 1`] = `"<s>[INST] 1st user message [/INST] assistant message</s>[INST] 2nd user message [/INST] "`;
+
+exports[`instruction prompt > should format prompt with instruction 1`] = `"<s>[INST] instruction [/INST] "`;
+
+exports[`instruction prompt > should format prompt with instruction and response prefix 1`] = `"<s>[INST] instruction [/INST] response prefix"`;
+
+exports[`instruction prompt > should format prompt with system and instruction 1`] = `"<s>[INST] system [/INST] </s>[INST] instruction [/INST] "`;
+
+exports[`text prompt > should format prompt 1`] = `"<s>[INST] prompt [/INST] "`;

@@ -1,6 +1,6 @@
 export * from "./MistralApiConfiguration.js";
+export * from "./MistralChatModel.js";
+export * as MistralChatPrompt from "./MistralChatPromptTemplate.js";
 export { MistralErrorData } from "./MistralError.js";
 export * as mistral from "./MistralFacade.js";
-export * as MistralPrompt from "./MistralPromptTemplate.js";
 export * from "./MistralTextEmbeddingModel.js";
-export * from "./MistralChatModel.js";

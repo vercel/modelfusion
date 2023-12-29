@@ -1,6 +1,11 @@
 import { MathJsTool } from "@modelfusion/mathjs-tool";
 import dotenv from "dotenv";
-import { Llama2Prompt, jsonToolCallPrompt, ollama, useTool } from "modelfusion";
+import {
+  MistralInstructPrompt,
+  jsonToolCallPrompt,
+  ollama,
+  useTool,
+} from "modelfusion";
 
 dotenv.config();
 
@@ -13,9 +18,10 @@ async function main() {
         model: "mistral",
         format: "json",
         temperature: 0,
-        raw: true,
+        raw: true, // use prompt template below
+        stopSequences: ["\n\n"], // prevent infinite generation
       })
-      .withTextPromptTemplate(Llama2Prompt.instruction()) // TODO Mistral prompt template
+      .withTextPromptTemplate(MistralInstructPrompt.instruction())
       .asToolCallGenerationModel(jsonToolCallPrompt.text()),
 
     new MathJsTool({ name: "calculator" }),

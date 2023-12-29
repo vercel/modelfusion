@@ -18,7 +18,7 @@ async function main() {
         maxGenerationTokens: 1024,
         temperature: 0,
         format: "json",
-        raw: true,
+        raw: true, // use prompt template below
         stopSequences: ["\n\n"], // prevent infinite generation
       })
       .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
