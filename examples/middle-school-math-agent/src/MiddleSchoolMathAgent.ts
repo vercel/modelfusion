@@ -15,6 +15,7 @@ const problem = questions[Math.floor(Math.random() * questions.length)];
 async function main() {
   console.log(`PROBLEM: ${problem}\n`);
 
+  // initial chat:
   const chat: ChatPrompt = {
     system:
       "You are solving math problems. " +
@@ -25,7 +26,9 @@ async function main() {
     messages: [ChatMessage.user({ text: problem })],
   };
 
+  // agent loop:
   while (true) {
+    // call the language model and execute the tools:
     const { text, toolResults } = await useToolsOrGenerateText(
       openai
         .ChatTextGenerator({

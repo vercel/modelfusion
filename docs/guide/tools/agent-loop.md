@@ -10,39 +10,50 @@ You can use [useToolsOrGenerateText](/api/modules/#usetoolsorgeneratetext) to im
 
 ## Example: Middle School Math Agent
 
-This example agent ([Source Code](https://github.com/lgrammel/modelfusion/tree/main/examples/middle-school-math-agent)) solves middle school math problems. It uses a calculator tool.
+This example agent ([Source Code](https://github.com/lgrammel/modelfusion/tree/main/examples/middle-school-math-agent)) solves middle school math problems. It uses the [Math.js tool](/guide/tools/predefined-tools/mathjs) to solve the problems.
 
 ```ts
-// initial messages:
-const messages = [
-  openai.ChatMessage.system(
+import { MathJsTool } from "@modelfusion/mathjs-tool";
+import dotenv from "dotenv";
+import {
+  ChatMessage,
+  ChatPrompt,
+  openai,
+  useToolsOrGenerateText,
+} from "modelfusion";
+
+// ...
+
+// initial chat:
+const chat: ChatPrompt = {
+  system:
     "You are solving math problems. " +
-      "Reason step by step. " +
-      "Use the calculator when necessary. " +
-      "The calculator can only do simple additions, subtractions, multiplications, and divisions. " +
-      "When you give the final answer, provide an explanation for how you got it."
-  ),
-  openai.ChatMessage.user(problem),
-];
+    "Reason step by step. " +
+    "Use the calculator when necessary. " +
+    "The calculator can only do simple additions, subtractions, multiplications, and divisions. " +
+    "When you give the final answer, provide an explanation for how you got it.",
+  messages: [ChatMessage.user({ text: problem })],
+};
 
 // agent loop:
 while (true) {
   // call the language model and execute the tools:
   const { text, toolResults } = await useToolsOrGenerateText(
-    openai.ChatTextGenerator({
-      model: "gpt-4-1106-preview",
-      temperature: 0,
-      maxGenerationTokens: 500,
-    }),
-    [calculator],
-    messages
+    openai
+      .ChatTextGenerator({
+        model: "gpt-4-1106-preview",
+        temperature: 0,
+        maxGenerationTokens: 500,
+      })
+      .withChatPrompt(),
+    [new MathJsTool({ name: "calculator" })],
+    chat
   );
 
   // add the result to the messages for the next iteration:
-  messages.push(
-    openai.ChatMessage.assistant(text, {
-      toolCalls: toolResults?.map((result) => result.toolCall),
-    })
+  chat.messages.push(
+    ChatMessage.assistant({ text, toolResults }),
+    ChatMessage.tool({ toolResults })
   );
 
   if (toolResults == null) {
@@ -55,11 +66,6 @@ while (true) {
   }
 
   for (const { tool, result, ok, args, toolCall } of toolResults ?? []) {
-    // add the tool results to the messages for the next iteration:
-    messages.push(
-      openai.ChatMessage.tool({ toolCallId: toolCall.id, content: result })
-    );
-
     if (!ok) {
       const error = result; // handle errors here
       continue;
@@ -70,11 +76,7 @@ while (true) {
       case "calculator": {
         // type safe results to the arguments and the result:
         const calculation = {
-          args: {
-            a: args.a,
-            operator: args.operator,
-            b: args.b,
-          },
+          expression: args.expression,
           result,
         };
         break;
