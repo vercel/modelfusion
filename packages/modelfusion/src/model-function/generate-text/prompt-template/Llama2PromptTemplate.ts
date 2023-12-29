@@ -26,7 +26,7 @@ export function text(): TextGenerationPromptTemplate<string, string> {
   return {
     stopSequences: [END_SEGMENT],
     format(prompt) {
-      return `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${prompt}${END_INSTRUCTION}\n`;
+      return `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${prompt}${END_INSTRUCTION}`;
     },
   };
 }
@@ -81,14 +81,18 @@ export function chat(): TextGenerationPromptTemplate<ChatPrompt, string> {
     format(prompt) {
       validateLlama2Prompt(prompt);
 
-      let text =
-        prompt.system != null
-          ? // Separate section for system message to simplify implementation
-            // (this is slightly different from the original instructions):
-            `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${BEGIN_SYSTEM}${prompt.system}${END_SYSTEM}${END_INSTRUCTION}${END_SEGMENT}`
-          : "";
+      // get content of the first message (validated to be a user message)
+      const content = prompt.messages[0].content;
 
-      for (const { role, content } of prompt.messages) {
+      let text = `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${
+        prompt.system != null
+          ? `${BEGIN_SYSTEM}${prompt.system}${END_SYSTEM}`
+          : ""
+      }${content}${END_INSTRUCTION}`;
+
+      // process remaining messages
+      for (let i = 1; i < prompt.messages.length; i++) {
+        const { role, content } = prompt.messages[i];
         switch (role) {
           case "user": {
             const textContent = validateContentIsString(content, prompt);

@@ -1,5 +1,18 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`chat prompt > should format prompt with system message and user-assistant-user messages 1`] = `
+"<|im_start|>system
+you are a chatbot<|im_end|>
+<|im_start|>user
+1st user message<|im_end|>
+<|im_start|>assistant
+assistant message<|im_end|>
+<|im_start|>user
+2nd user message<|im_end|>
+<|im_start|>assistant
+"
+`;
+
 exports[`chat prompt > should format prompt with user message 1`] = `
 "<|im_start|>user
 user message<|im_end|>
