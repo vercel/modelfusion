@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.107.0 - 2023-12-29
+
+### Added
+
+- Mistral instruct prompt template
+
+### Changed
+
+- **breaking change**: Renamed `LlamaCppTextGenerationModel` to `LlamaCppCompletionModel`.
+
+### Fixed
+
+- Updated `LlamaCppCompletionModel` to the latest llama.cpp version.
+- Fixed formatting of system prompt for chats in Llama2 2 prompt template.
+
 ## v0.106.0 - 2023-12-28
 
 Experimental features that are unlikely to become stable before v1.0 have been moved to a separate `modelfusion-experimental` package.

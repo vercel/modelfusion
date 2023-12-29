@@ -76,6 +76,6 @@
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
     "fastify": "^4.0.0",
-    "modelfusion": "0.106.0"
+    "modelfusion": "0.107.0"
   }
 }
