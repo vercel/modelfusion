@@ -538,16 +538,17 @@ const textStream = await streamText(
 );
 ```
 
-| Prompt Template | Text Prompt | Instruction Prompt | Chat Prompt |
-| --------------- | ----------- | ------------------ | ----------- |
-| OpenAI Chat     | ✅          | ✅                 | ✅          |
-| Anthropic       | ✅          | ✅                 | ✅          |
-| Llama 2         | ✅          | ✅                 | ✅          |
-| ChatML          | ✅          | ✅                 | ✅          |
-| NeuralChat      | ✅          | ✅                 | ✅          |
-| Alpaca          | ✅          | ✅                 | ❌          |
-| Vicuna          | ❌          | ❌                 | ✅          |
-| Generic Text    | ✅          | ✅                 | ✅          |
+| Prompt Template  | Text Prompt | Instruction Prompt | Chat Prompt |
+| ---------------- | ----------- | ------------------ | ----------- |
+| OpenAI Chat      | ✅          | ✅                 | ✅          |
+| Anthropic        | ✅          | ✅                 | ✅          |
+| Llama 2          | ✅          | ✅                 | ✅          |
+| ChatML           | ✅          | ✅                 | ✅          |
+| NeuralChat       | ✅          | ✅                 | ✅          |
+| Mistral Instruct | ✅          | ✅                 | ✅          |
+| Alpaca           | ✅          | ✅                 | ❌          |
+| Vicuna           | ❌          | ❌                 | ✅          |
+| Generic Text     | ✅          | ✅                 | ✅          |
 
 ### [Image Generation Prompt Templates](https://modelfusion.dev/guide/function/generate-image/prompt-format)
 
