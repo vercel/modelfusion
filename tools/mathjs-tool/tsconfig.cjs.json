@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": false,
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": ["node_modules"]
+}

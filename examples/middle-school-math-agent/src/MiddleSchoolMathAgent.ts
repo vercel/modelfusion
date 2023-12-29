@@ -1,3 +1,4 @@
+import { MathJsTool } from "@modelfusion/mathjs-tool";
 import dotenv from "dotenv";
 import {
   ChatMessage,
@@ -5,7 +6,6 @@ import {
   openai,
   useToolsOrGenerateText,
 } from "modelfusion";
-import { calculator } from "./CalculatorTool";
 import { questions } from "./Questions";
 
 dotenv.config();
@@ -34,7 +34,7 @@ async function main() {
           maxGenerationTokens: 500,
         })
         .withChatPrompt(),
-      [calculator],
+      [new MathJsTool({ name: "calculator" })],
       chat
     );
 
@@ -63,9 +63,7 @@ async function main() {
 
       switch (tool) {
         case "calculator": {
-          console.log(
-            `CALCULATION: ${args.a} ${args.operator} ${args.b} = ${result}\n`
-          );
+          console.log(`CALCULATION: ${args.expression} = ${result}\n`);
           break;
         }
       }

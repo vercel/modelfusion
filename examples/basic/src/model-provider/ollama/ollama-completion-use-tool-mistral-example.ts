@@ -1,6 +1,6 @@
+import { MathJsTool } from "@modelfusion/mathjs-tool";
 import dotenv from "dotenv";
 import { Llama2Prompt, jsonToolCallPrompt, ollama, useTool } from "modelfusion";
-import { calculator } from "../../tool/tools/calculator-tool";
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ async function main() {
       .withTextPromptTemplate(Llama2Prompt.instruction()) // TODO Mistral prompt template
       .asToolCallGenerationModel(jsonToolCallPrompt.text()),
 
-    calculator,
+    new MathJsTool({ name: "calculator" }),
     "What's fourteen times twelve?"
   );
 
