@@ -1,12 +1,11 @@
----
-sidebar_position: 2
-title: SerpAPI
----
-
-# SerpAPI WebSearch Tools
+# SerpAPI WebSearch Tools for ModelFusion
 
 [SerpAPI](https://serpapi.com/) is a service that provides search results from Google, Bing, and other search engines.
 Currently only the Google search is supported as a tool.
+
+## Requirements
+
+- [ModelFusion](https://modelfusion.dev) v0.9.0 or higher
 
 ## Setup
 
@@ -18,7 +17,7 @@ Currently only the Google search is supported as a tool.
    npm i @modelfusion/serpapi-tool
    ```
 
-3. Add `SERPAPI_API_KEY` with your SerpAPI api key to your environment variables or `.env` file.
+3. Add your SERPAPI_API_KEY to your environment variables or `.env` file.
 
 ## Usage
 
@@ -40,4 +39,13 @@ You can then use the tool with `useTool` or `executeTool`:
 const result = await executeTool(websearchTool, {
   query: "modelfusion",
 });
+```
+
+## Development
+
+### Setup
+
+```sh
+npm i
+npm link modelfusion
 ```

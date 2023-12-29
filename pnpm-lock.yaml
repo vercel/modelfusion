@@ -120,13 +120,13 @@ importers:
     dependencies:
       '@modelfusion/google-custom-search-tool':
         specifier: 0.9.0
-        version: link:../../packages/@modelfusion-google-custom-search-tool/dist
+        version: link:../../tools/google-custom-search-tool/dist
       '@modelfusion/pinecone':
         specifier: 0.3.0
         version: link:../../packages/@modelfusion-pinecone/dist
-      '@modelfusion/serpapi-tools':
+      '@modelfusion/serpapi-tool':
         specifier: 0.9.0
-        version: link:../../packages/@modelfusion-serpapi-tools/dist
+        version: link:../../tools/serpapi-tool/dist
       '@modelfusion/sqlite-vss':
         specifier: 0.3.0
         version: link:../../packages/@modelfusion-sqlite-vss/dist
@@ -428,7 +428,7 @@ importers:
     dependencies:
       '@modelfusion/google-custom-search-tool':
         specifier: ^0.9.0
-        version: link:../../packages/@modelfusion-google-custom-search-tool/dist
+        version: link:../../tools/google-custom-search-tool/dist
       chalk:
         specifier: ^4
         version: 4.1.2
@@ -464,31 +464,6 @@ importers:
         specifier: 20.2.3
         version: 20.2.3
 
-  packages/@modelfusion-google-custom-search-tool:
-    devDependencies:
-      '@types/node':
-        specifier: 18.11.9
-        version: 18.11.9
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^6.1.0
-        version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
-      '@typescript-eslint/parser':
-        specifier: ^6.1.0
-        version: 6.15.0(eslint@8.56.0)(typescript@5.3.3)
-      eslint:
-        specifier: ^8.45.0
-        version: 8.56.0
-      eslint-config-prettier:
-        specifier: 9.1.0
-        version: 9.1.0(eslint@8.56.0)
-      modelfusion:
-        specifier: 0.106.0
-        version: link:../modelfusion/dist
-      zod:
-        specifier: 3.22.4
-        version: 3.22.4
-    publishDirectory: dist
-
   packages/@modelfusion-pinecone:
     devDependencies:
       '@pinecone-database/pinecone':
@@ -512,35 +487,6 @@ importers:
       modelfusion:
         specifier: 0.106.0
         version: link:../modelfusion/dist
-    publishDirectory: dist
-
-  packages/@modelfusion-serpapi-tools:
-    dependencies:
-      serpapi:
-        specifier: ^2.0.0
-        version: 2.0.0
-    devDependencies:
-      '@types/node':
-        specifier: 18.11.9
-        version: 18.11.9
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^6.1.0
-        version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
-      '@typescript-eslint/parser':
-        specifier: ^6.1.0
-        version: 6.15.0(eslint@8.56.0)(typescript@5.3.3)
-      eslint:
-        specifier: ^8.45.0
-        version: 8.56.0
-      eslint-config-prettier:
-        specifier: 9.1.0
-        version: 9.1.0(eslint@8.56.0)
-      modelfusion:
-        specifier: 0.106.0
-        version: link:../modelfusion/dist
-      zod:
-        specifier: 3.22.4
-        version: 3.22.4
     publishDirectory: dist
 
   packages/@modelfusion-sqlite-vss:
@@ -701,6 +647,60 @@ importers:
       modelfusion:
         specifier: 0.104.0
         version: 0.104.0
+
+  tools/google-custom-search-tool:
+    devDependencies:
+      '@types/node':
+        specifier: 18.11.9
+        version: 18.11.9
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.1.0
+        version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^6.1.0
+        version: 6.15.0(eslint@8.56.0)(typescript@5.3.3)
+      eslint:
+        specifier: ^8.45.0
+        version: 8.56.0
+      eslint-config-prettier:
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
+      modelfusion:
+        specifier: 0.106.0
+        version: link:../../packages/modelfusion/dist
+      zod:
+        specifier: 3.22.4
+        version: 3.22.4
+    publishDirectory: dist
+
+  tools/serpapi-tool:
+    dependencies:
+      serpapi:
+        specifier: ^2.0.0
+        version: 2.0.0
+    devDependencies:
+      '@types/node':
+        specifier: 18.11.9
+        version: 18.11.9
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.1.0
+        version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^6.1.0
+        version: 6.15.0(eslint@8.56.0)(typescript@5.3.3)
+      eslint:
+        specifier: ^8.45.0
+        version: 8.56.0
+      eslint-config-prettier:
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
+      modelfusion:
+        specifier: 0.106.0
+        version: link:../../packages/modelfusion/dist
+      zod:
+        specifier: 3.22.4
+        version: 3.22.4
+    publishDirectory: dist
 
 packages:
 

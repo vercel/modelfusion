@@ -1,4 +1,4 @@
-import { SerpapiGoogleWebSearchTool } from "@modelfusion/serpapi-tools";
+import { SerpapiGoogleWebSearchTool } from "@modelfusion/serpapi-tool";
 import dotenv from "dotenv";
 import { executeTool } from "modelfusion";
 

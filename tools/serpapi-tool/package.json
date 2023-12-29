@@ -1,5 +1,5 @@
 {
-  "name": "@modelfusion/serpapi-tools",
+  "name": "@modelfusion/serpapi-tool",
   "description": "SerpAPI tools for ModelFusion",
   "version": "0.9.0",
   "author": "Lars Grammel",
