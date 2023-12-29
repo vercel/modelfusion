@@ -46,7 +46,7 @@ You can provide API keys for the different [integrations](https://modelfusion.de
 ### [Generate Text](https://modelfusion.dev/guide/function/generate-text)
 
 Generate text using a language model and a prompt. You can stream the text if it is supported by the model. You can use images for multi-modal prompting if the model supports it (e.g. with [llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)).
-You can use [prompt templates](https://modelfusion.dev/guide/function/generate-text#prompt-format) to change the prompt template of a model.
+You can use [prompt templates](https://modelfusion.dev/guide/function/generate-text#prompt-template) to change the prompt template of a model.
 
 #### generateText
 
