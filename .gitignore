@@ -2,10 +2,11 @@
 .env
 .dev.vars
 .turbo
+runs
+node_modules
+package-lock.json
 examples/*/build/**
 packages/*/build/**
 packages/*/coverage/**
 packages/*/dist/**
-runs
-node_modules
-package-lock.json
+
