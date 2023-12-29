@@ -14,7 +14,7 @@ Currently only the Google search is supported as a tool.
 2. Install the SerpAPI tools for ModelFusion:
 
    ```
-   npm i @modelfusion/serpapi-tools
+   npm i @modelfusion/serpapi-tool
    ```
 
 3. Add your SERPAPI_API_KEY to your environment variables or `.env` file.
@@ -24,7 +24,7 @@ Currently only the Google search is supported as a tool.
 ### Creating a SerpAPI Google Search Tool
 
 ```ts
-import { SerpapiGoogleWebSearchTool } from "@modelfusion/serpapi-tools";
+import { SerpapiGoogleWebSearchTool } from "@modelfusion/serpapi-tool";
 
 const websearchTool = new SerpapiGoogleWebSearchTool({
   name: "websearch",
