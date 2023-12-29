@@ -14,7 +14,7 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
    - [Llama 2 7b Chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF)
    - [Llama 2 7b](https://huggingface.co/TheBloke/Llama-2-7B-GGUF)
 1. Start the [llama.cpp server](https://github.com/ggerganov/llama.cpp/tree/master/examples/server) with the model that you want to serve:
-   - e.g., `./server -m models/llama-2-7b-chat.GGUF.q4_0.bin -c 4096` (Mac)
+   - e.g., `./server -m models/llama-2-7b-chat.GGUF.q4_0.bin` (Mac)
    - For generating embeddings, you need to start the server with the `--embedding` flag.
    - For multi-modal models, you need to specify the projection with the `--mmproj` flag.
    - [llama.cpp server docs](https://github.com/ggerganov/llama.cpp/tree/master/examples/server)
@@ -36,7 +36,7 @@ You can use various GGUF models with llama.cpp.
 - [Llama 2 7b Chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF)
 - [Llama 2 7b](https://huggingface.co/TheBloke/Llama-2-7B-GGUF)
 
-Server start example: `./server -m models/llama-2-7b-chat.GGUF.q4_0.bin -c 4096` (Mac)
+Server start example: `./server -m models/llama-2-7b-chat.GGUF.q4_0.bin` (Mac)
 
 ## Example Multi-modal Models
 
