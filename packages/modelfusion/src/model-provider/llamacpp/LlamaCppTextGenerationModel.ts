@@ -334,7 +334,7 @@ const llamaCppTextGenerationResponseSchema = z.object({
     seed: z.number(),
     stop: z.array(z.string()),
     stream: z.boolean(),
-    temp: z.number(),
+    temperature: z.number(),
     tfs_z: z.number(),
     top_k: z.number(),
     top_p: z.number(),

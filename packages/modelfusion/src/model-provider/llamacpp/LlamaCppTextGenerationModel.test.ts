@@ -18,7 +18,7 @@ describe("streamText", () => {
         `"mirostat_eta":0.10000000149011612,"mirostat_tau":5.0,"model":"models/llama-2-7b-chat.Q4_K_M.gguf",` +
         `"n_ctx":4096,"n_keep":0,"n_predict":-1,"n_probs":0,"penalize_nl":true,"penalty_prompt_tokens":[],` +
         `"presence_penalty":0.0,"repeat_last_n":64,"repeat_penalty":1.100000023841858,"seed":4294967295,` +
-        `"stop":[],"stream":true,"temp":0.800000011920929,"tfs_z":1.0,"top_k":40,"top_p":0.949999988079071,` +
+        `"stop":[],"stream":true,"temperature":0.800000011920929,"tfs_z":1.0,"top_k":40,"top_p":0.949999988079071,` +
         `"typical_p":1.0,"use_penalty_prompt_tokens":false},"model":"models/llama-2-7b-chat.Q4_K_M.gguf",` +
         `"prompt":"hello","slot_id":0,"stop":true,"stopped_eos":true,"stopped_limit":false,` +
         `"stopped_word":false,"stopping_word":"","timings":{"predicted_ms":1054.704,"predicted_n":69,` +
