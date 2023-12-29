@@ -34,10 +34,10 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.0.10
-        version: 5.0.10(@types/node@18.11.9)
+        version: 5.0.10(@types/node@20.10.5)
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.11.9)(@vitest/ui@1.1.0)
+        version: 1.0.4(@types/node@20.10.5)(@vitest/ui@1.1.0)
 
   docs:
     dependencies:
@@ -113,8 +113,8 @@ importers:
         specifier: ^21.1.1
         version: 21.1.6
       '@types/node':
-        specifier: 20.2.3
-        version: 20.2.3
+        specifier: 20.10.5
+        version: 20.10.5
 
   examples/basic:
     dependencies:
@@ -168,8 +168,8 @@ importers:
         specifier: 7.6.6
         version: 7.6.6
       '@types/node':
-        specifier: 20.2.3
-        version: 20.2.3
+        specifier: 20.10.5
+        version: 20.10.5
 
   examples/chatbot-next-js:
     dependencies:
@@ -317,8 +317,8 @@ importers:
         version: 3.6.172
     devDependencies:
       '@types/node':
-        specifier: 20.2.3
-        version: 20.2.3
+        specifier: 20.10.5
+        version: 20.10.5
 
   examples/pdf-to-tweet:
     dependencies:
@@ -342,8 +342,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@types/node':
-        specifier: 20.2.3
-        version: 20.2.3
+        specifier: 20.10.5
+        version: 20.10.5
 
   examples/speech-streaming-vite-react-fastify:
     dependencies:
@@ -391,7 +391,7 @@ importers:
         version: 3.22.4
     devDependencies:
       '@types/node':
-        specifier: ^20.8.7
+        specifier: ^20.10.5
         version: 20.10.5
       '@types/react':
         specifier: 18.2.15
@@ -467,8 +467,8 @@ importers:
         specifier: ^21.1.1
         version: 21.1.6
       '@types/node':
-        specifier: 20.2.3
-        version: 20.2.3
+        specifier: 20.10.5
+        version: 20.10.5
 
   packages/@modelfusion-pinecone:
     devDependencies:
@@ -476,8 +476,8 @@ importers:
         specifier: ^0.1.6
         version: 0.1.6
       '@types/node':
-        specifier: 18.11.9
-        version: 18.11.9
+        specifier: 20.10.5
+        version: 20.10.5
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.1.0
         version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -501,8 +501,8 @@ importers:
         specifier: ^7.6.6
         version: 7.6.6
       '@types/node':
-        specifier: 18.11.9
-        version: 18.11.9
+        specifier: 20.10.5
+        version: 20.10.5
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.1.0
         version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -532,8 +532,8 @@ importers:
         specifier: ^7.6.6
         version: 7.6.6
       '@types/node':
-        specifier: 18.11.9
-        version: 18.11.9
+        specifier: 20.10.5
+        version: 20.10.5
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.1.0
         version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -579,8 +579,8 @@ importers:
         version: 3.22.3(zod@3.22.4)
     devDependencies:
       '@types/node':
-        specifier: 18.11.9
-        version: 18.11.9
+        specifier: 20.10.5
+        version: 20.10.5
       '@types/ws':
         specifier: ^8.5.7
         version: 8.5.10
@@ -614,8 +614,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@types/node':
-        specifier: 18.11.9
-        version: 18.11.9
+        specifier: 20.10.5
+        version: 20.10.5
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.1.0
         version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -657,8 +657,8 @@ importers:
   tools/google-custom-search-tool:
     devDependencies:
       '@types/node':
-        specifier: 18.11.9
-        version: 18.11.9
+        specifier: 20.10.5
+        version: 20.10.5
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.1.0
         version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -686,8 +686,8 @@ importers:
         version: 12.2.1
     devDependencies:
       '@types/node':
-        specifier: 18.11.9
-        version: 18.11.9
+        specifier: 20.10.5
+        version: 20.10.5
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.1.0
         version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -715,8 +715,8 @@ importers:
         version: 2.0.0
     devDependencies:
       '@types/node':
-        specifier: 18.11.9
-        version: 18.11.9
+        specifier: 20.10.5
+        version: 20.10.5
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.1.0
         version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -5116,18 +5116,10 @@ packages:
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
     dev: false
 
-  /@types/node@18.11.9:
-    resolution: {integrity: sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg==}
-    dev: true
-
   /@types/node@20.10.5:
     resolution: {integrity: sha512-nNPsNE65wjMxEKI93yOP+NPGGBJz/PoN3kZsVLee0XMiJolxSekEVD8wRwBUBqkwc7UWop0edW50yrCQW4CyRw==}
     dependencies:
       undici-types: 5.26.5
-
-  /@types/node@20.2.3:
-    resolution: {integrity: sha512-pg9d0yC4rVNWQzX8U7xb4olIOFuuVL9za3bzMT2pu2SU0SNEi66i2qrvhE2qt0HvkhuCaWJu7pLNOt/Pj8BIrw==}
-    dev: true
 
   /@types/parse-json@4.0.2:
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -5445,7 +5437,7 @@ packages:
       std-env: 3.6.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.0.4(@types/node@18.11.9)(@vitest/ui@1.1.0)
+      vitest: 1.0.4(@types/node@20.10.5)(@vitest/ui@1.1.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5492,7 +5484,7 @@ packages:
       pathe: 1.1.1
       picocolors: 1.0.0
       sirv: 2.0.3
-      vitest: 1.0.4(@types/node@18.11.9)(@vitest/ui@1.1.0)
+      vitest: 1.0.4(@types/node@20.10.5)(@vitest/ui@1.1.0)
     dev: true
 
   /@vitest/utils@1.0.4:
@@ -14534,7 +14526,7 @@ packages:
       vfile-message: 3.1.4
     dev: false
 
-  /vite-node@1.0.4(@types/node@18.11.9):
+  /vite-node@1.0.4(@types/node@20.10.5):
     resolution: {integrity: sha512-9xQQtHdsz5Qn8hqbV7UKqkm8YkJhzT/zr41Dmt5N7AlD8hJXw/Z7y0QiD5I8lnTthV9Rvcvi0QW7PI0Fq83ZPg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -14543,7 +14535,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.0.10(@types/node@18.11.9)
+      vite: 5.0.10(@types/node@20.10.5)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -14591,7 +14583,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vite@5.0.10(@types/node@18.11.9):
+  /vite@5.0.10(@types/node@20.10.5):
     resolution: {integrity: sha512-2P8J7WWgmc355HUMlFrwofacvr98DAjoE52BfdbwQtyLH06XKwaL/FMnmKM2crF0iX4MpmMKoDlNCB1ok7zHCw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -14619,7 +14611,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 18.11.9
+      '@types/node': 20.10.5
       esbuild: 0.19.10
       postcss: 8.4.32
       rollup: 4.9.1
@@ -14627,7 +14619,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vitest@1.0.4(@types/node@18.11.9)(@vitest/ui@1.1.0):
+  /vitest@1.0.4(@types/node@20.10.5)(@vitest/ui@1.1.0):
     resolution: {integrity: sha512-s1GQHp/UOeWEo4+aXDOeFBJwFzL6mjycbQwwKWX2QcYfh/7tIerS59hWQ20mxzupTJluA2SdwiBuWwQHH67ckg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -14652,7 +14644,7 @@ packages:
       jsdom:
         optional: true
     dependencies:
-      '@types/node': 18.11.9
+      '@types/node': 20.10.5
       '@vitest/expect': 1.0.4
       '@vitest/runner': 1.0.4
       '@vitest/snapshot': 1.0.4
@@ -14672,8 +14664,8 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.8.1
-      vite: 5.0.10(@types/node@18.11.9)
-      vite-node: 1.0.4(@types/node@18.11.9)
+      vite: 5.0.10(@types/node@20.10.5)
+      vite-node: 1.0.4(@types/node@20.10.5)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
