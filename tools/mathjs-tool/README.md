@@ -8,8 +8,6 @@
 
 ## Usage
 
-### Creating a SerpAPI Google Search Tool
-
 ```ts
 import { MathJsTool } from "@modelfusion/mathjs-tool";
 

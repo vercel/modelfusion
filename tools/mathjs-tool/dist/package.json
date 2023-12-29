@@ -1,7 +1,7 @@
 {
   "name": "@modelfusion/mathjs-tool",
   "description": "Math.js tool for ModelFusion",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
