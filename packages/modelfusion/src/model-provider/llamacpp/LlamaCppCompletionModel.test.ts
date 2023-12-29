@@ -1,7 +1,7 @@
 import { streamText } from "../../model-function/generate-text/streamText.js";
 import { StreamingTestServer } from "../../test/StreamingTestServer.js";
 import { arrayFromAsync } from "../../test/arrayFromAsync.js";
-import { LlamaCppTextGenerationModel } from "./LlamaCppTextGenerationModel.js";
+import { LlamaCppCompletionModel } from "./LlamaCppCompletionModel.js";
 
 describe("streamText", () => {
   const server = new StreamingTestServer("http://127.0.0.1:8080/completion");
@@ -29,7 +29,7 @@ describe("streamText", () => {
     ];
 
     const stream = await streamText(
-      new LlamaCppTextGenerationModel().withTextPrompt(),
+      new LlamaCppCompletionModel().withTextPrompt(),
       "hello"
     );
 

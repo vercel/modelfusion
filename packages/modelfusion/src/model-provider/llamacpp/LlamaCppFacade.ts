@@ -5,15 +5,15 @@ import {
   LlamaCppTextEmbeddingModelSettings,
 } from "./LlamaCppTextEmbeddingModel.js";
 import {
-  LlamaCppTextGenerationModel,
-  LlamaCppTextGenerationModelSettings,
-} from "./LlamaCppTextGenerationModel.js";
+  LlamaCppCompletionModel,
+  LlamaCppCompletionModelSettings,
+} from "./LlamaCppCompletionModel.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
 export function TextGenerator<CONTEXT_WINDOW_SIZE extends number>(
-  settings: LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE> = {}
+  settings: LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE> = {}
 ) {
-  return new LlamaCppTextGenerationModel<CONTEXT_WINDOW_SIZE>(settings);
+  return new LlamaCppCompletionModel<CONTEXT_WINDOW_SIZE>(settings);
 }
 
 export function TextEmbedder(

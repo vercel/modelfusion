@@ -24,7 +24,7 @@ import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
-export interface LlamaCppTextGenerationModelSettings<
+export interface LlamaCppCompletionModelSettings<
   CONTEXT_WINDOW_SIZE extends number | undefined,
 > extends TextGenerationModelSettings {
   api?: ApiConfiguration;
@@ -57,7 +57,7 @@ export interface LlamaCppTextGenerationModelSettings<
   logitBias?: Array<[number, number | false]>;
 }
 
-export interface LlamaCppTextGenerationPrompt {
+export interface LlamaCppCompletionPrompt {
   /**
    * Text prompt. Images can be included through references such as `[img-ID]`, e.g. `[img-1]`.
    */
@@ -69,20 +69,18 @@ export interface LlamaCppTextGenerationPrompt {
   images?: Record<number, string>;
 }
 
-export class LlamaCppTextGenerationModel<
+export class LlamaCppCompletionModel<
     CONTEXT_WINDOW_SIZE extends number | undefined,
   >
-  extends AbstractModel<
-    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
-  >
+  extends AbstractModel<LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>>
   implements
     TextStreamingModel<
-      LlamaCppTextGenerationPrompt,
-      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+      LlamaCppCompletionPrompt,
+      LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>
     >
 {
   constructor(
-    settings: LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE> = {}
+    settings: LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE> = {}
   ) {
     super({ settings });
     this.tokenizer = new LlamaCppTokenizer(this.settings.api);
@@ -100,9 +98,9 @@ export class LlamaCppTextGenerationModel<
   readonly tokenizer: LlamaCppTokenizer;
 
   async callAPI<RESPONSE>(
-    prompt: LlamaCppTextGenerationPrompt,
+    prompt: LlamaCppCompletionPrompt,
     options: {
-      responseFormat: LlamaCppTextGenerationResponseFormatType<RESPONSE>;
+      responseFormat: LlamaCppCompletionResponseFormatType<RESPONSE>;
     } & FunctionOptions
   ): Promise<RESPONSE> {
     const api = this.settings.api ?? new LlamaCppApiConfiguration();
@@ -153,7 +151,7 @@ export class LlamaCppTextGenerationModel<
   }
 
   get settingsForEvent(): Partial<
-    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+    LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>
   > {
     const eventSettingProperties: Array<string> = [
       ...textGenerationModelProperties,
@@ -175,7 +173,7 @@ export class LlamaCppTextGenerationModel<
       "seed",
       "ignoreEos",
       "logitBias",
-    ] satisfies (keyof LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>)[];
+    ] satisfies (keyof LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>)[];
 
     return Object.fromEntries(
       Object.entries(this.settings).filter(([key]) =>
@@ -184,20 +182,18 @@ export class LlamaCppTextGenerationModel<
     );
   }
 
-  async countPromptTokens(
-    prompt: LlamaCppTextGenerationPrompt
-  ): Promise<number> {
+  async countPromptTokens(prompt: LlamaCppCompletionPrompt): Promise<number> {
     const tokens = await this.tokenizer.tokenize(prompt.text);
     return tokens.length;
   }
 
   async doGenerateTexts(
-    prompt: LlamaCppTextGenerationPrompt,
+    prompt: LlamaCppCompletionPrompt,
     options?: FunctionOptions
   ) {
     const response = await this.callAPI(prompt, {
       ...options,
-      responseFormat: LlamaCppTextGenerationResponseFormat.json,
+      responseFormat: LlamaCppCompletionResponseFormat.json,
     });
 
     return {
@@ -221,13 +217,10 @@ export class LlamaCppTextGenerationModel<
     };
   }
 
-  doStreamText(
-    prompt: LlamaCppTextGenerationPrompt,
-    options?: FunctionOptions
-  ) {
+  doStreamText(prompt: LlamaCppCompletionPrompt, options?: FunctionOptions) {
     return this.callAPI(prompt, {
       ...options,
-      responseFormat: LlamaCppTextGenerationResponseFormat.deltaIterable,
+      responseFormat: LlamaCppCompletionResponseFormat.deltaIterable,
     });
   }
 
@@ -237,8 +230,8 @@ export class LlamaCppTextGenerationModel<
 
   withTextPrompt(): PromptTemplateTextStreamingModel<
     string,
-    LlamaCppTextGenerationPrompt,
-    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+    LlamaCppCompletionPrompt,
+    LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
     return this.withPromptTemplate({
@@ -257,11 +250,11 @@ export class LlamaCppTextGenerationModel<
   ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
     string,
-    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+    LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
     PromptTemplateTextStreamingModel<
       string,
-      LlamaCppTextGenerationPrompt,
-      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+      LlamaCppCompletionPrompt,
+      LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
       this
     >
   > {
@@ -282,12 +275,12 @@ export class LlamaCppTextGenerationModel<
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<
       INPUT_PROMPT,
-      LlamaCppTextGenerationPrompt
+      LlamaCppCompletionPrompt
     >
   ): PromptTemplateTextStreamingModel<
     INPUT_PROMPT,
-    LlamaCppTextGenerationPrompt,
-    LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>,
+    LlamaCppCompletionPrompt,
+    LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
     return new PromptTemplateTextStreamingModel({
@@ -303,10 +296,10 @@ export class LlamaCppTextGenerationModel<
 
   withSettings(
     additionalSettings: Partial<
-      LlamaCppTextGenerationModelSettings<CONTEXT_WINDOW_SIZE>
+      LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>
     >
   ) {
-    return new LlamaCppTextGenerationModel(
+    return new LlamaCppCompletionModel(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
@@ -415,19 +408,19 @@ async function createLlamaCppFullDeltaIterableQueue(
   return queue;
 }
 
-export type LlamaCppTextGenerationResponseFormatType<T> = {
+export type LlamaCppCompletionResponseFormatType<T> = {
   stream: boolean;
   handler: ResponseHandler<T>;
 };
 
-export const LlamaCppTextGenerationResponseFormat = {
+export const LlamaCppCompletionResponseFormat = {
   /**
    * Returns the response as a JSON object.
    */
   json: {
     stream: false,
     handler: createJsonResponseHandler(llamaCppTextGenerationResponseSchema),
-  } satisfies LlamaCppTextGenerationResponseFormatType<LlamaCppTextGenerationResponse>,
+  } satisfies LlamaCppCompletionResponseFormatType<LlamaCppTextGenerationResponse>,
 
   /**
    * Returns an async iterable over the full deltas (all choices, including full current state at time of event)
@@ -437,7 +430,7 @@ export const LlamaCppTextGenerationResponseFormat = {
     stream: true,
     handler: async ({ response }: { response: Response }) =>
       createLlamaCppFullDeltaIterableQueue(response.body!),
-  } satisfies LlamaCppTextGenerationResponseFormatType<
+  } satisfies LlamaCppCompletionResponseFormatType<
     AsyncIterable<Delta<LlamaCppTextStreamChunk>>
   >,
 };

@@ -3,7 +3,7 @@ import { ChatPrompt } from "../../model-function/generate-text/prompt-template/C
 import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError.js";
-import { LlamaCppTextGenerationPrompt } from "./LlamaCppTextGenerationModel.js";
+import { LlamaCppCompletionPrompt } from "./LlamaCppCompletionModel.js";
 
 // default Vicuna 1 system message
 const DEFAULT_SYSTEM_MESSAGE =
@@ -17,7 +17,7 @@ const DEFAULT_SYSTEM_MESSAGE =
  */
 export function instruction(): TextGenerationPromptTemplate<
   InstructionPrompt,
-  LlamaCppTextGenerationPrompt
+  LlamaCppCompletionPrompt
 > {
   return {
     format(prompt) {
@@ -62,7 +62,7 @@ export function instruction(): TextGenerationPromptTemplate<
 
 export function chat(): TextGenerationPromptTemplate<
   ChatPrompt,
-  LlamaCppTextGenerationPrompt
+  LlamaCppCompletionPrompt
 > {
   return {
     format(prompt) {

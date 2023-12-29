@@ -71,7 +71,7 @@ const model = llamacpp.TextGenerator({
 
 ### Generate Text
 
-[LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
+[LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
 
 Consider [mapping the prompt to the prompt template](#prompt-formats) that your model was trained on.
 
@@ -90,7 +90,7 @@ const text = await generateText(
 
 ### Stream Text
 
-[LlamaCppTextGenerationModel API](/api/classes/LlamaCppTextGenerationModel)
+[LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
 
 Consider [mapping the prompt to the prompt template](#prompt-formats) that your model was trained on.
 
@@ -146,7 +146,7 @@ console.log("tokenize", tokens);
 ### Context Window Size
 
 You can serve models with different context window sizes with your Llama.cpp server.
-By default, the `contextWindowSize` property on the `LlamaCppTextGenerationModel` is set to `undefined`.
+By default, the `contextWindowSize` property on the `LlamaCppCompletionModel` is set to `undefined`.
 However, some functions that automatically optimize the prompt size (e.g., recursive summarization) require a context window size on the model.
 You can set the context window size on the model by passing it as a parameter to the constructor.
 
