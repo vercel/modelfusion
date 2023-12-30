@@ -15,10 +15,11 @@ import { TextGenerationFinishReason } from "../../model-function/generate-text/T
 import { ToolDefinition } from "../../tool/ToolDefinition.js";
 import { createEventSourceResponseHandler } from "../../util/streaming/createEventSourceResponseHandler.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
-import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
+import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 
-export interface AbstractOpenAIChatCallSettings {
+export interface AbstractOpenAIChatSettings
+  extends TextGenerationModelSettings {
   api?: ApiConfiguration;
 
   model: string;
@@ -89,11 +90,7 @@ export interface AbstractOpenAIChatCallSettings {
   };
 
   logitBias?: Record<number, number>;
-}
 
-export interface AbstractOpenAIChatSettings
-  extends TextGenerationModelSettings,
-    AbstractOpenAIChatCallSettings {
   isUserIdForwardingEnabled?: boolean;
 }
 
@@ -116,10 +113,10 @@ export abstract class AbstractOpenAIChatModel<
     options: {
       responseFormat: OpenAIChatResponseFormatType<RESULT>;
     } & FunctionOptions & {
-        functions?: AbstractOpenAIChatCallSettings["functions"];
-        functionCall?: AbstractOpenAIChatCallSettings["functionCall"];
-        tools?: AbstractOpenAIChatCallSettings["tools"];
-        toolChoice?: AbstractOpenAIChatCallSettings["toolChoice"];
+        functions?: AbstractOpenAIChatSettings["functions"];
+        functionCall?: AbstractOpenAIChatSettings["functionCall"];
+        tools?: AbstractOpenAIChatSettings["tools"];
+        toolChoice?: AbstractOpenAIChatSettings["toolChoice"];
       }
   ): Promise<RESULT> {
     const api = this.settings.api ?? new OpenAIApiConfiguration();

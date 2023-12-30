@@ -2,7 +2,6 @@ import { StructureFromTextPromptTemplate } from "../../model-function/generate-s
 import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
 import { PromptTemplateFullTextModel } from "../../model-function/generate-text/PromptTemplateFullTextModel.js";
 import {
-  TextGenerationModelSettings,
   TextStreamingModel,
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
@@ -10,8 +9,8 @@ import { TextGenerationPromptTemplate } from "../../model-function/generate-text
 import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel.js";
 import { ToolCallsOrTextGenerationModel } from "../../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
 import {
-  AbstractOpenAIChatCallSettings,
   AbstractOpenAIChatModel,
+  AbstractOpenAIChatSettings,
   OpenAIChatPrompt,
 } from "../openai/AbstractOpenAIChatModel.js";
 import { chat, instruction, text } from "../openai/OpenAIChatPromptTemplate.js";
@@ -21,10 +20,8 @@ export type OpenAICompatibleProviderName =
   | `openaicompatible-${string}`;
 
 export interface OpenAICompatibleChatSettings
-  extends TextGenerationModelSettings,
-    Omit<AbstractOpenAIChatCallSettings, "stop" | "maxTokens"> {
+  extends AbstractOpenAIChatSettings {
   provider?: OpenAICompatibleProviderName;
-  isUserIdForwardingEnabled?: boolean;
 }
 
 /**
