@@ -7,7 +7,7 @@ title: OpenAI Compatible
 
 Many AI hosting providers offer an OpenAI-compatible API. ModelFusion supports these providers out of the box.
 
-You only need to provide an API configuration, e.g. using [BaseUrlApiConfiguration](/api/classes/BaseUrlApiConfiguration).For several providers there also pre-configured API configurations: [Fireworks AI](/api/classes/FireworksAIApiConfiguration), [Together AI](/api/classes/TogetherAIApiConfiguration).
+You only need to provide an API configuration, e.g. using [BaseUrlApiConfiguration](/api/classes/BaseUrlApiConfiguration). For several providers there also pre-configured API configurations: [Fireworks AI](/api/classes/FireworksAIApiConfiguration), [Together AI](/api/classes/TogetherAIApiConfiguration).
 
 :::note
 Please note that many providers implement the OpenAI API with slight differences, which can cause
