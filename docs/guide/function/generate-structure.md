@@ -61,18 +61,8 @@ const model = openai
     maxGenerationTokens: 1024,
     responseFormat: { type: "json_object" }, // force JSON output
   })
-  .asStructureGenerationModel(
-    // Instruct the model to generate a JSON object that matches the given schema.
-    jsonStructurePrompt((instruction: string, schema) => [
-      openai.ChatMessage.system(
-        "JSON schema: \n" +
-          JSON.stringify(schema.getJsonSchema()) +
-          "\n\n" +
-          "Respond only using JSON that matches the above schema."
-      ),
-      openai.ChatMessage.user(instruction),
-    ])
-  );
+  .withInstructionPrompt() // needed for jsonStructurePrompt.instruction()
+  .asStructureGenerationModel(jsonStructurePrompt.instruction());
 ```
 
 #### Ollama OpenHermes 2.5
@@ -81,26 +71,14 @@ Structure generation is also possible with capable open-source models like [Open
 
 ```ts
 const model = ollama
-  .CompletionTextGenerator({
+  .ChatTextGenerator({
     model: "openhermes2.5-mistral",
     maxGenerationTokens: 1024,
     temperature: 0,
     format: "json", // force JSON output
-    raw: true, // prevent Ollama from adding its own prompts
-    stopSequences: ["\n\n"], // prevent infinite generation
   })
-  .withPromptTemplate(ChatMLPrompt.instruction())
-  .asStructureGenerationModel(
-    // Instruct the model to generate a JSON object that matches the given schema.
-    jsonStructurePrompt((instruction: string, schema) => ({
-      system:
-        "JSON schema: \n" +
-        JSON.stringify(schema.getJsonSchema()) +
-        "\n\n" +
-        "Respond only using JSON that matches the above schema.",
-      instruction,
-    }))
-  );
+  .withInstructionPrompt() // needed for jsonStructurePrompt.instruction()
+  .asStructureGenerationModel(jsonStructurePrompt.instruction());
 ```
 
 ### streamStructure
