@@ -8,7 +8,6 @@ import { parsePartialJson } from "../../model-function/generate-structure/parseP
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
   OpenAIChatChunk,
-  OpenAIChatCompletionChunk,
   OpenAIChatPrompt,
   OpenAIChatResponseFormat,
 } from "./AbstractOpenAIChatModel.js";
@@ -185,7 +184,7 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
       return undefined;
     }
 
-    const chatChunk = chunk as OpenAIChatCompletionChunk;
+    const chatChunk = chunk as OpenAIChatChunk;
 
     const firstChoice = chatChunk.choices[0];
 
