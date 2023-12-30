@@ -1,5 +1,49 @@
 # Changelog
 
+## v0.108.0 - 2023-12-30
+
+### Added
+
+- [Open AI compatible completion model](https://modelfusion.dev/integration/model-provider/openaicompatible/). It e.g. works with Fireworks AI.
+- Together AI API configuration (for Open AI compatible chat models):
+
+  ```ts
+  import {
+    TogetherAIApiConfiguration,
+    openaicompatible,
+    streamText,
+  } from "modelfusion";
+
+  const textStream = await streamText(
+    openaicompatible
+      .ChatTextGenerator({
+        api: new TogetherAIApiConfiguration(),
+        model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
+      })
+      .withTextPrompt(),
+
+    "Write a story about a robot learning to love"
+  );
+  ```
+
+- Updated Llama.cpp model settings. GBNF grammars can be passed into the `grammar` setting:
+
+  ```ts
+  const text = await generateText(
+    llamacpp
+      .TextGenerator({
+        maxGenerationTokens: 512,
+        temperature: 0,
+        // simple list grammar:
+        grammar: `root ::= ("- " item)+
+  item ::= [^\\n]+ "\\n"`,
+      })
+      .withTextPromptTemplate(MistralInstructPrompt.text()),
+
+    "List 5 ingredients for a lasagna:\n\n"
+  );
+  ```
+
 ## v0.107.0 - 2023-12-29
 
 ### Added
