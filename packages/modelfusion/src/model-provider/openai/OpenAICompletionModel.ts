@@ -26,137 +26,24 @@ export const OPENAI_TEXT_GENERATION_MODELS = {
     promptTokenCostInMillicents: 0.15,
     completionTokenCostInMillicents: 0.2,
   },
-  "davinci-002": {
-    contextWindowSize: 16_384,
-    promptTokenCostInMillicents: 0.2,
-    completionTokenCostInMillicents: 0.2,
-    fineTunedTokenCostInMillicents: 1.2,
-  },
-  "babbage-002": {
-    contextWindowSize: 16_384,
-    promptTokenCostInMillicents: 0.04,
-    completionTokenCostInMillicents: 0.04,
-    fineTunedTokenCostInMillicents: 0.16,
-  },
-  "text-davinci-003": {
-    contextWindowSize: 4096,
-    promptTokenCostInMillicents: 2,
-    completionTokenCostInMillicents: 2,
-  },
-  "text-davinci-002": {
-    contextWindowSize: 4096,
-    promptTokenCostInMillicents: 2,
-    completionTokenCostInMillicents: 2,
-  },
-  "code-davinci-002": {
-    contextWindowSize: 8000,
-    promptTokenCostInMillicents: 2,
-    completionTokenCostInMillicents: 2,
-  },
-  davinci: {
-    contextWindowSize: 2048,
-    promptTokenCostInMillicents: 2,
-    completionTokenCostInMillicents: 2,
-  },
-  "text-curie-001": {
-    contextWindowSize: 2048,
-    promptTokenCostInMillicents: 0.2,
-    completionTokenCostInMillicents: 0.2,
-  },
-  curie: {
-    contextWindowSize: 2048,
-    promptTokenCostInMillicents: 0.2,
-    completionTokenCostInMillicents: 0.2,
-  },
-  "text-babbage-001": {
-    contextWindowSize: 2048,
-    promptTokenCostInMillicents: 0.05,
-    completionTokenCostInMillicents: 0.05,
-  },
-  babbage: {
-    contextWindowSize: 2048,
-    promptTokenCostInMillicents: 0.05,
-    completionTokenCostInMillicents: 0.05,
-  },
-  "text-ada-001": {
-    contextWindowSize: 2048,
-    promptTokenCostInMillicents: 0.04,
-    completionTokenCostInMillicents: 0.04,
-  },
-  ada: {
-    contextWindowSize: 2048,
-    promptTokenCostInMillicents: 0.04,
-    completionTokenCostInMillicents: 0.04,
-  },
 };
 
 export function getOpenAICompletionModelInformation(
   model: OpenAICompletionModelType
 ): {
-  baseModel: OpenAICompletionBaseModelType;
-  isFineTuned: boolean;
   contextWindowSize: number;
   promptTokenCostInMillicents: number;
   completionTokenCostInMillicents: number;
 } {
-  // Model is already a base model:
-  if (model in OPENAI_TEXT_GENERATION_MODELS) {
-    const baseModelInformation =
-      OPENAI_TEXT_GENERATION_MODELS[model as OpenAICompletionBaseModelType];
-
-    return {
-      baseModel: model as OpenAICompletionBaseModelType,
-      isFineTuned: false,
-      contextWindowSize: baseModelInformation.contextWindowSize,
-      promptTokenCostInMillicents:
-        baseModelInformation.promptTokenCostInMillicents,
-      completionTokenCostInMillicents:
-        baseModelInformation.completionTokenCostInMillicents,
-    };
-  }
-
-  // Extract the base model from the fine-tuned model:
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, baseModel, ___, ____, _____] = model.split(":");
-
-  if (["davinci-002", "babbage-002"].includes(baseModel)) {
-    const baseModelInformation =
-      OPENAI_TEXT_GENERATION_MODELS[
-        baseModel as FineTuneableOpenAICompletionModelType
-      ];
-
-    return {
-      baseModel: baseModel as FineTuneableOpenAICompletionModelType,
-      isFineTuned: true,
-      contextWindowSize: baseModelInformation.contextWindowSize,
-      promptTokenCostInMillicents:
-        baseModelInformation.fineTunedTokenCostInMillicents,
-      completionTokenCostInMillicents:
-        baseModelInformation.fineTunedTokenCostInMillicents,
-    };
-  }
-
-  throw new Error(`Unknown OpenAI chat base model ${baseModel}.`);
+  return OPENAI_TEXT_GENERATION_MODELS[model];
 }
 
-type FineTuneableOpenAICompletionModelType = "davinci-002" | "babbage-002";
-
-type FineTunedOpenAICompletionModelType =
-  `ft:${FineTuneableOpenAICompletionModelType}:${string}:${string}:${string}`;
-
-export type OpenAICompletionBaseModelType =
-  keyof typeof OPENAI_TEXT_GENERATION_MODELS;
-
 export type OpenAICompletionModelType =
-  | OpenAICompletionBaseModelType
-  | FineTunedOpenAICompletionModelType;
+  keyof typeof OPENAI_TEXT_GENERATION_MODELS;
 
 export const isOpenAICompletionModel = (
   model: string
-): model is OpenAICompletionModelType =>
-  model in OPENAI_TEXT_GENERATION_MODELS ||
-  model.startsWith("ft:davinci-002:") ||
-  model.startsWith("ft:babbage-002:");
+): model is OpenAICompletionModelType => model in OPENAI_TEXT_GENERATION_MODELS;
 
 export const calculateOpenAICompletionCostInMillicents = ({
   model,
@@ -210,7 +97,7 @@ export class OpenAICompletionModel
     );
 
     this.tokenizer = new TikTokenTokenizer({
-      model: modelInformation.baseModel,
+      model: this.settings.model,
     });
     this.contextWindowSize = modelInformation.contextWindowSize;
   }

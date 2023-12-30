@@ -1,17 +1,15 @@
 import { Tiktoken } from "js-tiktoken/lite";
 import cl100k_base from "js-tiktoken/ranks/cl100k_base";
-import p50k_base from "js-tiktoken/ranks/p50k_base";
-import r50k_base from "js-tiktoken/ranks/r50k_base";
 import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { never } from "../../util/never.js";
-import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
-import { OpenAICompletionBaseModelType } from "./OpenAICompletionModel.js";
 import { OpenAIChatBaseModelType } from "./OpenAIChatModel.js";
+import { OpenAICompletionModelType } from "./OpenAICompletionModel.js";
+import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
 
 export type TikTokenTokenizerSettings = {
   model:
     | OpenAIChatBaseModelType
-    | OpenAICompletionBaseModelType
+    | OpenAICompletionModelType
     | OpenAITextEmbeddingModelType;
 };
 
@@ -63,28 +61,10 @@ export class TikTokenTokenizer implements FullTokenizer {
 function getTiktokenBPE(
   model:
     | OpenAIChatBaseModelType
-    | OpenAICompletionBaseModelType
+    | OpenAICompletionModelType
     | OpenAITextEmbeddingModelType
 ) {
   switch (model) {
-    case "code-davinci-002":
-    case "text-davinci-002":
-    case "text-davinci-003": {
-      return p50k_base;
-    }
-
-    case "ada":
-    case "babbage":
-    case "curie":
-    case "davinci":
-    case "text-ada-001":
-    case "text-babbage-001":
-    case "text-curie-001": {
-      return r50k_base;
-    }
-
-    case "babbage-002":
-    case "davinci-002":
     case "gpt-3.5-turbo":
     case "gpt-3.5-turbo-0301":
     case "gpt-3.5-turbo-0613":

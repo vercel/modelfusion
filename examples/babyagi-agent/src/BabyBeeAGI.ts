@@ -67,7 +67,7 @@ async function runBabyBeeAGI({
   const textCompletionTool = async (prompt: string) =>
     generateText(
       openai.CompletionTextGenerator({
-        model: "text-davinci-003",
+        model: "gpt-3.5-turbo-instruct",
         temperature: 0.5,
         maxGenerationTokens: 1500,
       }),
@@ -247,7 +247,7 @@ async function runBabyBeeAGI({
   async function summarizerAgent(input: string) {
     return await generateText(
       openai.CompletionTextGenerator({
-        model: "text-davinci-003",
+        model: "gpt-3.5-turbo-instruct",
         temperature: 0.5,
         maxGenerationTokens: 100,
       }),
@@ -271,7 +271,7 @@ async function runBabyBeeAGI({
 
     return await generateText(
       openai.CompletionTextGenerator({
-        model: "text-davinci-003",
+        model: "gpt-3.5-turbo-instruct",
         temperature: 0.5,
         maxGenerationTokens: 200,
       }),

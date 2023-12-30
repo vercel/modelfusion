@@ -30,7 +30,7 @@ async function runBabyAGI({
   firstTask: string;
 }) {
   const model = openai.CompletionTextGenerator({
-    model: "text-davinci-003",
+    model: "gpt-3.5-turbo-instruct",
   });
 
   async function executeTask({
