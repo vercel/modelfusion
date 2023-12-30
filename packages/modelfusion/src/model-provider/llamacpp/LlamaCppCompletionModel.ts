@@ -36,25 +36,133 @@ export interface LlamaCppCompletionModelSettings<
   contextWindowSize?: CONTEXT_WINDOW_SIZE;
 
   /**
+   * Adjust the randomness of the generated text (default: 0.8).
+   */
+  temperature?: number;
+
+  /**
+   * Limit the next token selection to the K most probable tokens (default: 40).
+   */
+  topK?: number;
+
+  /**
+   * Limit the next token selection to a subset of tokens with a cumulative probability above a threshold P (default: 0.95).
+   */
+  topP?: number;
+
+  /**
+   * The minimum probability for a token to be considered, relative to the probability of the most likely token (default: 0.05).
+   */
+  minP?: number;
+
+  /**
+   * Specify the number of tokens from the prompt to retain when the context size is exceeded
+   * and tokens need to be discarded. By default, this value is set to 0 (meaning no tokens
+   * are kept). Use -1 to retain all tokens from the prompt.
+   */
+  nKeep?: number;
+
+  /**
+   * Enable tail free sampling with parameter z (default: 1.0, 1.0 = disabled).
+   */
+  tfsZ?: number;
+
+  /**
+   * Enable locally typical sampling with parameter p (default: 1.0, 1.0 = disabled).
+   */
+  typicalP?: number;
+
+  /**
+   * Control the repetition of token sequences in the generated text (default: 1.1).
+   */
+  repeatPenalty?: number;
+
+  /**
+   * Last n tokens to consider for penalizing repetition (default: 64, 0 = disabled, -1 = ctx-size).
+   */
+  repeatLastN?: number;
+
+  /**
+   * Penalize newline tokens when applying the repeat penalty (default: true).
+   */
+  penalizeNl?: boolean;
+
+  /**
+   * Repeat alpha presence penalty (default: 0.0, 0.0 = disabled).
+   */
+  presencePenalty?: number;
+
+  /**
+   * Repeat alpha frequency penalty (default: 0.0, 0.0 = disabled).
+   */
+  frequencyPenalty?: number;
+
+  /**
+   * This will replace the prompt for the purpose of the penalty evaluation.
+   * Can be either null, a string or an array of numbers representing tokens
+   * (default: null = use the original prompt).
+   */
+  penaltyPrompt?: string | number[];
+
+  /**
+   * Enable Mirostat sampling, controlling perplexity during text generation
+   * (default: 0, 0 = disabled, 1 = Mirostat, 2 = Mirostat 2.0).
+   */
+  mirostat?: number;
+
+  /**
+   * Set the Mirostat target entropy, parameter tau (default: 5.0).
+   */
+  mirostatTau?: number;
+
+  /**
+   * Set the Mirostat learning rate, parameter eta (default: 0.1).
+   */
+  mirostatEta?: number;
+
+  /**
+   * Set grammar for grammar-based sampling (default: no grammar)
+   *
+   * @see https://github.com/ggerganov/llama.cpp/blob/master/grammars/README.md
+   */
+  grammar?: string;
+
+  /**
+   * Set the random number generator (RNG) seed
+   * (default: -1, -1 = random seed).
+   */
+  seed?: number;
+
+  /**
+   * Ignore end of stream token and continue generating (default: false).
+   */
+  ignoreEos?: boolean;
+
+  /**
+   * Modify the likelihood of a token appearing in the generated text completion.
+   * For example, use "logit_bias": [[15043,1.0]] to increase the likelihood of the token
+   * 'Hello', or "logit_bias": [[15043,-1.0]] to decrease its likelihood.
+   * Setting the value to false, "logit_bias": [[15043,false]] ensures that the token Hello is
+   * never produced (default: []).
+   */
+  logitBias?: Array<[number, number | false]>;
+
+  /**
+   * If greater than 0, the response also contains the probabilities of top N tokens
+   * for each generated token (default: 0)
+   */
+  nProbs?: number;
+
+  /**
    * Save the prompt and generation for avoid reprocess entire prompt if a part of this isn't change (default: false)
    */
   cachePrompt?: boolean;
 
-  temperature?: number;
-  topK?: number;
-  topP?: number;
-  nKeep?: number;
-  tfsZ?: number;
-  typicalP?: number;
-  repeatPenalty?: number;
-  repeatLastN?: number;
-  penalizeNl?: boolean;
-  mirostat?: number;
-  mirostatTau?: number;
-  mirostatEta?: number;
-  seed?: number;
-  ignoreEos?: boolean;
-  logitBias?: Array<[number, number | false]>;
+  /**
+   * Assign the completion task to an specific slot.
+   * If is -1 the task will be assigned to a Idle slot (default: -1)
+   */
+  slotId?: number;
 }
 
 export interface LlamaCppCompletionPrompt {
@@ -124,10 +232,10 @@ export class LlamaCppCompletionModel<
                     data,
                   }))
                 : undefined,
-            cache_prompt: this.settings.cachePrompt,
             temperature: this.settings.temperature,
             top_k: this.settings.topK,
             top_p: this.settings.topP,
+            min_p: this.settings.minP,
             n_predict: this.settings.maxGenerationTokens,
             n_keep: this.settings.nKeep,
             stop: this.settings.stopSequences,
@@ -136,12 +244,19 @@ export class LlamaCppCompletionModel<
             repeat_penalty: this.settings.repeatPenalty,
             repeat_last_n: this.settings.repeatLastN,
             penalize_nl: this.settings.penalizeNl,
+            presence_penalty: this.settings.presencePenalty,
+            frequency_penalty: this.settings.frequencyPenalty,
+            penalty_prompt: this.settings.penaltyPrompt,
             mirostat: this.settings.mirostat,
             mirostat_tau: this.settings.mirostatTau,
             mirostat_eta: this.settings.mirostatEta,
+            grammar: this.settings.grammar,
             seed: this.settings.seed,
             ignore_eos: this.settings.ignoreEos,
             logit_bias: this.settings.logitBias,
+            n_probs: this.settings.nProbs,
+            cache_prompt: this.settings.cachePrompt,
+            slot_id: this.settings.slotId,
           },
           failedResponseHandler: failedLlamaCppCallResponseHandler,
           successfulResponseHandler: responseFormat.handler,
@@ -157,22 +272,29 @@ export class LlamaCppCompletionModel<
       ...textGenerationModelProperties,
 
       "contextWindowSize",
-      "cachePrompt",
       "temperature",
       "topK",
       "topP",
+      "minP",
       "nKeep",
       "tfsZ",
       "typicalP",
       "repeatPenalty",
       "repeatLastN",
       "penalizeNl",
+      "presencePenalty",
+      "frequencyPenalty",
+      "penaltyPrompt",
       "mirostat",
       "mirostatTau",
       "mirostatEta",
+      "grammar",
       "seed",
       "ignoreEos",
       "logitBias",
+      "nProbs",
+      "cachePrompt",
+      "slotId",
     ] satisfies (keyof LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>)[];
 
     return Object.fromEntries(
@@ -344,7 +466,7 @@ const llamaCppTextGenerationResponseSchema = z.object({
     predicted_n: z.number(),
     predicted_per_second: z.number().nullable(),
     predicted_per_token_ms: z.number().nullable(),
-    prompt_ms: z.number().nullable(),
+    prompt_ms: z.number().nullable().optional(),
     prompt_n: z.number(),
     prompt_per_second: z.number().nullable(),
     prompt_per_token_ms: z.number().nullable(),
