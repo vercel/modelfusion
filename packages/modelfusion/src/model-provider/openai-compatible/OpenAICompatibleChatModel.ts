@@ -14,10 +14,7 @@ import {
   OpenAIChatPrompt,
 } from "../openai/AbstractOpenAIChatModel.js";
 import { chat, instruction, text } from "../openai/OpenAIChatPromptTemplate.js";
-
-export type OpenAICompatibleProviderName =
-  | `openaicompatible`
-  | `openaicompatible-${string}`;
+import { OpenAICompatibleProviderName } from "./OpenAICompatibleProviderName.js";
 
 export interface OpenAICompatibleChatSettings
   extends AbstractOpenAIChatSettings {

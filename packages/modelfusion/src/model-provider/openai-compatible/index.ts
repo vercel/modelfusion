@@ -1,3 +1,5 @@
-export * from "./OpenAICompatibleChatModel.js";
-export * as openaicompatible from "./OpenAICompatibleFacade.js";
 export * from "./FireworksAIApiConfiguration.js";
+export * from "./OpenAICompatibleChatModel.js";
+export * from "./OpenAICompatibleCompletionModel.js";
+export * as openaicompatible from "./OpenAICompatibleFacade.js";
+export * from "./OpenAICompatibleProviderName.js";
