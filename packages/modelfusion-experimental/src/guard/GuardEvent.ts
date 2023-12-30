@@ -1,7 +1,7 @@
 import {
   ExtensionFunctionFinishedEvent,
   ExtensionFunctionStartedEvent,
-} from "modelfusion/extension";
+} from "modelfusion/internal";
 
 export interface GuardStartedEvent extends ExtensionFunctionStartedEvent {
   extension: "guard";

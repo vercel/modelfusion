@@ -1,5 +1,5 @@
 import { FunctionOptions } from "modelfusion";
-import { executeFunctionCall } from "modelfusion/extension";
+import { executeFunctionCall } from "modelfusion/internal";
 
 type OutputResult<INPUT, OUTPUT> =
   | {

@@ -4,6 +4,7 @@ export { loadApiKey } from "../core/api/loadApiKey.js";
 export {
   ResponseHandler,
   createAudioMpegResponseHandler,
+  createJsonErrorResponseHandler,
   createJsonResponseHandler,
   createTextResponseHandler,
   postJsonToApi,

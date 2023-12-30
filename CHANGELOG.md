@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.110.0 - 2023-12-30
+
+### Changed
+
+- **breaking change**: renamed `modelfusion/extension` to `modelfusion/internal`. This requires updating `modelfusion-experimental` (if used) to `v0.3.0`
+
+### Removed
+
+- Deprecated OpenAI completion models that will be deactivated on January 4, 2024.
+
 ## v0.109.0 - 2023-12-30
 
 ### Added

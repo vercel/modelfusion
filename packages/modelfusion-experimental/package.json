@@ -1,7 +1,7 @@
 {
   "name": "modelfusion-experimental",
   "description": "Experimental ModelFusion features",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
@@ -76,6 +76,6 @@
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
     "fastify": "^4.0.0",
-    "modelfusion": "0.109.0"
+    "modelfusion": "0.110.0"
   }
 }

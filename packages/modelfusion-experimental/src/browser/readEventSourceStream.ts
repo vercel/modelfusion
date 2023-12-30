@@ -1,5 +1,5 @@
 import { AsyncQueue, Schema, safeParseJSON } from "modelfusion";
-import { ErrorHandler, parseEventSourceStream } from "modelfusion/extension";
+import { ErrorHandler, parseEventSourceStream } from "modelfusion/internal";
 
 export function readEventSourceStream<T>({
   stream,
