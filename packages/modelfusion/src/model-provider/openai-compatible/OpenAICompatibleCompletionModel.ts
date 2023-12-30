@@ -5,10 +5,6 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
-  chat,
-  instruction,
-} from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
-import {
   AbstractOpenAICompletionModel,
   AbstractOpenAICompletionModelSettings,
 } from "../openai/AbstractOpenAICompletionModel.js";
@@ -68,20 +64,6 @@ export class OpenAICompatibleCompletionModel
         eventSettingProperties.includes(key)
       )
     );
-  }
-
-  /**
-   * Returns this model with an instruction prompt template.
-   */
-  withInstructionPrompt() {
-    return this.withPromptTemplate(instruction());
-  }
-
-  /**
-   * Returns this model with a chat prompt template.
-   */
-  withChatPrompt(options?: { user?: string; assistant?: string }) {
-    return this.withPromptTemplate(chat(options));
   }
 
   withPromptTemplate<INPUT_PROMPT>(
