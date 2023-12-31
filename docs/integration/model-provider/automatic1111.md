@@ -21,7 +21,9 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 
 ```ts
 const api = automatic1111.Api({
-  port: "7861", // example: set port for --nowebui mode
+  baseUrl: {
+    port: "7861", // example: set port for --nowebui mode
+  },
   // ...
 });
 

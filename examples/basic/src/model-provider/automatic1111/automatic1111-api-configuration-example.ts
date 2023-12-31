@@ -4,6 +4,14 @@ import fs from "node:fs";
 async function main() {
   const image = await generateImage(
     automatic1111.ImageGenerator({
+      // Custom API configuration:
+      api: automatic1111.Api({
+        baseUrl: {
+          host: "localhost",
+          port: "7861",
+        },
+      }),
+
       model: "aZovyaRPGArtistTools_v4.safetensors",
       steps: 30,
       sampler: "DPM++ 2M Karras",

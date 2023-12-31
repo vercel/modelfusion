@@ -1,4 +1,4 @@
-import { BaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlPartsApiConfiguration.js";
+import { BaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
 import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
 import {
   StabilityImageGenerationModel,

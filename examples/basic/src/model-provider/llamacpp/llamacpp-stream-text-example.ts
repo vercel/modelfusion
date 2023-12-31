@@ -8,6 +8,7 @@ async function main() {
         temperature: 0.7,
       })
       .withTextPrompt(),
+
     "Write a short story about a robot learning to love:\n\n"
   );
 

@@ -1,40 +1,34 @@
 import {
-  BaseUrlPartsApiConfiguration,
-  BaseUrlPartsApiConfigurationOptions,
-} from "../../core/api/BaseUrlPartsApiConfiguration.js";
+  BaseUrlApiConfigurationWithDefaults,
+  PartialBaseUrlPartsApiConfigurationOptions,
+} from "../../core/api/BaseUrlApiConfiguration.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
 
 /**
  * Creates an API configuration for the Stability AI API.
  * It calls the API at https://api.stability.ai/v1 by default.
  */
-export class StabilityApiConfiguration extends BaseUrlPartsApiConfiguration {
-  constructor({
-    protocol = "https",
-    host = "api.stability.ai",
-    port = "443",
-    path = "/v1",
-    apiKey,
-    headers,
-    retry,
-    throttle,
-  }: Partial<BaseUrlPartsApiConfigurationOptions> & {
-    apiKey?: string;
-  } = {}) {
+export class StabilityApiConfiguration extends BaseUrlApiConfigurationWithDefaults {
+  constructor(
+    settings: PartialBaseUrlPartsApiConfigurationOptions & {
+      apiKey?: string;
+    } = {}
+  ) {
     super({
-      protocol,
-      host,
-      port,
-      path,
-      headers: headers ?? {
+      ...settings,
+      headers: settings.headers ?? {
         Authorization: `Bearer ${loadApiKey({
-          apiKey,
+          apiKey: settings.apiKey,
           environmentVariableName: "STABILITY_API_KEY",
           description: "Stability",
         })}`,
       },
-      retry,
-      throttle,
+      baseUrlDefaults: {
+        protocol: "https",
+        host: "api.stability.ai",
+        port: "443",
+        path: "/v1",
+      },
     });
   }
 }

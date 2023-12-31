@@ -1,22 +1,18 @@
-import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration.js";
-import { RetryFunction } from "../../core/api/RetryFunction.js";
-import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
+import {
+  BaseUrlApiConfigurationWithDefaults,
+  PartialBaseUrlPartsApiConfigurationOptions,
+} from "../../core/api/BaseUrlApiConfiguration.js";
 
-export class LlamaCppApiConfiguration extends BaseUrlApiConfiguration {
-  constructor({
-    baseUrl = "http://127.0.0.1:8080",
-    retry,
-    throttle,
-  }: {
-    baseUrl?: string;
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  } = {}) {
+export class LlamaCppApiConfiguration extends BaseUrlApiConfigurationWithDefaults {
+  constructor(settings: PartialBaseUrlPartsApiConfigurationOptions = {}) {
     super({
-      baseUrl,
-      headers: {},
-      retry,
-      throttle,
+      ...settings,
+      baseUrlDefaults: {
+        protocol: "http",
+        host: "127.0.0.1",
+        port: "8080",
+        path: "",
+      },
     });
   }
 }
