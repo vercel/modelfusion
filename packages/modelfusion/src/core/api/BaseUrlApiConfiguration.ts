@@ -37,11 +37,11 @@ export class BaseUrlApiConfiguration extends AbstractApiConfiguration {
   }
 
   assembleUrl(path: string): string {
-    const basePath = this.baseUrl.path;
+    let basePath = this.baseUrl.path;
 
     // ensure base path ends without a slash
     if (basePath.endsWith("/")) {
-      basePath.slice(0, -1);
+      basePath = basePath.slice(0, -1);
     }
 
     // ensure path starts with a slash
@@ -83,8 +83,8 @@ function parseBaseUrl(baseUrl: string): UrlParts {
   const url = new URL(baseUrl);
 
   return {
-    protocol: url.protocol,
-    host: url.host,
+    protocol: url.protocol.slice(0, -1), // remove trailing colon
+    host: url.hostname,
     port: url.port,
     path: url.pathname,
   };
