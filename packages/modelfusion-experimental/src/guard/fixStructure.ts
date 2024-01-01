@@ -31,7 +31,7 @@ import { Guard } from "./guard.js";
  *        .ChatTextGenerator(/* ... * /)
  *        .asFunctionCallStructureGenerationModel(/* ... * /),
  *
- *      new ZodSchema({
+ *      zodSchema({
  *        // ...
  *      }),
  *

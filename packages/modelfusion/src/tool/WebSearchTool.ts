@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { FunctionOptions } from "../core/FunctionOptions.js";
-import { ZodSchema } from "../core/schema/ZodSchema.js";
+import { zodSchema } from "../core/schema/ZodSchema.js";
 import { Tool } from "./Tool.js";
 
-const RETURN_TYPE_SCHEMA = new ZodSchema(
+const RETURN_TYPE_SCHEMA = zodSchema(
   z.object({
     results: z.array(
       z.object({
@@ -18,7 +18,7 @@ const RETURN_TYPE_SCHEMA = new ZodSchema(
 // expose the schemas to library consumers:
 const createParameters = (description: string) =>
   // same structure, but with description:
-  new ZodSchema(
+  zodSchema(
     z.object({
       query: z.string().describe(description),
     })

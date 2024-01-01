@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { Vector } from "../../core/Vector.js";
 import { Schema } from "../../core/schema/Schema.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
-import { cosineSimilarity } from "../../util/cosineSimilarity.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../core/schema/parseJSON.js";
+import { cosineSimilarity } from "../../util/cosineSimilarity.js";
 import { VectorIndex } from "../VectorIndex.js";
 
 type Entry<DATA> = {
@@ -12,7 +12,7 @@ type Entry<DATA> = {
   data: DATA;
 };
 
-const jsonDataSchema = new ZodSchema(
+const jsonDataSchema = zodSchema(
   z.array(
     z.object({
       id: z.string(),

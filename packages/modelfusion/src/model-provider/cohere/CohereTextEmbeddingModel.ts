@@ -138,8 +138,8 @@ export class CohereTextEmbeddingModel
     return callWithRetryAndThrottle({
       retry: api.retry,
       throttle: api.throttle,
-      call: async () => {
-        return postJsonToApi({
+      call: async () =>
+        postJsonToApi({
           url: api.assembleUrl(`/embed`),
           headers: api.headers,
           body: {
@@ -153,8 +153,7 @@ export class CohereTextEmbeddingModel
             zodSchema(cohereTextEmbeddingResponseSchema)
           ),
           abortSignal,
-        });
-      },
+        }),
     });
   }
 

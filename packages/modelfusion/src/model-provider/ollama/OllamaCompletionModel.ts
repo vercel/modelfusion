@@ -4,7 +4,7 @@ import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import { ResponseHandler, postJsonToApi } from "../../core/api/postToApi.js";
-import { ZodSchema, zodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
@@ -363,7 +363,7 @@ export const OllamaCompletionResponseFormat = {
 
       const parsedResult = safeParseJSON({
         text: responseBody,
-        schema: new ZodSchema(
+        schema: zodSchema(
           z.union([
             ollamaCompletionResponseSchema,
             z.object({
