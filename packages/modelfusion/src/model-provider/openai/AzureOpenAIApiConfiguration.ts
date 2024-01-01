@@ -3,6 +3,15 @@ import { RetryFunction } from "../../core/api/RetryFunction.js";
 import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
 
+export type AzureOpenAIApiConfigurationOptions = {
+  resourceName: string;
+  deploymentId: string;
+  apiVersion: string;
+  apiKey?: string;
+  retry?: RetryFunction;
+  throttle?: ThrottleFunction;
+};
+
 /**
  * Configuration for the Azure OpenAI API. This class is responsible for constructing URLs specific to the Azure OpenAI deployment.
  * It creates URLs of the form
@@ -24,14 +33,7 @@ export class AzureOpenAIApiConfiguration extends AbstractApiConfiguration {
     apiKey,
     retry,
     throttle,
-  }: {
-    resourceName: string;
-    deploymentId: string;
-    apiVersion: string;
-    apiKey?: string;
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  }) {
+  }: AzureOpenAIApiConfigurationOptions) {
     super({ retry, throttle });
 
     this.resourceName = resourceName;

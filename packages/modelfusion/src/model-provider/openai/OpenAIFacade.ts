@@ -1,4 +1,8 @@
 import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
+import {
+  AzureOpenAIApiConfiguration,
+  AzureOpenAIApiConfigurationOptions,
+} from "./AzureOpenAIApiConfiguration.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel.js";
 import {
@@ -36,6 +40,17 @@ export function Api(
   }
 ) {
   return new OpenAIApiConfiguration(settings);
+}
+
+/**
+ * Configuration for the Azure OpenAI API. This class is responsible for constructing URLs specific to the Azure OpenAI deployment.
+ * It creates URLs of the form
+ * `https://[resourceName].openai.azure.com/openai/deployments/[deploymentId]/[path]?api-version=[apiVersion]`
+ *
+ * @see https://learn.microsoft.com/en-us/azure/ai-services/openai/reference
+ */
+export function AzureApi(settings: AzureOpenAIApiConfigurationOptions) {
+  return new AzureOpenAIApiConfiguration(settings);
 }
 
 /**

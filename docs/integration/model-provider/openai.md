@@ -38,7 +38,7 @@ You need to configure the API as `AZURE_OPENAI_API_KEY` if you want to use it as
 
 ```ts
 openai.ChatTextGenerator({
-  api: new AzureOpenAIApiConfiguration({
+  api: openai.AzureApi({
     // apiKey: automatically uses process.env.AZURE_OPENAI_API_KEY,
     resourceName: "my-resource-name",
     deploymentId: "my-deployment-id",
