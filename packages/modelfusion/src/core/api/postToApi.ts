@@ -51,6 +51,25 @@ export const createJsonErrorResponseHandler =
     }
   };
 
+export const createTextErrorResponseHandler =
+  ({
+    isRetryable,
+  }: {
+    isRetryable?: (response: Response) => boolean;
+  } = {}): ResponseHandler<ApiCallError> =>
+  async ({ response, url, requestBodyValues }) => {
+    const responseBody = await response.text();
+
+    return new ApiCallError({
+      message: responseBody.trim() !== "" ? responseBody : response.statusText,
+      url,
+      requestBodyValues,
+      statusCode: response.status,
+      responseBody,
+      isRetryable: isRetryable?.(response),
+    });
+  };
+
 export const createJsonResponseHandler =
   <T>(responseSchema: z.ZodSchema<T>): ResponseHandler<T> =>
   async ({ response, url, requestBodyValues }) => {

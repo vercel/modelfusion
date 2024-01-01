@@ -4,9 +4,11 @@ import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createAudioMpegResponseHandler,
+  createTextErrorResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import {
@@ -15,9 +17,7 @@ import {
 } from "../../model-function/generate-speech/SpeechGenerationModel.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
-import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
-import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 
 const elevenLabsModels = [
   "eleven_multilingual_v2",
@@ -287,7 +287,7 @@ async function callElevenLabsTextToSpeechAPI({
       model_id: modelId ?? defaultModel,
       voice_settings: toApiVoiceSettings(voiceSettings),
     },
-    failedResponseHandler: failedElevenLabsCallResponseHandler,
+    failedResponseHandler: createTextErrorResponseHandler(),
     successfulResponseHandler: createAudioMpegResponseHandler(),
     abortSignal,
   });
