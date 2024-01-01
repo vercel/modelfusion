@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { createJsonErrorResponseHandler } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 
-const cohereErrorDataSchema = new ZodSchema(
+const cohereErrorDataSchema = zodSchema(
   z.object({
     message: z.string(),
   })
