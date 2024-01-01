@@ -1,6 +1,5 @@
 import {
   Llama2Prompt,
-  OpenAIApiConfiguration,
   cohere,
   createEventSourceStream,
   llamacpp,
@@ -23,7 +22,7 @@ const gpt35turboModel = openai
   .ChatTextGenerator({
     // explicit API configuration needed for NextJS environment
     // (otherwise env variables are not available):
-    api: new OpenAIApiConfiguration({
+    api: openai.Api({
       apiKey: process.env.OPENAI_API_KEY,
     }),
     model: "gpt-3.5-turbo",
@@ -45,7 +44,7 @@ const cohereModel = cohere
   .TextGenerator({
     // explicit API configuration needed for NextJS environment
     // (otherwise env variables are not available):
-    // api: new CohereApiConfiguration({
+    // api: cohere.Api({
     //   apiKey: process.env.COHERE_API_KEY,
     // }),
     model: "command",

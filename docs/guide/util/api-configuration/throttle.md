@@ -22,9 +22,9 @@ The `throttleMaxConcurrency` strategy limits the number of parallel API calls.
 #### Example: throttleMaxConcurrency in model constructor
 
 ```ts
-import { throttleMaxConcurrency } from "modelfusion";
+import { openai, throttleMaxConcurrency } from "modelfusion";
 
-const api = new OpenAIApiConfiguration({
+const api = openai.Api({
   throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
 });
 
@@ -43,9 +43,9 @@ The `throttleUnlimitedConcurrency` strategy does not limit parallel API calls.
 #### Example: throttleUnlimitedConcurrency in function call
 
 ```ts
-import { throttleUnlimitedConcurrency } from "modelfusion";
+import { openai, throttleUnlimitedConcurrency } from "modelfusion";
 
-const api = new OpenAIApiConfiguration({
+const api = openai.Api({
   throttle: throttleUnlimitedConcurrency(),
 });
 

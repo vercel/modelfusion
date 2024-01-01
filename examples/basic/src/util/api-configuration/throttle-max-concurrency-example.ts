@@ -1,15 +1,10 @@
 import dotenv from "dotenv";
-import {
-  OpenAIApiConfiguration,
-  embedMany,
-  openai,
-  throttleMaxConcurrency,
-} from "modelfusion";
+import { embedMany, openai, throttleMaxConcurrency } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const api = new OpenAIApiConfiguration({
+  const api = openai.Api({
     throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
   });
 

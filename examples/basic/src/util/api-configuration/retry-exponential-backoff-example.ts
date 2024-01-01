@@ -1,15 +1,10 @@
 import dotenv from "dotenv";
-import {
-  OpenAIApiConfiguration,
-  generateText,
-  openai,
-  retryWithExponentialBackoff,
-} from "modelfusion";
+import { generateText, openai, retryWithExponentialBackoff } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const api = new OpenAIApiConfiguration({
+  const api = openai.Api({
     // configure retries as part of the API configuration
     retry: retryWithExponentialBackoff({
       maxTries: 8,

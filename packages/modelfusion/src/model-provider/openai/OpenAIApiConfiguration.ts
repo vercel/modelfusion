@@ -1,31 +1,34 @@
-import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration.js";
-import { RetryFunction } from "../../core/api/RetryFunction.js";
-import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
+import {
+  BaseUrlApiConfigurationWithDefaults,
+  PartialBaseUrlPartsApiConfigurationOptions,
+} from "../../core/api/BaseUrlApiConfiguration.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
 
-export class OpenAIApiConfiguration extends BaseUrlApiConfiguration {
-  constructor({
-    baseUrl = "https://api.openai.com/v1",
-    apiKey,
-    retry,
-    throttle,
-  }: {
-    baseUrl?: string;
-    apiKey?: string;
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  } = {}) {
+/**
+ * Creates an API configuration for the OpenAI API.
+ * It calls the API at https://api.openai.com/v1 and uses the `OPENAI_API_KEY` env variable by default.
+ */
+export class OpenAIApiConfiguration extends BaseUrlApiConfigurationWithDefaults {
+  constructor(
+    settings: PartialBaseUrlPartsApiConfigurationOptions & {
+      apiKey?: string;
+    } = {}
+  ) {
     super({
-      baseUrl,
+      ...settings,
       headers: {
         Authorization: `Bearer ${loadApiKey({
-          apiKey,
+          apiKey: settings.apiKey,
           environmentVariableName: "OPENAI_API_KEY",
           description: "OpenAI",
         })}`,
       },
-      retry,
-      throttle,
+      baseUrlDefaults: {
+        protocol: "https",
+        host: "api.openai.com",
+        port: "443",
+        path: "/v1",
+      },
     });
   }
 }

@@ -17,7 +17,7 @@ title: OpenAI
 [OpenAI API Configuration](/api/classes/OpenAIApiConfiguration)
 
 ```ts
-const api = new OpenAIApiConfiguration({
+const api = openai.Api({
   apiKey: "my-api-key", // optional; default: process.env.OPENAI_API_KEY
   // ...
 });

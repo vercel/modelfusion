@@ -24,7 +24,7 @@ This is useful to set API keys and to define [throttling](/guide/util/api-config
 #### Example: Customized OpenAI API configuration
 
 ```ts
-const api = new OpenAIApiConfiguration({
+const api = openai.Api({
   apiKey: myApiKey,
   throttle: throttleMaxConcurrency({ maxConcurrentCalls: 1 }),
   retry: retryWithExponentialBackoff({

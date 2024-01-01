@@ -1,3 +1,6 @@
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
+import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel.js";
 import {
   OpenAICompletionModel,
   OpenAICompletionModelSettings,
@@ -22,7 +25,18 @@ import {
   TikTokenTokenizer,
   TikTokenTokenizerSettings,
 } from "./TikTokenTokenizer.js";
-import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel.js";
+
+/**
+ * Creates an API configuration for the OpenAI API.
+ * It calls the API at https://api.openai.com/v1 and uses the `OPENAI_API_KEY` env variable by default.
+ */
+export function Api(
+  settings: PartialBaseUrlPartsApiConfigurationOptions & {
+    apiKey?: string;
+  }
+) {
+  return new OpenAIApiConfiguration(settings);
+}
 
 /**
  * Create a text generation model that calls the OpenAI text completion API.
@@ -166,5 +180,5 @@ export function Tokenizer(settings: TikTokenTokenizerSettings) {
   return new TikTokenTokenizer(settings);
 }
 
-export { OpenAIChatMessage as ChatMessage } from "./OpenAIChatMessage.js";
 export { OpenAIChatPrompt as ChatPrompt } from "./AbstractOpenAIChatModel.js";
+export { OpenAIChatMessage as ChatMessage } from "./OpenAIChatMessage.js";

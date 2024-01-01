@@ -1,15 +1,10 @@
 import dotenv from "dotenv";
-import {
-  OpenAIApiConfiguration,
-  generateText,
-  openai,
-  retryNever,
-} from "modelfusion";
+import { generateText, openai, retryNever } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const api = new OpenAIApiConfiguration({
+  const api = openai.Api({
     retry: retryNever(),
   });
 

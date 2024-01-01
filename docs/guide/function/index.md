@@ -9,6 +9,8 @@ ModelFusion provides model functions for tasks such as [text generation](/guide/
 You can call these functions with a model, a prompt, and additional [FunctionOptions](/api/modules#functionoptions).
 
 ```ts
+import { generateText, openai } from "modelfusion";
+
 const text = await generateText(
   // model:
   openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
@@ -36,6 +38,8 @@ For more advanced use cases, you might want to access the full response from the
 Model functions return rich results that include the original response and metadata when you set the `fullResponse` option to `true`.
 
 ```ts
+import { generateText, openai } from "modelfusion";
+
 // access the full response (needs to be typed) and the metadata:
 const { text, texts, response, metadata } = await generateText(
   openai.CompletionTextGenerator({
@@ -71,6 +75,8 @@ Models provide a unified interface to AI models from different [providers](/inte
 Models are created using a constructor call. The constructors take a single configuration object as an argument. The configuration object is specific to the model.
 
 ```ts
+import { openai } from "modelfusion";
+
 const model = openai.CompletionTextGenerator({
   model: "gpt-3.5-turbo-instruct",
   maxGenerationTokens: 500,
@@ -80,12 +86,16 @@ const model = openai.CompletionTextGenerator({
 You can pass API configuration objects to the model constructors to configure the underlying API calls. There are preconfigured API configurations for each provider that you can use. The [API configuration](/api/interfaces/ApiConfiguration) contains api keys, base URLs, as well as throttling and retry functions.
 
 ```ts
+import { openai, retryWithExponentialBackoff, throttleUnlimitedConcurrency} from "modelfusion";
+
 openai.CompletionTextGenerator({
   model: "gpt-3.5-turbo-instruct",
-  api: new OpenAIApiConfiguration({
+  api: openai.Api({
     // all parameters are optional:
     apiKey: "my-api-key",
-    baseUrl: "custom-base-url",
+    baseUrl: {
+      host: "my-proxy-host
+    },
     retry: retryWithExponentialBackoff({ maxTries: 5 }),
     throttle: throttleUnlimitedConcurrency(),
   }),

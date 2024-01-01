@@ -21,9 +21,9 @@ The `retryWithExponentialBackoff` strategy retries a failed API call with an exp
 #### Example: retryWithExponentialBackoff in model constructor
 
 ```ts
-import { retryWithExponentialBackoff } from "modelfusion";
+import { openai, retryWithExponentialBackoff } from "modelfusion";
 
-const api = new OpenAIApiConfiguration({
+const api = openai.Api({
   // configure retries as part of the API configuration
   retry: retryWithExponentialBackoff({
     maxTries: 8,
@@ -47,9 +47,9 @@ The `retryNever` strategy never retries a failed API call.
 #### Example: retryWithExponentialBackoff in function call
 
 ```ts
-import { retryNever } from "modelfusion";
+import { openai, retryNever } from "modelfusion";
 
-const api = new OpenAIApiConfiguration({
+const api = openai.Api({
   retry: retryNever(),
 });
 
