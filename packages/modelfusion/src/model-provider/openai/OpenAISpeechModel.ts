@@ -97,14 +97,26 @@ export class OpenAISpeechModel
     text: string,
     options?: FunctionOptions
   ): Promise<Buffer> {
+    const api = this.settings.api ?? new OpenAIApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
+
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () =>
-        callOpenAITextToSpeechAPI({
-          ...this.settings,
-          abortSignal: options?.run?.abortSignal,
-          text,
+        postJsonToApi({
+          url: api.assembleUrl(`/audio/speech`),
+          headers: api.headers,
+          body: {
+            input: text,
+            voice: this.settings.voice,
+            speed: this.settings.speed,
+            model: this.settings.model,
+            response_format: this.settings.responseFormat,
+          },
+          failedResponseHandler: failedOpenAICallResponseHandler,
+          successfulResponseHandler: createAudioMpegResponseHandler(),
+          abortSignal,
         }),
     });
   }
@@ -128,37 +140,4 @@ export class OpenAISpeechModel
       ...additionalSettings,
     }) as this;
   }
-}
-
-async function callOpenAITextToSpeechAPI({
-  api = new OpenAIApiConfiguration(),
-  abortSignal,
-  text,
-  voice,
-  model,
-  speed,
-  responseFormat,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  text: string;
-  voice: OpenAISpeechVoice;
-  model: OpenAISpeechModelType;
-  speed?: number;
-  responseFormat?: string;
-}): Promise<Buffer> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/audio/speech`),
-    headers: api.headers,
-    body: {
-      input: text,
-      voice,
-      speed,
-      model,
-      response_format: responseFormat,
-    },
-    failedResponseHandler: failedOpenAICallResponseHandler,
-    successfulResponseHandler: createAudioMpegResponseHandler(),
-    abortSignal,
-  });
 }
