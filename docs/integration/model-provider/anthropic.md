@@ -17,7 +17,7 @@ title: Anthropic
 [Anthropic API Configuration](/api/classes/AnthropicApiConfiguration)
 
 ```ts
-const api = new AnthropicApiConfiguration({
+const api = anthropic.Api({
   apiKey: "my-api-key", // optional; default: process.env.ANTHROPIC_API_KEY
   // ...
 });
