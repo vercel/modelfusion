@@ -1,11 +1,11 @@
 import { RetryFunction } from "./RetryFunction.js";
 import { retryWithExponentialBackoff } from "./retryWithExponentialBackoff.js";
 import { ThrottleFunction } from "./ThrottleFunction.js";
-import { throttleUnlimitedConcurrency } from "./throttleUnlimitedConcurrency.js";
+import { throttleOff } from "./throttleOff.js";
 
 export const callWithRetryAndThrottle = async <OUTPUT>({
   retry = retryWithExponentialBackoff(),
-  throttle = throttleUnlimitedConcurrency(),
+  throttle = throttleOff(),
   call,
 }: {
   retry?: RetryFunction;

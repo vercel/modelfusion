@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
-import { embedMany, openai, throttleUnlimitedConcurrency } from "modelfusion";
+import { embedMany, openai, throttleOff } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const api = openai.Api({
-    throttle: throttleUnlimitedConcurrency(),
+    throttle: throttleOff(),
   });
 
   const embeddings = await embedMany(

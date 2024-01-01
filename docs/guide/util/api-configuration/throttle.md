@@ -34,19 +34,19 @@ const model = openai.TextEmbedder({
 });
 ```
 
-### throttleUnlimitedConcurrency
+### throttleOff
 
-[API](/api/modules/#throttleUnlimitedConcurrency)
+[API](/api/modules/#throttleOff)
 
-The `throttleUnlimitedConcurrency` strategy does not limit parallel API calls.
+The `throttleOff` strategy does not limit parallel API calls.
 
 #### Example
 
 ```ts
-import { openai, throttleUnlimitedConcurrency } from "modelfusion";
+import { openai, throttleOff } from "modelfusion";
 
 const api = openai.Api({
-  throttle: throttleUnlimitedConcurrency(),
+  throttle: throttleOff(),
 });
 
 const model = openai.TextEmbedder({

@@ -8,4 +8,4 @@ export * from "./ThrottleFunction.js";
 export * from "./retryNever.js";
 export * from "./retryWithExponentialBackoff.js";
 export * from "./throttleMaxConcurrency.js";
-export * from "./throttleUnlimitedConcurrency.js";
+export * from "./throttleOff.js";
