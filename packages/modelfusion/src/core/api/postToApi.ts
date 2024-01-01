@@ -18,10 +18,22 @@ export const createJsonErrorResponseHandler =
   }: {
     errorSchema: Schema<T>;
     errorToMessage: (error: T) => string;
-    isRetryable?: (error: T, response: Response) => boolean;
+    isRetryable?: (response: Response, error?: T) => boolean;
   }): ResponseHandler<ApiCallError> =>
   async ({ response, url, requestBodyValues }) => {
     const responseBody = await response.text();
+
+    // Some providers return an empty response body for some errors:
+    if (responseBody.trim() === "") {
+      return new ApiCallError({
+        message: response.statusText,
+        url,
+        requestBodyValues,
+        statusCode: response.status,
+        responseBody,
+        isRetryable: isRetryable?.(response),
+      });
+    }
 
     // resilient parsing in case the response is not JSON or does not match the schema:
     try {
@@ -37,16 +49,16 @@ export const createJsonErrorResponseHandler =
         statusCode: response.status,
         responseBody,
         data: parsedError,
-        isRetryable: isRetryable?.(parsedError, response),
+        isRetryable: isRetryable?.(response, parsedError),
       });
     } catch (parseError) {
       return new ApiCallError({
-        message:
-          responseBody.trim() !== "" ? responseBody : response.statusText,
+        message: response.statusText,
         url,
         requestBodyValues,
         statusCode: response.status,
         responseBody,
+        isRetryable: isRetryable?.(response),
       });
     }
   };
