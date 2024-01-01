@@ -1,8 +1,41 @@
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
+import { FireworksAIApiConfiguration } from "./FireworksAIApiConfiguration.js";
 import {
   OpenAICompatibleChatModel,
   OpenAICompatibleChatSettings,
 } from "./OpenAICompatibleChatModel.js";
 import { OpenAICompatibleCompletionModel } from "./OpenAICompatibleCompletionModel.js";
+import { TogetherAIApiConfiguration } from "./TogetherAIApiConfiguration.js";
+
+/**
+ * Configuration for the Fireworks.ai API.
+ *
+ * It calls the API at https://api.fireworks.ai/inference/v1 and uses the `FIREWORKS_API_KEY` api key environment variable.
+ *
+ * @see https://readme.fireworks.ai/docs/openai-compatibility
+ */
+export function FireworksAIApi(
+  settings: PartialBaseUrlPartsApiConfigurationOptions & {
+    apiKey?: string;
+  } = {}
+) {
+  return new FireworksAIApiConfiguration(settings);
+}
+
+/**
+ * Configuration for the Together.ai API.
+ *
+ * It calls the API at https://api.together.xyz/v1 and uses the `TOGETHER_API_KEY` api key environment variable.
+ *
+ * @see https://docs.together.ai/docs/openai-api-compatibility
+ */
+export function TogetherAIApi(
+  settings: PartialBaseUrlPartsApiConfigurationOptions & {
+    apiKey?: string;
+  } = {}
+) {
+  return new TogetherAIApiConfiguration(settings);
+}
 
 /**
  * Create a text generation model that calls an API that is compatible with OpenAI's completion API.

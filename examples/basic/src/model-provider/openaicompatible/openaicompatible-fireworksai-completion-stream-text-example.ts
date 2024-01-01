@@ -1,16 +1,12 @@
 import dotenv from "dotenv";
-import {
-  FireworksAIApiConfiguration,
-  openaicompatible,
-  streamText,
-} from "modelfusion";
+import { openaicompatible, streamText } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
   const textStream = await streamText(
     openaicompatible.CompletionTextGenerator({
-      api: new FireworksAIApiConfiguration(),
+      api: openaicompatible.FireworksAIApi(),
       model: "accounts/fireworks/models/mistral-7b",
       maxGenerationTokens: 500,
     }),
