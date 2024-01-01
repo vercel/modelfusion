@@ -27,7 +27,10 @@ Without the `--convert` parameter, the server expects WAV files with 16kHz sampl
 
 ```ts
 const api = whispercpp.Api({
-  baseUrl: "http://localhost:8080",
+  baseUrl: {
+    host: "localhost",
+    port: "9000",
+  },
   // ...
 });
 

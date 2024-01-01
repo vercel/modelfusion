@@ -1,24 +1,22 @@
-import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration.js";
-import { RetryFunction } from "../../core/api/RetryFunction.js";
-import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
+import {
+  BaseUrlApiConfigurationWithDefaults,
+  PartialBaseUrlPartsApiConfigurationOptions,
+} from "../../core/api/BaseUrlApiConfiguration.js";
 
-export type WhisperCppApiConfigurationSettings = {
-  baseUrl?: string;
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
-};
-
-export class WhisperCppApiConfiguration extends BaseUrlApiConfiguration {
-  constructor({
-    baseUrl = "http://127.0.0.1:8080",
-    retry,
-    throttle,
-  }: WhisperCppApiConfigurationSettings = {}) {
+/**
+ * Creates an API configuration for the Whisper.cpp server.
+ * It calls the API at http://127.0.0.1:8080 by default.
+ */
+export class WhisperCppApiConfiguration extends BaseUrlApiConfigurationWithDefaults {
+  constructor(settings: PartialBaseUrlPartsApiConfigurationOptions = {}) {
     super({
-      baseUrl,
-      headers: {},
-      retry,
-      throttle,
+      ...settings,
+      baseUrlDefaults: {
+        protocol: "http",
+        host: "127.0.0.1",
+        port: "8080",
+        path: "",
+      },
     });
   }
 }

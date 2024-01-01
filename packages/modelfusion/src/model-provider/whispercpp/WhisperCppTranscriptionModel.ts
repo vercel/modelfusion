@@ -4,7 +4,7 @@ import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import { ResponseHandler, postToApi } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
@@ -100,9 +100,10 @@ export class WhisperCppTranscriptionModel
   }
 }
 
-const whisperCppTranscriptionJsonSchema = new ZodSchema(
-  z.union([z.object({ text: z.string() }), z.object({ error: z.string() })])
-);
+const whisperCppTranscriptionJsonSchema = z.union([
+  z.object({ text: z.string() }),
+  z.object({ error: z.string() }),
+]);
 
 const successfulResponseHandler: ResponseHandler<{
   text: string;
@@ -111,7 +112,7 @@ const successfulResponseHandler: ResponseHandler<{
 
   const parsedResult = safeParseJSON({
     text: responseBody,
-    schema: whisperCppTranscriptionJsonSchema,
+    schema: zodSchema(whisperCppTranscriptionJsonSchema),
   });
 
   if (!parsedResult.success) {
