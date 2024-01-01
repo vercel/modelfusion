@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.111.0 - 2024-01-01
+
+Reworked API configuration support.
+
+### Added
+
+- All providers now have an `Api` function that you can call to create custom API configurations. The base URL set up is more flexible and allows you to override parts of the base URL selectively.
+- `api` namespace with retry and throttle configurations
+
+### Changed
+
+- Updated Cohere models.
+- Updated LMNT API calls to LMNT `v1` API.
+- **breaking change**: Renamed `throttleUnlimitedConcurrency` to `throttleOff`.
+
 ## v0.110.0 - 2023-12-30
 
 ### Changed
