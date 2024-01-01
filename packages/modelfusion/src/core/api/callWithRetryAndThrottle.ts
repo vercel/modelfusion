@@ -1,10 +1,10 @@
 import { RetryFunction } from "./RetryFunction.js";
-import { retryWithExponentialBackoff } from "./retryWithExponentialBackoff.js";
+import { retryNever } from "./retryNever.js";
 import { ThrottleFunction } from "./ThrottleFunction.js";
 import { throttleOff } from "./throttleOff.js";
 
 export const callWithRetryAndThrottle = async <OUTPUT>({
-  retry = retryWithExponentialBackoff(),
+  retry = retryNever(),
   throttle = throttleOff(),
   call,
 }: {

@@ -22,15 +22,13 @@ The `throttleMaxConcurrency` strategy limits the number of parallel API calls.
 #### Example
 
 ```ts
-import { openai, throttleMaxConcurrency } from "modelfusion";
-
-const api = openai.Api({
-  throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
-});
+import { openai, api } from "modelfusion";
 
 const model = openai.TextEmbedder({
+  api: openai.Api({
+    throttle: api.throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
+  }),
   model: "text-embedding-ada-002",
-  api,
 });
 ```
 
@@ -43,13 +41,12 @@ The `throttleOff` strategy does not limit parallel API calls.
 #### Example
 
 ```ts
-import { openai, throttleOff } from "modelfusion";
-
-const api = openai.Api({
-  throttle: throttleOff(),
-});
+import { openai, api } from "modelfusion";
 
 const model = openai.TextEmbedder({
+  api: openai.Api({
+    throttle: api.throttleOff({ maxConcurrentCalls: 10 }),
+  }),
   model: "text-embedding-ada-002",
   api,
 });

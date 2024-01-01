@@ -1,6 +1,7 @@
 export * from "./AbortError.js";
 export * from "./ApiCallError.js";
 export * from "./ApiConfiguration.js";
+export * as api from "./ApiFacade.js";
 export * from "./BaseUrlApiConfiguration.js";
 export * from "./RetryError.js";
 export * from "./RetryFunction.js";

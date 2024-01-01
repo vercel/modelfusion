@@ -1,22 +1,20 @@
 import dotenv from "dotenv";
-import { generateText, openai, retryWithExponentialBackoff } from "modelfusion";
+import { generateText, openai, api } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const api = openai.Api({
-    // configure retries as part of the API configuration
-    retry: retryWithExponentialBackoff({
-      maxTries: 8,
-      initialDelayInMs: 1000,
-      backoffFactor: 2,
-    }),
-  });
-
   const text = await generateText(
     openai.CompletionTextGenerator({
+      api: openai.Api({
+        // configure retries as part of the API configuration
+        retry: api.retryWithExponentialBackoff({
+          maxTries: 8,
+          initialDelayInMs: 1000,
+          backoffFactor: 2,
+        }),
+      }),
       model: "gpt-3.5-turbo-instruct",
-      api,
     }),
     "Write a short story about a robot learning to love:\n\n"
   );

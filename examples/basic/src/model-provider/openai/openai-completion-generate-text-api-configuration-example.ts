@@ -1,10 +1,5 @@
 import dotenv from "dotenv";
-import {
-  generateText,
-  openai,
-  retryWithExponentialBackoff,
-  throttleOff,
-} from "modelfusion";
+import { generateText, openai, api } from "modelfusion";
 
 dotenv.config();
 
@@ -16,8 +11,8 @@ async function main() {
         // all parameters are optional:
         apiKey: "my-api-key",
         baseUrl: { host: "custom-host" },
-        retry: retryWithExponentialBackoff({ maxTries: 5 }),
-        throttle: throttleOff(),
+        retry: api.retryWithExponentialBackoff({ maxTries: 5 }),
+        throttle: api.throttleOff(),
       }),
     }),
     "Write a short story about a robot learning to love:\n\n"

@@ -86,7 +86,7 @@ const model = openai.CompletionTextGenerator({
 You can pass API configuration objects to the model constructors to configure the underlying API calls. There are preconfigured API configurations for each provider that you can use. The [API configuration](/api/interfaces/ApiConfiguration) contains api keys, base URLs, as well as throttling and retry functions.
 
 ```ts
-import { openai, retryWithExponentialBackoff, throttleOff } from "modelfusion";
+import { api, openai } from "modelfusion";
 
 openai.CompletionTextGenerator({
   model: "gpt-3.5-turbo-instruct",
@@ -96,8 +96,8 @@ openai.CompletionTextGenerator({
     baseUrl: {
       host: "my-proxy-host",
     },
-    retry: retryWithExponentialBackoff({ maxTries: 5 }),
-    throttle: throttleOff(),
+    retry: api.retryWithExponentialBackoff({ maxTries: 5 }),
+    throttle: api.throttleOff(),
   }),
 });
 ```
