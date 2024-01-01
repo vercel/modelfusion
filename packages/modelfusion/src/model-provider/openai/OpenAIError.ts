@@ -15,7 +15,7 @@ export type OpenAIErrorData = z.infer<typeof openAIErrorDataSchema>;
 
 export const failedOpenAICallResponseHandler = createJsonErrorResponseHandler({
   errorSchema: zodSchema(openAIErrorDataSchema),
-  errorToMessage: (error) => error.error.message,
+  errorToMessage: (data) => data.error.message,
   isRetryable: (response, error) =>
     response.status >= 500 ||
     (response.status === 429 &&
