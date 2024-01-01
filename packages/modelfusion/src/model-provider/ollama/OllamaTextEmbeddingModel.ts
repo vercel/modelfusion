@@ -71,7 +71,7 @@ export class OllamaTextEmbeddingModel
           },
           failedResponseHandler: failedOllamaCallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
-            ollamaTextEmbeddingResponseSchema
+            zodSchema(ollamaTextEmbeddingResponseSchema)
           ),
           abortSignal,
         }),
@@ -100,11 +100,10 @@ export class OllamaTextEmbeddingModel
   }
 }
 
-const ollamaTextEmbeddingResponseSchema = zodSchema(
-  z.object({
-    embedding: z.array(z.number()),
-  })
-);
+const ollamaTextEmbeddingResponseSchema = z.object({
+  embedding: z.array(z.number()),
+});
 
-export type OllamaTextEmbeddingResponse =
-  (typeof ollamaTextEmbeddingResponseSchema)["_type"];
+export type OllamaTextEmbeddingResponse = z.infer<
+  typeof ollamaTextEmbeddingResponseSchema
+>;

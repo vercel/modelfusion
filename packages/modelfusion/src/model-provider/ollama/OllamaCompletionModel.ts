@@ -320,33 +320,32 @@ export type OllamaCompletionResponse = z.infer<
   typeof ollamaCompletionResponseSchema
 >;
 
-const ollamaCompletionStreamChunkSchema = zodSchema(
-  z.discriminatedUnion("done", [
-    z.object({
-      done: z.literal(false),
-      model: z.string(),
-      created_at: z.string(),
-      response: z.string(),
-    }),
-    z.object({
-      done: z.literal(true),
-      model: z.string(),
-      created_at: z.string(),
-      total_duration: z.number(),
-      load_duration: z.number().optional(),
-      sample_count: z.number().optional(),
-      sample_duration: z.number().optional(),
-      prompt_eval_count: z.number(),
-      prompt_eval_duration: z.number().optional(),
-      eval_count: z.number(),
-      eval_duration: z.number(),
-      context: z.array(z.number()).optional(),
-    }),
-  ])
-);
+const ollamaCompletionStreamChunkSchema = z.discriminatedUnion("done", [
+  z.object({
+    done: z.literal(false),
+    model: z.string(),
+    created_at: z.string(),
+    response: z.string(),
+  }),
+  z.object({
+    done: z.literal(true),
+    model: z.string(),
+    created_at: z.string(),
+    total_duration: z.number(),
+    load_duration: z.number().optional(),
+    sample_count: z.number().optional(),
+    sample_duration: z.number().optional(),
+    prompt_eval_count: z.number(),
+    prompt_eval_duration: z.number().optional(),
+    eval_count: z.number(),
+    eval_duration: z.number(),
+    context: z.array(z.number()).optional(),
+  }),
+]);
 
-export type OllamaCompletionStreamChunk =
-  (typeof ollamaCompletionStreamChunkSchema)["_type"];
+export type OllamaCompletionStreamChunk = z.infer<
+  typeof ollamaCompletionStreamChunkSchema
+>;
 
 export type OllamaCompletionResponseFormatType<T> = {
   stream: boolean;
@@ -409,6 +408,8 @@ export const OllamaCompletionResponseFormat = {
    */
   deltaIterable: {
     stream: true,
-    handler: createJsonStreamResponseHandler(ollamaCompletionStreamChunkSchema),
+    handler: createJsonStreamResponseHandler(
+      zodSchema(ollamaCompletionStreamChunkSchema)
+    ),
   },
 };

@@ -4,7 +4,7 @@ import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import { ResponseHandler, postJsonToApi } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
@@ -252,33 +252,30 @@ const ollamaChatResponseSchema = z.object({
 
 export type OllamaChatResponse = z.infer<typeof ollamaChatResponseSchema>;
 
-const ollamaChatStreamChunkSchema = new ZodSchema(
-  z.discriminatedUnion("done", [
-    z.object({
-      done: z.literal(false),
-      model: z.string(),
-      created_at: z.string(),
-      message: z.object({
-        role: z.string(),
-        content: z.string(),
-      }),
+const ollamaChatStreamChunkSchema = z.discriminatedUnion("done", [
+  z.object({
+    done: z.literal(false),
+    model: z.string(),
+    created_at: z.string(),
+    message: z.object({
+      role: z.string(),
+      content: z.string(),
     }),
-    z.object({
-      done: z.literal(true),
-      model: z.string(),
-      created_at: z.string(),
-      total_duration: z.number(),
-      load_duration: z.number().optional(),
-      prompt_eval_count: z.number(),
-      prompt_eval_duration: z.number().optional(),
-      eval_count: z.number(),
-      eval_duration: z.number(),
-    }),
-  ])
-);
+  }),
+  z.object({
+    done: z.literal(true),
+    model: z.string(),
+    created_at: z.string(),
+    total_duration: z.number(),
+    load_duration: z.number().optional(),
+    prompt_eval_count: z.number(),
+    prompt_eval_duration: z.number().optional(),
+    eval_count: z.number(),
+    eval_duration: z.number(),
+  }),
+]);
 
-export type OllamaChatStreamChunk =
-  (typeof ollamaChatStreamChunkSchema)["_type"];
+export type OllamaChatStreamChunk = z.infer<typeof ollamaChatStreamChunkSchema>;
 
 export type OllamaChatResponseFormatType<T> = {
   stream: boolean;
@@ -296,7 +293,7 @@ export const OllamaChatResponseFormat = {
 
       const parsedResult = safeParseJSON({
         text: responseBody,
-        schema: new ZodSchema(
+        schema: zodSchema(
           z.union([
             ollamaChatResponseSchema,
             z.object({
@@ -340,6 +337,8 @@ export const OllamaChatResponseFormat = {
    */
   deltaIterable: {
     stream: true,
-    handler: createJsonStreamResponseHandler(ollamaChatStreamChunkSchema),
+    handler: createJsonStreamResponseHandler(
+      zodSchema(ollamaChatStreamChunkSchema)
+    ),
   },
 };

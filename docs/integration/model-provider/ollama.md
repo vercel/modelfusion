@@ -21,7 +21,9 @@ Generate text and embeddings using [Ollama](https://github.com/jmorganca/ollama)
 
 ```ts
 const api = ollama.Api({
-  baseUrl: "http://127.0.0.1:11434",
+  baseUrl: {
+    port: "12345",
+  },
   // ...
 });
 
