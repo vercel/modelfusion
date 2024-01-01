@@ -24,19 +24,19 @@ This is useful to set API keys and to define [throttling](/guide/util/api-config
 #### Example: Customized OpenAI API configuration
 
 ```ts
-const api = new OpenAIApiConfiguration({
-  apiKey: myApiKey,
-  throttle: throttleMaxConcurrency({ maxConcurrentCalls: 1 }),
-  retry: retryWithExponentialBackoff({
-    maxTries: 8,
-    initialDelayInMs: 1000,
-    backoffFactor: 2,
-  }),
-});
+import { api, openai } from "modelfusion";
 
 const model = openai.CompletionTextGenerator({
+  api: openai.Api({
+    apiKey: myApiKey,
+    throttle: api.throttleMaxConcurrency({ maxConcurrentCalls: 1 }),
+    retry: api.retryWithExponentialBackoff({
+      maxTries: 8,
+      initialDelayInMs: 1000,
+      backoffFactor: 2,
+    }),
+  }),
   model: "gpt-3.5-turbo-instruct",
-  api,
 });
 ```
 
@@ -49,17 +49,17 @@ You can use the [BaseUrlApiConfiguration](/api/classes/BaseUrlApiConfiguration) 
 #### Example: Customized OpenAI API configuration with custom headers
 
 ```ts
-const api = new BaseUrlApiConfiguration({
-  baseUrl: "https://openai.mycompany.com/v1/",
-  headers: {
-    Authorization: `Bearer ${myOpenAIApiKey}`,
-    Custom: "A custom header, e.g. proxy settings",
-  },
-});
+import { BaseUrlApiConfiguration, openai } from "modelfusion";
 
 const model = openai.CompletionTextGenerator({
+  api: new BaseUrlApiConfiguration({
+    baseUrl: "https://openai.mycompany.com/v1/",
+    headers: {
+      Authorization: `Bearer ${myOpenAIApiKey}`,
+      Custom: "A custom header, e.g. proxy settings",
+    },
+  }),
   model: "gpt-3.5-turbo-instruct",
-  api,
 });
 ```
 

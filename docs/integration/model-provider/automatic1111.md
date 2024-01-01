@@ -33,6 +33,24 @@ const model = automatic1111.ImageGenerator({
 });
 ```
 
+#### Example: Accessing password-protected server
+
+Start the Stable Diffusion web ui server with: `./webui.sh --api --api-auth user:password --api-log --nowebui`.
+
+```ts
+const api = automatic1111.Api({
+  baseUrl: {
+    host: "localhost",
+    port: "7861", // default port when starting with --nowebui
+  },
+  headers: {
+    Authorization: `Basic ${Buffer.from(`${user}:${password}`).toString(
+      "base64"
+    )}`,
+  },
+});
+```
+
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/a1111)

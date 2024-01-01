@@ -1,21 +1,14 @@
 import dotenv from "dotenv";
-import {
-  OpenAIApiConfiguration,
-  embedMany,
-  openai,
-  throttleUnlimitedConcurrency,
-} from "modelfusion";
+import { api, embedMany, openai } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const api = new OpenAIApiConfiguration({
-    throttle: throttleUnlimitedConcurrency(),
-  });
-
   const embeddings = await embedMany(
     openai.TextEmbedder({
-      api,
+      api: openai.Api({
+        throttle: api.throttleOff(),
+      }),
       model: "text-embedding-ada-002",
     }),
     [

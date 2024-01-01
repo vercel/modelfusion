@@ -1,11 +1,5 @@
 import dotenv from "dotenv";
-import {
-  OpenAIApiConfiguration,
-  generateText,
-  openai,
-  retryWithExponentialBackoff,
-  throttleUnlimitedConcurrency,
-} from "modelfusion";
+import { generateText, openai, api } from "modelfusion";
 
 dotenv.config();
 
@@ -13,12 +7,12 @@ async function main() {
   const text = await generateText(
     openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
-      api: new OpenAIApiConfiguration({
+      api: openai.Api({
         // all parameters are optional:
         apiKey: "my-api-key",
-        baseUrl: "custom-base-url",
-        retry: retryWithExponentialBackoff({ maxTries: 5 }),
-        throttle: throttleUnlimitedConcurrency(),
+        baseUrl: { host: "custom-host" },
+        retry: api.retryWithExponentialBackoff({ maxTries: 5 }),
+        throttle: api.throttleOff(),
       }),
     }),
     "Write a short story about a robot learning to love:\n\n"

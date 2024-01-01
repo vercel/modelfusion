@@ -1,9 +1,5 @@
 import dotenv from "dotenv";
-import {
-  TogetherAIApiConfiguration,
-  openaicompatible,
-  streamText,
-} from "modelfusion";
+import { openaicompatible, streamText } from "modelfusion";
 
 dotenv.config();
 
@@ -11,7 +7,7 @@ async function main() {
   const textStream = await streamText(
     openaicompatible
       .ChatTextGenerator({
-        api: new TogetherAIApiConfiguration(),
+        api: openaicompatible.TogetherAIApi(),
         model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
       })
       .withTextPrompt(),

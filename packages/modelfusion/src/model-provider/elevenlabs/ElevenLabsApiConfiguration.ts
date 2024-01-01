@@ -1,31 +1,34 @@
-import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration.js";
-import { RetryFunction } from "../../core/api/RetryFunction.js";
-import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
+import {
+  BaseUrlApiConfigurationWithDefaults,
+  PartialBaseUrlPartsApiConfigurationOptions,
+} from "../../core/api/BaseUrlApiConfiguration.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
 
-export class ElevenLabsApiConfiguration extends BaseUrlApiConfiguration {
-  constructor({
-    baseUrl = "https://api.elevenlabs.io/v1",
-    apiKey,
-    retry,
-    throttle,
-  }: {
-    baseUrl?: string;
-    apiKey?: string;
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  } = {}) {
+/**
+ * Creates an API configuration for ElevenLabs API.
+ * It calls the API at https://api.elevenlabs.io/v1 and uses the `ELEVENLABS_API_KEY` env variable by default.
+ */
+export class ElevenLabsApiConfiguration extends BaseUrlApiConfigurationWithDefaults {
+  constructor(
+    settings: PartialBaseUrlPartsApiConfigurationOptions & {
+      apiKey?: string;
+    } = {}
+  ) {
     super({
-      baseUrl,
+      ...settings,
       headers: {
         "xi-api-key": loadApiKey({
-          apiKey,
+          apiKey: settings.apiKey,
           environmentVariableName: "ELEVENLABS_API_KEY",
           description: "ElevenLabs",
         }),
       },
-      retry,
-      throttle,
+      baseUrlDefaults: {
+        protocol: "https",
+        host: "api.elevenlabs.io",
+        port: "443",
+        path: "/v1",
+      },
     });
   }
 

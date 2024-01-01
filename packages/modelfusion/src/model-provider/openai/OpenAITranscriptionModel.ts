@@ -8,6 +8,7 @@ import {
   createTextResponseHandler,
   postToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
   TranscriptionModel,
@@ -69,6 +70,11 @@ export interface OpenAITranscriptionModelSettings
    * increase the temperature until certain thresholds are hit.
    */
   temperature?: number;
+
+  /**
+   * An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.
+   */
+  prompt?: string;
 }
 
 export type OpenAITranscriptionInput = {
@@ -140,21 +146,53 @@ export class OpenAITranscriptionModel
       responseFormat: OpenAITranscriptionResponseFormatType<RESULT>;
     } & FunctionOptions
   ): Promise<RESULT> {
-    return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
-      call: async () =>
-        callOpenAITranscriptionAPI({
-          ...this.settings,
+    const api = this.settings.api ?? new OpenAIApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
 
-          // other settings:
-          abortSignal: options?.run?.abortSignal,
-          file: {
-            name: `audio.${data.type}`,
-            data: data.data,
+    return callWithRetryAndThrottle({
+      retry: api.retry,
+      throttle: api.throttle,
+      call: async () => {
+        const fileName = `audio.${data.type}`;
+
+        const formData = new FormData();
+        formData.append("file", new Blob([data.data]), fileName);
+        formData.append("model", this.settings.model);
+
+        if (this.settings.prompt != null) {
+          formData.append("prompt", this.settings.prompt);
+        }
+
+        if (options.responseFormat != null) {
+          formData.append("response_format", options.responseFormat.type);
+        }
+
+        if (this.settings.temperature != null) {
+          formData.append("temperature", this.settings.temperature.toString());
+        }
+
+        if (this.settings.language != null) {
+          formData.append("language", this.settings.language);
+        }
+
+        return postToApi({
+          url: api.assembleUrl("/audio/transcriptions"),
+          headers: api.headers,
+          body: {
+            content: formData,
+            values: {
+              model: this.settings.model,
+              prompt: this.settings.prompt,
+              response_format: options.responseFormat,
+              temperature: this.settings.temperature,
+              language: this.settings.language,
+            },
           },
-          responseFormat: options?.responseFormat,
-        }),
+          failedResponseHandler: failedOpenAICallResponseHandler,
+          successfulResponseHandler: options.responseFormat.handler,
+          abortSignal,
+        });
+      },
     });
   }
 
@@ -170,67 +208,6 @@ export class OpenAITranscriptionModel
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
-}
-
-async function callOpenAITranscriptionAPI<RESPONSE>({
-  api = new OpenAIApiConfiguration(),
-  abortSignal,
-  model,
-  file,
-  prompt,
-  responseFormat,
-  temperature,
-  language,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  model: OpenAITranscriptionModelType;
-  file: {
-    name: string;
-    data: Buffer;
-  };
-  responseFormat: OpenAITranscriptionResponseFormatType<RESPONSE>;
-  prompt?: string;
-  temperature?: number;
-  language?: string; // ISO-639-1 code
-}): Promise<RESPONSE> {
-  const formData = new FormData();
-  formData.append("file", new Blob([file.data]), file.name);
-  formData.append("model", model);
-
-  if (prompt) {
-    formData.append("prompt", prompt);
-  }
-
-  if (responseFormat) {
-    formData.append("response_format", responseFormat.type);
-  }
-
-  if (temperature) {
-    formData.append("temperature", temperature.toString());
-  }
-
-  if (language) {
-    formData.append("language", language);
-  }
-
-  return postToApi({
-    url: api.assembleUrl("/audio/transcriptions"),
-    headers: api.headers,
-    body: {
-      content: formData,
-      values: {
-        model,
-        prompt,
-        response_format: responseFormat,
-        temperature,
-        language,
-      },
-    },
-    failedResponseHandler: failedOpenAICallResponseHandler,
-    successfulResponseHandler: responseFormat.handler,
-    abortSignal,
-  });
 }
 
 const openAITranscriptionJsonSchema = z.object({
@@ -275,11 +252,15 @@ export type OpenAITranscriptionResponseFormatType<T> = {
 export const OpenAITranscriptionResponseFormat = {
   json: {
     type: "json" as const,
-    handler: createJsonResponseHandler(openAITranscriptionJsonSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(openAITranscriptionJsonSchema)
+    ),
   },
   verboseJson: {
     type: "verbose_json" as const,
-    handler: createJsonResponseHandler(openAITranscriptionVerboseJsonSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(openAITranscriptionVerboseJsonSchema)
+    ),
   },
   text: {
     type: "text" as const,

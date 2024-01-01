@@ -1,31 +1,34 @@
-import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration.js";
-import { RetryFunction } from "../../core/api/RetryFunction.js";
-import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
+import {
+  BaseUrlApiConfigurationWithDefaults,
+  PartialBaseUrlPartsApiConfigurationOptions,
+} from "../../core/api/BaseUrlApiConfiguration.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
 
-export class HuggingFaceApiConfiguration extends BaseUrlApiConfiguration {
-  constructor({
-    baseUrl = "https://api-inference.huggingface.co/models",
-    apiKey,
-    retry,
-    throttle,
-  }: {
-    baseUrl?: string;
-    apiKey?: string;
-    retry?: RetryFunction;
-    throttle?: ThrottleFunction;
-  } = {}) {
+/**
+ * Creates an API configuration for the HuggingFace API.
+ * It calls the API at https://api-inference.huggingface.co/models and uses the `HUGGINGFACE_API_KEY` env variable by default.
+ */
+export class HuggingFaceApiConfiguration extends BaseUrlApiConfigurationWithDefaults {
+  constructor(
+    settings: PartialBaseUrlPartsApiConfigurationOptions & {
+      apiKey?: string;
+    } = {}
+  ) {
     super({
-      baseUrl,
+      ...settings,
       headers: {
         Authorization: `Bearer ${loadApiKey({
-          apiKey,
+          apiKey: settings.apiKey,
           environmentVariableName: "HUGGINGFACE_API_KEY",
           description: "Hugging Face",
         })}`,
       },
-      retry,
-      throttle,
+      baseUrlDefaults: {
+        protocol: "https",
+        host: "api-inference.huggingface.co",
+        port: "443",
+        path: "/models",
+      },
     });
   }
 }

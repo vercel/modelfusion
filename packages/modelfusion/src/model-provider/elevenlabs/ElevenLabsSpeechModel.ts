@@ -4,9 +4,11 @@ import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createAudioMpegResponseHandler,
+  createTextErrorResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import {
@@ -15,9 +17,7 @@ import {
 } from "../../model-function/generate-speech/SpeechGenerationModel.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
-import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
-import { failedElevenLabsCallResponseHandler } from "./ElevenLabsError.js";
 
 const elevenLabsModels = [
   "eleven_multilingual_v2",
@@ -63,30 +63,6 @@ export interface ElevenLabsSpeechModelSettings
   };
 }
 
-const streamingResponseSchema = new ZodSchema(
-  z.union([
-    z.object({
-      audio: z.string(),
-      isFinal: z.literal(false).nullable(),
-      normalizedAlignment: z
-        .object({
-          chars: z.array(z.string()),
-          charStartTimesMs: z.array(z.number()),
-          charDurationsMs: z.array(z.number()),
-        })
-        .nullable(),
-    }),
-    z.object({
-      isFinal: z.literal(true),
-    }),
-    z.object({
-      message: z.string(),
-      error: z.string(),
-      code: z.number(),
-    }),
-  ])
-);
-
 /**
  * Synthesize speech using the ElevenLabs Text to Speech API.
  *
@@ -113,17 +89,30 @@ export class ElevenLabsSpeechModel
     text: string,
     options?: FunctionOptions
   ): Promise<Buffer> {
+    const api = this.settings.api ?? new ElevenLabsApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
+
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () =>
-        callElevenLabsTextToSpeechAPI({
-          api: this.settings.api,
-          abortSignal: options?.run?.abortSignal,
-          text,
-          voiceId: this.settings.voice,
-          modelId: this.settings.model,
-          voiceSettings: this.settings.voiceSettings,
+        postJsonToApi({
+          url: api.assembleUrl(
+            `/text-to-speech/${this.settings.voice}${assembleQuery({
+              optimize_streaming_latency:
+                this.settings.optimizeStreamingLatency,
+              output_format: this.settings.outputFormat,
+            })}`
+          ),
+          headers: api.headers,
+          body: {
+            text,
+            model_id: this.settings.model ?? defaultModel,
+            voice_settings: toApiVoiceSettings(this.settings.voiceSettings),
+          },
+          failedResponseHandler: createTextErrorResponseHandler(),
+          successfulResponseHandler: createAudioMpegResponseHandler(),
+          abortSignal,
         }),
     });
   }
@@ -213,7 +202,7 @@ export class ElevenLabsSpeechModel
     socket.onmessage = (event) => {
       const parseResult = safeParseJSON({
         text: event.data,
-        schema: streamingResponseSchema,
+        schema: zodSchema(streamingResponseSchema),
       });
 
       if (!parseResult.success) {
@@ -255,43 +244,27 @@ export class ElevenLabsSpeechModel
   }
 }
 
-async function callElevenLabsTextToSpeechAPI({
-  api = new ElevenLabsApiConfiguration(),
-  abortSignal,
-  text,
-  voiceId,
-  modelId,
-  optimizeStreamingLatency,
-  outputFormat,
-  voiceSettings,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  text: string;
-  voiceId: string;
-  modelId?: string;
-  optimizeStreamingLatency?: ElevenLabsSpeechModelSettings["optimizeStreamingLatency"];
-  outputFormat?: ElevenLabsSpeechModelSettings["outputFormat"];
-  voiceSettings?: ElevenLabsSpeechModelSettings["voiceSettings"];
-}): Promise<Buffer> {
-  return postJsonToApi({
-    url: api.assembleUrl(
-      `/text-to-speech/${voiceId}${assembleQuery({
-        optimize_streaming_latency: optimizeStreamingLatency,
-        output_format: outputFormat,
-      })}`
-    ),
-    headers: api.headers,
-    body: {
-      text,
-      model_id: modelId ?? defaultModel,
-      voice_settings: toApiVoiceSettings(voiceSettings),
-    },
-    failedResponseHandler: failedElevenLabsCallResponseHandler,
-    successfulResponseHandler: createAudioMpegResponseHandler(),
-    abortSignal,
-  });
-}
+const streamingResponseSchema = z.union([
+  z.object({
+    audio: z.string(),
+    isFinal: z.literal(false).nullable(),
+    normalizedAlignment: z
+      .object({
+        chars: z.array(z.string()),
+        charStartTimesMs: z.array(z.number()),
+        charDurationsMs: z.array(z.number()),
+      })
+      .nullable(),
+  }),
+  z.object({
+    isFinal: z.literal(true),
+  }),
+  z.object({
+    message: z.string(),
+    error: z.string(),
+    code: z.number(),
+  }),
+]);
 
 function assembleQuery(parameters: Record<string, unknown | undefined>) {
   let query = "";
@@ -332,8 +305,6 @@ function toGenerationConfig(
   generationConfig?: ElevenLabsSpeechModelSettings["generationConfig"]
 ) {
   return generationConfig != null
-    ? {
-        chunk_length_schedule: generationConfig.chunkLengthSchedule,
-      }
+    ? { chunk_length_schedule: generationConfig.chunkLengthSchedule }
     : undefined;
 }

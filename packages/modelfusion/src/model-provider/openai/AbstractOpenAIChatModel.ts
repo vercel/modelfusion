@@ -373,54 +373,52 @@ const openAIChatResponseSchema = z.object({
 
 export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
 
-const openaiChatChunkSchema = zodSchema(
-  z.object({
-    object: z.literal("chat.completion.chunk"),
-    id: z.string(),
-    choices: z.array(
-      z.object({
-        delta: z.object({
-          role: z.enum(["assistant", "user"]).optional(),
-          content: z.string().nullable().optional(),
-          function_call: z
-            .object({
-              name: z.string().optional(),
-              arguments: z.string().optional(),
-            })
-            .optional(),
-          tool_calls: z
-            .array(
-              z.object({
-                id: z.string(),
-                type: z.literal("function"),
-                function: z.object({
-                  name: z.string(),
-                  arguments: z.string(),
-                }),
-              })
-            )
-            .optional(),
-        }),
-        finish_reason: z
-          .enum([
-            "stop",
-            "length",
-            "tool_calls",
-            "content_filter",
-            "function_call",
-          ])
-          .nullable()
+const openaiChatChunkSchema = z.object({
+  object: z.literal("chat.completion.chunk"),
+  id: z.string(),
+  choices: z.array(
+    z.object({
+      delta: z.object({
+        role: z.enum(["assistant", "user"]).optional(),
+        content: z.string().nullable().optional(),
+        function_call: z
+          .object({
+            name: z.string().optional(),
+            arguments: z.string().optional(),
+          })
           .optional(),
-        index: z.number(),
-      })
-    ),
-    created: z.number(),
-    model: z.string(),
-    system_fingerprint: z.string().optional().nullable(),
-  })
-);
+        tool_calls: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.literal("function"),
+              function: z.object({
+                name: z.string(),
+                arguments: z.string(),
+              }),
+            })
+          )
+          .optional(),
+      }),
+      finish_reason: z
+        .enum([
+          "stop",
+          "length",
+          "tool_calls",
+          "content_filter",
+          "function_call",
+        ])
+        .nullable()
+        .optional(),
+      index: z.number(),
+    })
+  ),
+  created: z.number(),
+  model: z.string(),
+  system_fingerprint: z.string().optional().nullable(),
+});
 
-export type OpenAIChatChunk = (typeof openaiChatChunkSchema)["_type"];
+export type OpenAIChatChunk = z.infer<typeof openaiChatChunkSchema>;
 
 export type OpenAIChatResponseFormatType<T> = {
   stream: boolean;
@@ -433,7 +431,7 @@ export const OpenAIChatResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(openAIChatResponseSchema),
+    handler: createJsonResponseHandler(zodSchema(openAIChatResponseSchema)),
   },
 
   /**
@@ -441,6 +439,6 @@ export const OpenAIChatResponseFormat = {
    */
   deltaIterable: {
     stream: true,
-    handler: createEventSourceResponseHandler(openaiChatChunkSchema),
+    handler: createEventSourceResponseHandler(zodSchema(openaiChatChunkSchema)),
   },
 };

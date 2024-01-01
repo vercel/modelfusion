@@ -16,7 +16,8 @@ sidebar_position: 80
 [ElevenLabs API Configuration](/api/classes/ElevenLabsApiConfiguration)
 
 ```ts
-const api = new ElevenLabsApiConfiguration({
+const api = elevenlabs.Api({
+  apiKey: "my-api-key",
   // ...
 });
 

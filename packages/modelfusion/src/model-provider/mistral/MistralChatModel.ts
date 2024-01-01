@@ -7,7 +7,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
@@ -249,30 +249,29 @@ const mistralChatResponseSchema = z.object({
 
 export type MistralChatResponse = z.infer<typeof mistralChatResponseSchema>;
 
-const mistralChatStreamChunkSchema = new ZodSchema(
-  z.object({
-    id: z.string(),
-    object: z.string().optional(),
-    created: z.number().optional(),
-    model: z.string(),
-    choices: z.array(
-      z.object({
-        index: z.number(),
-        delta: z.object({
-          role: z.enum(["assistant", "user"]).optional().nullable(),
-          content: z.string().nullable().optional(),
-        }),
-        finish_reason: z
-          .enum(["stop", "length", "model_length"])
-          .nullable()
-          .optional(),
-      })
-    ),
-  })
-);
+const mistralChatStreamChunkSchema = z.object({
+  id: z.string(),
+  object: z.string().optional(),
+  created: z.number().optional(),
+  model: z.string(),
+  choices: z.array(
+    z.object({
+      index: z.number(),
+      delta: z.object({
+        role: z.enum(["assistant", "user"]).optional().nullable(),
+        content: z.string().nullable().optional(),
+      }),
+      finish_reason: z
+        .enum(["stop", "length", "model_length"])
+        .nullable()
+        .optional(),
+    })
+  ),
+});
 
-export type MistralChatStreamChunk =
-  (typeof mistralChatStreamChunkSchema)["_type"];
+export type MistralChatStreamChunk = z.infer<
+  typeof mistralChatStreamChunkSchema
+>;
 
 export type MistralChatResponseFormatType<T> = {
   stream: boolean;
@@ -285,7 +284,7 @@ export const MistralChatResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(mistralChatResponseSchema),
+    handler: createJsonResponseHandler(zodSchema(mistralChatResponseSchema)),
   },
 
   /**
@@ -293,6 +292,8 @@ export const MistralChatResponseFormat = {
    */
   textDeltaIterable: {
     stream: true,
-    handler: createEventSourceResponseHandler(mistralChatStreamChunkSchema),
+    handler: createEventSourceResponseHandler(
+      zodSchema(mistralChatStreamChunkSchema)
+    ),
   },
 };

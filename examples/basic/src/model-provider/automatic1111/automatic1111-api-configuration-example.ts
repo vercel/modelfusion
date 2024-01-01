@@ -8,7 +8,7 @@ async function main() {
       api: automatic1111.Api({
         baseUrl: {
           host: "localhost",
-          port: "7861",
+          port: "7861", // default port when starting with --nowebui
         },
       }),
 

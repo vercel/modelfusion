@@ -1,16 +1,17 @@
 import { z } from "zod";
 import { Run } from "../../core/Run.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
+import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import { failedCohereCallResponseHandler } from "./CohereError.js";
 import { CohereTextEmbeddingModelType } from "./CohereTextEmbeddingModel.js";
 import { CohereTextGenerationModelType } from "./CohereTextGenerationModel.js";
-import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 
 export type CohereTokenizerModelType =
   | CohereTextGenerationModelType
@@ -25,10 +26,10 @@ export interface CohereTokenizerSettings {
  * Tokenizer for the Cohere models. It uses the Co.Tokenize and Co.Detokenize APIs.
  *
  * @see https://docs.cohere.com/reference/tokenize
- * @see https://docs.cohere.com/reference/detokenize-1
+ * @see https://docs.cohere.com/reference/detokenize
  *
  * @example
- * const tokenizer = new CohereTokenizer({ model: "command-nightly" });
+ * const tokenizer = new CohereTokenizer({ model: "command" });
  *
  * const text = "At first, Nox didn't know what to do with the pup.";
  *
@@ -48,14 +49,25 @@ export class CohereTokenizer implements FullTokenizer {
     text: string,
     context?: Run
   ): Promise<CohereTokenizationResponse> {
+    const api = this.settings.api ?? new CohereApiConfiguration();
+    const abortSignal = context?.abortSignal;
+
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () =>
-        callCohereTokenizeAPI({
-          abortSignal: context?.abortSignal,
-          text,
-          ...this.settings,
+        postJsonToApi({
+          url: api.assembleUrl(`/tokenize`),
+          headers: api.headers,
+          body: {
+            model: this.settings.model,
+            text,
+          },
+          failedResponseHandler: failedCohereCallResponseHandler,
+          successfulResponseHandler: createJsonResponseHandler(
+            zodSchema(cohereTokenizationResponseSchema)
+          ),
+          abortSignal,
         }),
     });
   }
@@ -64,14 +76,25 @@ export class CohereTokenizer implements FullTokenizer {
     tokens: number[],
     context?: Run
   ): Promise<CohereDetokenizationResponse> {
+    const api = this.settings.api ?? new CohereApiConfiguration();
+    const abortSignal = context?.abortSignal;
+
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () =>
-        callCohereDetokenizeAPI({
-          abortSignal: context?.abortSignal,
-          tokens,
-          ...this.settings,
+        postJsonToApi({
+          url: api.assembleUrl(`/detokenize`),
+          headers: api.headers,
+          body: {
+            model: this.settings.model,
+            tokens,
+          },
+          failedResponseHandler: failedCohereCallResponseHandler,
+          successfulResponseHandler: createJsonResponseHandler(
+            zodSchema(cohereDetokenizationResponseSchema)
+          ),
+          abortSignal,
         }),
     });
   }
@@ -109,32 +132,6 @@ export type CohereDetokenizationResponse = z.infer<
   typeof cohereDetokenizationResponseSchema
 >;
 
-async function callCohereDetokenizeAPI({
-  api = new CohereApiConfiguration(),
-  abortSignal,
-  model,
-  tokens,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  model?: CohereTokenizerModelType;
-  tokens: Array<number>;
-}): Promise<CohereDetokenizationResponse> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/detokenize`),
-    headers: api.headers,
-    body: {
-      model,
-      tokens,
-    },
-    failedResponseHandler: failedCohereCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      cohereDetokenizationResponseSchema
-    ),
-    abortSignal,
-  });
-}
-
 const cohereTokenizationResponseSchema = z.object({
   tokens: z.array(z.number()),
   token_strings: z.array(z.string()),
@@ -148,29 +145,3 @@ const cohereTokenizationResponseSchema = z.object({
 export type CohereTokenizationResponse = z.infer<
   typeof cohereTokenizationResponseSchema
 >;
-
-async function callCohereTokenizeAPI({
-  api = new CohereApiConfiguration(),
-  abortSignal,
-  model,
-  text,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  model?: CohereTokenizerModelType;
-  text: string;
-}): Promise<CohereTokenizationResponse> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/tokenize`),
-    headers: api.headers,
-    body: {
-      model,
-      text,
-    },
-    failedResponseHandler: failedCohereCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      cohereTokenizationResponseSchema
-    ),
-    abortSignal,
-  });
-}

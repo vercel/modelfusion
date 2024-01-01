@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplate } from "../../model-function/PromptTemplate.js";
 import {
@@ -179,7 +180,7 @@ export class StabilityImageGenerationModel
           },
           failedResponseHandler: failedStabilityCallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
-            stabilityImageGenerationResponseSchema
+            zodSchema(stabilityImageGenerationResponseSchema)
           ),
           abortSignal,
         }),

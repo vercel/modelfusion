@@ -17,7 +17,8 @@ title: Hugging Face
 [Hugging Face API Configuration](/api/classes/HuggingFaceApiConfiguration)
 
 ```ts
-const api = new HuggingFaceApiConfiguration({
+const api = huggingface.Api({
+  apiKey: "my-api-key",
   // ...
 });
 

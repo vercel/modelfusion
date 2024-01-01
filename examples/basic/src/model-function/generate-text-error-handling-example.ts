@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { OpenAIApiConfiguration, generateText, openai } from "modelfusion";
+import { generateText, openai } from "modelfusion";
 
 dotenv.config();
 
@@ -7,8 +7,8 @@ async function main() {
   try {
     const text = await generateText(
       openai.CompletionTextGenerator({
-        api: new OpenAIApiConfiguration({
-          baseUrl: "invalid-url",
+        api: openai.Api({
+          baseUrl: { host: "invalid-host" },
         }),
         model: "gpt-3.5-turbo-instruct",
         temperature: 0.7,

@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { AzureOpenAIApiConfiguration, openai, streamText } from "modelfusion";
+import { openai, streamText } from "modelfusion";
 
 dotenv.config();
 
@@ -7,7 +7,7 @@ async function main() {
   const textStream = await streamText(
     openai.ChatTextGenerator({
       model: "gpt-3.5-turbo",
-      api: new AzureOpenAIApiConfiguration({
+      api: openai.AzureApi({
         // apiKey: automatically uses process.env.AZURE_OPENAI_API_KEY,
         resourceName: "my-resource-name",
         deploymentId: "my-deployment-id",

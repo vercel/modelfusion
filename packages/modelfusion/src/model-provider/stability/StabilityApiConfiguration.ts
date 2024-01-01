@@ -6,7 +6,7 @@ import { loadApiKey } from "../../core/api/loadApiKey.js";
 
 /**
  * Creates an API configuration for the Stability AI API.
- * It calls the API at https://api.stability.ai/v1 by default.
+ * It calls the API at https://api.stability.ai/v1 by default and uses the `STABILITY_API_KEY` environment variable.
  */
 export class StabilityApiConfiguration extends BaseUrlApiConfigurationWithDefaults {
   constructor(

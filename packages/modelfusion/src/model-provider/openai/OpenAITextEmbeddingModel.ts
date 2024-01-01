@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
   EmbeddingModel,
@@ -95,7 +96,7 @@ export class OpenAITextEmbeddingModel
   get maxValuesPerCall() {
     return this.settings.maxValuesPerCall ?? 2048;
   }
-  
+
   readonly isParallelizable = true;
 
   readonly embeddingDimensions: number;
@@ -111,17 +112,28 @@ export class OpenAITextEmbeddingModel
     texts: Array<string>,
     options?: FunctionOptions
   ): Promise<OpenAITextEmbeddingResponse> {
+    const api = this.settings.api ?? new OpenAIApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
+
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () =>
-        callOpenAITextEmbeddingAPI({
-          ...this.settings,
-          user: this.settings.isUserIdForwardingEnabled
-            ? options?.run?.userId
-            : undefined,
-          abortSignal: options?.run?.abortSignal,
-          input: texts,
+        postJsonToApi({
+          url: api.assembleUrl("/embeddings"),
+          headers: api.headers,
+          body: {
+            model: this.modelName,
+            input: texts,
+            user: this.settings.isUserIdForwardingEnabled
+              ? options?.run?.userId
+              : undefined,
+          },
+          failedResponseHandler: failedOpenAICallResponseHandler,
+          successfulResponseHandler: createJsonResponseHandler(
+            zodSchema(openAITextEmbeddingResponseSchema)
+          ),
+          abortSignal,
         }),
     });
   }
@@ -171,32 +183,3 @@ const openAITextEmbeddingResponseSchema = z.object({
 export type OpenAITextEmbeddingResponse = z.infer<
   typeof openAITextEmbeddingResponseSchema
 >;
-
-async function callOpenAITextEmbeddingAPI({
-  api = new OpenAIApiConfiguration(),
-  abortSignal,
-  model,
-  input,
-  user,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  model: OpenAITextEmbeddingModelType;
-  input: Array<string>;
-  user?: string;
-}): Promise<OpenAITextEmbeddingResponse> {
-  return postJsonToApi({
-    url: api.assembleUrl("/embeddings"),
-    headers: api.headers,
-    body: {
-      model,
-      input,
-      user,
-    },
-    failedResponseHandler: failedOpenAICallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      openAITextEmbeddingResponseSchema
-    ),
-    abortSignal,
-  });
-}

@@ -1,3 +1,5 @@
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
+import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
 import {
   HuggingFaceTextEmbeddingModel,
   HuggingFaceTextEmbeddingModelSettings,
@@ -6,6 +8,18 @@ import {
   HuggingFaceTextGenerationModel,
   HuggingFaceTextGenerationModelSettings,
 } from "./HuggingFaceTextGenerationModel.js";
+
+/**
+ * Creates an API configuration for the HuggingFace API.
+ * It calls the API at https://api-inference.huggingface.co/models and uses the `HUGGINGFACE_API_KEY` env variable by default.
+ */
+export function Api(
+  settings: PartialBaseUrlPartsApiConfigurationOptions & {
+    apiKey?: string;
+  }
+) {
+  return new HuggingFaceApiConfiguration(settings);
+}
 
 /**
  * Create a text generation model that calls a Hugging Face Inference API Text Generation Task.

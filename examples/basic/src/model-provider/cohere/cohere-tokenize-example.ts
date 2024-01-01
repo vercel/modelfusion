@@ -4,7 +4,7 @@ import { cohere, countTokens } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const tokenizer = cohere.Tokenizer({ model: "command-nightly" });
+  const tokenizer = cohere.Tokenizer({ model: "command" });
 
   const text = "At first, Nox didn't know what to do with the pup.";
 

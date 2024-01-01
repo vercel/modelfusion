@@ -19,37 +19,34 @@ Throttling can be particularly useful for [text embedding](/guide/function/embed
 
 The `throttleMaxConcurrency` strategy limits the number of parallel API calls.
 
-#### Example: throttleMaxConcurrency in model constructor
+#### Example
 
 ```ts
-import { throttleMaxConcurrency } from "modelfusion";
-
-const api = new OpenAIApiConfiguration({
-  throttle: throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
-});
+import { openai, api } from "modelfusion";
 
 const model = openai.TextEmbedder({
+  api: openai.Api({
+    throttle: api.throttleMaxConcurrency({ maxConcurrentCalls: 10 }),
+  }),
   model: "text-embedding-ada-002",
-  api,
 });
 ```
 
-### throttleUnlimitedConcurrency
+### throttleOff
 
-[API](/api/modules/#throttleUnlimitedConcurrency)
+[API](/api/modules/#throttleOff)
 
-The `throttleUnlimitedConcurrency` strategy does not limit parallel API calls.
+The `throttleOff` strategy does not limit parallel API calls.
 
-#### Example: throttleUnlimitedConcurrency in function call
+#### Example
 
 ```ts
-import { throttleUnlimitedConcurrency } from "modelfusion";
+import { openai, api } from "modelfusion";
 
-const api = new OpenAIApiConfiguration({
-  throttle: throttleUnlimitedConcurrency(),
-});
-
-openai.TextEmbedder({
+const model = openai.TextEmbedder({
+  api: openai.Api({
+    throttle: api.throttleOff({ maxConcurrentCalls: 10 }),
+  }),
   model: "text-embedding-ada-002",
   api,
 });

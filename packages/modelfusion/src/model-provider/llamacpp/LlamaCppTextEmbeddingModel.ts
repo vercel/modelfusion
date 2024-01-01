@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
   EmbeddingModel,
@@ -63,14 +64,22 @@ export class LlamaCppTextEmbeddingModel
       );
     }
 
+    const api = this.settings.api ?? new LlamaCppApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
+
     return callWithRetryAndThrottle({
       retry: this.settings.api?.retry,
       throttle: this.settings.api?.throttle,
       call: async () =>
-        callLlamaCppEmbeddingAPI({
-          ...this.settings,
-          abortSignal: options?.run?.abortSignal,
-          content: texts[0],
+        postJsonToApi({
+          url: api.assembleUrl(`/embedding`),
+          headers: api.headers,
+          body: { content: texts[0] },
+          failedResponseHandler: failedLlamaCppCallResponseHandler,
+          successfulResponseHandler: createJsonResponseHandler(
+            zodSchema(llamaCppTextEmbeddingResponseSchema)
+          ),
+          abortSignal,
         }),
     });
   }
@@ -106,24 +115,3 @@ const llamaCppTextEmbeddingResponseSchema = z.object({
 export type LlamaCppTextEmbeddingResponse = z.infer<
   typeof llamaCppTextEmbeddingResponseSchema
 >;
-
-async function callLlamaCppEmbeddingAPI({
-  api = new LlamaCppApiConfiguration(),
-  abortSignal,
-  content,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  content: string;
-}): Promise<LlamaCppTextEmbeddingResponse> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/embedding`),
-    headers: api.headers,
-    body: { content },
-    failedResponseHandler: failedLlamaCppCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      llamaCppTextEmbeddingResponseSchema
-    ),
-    abortSignal,
-  });
-}

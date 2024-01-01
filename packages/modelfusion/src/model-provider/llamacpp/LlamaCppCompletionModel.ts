@@ -481,18 +481,17 @@ export type LlamaCppTextGenerationResponse = z.infer<
   typeof llamaCppTextGenerationResponseSchema
 >;
 
-const llamaCppTextStreamChunkSchema = zodSchema(
-  z.discriminatedUnion("stop", [
-    z.object({
-      content: z.string(),
-      stop: z.literal(false),
-    }),
-    llamaCppTextGenerationResponseSchema,
-  ])
-);
+const llamaCppTextStreamChunkSchema = z.discriminatedUnion("stop", [
+  z.object({
+    content: z.string(),
+    stop: z.literal(false),
+  }),
+  llamaCppTextGenerationResponseSchema,
+]);
 
-export type LlamaCppTextStreamChunk =
-  (typeof llamaCppTextStreamChunkSchema)["_type"];
+export type LlamaCppTextStreamChunk = z.infer<
+  typeof llamaCppTextStreamChunkSchema
+>;
 
 async function createLlamaCppFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
@@ -508,7 +507,7 @@ async function createLlamaCppFullDeltaIterableQueue(
 
           const eventData = parseJSON({
             text: data,
-            schema: llamaCppTextStreamChunkSchema,
+            schema: zodSchema(llamaCppTextStreamChunkSchema),
           });
 
           queue.push({ type: "delta", deltaValue: eventData });
@@ -541,7 +540,9 @@ export const LlamaCppCompletionResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(llamaCppTextGenerationResponseSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(llamaCppTextGenerationResponseSchema)
+    ),
   } satisfies LlamaCppCompletionResponseFormatType<LlamaCppTextGenerationResponse>,
 
   /**

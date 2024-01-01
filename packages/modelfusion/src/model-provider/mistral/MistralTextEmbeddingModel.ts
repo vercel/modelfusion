@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
   EmbeddingModel,
@@ -83,7 +84,7 @@ export class MistralTextEmbeddingModel
           },
           failedResponseHandler: failedMistralCallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
-            MistralTextEmbeddingResponseSchema
+            zodSchema(MistralTextEmbeddingResponseSchema)
           ),
           abortSignal,
         }),

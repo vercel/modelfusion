@@ -17,7 +17,7 @@ title: OpenAI
 [OpenAI API Configuration](/api/classes/OpenAIApiConfiguration)
 
 ```ts
-const api = new OpenAIApiConfiguration({
+const api = openai.Api({
   apiKey: "my-api-key", // optional; default: process.env.OPENAI_API_KEY
   // ...
 });
@@ -38,7 +38,7 @@ You need to configure the API as `AZURE_OPENAI_API_KEY` if you want to use it as
 
 ```ts
 openai.ChatTextGenerator({
-  api: new AzureOpenAIApiConfiguration({
+  api: openai.AzureApi({
     // apiKey: automatically uses process.env.AZURE_OPENAI_API_KEY,
     resourceName: "my-resource-name",
     deploymentId: "my-deployment-id",

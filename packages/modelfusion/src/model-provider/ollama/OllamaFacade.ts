@@ -1,18 +1,20 @@
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
+import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { OllamaChatModel, OllamaChatModelSettings } from "./OllamaChatModel.js";
-import {
-  OllamaTextEmbeddingModel,
-  OllamaTextEmbeddingModelSettings,
-} from "./OllamaTextEmbeddingModel.js";
 import {
   OllamaCompletionModel,
   OllamaCompletionModelSettings,
 } from "./OllamaCompletionModel.js";
 import {
-  OllamaApiConfiguration,
-  OllamaApiConfigurationSettings,
-} from "./OllamaApiConfiguration.js";
+  OllamaTextEmbeddingModel,
+  OllamaTextEmbeddingModelSettings,
+} from "./OllamaTextEmbeddingModel.js";
 
-export function Api(settings: OllamaApiConfigurationSettings) {
+/**
+ * Creates an API configuration for the Ollama API.
+ * It calls the API at http://127.0.0.1:11434 by default.
+ */
+export function Api(settings: PartialBaseUrlPartsApiConfigurationOptions) {
   return new OllamaApiConfiguration(settings);
 }
 

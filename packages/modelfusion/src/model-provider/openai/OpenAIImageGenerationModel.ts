@@ -7,6 +7,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplate } from "../../model-function/PromptTemplate.js";
 import {
@@ -128,15 +129,15 @@ export class OpenAIImageGenerationModel
     } & FunctionOptions
   ): Promise<RESULT> {
     const api = this.settings.api ?? new OpenAIApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
-    const userId = options?.run?.userId;
-    const responseFormat = options?.responseFormat;
+    const abortSignal = options.run?.abortSignal;
+    const userId = options.run?.userId;
+    const responseFormat = options.responseFormat;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
       throttle: api.throttle,
-      call: async () => {
-        return postJsonToApi({
+      call: async () =>
+        postJsonToApi({
           url: api.assembleUrl("/images/generations"),
           headers: api.headers,
           body: {
@@ -147,10 +148,9 @@ export class OpenAIImageGenerationModel
             user: this.settings.isUserIdForwardingEnabled ? userId : undefined,
           },
           failedResponseHandler: failedOpenAICallResponseHandler,
-          successfulResponseHandler: responseFormat?.handler,
+          successfulResponseHandler: responseFormat.handler,
           abortSignal,
-        });
-      },
+        }),
     });
   }
 
@@ -235,10 +235,14 @@ export type OpenAIImageGenerationBase64JsonResponse = z.infer<
 export const OpenAIImageGenerationResponseFormat = {
   url: {
     type: "url" as const,
-    handler: createJsonResponseHandler(openAIImageGenerationUrlSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(openAIImageGenerationUrlSchema)
+    ),
   },
   base64Json: {
     type: "b64_json" as const,
-    handler: createJsonResponseHandler(openAIImageGenerationBase64JsonSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(openAIImageGenerationBase64JsonSchema)
+    ),
   },
 };

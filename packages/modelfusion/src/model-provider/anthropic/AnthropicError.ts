@@ -1,51 +1,18 @@
 import { z } from "zod";
-import { ApiCallError } from "../../core/api/ApiCallError.js";
-import { ResponseHandler } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
+import { createJsonErrorResponseHandler } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 
-export const anthropicErrorDataSchema = new ZodSchema(
-  z.object({
-    error: z.object({
-      type: z.string(),
-      message: z.string(),
-    }),
-  })
-);
+const anthropicErrorDataSchema = z.object({
+  error: z.object({
+    type: z.string(),
+    message: z.string(),
+  }),
+});
 
-export type AnthropicErrorData = (typeof anthropicErrorDataSchema)["_type"];
+export type AnthropicErrorData = z.infer<typeof anthropicErrorDataSchema>;
 
-export class AnthropicError extends ApiCallError {
-  public readonly data: AnthropicErrorData;
-
-  constructor({
-    data,
-    statusCode,
-    url,
-    requestBodyValues,
-    message = data.error.message,
-  }: {
-    message?: string;
-    statusCode: number;
-    url: string;
-    requestBodyValues: unknown;
-    data: AnthropicErrorData;
-  }) {
-    super({ message, statusCode, requestBodyValues, url });
-
-    this.data = data;
-  }
-}
-
-export const failedAnthropicCallResponseHandler: ResponseHandler<
-  ApiCallError
-> = async ({ response, url, requestBodyValues }) =>
-  new AnthropicError({
-    url,
-    requestBodyValues,
-    statusCode: response.status,
-    data: parseJSON({
-      text: await response.text(),
-      schema: anthropicErrorDataSchema,
-    }),
+export const failedAnthropicCallResponseHandler =
+  createJsonErrorResponseHandler({
+    errorSchema: zodSchema(anthropicErrorDataSchema),
+    errorToMessage: (error) => error.error.message,
   });

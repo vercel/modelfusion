@@ -29,16 +29,10 @@ import { CohereTokenizer } from "./CohereTokenizer.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
-    contextWindowSize: 2048,
-  },
-  "command-nightly": {
-    contextWindowSize: 2048,
+    contextWindowSize: 4096,
   },
   "command-light": {
-    contextWindowSize: 2048,
-  },
-  "command-light-nightly": {
-    contextWindowSize: 2048,
+    contextWindowSize: 4096,
   },
 };
 
@@ -70,7 +64,7 @@ export interface CohereTextGenerationModelSettings
  *
  * @example
  * const model = new CohereTextGenerationModel({
- *   model: "command-nightly",
+ *   model: "command",
  *   temperature: 0.7,
  *   maxGenerationTokens: 500,
  * });
@@ -121,8 +115,8 @@ export class CohereTextGenerationModel
     return callWithRetryAndThrottle({
       retry: api.retry,
       throttle: api.throttle,
-      call: async () => {
-        return postJsonToApi({
+      call: async () =>
+        postJsonToApi({
           url: api.assembleUrl(`/generate`),
           headers: api.headers,
           body: {
@@ -145,8 +139,7 @@ export class CohereTextGenerationModel
           failedResponseHandler: failedCohereCallResponseHandler,
           successfulResponseHandler: responseFormat.handler,
           abortSignal,
-        });
-      },
+        }),
     });
   }
 
@@ -279,21 +272,19 @@ export type CohereTextGenerationResponse = z.infer<
   typeof cohereTextGenerationResponseSchema
 >;
 
-const cohereTextStreamChunkSchema = zodSchema(
-  z.discriminatedUnion("is_finished", [
-    z.object({
-      text: z.string(),
-      is_finished: z.literal(false),
-    }),
-    z.object({
-      is_finished: z.literal(true),
-      finish_reason: z.string(),
-      response: cohereTextGenerationResponseSchema,
-    }),
-  ])
-);
+const cohereTextStreamChunkSchema = z.discriminatedUnion("is_finished", [
+  z.object({
+    text: z.string(),
+    is_finished: z.literal(false),
+  }),
+  z.object({
+    is_finished: z.literal(true),
+    finish_reason: z.string(),
+    response: cohereTextGenerationResponseSchema,
+  }),
+]);
 
-type CohereTextStreamChunk = (typeof cohereTextStreamChunkSchema)["_type"];
+export type CohereTextStreamChunk = z.infer<typeof cohereTextStreamChunkSchema>;
 
 export type CohereTextGenerationResponseFormatType<T> = {
   stream: boolean;
@@ -306,7 +297,9 @@ export const CohereTextGenerationResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(cohereTextGenerationResponseSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(cohereTextGenerationResponseSchema)
+    ),
   },
 
   /**
@@ -315,6 +308,8 @@ export const CohereTextGenerationResponseFormat = {
    */
   deltaIterable: {
     stream: true,
-    handler: createJsonStreamResponseHandler(cohereTextStreamChunkSchema),
+    handler: createJsonStreamResponseHandler(
+      zodSchema(cohereTextStreamChunkSchema)
+    ),
   },
 };
