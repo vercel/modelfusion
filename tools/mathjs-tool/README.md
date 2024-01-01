@@ -2,10 +2,6 @@
 
 [Math.js](https://mathjs.org) is a JavaScript library for evaluating mathematical expressions.
 
-## Requirements
-
-- [ModelFusion](https://modelfusion.dev) v0.106.0 or higher
-
 ## Usage
 
 ```ts

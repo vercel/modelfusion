@@ -432,9 +432,9 @@ importers:
 
   examples/wikipedia-agent:
     dependencies:
-      '@modelfusion/google-custom-search-tool':
-        specifier: ^0.9.0
-        version: link:../../tools/google-custom-search-tool/dist
+      '@modelfusion/mediawiki-search-tool':
+        specifier: ^0.1.0
+        version: link:../../tools/mediawiki-search-tool/dist
       chalk:
         specifier: ^4
         version: 4.1.2
@@ -684,6 +684,31 @@ importers:
       mathjs:
         specifier: ^12.2
         version: 12.2.1
+    devDependencies:
+      '@types/node':
+        specifier: 18.11.9
+        version: 18.11.9
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.1.0
+        version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^6.1.0
+        version: 6.15.0(eslint@8.56.0)(typescript@5.3.3)
+      eslint:
+        specifier: ^8.45.0
+        version: 8.56.0
+      eslint-config-prettier:
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
+      modelfusion:
+        specifier: 0.111.0
+        version: link:../../packages/modelfusion/dist
+      zod:
+        specifier: 3.22.4
+        version: 3.22.4
+    publishDirectory: dist
+
+  tools/mediawiki-search-tool:
     devDependencies:
       '@types/node':
         specifier: 18.11.9

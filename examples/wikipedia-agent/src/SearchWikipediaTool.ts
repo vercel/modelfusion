@@ -1,8 +1,9 @@
-import { GoogleCustomSearchTool } from "@modelfusion/google-custom-search-tool";
+import { MediaWikiSearchTool } from "@modelfusion/mediawiki-search-tool";
 
-export const searchWikipedia = new GoogleCustomSearchTool({
+export const searchWikipedia = new MediaWikiSearchTool({
+  url: "https://en.wikipedia.org/w/api.php",
   name: "search_wikipedia",
-  searchEngineId: "76fe2b5e95a3e4215",
   description: "Search Wikipedia pages using a query",
+  profile: "fuzzy",
   maxResults: 5,
 });
