@@ -5,7 +5,7 @@ import { loadApiKey } from "../../core/api/loadApiKey.js";
 
 export class LmntApiConfiguration extends BaseUrlApiConfiguration {
   constructor({
-    baseUrl = "https://api.lmnt.com/speech/beta",
+    baseUrl = "https://api.lmnt.com/v1",
     apiKey,
     retry,
     throttle,
