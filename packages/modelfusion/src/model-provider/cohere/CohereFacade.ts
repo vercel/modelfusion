@@ -11,7 +11,7 @@ import {
 import { CohereTokenizer, CohereTokenizerSettings } from "./CohereTokenizer.js";
 
 /**
- * Creates an API configuration for Cohere API.
+ * Creates an API configuration for the Cohere API.
  * It calls the API at https://api.cohere.ai/v1 and uses the `COHERE_API_KEY` env variable by default.
  */
 export function Api(

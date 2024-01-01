@@ -4,22 +4,20 @@ import {
   ResponseHandler,
   createJsonErrorResponseHandler,
 } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 
-const mistralErrorDataSchema = new ZodSchema(
-  z.object({
-    object: z.literal("error"),
-    message: z.string(),
-    type: z.string(),
-    param: z.string().nullable(),
-    code: z.string(),
-  })
-);
+const mistralErrorDataSchema = z.object({
+  object: z.literal("error"),
+  message: z.string(),
+  type: z.string(),
+  param: z.string().nullable(),
+  code: z.string(),
+});
 
-export type MistralErrorData = (typeof mistralErrorDataSchema)["_type"];
+export type MistralErrorData = z.infer<typeof mistralErrorDataSchema>;
 
 export const failedMistralCallResponseHandler: ResponseHandler<ApiCallError> =
   createJsonErrorResponseHandler({
-    errorSchema: mistralErrorDataSchema,
+    errorSchema: zodSchema(mistralErrorDataSchema),
     errorToMessage: (error) => error.message,
   });

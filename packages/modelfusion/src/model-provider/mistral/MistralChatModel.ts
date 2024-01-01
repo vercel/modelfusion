@@ -225,56 +225,53 @@ export class MistralChatModel
   }
 }
 
-const mistralChatResponseSchema = zodSchema(
-  z.object({
-    id: z.string(),
-    object: z.string(),
-    created: z.number(),
-    model: z.string(),
-    choices: z.array(
-      z.object({
-        index: z.number(),
-        message: z.object({
-          role: z.enum(["user", "assistant"]),
-          content: z.string(),
-        }),
-        finish_reason: z.enum(["stop", "length", "model_length"]),
-      })
-    ),
-    usage: z.object({
-      prompt_tokens: z.number(),
-      completion_tokens: z.number(),
-      total_tokens: z.number(),
-    }),
-  })
-);
+const mistralChatResponseSchema = z.object({
+  id: z.string(),
+  object: z.string(),
+  created: z.number(),
+  model: z.string(),
+  choices: z.array(
+    z.object({
+      index: z.number(),
+      message: z.object({
+        role: z.enum(["user", "assistant"]),
+        content: z.string(),
+      }),
+      finish_reason: z.enum(["stop", "length", "model_length"]),
+    })
+  ),
+  usage: z.object({
+    prompt_tokens: z.number(),
+    completion_tokens: z.number(),
+    total_tokens: z.number(),
+  }),
+});
 
-export type MistralChatResponse = (typeof mistralChatResponseSchema)["_type"];
+export type MistralChatResponse = z.infer<typeof mistralChatResponseSchema>;
 
-const mistralChatStreamChunkSchema = zodSchema(
-  z.object({
-    id: z.string(),
-    object: z.string().optional(),
-    created: z.number().optional(),
-    model: z.string(),
-    choices: z.array(
-      z.object({
-        index: z.number(),
-        delta: z.object({
-          role: z.enum(["assistant", "user"]).optional().nullable(),
-          content: z.string().nullable().optional(),
-        }),
-        finish_reason: z
-          .enum(["stop", "length", "model_length"])
-          .nullable()
-          .optional(),
-      })
-    ),
-  })
-);
+const mistralChatStreamChunkSchema = z.object({
+  id: z.string(),
+  object: z.string().optional(),
+  created: z.number().optional(),
+  model: z.string(),
+  choices: z.array(
+    z.object({
+      index: z.number(),
+      delta: z.object({
+        role: z.enum(["assistant", "user"]).optional().nullable(),
+        content: z.string().nullable().optional(),
+      }),
+      finish_reason: z
+        .enum(["stop", "length", "model_length"])
+        .nullable()
+        .optional(),
+    })
+  ),
+});
 
-export type MistralChatStreamChunk =
-  (typeof mistralChatStreamChunkSchema)["_type"];
+export type MistralChatStreamChunk = z.infer<
+  typeof mistralChatStreamChunkSchema
+>;
 
 export type MistralChatResponseFormatType<T> = {
   stream: boolean;
@@ -287,7 +284,7 @@ export const MistralChatResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(mistralChatResponseSchema),
+    handler: createJsonResponseHandler(zodSchema(mistralChatResponseSchema)),
   },
 
   /**
@@ -295,6 +292,8 @@ export const MistralChatResponseFormat = {
    */
   textDeltaIterable: {
     stream: true,
-    handler: createEventSourceResponseHandler(mistralChatStreamChunkSchema),
+    handler: createEventSourceResponseHandler(
+      zodSchema(mistralChatStreamChunkSchema)
+    ),
   },
 };

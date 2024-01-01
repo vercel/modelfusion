@@ -84,7 +84,7 @@ export class MistralTextEmbeddingModel
           },
           failedResponseHandler: failedMistralCallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
-            MistralTextEmbeddingResponseSchema
+            zodSchema(MistralTextEmbeddingResponseSchema)
           ),
           abortSignal,
         }),
@@ -113,24 +113,23 @@ export class MistralTextEmbeddingModel
   }
 }
 
-const MistralTextEmbeddingResponseSchema = zodSchema(
-  z.object({
-    id: z.string(),
-    object: z.string(),
-    data: z.array(
-      z.object({
-        object: z.string(),
-        embedding: z.array(z.number()),
-        index: z.number(),
-      })
-    ),
-    model: z.string(),
-    usage: z.object({
-      prompt_tokens: z.number(),
-      total_tokens: z.number(),
-    }),
-  })
-);
+const MistralTextEmbeddingResponseSchema = z.object({
+  id: z.string(),
+  object: z.string(),
+  data: z.array(
+    z.object({
+      object: z.string(),
+      embedding: z.array(z.number()),
+      index: z.number(),
+    })
+  ),
+  model: z.string(),
+  usage: z.object({
+    prompt_tokens: z.number(),
+    total_tokens: z.number(),
+  }),
+});
 
-export type MistralTextEmbeddingResponse =
-  (typeof MistralTextEmbeddingResponseSchema)["_type"];
+export type MistralTextEmbeddingResponse = z.infer<
+  typeof MistralTextEmbeddingResponseSchema
+>;
