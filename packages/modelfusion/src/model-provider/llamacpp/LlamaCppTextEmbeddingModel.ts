@@ -77,7 +77,7 @@ export class LlamaCppTextEmbeddingModel
           body: { content: texts[0] },
           failedResponseHandler: failedLlamaCppCallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
-            llamaCppTextEmbeddingResponseSchema
+            zodSchema(llamaCppTextEmbeddingResponseSchema)
           ),
           abortSignal,
         }),
@@ -108,11 +108,10 @@ export class LlamaCppTextEmbeddingModel
   }
 }
 
-const llamaCppTextEmbeddingResponseSchema = zodSchema(
-  z.object({
-    embedding: z.array(z.number()),
-  })
-);
+const llamaCppTextEmbeddingResponseSchema = z.object({
+  embedding: z.array(z.number()),
+});
 
-export type LlamaCppTextEmbeddingResponse =
-  (typeof llamaCppTextEmbeddingResponseSchema)["_type"];
+export type LlamaCppTextEmbeddingResponse = z.infer<
+  typeof llamaCppTextEmbeddingResponseSchema
+>;

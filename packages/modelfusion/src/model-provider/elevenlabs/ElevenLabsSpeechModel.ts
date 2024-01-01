@@ -202,7 +202,7 @@ export class ElevenLabsSpeechModel
     socket.onmessage = (event) => {
       const parseResult = safeParseJSON({
         text: event.data,
-        schema: streamingResponseSchema,
+        schema: zodSchema(streamingResponseSchema),
       });
 
       if (!parseResult.success) {
@@ -244,29 +244,27 @@ export class ElevenLabsSpeechModel
   }
 }
 
-const streamingResponseSchema = zodSchema(
-  z.union([
-    z.object({
-      audio: z.string(),
-      isFinal: z.literal(false).nullable(),
-      normalizedAlignment: z
-        .object({
-          chars: z.array(z.string()),
-          charStartTimesMs: z.array(z.number()),
-          charDurationsMs: z.array(z.number()),
-        })
-        .nullable(),
-    }),
-    z.object({
-      isFinal: z.literal(true),
-    }),
-    z.object({
-      message: z.string(),
-      error: z.string(),
-      code: z.number(),
-    }),
-  ])
-);
+const streamingResponseSchema = z.union([
+  z.object({
+    audio: z.string(),
+    isFinal: z.literal(false).nullable(),
+    normalizedAlignment: z
+      .object({
+        chars: z.array(z.string()),
+        charStartTimesMs: z.array(z.number()),
+        charDurationsMs: z.array(z.number()),
+      })
+      .nullable(),
+  }),
+  z.object({
+    isFinal: z.literal(true),
+  }),
+  z.object({
+    message: z.string(),
+    error: z.string(),
+    code: z.number(),
+  }),
+]);
 
 function assembleQuery(parameters: Record<string, unknown | undefined>) {
   let query = "";

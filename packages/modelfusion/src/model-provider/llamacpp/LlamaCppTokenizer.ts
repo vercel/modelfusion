@@ -50,7 +50,7 @@ export class LlamaCppTokenizer implements BasicTokenizer {
           },
           failedResponseHandler: failedLlamaCppCallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
-            llamaCppTokenizationResponseSchema
+            zodSchema(llamaCppTokenizationResponseSchema)
           ),
           abortSignal,
         }),
@@ -63,11 +63,10 @@ export class LlamaCppTokenizer implements BasicTokenizer {
   }
 }
 
-const llamaCppTokenizationResponseSchema = zodSchema(
-  z.object({
-    tokens: z.array(z.number()),
-  })
-);
+const llamaCppTokenizationResponseSchema = z.object({
+  tokens: z.array(z.number()),
+});
 
-export type LlamaCppTokenizationResponse =
-  (typeof llamaCppTokenizationResponseSchema)["_type"];
+export type LlamaCppTokenizationResponse = z.infer<
+  typeof llamaCppTokenizationResponseSchema
+>;
