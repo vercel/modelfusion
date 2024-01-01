@@ -17,7 +17,8 @@ title: Cohere
 [Cohere API Configuration](/api/classes/CohereApiConfiguration)
 
 ```ts
-const api = new CohereApiConfiguration({
+const api = cohere.Api({
+  apiKey: "my-api-key",
   // ...
 });
 

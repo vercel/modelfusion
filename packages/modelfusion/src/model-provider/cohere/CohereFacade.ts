@@ -1,3 +1,5 @@
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
+import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
 import {
   CohereTextEmbeddingModel,
   CohereTextEmbeddingModelSettings,
@@ -7,6 +9,18 @@ import {
   CohereTextGenerationModelSettings,
 } from "./CohereTextGenerationModel.js";
 import { CohereTokenizer, CohereTokenizerSettings } from "./CohereTokenizer.js";
+
+/**
+ * Creates an API configuration for Cohere API.
+ * It calls the API at https://api.cohere.ai/v1 and uses the `COHERE_API_KEY` env variable by default.
+ */
+export function Api(
+  settings: PartialBaseUrlPartsApiConfigurationOptions & {
+    apiKey?: string;
+  }
+) {
+  return new CohereApiConfiguration(settings);
+}
 
 /**
  * Create a text generation model that calls the Cohere Co.Generate API.
