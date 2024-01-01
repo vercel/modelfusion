@@ -7,6 +7,12 @@ title: Math.js
 
 [Math.js](https://mathjs.org) is a JavaScript library for evaluating mathematical expressions.
 
+## Installation
+
+```sh
+npm install @modelfusion/mathjs-tool
+```
+
 ## Usage
 
 ```ts

@@ -1,4 +1,9 @@
-# MediaWiki Search Tool for ModelFusion
+---
+sidebar_position: 8
+title: MediaWiki Search
+---
+
+# MediaWiki Search Tool
 
 Searches MediaWiki instances, such as Wikipedia, using their `opensearch` API endpoint.
 
