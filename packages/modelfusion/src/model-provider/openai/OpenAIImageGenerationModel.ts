@@ -136,8 +136,8 @@ export class OpenAIImageGenerationModel
     return callWithRetryAndThrottle({
       retry: api.retry,
       throttle: api.throttle,
-      call: async () => {
-        return postJsonToApi({
+      call: async () =>
+        postJsonToApi({
           url: api.assembleUrl("/images/generations"),
           headers: api.headers,
           body: {
@@ -150,8 +150,7 @@ export class OpenAIImageGenerationModel
           failedResponseHandler: failedOpenAICallResponseHandler,
           successfulResponseHandler: responseFormat.handler,
           abortSignal,
-        });
-      },
+        }),
     });
   }
 

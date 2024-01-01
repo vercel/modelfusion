@@ -97,8 +97,8 @@ export class AnthropicTextGenerationModel
     return callWithRetryAndThrottle({
       retry: api.retry,
       throttle: api.throttle,
-      call: async () => {
-        return postJsonToApi({
+      call: async () =>
+        postJsonToApi({
           url: api.assembleUrl(`/complete`),
           headers: api.headers,
           body: {
@@ -115,8 +115,7 @@ export class AnthropicTextGenerationModel
           failedResponseHandler: failedAnthropicCallResponseHandler,
           successfulResponseHandler: responseFormat.handler,
           abortSignal,
-        });
-      },
+        }),
     });
   }
 

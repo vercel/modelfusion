@@ -78,8 +78,8 @@ export class HuggingFaceTextGenerationModel
     return callWithRetryAndThrottle({
       retry: api.retry,
       throttle: api.throttle,
-      call: async () => {
-        return postJsonToApi({
+      call: async () =>
+        postJsonToApi({
           url: api.assembleUrl(`/${this.settings.model}`),
           headers: api.headers,
           body: {
@@ -102,8 +102,7 @@ export class HuggingFaceTextGenerationModel
             zodSchema(huggingFaceTextGenerationResponseSchema)
           ),
           abortSignal,
-        });
-      },
+        }),
     });
   }
 

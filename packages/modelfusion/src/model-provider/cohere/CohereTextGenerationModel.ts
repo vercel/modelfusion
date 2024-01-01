@@ -115,8 +115,8 @@ export class CohereTextGenerationModel
     return callWithRetryAndThrottle({
       retry: api.retry,
       throttle: api.throttle,
-      call: async () => {
-        return postJsonToApi({
+      call: async () =>
+        postJsonToApi({
           url: api.assembleUrl(`/generate`),
           headers: api.headers,
           body: {
@@ -139,8 +139,7 @@ export class CohereTextGenerationModel
           failedResponseHandler: failedCohereCallResponseHandler,
           successfulResponseHandler: responseFormat.handler,
           abortSignal,
-        });
-      },
+        }),
     });
   }
 

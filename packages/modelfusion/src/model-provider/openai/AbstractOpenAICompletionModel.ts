@@ -71,8 +71,8 @@ export abstract class AbstractOpenAICompletionModel<
     return callWithRetryAndThrottle({
       retry: api.retry,
       throttle: api.throttle,
-      call: async () => {
-        return postJsonToApi({
+      call: async () =>
+        postJsonToApi({
           url: api.assembleUrl("/completions"),
           headers: api.headers,
           body: {
@@ -97,8 +97,7 @@ export abstract class AbstractOpenAICompletionModel<
           failedResponseHandler: failedOpenAICallResponseHandler,
           successfulResponseHandler: openaiResponseFormat.handler,
           abortSignal,
-        });
-      },
+        }),
     });
   }
 

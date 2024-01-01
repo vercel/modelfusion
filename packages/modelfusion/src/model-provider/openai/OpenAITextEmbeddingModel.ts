@@ -118,8 +118,8 @@ export class OpenAITextEmbeddingModel
     return callWithRetryAndThrottle({
       retry: api.retry,
       throttle: api.throttle,
-      call: async () => {
-        return postJsonToApi({
+      call: async () =>
+        postJsonToApi({
           url: api.assembleUrl("/embeddings"),
           headers: api.headers,
           body: {
@@ -134,8 +134,7 @@ export class OpenAITextEmbeddingModel
             zodSchema(openAITextEmbeddingResponseSchema)
           ),
           abortSignal,
-        });
-      },
+        }),
     });
   }
 
