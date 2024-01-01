@@ -18,7 +18,7 @@ title: Stability AI
 
 ```ts
 const api = stability.Api({
-  host: "myproxy.host",
+  apiKey: "my-api-key",
   // ...
 });
 

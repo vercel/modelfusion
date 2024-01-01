@@ -4,18 +4,16 @@ import {
   ResponseHandler,
   createJsonErrorResponseHandler,
 } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 
-const stabilityErrorDataSchema = new ZodSchema(
-  z.object({
-    message: z.string(),
-  })
-);
+const stabilityErrorDataSchema = z.object({
+  message: z.string(),
+});
 
-export type StabilityErrorData = (typeof stabilityErrorDataSchema)["_type"];
+export type StabilityErrorData = z.infer<typeof stabilityErrorDataSchema>;
 
 export const failedStabilityCallResponseHandler: ResponseHandler<ApiCallError> =
   createJsonErrorResponseHandler({
-    errorSchema: stabilityErrorDataSchema,
+    errorSchema: zodSchema(stabilityErrorDataSchema),
     errorToMessage: (error) => error.message,
   });

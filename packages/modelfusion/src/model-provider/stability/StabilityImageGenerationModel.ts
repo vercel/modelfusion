@@ -180,7 +180,7 @@ export class StabilityImageGenerationModel
           },
           failedResponseHandler: failedStabilityCallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
-            stabilityImageGenerationResponseSchema
+            zodSchema(stabilityImageGenerationResponseSchema)
           ),
           abortSignal,
         }),
@@ -238,17 +238,16 @@ export class StabilityImageGenerationModel
   }
 }
 
-const stabilityImageGenerationResponseSchema = zodSchema(
-  z.object({
-    artifacts: z.array(
-      z.object({
-        base64: z.string(),
-        seed: z.number(),
-        finishReason: z.enum(["SUCCESS", "ERROR", "CONTENT_FILTERED"]),
-      })
-    ),
-  })
-);
+const stabilityImageGenerationResponseSchema = z.object({
+  artifacts: z.array(
+    z.object({
+      base64: z.string(),
+      seed: z.number(),
+      finishReason: z.enum(["SUCCESS", "ERROR", "CONTENT_FILTERED"]),
+    })
+  ),
+});
 
-export type StabilityImageGenerationResponse =
-  (typeof stabilityImageGenerationResponseSchema)["_type"];
+export type StabilityImageGenerationResponse = z.infer<
+  typeof stabilityImageGenerationResponseSchema
+>;

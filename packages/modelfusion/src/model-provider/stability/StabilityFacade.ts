@@ -6,6 +6,18 @@ import {
 } from "./StabilityImageGenerationModel.js";
 
 /**
+ * Creates an API configuration for the Stability AI API.
+ * It calls the API at https://api.stability.ai/v1 by default and uses the `STABILITY_API_KEY` environment variable.
+ */
+export function Api(
+  settings: Partial<BaseUrlPartsApiConfigurationOptions> & {
+    apiKey?: string;
+  }
+) {
+  return new StabilityApiConfiguration(settings);
+}
+
+/**
  * Create an image generation model that calls the Stability AI image generation API.
  *
  * @see https://api.stability.ai/docs#tag/v1generation/operation/textToImage
@@ -30,16 +42,4 @@ import {
  */
 export function ImageGenerator(settings: StabilityImageGenerationSettings) {
   return new StabilityImageGenerationModel(settings);
-}
-
-/**
- * Creates an API configuration for the Stability AI API.
- * It calls the API at https://api.stability.ai/v1 by default.
- */
-export function Api(
-  settings: Partial<BaseUrlPartsApiConfigurationOptions> & {
-    apiKey?: string;
-  }
-) {
-  return new StabilityApiConfiguration(settings);
 }
