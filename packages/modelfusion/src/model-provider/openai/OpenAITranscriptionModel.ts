@@ -210,41 +210,39 @@ export class OpenAITranscriptionModel
   }
 }
 
-const openAITranscriptionJsonSchema = zodSchema(
-  z.object({
-    text: z.string(),
-  })
-);
+const openAITranscriptionJsonSchema = z.object({
+  text: z.string(),
+});
 
-export type OpenAITranscriptionJsonResponse =
-  (typeof openAITranscriptionJsonSchema)["_type"];
+export type OpenAITranscriptionJsonResponse = z.infer<
+  typeof openAITranscriptionJsonSchema
+>;
 
-const openAITranscriptionVerboseJsonSchema = zodSchema(
-  z.object({
-    task: z.literal("transcribe"),
-    language: z.string(),
-    duration: z.number(),
-    segments: z.array(
-      z.object({
-        id: z.number(),
-        seek: z.number(),
-        start: z.number(),
-        end: z.number(),
-        text: z.string(),
-        tokens: z.array(z.number()),
-        temperature: z.number(),
-        avg_logprob: z.number(),
-        compression_ratio: z.number(),
-        no_speech_prob: z.number(),
-        transient: z.boolean().optional(),
-      })
-    ),
-    text: z.string(),
-  })
-);
+const openAITranscriptionVerboseJsonSchema = z.object({
+  task: z.literal("transcribe"),
+  language: z.string(),
+  duration: z.number(),
+  segments: z.array(
+    z.object({
+      id: z.number(),
+      seek: z.number(),
+      start: z.number(),
+      end: z.number(),
+      text: z.string(),
+      tokens: z.array(z.number()),
+      temperature: z.number(),
+      avg_logprob: z.number(),
+      compression_ratio: z.number(),
+      no_speech_prob: z.number(),
+      transient: z.boolean().optional(),
+    })
+  ),
+  text: z.string(),
+});
 
-export type OpenAITranscriptionVerboseJsonResponse =
-  (typeof openAITranscriptionVerboseJsonSchema)["_type"];
+export type OpenAITranscriptionVerboseJsonResponse = z.infer<
+  typeof openAITranscriptionVerboseJsonSchema
+>;
 
 export type OpenAITranscriptionResponseFormatType<T> = {
   type: "json" | "text" | "srt" | "verbose_json" | "vtt";
@@ -254,11 +252,15 @@ export type OpenAITranscriptionResponseFormatType<T> = {
 export const OpenAITranscriptionResponseFormat = {
   json: {
     type: "json" as const,
-    handler: createJsonResponseHandler(openAITranscriptionJsonSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(openAITranscriptionJsonSchema)
+    ),
   },
   verboseJson: {
     type: "verbose_json" as const,
-    handler: createJsonResponseHandler(openAITranscriptionVerboseJsonSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(openAITranscriptionVerboseJsonSchema)
+    ),
   },
   text: {
     type: "text" as const,

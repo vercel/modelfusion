@@ -2,21 +2,19 @@ import { z } from "zod";
 import { createJsonErrorResponseHandler } from "../../core/api/postToApi.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
 
-const openAIErrorDataSchema = zodSchema(
-  z.object({
-    error: z.object({
-      message: z.string(),
-      type: z.string(),
-      param: z.any().nullable(),
-      code: z.string().nullable(),
-    }),
-  })
-);
+const openAIErrorDataSchema = z.object({
+  error: z.object({
+    message: z.string(),
+    type: z.string(),
+    param: z.any().nullable(),
+    code: z.string().nullable(),
+  }),
+});
 
-export type OpenAIErrorData = (typeof openAIErrorDataSchema)["_type"];
+export type OpenAIErrorData = z.infer<typeof openAIErrorDataSchema>;
 
 export const failedOpenAICallResponseHandler = createJsonErrorResponseHandler({
-  errorSchema: openAIErrorDataSchema,
+  errorSchema: zodSchema(openAIErrorDataSchema),
   errorToMessage: (error) => error.error.message,
   isRetryable: (response, error) =>
     response.status >= 500 ||

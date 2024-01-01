@@ -131,7 +131,7 @@ export class OpenAITextEmbeddingModel
           },
           failedResponseHandler: failedOpenAICallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
-            openAITextEmbeddingResponseSchema
+            zodSchema(openAITextEmbeddingResponseSchema)
           ),
           abortSignal,
         });
@@ -165,23 +165,22 @@ export class OpenAITextEmbeddingModel
   }
 }
 
-const openAITextEmbeddingResponseSchema = zodSchema(
-  z.object({
-    object: z.literal("list"),
-    data: z.array(
-      z.object({
-        object: z.literal("embedding"),
-        embedding: z.array(z.number()),
-        index: z.number(),
-      })
-    ),
-    model: z.string(),
-    usage: z.object({
-      prompt_tokens: z.number(),
-      total_tokens: z.number(),
-    }),
-  })
-);
+const openAITextEmbeddingResponseSchema = z.object({
+  object: z.literal("list"),
+  data: z.array(
+    z.object({
+      object: z.literal("embedding"),
+      embedding: z.array(z.number()),
+      index: z.number(),
+    })
+  ),
+  model: z.string(),
+  usage: z.object({
+    prompt_tokens: z.number(),
+    total_tokens: z.number(),
+  }),
+});
 
-export type OpenAITextEmbeddingResponse =
-  (typeof openAITextEmbeddingResponseSchema)["_type"];
+export type OpenAITextEmbeddingResponse = z.infer<
+  typeof openAITextEmbeddingResponseSchema
+>;

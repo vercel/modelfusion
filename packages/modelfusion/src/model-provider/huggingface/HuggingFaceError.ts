@@ -1,16 +1,14 @@
 import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ResponseHandler } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../core/schema/parseJSON.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
 
-export const huggingFaceErrorDataSchema = new ZodSchema(
-  z.object({
-    error: z.array(z.string()).or(z.string()),
-  })
-);
+export const huggingFaceErrorDataSchema = z.object({
+  error: z.array(z.string()).or(z.string()),
+});
 
-export type HuggingFaceErrorData = (typeof huggingFaceErrorDataSchema)["_type"];
+export type HuggingFaceErrorData = z.infer<typeof huggingFaceErrorDataSchema>;
 
 export class HuggingFaceError extends ApiCallError {
   public readonly data: HuggingFaceErrorData;
@@ -45,6 +43,6 @@ export const failedHuggingFaceCallResponseHandler: ResponseHandler<
     statusCode: response.status,
     data: parseJSON({
       text: await response.text(),
-      schema: huggingFaceErrorDataSchema,
+      schema: zodSchema(huggingFaceErrorDataSchema),
     }),
   });

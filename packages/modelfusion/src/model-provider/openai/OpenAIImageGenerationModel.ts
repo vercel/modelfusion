@@ -207,41 +207,43 @@ export type OpenAIImageGenerationResponseFormatType<T> = {
   handler: ResponseHandler<T>;
 };
 
-const openAIImageGenerationUrlSchema = zodSchema(
-  z.object({
-    created: z.number(),
-    data: z.array(
-      z.object({
-        url: z.string(),
-      })
-    ),
-  })
-);
+const openAIImageGenerationUrlSchema = z.object({
+  created: z.number(),
+  data: z.array(
+    z.object({
+      url: z.string(),
+    })
+  ),
+});
 
-export type OpenAIImageGenerationUrlResponse =
-  (typeof openAIImageGenerationUrlSchema)["_type"];
+export type OpenAIImageGenerationUrlResponse = z.infer<
+  typeof openAIImageGenerationUrlSchema
+>;
 
-const openAIImageGenerationBase64JsonSchema = zodSchema(
-  z.object({
-    created: z.number(),
-    data: z.array(
-      z.object({
-        b64_json: z.string(),
-      })
-    ),
-  })
-);
+const openAIImageGenerationBase64JsonSchema = z.object({
+  created: z.number(),
+  data: z.array(
+    z.object({
+      b64_json: z.string(),
+    })
+  ),
+});
 
-export type OpenAIImageGenerationBase64JsonResponse =
-  (typeof openAIImageGenerationBase64JsonSchema)["_type"];
+export type OpenAIImageGenerationBase64JsonResponse = z.infer<
+  typeof openAIImageGenerationBase64JsonSchema
+>;
 
 export const OpenAIImageGenerationResponseFormat = {
   url: {
     type: "url" as const,
-    handler: createJsonResponseHandler(openAIImageGenerationUrlSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(openAIImageGenerationUrlSchema)
+    ),
   },
   base64Json: {
     type: "b64_json" as const,
-    handler: createJsonResponseHandler(openAIImageGenerationBase64JsonSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(openAIImageGenerationBase64JsonSchema)
+    ),
   },
 };

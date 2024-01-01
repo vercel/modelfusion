@@ -159,57 +159,55 @@ export abstract class AbstractOpenAICompletionModel<
   }
 }
 
-const OpenAICompletionResponseSchema = zodSchema(
-  z.object({
-    id: z.string(),
-    choices: z.array(
-      z.object({
-        finish_reason: z
-          .enum(["stop", "length", "content_filter"])
-          .optional()
-          .nullable(),
-        index: z.number(),
-        logprobs: z.nullable(z.any()),
-        text: z.string(),
-      })
-    ),
-    created: z.number(),
-    model: z.string(),
-    system_fingerprint: z.string().optional(),
-    object: z.literal("text_completion"),
-    usage: z.object({
-      prompt_tokens: z.number(),
-      completion_tokens: z.number(),
-      total_tokens: z.number(),
-    }),
-  })
-);
+const OpenAICompletionResponseSchema = z.object({
+  id: z.string(),
+  choices: z.array(
+    z.object({
+      finish_reason: z
+        .enum(["stop", "length", "content_filter"])
+        .optional()
+        .nullable(),
+      index: z.number(),
+      logprobs: z.nullable(z.any()),
+      text: z.string(),
+    })
+  ),
+  created: z.number(),
+  model: z.string(),
+  system_fingerprint: z.string().optional(),
+  object: z.literal("text_completion"),
+  usage: z.object({
+    prompt_tokens: z.number(),
+    completion_tokens: z.number(),
+    total_tokens: z.number(),
+  }),
+});
 
-export type OpenAICompletionResponse =
-  (typeof OpenAICompletionResponseSchema)["_type"];
+export type OpenAICompletionResponse = z.infer<
+  typeof OpenAICompletionResponseSchema
+>;
 
-const openaiCompletionStreamChunkSchema = zodSchema(
-  z.object({
-    choices: z.array(
-      z.object({
-        text: z.string(),
-        finish_reason: z
-          .enum(["stop", "length", "content_filter"])
-          .optional()
-          .nullable(),
-        index: z.number(),
-      })
-    ),
-    created: z.number(),
-    id: z.string(),
-    model: z.string(),
-    system_fingerprint: z.string().optional(),
-    object: z.literal("text_completion"),
-  })
-);
+const openaiCompletionStreamChunkSchema = z.object({
+  choices: z.array(
+    z.object({
+      text: z.string(),
+      finish_reason: z
+        .enum(["stop", "length", "content_filter"])
+        .optional()
+        .nullable(),
+      index: z.number(),
+    })
+  ),
+  created: z.number(),
+  id: z.string(),
+  model: z.string(),
+  system_fingerprint: z.string().optional(),
+  object: z.literal("text_completion"),
+});
 
-type OpenAICompletionStreamChunk =
-  (typeof openaiCompletionStreamChunkSchema)["_type"];
+type OpenAICompletionStreamChunk = z.infer<
+  typeof openaiCompletionStreamChunkSchema
+>;
 
 export type OpenAITextResponseFormatType<T> = {
   stream: boolean;
@@ -222,7 +220,9 @@ export const OpenAITextResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(OpenAICompletionResponseSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(OpenAICompletionResponseSchema)
+    ),
   },
 
   /**
@@ -232,7 +232,7 @@ export const OpenAITextResponseFormat = {
   deltaIterable: {
     stream: true,
     handler: createEventSourceResponseHandler(
-      openaiCompletionStreamChunkSchema
+      zodSchema(openaiCompletionStreamChunkSchema)
     ),
   },
 };

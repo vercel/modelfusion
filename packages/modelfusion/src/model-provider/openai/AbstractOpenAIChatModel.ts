@@ -320,109 +320,105 @@ export abstract class AbstractOpenAIChatModel<
   }
 }
 
-const openAIChatResponseSchema = zodSchema(
-  z.object({
-    id: z.string(),
-    choices: z.array(
-      z.object({
-        message: z.object({
-          role: z.literal("assistant"),
-          content: z.string().nullable(),
-          function_call: z
-            .object({
-              name: z.string(),
-              arguments: z.string(),
-            })
-            .optional(),
-          tool_calls: z
-            .array(
-              z.object({
-                id: z.string(),
-                type: z.literal("function"),
-                function: z.object({
-                  name: z.string(),
-                  arguments: z.string(),
-                }),
-              })
-            )
-            .optional(),
-        }),
-        index: z.number(),
-        logprobs: z.nullable(z.any()),
-        finish_reason: z
-          .enum([
-            "stop",
-            "length",
-            "tool_calls",
-            "content_filter",
-            "function_call",
-          ])
-          .optional()
-          .nullable(),
-      })
-    ),
-    created: z.number(),
-    model: z.string(),
-    system_fingerprint: z.string().optional().nullable(),
-    object: z.literal("chat.completion"),
-    usage: z.object({
-      prompt_tokens: z.number(),
-      completion_tokens: z.number(),
-      total_tokens: z.number(),
-    }),
-  })
-);
-
-export type OpenAIChatResponse = (typeof openAIChatResponseSchema)["_type"];
-
-const openaiChatChunkSchema = zodSchema(
-  z.object({
-    object: z.literal("chat.completion.chunk"),
-    id: z.string(),
-    choices: z.array(
-      z.object({
-        delta: z.object({
-          role: z.enum(["assistant", "user"]).optional(),
-          content: z.string().nullable().optional(),
-          function_call: z
-            .object({
-              name: z.string().optional(),
-              arguments: z.string().optional(),
-            })
-            .optional(),
-          tool_calls: z
-            .array(
-              z.object({
-                id: z.string(),
-                type: z.literal("function"),
-                function: z.object({
-                  name: z.string(),
-                  arguments: z.string(),
-                }),
-              })
-            )
-            .optional(),
-        }),
-        finish_reason: z
-          .enum([
-            "stop",
-            "length",
-            "tool_calls",
-            "content_filter",
-            "function_call",
-          ])
-          .nullable()
+const openAIChatResponseSchema = z.object({
+  id: z.string(),
+  choices: z.array(
+    z.object({
+      message: z.object({
+        role: z.literal("assistant"),
+        content: z.string().nullable(),
+        function_call: z
+          .object({
+            name: z.string(),
+            arguments: z.string(),
+          })
           .optional(),
-        index: z.number(),
-      })
-    ),
-    created: z.number(),
-    model: z.string(),
-    system_fingerprint: z.string().optional().nullable(),
-  })
-);
+        tool_calls: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.literal("function"),
+              function: z.object({
+                name: z.string(),
+                arguments: z.string(),
+              }),
+            })
+          )
+          .optional(),
+      }),
+      index: z.number(),
+      logprobs: z.nullable(z.any()),
+      finish_reason: z
+        .enum([
+          "stop",
+          "length",
+          "tool_calls",
+          "content_filter",
+          "function_call",
+        ])
+        .optional()
+        .nullable(),
+    })
+  ),
+  created: z.number(),
+  model: z.string(),
+  system_fingerprint: z.string().optional().nullable(),
+  object: z.literal("chat.completion"),
+  usage: z.object({
+    prompt_tokens: z.number(),
+    completion_tokens: z.number(),
+    total_tokens: z.number(),
+  }),
+});
 
-export type OpenAIChatChunk = (typeof openaiChatChunkSchema)["_type"];
+export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
+
+const openaiChatChunkSchema = z.object({
+  object: z.literal("chat.completion.chunk"),
+  id: z.string(),
+  choices: z.array(
+    z.object({
+      delta: z.object({
+        role: z.enum(["assistant", "user"]).optional(),
+        content: z.string().nullable().optional(),
+        function_call: z
+          .object({
+            name: z.string().optional(),
+            arguments: z.string().optional(),
+          })
+          .optional(),
+        tool_calls: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.literal("function"),
+              function: z.object({
+                name: z.string(),
+                arguments: z.string(),
+              }),
+            })
+          )
+          .optional(),
+      }),
+      finish_reason: z
+        .enum([
+          "stop",
+          "length",
+          "tool_calls",
+          "content_filter",
+          "function_call",
+        ])
+        .nullable()
+        .optional(),
+      index: z.number(),
+    })
+  ),
+  created: z.number(),
+  model: z.string(),
+  system_fingerprint: z.string().optional().nullable(),
+});
+
+export type OpenAIChatChunk = z.infer<typeof openaiChatChunkSchema>;
 
 export type OpenAIChatResponseFormatType<T> = {
   stream: boolean;
@@ -435,7 +431,7 @@ export const OpenAIChatResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(openAIChatResponseSchema),
+    handler: createJsonResponseHandler(zodSchema(openAIChatResponseSchema)),
   },
 
   /**
@@ -443,6 +439,6 @@ export const OpenAIChatResponseFormat = {
    */
   deltaIterable: {
     stream: true,
-    handler: createEventSourceResponseHandler(openaiChatChunkSchema),
+    handler: createEventSourceResponseHandler(zodSchema(openaiChatChunkSchema)),
   },
 };
