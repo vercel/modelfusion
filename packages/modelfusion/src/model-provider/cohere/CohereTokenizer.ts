@@ -53,8 +53,8 @@ export class CohereTokenizer implements FullTokenizer {
     const abortSignal = context?.abortSignal;
 
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/tokenize`),
