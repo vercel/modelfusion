@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplate } from "../../model-function/PromptTemplate.js";
 import {
@@ -237,16 +238,17 @@ export class StabilityImageGenerationModel
   }
 }
 
-const stabilityImageGenerationResponseSchema = z.object({
-  artifacts: z.array(
-    z.object({
-      base64: z.string(),
-      seed: z.number(),
-      finishReason: z.enum(["SUCCESS", "ERROR", "CONTENT_FILTERED"]),
-    })
-  ),
-});
+const stabilityImageGenerationResponseSchema = zodSchema(
+  z.object({
+    artifacts: z.array(
+      z.object({
+        base64: z.string(),
+        seed: z.number(),
+        finishReason: z.enum(["SUCCESS", "ERROR", "CONTENT_FILTERED"]),
+      })
+    ),
+  })
+);
 
-export type StabilityImageGenerationResponse = z.infer<
-  typeof stabilityImageGenerationResponseSchema
->;
+export type StabilityImageGenerationResponse =
+  (typeof stabilityImageGenerationResponseSchema)["_type"];

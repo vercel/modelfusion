@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
   EmbeddingModel,
@@ -84,19 +85,30 @@ export class HuggingFaceTextEmbeddingModel
       );
     }
 
+    const api = this.settings.api ?? new HuggingFaceApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
+
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
-      call: async () =>
-        callHuggingFaceTextGenerationAPI({
-          options: {
-            useCache: true,
-            waitForModel: true,
+      retry: api.retry,
+      throttle: api.throttle,
+      call: async () => {
+        return postJsonToApi({
+          url: api.assembleUrl(`/${this.settings.model}`),
+          headers: api.headers,
+          body: {
+            inputs: texts,
+            options: {
+              use_cache: this.settings.options?.useCache ?? true,
+              wait_for_model: this.settings.options?.waitForModel ?? true,
+            },
           },
-          ...this.settings,
-          abortSignal: options?.run?.abortSignal,
-          inputs: texts,
-        }),
+          failedResponseHandler: failedHuggingFaceCallResponseHandler,
+          successfulResponseHandler: createJsonResponseHandler(
+            zodSchema(huggingFaceTextEmbeddingResponseSchema)
+          ),
+          abortSignal,
+        });
+      },
     });
   }
 
@@ -132,39 +144,3 @@ const huggingFaceTextEmbeddingResponseSchema = z.array(z.array(z.number()));
 export type HuggingFaceTextEmbeddingResponse = z.infer<
   typeof huggingFaceTextEmbeddingResponseSchema
 >;
-
-async function callHuggingFaceTextGenerationAPI({
-  api = new HuggingFaceApiConfiguration(),
-  abortSignal,
-  model,
-  inputs,
-  options,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  model: string;
-  inputs: string[];
-  options?: {
-    useCache?: boolean;
-    waitForModel?: boolean;
-  };
-}): Promise<HuggingFaceTextEmbeddingResponse> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/${model}`),
-    headers: api.headers,
-    body: {
-      inputs,
-      options: options
-        ? {
-            use_cache: options?.useCache,
-            wait_for_model: options?.waitForModel,
-          }
-        : {},
-    },
-    failedResponseHandler: failedHuggingFaceCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      huggingFaceTextEmbeddingResponseSchema
-    ),
-    abortSignal,
-  });
-}

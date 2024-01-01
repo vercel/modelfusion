@@ -7,6 +7,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplate } from "../../model-function/PromptTemplate.js";
 import {
@@ -128,9 +129,9 @@ export class OpenAIImageGenerationModel
     } & FunctionOptions
   ): Promise<RESULT> {
     const api = this.settings.api ?? new OpenAIApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
-    const userId = options?.run?.userId;
-    const responseFormat = options?.responseFormat;
+    const abortSignal = options.run?.abortSignal;
+    const userId = options.run?.userId;
+    const responseFormat = options.responseFormat;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -147,7 +148,7 @@ export class OpenAIImageGenerationModel
             user: this.settings.isUserIdForwardingEnabled ? userId : undefined,
           },
           failedResponseHandler: failedOpenAICallResponseHandler,
-          successfulResponseHandler: responseFormat?.handler,
+          successfulResponseHandler: responseFormat.handler,
           abortSignal,
         });
       },
@@ -206,31 +207,33 @@ export type OpenAIImageGenerationResponseFormatType<T> = {
   handler: ResponseHandler<T>;
 };
 
-const openAIImageGenerationUrlSchema = z.object({
-  created: z.number(),
-  data: z.array(
-    z.object({
-      url: z.string(),
-    })
-  ),
-});
+const openAIImageGenerationUrlSchema = zodSchema(
+  z.object({
+    created: z.number(),
+    data: z.array(
+      z.object({
+        url: z.string(),
+      })
+    ),
+  })
+);
 
-export type OpenAIImageGenerationUrlResponse = z.infer<
-  typeof openAIImageGenerationUrlSchema
->;
+export type OpenAIImageGenerationUrlResponse =
+  (typeof openAIImageGenerationUrlSchema)["_type"];
 
-const openAIImageGenerationBase64JsonSchema = z.object({
-  created: z.number(),
-  data: z.array(
-    z.object({
-      b64_json: z.string(),
-    })
-  ),
-});
+const openAIImageGenerationBase64JsonSchema = zodSchema(
+  z.object({
+    created: z.number(),
+    data: z.array(
+      z.object({
+        b64_json: z.string(),
+      })
+    ),
+  })
+);
 
-export type OpenAIImageGenerationBase64JsonResponse = z.infer<
-  typeof openAIImageGenerationBase64JsonSchema
->;
+export type OpenAIImageGenerationBase64JsonResponse =
+  (typeof openAIImageGenerationBase64JsonSchema)["_type"];
 
 export const OpenAIImageGenerationResponseFormat = {
   url: {

@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { Run } from "../../core/Run.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 
@@ -34,14 +35,24 @@ export class LlamaCppTokenizer implements BasicTokenizer {
     text: string,
     context?: Run
   ): Promise<LlamaCppTokenizationResponse> {
+    const api = this.api;
+    const abortSignal = context?.abortSignal;
+
     return callWithRetryAndThrottle({
-      retry: this.api.retry,
-      throttle: this.api.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () =>
-        callLlamaCppTokenizeAPI({
-          api: this.api,
-          abortSignal: context?.abortSignal,
-          text,
+        postJsonToApi({
+          url: api.assembleUrl(`/tokenize`),
+          headers: api.headers,
+          body: {
+            content: text,
+          },
+          failedResponseHandler: failedLlamaCppCallResponseHandler,
+          successfulResponseHandler: createJsonResponseHandler(
+            llamaCppTokenizationResponseSchema
+          ),
+          abortSignal,
         }),
     });
   }
@@ -52,33 +63,11 @@ export class LlamaCppTokenizer implements BasicTokenizer {
   }
 }
 
-const llamaCppTokenizationResponseSchema = z.object({
-  tokens: z.array(z.number()),
-});
+const llamaCppTokenizationResponseSchema = zodSchema(
+  z.object({
+    tokens: z.array(z.number()),
+  })
+);
 
-export type LlamaCppTokenizationResponse = z.infer<
-  typeof llamaCppTokenizationResponseSchema
->;
-
-async function callLlamaCppTokenizeAPI({
-  api,
-  abortSignal,
-  text,
-}: {
-  api: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  text: string;
-}): Promise<LlamaCppTokenizationResponse> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/tokenize`),
-    headers: api.headers,
-    body: {
-      content: text,
-    },
-    failedResponseHandler: failedLlamaCppCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      llamaCppTokenizationResponseSchema
-    ),
-    abortSignal,
-  });
-}
+export type LlamaCppTokenizationResponse =
+  (typeof llamaCppTokenizationResponseSchema)["_type"];

@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
   EmbeddingModel,
@@ -54,14 +55,25 @@ export class OllamaTextEmbeddingModel
       );
     }
 
+    const api = this.settings.api ?? new OllamaApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
+
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
+      retry: api.retry,
+      throttle: api.throttle,
       call: async () =>
-        callOllamaEmbeddingAPI({
-          ...this.settings,
-          abortSignal: options?.run?.abortSignal,
-          prompt: texts[0],
+        postJsonToApi({
+          url: api.assembleUrl(`/api/embeddings`),
+          headers: api.headers,
+          body: {
+            model: this.settings.model,
+            prompt: texts[0],
+          },
+          failedResponseHandler: failedOllamaCallResponseHandler,
+          successfulResponseHandler: createJsonResponseHandler(
+            ollamaTextEmbeddingResponseSchema
+          ),
+          abortSignal,
         }),
     });
   }
@@ -88,33 +100,11 @@ export class OllamaTextEmbeddingModel
   }
 }
 
-const ollamaTextEmbeddingResponseSchema = z.object({
-  embedding: z.array(z.number()),
-});
+const ollamaTextEmbeddingResponseSchema = zodSchema(
+  z.object({
+    embedding: z.array(z.number()),
+  })
+);
 
-export type OllamaTextEmbeddingResponse = z.infer<
-  typeof ollamaTextEmbeddingResponseSchema
->;
-
-async function callOllamaEmbeddingAPI({
-  api = new OllamaApiConfiguration(),
-  abortSignal,
-  model,
-  prompt,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  model: string;
-  prompt: string;
-}): Promise<OllamaTextEmbeddingResponse> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/api/embeddings`),
-    headers: api.headers,
-    body: { model, prompt },
-    failedResponseHandler: failedOllamaCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      ollamaTextEmbeddingResponseSchema
-    ),
-    abortSignal,
-  });
-}
+export type OllamaTextEmbeddingResponse =
+  (typeof ollamaTextEmbeddingResponseSchema)["_type"];

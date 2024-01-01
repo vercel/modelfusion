@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextGenerationModel } from "../../model-function/generate-text/PromptTemplateTextGenerationModel.js";
 import {
@@ -98,7 +99,7 @@ export class HuggingFaceTextGenerationModel
           },
           failedResponseHandler: failedHuggingFaceCallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
-            huggingFaceTextGenerationResponseSchema
+            zodSchema(huggingFaceTextGenerationResponseSchema)
           ),
           abortSignal,
         });

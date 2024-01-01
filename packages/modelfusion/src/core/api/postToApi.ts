@@ -1,6 +1,4 @@
-import { z } from "zod";
 import { Schema } from "../schema/Schema.js";
-import { ZodSchema } from "../schema/ZodSchema.js";
 import { parseJSON, safeParseJSON } from "../schema/parseJSON.js";
 import { ApiCallError } from "./ApiCallError.js";
 
@@ -83,13 +81,13 @@ export const createTextErrorResponseHandler =
   };
 
 export const createJsonResponseHandler =
-  <T>(responseSchema: z.ZodSchema<T>): ResponseHandler<T> =>
+  <T>(responseSchema: Schema<T>): ResponseHandler<T> =>
   async ({ response, url, requestBodyValues }) => {
     const responseBody = await response.text();
 
     const parsedResult = safeParseJSON({
       text: responseBody,
-      schema: new ZodSchema(responseSchema),
+      schema: responseSchema,
     });
 
     if (!parsedResult.success) {

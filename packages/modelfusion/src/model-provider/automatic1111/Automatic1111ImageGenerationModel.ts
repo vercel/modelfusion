@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplate } from "../../model-function/PromptTemplate.js";
 import {
@@ -103,7 +104,7 @@ export class Automatic1111ImageGenerationModel
           },
           failedResponseHandler: failedAutomatic1111CallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
-            Automatic1111ImageGenerationResponseSchema
+            zodSchema(Automatic1111ImageGenerationResponseSchema)
           ),
           abortSignal,
         }),
@@ -111,12 +112,20 @@ export class Automatic1111ImageGenerationModel
   }
 
   get settingsForEvent(): Partial<Automatic1111ImageGenerationSettings> {
-    return {
-      height: this.settings.height,
-      width: this.settings.width,
-      sampler: this.settings.sampler,
-      steps: this.settings.steps,
-    };
+    const eventSettingProperties: Array<string> = [
+      "height",
+      "width",
+      "sampler",
+      "steps",
+      "cfgScale",
+      "seed",
+    ] satisfies (keyof Automatic1111ImageGenerationSettings)[];
+
+    return Object.fromEntries(
+      Object.entries(this.settings).filter(([key]) =>
+        eventSettingProperties.includes(key)
+      )
+    );
   }
 
   async doGenerateImages(

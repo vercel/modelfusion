@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
   EmbeddingModel,
@@ -131,15 +132,29 @@ export class CohereTextEmbeddingModel
       );
     }
 
+    const api = this.settings.api ?? new CohereApiConfiguration();
+    const abortSignal = options?.run?.abortSignal;
+
     return callWithRetryAndThrottle({
-      retry: this.settings.api?.retry,
-      throttle: this.settings.api?.throttle,
-      call: async () =>
-        callCohereEmbeddingAPI({
-          ...this.settings,
-          abortSignal: options?.run?.abortSignal,
-          texts,
-        }),
+      retry: api.retry,
+      throttle: api.throttle,
+      call: async () => {
+        return postJsonToApi({
+          url: api.assembleUrl(`/embed`),
+          headers: api.headers,
+          body: {
+            model: this.settings.model,
+            texts,
+            input_type: this.settings.inputType,
+            truncate: this.settings.truncate,
+          },
+          failedResponseHandler: failedCohereCallResponseHandler,
+          successfulResponseHandler: createJsonResponseHandler(
+            zodSchema(cohereTextEmbeddingResponseSchema)
+          ),
+          abortSignal,
+        });
+      },
     });
   }
 
@@ -178,35 +193,3 @@ const cohereTextEmbeddingResponseSchema = z.object({
 export type CohereTextEmbeddingResponse = z.infer<
   typeof cohereTextEmbeddingResponseSchema
 >;
-
-async function callCohereEmbeddingAPI({
-  api = new CohereApiConfiguration(),
-  abortSignal,
-  model,
-  texts,
-  inputType,
-  truncate,
-}: {
-  api?: ApiConfiguration;
-  abortSignal?: AbortSignal;
-  model: CohereTextEmbeddingModelType;
-  texts: string[];
-  inputType?: CohereTextEmbeddingModelSettings["inputType"];
-  truncate?: CohereTextEmbeddingModelSettings["truncate"];
-}): Promise<CohereTextEmbeddingResponse> {
-  return postJsonToApi({
-    url: api.assembleUrl(`/embed`),
-    headers: api.headers,
-    body: {
-      model,
-      texts,
-      input_type: inputType,
-      truncate,
-    },
-    failedResponseHandler: failedCohereCallResponseHandler,
-    successfulResponseHandler: createJsonResponseHandler(
-      cohereTextEmbeddingResponseSchema
-    ),
-    abortSignal,
-  });
-}

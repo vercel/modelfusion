@@ -6,6 +6,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
   EmbeddingModel,
@@ -112,23 +113,24 @@ export class MistralTextEmbeddingModel
   }
 }
 
-const MistralTextEmbeddingResponseSchema = z.object({
-  id: z.string(),
-  object: z.string(),
-  data: z.array(
-    z.object({
-      object: z.string(),
-      embedding: z.array(z.number()),
-      index: z.number(),
-    })
-  ),
-  model: z.string(),
-  usage: z.object({
-    prompt_tokens: z.number(),
-    total_tokens: z.number(),
-  }),
-});
+const MistralTextEmbeddingResponseSchema = zodSchema(
+  z.object({
+    id: z.string(),
+    object: z.string(),
+    data: z.array(
+      z.object({
+        object: z.string(),
+        embedding: z.array(z.number()),
+        index: z.number(),
+      })
+    ),
+    model: z.string(),
+    usage: z.object({
+      prompt_tokens: z.number(),
+      total_tokens: z.number(),
+    }),
+  })
+);
 
-export type MistralTextEmbeddingResponse = z.infer<
-  typeof MistralTextEmbeddingResponseSchema
->;
+export type MistralTextEmbeddingResponse =
+  (typeof MistralTextEmbeddingResponseSchema)["_type"];

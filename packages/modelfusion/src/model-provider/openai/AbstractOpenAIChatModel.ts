@@ -320,58 +320,60 @@ export abstract class AbstractOpenAIChatModel<
   }
 }
 
-const openAIChatResponseSchema = z.object({
-  id: z.string(),
-  choices: z.array(
-    z.object({
-      message: z.object({
-        role: z.literal("assistant"),
-        content: z.string().nullable(),
-        function_call: z
-          .object({
-            name: z.string(),
-            arguments: z.string(),
-          })
-          .optional(),
-        tool_calls: z
-          .array(
-            z.object({
-              id: z.string(),
-              type: z.literal("function"),
-              function: z.object({
-                name: z.string(),
-                arguments: z.string(),
-              }),
+const openAIChatResponseSchema = zodSchema(
+  z.object({
+    id: z.string(),
+    choices: z.array(
+      z.object({
+        message: z.object({
+          role: z.literal("assistant"),
+          content: z.string().nullable(),
+          function_call: z
+            .object({
+              name: z.string(),
+              arguments: z.string(),
             })
-          )
-          .optional(),
-      }),
-      index: z.number(),
-      logprobs: z.nullable(z.any()),
-      finish_reason: z
-        .enum([
-          "stop",
-          "length",
-          "tool_calls",
-          "content_filter",
-          "function_call",
-        ])
-        .optional()
-        .nullable(),
-    })
-  ),
-  created: z.number(),
-  model: z.string(),
-  system_fingerprint: z.string().optional().nullable(),
-  object: z.literal("chat.completion"),
-  usage: z.object({
-    prompt_tokens: z.number(),
-    completion_tokens: z.number(),
-    total_tokens: z.number(),
-  }),
-});
+            .optional(),
+          tool_calls: z
+            .array(
+              z.object({
+                id: z.string(),
+                type: z.literal("function"),
+                function: z.object({
+                  name: z.string(),
+                  arguments: z.string(),
+                }),
+              })
+            )
+            .optional(),
+        }),
+        index: z.number(),
+        logprobs: z.nullable(z.any()),
+        finish_reason: z
+          .enum([
+            "stop",
+            "length",
+            "tool_calls",
+            "content_filter",
+            "function_call",
+          ])
+          .optional()
+          .nullable(),
+      })
+    ),
+    created: z.number(),
+    model: z.string(),
+    system_fingerprint: z.string().optional().nullable(),
+    object: z.literal("chat.completion"),
+    usage: z.object({
+      prompt_tokens: z.number(),
+      completion_tokens: z.number(),
+      total_tokens: z.number(),
+    }),
+  })
+);
 
-export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
+export type OpenAIChatResponse = (typeof openAIChatResponseSchema)["_type"];
 
 const openaiChatChunkSchema = zodSchema(
   z.object({

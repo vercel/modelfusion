@@ -159,33 +159,34 @@ export abstract class AbstractOpenAICompletionModel<
   }
 }
 
-const OpenAICompletionResponseSchema = z.object({
-  id: z.string(),
-  choices: z.array(
-    z.object({
-      finish_reason: z
-        .enum(["stop", "length", "content_filter"])
-        .optional()
-        .nullable(),
-      index: z.number(),
-      logprobs: z.nullable(z.any()),
-      text: z.string(),
-    })
-  ),
-  created: z.number(),
-  model: z.string(),
-  system_fingerprint: z.string().optional(),
-  object: z.literal("text_completion"),
-  usage: z.object({
-    prompt_tokens: z.number(),
-    completion_tokens: z.number(),
-    total_tokens: z.number(),
-  }),
-});
+const OpenAICompletionResponseSchema = zodSchema(
+  z.object({
+    id: z.string(),
+    choices: z.array(
+      z.object({
+        finish_reason: z
+          .enum(["stop", "length", "content_filter"])
+          .optional()
+          .nullable(),
+        index: z.number(),
+        logprobs: z.nullable(z.any()),
+        text: z.string(),
+      })
+    ),
+    created: z.number(),
+    model: z.string(),
+    system_fingerprint: z.string().optional(),
+    object: z.literal("text_completion"),
+    usage: z.object({
+      prompt_tokens: z.number(),
+      completion_tokens: z.number(),
+      total_tokens: z.number(),
+    }),
+  })
+);
 
-export type OpenAICompletionResponse = z.infer<
-  typeof OpenAICompletionResponseSchema
->;
+export type OpenAICompletionResponse =
+  (typeof OpenAICompletionResponseSchema)["_type"];
 
 const openaiCompletionStreamChunkSchema = zodSchema(
   z.object({

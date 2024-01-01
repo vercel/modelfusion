@@ -7,7 +7,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
@@ -238,16 +238,13 @@ export type AnthropicTextGenerationResponse = z.infer<
   typeof anthropicTextGenerationResponseSchema
 >;
 
-const anthropicTextStreamChunkSchema = new ZodSchema(
-  z.object({
-    completion: z.string(),
-    stop_reason: z.string().nullable(),
-    model: z.string(),
-  })
-);
+const anthropicTextStreamChunkSchema = z.object({
+  completion: z.string(),
+  stop_reason: z.string().nullable(),
+  model: z.string(),
+});
 
-type AnthropicTextStreamChunk =
-  (typeof anthropicTextStreamChunkSchema)["_type"];
+type AnthropicTextStreamChunk = z.infer<typeof anthropicTextStreamChunkSchema>;
 
 async function createAnthropicFullDeltaIterableQueue(
   stream: ReadableStream<Uint8Array>
@@ -273,7 +270,7 @@ async function createAnthropicFullDeltaIterableQueue(
 
           const eventData = parseJSON({
             text: data,
-            schema: anthropicTextStreamChunkSchema,
+            schema: zodSchema(anthropicTextStreamChunkSchema),
           });
 
           queue.push({ type: "delta", deltaValue: eventData });
@@ -306,7 +303,9 @@ export const AnthropicTextGenerationResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(anthropicTextGenerationResponseSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(anthropicTextGenerationResponseSchema)
+    ),
   } satisfies AnthropicTextGenerationResponseFormatType<AnthropicTextGenerationResponse>,
 
   /**

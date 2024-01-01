@@ -273,21 +273,19 @@ export type CohereTextGenerationResponse = z.infer<
   typeof cohereTextGenerationResponseSchema
 >;
 
-const cohereTextStreamChunkSchema = zodSchema(
-  z.discriminatedUnion("is_finished", [
-    z.object({
-      text: z.string(),
-      is_finished: z.literal(false),
-    }),
-    z.object({
-      is_finished: z.literal(true),
-      finish_reason: z.string(),
-      response: cohereTextGenerationResponseSchema,
-    }),
-  ])
-);
+const cohereTextStreamChunkSchema = z.discriminatedUnion("is_finished", [
+  z.object({
+    text: z.string(),
+    is_finished: z.literal(false),
+  }),
+  z.object({
+    is_finished: z.literal(true),
+    finish_reason: z.string(),
+    response: cohereTextGenerationResponseSchema,
+  }),
+]);
 
-type CohereTextStreamChunk = (typeof cohereTextStreamChunkSchema)["_type"];
+export type CohereTextStreamChunk = z.infer<typeof cohereTextStreamChunkSchema>;
 
 export type CohereTextGenerationResponseFormatType<T> = {
   stream: boolean;
@@ -300,7 +298,9 @@ export const CohereTextGenerationResponseFormat = {
    */
   json: {
     stream: false,
-    handler: createJsonResponseHandler(cohereTextGenerationResponseSchema),
+    handler: createJsonResponseHandler(
+      zodSchema(cohereTextGenerationResponseSchema)
+    ),
   },
 
   /**
@@ -309,6 +309,8 @@ export const CohereTextGenerationResponseFormat = {
    */
   deltaIterable: {
     stream: true,
-    handler: createJsonStreamResponseHandler(cohereTextStreamChunkSchema),
+    handler: createJsonStreamResponseHandler(
+      zodSchema(cohereTextStreamChunkSchema)
+    ),
   },
 };

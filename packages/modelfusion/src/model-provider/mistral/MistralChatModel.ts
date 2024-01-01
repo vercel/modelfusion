@@ -7,7 +7,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
@@ -225,31 +225,33 @@ export class MistralChatModel
   }
 }
 
-const mistralChatResponseSchema = z.object({
-  id: z.string(),
-  object: z.string(),
-  created: z.number(),
-  model: z.string(),
-  choices: z.array(
-    z.object({
-      index: z.number(),
-      message: z.object({
-        role: z.enum(["user", "assistant"]),
-        content: z.string(),
-      }),
-      finish_reason: z.enum(["stop", "length", "model_length"]),
-    })
-  ),
-  usage: z.object({
-    prompt_tokens: z.number(),
-    completion_tokens: z.number(),
-    total_tokens: z.number(),
-  }),
-});
+const mistralChatResponseSchema = zodSchema(
+  z.object({
+    id: z.string(),
+    object: z.string(),
+    created: z.number(),
+    model: z.string(),
+    choices: z.array(
+      z.object({
+        index: z.number(),
+        message: z.object({
+          role: z.enum(["user", "assistant"]),
+          content: z.string(),
+        }),
+        finish_reason: z.enum(["stop", "length", "model_length"]),
+      })
+    ),
+    usage: z.object({
+      prompt_tokens: z.number(),
+      completion_tokens: z.number(),
+      total_tokens: z.number(),
+    }),
+  })
+);
 
-export type MistralChatResponse = z.infer<typeof mistralChatResponseSchema>;
+export type MistralChatResponse = (typeof mistralChatResponseSchema)["_type"];
 
-const mistralChatStreamChunkSchema = new ZodSchema(
+const mistralChatStreamChunkSchema = zodSchema(
   z.object({
     id: z.string(),
     object: z.string().optional(),
