@@ -26,7 +26,7 @@ export const COHERE_TEXT_EMBEDDING_MODELS = {
     embeddingDimensions: 4096,
   },
   "embed-multilingual-v2.0": {
-    contextWindowSize: 512,
+    contextWindowSize: 256,
     embeddingDimensions: 768,
   },
   "embed-english-v3.0": {
