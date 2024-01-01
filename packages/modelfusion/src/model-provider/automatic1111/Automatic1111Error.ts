@@ -4,9 +4,9 @@ import {
   ResponseHandler,
   createJsonErrorResponseHandler,
 } from "../../core/api/postToApi.js";
-import { ZodSchema } from "../../core/schema/ZodSchema.js";
+import { zodSchema } from "../../core/schema/ZodSchema.js";
 
-const automatic1111ErrorDataSchema = new ZodSchema(
+const automatic1111ErrorDataSchema = zodSchema(
   z.object({
     error: z.string(),
     detail: z.string(),

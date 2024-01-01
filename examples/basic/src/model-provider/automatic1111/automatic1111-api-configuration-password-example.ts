@@ -1,7 +1,11 @@
 import { automatic1111, generateImage } from "modelfusion";
 import fs from "node:fs";
 
+// Start server with: `./webui.sh --api --api-auth user:password --api-log --nowebui`
 async function main() {
+  const user = "user";
+  const password = "password";
+
   const image = await generateImage(
     automatic1111.ImageGenerator({
       // Custom API configuration:
@@ -9,6 +13,11 @@ async function main() {
         baseUrl: {
           host: "localhost",
           port: "7861", // default port when starting with --nowebui
+        },
+        headers: {
+          Authorization: `Basic ${Buffer.from(`${user}:${password}`).toString(
+            "base64"
+          )}`,
         },
       }),
 
