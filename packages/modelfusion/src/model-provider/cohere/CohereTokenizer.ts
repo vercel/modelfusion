@@ -28,7 +28,7 @@ export interface CohereTokenizerSettings {
  * @see https://docs.cohere.com/reference/detokenize-1
  *
  * @example
- * const tokenizer = new CohereTokenizer({ model: "command-nightly" });
+ * const tokenizer = new CohereTokenizer({ model: "command" });
  *
  * const text = "At first, Nox didn't know what to do with the pup.";
  *

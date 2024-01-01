@@ -29,7 +29,7 @@ export function Api(
  *
  * @example
  * const model = cohere.TextGenerator({
- *   model: "command-nightly",
+ *   model: "command",
  *   temperature: 0.7,
  *   maxGenerationTokens: 500,
  * });
@@ -72,7 +72,7 @@ export function TextEmbedder(settings: CohereTextEmbeddingModelSettings) {
  * @see https://docs.cohere.com/reference/detokenize-1
  *
  * @example
- * const tokenizer = cohere.Tokenizer({ model: "command-nightly" });
+ * const tokenizer = cohere.Tokenizer({ model: "command" });
  *
  * const text = "At first, Nox didn't know what to do with the pup.";
  *

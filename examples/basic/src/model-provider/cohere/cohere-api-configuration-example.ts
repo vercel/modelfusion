@@ -9,7 +9,7 @@ async function main() {
       api: cohere.Api({
         apiKey: process.env.COHERE_API_KEY,
       }),
-      model: "command-nightly",
+      model: "command",
     }),
     "Write a short story about a robot learning to love:\n\n"
   );

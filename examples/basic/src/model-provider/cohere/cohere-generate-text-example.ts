@@ -6,7 +6,7 @@ dotenv.config();
 async function main() {
   const text = await generateText(
     cohere.TextGenerator({
-      model: "command-nightly",
+      model: "command",
       temperature: 0.7,
       maxGenerationTokens: 500,
     }),

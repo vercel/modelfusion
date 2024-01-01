@@ -29,16 +29,10 @@ import { CohereTokenizer } from "./CohereTokenizer.js";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {
-    contextWindowSize: 2048,
-  },
-  "command-nightly": {
-    contextWindowSize: 2048,
+    contextWindowSize: 4096,
   },
   "command-light": {
-    contextWindowSize: 2048,
-  },
-  "command-light-nightly": {
-    contextWindowSize: 2048,
+    contextWindowSize: 4096,
   },
 };
 
@@ -70,7 +64,7 @@ export interface CohereTextGenerationModelSettings
  *
  * @example
  * const model = new CohereTextGenerationModel({
- *   model: "command-nightly",
+ *   model: "command",
  *   temperature: 0.7,
  *   maxGenerationTokens: 500,
  * });

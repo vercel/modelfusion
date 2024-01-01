@@ -41,7 +41,7 @@ import { cohere, generateText } from "modelfusion";
 
 const text = await generateText(
   cohere.TextGenerator({
-    model: "command-nightly",
+    model: "command",
     temperature: 0.7,
     maxGenerationTokens: 500,
   }),
@@ -58,7 +58,7 @@ import { cohere, streamText } from "modelfusion";
 
 const textStream = await streamText(
   cohere.TextGenerator({
-    model: "command-nightly",
+    model: "command",
     temperature: 0.7,
     maxGenerationTokens: 500,
   }),
@@ -93,7 +93,7 @@ const embeddings = await embedMany(
 ```ts
 import { cohere, countTokens } from "modelfusion";
 
-const tokenizer = cohere.Tokenizer({ model: "command-nightly" });
+const tokenizer = cohere.Tokenizer({ model: "command" });
 
 const text = "At first, Nox didn't know what to do with the pup.";
 
