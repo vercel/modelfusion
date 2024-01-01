@@ -16,7 +16,8 @@ sidebar_position: 81
 [LMNT API Configuration](/api/classes/LmntApiConfiguration)
 
 ```ts
-const api = new LmntApiConfiguration({
+const api = lmnt.Api({
+  apiKey: "my-api-key",
   // ...
 });
 
