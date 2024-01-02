@@ -3,7 +3,7 @@ import {
   MistralInstructPrompt,
   modelfusion,
   ollama,
-  useToolsOrGenerateText,
+  useTools,
 } from "modelfusion";
 import { mistralMultiToolCallPromptTemplate } from "../../tool/prompts/mistral";
 import { calculator } from "../../tool/tools/calculator-tool";
@@ -14,7 +14,7 @@ dotenv.config();
 modelfusion.setLogFormat("detailed-object");
 
 async function main() {
-  const { text, toolResults } = await useToolsOrGenerateText(
+  const { text, toolResults } = await useTools(
     ollama
       .CompletionTextGenerator({
         model: "mixtral",

@@ -3,8 +3,8 @@ import {
   TextGenerationToolCallModel,
   ToolCallPromptTemplate,
 } from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
-import { TextGenerationToolCallsOrGenerateTextModel } from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
-import { ToolCallsOrGenerateTextPromptTemplate } from "../../tool/generate-tool-calls-or-text/ToolCallsOrGenerateTextPromptTemplate.js";
+import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/TextGenerationToolCallsModel.js";
+import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate.js";
 import { StructureFromTextGenerationModel } from "../generate-structure/StructureFromTextGenerationModel.js";
 import { StructureFromTextPromptTemplate } from "../generate-structure/StructureFromTextPromptTemplate.js";
 import {
@@ -90,9 +90,9 @@ export class PromptTemplateTextGenerationModel<
   }
 
   asToolCallsOrTextGenerationModel<INPUT_PROMPT>(
-    promptTemplate: ToolCallsOrGenerateTextPromptTemplate<INPUT_PROMPT, PROMPT>
+    promptTemplate: ToolCallsPromptTemplate<INPUT_PROMPT, PROMPT>
   ) {
-    return new TextGenerationToolCallsOrGenerateTextModel({
+    return new TextGenerationToolCallsModel({
       model: this,
       template: promptTemplate,
     });

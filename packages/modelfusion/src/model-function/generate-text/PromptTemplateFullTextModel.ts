@@ -1,7 +1,7 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ToolDefinition } from "../../tool/ToolDefinition.js";
 import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel.js";
-import { ToolCallsOrTextGenerationModel } from "../../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
+import { ToolCallsGenerationModel } from "../../tool/generate-tool-calls/ToolCallsGenerationModel.js";
 import { PromptTemplateTextStreamingModel } from "./PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
@@ -15,7 +15,7 @@ export class PromptTemplateFullTextModel<
     SETTINGS extends TextGenerationModelSettings,
     MODEL extends TextStreamingModel<MODEL_PROMPT, SETTINGS> &
       ToolCallGenerationModel<MODEL_PROMPT, SETTINGS> &
-      ToolCallsOrTextGenerationModel<MODEL_PROMPT, SETTINGS>,
+      ToolCallsGenerationModel<MODEL_PROMPT, SETTINGS>,
   >
   extends PromptTemplateTextStreamingModel<
     PROMPT,
@@ -26,7 +26,7 @@ export class PromptTemplateFullTextModel<
   implements
     TextStreamingModel<PROMPT, SETTINGS>,
     ToolCallGenerationModel<PROMPT, SETTINGS>,
-    ToolCallsOrTextGenerationModel<PROMPT, SETTINGS>
+    ToolCallsGenerationModel<PROMPT, SETTINGS>
 {
   constructor(options: {
     model: MODEL;
@@ -50,7 +50,7 @@ export class PromptTemplateFullTextModel<
     return this.model.doGenerateToolCall(tool, mappedPrompt, options);
   }
 
-  doGenerateToolCallsOrText(
+  doGenerateToolCalls(
     tools: ToolDefinition<string, unknown>[],
     prompt: PROMPT,
     options?: FunctionOptions | undefined
@@ -63,7 +63,7 @@ export class PromptTemplateFullTextModel<
       | undefined;
   }> {
     const mappedPrompt = this.promptTemplate.format(prompt);
-    return this.model.doGenerateToolCallsOrText(tools, mappedPrompt, options);
+    return this.model.doGenerateToolCalls(tools, mappedPrompt, options);
   }
 
   withPromptTemplate<INPUT_PROMPT>(

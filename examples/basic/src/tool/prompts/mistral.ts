@@ -1,6 +1,6 @@
 import {
   InstructionPrompt,
-  ToolCallsOrGenerateTextPromptTemplate,
+  ToolCallsPromptTemplate,
   ToolDefinition,
   parseJSON,
   zodSchema,
@@ -8,7 +8,7 @@ import {
 import { nanoid } from "nanoid";
 import { z } from "zod";
 
-export const mistralMultiToolCallPromptTemplate: ToolCallsOrGenerateTextPromptTemplate<
+export const mistralMultiToolCallPromptTemplate: ToolCallsPromptTemplate<
   string,
   InstructionPrompt
 > = {

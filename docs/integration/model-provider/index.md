@@ -24,7 +24,7 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 - [OpenAI](/integration/model-provider/openai) chat models (function call, json mode)
 - [Ollama](/integration/model-provider/ollama) json mode, with compatible models
 
-### [Generate Tool Call](/guide/tools/generate-tool-call) and [Generate Tool Calls or Text](/guide/tools/generate-tool-calls-or-text)
+### [Generate Tool Call](/guide/tools/generate-tool-call) and [Generate Tool Calls](/guide/tools/generate-tool-calls)
 
 - [OpenAI](/integration/model-provider/openai) chat models
 

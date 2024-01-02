@@ -277,7 +277,7 @@ export abstract class AbstractOpenAIChatModel<
     };
   }
 
-  async doGenerateToolCallsOrText(
+  async doGenerateToolCalls(
     tools: Array<ToolDefinition<string, unknown>>,
     prompt: OpenAIChatPrompt,
     options?: FunctionOptions

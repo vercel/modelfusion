@@ -5,9 +5,9 @@ import { NoSuchToolDefinitionError } from "../NoSuchToolDefinitionError.js";
 import { ToolCallArgumentsValidationError } from "../ToolCallArgumentsValidationError.js";
 import { ToolDefinition } from "../ToolDefinition.js";
 import {
-  ToolCallsOrTextGenerationModel,
-  ToolCallsOrTextGenerationModelSettings,
-} from "./ToolCallsOrTextGenerationModel.js";
+  ToolCallsGenerationModel,
+  ToolCallsGenerationModelSettings,
+} from "./ToolCallsGenerationModel.js";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
 // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
@@ -34,14 +34,11 @@ type ToOutputValue<
   TOOL_CALLS extends ToolCallDefinitionArray<ToolDefinition<any, any>[]>,
 > = ToToolCallUnion<ToToolCallDefinitionMap<TOOL_CALLS>>;
 
-export async function generateToolCallsOrText<
+export async function generateToolCalls<
   TOOLS extends Array<ToolDefinition<any, any>>,
   PROMPT,
 >(
-  model: ToolCallsOrTextGenerationModel<
-    PROMPT,
-    ToolCallsOrTextGenerationModelSettings
-  >,
+  model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>,
   tools: TOOLS,
   prompt: PROMPT | ((tools: TOOLS) => PROMPT),
   options?: FunctionOptions & { fullResponse?: false }
@@ -49,14 +46,11 @@ export async function generateToolCallsOrText<
   text: string | null;
   toolCalls: Array<ToOutputValue<TOOLS>> | null;
 }>;
-export async function generateToolCallsOrText<
+export async function generateToolCalls<
   TOOLS extends ToolDefinition<any, any>[],
   PROMPT,
 >(
-  model: ToolCallsOrTextGenerationModel<
-    PROMPT,
-    ToolCallsOrTextGenerationModelSettings
-  >,
+  model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>,
   tools: TOOLS,
   prompt: PROMPT | ((tools: TOOLS) => PROMPT),
   options: FunctionOptions & { fullResponse?: boolean }
@@ -65,14 +59,11 @@ export async function generateToolCallsOrText<
   response: unknown;
   metadata: ModelCallMetadata;
 }>;
-export async function generateToolCallsOrText<
+export async function generateToolCalls<
   TOOLS extends ToolDefinition<any, any>[],
   PROMPT,
 >(
-  model: ToolCallsOrTextGenerationModel<
-    PROMPT,
-    ToolCallsOrTextGenerationModelSettings
-  >,
+  model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>,
   tools: TOOLS,
   prompt: PROMPT | ((tools: TOOLS) => PROMPT),
   options?: FunctionOptions & { fullResponse?: boolean }
@@ -98,17 +89,14 @@ export async function generateToolCallsOrText<
       text: string | null;
       toolCalls: Array<ToOutputValue<TOOLS>> | null;
     },
-    ToolCallsOrTextGenerationModel<
-      PROMPT,
-      ToolCallsOrTextGenerationModelSettings
-    >
+    ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>
   >({
-    functionType: "generate-tool-calls-or-text",
+    functionType: "generate-tool-calls",
     input: expandedPrompt,
     model,
     options,
     generateResponse: async (options) => {
-      const result = await model.doGenerateToolCallsOrText(
+      const result = await model.doGenerateToolCalls(
         tools,
         expandedPrompt,
         options

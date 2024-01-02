@@ -7,7 +7,7 @@ import {
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel.js";
-import { ToolCallsOrTextGenerationModel } from "../../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
+import { ToolCallsGenerationModel } from "../../tool/generate-tool-calls/ToolCallsGenerationModel.js";
 import {
   AbstractOpenAIChatModel,
   AbstractOpenAIChatSettings,
@@ -34,10 +34,7 @@ export class OpenAICompatibleChatModel
   implements
     TextStreamingModel<OpenAIChatPrompt, OpenAICompatibleChatSettings>,
     ToolCallGenerationModel<OpenAIChatPrompt, OpenAICompatibleChatSettings>,
-    ToolCallsOrTextGenerationModel<
-      OpenAIChatPrompt,
-      OpenAICompatibleChatSettings
-    >
+    ToolCallsGenerationModel<OpenAIChatPrompt, OpenAICompatibleChatSettings>
 {
   constructor(settings: OpenAICompatibleChatSettings) {
     super(settings);

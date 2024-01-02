@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
-import { generateToolCallsOrText, openai, zodSchema } from "modelfusion";
+import { generateToolCalls, openai, zodSchema } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
 
 async function main() {
-  const { text, toolCalls } = await generateToolCallsOrText(
+  const { text, toolCalls } = await generateToolCalls(
     openai.ChatTextGenerator({
       model: "gpt-4-1106-preview",
       maxGenerationTokens: 200,

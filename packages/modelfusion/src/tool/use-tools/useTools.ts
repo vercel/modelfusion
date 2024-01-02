@@ -6,10 +6,10 @@ import { ToolCallError } from "../ToolCallError.js";
 import { ToolCallResult } from "../ToolCallResult.js";
 import { safeExecuteToolCall } from "../execute-tool/safeExecuteToolCall.js";
 import {
-  ToolCallsOrTextGenerationModel,
-  ToolCallsOrTextGenerationModelSettings,
-} from "../generate-tool-calls-or-text/ToolCallsOrTextGenerationModel.js";
-import { generateToolCallsOrText } from "../generate-tool-calls-or-text/generateToolCallsOrText.js";
+  ToolCallsGenerationModel,
+  ToolCallsGenerationModelSettings,
+} from "../generate-tool-calls/ToolCallsGenerationModel.js";
+import { generateToolCalls } from "../generate-tool-calls/generateToolCalls.js";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
 // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
@@ -40,14 +40,11 @@ type ToToolCallUnion<T> = {
 type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
   ToToolCallUnion<ToToolMap<TOOLS>>;
 
-export async function useToolsOrGenerateText<
+export async function useTools<
   PROMPT,
   TOOLS extends Array<Tool<any, any, any>>,
 >(
-  model: ToolCallsOrTextGenerationModel<
-    PROMPT,
-    ToolCallsOrTextGenerationModelSettings
-  >,
+  model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>,
   tools: TOOLS,
   prompt: PROMPT | ((tools: TOOLS) => PROMPT),
   options?: FunctionOptions
@@ -64,9 +61,9 @@ export async function useToolsOrGenerateText<
   return executeFunctionCall({
     options,
     input: expandedPrompt,
-    functionType: "use-tools-or-generate-text",
+    functionType: "use-tools",
     execute: async (options) => {
-      const modelResponse = await generateToolCallsOrText(
+      const modelResponse = await generateToolCalls(
         model,
         tools,
         expandedPrompt,

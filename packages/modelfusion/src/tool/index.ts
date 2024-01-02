@@ -10,6 +10,6 @@ export * from "./ToolExecutionError.js";
 export * from "./WebSearchTool.js";
 export * from "./execute-tool/index.js";
 export * from "./generate-tool-call/index.js";
-export * from "./generate-tool-calls-or-text/index.js";
+export * from "./generate-tool-calls/index.js";
 export * from "./use-tool/index.js";
-export * from "./use-tools-or-generate-text/index.js";
+export * from "./use-tools/index.js";

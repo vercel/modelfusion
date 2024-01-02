@@ -1,23 +1,23 @@
 ---
-sidebar_position: 45
+sidebar_position: 25
 ---
 
-# Use Tools or Generate Text
+# Use Tools
 
 An essential behavior of chat agents is to be able to choose from different tools or to respond to the user. The agent needs to be able to make the choice of which tools, if any, to use and how, and to generate text to respond to the user.
 
-`useToolsOrGenerateText` supports exactly this use case. It generates tool calls and text from a prompt, and then executes the tools. The model that you provide needs to support tool calls (e.g. OpenAI Chat).
+`useTools` supports exactly this use case. It generates tool calls and text from a prompt, and then executes the tools. The model that you provide needs to support tool calls (e.g. OpenAI Chat).
 
-`useToolsOrGenerateText` does the following:
+`useTools` does the following:
 
-1. It calls `generateToolCallsOrText` to generate text and multiple tool calls from a prompt.
+1. It calls `generateToolCalls` to generate text and multiple tool calls from a prompt.
 2. It calls `executeTool` for each tool call in parallel to run the tool with the provided arguments.
 3. It handles tool execution errors and returns a safe result.
 
 ## Example
 
 ```ts
-const { text, toolResults } = await useToolsOrGenerateText(
+const { text, toolResults } = await useTools(
   openai.ChatTextGenerator({ model: "gpt-4-1106-preview" }),
   [toolA, toolB, toolC],
   [openai.ChatMessage.user(query)]

@@ -7,9 +7,9 @@ import {
   ToolCallGenerationStartedEvent,
 } from "../tool/generate-tool-call/ToolCallGenerationEvent.js";
 import {
-  ToolCallsOrTextGenerationFinishedEvent,
-  ToolCallsOrTextGenerationStartedEvent,
-} from "../tool/generate-tool-calls-or-text/ToolCallsOrTextGenerationEvent.js";
+  ToolCallsGenerationFinishedEvent,
+  ToolCallsGenerationStartedEvent,
+} from "../tool/generate-tool-calls/ToolCallsGenerationEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
   EmbeddingFinishedEvent,
@@ -101,7 +101,7 @@ export type ModelCallStartedEvent =
   | TextGenerationStartedEvent
   | TextStreamingStartedEvent
   | ToolCallGenerationStartedEvent
-  | ToolCallsOrTextGenerationStartedEvent
+  | ToolCallsGenerationStartedEvent
   | TranscriptionStartedEvent;
 
 export type ModelCallFinishedEvent =
@@ -114,5 +114,5 @@ export type ModelCallFinishedEvent =
   | TextGenerationFinishedEvent
   | TextStreamingFinishedEvent
   | ToolCallGenerationFinishedEvent
-  | ToolCallsOrTextGenerationFinishedEvent
+  | ToolCallsGenerationFinishedEvent
   | TranscriptionFinishedEvent;

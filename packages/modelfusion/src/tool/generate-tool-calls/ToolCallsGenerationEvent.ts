@@ -3,12 +3,12 @@ import {
   BaseModelCallStartedEvent,
 } from "../../model-function/ModelCallEvent.js";
 
-export interface ToolCallsOrTextGenerationStartedEvent
+export interface ToolCallsGenerationStartedEvent
   extends BaseModelCallStartedEvent {
-  functionType: "generate-tool-calls-or-text";
+  functionType: "generate-tool-calls";
 }
 
-export type ToolCallsOrTextGenerationFinishedEventResult =
+export type ToolCallsGenerationFinishedEventResult =
   | {
       status: "success";
       response: unknown;
@@ -23,8 +23,7 @@ export type ToolCallsOrTextGenerationFinishedEventResult =
   | { status: "error"; error: unknown }
   | { status: "abort" };
 
-export type ToolCallsOrTextGenerationFinishedEvent =
-  BaseModelCallFinishedEvent & {
-    functionType: "generate-tool-calls-or-text";
-    result: ToolCallsOrTextGenerationFinishedEventResult;
-  };
+export type ToolCallsGenerationFinishedEvent = BaseModelCallFinishedEvent & {
+  functionType: "generate-tool-calls";
+  result: ToolCallsGenerationFinishedEventResult;
+};

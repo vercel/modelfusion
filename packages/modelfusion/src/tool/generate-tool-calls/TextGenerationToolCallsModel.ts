@@ -2,24 +2,24 @@ import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { TextGenerationModel } from "../../model-function/generate-text/TextGenerationModel.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { ToolDefinition } from "../ToolDefinition.js";
-import { ToolCallsOrGenerateTextPromptTemplate } from "./ToolCallsOrGenerateTextPromptTemplate.js";
 import {
-  ToolCallsOrTextGenerationModel,
-  ToolCallsOrTextGenerationModelSettings,
-} from "./ToolCallsOrTextGenerationModel.js";
-import { ToolCallsOrTextParseError } from "./ToolCallsOrTextParseError.js";
+  ToolCallsGenerationModel,
+  ToolCallsGenerationModelSettings,
+} from "./ToolCallsGenerationModel.js";
+import { ToolCallsPromptTemplate } from "./ToolCallsPromptTemplate.js";
+import { ToolCallsParseError } from "./ToolCallsParseError.js";
 
-export class TextGenerationToolCallsOrGenerateTextModel<
+export class TextGenerationToolCallsModel<
   SOURCE_PROMPT,
   TARGET_PROMPT,
   MODEL extends TextGenerationModel<
     TARGET_PROMPT,
-    ToolCallsOrTextGenerationModelSettings
+    ToolCallsGenerationModelSettings
   >,
-> implements ToolCallsOrTextGenerationModel<SOURCE_PROMPT, MODEL["settings"]>
+> implements ToolCallsGenerationModel<SOURCE_PROMPT, MODEL["settings"]>
 {
   private readonly model: MODEL;
-  private readonly template: ToolCallsOrGenerateTextPromptTemplate<
+  private readonly template: ToolCallsPromptTemplate<
     SOURCE_PROMPT,
     TARGET_PROMPT
   >;
@@ -29,10 +29,7 @@ export class TextGenerationToolCallsOrGenerateTextModel<
     template,
   }: {
     model: MODEL;
-    template: ToolCallsOrGenerateTextPromptTemplate<
-      SOURCE_PROMPT,
-      TARGET_PROMPT
-    >;
+    template: ToolCallsPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT>;
   }) {
     this.model = model;
     this.template = template;
@@ -50,7 +47,7 @@ export class TextGenerationToolCallsOrGenerateTextModel<
     return this.model.settingsForEvent;
   }
 
-  async doGenerateToolCallsOrText(
+  async doGenerateToolCalls(
     tools: Array<ToolDefinition<string, unknown>>,
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
@@ -85,7 +82,7 @@ export class TextGenerationToolCallsOrGenerateTextModel<
           | undefined,
       };
     } catch (error) {
-      throw new ToolCallsOrTextParseError({
+      throw new ToolCallsParseError({
         valueText: generatedText,
         cause: error,
       });
@@ -93,7 +90,7 @@ export class TextGenerationToolCallsOrGenerateTextModel<
   }
 
   withSettings(additionalSettings: Partial<MODEL["settings"]>): this {
-    return new TextGenerationToolCallsOrGenerateTextModel({
+    return new TextGenerationToolCallsModel({
       model: this.model.withSettings(additionalSettings),
       template: this.template,
     }) as this;

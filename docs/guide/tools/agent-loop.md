@@ -6,7 +6,7 @@ sidebar_position: 60
 
 An agent loop is a loop in which the agent decides at each step which tools to use and how, and which text to generate to respond to the user. The results of the tools are being fed back to the agent in the next iteration.
 
-You can use [useToolsOrGenerateText](/api/modules/#usetoolsorgeneratetext) to implement an agent loop.
+You can use [useTools](/api/modules/#useTools) to implement an agent loop.
 
 ## Example: Middle School Math Agent
 
@@ -15,12 +15,7 @@ This example agent ([Source Code](https://github.com/lgrammel/modelfusion/tree/m
 ```ts
 import { MathJsTool } from "@modelfusion/mathjs-tool";
 import dotenv from "dotenv";
-import {
-  ChatMessage,
-  ChatPrompt,
-  openai,
-  useToolsOrGenerateText,
-} from "modelfusion";
+import { ChatMessage, ChatPrompt, openai, useTools } from "modelfusion";
 
 // ...
 
@@ -38,7 +33,7 @@ const chat: ChatPrompt = {
 // agent loop:
 while (true) {
   // call the language model and execute the tools:
-  const { text, toolResults } = await useToolsOrGenerateText(
+  const { text, toolResults } = await useTools(
     openai
       .ChatTextGenerator({
         model: "gpt-4-1106-preview",

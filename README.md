@@ -360,12 +360,12 @@ console.log(`Ok:`, ok);
 console.log(`Result or Error:`, result);
 ```
 
-#### [useToolsOrGenerateText](https://modelfusion.dev/guide/tools/use-tools-or-generate-text)
+#### [useTools](https://modelfusion.dev/guide/tools/use-tools-or-generate-text)
 
-With `useToolsOrGenerateText`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function executes the tools.
+With `useTools`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function executes the tools.
 
 ```ts
-const { text, toolResults } = await useToolsOrGenerateText(
+const { text, toolResults } = await useTools(
   openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   [calculator /* ... */],
   [openai.ChatMessage.user("What's fourteen times twelve?")]
@@ -410,7 +410,7 @@ const calculator = new Tool({
 
 #### [Agent Loop](https://modelfusion.dev/guide/tools/agent-loop)
 
-You can use `useToolsOrGenerateText` to implement an agent loop that responds to user messages and executes tools. [Learn more](https://modelfusion.dev/guide/tools/agent-loop).
+You can use `useTools` to implement an agent loop that responds to user messages and executes tools. [Learn more](https://modelfusion.dev/guide/tools/agent-loop).
 
 ### [Vector Indices](https://modelfusion.dev/guide/vector-index)
 

@@ -1,17 +1,17 @@
 import { getErrorMessage } from "../../util/getErrorMessage.js";
 
-export class ToolCallsOrTextParseError extends Error {
+export class ToolCallsParseError extends Error {
   readonly valueText: string;
   readonly cause: unknown;
 
   constructor({ valueText, cause }: { valueText: string; cause: unknown }) {
     super(
-      `Tool calls or text parsing failed. ` +
+      `Tool calls parsing failed. ` +
         `Value: ${valueText}.\n` +
         `Error message: ${getErrorMessage(cause)}`
     );
 
-    this.name = "ToolCallsOrTextParseError";
+    this.name = "ToolCallsParseError";
 
     this.cause = cause;
     this.valueText = valueText;

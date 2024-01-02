@@ -17,8 +17,8 @@ import {
   TextGenerationToolCallModel,
   ToolCallPromptTemplate,
 } from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
-import { TextGenerationToolCallsOrGenerateTextModel } from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
-import { ToolCallsOrGenerateTextPromptTemplate } from "../../tool/generate-tool-calls-or-text/ToolCallsOrGenerateTextPromptTemplate.js";
+import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/TextGenerationToolCallsModel.js";
+import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate.js";
 import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
@@ -217,12 +217,12 @@ export class OllamaCompletionModel<
   }
 
   asToolCallsOrTextGenerationModel<INPUT_PROMPT>(
-    promptTemplate: ToolCallsOrGenerateTextPromptTemplate<
+    promptTemplate: ToolCallsPromptTemplate<
       INPUT_PROMPT,
       OllamaCompletionPrompt
     >
   ) {
-    return new TextGenerationToolCallsOrGenerateTextModel({
+    return new TextGenerationToolCallsModel({
       model: this,
       template: promptTemplate,
     });

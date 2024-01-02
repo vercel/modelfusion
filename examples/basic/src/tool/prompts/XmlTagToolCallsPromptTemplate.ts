@@ -1,6 +1,6 @@
 import {
   InstructionPrompt,
-  ToolCallsOrGenerateTextPromptTemplate,
+  ToolCallsPromptTemplate,
   ToolDefinition,
   parseJSON,
   zodSchema,
@@ -15,7 +15,7 @@ const DEFAULT_INSTRUCTION = (tagName: string) =>
   `\nTo use these functions respond with a JSON object inside <${tagName}> XML tags:\n` +
   `<${tagName}> { "name": functionName, "args": functionArgs } </${tagName}>`;
 
-export const XmlTagToolCallsOrGenerateTextPromptTemplate = {
+export const XmlTagToolCallsPromptTemplate = {
   text: ({
     tagName,
     generateId,
@@ -28,10 +28,7 @@ export const XmlTagToolCallsOrGenerateTextPromptTemplate = {
     instructionPrefix?: string;
     instruction?: string;
     instructionSuffix?: string;
-  } = {}): ToolCallsOrGenerateTextPromptTemplate<
-    string,
-    InstructionPrompt
-  > => ({
+  } = {}): ToolCallsPromptTemplate<string, InstructionPrompt> => ({
     createPrompt(
       prompt: string,
       tools: Array<ToolDefinition<string, unknown>>
@@ -65,10 +62,7 @@ export const XmlTagToolCallsOrGenerateTextPromptTemplate = {
     instructionPrefix?: string;
     instruction?: string;
     instructionSuffix?: string;
-  } = {}): ToolCallsOrGenerateTextPromptTemplate<
-    InstructionPrompt,
-    InstructionPrompt
-  > => ({
+  } = {}): ToolCallsPromptTemplate<InstructionPrompt, InstructionPrompt> => ({
     createPrompt(
       prompt: InstructionPrompt,
       tools: Array<ToolDefinition<string, unknown>>

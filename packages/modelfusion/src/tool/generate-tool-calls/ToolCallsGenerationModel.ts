@@ -2,13 +2,13 @@ import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { Model, ModelSettings } from "../../model-function/Model.js";
 import { ToolDefinition } from "../ToolDefinition.js";
 
-export interface ToolCallsOrTextGenerationModelSettings extends ModelSettings {}
+export interface ToolCallsGenerationModelSettings extends ModelSettings {}
 
-export interface ToolCallsOrTextGenerationModel<
+export interface ToolCallsGenerationModel<
   PROMPT,
-  SETTINGS extends ToolCallsOrTextGenerationModelSettings,
+  SETTINGS extends ToolCallsGenerationModelSettings,
 > extends Model<SETTINGS> {
-  doGenerateToolCallsOrText(
+  doGenerateToolCalls(
     tools: Array<ToolDefinition<string, unknown>>,
     prompt: PROMPT,
     options?: FunctionOptions

@@ -17,8 +17,8 @@ import {
   TextGenerationToolCallModel,
   ToolCallPromptTemplate,
 } from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
-import { TextGenerationToolCallsOrGenerateTextModel } from "../../tool/generate-tool-calls-or-text/TextGenerationToolCallsOrGenerateTextModel.js";
-import { ToolCallsOrGenerateTextPromptTemplate } from "../../tool/generate-tool-calls-or-text/ToolCallsOrGenerateTextPromptTemplate.js";
+import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/TextGenerationToolCallsModel.js";
+import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate.js";
 import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { chat, instruction, text } from "./OllamaChatPromptTemplate.js";
@@ -176,12 +176,9 @@ export class OllamaChatModel
   }
 
   asToolCallsOrTextGenerationModel<INPUT_PROMPT>(
-    promptTemplate: ToolCallsOrGenerateTextPromptTemplate<
-      INPUT_PROMPT,
-      OllamaChatPrompt
-    >
+    promptTemplate: ToolCallsPromptTemplate<INPUT_PROMPT, OllamaChatPrompt>
   ) {
-    return new TextGenerationToolCallsOrGenerateTextModel({
+    return new TextGenerationToolCallsModel({
       model: this,
       template: promptTemplate,
     });

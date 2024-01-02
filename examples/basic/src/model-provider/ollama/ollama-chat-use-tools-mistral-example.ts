@@ -1,11 +1,6 @@
 import dotenv from "dotenv";
-import {
-  automatic1111,
-  modelfusion,
-  ollama,
-  useToolsOrGenerateText,
-} from "modelfusion";
-import { XmlTagToolCallsOrGenerateTextPromptTemplate } from "../../tool/prompts/XmlTagToolCallsOrGenerateTextPromptTemplate";
+import { automatic1111, modelfusion, ollama, useTools } from "modelfusion";
+import { XmlTagToolCallsPromptTemplate } from "../../tool/prompts/XmlTagToolCallsPromptTemplate";
 import { ImageGeneratorTool } from "../../tool/tools/image-generator-tool";
 
 dotenv.config();
@@ -13,16 +8,14 @@ dotenv.config();
 modelfusion.setLogFormat("detailed-object");
 
 async function main() {
-  const { text, toolResults } = await useToolsOrGenerateText(
+  const { text, toolResults } = await useTools(
     ollama
       .ChatTextGenerator({
         model: "mixtral",
         temperature: 0,
       })
       .withInstructionPrompt()
-      .asToolCallsOrTextGenerationModel(
-        XmlTagToolCallsOrGenerateTextPromptTemplate.text()
-      ),
+      .asToolCallsOrTextGenerationModel(XmlTagToolCallsPromptTemplate.text()),
 
     [
       new ImageGeneratorTool({
