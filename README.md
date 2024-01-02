@@ -348,7 +348,7 @@ console.log(`Ok:`, ok);
 console.log(`Result or Error:`, result);
 ```
 
-#### [useTools](https://modelfusion.dev/guide/tools/use-tools-or-generate-text)
+#### [useTools](https://modelfusion.dev/guide/tools/use-tools)
 
 With `useTools`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function executes the tools.
 
@@ -613,6 +613,12 @@ invokeFlow({
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
 - [Tools](https://modelfusion.dev/guide/tools)
+  - [Use Tool](https://modelfusion.dev/guide/tools/use-tool)
+  - [Use Tools](https://modelfusion.dev/guide/tools/use-tools)
+  - [Agent Loop](https://modelfusion.dev/guide/tools/agent-loop)
+  - [Available Tools](https://modelfusion.dev/guide/tools/available-tools/)
+  - [Custom Tools](https://modelfusion.dev/guide/tools/custom-tools)
+  - [Advanced](https://modelfusion.dev/guide/tools/advanced)
 - [Vector Indices](https://modelfusion.dev/guide/vector-index)
   - [Upsert](https://modelfusion.dev/guide/vector-index/upsert)
   - [Retrieve](https://modelfusion.dev/guide/vector-index/retrieve)
