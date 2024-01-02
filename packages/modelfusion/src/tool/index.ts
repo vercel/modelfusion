@@ -1,4 +1,3 @@
-export * from "./InvalidToolNameError.js";
 export * from "./NoSuchToolDefinitionError.js";
 export * from "./Tool.js";
 export * from "./ToolCall.js";

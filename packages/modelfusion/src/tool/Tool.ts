@@ -1,10 +1,7 @@
 import { FunctionOptions } from "../core/FunctionOptions.js";
 import { JsonSchemaProducer } from "../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../core/schema/Schema.js";
-import { InvalidToolNameError } from "./InvalidToolNameError.js";
 import { ToolDefinition } from "./ToolDefinition.js";
-
-const namePattern = /^[a-zA-Z0-9_-]{1,64}$/;
 
 /**
  * A tool is a function with a name, description and defined inputs that can be used
@@ -15,7 +12,6 @@ export class Tool<NAME extends string, PARAMETERS, RESULT>
 {
   /**
    * The name of the tool.
-   * It has to be a function name that matches the regular expression pattern '^[a-zA-Z0-9_-]{1,64}$'.
    * Should be understandable for language models and unique among the tools that they know.
    */
   readonly name: NAME;
@@ -57,14 +53,6 @@ export class Tool<NAME extends string, PARAMETERS, RESULT>
     returnType?: Schema<RESULT>;
     execute(args: PARAMETERS, options?: FunctionOptions): PromiseLike<RESULT>;
   }) {
-    // check that the name is a valid function name:
-    if (!namePattern.test(name)) {
-      throw new InvalidToolNameError({
-        toolName: name,
-        namePattern,
-      });
-    }
-
     this.name = name;
     this.description = description;
     this.parameters = parameters;
