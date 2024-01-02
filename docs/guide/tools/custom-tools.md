@@ -1,8 +1,8 @@
 ---
-sidebar_position: 40
+sidebar_position: 75
 ---
 
-# Creating Tools
+# Custom Tools
 
 You can create the tools that you need for yor application by using the [Tool class](/api/classes/Tool).
 

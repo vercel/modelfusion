@@ -10,7 +10,7 @@ You can use [useTools](/api/modules/#useTools) to implement an agent loop.
 
 ## Example: Middle School Math Agent
 
-This example agent ([Source Code](https://github.com/lgrammel/modelfusion/tree/main/examples/middle-school-math-agent)) solves middle school math problems. It uses the [Math.js tool](/guide/tools/predefined-tools/mathjs) to solve the problems.
+This example agent ([Source Code](https://github.com/lgrammel/modelfusion/tree/main/examples/middle-school-math-agent)) solves middle school math problems. It uses the [Math.js tool](/guide/tools/available-tools/mathjs) to solve the problems.
 
 ```ts
 import { MathJsTool } from "@modelfusion/mathjs-tool";

@@ -4,7 +4,7 @@ sidebar_position: 20
 
 # Use Tool
 
-With [useTool](/api/modules/#usetool), you can invoke a single tool with a model prompt. The model that you provide needs to support tools calls (e.g. OpenAI Chat).
+With [useTool](/api/modules/#usetool), you can invoke a single tool with a model prompt. The model that you provide needs to support tools calls (e.g. OpenAI chat).
 
 `useTool` does the following:
 
