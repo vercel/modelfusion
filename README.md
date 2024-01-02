@@ -326,25 +326,13 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 
 ### [Tools](https://modelfusion.dev/guide/tools)
 
-Tools are functions that can be executed by an AI model. They are useful for building chatbots and agents.
+Tools are functions (and associated metadata) that can be executed by an AI model. They are useful for building chatbots and agents.
 
-Predefined tools: [Math.js](https://modelfusion.dev/guide/tools/predefined-tools/mathjs), [MediaWiki Search](https://modelfusion.dev/guide/tools/predefined-tools/mediawiki-search), [SerpAPI](https://modelfusion.dev/guide/tools/predefined-tools/serpapi), [Google Custom Search](https://modelfusion.dev/guide/tools/predefined-tools/google-custom-search)
-
-#### [executeTool](https://modelfusion.dev/guide/tools/execute-tool)
-
-You can directly invoke a tool with `executeTool`:
-
-```ts
-const result = await executeTool(calculator, {
-  a: 14,
-  b: 12,
-  operator: "*",
-});
-```
+ModelFusion offers several tools out-of-the-box: [Math.js](https://modelfusion.dev/guide/tools/predefined-tools/mathjs), [MediaWiki Search](https://modelfusion.dev/guide/tools/predefined-tools/mediawiki-search), [SerpAPI](https://modelfusion.dev/guide/tools/predefined-tools/serpapi), [Google Custom Search](https://modelfusion.dev/guide/tools/predefined-tools/google-custom-search). You can also create [custom tools](https://modelfusion.dev/guide/tools).
 
 #### [useTool](https://modelfusion.dev/guide/tools/use-tool)
 
-With `useTool`, you can use a tool with a language model that supports tools calls (e.g. OpenAI Chat). `useTool` first generates a tool call and then executes the tool with the arguments.
+With `useTool`, you can ask a tool-compatible language model (e.g. OpenAI chat) to invoke a single tool. `useTool` first generates a tool call and then executes the tool with the arguments.
 
 ```ts
 const { tool, toolCall, args, ok, result } = await useTool(
@@ -370,42 +358,6 @@ const { text, toolResults } = await useTools(
   [calculator /* ... */],
   [openai.ChatMessage.user("What's fourteen times twelve?")]
 );
-```
-
-#### [Creating Tools](https://modelfusion.dev/guide/tools/create-tools)
-
-A tool is comprised of an async execute function, a name, a description, and a schema for the input parameters.
-
-```ts
-const calculator = new Tool({
-  name: "calculator",
-  description: "Execute a calculation",
-
-  parameters: zodSchema(
-    z.object({
-      a: z.number().describe("The first number."),
-      b: z.number().describe("The second number."),
-      operator: z
-        .enum(["+", "-", "*", "/"])
-        .describe("The operator (+, -, *, /)."),
-    })
-  ),
-
-  execute: async ({ a, b, operator }) => {
-    switch (operator) {
-      case "+":
-        return a + b;
-      case "-":
-        return a - b;
-      case "*":
-        return a * b;
-      case "/":
-        return a / b;
-      default:
-        throw new Error(`Unknown operator: ${operator}`);
-    }
-  },
-});
 ```
 
 #### [Agent Loop](https://modelfusion.dev/guide/tools/agent-loop)
