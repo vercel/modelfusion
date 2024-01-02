@@ -330,66 +330,6 @@ Tools are functions that can be executed by an AI model. They are useful for bui
 
 Predefined tools: [Math.js](https://modelfusion.dev/guide/tools/predefined-tools/mathjs), [SerpAPI](https://modelfusion.dev/guide/tools/predefined-tools/serpapi), [Google Custom Search](https://modelfusion.dev/guide/tools/predefined-tools/google-custom-search)
 
-#### [Creating Tools](https://modelfusion.dev/guide/tools/create-tools)
-
-A tool is comprised of an async execute function, a name, a description, and a schema for the input parameters.
-
-```ts
-const calculator = new Tool({
-  name: "calculator",
-  description: "Execute a calculation",
-
-  parameters: zodSchema(
-    z.object({
-      a: z.number().describe("The first number."),
-      b: z.number().describe("The second number."),
-      operator: z
-        .enum(["+", "-", "*", "/"])
-        .describe("The operator (+, -, *, /)."),
-    })
-  ),
-
-  execute: async ({ a, b, operator }) => {
-    switch (operator) {
-      case "+":
-        return a + b;
-      case "-":
-        return a - b;
-      case "*":
-        return a * b;
-      case "/":
-        return a / b;
-      default:
-        throw new Error(`Unknown operator: ${operator}`);
-    }
-  },
-});
-```
-
-#### [generateToolCall](https://modelfusion.dev/guide/tools/generate-tool-call)
-
-With `generateToolCall`, you can generate a tool call for a specific tool with a language model that supports tools calls (e.g. OpenAI Chat). This function does not execute the tools.
-
-```ts
-const { id, name, args } = await generateToolCall(
-  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-  calculator,
-  [openai.ChatMessage.user("What's fourteen times twelve?")]
-);
-```
-
-#### [generateToolCallsOrText](https://modelfusion.dev/guide/tools/generate-tool-calls-or-text)
-
-With `generateToolCallsOrText`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function does not execute the tools.
-
-```ts
-const { text, toolCalls } = await generateToolCallsOrText(
-  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-  [toolA, toolB, toolC],
-  [openai.ChatMessage.user(query)]
-);
-```
-
 #### [executeTool](https://modelfusion.dev/guide/tools/execute-tool)
 
 You can directly invoke a tool with `executeTool`:
@@ -430,6 +370,42 @@ const { text, toolResults } = await useToolsOrGenerateText(
   [calculator /* ... */],
   [openai.ChatMessage.user("What's fourteen times twelve?")]
 );
+```
+
+#### [Creating Tools](https://modelfusion.dev/guide/tools/create-tools)
+
+A tool is comprised of an async execute function, a name, a description, and a schema for the input parameters.
+
+```ts
+const calculator = new Tool({
+  name: "calculator",
+  description: "Execute a calculation",
+
+  parameters: zodSchema(
+    z.object({
+      a: z.number().describe("The first number."),
+      b: z.number().describe("The second number."),
+      operator: z
+        .enum(["+", "-", "*", "/"])
+        .describe("The operator (+, -, *, /)."),
+    })
+  ),
+
+  execute: async ({ a, b, operator }) => {
+    switch (operator) {
+      case "+":
+        return a + b;
+      case "-":
+        return a - b;
+      case "*":
+        return a * b;
+      case "/":
+        return a / b;
+      default:
+        throw new Error(`Unknown operator: ${operator}`);
+    }
+  },
+});
 ```
 
 #### [Agent Loop](https://modelfusion.dev/guide/tools/agent-loop)
