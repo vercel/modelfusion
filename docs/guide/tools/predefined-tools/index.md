@@ -12,5 +12,6 @@ Several tools for common tasks are already available for you to use.
 The following tools are available as a separate packages:
 
 - [Math.js](/guide/tools/predefined-tools/mathjs)
+- [MediaWiki Search](/guide/tools/predefined-tools/mediawiki-search)
 - [SerpAPI websearch](/guide/tools/predefined-tools/serpapi)
 - [Google Custom Search](/guide/tools/predefined-tools/google-custom-search)
