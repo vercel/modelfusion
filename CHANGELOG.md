@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.112.0 - 2024-01-02
+
+### Changed
+
+- **breaking change**: renamed `useToolsOrGenerateText` to `useTools`
+- **breaking change**: renamed `generateToolCallsOrText` to `generateToolCalls`
+
+### Removed
+
+- Restriction on tool names. OpenAI tool calls do not have such a restriction.
+
 ## v0.111.0 - 2024-01-01
 
 Reworked API configuration support.
