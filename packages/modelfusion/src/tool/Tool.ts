@@ -4,7 +4,7 @@ import { Schema } from "../core/schema/Schema.js";
 import { InvalidToolNameError } from "./InvalidToolNameError.js";
 import { ToolDefinition } from "./ToolDefinition.js";
 
-const namePattern = /^[a-zA-Z0-9_-]{1,64}$/;
+const namePattern = /^[a-zA-Z0-9._-]{1,64}$/;
 
 /**
  * A tool is a function with a name, description and defined inputs that can be used
