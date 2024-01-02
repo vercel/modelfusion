@@ -5,6 +5,8 @@ title: MediaWiki Search
 
 # MediaWiki Search Tool
 
+[[Source Code](https://github.com/lgrammel/modelfusion/tree/main/tools/mediawiki-search-tool)]
+
 Searches MediaWiki instances, such as Wikipedia, using their `opensearch` API endpoint.
 
 ## Installation

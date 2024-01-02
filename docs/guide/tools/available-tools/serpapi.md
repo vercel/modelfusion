@@ -5,6 +5,8 @@ title: SerpAPI
 
 # SerpAPI WebSearch Tool
 
+[[Source Code](https://github.com/lgrammel/modelfusion/tree/main/tools/serpapi-tool)]
+
 [SerpAPI](https://serpapi.com/) is a service that provides search results from Google, Bing, and other search engines.
 Currently only the Google search is supported as a tool.
 

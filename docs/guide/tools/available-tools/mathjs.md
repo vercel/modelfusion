@@ -5,6 +5,8 @@ title: Math.js
 
 # Math.js Tool
 
+[[Source Code](https://github.com/lgrammel/modelfusion/tree/main/tools/mathjs-tool)]
+
 [Math.js](https://mathjs.org) is a JavaScript library for evaluating mathematical expressions.
 
 ## Installation
