@@ -16,9 +16,7 @@ async function main() {
         model: "openhermes2.5-mistral",
         maxGenerationTokens: 1024,
         temperature: 0,
-        format: "json", // force JSON output
       })
-      .withInstructionPrompt() // needed for jsonStructurePrompt.text()
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
     zodSchema(

@@ -100,6 +100,11 @@ export interface TextGenerationModel<
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>
   ): TextGenerationModel<INPUT_PROMPT, SETTINGS>;
+
+  /**
+   * Optional. When available, forces the model to return JSON as the text output.
+   */
+  withJsonOutput?(): this;
 }
 
 export interface TextStreamingModel<
