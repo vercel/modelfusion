@@ -105,93 +105,6 @@ for await (const textPart of textStream) {
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama)
 
-### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
-
-Generate an image from a prompt.
-
-```ts
-import { generateImage, openai } from "modelfusion";
-
-const image = await generateImage(
-  openai.ImageGenerator({ model: "dall-e-3", size: "1024x1024" }),
-  "the wicked witch of the west in the style of early 19th century painting"
-);
-```
-
-Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider/openai), [Stability AI](https://modelfusion.dev/integration/model-provider/stability), [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111)
-
-### [Generate Speech](https://modelfusion.dev/guide/function/generate-speech)
-
-Synthesize speech (audio) from text. Also called TTS (text-to-speech).
-
-#### generateSpeech
-
-`generateSpeech` synthesizes speech from text.
-
-```ts
-import { generateSpeech, lmnt } from "modelfusion";
-
-// `speech` is a Buffer with MP3 audio data
-const speech = await generateSpeech(
-  lmnt.SpeechGenerator({
-    voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
-  }),
-  "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
-    "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
-    "fresh tunes in nearly twenty years, featuring the illustrious Lady Gaga, the " +
-    "magical Stevie Wonder, and the final beats from the late Charlie Watts."
-);
-```
-
-Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt), [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
-
-#### streamSpeech
-
-`generateSpeech` generates a stream of speech chunks from text or from a text stream. Depending on the model, this can be fully duplex.
-
-```ts
-import { streamSpeech, elevenlabs } from "modelfusion";
-
-const textStream: AsyncIterable<string>;
-
-const speechStream = await streamSpeech(
-  elevenlabs.SpeechGenerator({
-    model: "eleven_turbo_v2",
-    voice: "pNInz6obpgDQGcFmaJgB", // Adam
-    optimizeStreamingLatency: 1,
-    voiceSettings: { stability: 1, similarityBoost: 0.35 },
-    generationConfig: {
-      chunkLengthSchedule: [50, 90, 120, 150, 200],
-    },
-  }),
-  textStream
-);
-
-for await (const part of speechStream) {
-  // each part is a Buffer with MP3 audio data
-}
-```
-
-Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs)
-
-### [Generate Transcription](https://modelfusion.dev/guide/function/generate-transcription)
-
-Transcribe speech (audio) data into text. Also called speech-to-text (STT).
-
-```ts
-import { generateTranscription, openai } from "modelfusion";
-
-const transcription = await generateTranscription(
-  openai.Transcriber({ model: "whisper-1" }),
-  {
-    type: "mp3",
-    data: await fs.promises.readFile("data/test.mp3"),
-  }
-);
-```
-
-Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai), [Whisper.cpp](https://modelfusion.dev/integration/model-provider/whispercpp)
-
 ### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure)
 
 Generate typed objects using a language model and a schema.
@@ -286,6 +199,93 @@ for await (const part of structureStream) {
 ```
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Ollama](https://modelfusion.dev//integration/model-provider/ollama)
+
+### [Generate Image](https://modelfusion.dev/guide/function/generate-image)
+
+Generate an image from a prompt.
+
+```ts
+import { generateImage, openai } from "modelfusion";
+
+const image = await generateImage(
+  openai.ImageGenerator({ model: "dall-e-3", size: "1024x1024" }),
+  "the wicked witch of the west in the style of early 19th century painting"
+);
+```
+
+Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider/openai), [Stability AI](https://modelfusion.dev/integration/model-provider/stability), [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111)
+
+### [Generate Speech](https://modelfusion.dev/guide/function/generate-speech)
+
+Synthesize speech (audio) from text. Also called TTS (text-to-speech).
+
+#### generateSpeech
+
+`generateSpeech` synthesizes speech from text.
+
+```ts
+import { generateSpeech, lmnt } from "modelfusion";
+
+// `speech` is a Buffer with MP3 audio data
+const speech = await generateSpeech(
+  lmnt.SpeechGenerator({
+    voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
+  }),
+  "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
+    "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
+    "fresh tunes in nearly twenty years, featuring the illustrious Lady Gaga, the " +
+    "magical Stevie Wonder, and the final beats from the late Charlie Watts."
+);
+```
+
+Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt), [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
+
+#### streamSpeech
+
+`generateSpeech` generates a stream of speech chunks from text or from a text stream. Depending on the model, this can be fully duplex.
+
+```ts
+import { streamSpeech, elevenlabs } from "modelfusion";
+
+const textStream: AsyncIterable<string>;
+
+const speechStream = await streamSpeech(
+  elevenlabs.SpeechGenerator({
+    model: "eleven_turbo_v2",
+    voice: "pNInz6obpgDQGcFmaJgB", // Adam
+    optimizeStreamingLatency: 1,
+    voiceSettings: { stability: 1, similarityBoost: 0.35 },
+    generationConfig: {
+      chunkLengthSchedule: [50, 90, 120, 150, 200],
+    },
+  }),
+  textStream
+);
+
+for await (const part of speechStream) {
+  // each part is a Buffer with MP3 audio data
+}
+```
+
+Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs)
+
+### [Generate Transcription](https://modelfusion.dev/guide/function/generate-transcription)
+
+Transcribe speech (audio) data into text. Also called speech-to-text (STT).
+
+```ts
+import { generateTranscription, openai } from "modelfusion";
+
+const transcription = await generateTranscription(
+  openai.Transcriber({ model: "whisper-1" }),
+  {
+    type: "mp3",
+    data: await fs.promises.readFile("data/test.mp3"),
+  }
+);
+```
+
+Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai), [Whisper.cpp](https://modelfusion.dev/integration/model-provider/whispercpp)
 
 ### [Embed Value](https://modelfusion.dev/guide/function/embed)
 
