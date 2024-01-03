@@ -201,18 +201,22 @@ Generate typed objects using a language model and a schema.
 Generate a structure that matches a schema.
 
 ```ts
-import { zodSchema, generateStructure, openai } from "modelfusion";
+import {
+  ollama,
+  zodSchema,
+  generateStructure,
+  jsonStructurePrompt,
+} from "modelfusion";
 
 const sentiment = await generateStructure(
   // model:
-  openai
+  ollama
     .ChatTextGenerator({
-      model: "gpt-3.5-turbo",
+      model: "openhermes2.5-mistral",
+      maxGenerationTokens: 1024,
       temperature: 0,
-      maxGenerationTokens: 50,
     })
-    .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
-    .withInstructionPrompt(),
+    .asStructureGenerationModel(jsonStructurePrompt.instruction()),
 
   // schema:
   zodSchema(

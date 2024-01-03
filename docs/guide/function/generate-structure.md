@@ -4,30 +4,97 @@ sidebar_position: 50
 
 # Generate Structure
 
-Generates a structure that matches a schema.
-This is, for example, useful for [information extraction](/tutorial/tutorials/information-extraction)
-and classification tasks (e.g. [sentiment analysis](/tutorial/tutorials/sentiment-analysis)). The structure can be generated in one pass or streamed.
+Generates a typed object that matches a schema. The object can be generated in one pass or streamed as a sequence of partial results.
+
+First, a language model is invoked with a schema and a prompt. When possible and required by the prompt, the model output is restricted, for example, to JSON. Then the model output is parsed and type inference is executed. The result is a typed object that matches the schema.
+
+You can use this for e.g. the following tasks:
+
+- information generation, e.g. generating a list of characters for a role playing game
+- [information extraction](/tutorial/tutorials/information-extraction), e.g. extracting structured information from websites
+- classification, e.g. [sentiment analysis](/tutorial/tutorials/sentiment-analysis).
 
 ## Usage
+
+First you need to create a structure generation model. Such a model can be derived from a text chat model or a completion model, for example.
+
+### StructureGenerationModel
+
+[StructureGenerationModel API](/api/interfaces/StructureGenerationModel)
+
+#### OpenAI chat model with function calls
+
+You can create a structure generation model by using function calls on an OpenAI chat model. You need to pass the function name and optionally a function description to `asFunctionCallStructureGenerationModel` when deriving the structure generation model.
+
+```ts
+import { openai } from "modelfusion";
+
+const model = openai
+  .ChatTextGenerator({
+    model: "gpt-4-1106-preview",
+    temperature: 0,
+    maxGenerationTokens: 50,
+  })
+  .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
+  .withInstructionPrompt(); // optional, required in example below
+```
+
+#### OpenAI chat model with JSON output
+
+You can also use the JSON output of OpenAI chat models to generate a structure. The `jsonStructurePrompt` automatically restricts the output to JSON.
+
+```ts
+import { jsonStructurePrompt, openai } from "modelfusion";
+
+const model = openai
+  .ChatTextGenerator({
+    model: "gpt-4-1106-preview",
+    maxGenerationTokens: 1024,
+    temperature: 0,
+  })
+  .asStructureGenerationModel(jsonStructurePrompt.instruction());
+```
+
+#### Ollama chat model with JSON output
+
+You can also use the JSON output of Ollama chat models to generate a structure. The `jsonStructurePrompt` automatically restricts the output to JSON.
+
+:::note
+When using Ollama for structure generation, it is important to choose a model that is capable of creating the structure that you want. I had good results with `openhermes2.5-mistral` and `mixtral`, for example, but this depends on your use case.
+:::
+
+```ts
+import { jsonStructurePrompt, ollama } from "modelfusion";
+
+const model = ollama
+  .ChatTextGenerator({
+    model: "openhermes2.5-mistral",
+    maxGenerationTokens: 1024,
+    temperature: 0,
+  })
+  .asStructureGenerationModel(jsonStructurePrompt.instruction());
+```
+
+### jsonStructurePrompt
+
+[jsonStructurePrompt API](/api/modules#jsonstructureprompt)
+
+`jsonStructurePrompt` is a helper for getting language models to generate structured JSON output. It injects a JSON schema and instructions to generate JSON into your prompt. When possible, it restricts the model output to JSON.
+
+It allows you to create text or instruction prompts. You can pass a custom schema prefix and suffix.
+
+- `jsonStructurePrompt.text()`
+- `jsonStructurePrompt.instruction()`
 
 ### generateStructure
 
 [generateStructure API](/api/modules#generatestructure)
 
-#### OpenAI chat model with function call
+#### Example: Sentiment analysis
 
 ```ts
 import { openai, zodSchema, generateStructure } from "modelfusion";
 import { z } from "zod";
-
-const model = openai
-  .ChatTextGenerator({
-    model: "gpt-3.5-turbo",
-    temperature: 0,
-    maxGenerationTokens: 50,
-  })
-  .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
-  .withInstructionPrompt();
 
 const sentiment = await generateStructure(
   model,
@@ -49,38 +116,6 @@ const sentiment = await generateStructure(
 );
 ```
 
-#### OpenAI JSON format
-
-You can also use the JSON format of OpenAI to generate a structure.
-
-```ts
-const model = openai
-  .ChatTextGenerator({
-    model: "gpt-4-1106-preview",
-    temperature: 0,
-    maxGenerationTokens: 1024,
-    responseFormat: { type: "json_object" }, // force JSON output
-  })
-  .withInstructionPrompt() // needed for jsonStructurePrompt.instruction()
-  .asStructureGenerationModel(jsonStructurePrompt.instruction());
-```
-
-#### Ollama OpenHermes 2.5
-
-Structure generation is also possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B).
-
-```ts
-const model = ollama
-  .ChatTextGenerator({
-    model: "openhermes2.5-mistral",
-    maxGenerationTokens: 1024,
-    temperature: 0,
-    format: "json", // force JSON output
-  })
-  .withInstructionPrompt() // needed for jsonStructurePrompt.instruction()
-  .asStructureGenerationModel(jsonStructurePrompt.instruction());
-```
-
 ### streamStructure
 
 [streamStructure API](/api/modules#streamstructure)
@@ -94,11 +129,11 @@ For complete results, type inference is executed and `value` will be typed.
 For partial results `value` is JSON of the type `unknown`.
 You can do your own type inference on partial results if needed.
 
-#### OpenAI chat model
+#### Example: RPG character generation
 
 ```ts
 const structureStream = await streamStructure(
-  model, // see generateStructure examples
+  model,
   zodSchema(
     z.object({
       characters: z.array(
