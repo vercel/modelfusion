@@ -79,12 +79,18 @@ export async function generateText<PROMPT>(
 
         let cacheErrors: unknown[] | undefined = undefined;
 
+        const cacheKey = {
+          functionType: "generate-text",
+          functionId: options?.functionId,
+          input: {
+            model,
+            settings: model.settingsForEvent, // TODO should include full model information
+            prompt,
+          },
+        };
+
         try {
-          const cachedRawResponse = await options.cache.lookupValue({
-            functionType: "generate-text",
-            functionId: options?.functionId,
-            input: prompt, // TODO should include model information
-          });
+          const cachedRawResponse = await options.cache.lookupValue(cacheKey);
 
           if (cachedRawResponse != null) {
             return {
@@ -99,24 +105,14 @@ export async function generateText<PROMPT>(
         const result = await model.doGenerateTexts(prompt, options);
 
         try {
-          await options.cache.storeValue(
-            {
-              functionType: "generate-text",
-              functionId: options?.functionId,
-              input: prompt, // TODO should include model information
-            },
-            result.response
-          );
+          await options.cache.storeValue(cacheKey, result.response);
         } catch (err) {
           cacheErrors = [...(cacheErrors ?? []), err];
         }
 
         return {
           ...result,
-          cache: {
-            status: "miss",
-            errors: cacheErrors,
-          },
+          cache: { status: "miss", errors: cacheErrors },
         };
       }
 
