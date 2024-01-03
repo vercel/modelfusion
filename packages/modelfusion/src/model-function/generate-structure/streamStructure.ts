@@ -110,7 +110,10 @@ export async function streamStructure<STRUCTURE, PROMPT>(
     StructureStreamingModel<PROMPT>
   >({
     functionType: "stream-structure",
-    input: prompt,
+    input: {
+      schema,
+      prompt: expandedPrompt,
+    },
     model,
     options,
     startStream: async (options) =>

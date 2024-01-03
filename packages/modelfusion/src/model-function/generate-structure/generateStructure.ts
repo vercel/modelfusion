@@ -92,7 +92,10 @@ export async function generateStructure<
 
   const fullResponse = await executeStandardCall({
     functionType: "generate-structure",
-    input: expandedPrompt,
+    input: {
+      schema,
+      prompt: expandedPrompt,
+    },
     model,
     options,
     generateResponse: async (options) => {
