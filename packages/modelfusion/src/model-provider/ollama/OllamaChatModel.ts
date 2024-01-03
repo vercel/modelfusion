@@ -29,7 +29,6 @@ import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { chat, instruction, text } from "./OllamaChatPromptTemplate.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
 import { OllamaTextGenerationSettings } from "./OllamaTextGenerationSettings.js";
-import { TextGenerationResult } from "index.js";
 
 export type OllamaChatMessage = {
   role: "system" | "user" | "assistant";
@@ -152,13 +151,7 @@ export class OllamaChatModel
     );
   }
 
-  restoreGeneratedTexts(rawResponse: unknown): {
-    response: unknown;
-    textGenerationResults: TextGenerationResult[];
-    usage?:
-      | { promptTokens: number; completionTokens: number; totalTokens: number }
-      | undefined;
-  } {
+  restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
       parseJSON({
         text: JSON.stringify(rawResponse), // TODO parseJSON with structure
