@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
@@ -102,11 +103,24 @@ export abstract class AbstractOpenAICompletionModel<
   }
 
   async doGenerateTexts(prompt: string, options?: FunctionOptions) {
-    const response = await this.callAPI(prompt, {
-      ...options,
-      responseFormat: OpenAITextResponseFormat.json,
-    });
+    return this.processTextGenerationResponse(
+      await this.callAPI(prompt, {
+        ...options,
+        responseFormat: OpenAITextResponseFormat.json,
+      })
+    );
+  }
 
+  restoreGeneratedTexts(rawResponse: unknown) {
+    return this.processTextGenerationResponse(
+      parseJSON({
+        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+        schema: zodSchema(OpenAICompletionResponseSchema),
+      })
+    );
+  }
+
+  private processTextGenerationResponse(response: OpenAICompletionResponse) {
     return {
       response,
       textGenerationResults: response.choices.map((choice) => {

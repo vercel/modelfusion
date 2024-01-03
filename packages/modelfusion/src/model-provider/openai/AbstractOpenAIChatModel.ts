@@ -180,11 +180,24 @@ export abstract class AbstractOpenAIChatModel<
   }
 
   async doGenerateTexts(prompt: OpenAIChatPrompt, options?: FunctionOptions) {
-    const response = await this.callAPI(prompt, {
-      ...options,
-      responseFormat: OpenAIChatResponseFormat.json,
-    });
+    return this.processTextGenerationResponse(
+      await this.callAPI(prompt, {
+        ...options,
+        responseFormat: OpenAIChatResponseFormat.json,
+      })
+    );
+  }
 
+  restoreGeneratedTexts(rawResponse: unknown) {
+    return this.processTextGenerationResponse(
+      parseJSON({
+        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+        schema: zodSchema(openAIChatResponseSchema),
+      })
+    );
+  }
+
+  processTextGenerationResponse(response: OpenAIChatResponse) {
     return {
       response,
       textGenerationResults: response.choices.map((choice) => ({

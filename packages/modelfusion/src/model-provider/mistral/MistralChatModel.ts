@@ -8,6 +8,7 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
@@ -140,11 +141,24 @@ export class MistralChatModel
   }
 
   async doGenerateTexts(prompt: MistralChatPrompt, options?: FunctionOptions) {
-    const response = await this.callAPI(prompt, {
-      ...options,
-      responseFormat: MistralChatResponseFormat.json,
-    });
+    return this.processTextGenerationResponse(
+      await this.callAPI(prompt, {
+        ...options,
+        responseFormat: MistralChatResponseFormat.json,
+      })
+    );
+  }
 
+  restoreGeneratedTexts(rawResponse: unknown) {
+    return this.processTextGenerationResponse(
+      parseJSON({
+        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+        schema: zodSchema(mistralChatResponseSchema),
+      })
+    );
+  }
+
+  processTextGenerationResponse(response: MistralChatResponse) {
     return {
       response,
       textGenerationResults: response.choices.map((choice) => ({

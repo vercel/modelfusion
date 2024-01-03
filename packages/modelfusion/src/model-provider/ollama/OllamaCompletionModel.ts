@@ -5,7 +5,7 @@ import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import { ResponseHandler, postJsonToApi } from "../../core/api/postToApi.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { safeParseJSON } from "../../core/schema/parseJSON.js";
+import { parseJSON, safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
@@ -179,11 +179,24 @@ export class OllamaCompletionModel<
     prompt: OllamaCompletionPrompt,
     options?: FunctionOptions
   ) {
-    const response = await this.callAPI(prompt, {
-      ...options,
-      responseFormat: OllamaCompletionResponseFormat.json,
-    });
+    return this.processTextGenerationResponse(
+      await this.callAPI(prompt, {
+        ...options,
+        responseFormat: OllamaCompletionResponseFormat.json,
+      })
+    );
+  }
 
+  restoreGeneratedTexts(rawResponse: unknown) {
+    return this.processTextGenerationResponse(
+      parseJSON({
+        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+        schema: zodSchema(ollamaCompletionResponseSchema),
+      })
+    );
+  }
+
+  processTextGenerationResponse(response: OllamaCompletionResponse) {
     return {
       response,
       textGenerationResults: [

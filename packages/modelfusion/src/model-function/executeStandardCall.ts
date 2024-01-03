@@ -83,6 +83,7 @@ export async function executeStandardCall<
       functionId: options?.functionId,
       logging: options?.logging,
       observers: options?.observers,
+      cache: options?.cache,
       run,
       parentCallId: startMetadata.callId,
     })

@@ -76,6 +76,10 @@ export class PromptTemplateTextGenerationModel<
     return this.model.doGenerateTexts(mappedPrompt, options);
   }
 
+  restoreGeneratedTexts(rawResponse: unknown) {
+    return this.model.restoreGeneratedTexts(rawResponse);
+  }
+
   get settingsForEvent(): Partial<SETTINGS> {
     return this.model.settingsForEvent;
   }

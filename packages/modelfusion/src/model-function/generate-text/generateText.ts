@@ -69,7 +69,59 @@ export async function generateText<PROMPT>(
     model,
     options,
     generateResponse: async (options) => {
-      const result = await model.doGenerateTexts(prompt, options);
+      async function getGeneratedTexts() {
+        if (options?.cache == null) {
+          return {
+            ...(await model.doGenerateTexts(prompt, options)),
+            cache: undefined,
+          };
+        }
+
+        let cacheErrors: unknown[] | undefined = undefined;
+
+        try {
+          const cachedRawResponse = await options.cache.lookupValue({
+            functionType: "generate-text",
+            functionId: options?.functionId,
+            input: prompt, // TODO should include model information
+          });
+
+          if (cachedRawResponse != null) {
+            return {
+              ...model.restoreGeneratedTexts(cachedRawResponse),
+              cache: { status: "hit" },
+            };
+          }
+        } catch (err) {
+          cacheErrors = [err];
+        }
+
+        const result = await model.doGenerateTexts(prompt, options);
+
+        try {
+          await options.cache.storeValue(
+            {
+              functionType: "generate-text",
+              functionId: options?.functionId,
+              input: prompt, // TODO should include model information
+            },
+            result.response
+          );
+        } catch (err) {
+          cacheErrors = [...(cacheErrors ?? []), err];
+        }
+
+        return {
+          ...result,
+          cache: {
+            status: "miss",
+            errors: cacheErrors,
+          },
+        };
+      }
+
+      const result = await getGeneratedTexts();
+
       const shouldTrimWhitespace = model.settings.trimWhitespace ?? true;
 
       const textGenerationResults = shouldTrimWhitespace
@@ -79,6 +131,7 @@ export async function generateText<PROMPT>(
           }))
         : result.textGenerationResults;
 
+      // TODO add cache information
       return {
         response: result.response,
         extractedValue: textGenerationResults,

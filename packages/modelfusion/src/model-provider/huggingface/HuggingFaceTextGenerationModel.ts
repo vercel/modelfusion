@@ -7,6 +7,7 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextGenerationModel } from "../../model-function/generate-text/PromptTemplateTextGenerationModel.js";
 import {
@@ -126,8 +127,21 @@ export class HuggingFaceTextGenerationModel
   }
 
   async doGenerateTexts(prompt: string, options?: FunctionOptions) {
-    const response = await this.callAPI(prompt, options);
+    return this.processTextGenerationResponse(
+      await this.callAPI(prompt, options)
+    );
+  }
 
+  restoreGeneratedTexts(rawResponse: unknown) {
+    return this.processTextGenerationResponse(
+      parseJSON({
+        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+        schema: zodSchema(huggingFaceTextGenerationResponseSchema),
+      })
+    );
+  }
+
+  processTextGenerationResponse(response: HuggingFaceTextGenerationResponse) {
     return {
       response,
       textGenerationResults: response.map((response) => ({

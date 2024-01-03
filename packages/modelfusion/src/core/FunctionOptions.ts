@@ -1,6 +1,7 @@
 import { FunctionObserver } from "./FunctionObserver.js";
 import { LogFormat } from "./LogFormat.js";
 import { Run } from "./Run.js";
+import { Cache } from "./cache/Cache.js";
 
 /**
  * Additional settings for ModelFusion functions.
@@ -21,6 +22,12 @@ export type FunctionOptions = {
    * Optional observers that are called when the function is invoked.
    */
   observers?: Array<FunctionObserver>;
+
+  /**
+   * Optional cache that can be used by the function to store and retrieve cached values.
+   * Not supported by all functions.
+   */
+  cache?: Cache;
 
   /**
    * Optional run as part of which this function is called. Used in events and logging.

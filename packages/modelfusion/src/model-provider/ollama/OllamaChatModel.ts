@@ -5,7 +5,7 @@ import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import { ResponseHandler, postJsonToApi } from "../../core/api/postToApi.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { safeParseJSON } from "../../core/schema/parseJSON.js";
+import { parseJSON, safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
   FlexibleStructureFromTextPromptTemplate,
@@ -29,6 +29,7 @@ import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { chat, instruction, text } from "./OllamaChatPromptTemplate.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
 import { OllamaTextGenerationSettings } from "./OllamaTextGenerationSettings.js";
+import { TextGenerationResult } from "index.js";
 
 export type OllamaChatMessage = {
   role: "system" | "user" | "assistant";
@@ -143,11 +144,30 @@ export class OllamaChatModel
   }
 
   async doGenerateTexts(prompt: OllamaChatPrompt, options?: FunctionOptions) {
-    const response = await this.callAPI(prompt, {
-      ...options,
-      responseFormat: OllamaChatResponseFormat.json,
-    });
+    return this.processTextGenerationResponse(
+      await this.callAPI(prompt, {
+        ...options,
+        responseFormat: OllamaChatResponseFormat.json,
+      })
+    );
+  }
 
+  restoreGeneratedTexts(rawResponse: unknown): {
+    response: unknown;
+    textGenerationResults: TextGenerationResult[];
+    usage?:
+      | { promptTokens: number; completionTokens: number; totalTokens: number }
+      | undefined;
+  } {
+    return this.processTextGenerationResponse(
+      parseJSON({
+        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+        schema: zodSchema(ollamaChatResponseSchema),
+      })
+    );
+  }
+
+  private processTextGenerationResponse(response: OllamaChatResponse) {
     return {
       response,
       textGenerationResults: [

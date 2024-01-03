@@ -137,11 +137,24 @@ export class AnthropicTextGenerationModel
   }
 
   async doGenerateTexts(prompt: string, options?: FunctionOptions) {
-    const response = await this.callAPI(prompt, {
-      ...options,
-      responseFormat: AnthropicTextGenerationResponseFormat.json,
-    });
+    return this.processTextGenerationResponse(
+      await this.callAPI(prompt, {
+        ...options,
+        responseFormat: AnthropicTextGenerationResponseFormat.json,
+      })
+    );
+  }
 
+  restoreGeneratedTexts(rawResponse: unknown) {
+    return this.processTextGenerationResponse(
+      parseJSON({
+        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+        schema: zodSchema(anthropicTextGenerationResponseSchema),
+      })
+    );
+  }
+
+  processTextGenerationResponse(response: AnthropicTextGenerationResponse) {
     return {
       response,
       textGenerationResults: [

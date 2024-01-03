@@ -8,6 +8,7 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { parseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
@@ -166,11 +167,24 @@ export class CohereTextGenerationModel
   }
 
   async doGenerateTexts(prompt: string, options?: FunctionOptions) {
-    const response = await this.callAPI(prompt, {
-      ...options,
-      responseFormat: CohereTextGenerationResponseFormat.json,
-    });
+    return this.processTextGenerationResponse(
+      await this.callAPI(prompt, {
+        ...options,
+        responseFormat: CohereTextGenerationResponseFormat.json,
+      })
+    );
+  }
 
+  restoreGeneratedTexts(rawResponse: unknown) {
+    return this.processTextGenerationResponse(
+      parseJSON({
+        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+        schema: zodSchema(cohereTextGenerationResponseSchema),
+      })
+    );
+  }
+
+  processTextGenerationResponse(response: CohereTextGenerationResponse) {
     return {
       response,
       textGenerationResults: response.generations.map((generation) => ({

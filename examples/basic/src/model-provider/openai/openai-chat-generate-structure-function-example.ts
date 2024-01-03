@@ -1,8 +1,10 @@
 import dotenv from "dotenv";
-import { zodSchema, generateStructure, openai } from "modelfusion";
+import { zodSchema, generateStructure, openai, modelfusion } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
+
+modelfusion.setLogFormat("detailed-object");
 
 async function main() {
   const sentiment = await generateStructure(
@@ -34,6 +36,10 @@ async function main() {
         "After I opened the package, I was met by a very unpleasant smell " +
         "that did not disappear even after washing. Never again!",
     }
+
+    // {
+    //   cache: blablaCache,
+    // }
   );
 
   console.log(JSON.stringify(sentiment, null, 2));

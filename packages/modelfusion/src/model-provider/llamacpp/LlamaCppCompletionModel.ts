@@ -313,11 +313,24 @@ export class LlamaCppCompletionModel<
     prompt: LlamaCppCompletionPrompt,
     options?: FunctionOptions
   ) {
-    const response = await this.callAPI(prompt, {
-      ...options,
-      responseFormat: LlamaCppCompletionResponseFormat.json,
-    });
+    return this.processTextGenerationResponse(
+      await this.callAPI(prompt, {
+        ...options,
+        responseFormat: LlamaCppCompletionResponseFormat.json,
+      })
+    );
+  }
 
+  restoreGeneratedTexts(rawResponse: unknown) {
+    return this.processTextGenerationResponse(
+      parseJSON({
+        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+        schema: zodSchema(llamaCppTextGenerationResponseSchema),
+      })
+    );
+  }
+
+  processTextGenerationResponse(response: LlamaCppTextGenerationResponse) {
     return {
       response,
       textGenerationResults: [

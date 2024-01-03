@@ -97,6 +97,16 @@ export interface TextGenerationModel<
     };
   }>;
 
+  restoreGeneratedTexts(rawResponse: unknown): {
+    response: unknown;
+    textGenerationResults: TextGenerationResult[];
+    usage?: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+  };
+
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>
   ): TextGenerationModel<INPUT_PROMPT, SETTINGS>;

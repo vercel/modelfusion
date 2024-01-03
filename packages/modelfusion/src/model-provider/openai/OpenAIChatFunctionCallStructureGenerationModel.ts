@@ -52,11 +52,19 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
   }
 
   get settings() {
-    return this.model.settings;
+    return {
+      ...this.model.settings,
+      fnName: this.fnName,
+      fnDescription: this.fnDescription,
+    };
   }
 
   get settingsForEvent() {
-    return this.model.settingsForEvent;
+    return {
+      ...this.model.settingsForEvent,
+      fnName: this.fnName,
+      fnDescription: this.fnDescription,
+    };
   }
 
   /**
