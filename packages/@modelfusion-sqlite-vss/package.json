@@ -54,7 +54,7 @@
     "@typescript-eslint/parser": "^6.1.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
-    "modelfusion": "0.112.0",
+    "modelfusion": "0.113.0",
     "sqlite-vss": "^0.1.2",
     "better-sqlite3": "^9.0.0"
   },

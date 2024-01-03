@@ -1,8 +1,9 @@
 import dotenv from "dotenv";
 import {
+  ChatMLPrompt,
+  generateStructure,
   jsonStructurePrompt,
-  openai,
-  streamStructure,
+  ollama,
   zodSchema,
 } from "modelfusion";
 import { z } from "zod";
@@ -10,13 +11,17 @@ import { z } from "zod";
 dotenv.config();
 
 async function main() {
-  const structureStream = await streamStructure(
-    openai
-      .ChatTextGenerator({
-        model: "gpt-4-1106-preview",
-        temperature: 0,
+  const structure = await generateStructure(
+    ollama
+      .CompletionTextGenerator({
+        model: "openhermes2.5-mistral",
         maxGenerationTokens: 1024,
+        temperature: 0,
+        format: "json",
+        raw: true, // use prompt template below
+        stopSequences: ["\n\n"], // prevent infinite generation
       })
+      .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
     zodSchema(
@@ -33,18 +38,10 @@ async function main() {
       })
     ),
 
-    "Generate 3 character descriptions for a fantasy role playing game."
+    "Generate 3 character descriptions for a fantasy role playing game. "
   );
 
-  for await (const part of structureStream) {
-    if (!part.isComplete) {
-      const unknownPartialStructure = part.value;
-      console.log("partial value", unknownPartialStructure);
-    } else {
-      const fullyTypedStructure = part.value;
-      console.log("final value", fullyTypedStructure);
-    }
-  }
+  console.log(structure.characters);
 }
 
 main().catch(console.error);

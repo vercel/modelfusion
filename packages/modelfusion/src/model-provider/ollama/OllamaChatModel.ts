@@ -7,6 +7,11 @@ import { ResponseHandler, postJsonToApi } from "../../core/api/postToApi.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import {
+  FlexibleStructureFromTextPromptTemplate,
+  StructureFromTextPromptTemplate,
+} from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
+import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextStreamingModel,
@@ -184,6 +189,22 @@ export class OllamaChatModel
     });
   }
 
+  asStructureGenerationModel<INPUT_PROMPT, OllamaChatPrompt>(
+    promptTemplate:
+      | StructureFromTextPromptTemplate<INPUT_PROMPT, OllamaChatPrompt>
+      | FlexibleStructureFromTextPromptTemplate<INPUT_PROMPT, unknown>
+  ) {
+    return "adaptModel" in promptTemplate
+      ? new StructureFromTextStreamingModel({
+          model: promptTemplate.adaptModel(this),
+          template: promptTemplate,
+        })
+      : new StructureFromTextStreamingModel({
+          model: this as TextStreamingModel<OllamaChatPrompt>,
+          template: promptTemplate,
+        });
+  }
+
   /**
    * Returns this model with a text prompt template.
    */
@@ -222,6 +243,10 @@ export class OllamaChatModel
       }),
       promptTemplate,
     });
+  }
+
+  withJsonOutput() {
+    return this.withSettings({ format: "json" });
   }
 
   withSettings(additionalSettings: Partial<OllamaChatModelSettings>) {

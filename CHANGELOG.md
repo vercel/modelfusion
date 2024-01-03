@@ -1,5 +1,51 @@
 # Changelog
 
+## v0.113.0 - 2024-01-03
+
+[Structure generation](https://modelfusion.dev/guide/function/generate-structure) improvements.
+
+### Added
+
+- `.asStructureGenerationModel(...)` function to `OpenAIChatModel` and `OllamaChatModel` to create structure generation models from chat models.
+- `jsonStructurePrompt` helper function to create structure generation models.
+
+### Example
+
+```ts
+import {
+  generateStructure,
+  jsonStructurePrompt,
+  ollama,
+  zodSchema,
+} from "modelfusion";
+
+const structure = await generateStructure(
+  ollama
+    .ChatTextGenerator({
+      model: "openhermes2.5-mistral",
+      maxGenerationTokens: 1024,
+      temperature: 0,
+    })
+    .asStructureGenerationModel(jsonStructurePrompt.text()),
+
+  zodSchema(
+    z.object({
+      characters: z.array(
+        z.object({
+          name: z.string(),
+          class: z
+            .string()
+            .describe("Character class, e.g. warrior, mage, or thief."),
+          description: z.string(),
+        })
+      ),
+    })
+  ),
+
+  "Generate 3 character descriptions for a fantasy role playing game. "
+);
+```
+
 ## v0.112.0 - 2024-01-02
 
 ### Changed

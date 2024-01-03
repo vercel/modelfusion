@@ -1,4 +1,7 @@
-import { StructureFromTextPromptTemplate } from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
+import {
+  FlexibleStructureFromTextPromptTemplate,
+  StructureFromTextPromptTemplate,
+} from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
 import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
 import { PromptTemplateFullTextModel } from "../../model-function/generate-text/PromptTemplateFullTextModel.js";
 import {
@@ -74,16 +77,20 @@ export class OpenAICompatibleChatModel
     );
   }
 
-  asStructureGenerationModel<INPUT_PROMPT>(
-    promptTemplate: StructureFromTextPromptTemplate<
-      INPUT_PROMPT,
-      OpenAIChatPrompt
-    >
+  asStructureGenerationModel<INPUT_PROMPT, OpenAIChatPrompt>(
+    promptTemplate:
+      | StructureFromTextPromptTemplate<INPUT_PROMPT, OpenAIChatPrompt>
+      | FlexibleStructureFromTextPromptTemplate<INPUT_PROMPT, unknown>
   ) {
-    return new StructureFromTextStreamingModel({
-      model: this,
-      template: promptTemplate,
-    });
+    return "adaptModel" in promptTemplate
+      ? new StructureFromTextStreamingModel({
+          model: promptTemplate.adaptModel(this),
+          template: promptTemplate,
+        })
+      : new StructureFromTextStreamingModel({
+          model: this as TextStreamingModel<OpenAIChatPrompt>,
+          template: promptTemplate,
+        });
   }
 
   /**
@@ -124,6 +131,10 @@ export class OpenAICompatibleChatModel
       }),
       promptTemplate,
     });
+  }
+
+  withJsonOutput() {
+    return this.withSettings({ responseFormat: { type: "json_object" } });
   }
 
   withSettings(additionalSettings: Partial<OpenAICompatibleChatSettings>) {

@@ -201,18 +201,22 @@ Generate typed objects using a language model and a schema.
 Generate a structure that matches a schema.
 
 ```ts
-import { zodSchema, generateStructure, openai } from "modelfusion";
+import {
+  ollama,
+  zodSchema,
+  generateStructure,
+  jsonStructurePrompt,
+} from "modelfusion";
 
 const sentiment = await generateStructure(
   // model:
-  openai
+  ollama
     .ChatTextGenerator({
-      model: "gpt-3.5-turbo",
+      model: "openhermes2.5-mistral",
+      maxGenerationTokens: 1024,
       temperature: 0,
-      maxGenerationTokens: 50,
     })
-    .asFunctionCallStructureGenerationModel({ fnName: "sentiment" })
-    .withInstructionPrompt(),
+    .asStructureGenerationModel(jsonStructurePrompt.instruction()),
 
   // schema:
   zodSchema(
@@ -540,11 +544,10 @@ modelfusion.setLogFormat("detailed-object"); // log full events
 
 - [Model Functions](https://modelfusion.dev/guide/function/)
   - [Generate text](https://modelfusion.dev/guide/function/generate-text)
+  - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
   - [Generate image](https://modelfusion.dev/guide/function/generate-image)
   - [Generate speech](https://modelfusion.dev/guide/function/generate-speech)
   - [Generate transcription](https://modelfusion.dev/guide/function/generation-transcription)
-  - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
-  - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
 - [Tools](https://modelfusion.dev/guide/tools)

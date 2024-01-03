@@ -2,7 +2,10 @@ import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../../core/schema/Schema.js";
 import { parseJSON } from "../../core/schema/parseJSON.js";
 import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
-import { StructureFromTextPromptTemplate } from "./StructureFromTextPromptTemplate.js";
+import {
+  FlexibleStructureFromTextPromptTemplate,
+  StructureFromTextPromptTemplate,
+} from "./StructureFromTextPromptTemplate.js";
 
 const DEFAULT_SCHEMA_PREFIX = "JSON schema:";
 const DEFAULT_SCHEMA_SUFFIX =
@@ -24,7 +27,7 @@ export const jsonStructurePrompt = {
   }: {
     schemaPrefix?: string;
     schemaSuffix?: string;
-  } = {}): StructureFromTextPromptTemplate<string, InstructionPrompt> {
+  } = {}): FlexibleStructureFromTextPromptTemplate<string, InstructionPrompt> {
     return {
       createPrompt: (
         prompt: string,
@@ -34,6 +37,12 @@ export const jsonStructurePrompt = {
         instruction: prompt,
       }),
       extractStructure,
+      adaptModel: (model) => {
+        if (model.withJsonOutput != null) {
+          model = model.withJsonOutput();
+        }
+        return model.withInstructionPrompt();
+      },
     };
   },
 
@@ -43,7 +52,7 @@ export const jsonStructurePrompt = {
   }: {
     schemaPrefix?: string;
     schemaSuffix?: string;
-  } = {}): StructureFromTextPromptTemplate<
+  } = {}): FlexibleStructureFromTextPromptTemplate<
     InstructionPrompt,
     InstructionPrompt
   > {
@@ -61,6 +70,12 @@ export const jsonStructurePrompt = {
         instruction: prompt.instruction,
       }),
       extractStructure,
+      adaptModel: (model) => {
+        if (model.withJsonOutput != null) {
+          model = model.withJsonOutput();
+        }
+        return model.withInstructionPrompt();
+      },
     };
   },
 };
