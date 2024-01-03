@@ -544,11 +544,10 @@ modelfusion.setLogFormat("detailed-object"); // log full events
 
 - [Model Functions](https://modelfusion.dev/guide/function/)
   - [Generate text](https://modelfusion.dev/guide/function/generate-text)
+  - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
   - [Generate image](https://modelfusion.dev/guide/function/generate-image)
   - [Generate speech](https://modelfusion.dev/guide/function/generate-speech)
   - [Generate transcription](https://modelfusion.dev/guide/function/generation-transcription)
-  - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
-  - [Generate structure or text](https://modelfusion.dev/guide/function/generate-structure-or-text)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
 - [Tools](https://modelfusion.dev/guide/tools)
