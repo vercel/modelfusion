@@ -14,7 +14,7 @@
     "secure-json-parse": "2.7.0",
     "modelfusion": "0.113.0",
     "modelfusion-experimental": "0.3.0",
-    "nanoid": "3.3.6",
+    "nanoid": "5.0.4",
     "better-sqlite3": "9.0.0",
     "sqlite-vss": "0.1.2",
     "sqlite-vss-darwin-arm64": "0.1.2",
