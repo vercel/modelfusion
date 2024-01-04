@@ -7,7 +7,7 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
+import { validateTypes } from "../../core/schema/validateTypes.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextGenerationModel } from "../../model-function/generate-text/PromptTemplateTextGenerationModel.js";
 import {
@@ -134,8 +134,8 @@ export class HuggingFaceTextGenerationModel
 
   restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
-      parseJSON({
-        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+      validateTypes({
+        structure: rawResponse,
         schema: zodSchema(huggingFaceTextGenerationResponseSchema),
       })
     );

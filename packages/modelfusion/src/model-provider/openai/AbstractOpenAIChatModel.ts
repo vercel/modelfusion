@@ -9,6 +9,7 @@ import {
 } from "../../core/api/postToApi.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../core/schema/parseJSON.js";
+import { validateTypes } from "../../core/schema/validateTypes.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { TextGenerationModelSettings } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
@@ -190,8 +191,8 @@ export abstract class AbstractOpenAIChatModel<
 
   restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
-      parseJSON({
-        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+      validateTypes({
+        structure: rawResponse,
         schema: zodSchema(openAIChatResponseSchema),
       })
     );

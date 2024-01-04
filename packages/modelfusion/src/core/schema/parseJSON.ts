@@ -1,6 +1,8 @@
 import SecureJSON from "secure-json-parse";
 import { JSONParseError } from "./JSONParseError.js";
 import { Schema } from "./Schema.js";
+import { safeValidateTypes, validateTypes } from "./validateTypes.js";
+import { TypeValidationError } from "./TypeValidationError.js";
 
 /**
  * Parses a JSON string into an unknown object.
@@ -38,15 +40,12 @@ export function parseJSON<T>({
       return json;
     }
 
-    const validationResult = schema.validate(json);
-
-    if (!validationResult.success) {
-      throw new JSONParseError({ text, cause: validationResult.error });
-    }
-
-    return validationResult.data;
+    return validateTypes({ structure: json, schema });
   } catch (error) {
-    if (error instanceof JSONParseError) {
+    if (
+      error instanceof JSONParseError ||
+      error instanceof TypeValidationError
+    ) {
       throw error;
     }
 
@@ -66,7 +65,7 @@ export function safeParseJSON({
   text: string;
 }):
   | { success: true; data: unknown }
-  | { success: false; error: JSONParseError };
+  | { success: false; error: JSONParseError | TypeValidationError };
 /**
  * Safely parses a JSON string into a strongly-typed object, using a provided schema to validate the structure.
  *
@@ -81,14 +80,18 @@ export function safeParseJSON<T>({
 }: {
   text: string;
   schema: Schema<T>;
-}): { success: true; data: T } | { success: false; error: JSONParseError };
+}):
+  | { success: true; data: T }
+  | { success: false; error: JSONParseError | TypeValidationError };
 export function safeParseJSON<T>({
   text,
   schema,
 }: {
   text: string;
   schema?: Schema<T>;
-}): { success: true; data: T } | { success: false; error: JSONParseError } {
+}):
+  | { success: true; data: T }
+  | { success: false; error: JSONParseError | TypeValidationError } {
   try {
     const json = SecureJSON.parse(text);
 
@@ -99,16 +102,7 @@ export function safeParseJSON<T>({
       };
     }
 
-    const validationResult = schema.validate(json);
-
-    if (validationResult.success) {
-      return validationResult;
-    }
-
-    return {
-      success: false,
-      error: new JSONParseError({ text, cause: validationResult.error }),
-    };
+    return safeValidateTypes({ structure: json, schema });
   } catch (error) {
     return {
       success: false,

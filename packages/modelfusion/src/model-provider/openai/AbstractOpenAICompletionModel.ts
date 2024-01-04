@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { parseJSON } from "../../core/schema/parseJSON.js";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
@@ -9,6 +8,7 @@ import {
   postJsonToApi,
 } from "../../core/api/postToApi.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { validateTypes } from "../../core/schema/validateTypes.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { TextGenerationModelSettings } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
@@ -113,8 +113,8 @@ export abstract class AbstractOpenAICompletionModel<
 
   restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
-      parseJSON({
-        text: JSON.stringify(rawResponse), // TODO parseJSON with structure
+      validateTypes({
+        structure: rawResponse,
         schema: zodSchema(OpenAICompletionResponseSchema),
       })
     );
