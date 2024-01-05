@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -76,10 +76,10 @@ export class Automatic1111ImageGenerationModel
 
   async callAPI(
     input: Automatic1111ImageGenerationPrompt,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ): Promise<Automatic1111ImageGenerationResponse> {
     const api = this.settings.api ?? new Automatic1111ApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -87,7 +87,12 @@ export class Automatic1111ImageGenerationModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/txt2img`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             prompt: input.prompt,
             negative_prompt: input.negativePrompt,
@@ -130,7 +135,7 @@ export class Automatic1111ImageGenerationModel
 
   async doGenerateImages(
     prompt: Automatic1111ImageGenerationPrompt,
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ) {
     const response = await this.callAPI(prompt, options);
 

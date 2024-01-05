@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -111,20 +111,20 @@ export abstract class AbstractOpenAIChatModel<
 
   async callAPI<RESULT>(
     messages: OpenAIChatPrompt,
+    callOptions: FunctionCallOptions,
     options: {
       responseFormat: OpenAIChatResponseFormatType<RESULT>;
-    } & FunctionOptions & {
-        functions?: AbstractOpenAIChatSettings["functions"];
-        functionCall?: AbstractOpenAIChatSettings["functionCall"];
-        tools?: AbstractOpenAIChatSettings["tools"];
-        toolChoice?: AbstractOpenAIChatSettings["toolChoice"];
-      }
+      functions?: AbstractOpenAIChatSettings["functions"];
+      functionCall?: AbstractOpenAIChatSettings["functionCall"];
+      tools?: AbstractOpenAIChatSettings["tools"];
+      toolChoice?: AbstractOpenAIChatSettings["toolChoice"];
+    }
   ): Promise<RESULT> {
     const api = this.settings.api ?? new OpenAIApiConfiguration();
     const responseFormat = options.responseFormat;
-    const abortSignal = options.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
     const user = this.settings.isUserIdForwardingEnabled
-      ? options.run?.userId
+      ? callOptions.run?.userId
       : undefined;
     const openAIResponseFormat = this.settings.responseFormat;
 
@@ -151,7 +151,12 @@ export abstract class AbstractOpenAIChatModel<
 
         return postJsonToApi({
           url: api.assembleUrl("/chat/completions"),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             stream: responseFormat.stream,
             model: this.settings.model,
@@ -180,10 +185,12 @@ export abstract class AbstractOpenAIChatModel<
     });
   }
 
-  async doGenerateTexts(prompt: OpenAIChatPrompt, options?: FunctionOptions) {
+  async doGenerateTexts(
+    prompt: OpenAIChatPrompt,
+    options: FunctionCallOptions
+  ) {
     return this.processTextGenerationResponse(
-      await this.callAPI(prompt, {
-        ...options,
+      await this.callAPI(prompt, options, {
         responseFormat: OpenAIChatResponseFormat.json,
       })
     );
@@ -227,9 +234,8 @@ export abstract class AbstractOpenAIChatModel<
     }
   }
 
-  doStreamText(prompt: OpenAIChatPrompt, options?: FunctionOptions) {
-    return this.callAPI(prompt, {
-      ...options,
+  doStreamText(prompt: OpenAIChatPrompt, options: FunctionCallOptions) {
+    return this.callAPI(prompt, options, {
       responseFormat: OpenAIChatResponseFormat.deltaIterable,
     });
   }
@@ -255,10 +261,9 @@ export abstract class AbstractOpenAIChatModel<
   async doGenerateToolCall(
     tool: ToolDefinition<string, unknown>,
     prompt: OpenAIChatPrompt,
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ) {
-    const response = await this.callAPI(prompt, {
-      ...options,
+    const response = await this.callAPI(prompt, options, {
       responseFormat: OpenAIChatResponseFormat.json,
       toolChoice: {
         type: "function",
@@ -294,10 +299,9 @@ export abstract class AbstractOpenAIChatModel<
   async doGenerateToolCalls(
     tools: Array<ToolDefinition<string, unknown>>,
     prompt: OpenAIChatPrompt,
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ) {
-    const response = await this.callAPI(prompt, {
-      ...options,
+    const response = await this.callAPI(prompt, options, {
       responseFormat: OpenAIChatResponseFormat.json,
       toolChoice: "auto",
       tools: tools.map((tool) => ({

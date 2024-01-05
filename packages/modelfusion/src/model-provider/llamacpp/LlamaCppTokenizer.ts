@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Run } from "../../core/Run.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -33,10 +33,10 @@ export class LlamaCppTokenizer implements BasicTokenizer {
 
   async callTokenizeAPI(
     text: string,
-    context?: Run
+    callOptions?: FunctionCallOptions
   ): Promise<LlamaCppTokenizationResponse> {
     const api = this.api;
-    const abortSignal = context?.abortSignal;
+    const abortSignal = callOptions?.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -44,7 +44,12 @@ export class LlamaCppTokenizer implements BasicTokenizer {
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/tokenize`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: "tokenize",
+            functionId: callOptions?.functionId,
+            run: callOptions?.run,
+            callId: "",
+          }),
           body: {
             content: text,
           },

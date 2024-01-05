@@ -24,7 +24,7 @@ export class AzureOpenAIApiConfiguration extends AbstractApiConfiguration {
   readonly deploymentId: string;
   readonly apiVersion: string;
 
-  readonly headers: Record<string, string>;
+  readonly fixedHeaderValue: Record<string, string>;
 
   constructor({
     resourceName,
@@ -40,7 +40,7 @@ export class AzureOpenAIApiConfiguration extends AbstractApiConfiguration {
     this.deploymentId = deploymentId;
     this.apiVersion = apiVersion;
 
-    this.headers = {
+    this.fixedHeaderValue = {
       "api-key": loadApiKey({
         apiKey,
         environmentVariableName: "AZURE_OPENAI_API_KEY",
@@ -51,5 +51,9 @@ export class AzureOpenAIApiConfiguration extends AbstractApiConfiguration {
 
   assembleUrl(path: string): string {
     return `https://${this.resourceName}.openai.azure.com/openai/deployments/${this.deploymentId}${path}?api-version=${this.apiVersion}`;
+  }
+
+  fixedHeaders() {
+    return this.fixedHeaderValue;
   }
 }

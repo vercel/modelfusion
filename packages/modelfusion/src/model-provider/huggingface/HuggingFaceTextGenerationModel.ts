@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -71,10 +71,10 @@ export class HuggingFaceTextGenerationModel
 
   async callAPI(
     prompt: string,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ): Promise<HuggingFaceTextGenerationResponse> {
     const api = this.settings.api ?? new HuggingFaceApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions?.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -82,7 +82,12 @@ export class HuggingFaceTextGenerationModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/${this.settings.model}`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             inputs: prompt,
             top_k: this.settings.topK,
@@ -126,7 +131,7 @@ export class HuggingFaceTextGenerationModel
     );
   }
 
-  async doGenerateTexts(prompt: string, options?: FunctionOptions) {
+  async doGenerateTexts(prompt: string, options: FunctionCallOptions) {
     return this.processTextGenerationResponse(
       await this.callAPI(prompt, options)
     );

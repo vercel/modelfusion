@@ -40,3 +40,12 @@ export type FunctionOptions = {
    */
   parentCallId?: string | undefined;
 };
+
+/**
+ * Extended options that are passed to models when functions are called. They are passed
+ * into e.g. API providers to create custom headers.
+ */
+export type FunctionCallOptions = Omit<FunctionOptions, "parentCallId"> & {
+  functionType: string;
+  callId: string;
+};

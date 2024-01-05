@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -152,10 +152,10 @@ export class StabilityImageGenerationModel
 
   async callAPI(
     input: StabilityImageGenerationPrompt,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ): Promise<StabilityImageGenerationResponse> {
     const api = this.settings.api ?? new StabilityApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: this.settings.api?.retry,
@@ -165,7 +165,12 @@ export class StabilityImageGenerationModel
           url: api.assembleUrl(
             `/generation/${this.settings.model}/text-to-image`
           ),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             height: this.settings.height,
             width: this.settings.width,
@@ -203,9 +208,9 @@ export class StabilityImageGenerationModel
 
   async doGenerateImages(
     prompt: StabilityImageGenerationPrompt,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ) {
-    const response = await this.callAPI(prompt, options);
+    const response = await this.callAPI(prompt, callOptions);
 
     return {
       response,

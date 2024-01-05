@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import {
   TextGenerationToolCallModel,
   ToolCallPromptTemplate,
@@ -71,7 +71,7 @@ export class PromptTemplateTextGenerationModel<
       : (prompt: PROMPT) => PromiseLike<number>;
   }
 
-  doGenerateTexts(prompt: PROMPT, options?: FunctionOptions) {
+  doGenerateTexts(prompt: PROMPT, options?: FunctionCallOptions) {
     const mappedPrompt = this.promptTemplate.format(prompt);
     return this.model.doGenerateTexts(mappedPrompt, options);
   }

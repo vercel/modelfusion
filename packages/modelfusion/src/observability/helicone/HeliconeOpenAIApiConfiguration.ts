@@ -1,4 +1,5 @@
 import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration.js";
+import { CustomHeaderProvider } from "../../core/api/CustomHeaderProvider.js";
 import { RetryFunction } from "../../core/api/RetryFunction.js";
 import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
@@ -10,12 +11,14 @@ export class HeliconeOpenAIApiConfiguration extends BaseUrlApiConfiguration {
     heliconeApiKey,
     retry,
     throttle,
+    customCallHeaders,
   }: {
     baseUrl?: string;
     openAIApiKey?: string;
     heliconeApiKey?: string;
     retry?: RetryFunction;
     throttle?: ThrottleFunction;
+    customCallHeaders?: CustomHeaderProvider;
   } = {}) {
     super({
       baseUrl,
@@ -35,6 +38,7 @@ export class HeliconeOpenAIApiConfiguration extends BaseUrlApiConfiguration {
       },
       retry,
       throttle,
+      customCallHeaders,
     });
   }
 }

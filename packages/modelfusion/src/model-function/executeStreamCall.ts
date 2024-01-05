@@ -1,6 +1,9 @@
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "../core/FunctionEventSource.js";
-import { FunctionOptions } from "../core/FunctionOptions.js";
+import {
+  FunctionCallOptions,
+  FunctionOptions,
+} from "../core/FunctionOptions.js";
 import { getLogFormat } from "../core/ModelFusionConfiguration.js";
 import { getFunctionObservers } from "../core/ModelFusionConfiguration.js";
 import { AbortError } from "../core/api/AbortError.js";
@@ -36,7 +39,7 @@ export async function executeStreamCall<
   input: unknown;
   functionType: ModelCallStartedEvent["functionType"];
   startStream: (
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ) => PromiseLike<AsyncIterable<Delta<DELTA_VALUE>>>;
   processDelta: (
     delta: Delta<DELTA_VALUE> & { type: "delta" }
@@ -88,11 +91,12 @@ export async function executeStreamCall<
 
   const result = await runSafe(async () => {
     const deltaIterable = await startStream({
+      functionType: startMetadata.functionType,
       functionId: options?.functionId,
+      callId: startMetadata.callId,
       logging: options?.logging,
       observers: options?.observers,
       run,
-      parentCallId: startMetadata.callId,
     });
 
     // Return a queue that can be iterated over several times:

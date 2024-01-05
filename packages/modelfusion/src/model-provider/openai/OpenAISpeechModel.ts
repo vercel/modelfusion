@@ -1,15 +1,15 @@
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import {
-  SpeechGenerationModel,
-  SpeechGenerationModelSettings,
-} from "../../model-function/generate-speech/SpeechGenerationModel.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
   createAudioMpegResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { AbstractModel } from "../../model-function/AbstractModel.js";
+import {
+  SpeechGenerationModel,
+  SpeechGenerationModelSettings,
+} from "../../model-function/generate-speech/SpeechGenerationModel.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 
@@ -95,10 +95,10 @@ export class OpenAISpeechModel
 
   private async callAPI(
     text: string,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ): Promise<Buffer> {
     const api = this.settings.api ?? new OpenAIApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -106,7 +106,12 @@ export class OpenAISpeechModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/audio/speech`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             input: text,
             voice: this.settings.voice,
@@ -130,7 +135,7 @@ export class OpenAISpeechModel
     };
   }
 
-  doGenerateSpeechStandard(text: string, options?: FunctionOptions) {
+  doGenerateSpeechStandard(text: string, options: FunctionCallOptions) {
     return this.callAPI(text, options);
   }
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -57,7 +57,7 @@ export class MistralTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ): Promise<MistralTextEmbeddingResponse> {
     if (texts.length > this.maxValuesPerCall) {
       throw new Error(
@@ -66,7 +66,7 @@ export class MistralTextEmbeddingModel
     }
 
     const api = this.settings.api ?? new MistralApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
     const model = this.settings.model;
     const encodingFormat = this.settings.encodingFormat ?? "float";
 
@@ -76,7 +76,12 @@ export class MistralTextEmbeddingModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/embeddings`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             model,
             input: texts,
@@ -97,7 +102,7 @@ export class MistralTextEmbeddingModel
     };
   }
 
-  async doEmbedValues(texts: string[], options?: FunctionOptions) {
+  async doEmbedValues(texts: string[], options: FunctionCallOptions) {
     const response = await this.callAPI(texts, options);
 
     return {

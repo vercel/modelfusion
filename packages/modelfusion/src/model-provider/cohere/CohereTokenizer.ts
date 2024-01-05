@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Run } from "../../core/Run.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -47,10 +47,10 @@ export class CohereTokenizer implements FullTokenizer {
 
   async callTokenizeAPI(
     text: string,
-    context?: Run
+    callOptions?: FunctionCallOptions
   ): Promise<CohereTokenizationResponse> {
     const api = this.settings.api ?? new CohereApiConfiguration();
-    const abortSignal = context?.abortSignal;
+    const abortSignal = callOptions?.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -58,7 +58,12 @@ export class CohereTokenizer implements FullTokenizer {
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/tokenize`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: "tokenize",
+            functionId: callOptions?.functionId,
+            run: callOptions?.run,
+            callId: "",
+          }),
           body: {
             model: this.settings.model,
             text,
@@ -74,10 +79,10 @@ export class CohereTokenizer implements FullTokenizer {
 
   async callDeTokenizeAPI(
     tokens: number[],
-    context?: Run
+    callOptions?: FunctionCallOptions
   ): Promise<CohereDetokenizationResponse> {
     const api = this.settings.api ?? new CohereApiConfiguration();
-    const abortSignal = context?.abortSignal;
+    const abortSignal = callOptions?.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -85,7 +90,12 @@ export class CohereTokenizer implements FullTokenizer {
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/detokenize`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: "detokenize",
+            functionId: callOptions?.functionId,
+            run: callOptions?.run,
+            callId: "",
+          }),
           body: {
             model: this.settings.model,
             tokens,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -105,13 +105,14 @@ export class CohereTextGenerationModel
 
   async callAPI<RESPONSE>(
     prompt: string,
+    callOptions: FunctionCallOptions,
     options: {
       responseFormat: CohereTextGenerationResponseFormatType<RESPONSE>;
-    } & FunctionOptions
+    }
   ): Promise<RESPONSE> {
     const api = this.settings.api ?? new CohereApiConfiguration();
     const responseFormat = options.responseFormat;
-    const abortSignal = options.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -119,7 +120,12 @@ export class CohereTextGenerationModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/generate`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             stream: responseFormat.stream,
             model: this.settings.model,
@@ -166,10 +172,9 @@ export class CohereTextGenerationModel
     );
   }
 
-  async doGenerateTexts(prompt: string, options?: FunctionOptions) {
+  async doGenerateTexts(prompt: string, options: FunctionCallOptions) {
     return this.processTextGenerationResponse(
-      await this.callAPI(prompt, {
-        ...options,
+      await this.callAPI(prompt, options, {
         responseFormat: CohereTextGenerationResponseFormat.json,
       })
     );
@@ -211,9 +216,8 @@ export class CohereTextGenerationModel
     }
   }
 
-  doStreamText(prompt: string, options?: FunctionOptions) {
-    return this.callAPI(prompt, {
-      ...options,
+  doStreamText(prompt: string, options: FunctionCallOptions) {
+    return this.callAPI(prompt, options, {
       responseFormat: CohereTextGenerationResponseFormat.deltaIterable,
     });
   }

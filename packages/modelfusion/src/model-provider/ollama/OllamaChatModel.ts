@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
@@ -69,13 +69,14 @@ export class OllamaChatModel
 
   async callAPI<RESPONSE>(
     prompt: OllamaChatPrompt,
+    callOptions: FunctionCallOptions,
     options: {
       responseFormat: OllamaChatResponseFormatType<RESPONSE>;
-    } & FunctionOptions
+    }
   ): Promise<RESPONSE> {
     const { responseFormat } = options;
     const api = this.settings.api ?? new OllamaApiConfiguration();
-    const abortSignal = options.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -83,7 +84,12 @@ export class OllamaChatModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/api/chat`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             stream: responseFormat.stream,
             model: this.settings.model,
@@ -143,10 +149,12 @@ export class OllamaChatModel
     );
   }
 
-  async doGenerateTexts(prompt: OllamaChatPrompt, options?: FunctionOptions) {
+  async doGenerateTexts(
+    prompt: OllamaChatPrompt,
+    options: FunctionCallOptions
+  ) {
     return this.processTextGenerationResponse(
-      await this.callAPI(prompt, {
-        ...options,
+      await this.callAPI(prompt, options, {
         responseFormat: OllamaChatResponseFormat.json,
       })
     );
@@ -173,9 +181,8 @@ export class OllamaChatModel
     };
   }
 
-  doStreamText(prompt: OllamaChatPrompt, options?: FunctionOptions) {
-    return this.callAPI(prompt, {
-      ...options,
+  doStreamText(prompt: OllamaChatPrompt, options: FunctionCallOptions) {
+    return this.callAPI(prompt, options, {
       responseFormat: OllamaChatResponseFormat.deltaIterable,
     });
   }

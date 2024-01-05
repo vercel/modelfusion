@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -126,12 +126,10 @@ export class OpenAITranscriptionModel
 
   async doTranscribe(
     data: OpenAITranscriptionInput,
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ) {
-    const response = await this.callAPI(data, {
+    const response = await this.callAPI(data, options, {
       responseFormat: OpenAITranscriptionResponseFormat.verboseJson,
-      functionId: options?.functionId,
-      run: options?.run,
     });
 
     return {
@@ -142,12 +140,13 @@ export class OpenAITranscriptionModel
 
   async callAPI<RESULT>(
     data: OpenAITranscriptionInput,
+    callOptions: FunctionCallOptions,
     options: {
       responseFormat: OpenAITranscriptionResponseFormatType<RESULT>;
-    } & FunctionOptions
+    }
   ): Promise<RESULT> {
     const api = this.settings.api ?? new OpenAIApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions?.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -177,7 +176,12 @@ export class OpenAITranscriptionModel
 
         return postToApi({
           url: api.assembleUrl("/audio/transcriptions"),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             content: formData,
             values: {

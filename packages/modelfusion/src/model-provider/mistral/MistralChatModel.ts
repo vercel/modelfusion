@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -90,12 +90,13 @@ export class MistralChatModel
 
   async callAPI<RESULT>(
     prompt: MistralChatPrompt,
+    callOptions: FunctionCallOptions,
     options: {
       responseFormat: MistralChatResponseFormatType<RESULT>;
-    } & FunctionOptions
+    }
   ) {
     const api = this.settings.api ?? new MistralApiConfiguration();
-    const abortSignal = options.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
     const stream = options.responseFormat.stream;
     const successfulResponseHandler = options.responseFormat.handler;
 
@@ -105,7 +106,12 @@ export class MistralChatModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/chat/completions`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             stream,
             messages: prompt,
@@ -140,10 +146,12 @@ export class MistralChatModel
     );
   }
 
-  async doGenerateTexts(prompt: MistralChatPrompt, options?: FunctionOptions) {
+  async doGenerateTexts(
+    prompt: MistralChatPrompt,
+    options: FunctionCallOptions
+  ) {
     return this.processTextGenerationResponse(
-      await this.callAPI(prompt, {
-        ...options,
+      await this.callAPI(prompt, options, {
         responseFormat: MistralChatResponseFormat.json,
       })
     );
@@ -182,9 +190,8 @@ export class MistralChatModel
     }
   }
 
-  doStreamText(prompt: MistralChatPrompt, options?: FunctionOptions) {
-    return this.callAPI(prompt, {
-      ...options,
+  doStreamText(prompt: MistralChatPrompt, options: FunctionCallOptions) {
+    return this.callAPI(prompt, options, {
       responseFormat: MistralChatResponseFormat.textDeltaIterable,
     });
   }

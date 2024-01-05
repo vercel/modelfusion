@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { StructureFromTextPromptTemplate } from "../generate-structure/StructureFromTextPromptTemplate.js";
 import { StructureFromTextStreamingModel } from "../generate-structure/StructureFromTextStreamingModel.js";
 import { PromptTemplateTextGenerationModel } from "./PromptTemplateTextGenerationModel.js";
@@ -29,7 +29,7 @@ export class PromptTemplateTextStreamingModel<
     super(options);
   }
 
-  doStreamText(prompt: PROMPT, options?: FunctionOptions) {
+  doStreamText(prompt: PROMPT, options?: FunctionCallOptions) {
     const mappedPrompt = this.promptTemplate.format(prompt);
     return this.model.doStreamText(mappedPrompt, options);
   }

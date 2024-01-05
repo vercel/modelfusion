@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -47,7 +47,7 @@ export class OllamaTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ): Promise<OllamaTextEmbeddingResponse> {
     if (texts.length > this.maxValuesPerCall) {
       throw new Error(
@@ -56,7 +56,7 @@ export class OllamaTextEmbeddingModel
     }
 
     const api = this.settings.api ?? new OllamaApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -64,7 +64,12 @@ export class OllamaTextEmbeddingModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/api/embeddings`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             model: this.settings.model,
             prompt: texts[0],
@@ -84,7 +89,7 @@ export class OllamaTextEmbeddingModel
     };
   }
 
-  async doEmbedValues(texts: string[], options?: FunctionOptions) {
+  async doEmbedValues(texts: string[], options: FunctionCallOptions) {
     const response = await this.callAPI(texts, options);
 
     return {

@@ -3,6 +3,7 @@ export * from "./ApiCallError.js";
 export * from "./ApiConfiguration.js";
 export * as api from "./ApiFacade.js";
 export * from "./BaseUrlApiConfiguration.js";
+export * from "./CustomHeaderProvider.js";
 export * from "./RetryError.js";
 export * from "./RetryFunction.js";
 export * from "./ThrottleFunction.js";

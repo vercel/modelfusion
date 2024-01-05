@@ -1,5 +1,13 @@
+import { Run } from "../Run.js";
 import { RetryFunction } from "./RetryFunction.js";
 import { ThrottleFunction } from "./ThrottleFunction.js";
+
+export type HeaderParameters = {
+  functionType: string;
+  functionId?: string;
+  run?: Run;
+  callId: string;
+};
 
 /**
  * Settings for how to call an API, e.g. OpenAI.
@@ -21,8 +29,10 @@ export interface ApiConfiguration {
    * This is intended for authentication headers and proxy settings.
    *
    * The model may add additional headers, in particular "Content-Type"."
+   *
+   * @param params Parameters that can be used to create the headers.
    */
-  readonly headers: Record<string, string>;
+  headers(params: HeaderParameters): Record<string, string>;
 
   /**
    * Defines how failed API calls should be retried.

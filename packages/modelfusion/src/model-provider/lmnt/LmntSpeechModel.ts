@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -60,10 +60,10 @@ export class LmntSpeechModel
 
   private async callAPI(
     text: string,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ): Promise<LmntSpeechResponse> {
     const api = this.settings.api ?? new LmntApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -87,7 +87,12 @@ export class LmntSpeechModel
 
         return postToApi({
           url: api.assembleUrl(`/ai/speech`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             content: formData,
             values: {
@@ -117,7 +122,7 @@ export class LmntSpeechModel
     };
   }
 
-  async doGenerateSpeechStandard(text: string, options?: FunctionOptions) {
+  async doGenerateSpeechStandard(text: string, options: FunctionCallOptions) {
     const response = await this.callAPI(text, options);
     return Buffer.from(response.audio, "base64");
   }

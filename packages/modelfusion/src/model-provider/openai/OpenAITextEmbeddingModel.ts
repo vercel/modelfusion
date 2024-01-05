@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -110,10 +110,10 @@ export class OpenAITextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ): Promise<OpenAITextEmbeddingResponse> {
     const api = this.settings.api ?? new OpenAIApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -121,12 +121,17 @@ export class OpenAITextEmbeddingModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl("/embeddings"),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             model: this.modelName,
             input: texts,
             user: this.settings.isUserIdForwardingEnabled
-              ? options?.run?.userId
+              ? callOptions.run?.userId
               : undefined,
           },
           failedResponseHandler: failedOpenAICallResponseHandler,
@@ -142,14 +147,14 @@ export class OpenAITextEmbeddingModel
     return {};
   }
 
-  async doEmbedValues(texts: string[], options?: FunctionOptions) {
+  async doEmbedValues(texts: string[], callOptions: FunctionCallOptions) {
     if (texts.length > this.maxValuesPerCall) {
       throw new Error(
         `The OpenAI embedding API only supports ${this.maxValuesPerCall} texts per API call.`
       );
     }
 
-    const response = await this.callAPI(texts, options);
+    const response = await this.callAPI(texts, callOptions);
 
     return {
       response,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -87,10 +87,10 @@ export class ElevenLabsSpeechModel
 
   private async callAPI(
     text: string,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ): Promise<Buffer> {
     const api = this.settings.api ?? new ElevenLabsApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions?.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -104,7 +104,12 @@ export class ElevenLabsSpeechModel
               output_format: this.settings.outputFormat,
             })}`
           ),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             text,
             model_id: this.settings.model ?? defaultModel,
@@ -125,7 +130,7 @@ export class ElevenLabsSpeechModel
     };
   }
 
-  doGenerateSpeechStandard(text: string, options?: FunctionOptions) {
+  doGenerateSpeechStandard(text: string, options: FunctionCallOptions) {
     return this.callAPI(text, options);
   }
 

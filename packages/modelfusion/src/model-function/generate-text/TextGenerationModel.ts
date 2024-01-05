@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { Delta } from "../Delta.js";
 import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
@@ -86,7 +86,7 @@ export interface TextGenerationModel<
 
   doGenerateTexts(
     prompt: PROMPT,
-    options?: FunctionOptions
+    options?: FunctionCallOptions
   ): PromiseLike<{
     response: unknown;
     textGenerationResults: TextGenerationResult[];
@@ -123,7 +123,7 @@ export interface TextStreamingModel<
 > extends TextGenerationModel<PROMPT, SETTINGS> {
   doStreamText(
     prompt: PROMPT,
-    options?: FunctionOptions
+    options?: FunctionCallOptions
   ): PromiseLike<AsyncIterable<Delta<unknown>>>;
 
   extractTextDelta(delta: unknown): string | undefined;

@@ -1,4 +1,5 @@
 import { AbstractApiConfiguration } from "./AbstractApiConfiguration.js";
+import { CustomHeaderProvider } from "./CustomHeaderProvider.js";
 import { RetryFunction } from "./RetryFunction.js";
 import { ThrottleFunction } from "./ThrottleFunction.js";
 
@@ -12,6 +13,7 @@ export type UrlParts = {
 export type BaseUrlPartsApiConfigurationOptions = {
   baseUrl: string | UrlParts;
   headers?: Record<string, string>;
+  customCallHeaders?: CustomHeaderProvider;
   retry?: RetryFunction;
   throttle?: ThrottleFunction;
 };
@@ -23,17 +25,23 @@ export type BaseUrlPartsApiConfigurationOptions = {
  */
 export class BaseUrlApiConfiguration extends AbstractApiConfiguration {
   readonly baseUrl: UrlParts;
-  readonly headers: Record<string, string>;
+
+  protected readonly fixedHeadersValue: Record<string, string>;
 
   constructor({
     baseUrl,
     headers,
     retry,
     throttle,
+    customCallHeaders,
   }: BaseUrlPartsApiConfigurationOptions) {
-    super({ retry, throttle });
+    super({ retry, throttle, customCallHeaders });
     this.baseUrl = typeof baseUrl == "string" ? parseBaseUrl(baseUrl) : baseUrl;
-    this.headers = headers ?? {};
+    this.fixedHeadersValue = headers ?? {};
+  }
+
+  fixedHeaders() {
+    return this.fixedHeadersValue;
   }
 
   assembleUrl(path: string): string {
@@ -53,11 +61,11 @@ export class BaseUrlApiConfiguration extends AbstractApiConfiguration {
   }
 }
 
-export type PartialBaseUrlPartsApiConfigurationOptions = {
+export type PartialBaseUrlPartsApiConfigurationOptions = Omit<
+  BaseUrlPartsApiConfigurationOptions,
+  "baseUrl"
+> & {
   baseUrl?: string | Partial<UrlParts>;
-  headers?: Record<string, string>;
-  retry?: RetryFunction;
-  throttle?: ThrottleFunction;
 };
 
 export class BaseUrlApiConfigurationWithDefaults extends BaseUrlApiConfiguration {
@@ -67,6 +75,7 @@ export class BaseUrlApiConfigurationWithDefaults extends BaseUrlApiConfiguration
     headers,
     retry,
     throttle,
+    customCallHeaders,
   }: {
     baseUrlDefaults: UrlParts;
   } & PartialBaseUrlPartsApiConfigurationOptions) {
@@ -75,6 +84,7 @@ export class BaseUrlApiConfigurationWithDefaults extends BaseUrlApiConfiguration
       headers,
       retry,
       throttle,
+      customCallHeaders,
     });
   }
 }

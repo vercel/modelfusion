@@ -33,6 +33,6 @@ export class ElevenLabsApiConfiguration extends BaseUrlApiConfigurationWithDefau
   }
 
   get apiKey() {
-    return this.headers["xi-api-key"];
+    return this.fixedHeadersValue["xi-api-key"];
   }
 }

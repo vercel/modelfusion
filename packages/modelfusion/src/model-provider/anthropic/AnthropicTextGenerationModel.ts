@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -86,13 +86,14 @@ export class AnthropicTextGenerationModel
 
   async callAPI<RESPONSE>(
     prompt: string,
+    callOptions: FunctionCallOptions,
     options: {
       responseFormat: AnthropicTextGenerationResponseFormatType<RESPONSE>;
-    } & FunctionOptions
+    }
   ): Promise<RESPONSE> {
     const api = this.settings.api ?? new AnthropicApiConfiguration();
     const responseFormat = options.responseFormat;
-    const abortSignal = options.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
     const userId = this.settings.userId;
 
     return callWithRetryAndThrottle({
@@ -101,7 +102,12 @@ export class AnthropicTextGenerationModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/complete`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             model: this.settings.model,
             prompt,
@@ -137,10 +143,9 @@ export class AnthropicTextGenerationModel
     );
   }
 
-  async doGenerateTexts(prompt: string, options?: FunctionOptions) {
+  async doGenerateTexts(prompt: string, options: FunctionCallOptions) {
     return this.processTextGenerationResponse(
-      await this.callAPI(prompt, {
-        ...options,
+      await this.callAPI(prompt, options, {
         responseFormat: AnthropicTextGenerationResponseFormat.json,
       })
     );
@@ -180,9 +185,8 @@ export class AnthropicTextGenerationModel
     }
   }
 
-  doStreamText(prompt: string, options?: FunctionOptions) {
-    return this.callAPI(prompt, {
-      ...options,
+  doStreamText(prompt: string, options: FunctionCallOptions) {
+    return this.callAPI(prompt, options, {
       responseFormat: AnthropicTextGenerationResponseFormat.deltaIterable,
     });
   }

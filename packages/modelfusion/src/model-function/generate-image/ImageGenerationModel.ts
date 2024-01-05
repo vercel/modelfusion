@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 import { PromptTemplate } from "../PromptTemplate.js";
 
@@ -21,7 +21,7 @@ export interface ImageGenerationModel<
 > extends Model<SETTINGS> {
   doGenerateImages(
     prompt: PROMPT,
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ): PromiseLike<{
     response: unknown;
     base64Images: string[];

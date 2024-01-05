@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { Vector } from "../../core/Vector.js";
 import { Model, ModelSettings } from "../Model.js";
 
@@ -25,7 +25,7 @@ export interface EmbeddingModel<
 
   doEmbedValues(
     values: VALUE[],
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ): PromiseLike<{
     response: unknown;
     embeddings: Vector[];

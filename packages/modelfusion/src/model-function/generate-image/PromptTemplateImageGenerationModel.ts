@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { PromptTemplate } from "../PromptTemplate.js";
 import {
   ImageGenerationModel,
@@ -34,7 +34,7 @@ export class PromptTemplateImageGenerationModel<
     return this.model.settings;
   }
 
-  doGenerateImages(prompt: PROMPT, options?: FunctionOptions) {
+  doGenerateImages(prompt: PROMPT, options: FunctionCallOptions) {
     const mappedPrompt = this.promptTemplate.format(prompt);
     return this.model.doGenerateImages(mappedPrompt, options);
   }

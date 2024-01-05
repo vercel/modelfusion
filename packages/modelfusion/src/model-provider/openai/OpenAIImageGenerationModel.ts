@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -124,13 +124,14 @@ export class OpenAIImageGenerationModel
 
   async callAPI<RESULT>(
     prompt: string,
+    callOptions: FunctionCallOptions,
     options: {
       responseFormat: OpenAIImageGenerationResponseFormatType<RESULT>;
-    } & FunctionOptions
+    }
   ): Promise<RESULT> {
     const api = this.settings.api ?? new OpenAIApiConfiguration();
-    const abortSignal = options.run?.abortSignal;
-    const userId = options.run?.userId;
+    const abortSignal = callOptions.run?.abortSignal;
+    const userId = callOptions.run?.userId;
     const responseFormat = options.responseFormat;
 
     return callWithRetryAndThrottle({
@@ -139,7 +140,12 @@ export class OpenAIImageGenerationModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl("/images/generations"),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             prompt,
             n: this.settings.numberOfGenerations,
@@ -169,10 +175,9 @@ export class OpenAIImageGenerationModel
     );
   }
 
-  async doGenerateImages(prompt: string, options?: FunctionOptions) {
-    const response = await this.callAPI(prompt, {
+  async doGenerateImages(prompt: string, options: FunctionCallOptions) {
+    const response = await this.callAPI(prompt, options, {
       responseFormat: OpenAIImageGenerationResponseFormat.base64Json,
-      ...options,
     });
 
     return {

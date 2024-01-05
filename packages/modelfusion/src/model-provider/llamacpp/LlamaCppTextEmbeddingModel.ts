@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -56,7 +56,7 @@ export class LlamaCppTextEmbeddingModel
 
   async callAPI(
     texts: Array<string>,
-    options?: FunctionOptions
+    callOptions: FunctionCallOptions
   ): Promise<LlamaCppTextEmbeddingResponse> {
     if (texts.length > this.maxValuesPerCall) {
       throw new Error(
@@ -65,7 +65,7 @@ export class LlamaCppTextEmbeddingModel
     }
 
     const api = this.settings.api ?? new LlamaCppApiConfiguration();
-    const abortSignal = options?.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: this.settings.api?.retry,
@@ -73,7 +73,12 @@ export class LlamaCppTextEmbeddingModel
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl(`/embedding`),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: { content: texts[0] },
           failedResponseHandler: failedLlamaCppCallResponseHandler,
           successfulResponseHandler: createJsonResponseHandler(
@@ -90,7 +95,7 @@ export class LlamaCppTextEmbeddingModel
     };
   }
 
-  async doEmbedValues(texts: string[], options?: FunctionOptions) {
+  async doEmbedValues(texts: string[], options: FunctionCallOptions) {
     const response = await this.callAPI(texts, options);
 
     return {

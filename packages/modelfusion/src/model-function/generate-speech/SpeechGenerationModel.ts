@@ -1,4 +1,4 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { Delta } from "../Delta.js";
 import { Model, ModelSettings } from "../Model.js";
 
@@ -13,7 +13,7 @@ export interface SpeechGenerationModel<
    */
   doGenerateSpeechStandard(
     text: string,
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ): PromiseLike<Buffer>;
 }
 
@@ -23,6 +23,6 @@ export interface StreamingSpeechGenerationModel<
 > extends SpeechGenerationModel<SETTINGS> {
   doGenerateSpeechStreamDuplex(
     textStream: AsyncIterable<string>,
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ): PromiseLike<AsyncIterable<Delta<Buffer>>>;
 }

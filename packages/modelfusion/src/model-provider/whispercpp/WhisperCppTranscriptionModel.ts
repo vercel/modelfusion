@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
@@ -42,12 +42,9 @@ export class WhisperCppTranscriptionModel
 
   async doTranscribe(
     data: WhisperCppTranscriptionInput,
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ) {
-    const response = await this.callAPI(data, {
-      functionId: options?.functionId,
-      run: options?.run,
-    });
+    const response = await this.callAPI(data, options);
 
     return {
       response,
@@ -55,10 +52,13 @@ export class WhisperCppTranscriptionModel
     };
   }
 
-  async callAPI(data: WhisperCppTranscriptionInput, options: FunctionOptions) {
+  async callAPI(
+    data: WhisperCppTranscriptionInput,
+    callOptions: FunctionCallOptions
+  ) {
     const { temperature } = this.settings;
     const api = this.settings.api ?? new WhisperCppApiConfiguration();
-    const abortSignal = options.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
 
     return callWithRetryAndThrottle({
       retry: api.retry,
@@ -74,7 +74,12 @@ export class WhisperCppTranscriptionModel
 
         return postToApi({
           url: api.assembleUrl("/inference"),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             content: formData,
             values: { temperature },

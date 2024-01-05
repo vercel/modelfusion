@@ -1,5 +1,5 @@
 import SecureJSON from "secure-json-parse";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../../core/schema/Schema.js";
 import { StructureStreamingModel } from "../../model-function/generate-structure/StructureGenerationModel.js";
@@ -123,7 +123,7 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
   async doGenerateStructure(
     schema: Schema<unknown> & JsonSchemaProducer,
     prompt: Parameters<PROMPT_TEMPLATE["format"]>[0], // first argument of the function
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ) {
     const expandedPrompt = this.promptTemplate.format(prompt);
 
@@ -134,8 +134,7 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
           ...this.promptTemplate.stopSequences,
         ],
       })
-      .callAPI(expandedPrompt, {
-        ...options,
+      .callAPI(expandedPrompt, options, {
         responseFormat: OpenAIChatResponseFormat.json,
         functionCall: { name: this.fnName },
         functions: [
@@ -167,12 +166,11 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
   async doStreamStructure(
     schema: Schema<unknown> & JsonSchemaProducer,
     prompt: Parameters<PROMPT_TEMPLATE["format"]>[0], // first argument of the function
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ) {
     const expandedPrompt = this.promptTemplate.format(prompt);
 
-    return this.model.callAPI(expandedPrompt, {
-      ...options,
+    return this.model.callAPI(expandedPrompt, options, {
       responseFormat: OpenAIChatResponseFormat.deltaIterable,
       functionCall: { name: this.fnName },
       functions: [

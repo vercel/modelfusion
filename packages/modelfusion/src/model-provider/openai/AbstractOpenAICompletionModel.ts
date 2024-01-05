@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
 import {
@@ -50,15 +50,16 @@ export abstract class AbstractOpenAICompletionModel<
 
   async callAPI<RESULT>(
     prompt: string,
+    callOptions: FunctionCallOptions,
     options: {
       responseFormat: OpenAITextResponseFormatType<RESULT>;
-    } & FunctionOptions
+    }
   ): Promise<RESULT> {
     const api = this.settings.api ?? new OpenAIApiConfiguration();
     const user = this.settings.isUserIdForwardingEnabled
-      ? options.run?.userId
+      ? callOptions.run?.userId
       : undefined;
-    const abortSignal = options.run?.abortSignal;
+    const abortSignal = callOptions.run?.abortSignal;
     const openaiResponseFormat = options.responseFormat;
 
     // empty arrays are not allowed for stop:
@@ -75,7 +76,12 @@ export abstract class AbstractOpenAICompletionModel<
       call: async () =>
         postJsonToApi({
           url: api.assembleUrl("/completions"),
-          headers: api.headers,
+          headers: api.headers({
+            functionType: callOptions.functionType,
+            functionId: callOptions.functionId,
+            run: callOptions.run,
+            callId: callOptions.callId,
+          }),
           body: {
             stream: openaiResponseFormat.stream,
             model: this.settings.model,
@@ -102,10 +108,9 @@ export abstract class AbstractOpenAICompletionModel<
     });
   }
 
-  async doGenerateTexts(prompt: string, options?: FunctionOptions) {
+  async doGenerateTexts(prompt: string, options: FunctionCallOptions) {
     return this.processTextGenerationResponse(
-      await this.callAPI(prompt, {
-        ...options,
+      await this.callAPI(prompt, options, {
         responseFormat: OpenAITextResponseFormat.json,
       })
     );
@@ -152,9 +157,8 @@ export abstract class AbstractOpenAICompletionModel<
     }
   }
 
-  doStreamText(prompt: string, options?: FunctionOptions) {
-    return this.callAPI(prompt, {
-      ...options,
+  doStreamText(prompt: string, options: FunctionCallOptions) {
+    return this.callAPI(prompt, options, {
       responseFormat: OpenAITextResponseFormat.deltaIterable,
     });
   }
