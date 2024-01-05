@@ -5,9 +5,16 @@ sidebar_position: 1
 # API Configuration
 
 Models can be configured with an [API configuration](/api/interfaces/ApiConfiguration) that defines how the model accesses the API.
-The API configuration controls how the called URL is constructed, what authorization and configuration headers are sent, and how retry and throttling are handled.
 
-Model providers usually provide a default API configuration is used automatically, e.g. the [OpenAIApiConfiguration](/api/classes/OpenAIApiConfiguration) for the [OpenAI integration](/integration/model-provider/openai).
+The API configuration controls how the called URL is constructed, what authorization and configuration headers are sent, and how retry and throttling are handled:
+
+- [Base URL](/guide/util/api-configuration/base-url)
+- API keys
+- Headers
+- [Retry Strategies](/guide/util/api-configuration/retry)
+- [Throttling Strategies](/guide/util/api-configuration/throttle)
+
+Model providers come with a default API configuration which is used automatically, e.g. the [OpenAIApiConfiguration](/api/classes/OpenAIApiConfiguration) for the [OpenAI integration](/integration/model-provider/openai).
 
 ## Usage
 
