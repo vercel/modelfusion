@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.114.1 - 2024-01-05
+
+### Fixed
+
+- Together AI text generation and text streaming using OpenAI-compatible chat models.
+
 ## v0.114.0 - 2024-01-05
 
 ### Added
