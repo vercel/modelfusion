@@ -6,7 +6,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
-    "modelfusion": "0.116.0",
+    "modelfusion": "0.116.1",
     "dotenv": "16.3.1"
   }
 }
