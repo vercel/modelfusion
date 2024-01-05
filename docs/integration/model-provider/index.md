@@ -17,7 +17,6 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 | [Mistral](/integration/model-provider/mistral)                    | ✅                                             | ✅                                           |                                                |
 | [Hugging Face](/integration/model-provider/huggingface)           | ✅                                             |                                              |                                                |
 | [Cohere](/integration/model-provider/cohere)                      | ✅                                             | ✅                                           | full                                           |
-| [Anthropic](/integration/model-provider/anthropic)                | ✅                                             | ✅                                           |                                                |
 
 ### [Generate Structure](/guide/function/generate-structure)
 

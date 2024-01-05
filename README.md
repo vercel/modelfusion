@@ -59,7 +59,7 @@ const text = await generateText(
 );
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Mistral](https://modelfusion.dev/integration/model-provider/mistral), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Mistral](https://modelfusion.dev/integration/model-provider/mistral), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface), [Cohere](https://modelfusion.dev/integration/model-provider/cohere)
 
 #### streamText
 
@@ -76,7 +76,7 @@ for await (const textPart of textStream) {
 }
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Mistral](https://modelfusion.dev/integration/model-provider/mistral), [Cohere](https://modelfusion.dev/integration/model-provider/cohere), [Anthropic](https://modelfusion.dev/integration/model-provider/anthropic)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Mistral](https://modelfusion.dev/integration/model-provider/mistral), [Cohere](https://modelfusion.dev/integration/model-provider/cohere)
 
 #### streamText with multi-modal prompt
 
@@ -412,9 +412,9 @@ Prompt templates let you use higher level prompt structures (such as text, instr
 
 ```ts
 const text = await generateText(
-  anthropic
-    .TextGenerator({
-      model: "claude-instant-1",
+  openai
+    .ChatTextGenerator({
+      // ...
     })
     .withTextPrompt(),
   "Write a short story about a robot learning to love"
@@ -473,7 +473,6 @@ const textStream = await streamText(
 | Prompt Template  | Text Prompt | Instruction Prompt | Chat Prompt |
 | ---------------- | ----------- | ------------------ | ----------- |
 | OpenAI Chat      | ✅          | ✅                 | ✅          |
-| Anthropic        | ✅          | ✅                 | ✅          |
 | Llama 2          | ✅          | ✅                 | ✅          |
 | ChatML           | ✅          | ✅                 | ✅          |
 | NeuralChat       | ✅          | ✅                 | ✅          |

@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.115.0 - 2024-01-05
+
+### Removed
+
+- Anthropic support. Anthropic has a strong stance against open-source models and against non-US AI. I will not support them by providing a ModelFusion integration.
+
 ## v0.114.1 - 2024-01-05
 
 ### Fixed

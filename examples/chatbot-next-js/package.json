@@ -20,7 +20,7 @@
     "@emotion/styled": "11.10.8",
     "@mui/icons-material": "5.11.16",
     "@mui/material": "5.12.2",
-    "modelfusion": "0.114.1",
+    "modelfusion": "0.115.0",
     "modelfusion-experimental": "0.3.0",
     "next": "13.5.1",
     "react": "18.2.0",

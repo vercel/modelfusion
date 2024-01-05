@@ -200,8 +200,6 @@ The following prompt templates are available for text prompts:
 
 - **OpenAI chat**: [OpenAIChatPrompt.text()](/api/namespaces/OpenAIChatPrompt#text)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [AnthropicPrompt.text()](/api/namespaces/AnthropicPrompt#text)
-  for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
 - **Llama 2**: [Llama2Prompt.text()](/api/namespaces/Llama2Prompt#text)
   for models that use the [Llama 2 prompt template](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
 - **Alpaca**: [AlpacaPrompt.text()](/api/namespaces/AlpacaPrompt#text)
@@ -278,8 +276,6 @@ The following prompt templates are available for instruction prompts:
 
 - **OpenAI chat**: [OpenAIChatPrompt.instruction()](/api/namespaces/OpenAIChatPrompt#instruction)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [AnthropicPrompt.instruction()](/api/namespaces/AnthropicPrompt#instruction)
-  for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
 - **Llama 2**: [Llama2Prompt.instruction()](/api/namespaces/Llama2Prompt#instruction)
   for models that use the [Llama 2 prompt template](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
 - **Alpaca**: [AlpacaPrompt.instruction()](/api/namespaces/AlpacaPrompt#instruction)
@@ -353,8 +349,6 @@ The following prompt templates are available for chat prompts:
 
 - **OpenAI chat**: [OpenAIChatPrompt.chat()](/api/namespaces/OpenAIChatPrompt#chat)
   for [OpenAI chat models](/api/classes/OpenAIChatModel).
-- **Anthropic**: [AnthropicPrompt.chat()](/api/namespaces/AnthropicPrompt#chat)
-  for [Anthropic models](/api/classes/AnthropicTextGenerationModel).
 - **Llama 2**: [Llama2Prompt.chat()](/api/namespaces/Llama2Prompt#chat)
   for models that use the [Llama 2 prompt template](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat).
 - **Vicuna**: [VicunaPromptTemplate.chat()](/api/namespaces/VicunaPrompt#chat)
@@ -429,4 +423,3 @@ const modelWithMyCustomPromptTemplate =
 - [Mistral](/integration/model-provider/mistral)
 - [Hugging Face](/integration/model-provider/huggingface) (no streaming)
 - [Cohere](/integration/model-provider/cohere)
-- [Anthropic](/integration/model-provider/anthropic)
