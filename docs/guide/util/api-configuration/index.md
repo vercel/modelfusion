@@ -10,7 +10,7 @@ The API configuration controls how the called URL is constructed, what authoriza
 
 - [Base URL](/guide/util/api-configuration/base-url)
 - API keys
-- Headers
+- [Headers](/guide/util/api-configuration/headers)
 - [Retry Strategies](/guide/util/api-configuration/retry)
 - [Throttling Strategies](/guide/util/api-configuration/throttle)
 

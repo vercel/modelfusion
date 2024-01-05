@@ -564,6 +564,7 @@ modelfusion.setLogFormat("detailed-object"); // log full events
 - [Utilities](https://modelfusion.dev/guide/util/)
   - [API Configuration](https://modelfusion.dev/guide/util/api-configuration)
     - [Base URL](https://modelfusion.dev/guide/util/api-configuration/base-url)
+    - [Headers](https://modelfusion.dev/guide/util/api-configuration/headers)
     - [Retry strategies](https://modelfusion.dev/guide/util/api-configuration/retry)
     - [Throttling strategies](https://modelfusion.dev/guide/util/api-configuration/throttle)
   - [Logging](https://modelfusion.dev/guide/util/logging)
