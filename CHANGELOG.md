@@ -1,5 +1,64 @@
 # Changelog
 
+## v0.114.0 - 2024-01-05
+
+### Added
+
+- Custom call header support for APIs. You can pass a `customCallHeaders` function into API configurations to add custom headers. The function is called with `functionType`, `functionId`, `run`, and `callId` parameters. Example for Helicone:
+
+  ```ts
+  const text = await generateText(
+    openai
+      .ChatTextGenerator({
+        api: new HeliconeOpenAIApiConfiguration({
+          customCallHeaders: ({ functionId, callId }) => ({
+            "Helicone-Property-FunctionId": functionId,
+            "Helicone-Property-CallId": callId,
+          }),
+        }),
+        model: "gpt-3.5-turbo",
+        temperature: 0.7,
+        maxGenerationTokens: 500,
+      })
+      .withTextPrompt(),
+
+    "Write a short story about a robot learning to love",
+
+    { functionId: "example-function" }
+  );
+  ```
+
+- Rudimentary caching support for `generateText`. You can use a `MemoryCache` to store the response of a `generateText` call. Example:
+
+  ```ts
+  import { MemoryCache, generateText, ollama } from "modelfusion";
+
+  const model = ollama
+    .ChatTextGenerator({ model: "llama2:chat", maxGenerationTokens: 100 })
+    .withTextPrompt();
+
+  const cache = new MemoryCache();
+
+  const text1 = await generateText(
+    model,
+    "Write a short story about a robot learning to love:",
+    { cache }
+  );
+
+  console.log(text1);
+
+  // 2nd call will use cached response:
+  const text2 = await generateText(
+    model,
+    "Write a short story about a robot learning to love:", // same text
+    { cache }
+  );
+
+  console.log(text2);
+  ```
+
+- `validateTypes` and `safeValidateTypes` helpers that perform type checking of an object against a `Schema` (e.g., a `zodSchema`).
+
 ## v0.113.0 - 2024-01-03
 
 [Structure generation](https://modelfusion.dev/guide/function/generate-structure) improvements.
