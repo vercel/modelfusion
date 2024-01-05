@@ -9,7 +9,6 @@ Models can be configured with an [API configuration](/api/interfaces/ApiConfigur
 The API configuration controls how the called URL is constructed, what authorization and configuration headers are sent, and how retry and throttling are handled:
 
 - [Base URL](/guide/util/api-configuration/base-url)
-- API keys
 - [Headers](/guide/util/api-configuration/headers)
 - [Retry Strategies](/guide/util/api-configuration/retry)
 - [Throttling Strategies](/guide/util/api-configuration/throttle)
