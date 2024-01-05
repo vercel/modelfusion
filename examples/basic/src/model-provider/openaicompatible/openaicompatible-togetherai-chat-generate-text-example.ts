@@ -9,6 +9,7 @@ async function main() {
       .ChatTextGenerator({
         api: openaicompatible.TogetherAIApi(),
         model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
+        maxGenerationTokens: 200,
       })
       .withTextPrompt(),
 

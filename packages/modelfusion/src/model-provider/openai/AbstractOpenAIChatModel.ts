@@ -364,7 +364,7 @@ const openAIChatResponseSchema = z.object({
           )
           .optional(),
       }),
-      index: z.number(),
+      index: z.number().optional(), // optional for OpenAI compatible models
       logprobs: z.nullable(z.any()),
       finish_reason: z
         .enum([
@@ -432,7 +432,7 @@ const openaiChatChunkSchema = z.object({
     })
   ),
   created: z.number(),
-  model: z.string(),
+  model: z.string().optional(), // optional for OpenAI compatible models
   system_fingerprint: z.string().optional().nullable(),
 });
 
