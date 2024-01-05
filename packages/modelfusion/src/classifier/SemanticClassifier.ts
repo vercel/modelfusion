@@ -100,12 +100,8 @@ export class SemanticClassifier<
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ClusterArray<T extends SemanticCluster<any, any>[]> = T;
-
-// all names from cluster array as a type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ClusterNames<T extends ClusterArray<SemanticCluster<any, any>[]>> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [K in T[number]["name"]]: Extract<T[number], SemanticCluster<any, K>>;
-}[T[number]["name"]];
+type ClusterNames<CLUSTERS> = CLUSTERS extends Array<
+  SemanticCluster<unknown, infer NAME>
+>
+  ? NAME
+  : never;
