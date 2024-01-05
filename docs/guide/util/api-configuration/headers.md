@@ -10,7 +10,7 @@ You can configure both fixed and dynamic headers for an API configuration.
 
 ### Setting fixed headers
 
-Example for [Automatic1111](/integration/model-provider/automatic111). The same approach works for other model providers.
+Example for [Automatic1111](/integration/model-provider/automatic1111). The same approach works for other model providers.
 
 ```ts
 import { ollama } from "modelfusion";
