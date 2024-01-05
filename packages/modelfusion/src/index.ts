@@ -1,3 +1,4 @@
+export * from "./classifier/index.js";
 export * from "./core/index.js";
 export * from "./model-function/index.js";
 export * from "./model-provider/index.js";
