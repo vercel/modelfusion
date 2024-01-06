@@ -1,5 +1,4 @@
 import {
-  Llama2Prompt,
   cohere,
   createEventSourceStream,
   llamacpp,
@@ -18,39 +17,34 @@ const messageSchame = z.object({
 
 const requestSchema = z.array(messageSchame);
 
-const gpt35turboModel = openai
-  .ChatTextGenerator({
-    // explicit API configuration needed for NextJS environment
-    // (otherwise env variables are not available):
-    api: openai.Api({
-      apiKey: process.env.OPENAI_API_KEY,
-    }),
-    model: "gpt-3.5-turbo",
-    maxGenerationTokens: 512,
-  })
-  .withChatPrompt();
+const gpt35turboModel = openai.ChatTextGenerator({
+  // explicit API configuration needed for NextJS environment
+  // (otherwise env variables are not available):
+  api: openai.Api({
+    apiKey: process.env.OPENAI_API_KEY,
+  }),
+  model: "gpt-3.5-turbo",
+  maxGenerationTokens: 512,
+});
 
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const llama2Model = llamacpp
-  .TextGenerator({
-    contextWindowSize: 4096, // Llama 2 context window size
-    maxGenerationTokens: 512,
-  })
-  .withTextPromptTemplate(Llama2Prompt.chat());
+const llama2Model = llamacpp.TextGenerator({
+  promptTemplate: llamacpp.prompt.Llama2,
+  contextWindowSize: 4096, // Llama 2 context window size
+  maxGenerationTokens: 512,
+});
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const cohereModel = cohere
-  .TextGenerator({
-    // explicit API configuration needed for NextJS environment
-    // (otherwise env variables are not available):
-    // api: cohere.Api({
-    //   apiKey: process.env.COHERE_API_KEY,
-    // }),
-    model: "command",
-    maxGenerationTokens: 512,
-  })
-  .withChatPrompt();
+const cohereModel = cohere.TextGenerator({
+  // explicit API configuration needed for NextJS environment
+  // (otherwise env variables are not available):
+  // api: cohere.Api({
+  //   apiKey: process.env.COHERE_API_KEY,
+  // }),
+  model: "command",
+  maxGenerationTokens: 512,
+});
 
 const sendMessage = async (request: Request): Promise<Response> => {
   if (request.method !== "POST") {
@@ -79,13 +73,14 @@ const sendMessage = async (request: Request): Promise<Response> => {
 
   const messages = parsedData.data;
 
-  const model = gpt35turboModel; // change this to your preferred model
+  // change this to your preferred model:
+  const chatModel = gpt35turboModel.withChatPrompt();
 
   const textStream = await streamText(
-    model,
+    chatModel,
     // limit the size of the prompt to leave room for the answer:
     await trimChatPrompt({
-      model,
+      model: chatModel,
       prompt: {
         system:
           "You are an AI chat bot. " +
