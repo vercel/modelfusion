@@ -370,9 +370,10 @@ export class LlamaCppCompletionModel<
   }
 
   withJsonOutput(): this {
-    return this.withSettings({
-      grammar: json,
-    });
+    // don't override the grammar if it's already set (to support more restrictive grammars)
+    return this.settings.grammar == null
+      ? this.withSettings({ grammar: json })
+      : this;
   }
 
   withTextPrompt(): PromptTemplateTextStreamingModel<
