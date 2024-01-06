@@ -15,7 +15,6 @@ async function main() {
         maxGenerationTokens: 1024,
         temperature: 0,
       })
-      .withInstructionPrompt() // needed for jsonStructurePrompt.text()
       .asStructureGenerationModel(jsonStructurePrompt.text()), // automatically restrict the output to JSON
 
     zodSchema(

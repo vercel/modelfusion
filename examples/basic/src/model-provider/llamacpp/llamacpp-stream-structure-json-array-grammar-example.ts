@@ -16,7 +16,6 @@ async function main() {
         temperature: 0,
         grammar: llamacpp.grammar.jsonArray, // force JSON array output
       })
-      .withInstructionPrompt() // needed for jsonStructurePrompt.text()
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
     zodSchema(
