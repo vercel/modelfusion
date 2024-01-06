@@ -19,10 +19,10 @@ async function main() {
     const model = llamacpp
       .TextGenerator({
         // use llama-2-7b-chat.GGUF.q4_0.bin
+        promptTemplate: llamacpp.prompt.Llama2,
         contextWindowSize: 4096, // Llama 2 context window size
         maxGenerationTokens: 512,
         cachePrompt: true,
-        promptTemplate: llamacpp.prompt.Llama2,
       })
       .withChatPrompt();
 

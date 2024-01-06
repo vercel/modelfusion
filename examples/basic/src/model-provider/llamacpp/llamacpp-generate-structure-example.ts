@@ -11,9 +11,9 @@ async function main() {
     llamacpp
       .TextGenerator({
         // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
+        promptTemplate: llamacpp.prompt.ChatML,
         maxGenerationTokens: 1024,
         temperature: 0,
-        promptTemplate: llamacpp.prompt.ChatML,
       })
       .withInstructionPrompt() // needed for jsonStructurePrompt.text()
       .asStructureGenerationModel(jsonStructurePrompt.text()), // automatically restrict the output to JSON

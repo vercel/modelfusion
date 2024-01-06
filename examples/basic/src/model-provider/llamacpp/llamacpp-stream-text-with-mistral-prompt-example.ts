@@ -5,8 +5,8 @@ async function main() {
   const textStream = await streamText(
     llamacpp
       .TextGenerator({
-        maxGenerationTokens: 512,
         promptTemplate: llamacpp.prompt.Mistral,
+        maxGenerationTokens: 512,
       })
       .withInstructionPrompt(),
 

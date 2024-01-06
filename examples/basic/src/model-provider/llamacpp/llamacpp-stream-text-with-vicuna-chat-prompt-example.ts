@@ -1,13 +1,13 @@
 import { llamacpp, streamText } from "modelfusion";
 
-// example assumes you are running https://huggingface.co/TheBloke/vicuna-7B-v1.5-GGUF with llama.cpp
 async function main() {
   const textStream = await streamText(
     llamacpp
       .TextGenerator({
+        // run https://huggingface.co/TheBloke/vicuna-7B-v1.5-GGUF with llama.cpp
+        promptTemplate: llamacpp.prompt.Vicuna,
         contextWindowSize: 2048, // Vicuna v1.5 context window size
         maxGenerationTokens: 512,
-        promptTemplate: llamacpp.prompt.Vicuna,
       })
       .withChatPrompt(),
     {
