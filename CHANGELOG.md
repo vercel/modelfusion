@@ -1,5 +1,46 @@
 # Changelog
 
+## v0.117.0 - 2024-01-06
+
+### Added
+
+- Predefined Llama.cpp GBNF grammars:
+
+  - `llamacpp.grammar.json`: Restricts the output to JSON.
+  - `llamacpp.grammar.jsonArray`: Restricts the output to a JSON array.
+  - `llamacpp.grammar.list`: Restricts the output to a newline-separated list where each line starts with `- `.
+
+- Llama.cpp structure generation support:
+
+  ```ts
+  const structure = await generateStructure(
+    llamacpp
+      .TextGenerator({
+        // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
+        maxGenerationTokens: 1024,
+        temperature: 0,
+      })
+      .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
+      .asStructureGenerationModel(jsonStructurePrompt.text()), // automatically restrict the output to JSON
+
+    zodSchema(
+      z.object({
+        characters: z.array(
+          z.object({
+            name: z.string(),
+            class: z
+              .string()
+              .describe("Character class, e.g. warrior, mage, or thief."),
+            description: z.string(),
+          })
+        ),
+      })
+    ),
+
+    "Generate 3 character descriptions for a fantasy role playing game. "
+  );
+  ```
+
 ## v0.116.0 - 2024-01-05
 
 ### Added
