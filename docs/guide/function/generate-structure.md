@@ -57,7 +57,7 @@ const model = openai
 
 #### Ollama chat model with JSON output
 
-You can also use the JSON output of [Ollama](/integration/provider/ollama) chat models to generate a structure. The `jsonStructurePrompt` automatically restricts the output to JSON.
+You can also use the JSON output of [Ollama](/integration/model-provider/ollama) chat models to generate a structure. The `jsonStructurePrompt` automatically restricts the output to JSON.
 
 :::note
 When using Ollama for structure generation, it is important to choose a model that is capable of creating the structure that you want. I had good results with `openhermes2.5-mistral` and `mixtral`, for example, but this depends on your use case.
