@@ -1,12 +1,52 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
 import { ChatPrompt } from "./ChatPrompt.js";
 import { validateContentIsString } from "./ContentPart.js";
+import { InstructionPrompt } from "./InstructionPrompt.js";
 import { InvalidPromptError } from "./InvalidPromptError.js";
 
 // default Vicuna 1 system message
 const DEFAULT_SYSTEM_MESSAGE =
   "A chat between a curious user and an artificial intelligence assistant. " +
   "The assistant gives helpful, detailed, and polite answers to the user's questions.";
+
+/**
+ * Formats a text prompt as a Vicuna prompt.
+ */
+export function text(): TextGenerationPromptTemplate<string, string> {
+  return {
+    stopSequences: [],
+    format(prompt) {
+      let text = DEFAULT_SYSTEM_MESSAGE;
+      text += "\n\nUSER: ";
+      text += prompt;
+      text += "\n\nASSISTANT: ";
+      return text;
+    },
+  };
+}
+
+/**
+ * Formats an instruction prompt as a Vicuna prompt.
+ */
+export function instruction(): TextGenerationPromptTemplate<
+  InstructionPrompt,
+  string
+> {
+  return {
+    format(prompt) {
+      let text =
+        prompt.system != null
+          ? `${prompt.system}\n\n`
+          : `${DEFAULT_SYSTEM_MESSAGE}\n\n`;
+
+      text += `USER: ${validateContentIsString(prompt.instruction, prompt)}\n`;
+      text += `ASSISTANT: `;
+
+      return text;
+    },
+    stopSequences: [`\nUSER:`],
+  };
+}
 
 /**
  * Formats a chat prompt as a Vicuna prompt.
