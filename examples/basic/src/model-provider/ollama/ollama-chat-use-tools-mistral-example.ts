@@ -1,9 +1,6 @@
-import dotenv from "dotenv";
 import { automatic1111, modelfusion, ollama, useTools } from "modelfusion";
 import { XmlTagToolCallsPromptTemplate } from "../../tool/prompts/XmlTagToolCallsPromptTemplate";
 import { ImageGeneratorTool } from "../../tool/tools/image-generator-tool";
-
-dotenv.config();
 
 modelfusion.setLogFormat("detailed-object");
 

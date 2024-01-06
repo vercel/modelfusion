@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
 import { MistralInstructPrompt, generateText, ollama } from "modelfusion";
-
-dotenv.config();
 
 async function main() {
   const text = await generateText(

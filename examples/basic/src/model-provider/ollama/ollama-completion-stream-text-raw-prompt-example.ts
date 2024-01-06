@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
-import { MistralInstructPrompt, ollama, streamText } from "modelfusion";
-
-dotenv.config();
+import { ollama, streamText } from "modelfusion";
 
 async function main() {
   const textStream = await streamText(

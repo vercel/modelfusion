@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
 import { ChatMLPrompt, llamacpp, streamText } from "modelfusion";
-
-dotenv.config();
 
 // example assumes you are running https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp
 async function main() {

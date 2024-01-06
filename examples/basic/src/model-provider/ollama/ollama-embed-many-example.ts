@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
 import { embedMany, ollama } from "modelfusion";
-
-dotenv.config();
 
 async function main() {
   const embeddings = await embedMany(

@@ -1,9 +1,6 @@
-import dotenv from "dotenv";
 import { LlamaCppBakLLaVA1Prompt, llamacpp, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
-
-dotenv.config();
 
 async function main() {
   const catImage = fs.readFileSync(path.join("data", "comic-cat.png"), {

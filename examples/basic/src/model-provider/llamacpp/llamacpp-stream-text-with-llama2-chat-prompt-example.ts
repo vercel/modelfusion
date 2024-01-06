@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
 import { Llama2Prompt, llamacpp, streamText } from "modelfusion";
-
-dotenv.config();
 
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
 async function main() {

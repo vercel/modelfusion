@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import {
   MistralInstructPrompt,
   modelfusion,
@@ -8,8 +7,6 @@ import {
 import { mistralMultiToolCallPromptTemplate } from "../../tool/prompts/mistral";
 import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
-
-dotenv.config();
 
 modelfusion.setLogFormat("detailed-object");
 

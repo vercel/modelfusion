@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
 import { MemoryCache, generateText, modelfusion, ollama } from "modelfusion";
-
-dotenv.config();
 
 modelfusion.setLogFormat("detailed-object");
 

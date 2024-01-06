@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import {
   jsonStructurePrompt,
   ollama,
@@ -6,8 +5,6 @@ import {
   zodSchema,
 } from "modelfusion";
 import { z } from "zod";
-
-dotenv.config();
 
 async function main() {
   const structureStream = await streamStructure(

@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import {
   ChatMLPrompt,
   generateStructure,
@@ -7,8 +6,6 @@ import {
   zodSchema,
 } from "modelfusion";
 import { z } from "zod";
-
-dotenv.config();
 
 async function main() {
   const structure = await generateStructure(

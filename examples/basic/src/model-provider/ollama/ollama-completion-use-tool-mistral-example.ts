@@ -1,15 +1,10 @@
 import { MathJsTool } from "@modelfusion/mathjs-tool";
-import dotenv from "dotenv";
 import {
   MistralInstructPrompt,
   jsonToolCallPrompt,
   ollama,
   useTool,
 } from "modelfusion";
-
-dotenv.config();
-
-// modelfusion.setLogFormat("detailed-object");
 
 async function main() {
   const { tool, args, toolCall, result } = await useTool(

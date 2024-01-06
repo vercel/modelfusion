@@ -1,10 +1,7 @@
-import dotenv from "dotenv";
 import { ChatMLPrompt, llamacpp, useTools } from "modelfusion";
 import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
 import { XmlTagToolCallsPromptTemplate } from "../../tool/prompts/XmlTagToolCallsPromptTemplate";
-
-dotenv.config();
 
 // example assumes you are running https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp
 async function main() {

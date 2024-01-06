@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
 import { VicunaPrompt, llamacpp, streamText } from "modelfusion";
-
-dotenv.config();
 
 // example assumes you are running https://huggingface.co/TheBloke/vicuna-7B-v1.5-GGUF with llama.cpp
 async function main() {
