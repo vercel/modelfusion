@@ -14,10 +14,9 @@ async function main() {
         // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
         maxGenerationTokens: 1024,
         temperature: 0,
-        grammar: llamacpp.grammar.json, // force JSON output
       })
       .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
-      .asStructureGenerationModel(jsonStructurePrompt.text()),
+      .asStructureGenerationModel(jsonStructurePrompt.text()), // automatically restrict the output to JSON
 
     zodSchema(
       z.object({

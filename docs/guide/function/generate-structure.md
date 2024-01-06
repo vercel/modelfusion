@@ -57,7 +57,7 @@ const model = openai
 
 #### Ollama chat model with JSON output
 
-You can also use the JSON output of Ollama chat models to generate a structure. The `jsonStructurePrompt` automatically restricts the output to JSON.
+You can also use the JSON output of [Ollama](/integration/provider/ollama) chat models to generate a structure. The `jsonStructurePrompt` automatically restricts the output to JSON.
 
 :::note
 When using Ollama for structure generation, it is important to choose a model that is capable of creating the structure that you want. I had good results with `openhermes2.5-mistral` and `mixtral`, for example, but this depends on your use case.
@@ -73,6 +73,41 @@ const model = ollama
     temperature: 0,
   })
   .asStructureGenerationModel(jsonStructurePrompt.instruction());
+```
+
+#### Llama.cpp JSON grammar
+
+You can generate structures with [Llama.cpp](/integration/model-provider/llamacpp) models. The `jsonStructurePrompt` automatically restricts the output to JSON using a GBNF grammar.
+
+:::note
+When using Llama.cpp for structure generation, it is important to choose a model that is capable of creating the structure that you want. I had good results with `openhermes2.5-mistral` and `mixtral`, for example, but this depends on your use case.
+:::
+
+```ts
+const model = llamacpp
+  .TextGenerator({
+    // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
+    maxGenerationTokens: 1024,
+    temperature: 0,
+  })
+  .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
+  .asStructureGenerationModel(jsonStructurePrompt.text()); // automatically restrict the output to JSON
+```
+
+#### Llama.cpp JSON array grammar
+
+With Llama.cpp, it is possible to generate structures with top-level arrays. Use can use the `grammar: llamacpp.grammar.jsonArray` setting to generate a top-level array.
+
+```ts
+const model = llamacpp
+  .TextGenerator({
+    // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
+    maxGenerationTokens: 1024,
+    temperature: 0,
+    grammar: llamacpp.grammar.jsonArray, // force JSON array output
+  })
+  .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
+  .asStructureGenerationModel(jsonStructurePrompt.text());
 ```
 
 ### jsonStructurePrompt
@@ -130,6 +165,12 @@ For partial results `value` is JSON of the type `unknown`.
 You can do your own type inference on partial results if needed.
 
 #### Example: RPG character generation
+
+:::note
+With most models, you need to have a JSON object as the top-level structure. If you want to produce arrays, you need to use a property in that object. For example, you can use a `characters` property to generate an array of characters.
+
+When using Llama.cpp with a JSON array grammar, you can generate a top-level array and do not need to use a property.
+:::
 
 ```ts
 const structureStream = await streamStructure(
