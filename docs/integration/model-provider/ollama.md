@@ -180,9 +180,9 @@ const textStream = await streamText(
 );
 ```
 
-### Generate Structure (Completion)
+### Generate Structure (Chat)
 
-Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B).
+Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://ollama.ai/library/openhermes).
 
 ```ts
 import { ollama, zodSchema, generateStructure } from "modelfusion";
@@ -193,10 +193,8 @@ const model = ollama
     model: "openhermes2.5-mistral",
     maxGenerationTokens: 1024,
     temperature: 0,
-    format: "json", // force JSON output
   })
-  .withInstructionPrompt() // needed for jsonStructurePrompt.instruction()
-  .asStructureGenerationModel(jsonStructurePrompt.instruction());
+  .asStructureGenerationModel(jsonStructurePrompt.text());
 
 const sentiment = await generateStructure(
   model,
