@@ -1,11 +1,15 @@
-import { MistralInstructPrompt, llamacpp, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 
 // example assumes you are running a mistral instruct model with llama.cpp
 async function main() {
   const textStream = await streamText(
     llamacpp
-      .TextGenerator({ maxGenerationTokens: 512 })
-      .withTextPromptTemplate(MistralInstructPrompt.instruction()),
+      .TextGenerator({
+        maxGenerationTokens: 512,
+        promptTemplate: llamacpp.prompt.Mistral,
+      })
+      .withInstructionPrompt(),
+
     {
       system: "You are a celebrated poet.",
       instruction: "Write a short story about a robot learning to love.",

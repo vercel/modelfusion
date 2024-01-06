@@ -8,8 +8,9 @@ async function main() {
         maxGenerationTokens: 512,
         temperature: 0,
         grammar: llamacpp.grammar.list, // simple list grammar
+        promptTemplate: llamacpp.prompt.ChatML,
       })
-      .withTextPromptTemplate(ChatMLPrompt.text()), // OpenHermes uses ChatML
+      .withTextPrompt(),
 
     "List the top 10 tourist attractions in Paris. Only mention the name of each attraction."
   );

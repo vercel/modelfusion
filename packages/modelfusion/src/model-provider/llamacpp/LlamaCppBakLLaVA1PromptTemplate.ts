@@ -3,12 +3,29 @@ import { ChatPrompt } from "../../model-function/generate-text/prompt-template/C
 import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError.js";
+import { text as vicunaText } from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
 import { LlamaCppCompletionPrompt } from "./LlamaCppCompletionModel.js";
 
 // default Vicuna 1 system message
 const DEFAULT_SYSTEM_MESSAGE =
   "A chat between a curious user and an artificial intelligence assistant. " +
   "The assistant gives helpful, detailed, and polite answers to the user's questions.";
+
+/**
+ * Text prompt.
+ */
+export function text(): TextGenerationPromptTemplate<
+  string,
+  LlamaCppCompletionPrompt
+> {
+  const delegate = vicunaText();
+  return {
+    stopSequences: [],
+    format(prompt) {
+      return { text: delegate.format(prompt) };
+    },
+  };
+}
 
 /**
  * BakLLaVA 1 uses a Vicuna 1 prompt. This mapping combines it with the LlamaCpp prompt structure.

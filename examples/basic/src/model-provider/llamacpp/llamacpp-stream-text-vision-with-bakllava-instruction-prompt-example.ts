@@ -1,4 +1,4 @@
-import { LlamaCppBakLLaVA1Prompt, llamacpp, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -14,8 +14,9 @@ async function main() {
       .TextGenerator({
         maxGenerationTokens: 1024,
         temperature: 0,
+        promptTemplate: llamacpp.prompt.BakLLaVA1,
       })
-      .withPromptTemplate(LlamaCppBakLLaVA1Prompt.instruction()),
+      .withInstructionPrompt(),
 
     {
       instruction: [

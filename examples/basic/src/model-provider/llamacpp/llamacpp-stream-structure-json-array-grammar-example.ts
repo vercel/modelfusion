@@ -15,8 +15,9 @@ async function main() {
         maxGenerationTokens: 1024,
         temperature: 0,
         grammar: llamacpp.grammar.jsonArray, // force JSON array output
+        promptTemplate: llamacpp.prompt.ChatML,
       })
-      .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
+      .withInstructionPrompt() // needed for jsonStructurePrompt.text()
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
     zodSchema(

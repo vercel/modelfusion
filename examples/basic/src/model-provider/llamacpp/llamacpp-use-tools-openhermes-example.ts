@@ -1,14 +1,14 @@
-import { ChatMLPrompt, llamacpp, useTools } from "modelfusion";
+import { llamacpp, useTools } from "modelfusion";
+import { XmlTagToolCallsPromptTemplate } from "../../tool/prompts/XmlTagToolCallsPromptTemplate";
 import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
-import { XmlTagToolCallsPromptTemplate } from "../../tool/prompts/XmlTagToolCallsPromptTemplate";
 
 // example assumes you are running https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp
 async function main() {
   const { text, toolResults } = await useTools(
     llamacpp
-      .TextGenerator({ temperature: 0 })
-      .withTextPromptTemplate(ChatMLPrompt.instruction())
+      .TextGenerator({ temperature: 0, promptTemplate: llamacpp.prompt.ChatML })
+      .withInstructionPrompt()
       .asToolCallsOrTextGenerationModel(XmlTagToolCallsPromptTemplate.text()),
     [calculator, weather],
     "What's fourteen times twelve?"

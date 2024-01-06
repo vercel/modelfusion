@@ -1,5 +1,4 @@
 import {
-  ChatMLPrompt,
   generateStructure,
   jsonStructurePrompt,
   llamacpp,
@@ -14,8 +13,9 @@ async function main() {
         // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
         maxGenerationTokens: 1024,
         temperature: 0,
+        promptTemplate: llamacpp.prompt.ChatML,
       })
-      .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
+      .withInstructionPrompt() // needed for jsonStructurePrompt.text()
       .asStructureGenerationModel(jsonStructurePrompt.text()), // automatically restrict the output to JSON
 
     zodSchema(

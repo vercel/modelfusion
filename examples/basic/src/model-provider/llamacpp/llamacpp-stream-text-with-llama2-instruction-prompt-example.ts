@@ -1,4 +1,4 @@
-import { Llama2Prompt, llamacpp, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
 async function main() {
@@ -7,8 +7,10 @@ async function main() {
       .TextGenerator({
         contextWindowSize: 4096, // Llama 2 context window size
         maxGenerationTokens: 512,
+        promptTemplate: llamacpp.prompt.Llama2,
       })
-      .withTextPromptTemplate(Llama2Prompt.instruction()),
+      .withInstructionPrompt(),
+
     {
       system: "You are a celebrated poet.",
       instruction: "Write a short story about a robot learning to love.",

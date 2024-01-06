@@ -41,3 +41,5 @@ export function Tokenizer(
  * GBNF grammars. You can use them in the `grammar` option of the `TextGenerator` model.
  */
 export * as grammar from "./LlamaCppGrammars.js";
+
+export * as prompt from "./LlamaCppPrompt.js";
