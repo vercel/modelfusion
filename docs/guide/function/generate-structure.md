@@ -171,3 +171,4 @@ for await (const part of structureStream) {
 
 - [OpenAI](/integration/model-provider/openai)
 - [Ollama](/integration/model-provider/ollama)
+- [Llama.cpp](/integration/model-provider/llamacpp)

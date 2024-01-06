@@ -152,7 +152,7 @@ const sentiment = await generateStructure(
 );
 ```
 
-Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Ollama](https://modelfusion.dev//integration/model-provider/ollama)
+Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Ollama](https://modelfusion.dev//integration/model-provider/ollama), [Llama.cpp](https://modelfusion.dev//integration/model-provider/llama.cpp)
 
 #### streamStructure
 
