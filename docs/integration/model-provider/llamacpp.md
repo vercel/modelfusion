@@ -258,6 +258,16 @@ const model = llamacpp.TextGenerator({
 });
 ```
 
+## GBNF Grammars
+
+You can use [GBNF Grammars](https://github.com/ggerganov/llama.cpp/tree/master/grammars) wit the `grammar` setting of the `LlamaCppCompletionModel` to restrict the output of the model.
+
+The grammars can be provided as text. ModelFusion provides a few grammars as constants under `llamacpp.grammar`:
+
+- `llamacpp.grammar.json`: Restricts the output to JSON.
+- `llamacpp.grammar.jsonArray`: Restricts the output to a JSON array.
+- `llamacpp.grammar.list`: Restricts the output to a newline-separated list where each line starts with `- `.
+
 ## Prompt Templates
 
 Many models are trained on specific prompts.
