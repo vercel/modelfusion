@@ -24,6 +24,7 @@ import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStr
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
+import { json } from "./LlamaCppGrammars.js";
 
 export interface LlamaCppCompletionModelSettings<
   CONTEXT_WINDOW_SIZE extends number | undefined,
@@ -366,6 +367,12 @@ export class LlamaCppCompletionModel<
 
   extractTextDelta(delta: unknown) {
     return (delta as LlamaCppTextStreamChunk).content;
+  }
+
+  withJsonOutput(): this {
+    return this.withSettings({
+      grammar: json,
+    });
   }
 
   withTextPrompt(): PromptTemplateTextStreamingModel<
