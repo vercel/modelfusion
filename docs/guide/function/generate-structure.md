@@ -87,10 +87,10 @@ When using Llama.cpp for structure generation, it is important to choose a model
 const model = llamacpp
   .CompletionTextGenerator({
     // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
+    promptTemplate: llamacpp.prompt.ChatML,
     maxGenerationTokens: 1024,
     temperature: 0,
   })
-  .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
   .asStructureGenerationModel(jsonStructurePrompt.text()); // automatically restrict the output to JSON
 ```
 
@@ -102,11 +102,11 @@ With Llama.cpp, it is possible to generate structures with top-level arrays. Use
 const model = llamacpp
   .CompletionTextGenerator({
     // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
+    promptTemplate: llamacpp.prompt.ChatML,
     maxGenerationTokens: 1024,
     temperature: 0,
     grammar: llamacpp.grammar.jsonArray, // force JSON array output
   })
-  .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
   .asStructureGenerationModel(jsonStructurePrompt.text());
 ```
 

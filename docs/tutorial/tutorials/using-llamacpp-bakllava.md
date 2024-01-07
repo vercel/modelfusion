@@ -50,10 +50,12 @@ import { LlamaCppBakLLaVA1Prompt, llamacpp, streamText } from "modelfusion";
 const textStream = await streamText(
   llamacpp
     .CompletionTextGenerator({
+      promptTemplate: llamacpp.prompt.BakLLaVA1,
       maxGenerationTokens: 1024,
       temperature: 0,
     })
-    .withPromptTemplate(LlamaCppBakLLaVA1Prompt.instruction()),
+    .withInstructionPrompt(),
+
   {
     instruction: [
       { type: "text", text: "Describe the image in detail:\n\n" },

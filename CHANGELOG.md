@@ -2,9 +2,29 @@
 
 ## UNRELEASED
 
+### Added
+
+- `LlamaCppCompletionModel` supports setting the prompt template in the settings. Prompt formats are available under `llamacpp.prompt.*`. You can then call `.withTextPrompt()`, `.withInstructionPrompt()` or `.withChatPrompt()` to use a standardized prompt.
+
+  ```ts
+  const model = llamacpp
+    .CompletionTextGenerator({
+      // run https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp
+      promptTemplate: llamacpp.prompt.ChatML,
+      contextWindowSize: 4096,
+      maxGenerationTokens: 512,
+    })
+    .withChatPrompt();
+  ```
+
 ### Changed
 
+- **breaking change**: renamed `response` to `rawResponse` when using `fullResponse: true` setting.
 - **breaking change**: renamed `llamacpp.TextGenerator` to `llamacpp.CompletionTextGenerator`.
+
+### Removed
+
+- **breaking change**: removed `.withTextPromptTemplate` on `LlamaCppCompletionModel`.
 
 ## v0.117.0 - 2024-01-06
 
