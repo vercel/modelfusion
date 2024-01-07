@@ -410,8 +410,6 @@ export class LlamaCppCompletionModel<
 
     const grammar = convertJsonSchemaToGBNF(schema.getJsonSchema());
 
-    console.log("grammar", grammar);
-
     return this.withSettings({
       grammar: grammar,
     });
