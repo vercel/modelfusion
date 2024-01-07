@@ -8,11 +8,9 @@ import {
   TextGenerationModelSettings,
   TextStreamingModel,
 } from "../generate-text/TextGenerationModel.js";
-import { generateText } from "../generate-text/generateText.js";
 import { StructureFromTextGenerationModel } from "./StructureFromTextGenerationModel.js";
 import { StructureFromTextPromptTemplate } from "./StructureFromTextPromptTemplate.js";
 import { StructureStreamingModel } from "./StructureGenerationModel.js";
-import { StructureParseError } from "./StructureParseError.js";
 import { parsePartialJson } from "./parsePartialJson.js";
 
 export class StructureFromTextStreamingModel<
@@ -31,34 +29,6 @@ export class StructureFromTextStreamingModel<
     template: StructureFromTextPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT>;
   }) {
     super(options);
-  }
-
-  async doGenerateStructure(
-    schema: Schema<unknown> & JsonSchemaProducer,
-    prompt: SOURCE_PROMPT,
-    options?: FunctionOptions
-  ) {
-    const { rawResponse: response, text } = await generateText(
-      this.model,
-      this.template.createPrompt(prompt, schema),
-      {
-        ...options,
-        fullResponse: true,
-      }
-    );
-
-    try {
-      return {
-        response,
-        value: this.template.extractStructure(text),
-        valueText: text,
-      };
-    } catch (error) {
-      throw new StructureParseError({
-        valueText: text,
-        cause: error,
-      });
-    }
   }
 
   async doStreamStructure(
