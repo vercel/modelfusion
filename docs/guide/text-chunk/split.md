@@ -28,7 +28,7 @@ const result = await split({ text });
 
 ### splitAtCharacter
 
-Splits text recursively until the resulting chunks are smaller than the `maxCharactersPerChunk`. The text is recursively split in the middle, so that all chunks are roughtly the same size.
+Splits text recursively until the resulting chunks are smaller than the `maxCharactersPerChunk`. The text is recursively split in the middle, so that all chunks are roughly the same size.
 
 ```ts
 const split = splitAtCharacter({ maxCharactersPerChunk: 1000 });
@@ -37,7 +37,7 @@ const result = await split({ text });
 
 ### splitAtToken
 
-Splits text recursively until the resulting chunks are smaller than the `maxTokensPerChunk`, while respecting the token boundaries. The text is recursively split in the middle, so that all chunks are roughtly the same size.
+Splits text recursively until the resulting chunks are smaller than the `maxTokensPerChunk`, while respecting the token boundaries. The text is recursively split in the middle, so that all chunks are roughly the same size.
 
 ```ts
 const split = splitAtToken({
