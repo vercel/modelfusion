@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@modelfusion/mediawiki-search-tool": "^0.1.0",
-    "chalk": "^4",
+    "chalk": "^5",
     "commander": "10.0.1",
     "dotenv": "16.3.1",
     "html-to-text": "9.0.5",
