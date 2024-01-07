@@ -1,49 +1,51 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-const darkCodeTheme = require("prism-react-renderer/themes/dracula");
+const prismReactRenderer = require("prism-react-renderer");
+
+const lightCodeTheme = prismReactRenderer.themes.github;
+const darkCodeTheme = prismReactRenderer.themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'ModelFusion',
+  title: "ModelFusion",
   tagline:
-    'Build AI applications, chatbots, and agents with JavaScript and TypeScript.',
+    "Build AI applications, chatbots, and agents with JavaScript and TypeScript.",
   // favicon: "img/favicon.ico",
-  url: 'https://modelfusion.dev',
-  baseUrl: '/',
+  url: "https://modelfusion.dev",
+  baseUrl: "/",
 
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'throw',
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "throw",
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
 
   markdown: {
     mermaid: true,
   },
 
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: ["@docusaurus/theme-mermaid"],
 
   presets: [
     [
-      'classic',
+      "classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          routeBasePath: 'api',
-          path: 'docs',
-          sidebarPath: require.resolve('./sidebars.js'),
-          lastVersion: 'current',
-          onlyIncludeVersions: ['current'],
+          routeBasePath: "api",
+          path: "docs",
+          sidebarPath: require.resolve("./sidebars.js"),
+          lastVersion: "current",
+          onlyIncludeVersions: ["current"],
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve("./src/css/custom.css"),
         },
       }),
     ],
@@ -51,50 +53,50 @@ const config = {
 
   plugins: [
     [
-      '@docusaurus/plugin-content-docs',
+      "@docusaurus/plugin-content-docs",
       {
-        routeBasePath: 'guide',
-        id: 'guide',
-        path: 'guide',
+        routeBasePath: "guide",
+        id: "guide",
+        path: "guide",
         sidebarCollapsible: true,
       },
     ],
     [
-      '@docusaurus/plugin-content-docs',
+      "@docusaurus/plugin-content-docs",
       {
-        routeBasePath: 'integration',
-        id: 'integration',
-        path: 'integration',
+        routeBasePath: "integration",
+        id: "integration",
+        path: "integration",
         sidebarCollapsible: true,
       },
     ],
     [
-      '@docusaurus/plugin-content-docs',
+      "@docusaurus/plugin-content-docs",
       {
-        routeBasePath: 'tutorial',
-        id: 'tutorial',
-        path: 'tutorial',
+        routeBasePath: "tutorial",
+        id: "tutorial",
+        path: "tutorial",
         sidebarCollapsible: true,
       },
     ],
     [
-      'docusaurus-plugin-typedoc',
+      "docusaurus-plugin-typedoc",
       {
         // typedoc options:
-        entryPoints: ['../packages/modelfusion/src/index.ts'],
-        tsconfig: '../packages/modelfusion/tsconfig.json',
-        groupOrder: ['Functions', 'Variables', '*'],
-        name: 'modelfusion',
-        plugin: ['typedoc-plugin-zod'],
+        entryPoints: ["../packages/modelfusion/src/index.ts"],
+        tsconfig: "../packages/modelfusion/tsconfig.json",
+        groupOrder: ["Functions", "Variables", "*"],
+        name: "modelfusion",
+        plugin: ["typedoc-plugin-zod"],
         excludePrivate: true,
         excludeProtected: true,
         sourceLinkTemplate:
-          'https://github.com/lgrammel/modelfusion/tree/main/{path}#L{line}',
+          "https://github.com/lgrammel/modelfusion/tree/main/{path}#L{line}",
 
         // docusaurus options:
-        out: '.',
+        out: ".",
         sidebar: {
-          categoryLabel: 'API Reference',
+          categoryLabel: "API Reference",
           collapsed: false,
           fullNames: true,
         },
@@ -105,105 +107,105 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      image: '/img/social-card.jpg',
+      image: "/img/social-card.jpg",
       navbar: {
-        title: 'ModelFusion',
+        title: "ModelFusion",
         items: [
           {
-            to: '/guide/',
-            label: 'Guide',
+            to: "/guide/",
+            label: "Guide",
             activeBaseRegex: `/guide/`,
-            sidebarId: 'guide',
-            position: 'left',
+            sidebarId: "guide",
+            position: "left",
           },
           {
-            to: '/integration/model-provider/',
-            label: 'Integrations',
+            to: "/integration/model-provider/",
+            label: "Integrations",
             activeBaseRegex: `/integration/model-provider/`,
-            sidebarId: 'integration',
-            position: 'left',
+            sidebarId: "integration",
+            position: "left",
           },
           {
-            to: '/tutorial/',
-            label: 'Examples & Tutorials',
+            to: "/tutorial/",
+            label: "Examples & Tutorials",
             activeBaseRegex: `/tutorial/`,
-            sidebarId: 'tutorial',
-            position: 'left',
+            sidebarId: "tutorial",
+            position: "left",
           },
           {
-            to: '/api/modules/',
-            label: 'API Reference',
+            to: "/api/modules/",
+            label: "API Reference",
             activeBaseRegex: `/api/`,
-            position: 'right',
+            position: "right",
           },
-          { to: 'blog', label: 'Blog', position: 'right' },
+          { to: "blog", label: "Blog", position: "right" },
           {
-            href: 'https://discord.gg/GqCwYZATem',
-            label: 'Discord',
-            position: 'right',
+            href: "https://discord.gg/GqCwYZATem",
+            label: "Discord",
+            position: "right",
           },
           {
-            href: 'https://github.com/lgrammel/modelfusion',
-            label: 'GitHub',
-            position: 'right',
+            href: "https://github.com/lgrammel/modelfusion",
+            label: "GitHub",
+            position: "right",
           },
         ],
       },
       footer: {
-        style: 'dark',
+        style: "dark",
         links: [
           {
-            title: 'Documentation',
+            title: "Documentation",
             items: [
               {
-                label: 'Guide',
-                to: '/guide/',
+                label: "Guide",
+                to: "/guide/",
               },
               {
-                label: 'Integrations',
-                to: '/integration/model-provider/',
+                label: "Integrations",
+                to: "/integration/model-provider/",
               },
               {
-                label: 'API Reference',
-                to: '/api/modules/',
+                label: "API Reference",
+                to: "/api/modules/",
               },
             ],
           },
           {
-            title: 'Learn',
+            title: "Learn",
             items: [
               {
-                label: 'Examples & Tutorials',
-                to: '/tutorial/',
+                label: "Examples & Tutorials",
+                to: "/tutorial/",
               },
               {
-                href: 'https://github.com/lgrammel/modelfusion/tree/main/examples',
-                label: 'Examples (GitHub)',
+                href: "https://github.com/lgrammel/modelfusion/tree/main/examples",
+                label: "Examples (GitHub)",
               },
               {
-                label: 'Showcase',
-                to: '/tutorial/showcase/',
+                label: "Showcase",
+                to: "/tutorial/showcase/",
               },
             ],
           },
           {
-            title: 'More',
+            title: "More",
             items: [
               {
-                label: 'Blog',
-                to: 'blog',
+                label: "Blog",
+                to: "blog",
               },
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/lgrammel',
+                label: "Twitter",
+                href: "https://twitter.com/lgrammel",
               },
               {
-                label: 'Discord',
-                href: 'https://discord.gg/GqCwYZATem',
+                label: "Discord",
+                href: "https://discord.gg/GqCwYZATem",
               },
               {
-                label: 'GitHub',
-                href: 'https://github.com/lgrammel/modelfusion',
+                label: "GitHub",
+                href: "https://github.com/lgrammel/modelfusion",
               },
             ],
           },
