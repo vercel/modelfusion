@@ -104,7 +104,7 @@ function visit(schema: any, name: string | undefined, rules: RuleMap): string {
     propPairs.forEach(([propName, propSchema], i) => {
       const propRuleName = visit(
         propSchema,
-        `${name}${name ? "-" : ""}${propName}`,
+        `${name ?? ""}${name ? "-" : ""}${propName}`,
         rules
       );
       if (i > 0) {
