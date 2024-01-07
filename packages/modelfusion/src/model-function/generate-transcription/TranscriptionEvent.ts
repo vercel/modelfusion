@@ -10,7 +10,7 @@ export interface TranscriptionStartedEvent extends BaseModelCallStartedEvent {
 export type TranscriptionFinishedEventResult =
   | {
       status: "success";
-      response: unknown;
+      rawResponse: unknown;
       value: string;
     }
   | { status: "error"; error: unknown }

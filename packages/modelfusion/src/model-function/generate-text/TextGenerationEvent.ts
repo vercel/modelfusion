@@ -10,7 +10,7 @@ export interface TextGenerationStartedEvent extends BaseModelCallStartedEvent {
 export type TextGenerationFinishedEventResult =
   | {
       status: "success";
-      response: unknown;
+      rawResponse: unknown;
       value: string;
 
       usage?: {

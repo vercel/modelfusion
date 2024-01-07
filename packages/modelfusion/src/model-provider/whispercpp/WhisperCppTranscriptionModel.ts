@@ -44,11 +44,11 @@ export class WhisperCppTranscriptionModel
     data: WhisperCppTranscriptionInput,
     options: FunctionCallOptions
   ) {
-    const response = await this.callAPI(data, options);
+    const rawResponse = await this.callAPI(data, options);
 
     return {
-      response,
-      transcription: response.text,
+      rawResponse,
+      transcription: rawResponse.text,
     };
   }
 

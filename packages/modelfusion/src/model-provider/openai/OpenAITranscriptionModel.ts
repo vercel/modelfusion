@@ -128,13 +128,13 @@ export class OpenAITranscriptionModel
     data: OpenAITranscriptionInput,
     options: FunctionCallOptions
   ) {
-    const response = await this.callAPI(data, options, {
+    const rawResponse = await this.callAPI(data, options, {
       responseFormat: OpenAITranscriptionResponseFormat.verboseJson,
     });
 
     return {
-      response,
-      transcription: response.text,
+      rawResponse,
+      transcription: rawResponse.text,
     };
   }
 

@@ -166,10 +166,10 @@ export class MistralChatModel
     );
   }
 
-  processTextGenerationResponse(response: MistralChatResponse) {
+  processTextGenerationResponse(rawResponse: MistralChatResponse) {
     return {
-      response,
-      textGenerationResults: response.choices.map((choice) => ({
+      rawResponse,
+      textGenerationResults: rawResponse.choices.map((choice) => ({
         text: choice.message.content,
         finishReason: this.translateFinishReason(choice.finish_reason),
       })),

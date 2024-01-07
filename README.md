@@ -503,11 +503,11 @@ const image = await generateImage(
 
 ### Metadata and original responses
 
-ModelFusion model functions return rich responses that include the original response and metadata when you set the `fullResponse` option to `true`.
+ModelFusion model functions return rich responses that include the raw (original) response and metadata when you set the `fullResponse` option to `true`.
 
 ```ts
-// access the full response (needs to be typed) and the metadata:
-const { text, response, metadata } = await generateText(
+// access the raw response (needs to be typed) and the metadata:
+const { text, rawResponse, metadata } = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxGenerationTokens: 1000,
@@ -519,8 +519,8 @@ const { text, response, metadata } = await generateText(
 
 console.log(metadata);
 
-// cast to the response type:
-for (const choice of (response as OpenAICompletionResponse).choices) {
+// cast to the raw response type:
+for (const choice of (rawResponse as OpenAICompletionResponse).choices) {
   console.log(choice.text);
 }
 ```

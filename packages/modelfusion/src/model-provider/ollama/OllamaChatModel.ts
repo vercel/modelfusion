@@ -169,12 +169,12 @@ export class OllamaChatModel
     );
   }
 
-  private processTextGenerationResponse(response: OllamaChatResponse) {
+  private processTextGenerationResponse(rawResponse: OllamaChatResponse) {
     return {
-      response,
+      rawResponse,
       textGenerationResults: [
         {
-          text: response.message.content,
+          text: rawResponse.message.content,
           finishReason: "unknown" as const,
         },
       ],

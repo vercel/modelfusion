@@ -202,12 +202,12 @@ export class OllamaCompletionModel<
     );
   }
 
-  processTextGenerationResponse(response: OllamaCompletionResponse) {
+  processTextGenerationResponse(rawResponse: OllamaCompletionResponse) {
     return {
-      response,
+      rawResponse,
       textGenerationResults: [
         {
-          text: response.response,
+          text: rawResponse.response,
           finishReason: "unknown" as const,
         },
       ],

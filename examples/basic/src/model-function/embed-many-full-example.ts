@@ -4,7 +4,7 @@ import { embedMany, openai } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const { embeddings, metadata, response } = await embedMany(
+  const { embeddings, metadata, rawResponse } = await embedMany(
     openai.TextEmbedder({ model: "text-embedding-ada-002" }),
     [
       "At first, Nox didn't know what to do with the pup.",

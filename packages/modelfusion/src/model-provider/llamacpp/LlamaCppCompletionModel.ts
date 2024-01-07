@@ -351,24 +351,25 @@ export class LlamaCppCompletionModel<
     );
   }
 
-  processTextGenerationResponse(response: LlamaCppTextGenerationResponse) {
+  processTextGenerationResponse(rawResponse: LlamaCppTextGenerationResponse) {
     return {
-      response,
+      rawResponse,
       textGenerationResults: [
         {
-          text: response.content,
+          text: rawResponse.content,
           finishReason:
-            response.stopped_eos || response.stopped_word
+            rawResponse.stopped_eos || rawResponse.stopped_word
               ? ("stop" as const)
-              : response.stopped_limit
+              : rawResponse.stopped_limit
                 ? ("length" as const)
                 : ("unknown" as const),
         },
       ],
       usage: {
-        promptTokens: response.tokens_evaluated,
-        completionTokens: response.tokens_predicted,
-        totalTokens: response.tokens_evaluated + response.tokens_predicted,
+        promptTokens: rawResponse.tokens_evaluated,
+        completionTokens: rawResponse.tokens_predicted,
+        totalTokens:
+          rawResponse.tokens_evaluated + rawResponse.tokens_predicted,
       },
     };
   }

@@ -27,7 +27,7 @@ export interface EmbeddingModel<
     values: VALUE[],
     options: FunctionCallOptions
   ): PromiseLike<{
-    response: unknown;
+    rawResponse: unknown;
     embeddings: Vector[];
   }>;
 }

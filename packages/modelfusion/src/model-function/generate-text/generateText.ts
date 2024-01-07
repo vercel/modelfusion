@@ -45,7 +45,7 @@ export async function generateText<PROMPT>(
   finishReason: TextGenerationFinishReason;
   texts: string[];
   textGenerationResults: TextGenerationResult[];
-  response: unknown;
+  rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
 export async function generateText<PROMPT>(
@@ -59,7 +59,7 @@ export async function generateText<PROMPT>(
       finishReason: TextGenerationFinishReason;
       texts: string[];
       textGenerationResults: TextGenerationResult[];
-      response: unknown;
+      rawResponse: unknown;
       metadata: ModelCallMetadata;
     }
 > {
@@ -105,7 +105,7 @@ export async function generateText<PROMPT>(
         const result = await model.doGenerateTexts(prompt, options);
 
         try {
-          await options.cache.storeValue(cacheKey, result.response);
+          await options.cache.storeValue(cacheKey, result.rawResponse);
         } catch (err) {
           cacheErrors = [...(cacheErrors ?? []), err];
         }
@@ -129,7 +129,7 @@ export async function generateText<PROMPT>(
 
       // TODO add cache information
       return {
-        response: result.response,
+        rawResponse: result.rawResponse,
         extractedValue: textGenerationResults,
         usage: result.usage,
       };
@@ -147,7 +147,7 @@ export async function generateText<PROMPT>(
           (textGeneration) => textGeneration.text
         ),
         textGenerationResults,
-        response: fullResponse.response,
+        rawResponse: fullResponse.rawResponse,
         metadata: fullResponse.metadata,
       }
     : firstResult.text;

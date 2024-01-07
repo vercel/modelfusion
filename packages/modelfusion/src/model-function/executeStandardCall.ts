@@ -33,13 +33,13 @@ export async function executeStandardCall<
   input: unknown;
   functionType: ModelCallStartedEvent["functionType"];
   generateResponse: (options: FunctionCallOptions) => PromiseLike<{
-    response: unknown;
+    rawResponse: unknown;
     extractedValue: VALUE;
     usage?: unknown;
   }>;
 }): Promise<{
   value: VALUE;
-  response: unknown;
+  rawResponse: unknown;
   metadata: ModelCallMetadata;
 }> {
   const run = await getRun(options?.run);
@@ -124,7 +124,7 @@ export async function executeStandardCall<
     throw result.error;
   }
 
-  const response = result.value.response;
+  const rawResponse = result.value.rawResponse;
   const value = result.value.extractedValue;
   const usage = result.value.usage;
 
@@ -134,14 +134,14 @@ export async function executeStandardCall<
     result: {
       status: "success",
       usage,
-      response,
+      rawResponse,
       value,
     },
   } as ModelCallFinishedEvent);
 
   return {
     value,
-    response,
+    rawResponse,
     metadata: {
       model: model.modelInformation,
 

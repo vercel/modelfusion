@@ -5,7 +5,7 @@ import { z } from "zod";
 dotenv.config();
 
 async function main() {
-  const { structure, metadata, response } = await generateStructure(
+  const { structure, metadata, rawResponse } = await generateStructure(
     openai
       .ChatTextGenerator({
         model: "gpt-3.5-turbo",

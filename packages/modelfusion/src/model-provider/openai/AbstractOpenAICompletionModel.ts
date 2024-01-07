@@ -125,19 +125,19 @@ export abstract class AbstractOpenAICompletionModel<
     );
   }
 
-  private processTextGenerationResponse(response: OpenAICompletionResponse) {
+  private processTextGenerationResponse(rawResponse: OpenAICompletionResponse) {
     return {
-      response,
-      textGenerationResults: response.choices.map((choice) => {
+      rawResponse,
+      textGenerationResults: rawResponse.choices.map((choice) => {
         return {
           finishReason: this.translateFinishReason(choice.finish_reason),
           text: choice.text,
         };
       }),
       usage: {
-        promptTokens: response.usage.prompt_tokens,
-        completionTokens: response.usage.completion_tokens,
-        totalTokens: response.usage.total_tokens,
+        promptTokens: rawResponse.usage.prompt_tokens,
+        completionTokens: rawResponse.usage.completion_tokens,
+        totalTokens: rawResponse.usage.total_tokens,
       },
     };
   }

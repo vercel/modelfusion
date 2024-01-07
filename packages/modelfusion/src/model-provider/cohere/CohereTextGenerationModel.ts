@@ -189,10 +189,10 @@ export class CohereTextGenerationModel
     );
   }
 
-  processTextGenerationResponse(response: CohereTextGenerationResponse) {
+  processTextGenerationResponse(rawResponse: CohereTextGenerationResponse) {
     return {
-      response,
-      textGenerationResults: response.generations.map((generation) => ({
+      rawResponse,
+      textGenerationResults: rawResponse.generations.map((generation) => ({
         text: generation.text,
         finishReason: this.translateFinishReason(generation.finish_reason),
       })),

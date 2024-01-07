@@ -50,7 +50,7 @@ export class StructureFromTextGenerationModel<
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
-    const { response, text } = await generateText(
+    const { rawResponse: response, text } = await generateText(
       this.model,
       this.template.createPrompt(prompt, schema),
       {

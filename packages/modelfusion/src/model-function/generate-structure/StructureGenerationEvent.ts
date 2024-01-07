@@ -11,7 +11,7 @@ export interface StructureGenerationStartedEvent
 export type StructureGenerationFinishedEventResult =
   | {
       status: "success";
-      response: unknown;
+      rawResponse: unknown;
       value: unknown;
 
       usage?: {

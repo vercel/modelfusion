@@ -47,13 +47,13 @@ const detailedObjectObserver: FunctionObserver = {
     if (
       event.eventType === "finished" &&
       event.result != null &&
-      "response" in event.result &&
-      event.result?.response != null
+      "rawResponse" in event.result &&
+      event.result?.rawResponse != null
     ) {
       event = {
         ...event,
         result: Object.fromEntries(
-          Object.entries(event.result).filter(([k]) => k !== "response")
+          Object.entries(event.result).filter(([k]) => k !== "rawResponse")
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ) as any,
       };
@@ -97,13 +97,13 @@ const detailedJsonObserver: FunctionObserver = {
     if (
       event.eventType === "finished" &&
       event.result != null &&
-      "response" in event.result &&
-      event.result?.response != null
+      "rawResponse" in event.result &&
+      event.result?.rawResponse != null
     ) {
       event = {
         ...event,
         result: Object.fromEntries(
-          Object.entries(event.result).filter(([k]) => k !== "response")
+          Object.entries(event.result).filter(([k]) => k !== "rawResponse")
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ) as any,
       };

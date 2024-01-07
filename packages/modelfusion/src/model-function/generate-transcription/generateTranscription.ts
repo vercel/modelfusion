@@ -34,13 +34,17 @@ export async function generateTranscription<DATA>(
   model: TranscriptionModel<DATA, TranscriptionModelSettings>,
   data: DATA,
   options: FunctionOptions & { fullResponse: true }
-): Promise<{ value: string; response: unknown; metadata: ModelCallMetadata }>;
+): Promise<{
+  value: string;
+  rawResponse: unknown;
+  metadata: ModelCallMetadata;
+}>;
 export async function generateTranscription<DATA>(
   model: TranscriptionModel<DATA, TranscriptionModelSettings>,
   data: DATA,
   options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
-  string | { value: string; response: unknown; metadata: ModelCallMetadata }
+  string | { value: string; rawResponse: unknown; metadata: ModelCallMetadata }
 > {
   const fullResponse = await executeStandardCall({
     functionType: "generate-transcription",
@@ -50,7 +54,7 @@ export async function generateTranscription<DATA>(
     generateResponse: async (options) => {
       const result = await model.doTranscribe(data, options);
       return {
-        response: result.response,
+        rawResponse: result.rawResponse,
         extractedValue: result.transcription,
       };
     },

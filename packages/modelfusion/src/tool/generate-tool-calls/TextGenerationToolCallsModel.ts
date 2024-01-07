@@ -53,7 +53,7 @@ export class TextGenerationToolCallsModel<
     options?: FunctionOptions
   ) {
     const {
-      response,
+      rawResponse,
       text: generatedText,
       metadata,
     } = await generateText(
@@ -70,7 +70,7 @@ export class TextGenerationToolCallsModel<
         this.template.extractToolCallsAndText(generatedText);
 
       return {
-        response,
+        rawResponse,
         text,
         toolCalls,
         usage: metadata?.usage as

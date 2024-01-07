@@ -64,7 +64,7 @@ export async function generateStructure<
   options: FunctionOptions & { fullResponse: true }
 ): Promise<{
   structure: STRUCTURE;
-  response: unknown;
+  rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
 export async function generateStructure<
@@ -80,7 +80,7 @@ export async function generateStructure<
   | STRUCTURE
   | {
       structure: STRUCTURE;
-      response: unknown;
+      rawResponse: unknown;
       metadata: ModelCallMetadata;
     }
 > {
@@ -119,7 +119,7 @@ export async function generateStructure<
       const value = parseResult.data;
 
       return {
-        response: result.response,
+        rawResponse: result.response,
         extractedValue: value,
         usage: result.usage,
       };
@@ -129,7 +129,7 @@ export async function generateStructure<
   return options?.fullResponse
     ? {
         structure: fullResponse.value,
-        response: fullResponse.response,
+        rawResponse: fullResponse.rawResponse,
         metadata: fullResponse.metadata,
       }
     : fullResponse.value;

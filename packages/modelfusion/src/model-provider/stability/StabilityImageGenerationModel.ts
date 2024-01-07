@@ -210,11 +210,11 @@ export class StabilityImageGenerationModel
     prompt: StabilityImageGenerationPrompt,
     callOptions: FunctionCallOptions
   ) {
-    const response = await this.callAPI(prompt, callOptions);
+    const rawResponse = await this.callAPI(prompt, callOptions);
 
     return {
-      response,
-      base64Images: response.artifacts.map((artifact) => artifact.base64),
+      rawResponse,
+      base64Images: rawResponse.artifacts.map((artifact) => artifact.base64),
     };
   }
 
