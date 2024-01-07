@@ -77,7 +77,7 @@ const model = ollama
 
 #### Llama.cpp JSON grammar
 
-You can generate structures with [Llama.cpp](/integration/model-provider/llamacpp) models. The `jsonStructurePrompt` automatically restricts the output to JSON using a GBNF grammar.
+You can generate structures with [Llama.cpp](/integration/model-provider/llamacpp) models. The `jsonStructurePrompt` automatically restricts the output to your JSON schema using a GBNF grammar.
 
 :::note
 When using Llama.cpp for structure generation, it is important to choose a model that is capable of creating the structure that you want. I had good results with `openhermes2.5-mistral` and `mixtral`, for example, but this depends on your use case.
@@ -91,22 +91,7 @@ const model = llamacpp
     maxGenerationTokens: 1024,
     temperature: 0,
   })
-  .asStructureGenerationModel(jsonStructurePrompt.text()); // automatically restrict the output to JSON
-```
-
-#### Llama.cpp JSON array grammar
-
-With Llama.cpp, it is possible to generate structures with top-level arrays. Use can use the `grammar: llamacpp.grammar.jsonArray` setting to generate a top-level array.
-
-```ts
-const model = llamacpp
-  .CompletionTextGenerator({
-    // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
-    promptTemplate: llamacpp.prompt.ChatML,
-    maxGenerationTokens: 1024,
-    temperature: 0,
-    grammar: llamacpp.grammar.jsonArray, // force JSON array output
-  })
+  // automatically restrict the output to your schema using GBNF:
   .asStructureGenerationModel(jsonStructurePrompt.text());
 ```
 

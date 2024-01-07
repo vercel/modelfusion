@@ -15,7 +15,7 @@ async function main() {
         maxGenerationTokens: 1024,
         temperature: 0,
       })
-      // automatically restrict the output to JSON using GBNF:
+      // automatically restrict the output to your schema using GBNF:
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
     zodSchema(

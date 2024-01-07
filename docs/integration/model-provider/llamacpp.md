@@ -119,7 +119,7 @@ for await (const textPart of textStream) {
 
 ### Generate Structure
 
-Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). You need to use the `json` grammar for structure generation and use a `jsonStructurePrompt`.
+Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). When you use `jsonStructurePrompt` with Llama.cpp, it automatically uses a GBNF grammar for the JSON schema that you provide.
 
 ```ts
 import {
@@ -138,8 +138,8 @@ const structure = await generateStructure(
       promptTemplate: llamacpp.prompt.ChatML,
       maxGenerationTokens: 1024,
       temperature: 0,
-      grammar: llamacpp.grammar.json, // force JSON output
     })
+    // automatically restrict the output to your schema using GBNF:
     .asStructureGenerationModel(jsonStructurePrompt.text()),
 
   zodSchema(
@@ -162,7 +162,7 @@ const structure = await generateStructure(
 
 ### Stream Structure
 
-Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). LLama.cpp supports JSON array output as top-level structure with the `jsonArray` grammar.
+Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). When you use `jsonStructurePrompt` with Llama.cpp, it automatically uses a GBNF grammar for the JSON schema that you provide.
 
 ```ts
 import {
@@ -181,8 +181,8 @@ const structureStream = await streamStructure(
       promptTemplate: llamacpp.prompt.ChatML,
       maxGenerationTokens: 1024,
       temperature: 0,
-      grammar: llamacpp.grammar.jsonArray, // force JSON array output
     })
+    // automatically restrict the output to your schema using GBNF:
     .asStructureGenerationModel(jsonStructurePrompt.text()),
 
   zodSchema(
@@ -269,6 +269,8 @@ The grammars can be provided as text. ModelFusion provides a few grammars as con
 - `llamacpp.grammar.json`: Restricts the output to JSON.
 - `llamacpp.grammar.jsonArray`: Restricts the output to a JSON array.
 - `llamacpp.grammar.list`: Restricts the output to a newline-separated list where each line starts with `- `.
+
+You can also use `llamacpp.grammar.fromJsonSchema(schema)` to convert a JSON schema object to GBNF.
 
 ## Prompt Templates
 
