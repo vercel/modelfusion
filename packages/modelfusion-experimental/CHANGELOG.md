@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.0 - 2021-01-07
+
+Compatibility update.
+
 ## v0.2.0 - 2023-12-28
 
 Initial release. Moved from ModelFusion:
