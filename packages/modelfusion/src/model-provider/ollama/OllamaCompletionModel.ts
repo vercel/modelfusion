@@ -247,6 +247,10 @@ export class OllamaCompletionModel<
     });
   }
 
+  withJsonOutput(): this {
+    return this;
+  }
+
   withTextPrompt(): PromptTemplateTextStreamingModel<
     string,
     OllamaCompletionPrompt,

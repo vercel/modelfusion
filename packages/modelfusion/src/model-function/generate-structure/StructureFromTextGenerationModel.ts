@@ -45,13 +45,24 @@ export class StructureFromTextGenerationModel<
     return this.model.settingsForEvent;
   }
 
+  getModelWithJsonOutput(schema: Schema<unknown> & JsonSchemaProducer) {
+    if (this.template.withJsonOutput != null) {
+      return this.template.withJsonOutput?.({
+        model: this.model,
+        schema,
+      }) as MODEL;
+    }
+
+    return this.model;
+  }
+
   async doGenerateStructure(
     schema: Schema<unknown> & JsonSchemaProducer,
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
     const { rawResponse: response, text } = await generateText(
-      this.model,
+      this.getModelWithJsonOutput(schema),
       this.template.createPrompt(prompt, schema),
       {
         ...options,

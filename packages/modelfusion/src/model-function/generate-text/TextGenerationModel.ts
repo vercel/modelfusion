@@ -1,4 +1,6 @@
 import { FunctionCallOptions } from "../../core/FunctionOptions.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
+import { Schema } from "../../core/schema/Schema.js";
 import { Delta } from "../Delta.js";
 import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
@@ -112,9 +114,10 @@ export interface TextGenerationModel<
   ): TextGenerationModel<INPUT_PROMPT, SETTINGS>;
 
   /**
-   * Optional. When available, forces the model to return JSON as the text output.
+   * When possible, limit the output generation to the specified JSON schema,
+   * or super sets of it (e.g. JSON in general).
    */
-  withJsonOutput?(): this;
+  withJsonOutput(schema: Schema<unknown> & JsonSchemaProducer): this;
 }
 
 export interface TextStreamingModel<

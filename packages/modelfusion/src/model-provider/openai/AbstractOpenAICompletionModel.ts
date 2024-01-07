@@ -174,6 +174,10 @@ export abstract class AbstractOpenAICompletionModel<
 
     return chunk.choices[0].text;
   }
+
+  withJsonOutput(): this {
+    return this;
+  }
 }
 
 const OpenAICompletionResponseSchema = z.object({

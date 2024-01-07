@@ -241,6 +241,10 @@ export class CohereTextGenerationModel
     return this.withPromptTemplate(chat(options));
   }
 
+  withJsonOutput(): this {
+    return this;
+  }
+
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
   ): PromptTemplateTextStreamingModel<

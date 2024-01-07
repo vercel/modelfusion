@@ -222,6 +222,10 @@ export class MistralChatModel
     return this.withPromptTemplate(chat());
   }
 
+  withJsonOutput(): this {
+    return this;
+  }
+
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<
       INPUT_PROMPT,

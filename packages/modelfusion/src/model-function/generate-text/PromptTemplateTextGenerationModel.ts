@@ -1,4 +1,6 @@
 import { FunctionCallOptions } from "../../core/FunctionOptions.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
+import { Schema } from "../../core/schema/Schema.js";
 import {
   TextGenerationToolCallModel,
   ToolCallPromptTemplate,
@@ -109,6 +111,13 @@ export class PromptTemplateTextGenerationModel<
       model: this,
       template: promptTemplate,
     });
+  }
+
+  withJsonOutput(schema: Schema<unknown> & JsonSchemaProducer): this {
+    return new PromptTemplateTextGenerationModel({
+      model: this.model.withJsonOutput(schema),
+      promptTemplate: this.promptTemplate,
+    }) as this;
   }
 
   withPromptTemplate<INPUT_PROMPT>(

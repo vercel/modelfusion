@@ -7,6 +7,8 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from "../../core/api/postToApi.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
+import { Schema } from "../../core/schema/Schema.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { parseJSON } from "../../core/schema/parseJSON.js";
 import { validateTypes } from "../../core/schema/validateTypes.js";
@@ -31,9 +33,9 @@ import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
-import { json } from "./LlamaCppGrammars.js";
 import { Text } from "./LlamaCppPrompt.js";
 import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
+import { convertJsonSchemaToGBNF } from "./convertJsonSchemaToGBNF.js";
 
 export interface LlamaCppCompletionModelSettings<
   CONTEXT_WINDOW_SIZE extends number | undefined,
@@ -400,11 +402,19 @@ export class LlamaCppCompletionModel<
         });
   }
 
-  withJsonOutput(): this {
-    // don't override the grammar if it's already set (to support more restrictive grammars)
-    return this.settings.grammar == null
-      ? this.withSettings({ grammar: json })
-      : this;
+  withJsonOutput(schema: Schema<unknown> & JsonSchemaProducer): this {
+    // don't override the grammar if it's already set (to allow user to override)
+    if (this.settings.grammar != null) {
+      return this;
+    }
+
+    const grammar = convertJsonSchemaToGBNF(schema.getJsonSchema());
+
+    console.log("grammar", grammar);
+
+    return this.withSettings({
+      grammar: grammar,
+    });
   }
 
   private get promptTemplateProvider(): TextGenerationPromptTemplateProvider<LlamaCppCompletionPrompt> {

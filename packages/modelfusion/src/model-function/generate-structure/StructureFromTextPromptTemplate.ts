@@ -9,7 +9,20 @@ export type StructureFromTextPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> = {
     prompt: SOURCE_PROMPT,
     schema: Schema<unknown> & JsonSchemaProducer
   ) => TARGET_PROMPT;
+
   extractStructure: (response: string) => unknown;
+
+  withJsonOutput?: ({
+    model,
+    schema,
+  }: {
+    model: {
+      withJsonOutput(
+        schema: Schema<unknown> & JsonSchemaProducer
+      ): typeof model;
+    };
+    schema: Schema<unknown> & JsonSchemaProducer;
+  }) => typeof model;
 };
 
 export type FlexibleStructureFromTextPromptTemplate<
@@ -27,7 +40,18 @@ export type FlexibleStructureFromTextPromptTemplate<
       withTextPrompt(): TextStreamingModel<string>;
       withInstructionPrompt(): TextStreamingModel<InstructionPrompt>;
       withChatPrompt(): TextStreamingModel<ChatPrompt>;
-      withJsonOutput?: () => typeof model;
     }
   ) => TextStreamingModel<INTERMEDIATE_PROMPT>;
+
+  withJsonOutput?: ({
+    model,
+    schema,
+  }: {
+    model: {
+      withJsonOutput(
+        schema: Schema<unknown> & JsonSchemaProducer
+      ): typeof model;
+    };
+    schema: Schema<unknown> & JsonSchemaProducer;
+  }) => typeof model;
 };

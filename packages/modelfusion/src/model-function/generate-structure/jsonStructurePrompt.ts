@@ -37,12 +37,8 @@ export const jsonStructurePrompt = {
         instruction: prompt,
       }),
       extractStructure,
-      adaptModel: (model) => {
-        if (model.withJsonOutput != null) {
-          model = model.withJsonOutput();
-        }
-        return model.withInstructionPrompt();
-      },
+      adaptModel: (model) => model.withInstructionPrompt(),
+      withJsonOutput: ({ model, schema }) => model.withJsonOutput(schema),
     };
   },
 
@@ -70,12 +66,8 @@ export const jsonStructurePrompt = {
         instruction: prompt.instruction,
       }),
       extractStructure,
-      adaptModel: (model) => {
-        if (model.withJsonOutput != null) {
-          model = model.withJsonOutput();
-        }
-        return model.withInstructionPrompt();
-      },
+      adaptModel: (model) => model.withInstructionPrompt(),
+      withJsonOutput: ({ model, schema }) => model.withJsonOutput(schema),
     };
   },
 };

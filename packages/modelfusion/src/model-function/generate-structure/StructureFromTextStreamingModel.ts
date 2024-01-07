@@ -37,7 +37,7 @@ export class StructureFromTextStreamingModel<
     options?: FunctionOptions
   ) {
     const textStream = await streamText(
-      this.model,
+      this.getModelWithJsonOutput(schema),
       this.template.createPrompt(prompt, schema),
       options
     );

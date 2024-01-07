@@ -14,12 +14,11 @@ async function main() {
         promptTemplate: llamacpp.prompt.ChatML,
         maxGenerationTokens: 1024,
         temperature: 0,
-        grammar: llamacpp.grammar.jsonArray, // force JSON array output
       })
+      // automatically restrict the output to JSON using GBNF:
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
     zodSchema(
-      // With grammar.jsonArray, it is possible to output arrays as top level structures:
       z.array(
         z.object({
           name: z.string(),

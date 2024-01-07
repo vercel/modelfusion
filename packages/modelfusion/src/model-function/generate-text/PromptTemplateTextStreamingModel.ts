@@ -1,4 +1,6 @@
 import { FunctionCallOptions } from "../../core/FunctionOptions.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
+import { Schema } from "../../core/schema/Schema.js";
 import { StructureFromTextPromptTemplate } from "../generate-structure/StructureFromTextPromptTemplate.js";
 import { StructureFromTextStreamingModel } from "../generate-structure/StructureFromTextStreamingModel.js";
 import { PromptTemplateTextGenerationModel } from "./PromptTemplateTextGenerationModel.js";
@@ -45,6 +47,13 @@ export class PromptTemplateTextStreamingModel<
       model: this,
       template: promptTemplate,
     });
+  }
+
+  withJsonOutput(schema: Schema<unknown> & JsonSchemaProducer): this {
+    return new PromptTemplateTextStreamingModel({
+      model: this.model.withJsonOutput(schema),
+      promptTemplate: this.promptTemplate,
+    }) as this;
   }
 
   withPromptTemplate<INPUT_PROMPT>(

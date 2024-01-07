@@ -158,6 +158,10 @@ export class HuggingFaceTextGenerationModel
     };
   }
 
+  withJsonOutput(): this {
+    return this;
+  }
+
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
   ): PromptTemplateTextGenerationModel<
