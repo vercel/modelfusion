@@ -137,11 +137,11 @@ export class Automatic1111ImageGenerationModel
     prompt: Automatic1111ImageGenerationPrompt,
     options: FunctionCallOptions
   ) {
-    const response = await this.callAPI(prompt, options);
+    const rawResponse = await this.callAPI(prompt, options);
 
     return {
-      response,
-      base64Images: response.images,
+      rawResponse,
+      base64Images: rawResponse.images,
     };
   }
 

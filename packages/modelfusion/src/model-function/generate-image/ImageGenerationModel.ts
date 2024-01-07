@@ -23,7 +23,7 @@ export interface ImageGenerationModel<
     prompt: PROMPT,
     options: FunctionCallOptions
   ): PromiseLike<{
-    response: unknown;
+    rawResponse: unknown;
     base64Images: string[];
   }>;
 

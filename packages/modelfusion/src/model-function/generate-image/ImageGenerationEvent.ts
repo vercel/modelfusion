@@ -10,7 +10,7 @@ export interface ImageGenerationStartedEvent extends BaseModelCallStartedEvent {
 export type ImageGenerationFinishedEventResult =
   | {
       status: "success";
-      response: unknown;
+      rawResponse: unknown;
       value: string;
     }
   | { status: "error"; error: unknown }

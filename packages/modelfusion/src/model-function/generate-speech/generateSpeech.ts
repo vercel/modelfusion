@@ -33,13 +33,17 @@ export async function generateSpeech(
   model: SpeechGenerationModel<SpeechGenerationModelSettings>,
   text: string,
   options: FunctionOptions & { fullResponse: true }
-): Promise<{ speech: Buffer; response: unknown; metadata: ModelCallMetadata }>;
+): Promise<{
+  speech: Buffer;
+  rawResponse: unknown;
+  metadata: ModelCallMetadata;
+}>;
 export async function generateSpeech(
   model: SpeechGenerationModel<SpeechGenerationModelSettings>,
   text: string,
   options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
-  Buffer | { speech: Buffer; response: unknown; metadata: ModelCallMetadata }
+  Buffer | { speech: Buffer; rawResponse: unknown; metadata: ModelCallMetadata }
 > {
   const fullResponse = await executeStandardCall({
     functionType: "generate-speech",
@@ -50,7 +54,7 @@ export async function generateSpeech(
       const response = await model.doGenerateSpeechStandard(text, options);
 
       return {
-        response,
+        rawResponse: response,
         extractedValue: response,
       };
     },
@@ -59,7 +63,7 @@ export async function generateSpeech(
   return options?.fullResponse
     ? {
         speech: fullResponse.value,
-        response: fullResponse.response,
+        rawResponse: fullResponse.rawResponse,
         metadata: fullResponse.metadata,
       }
     : fullResponse.value;

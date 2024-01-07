@@ -103,11 +103,11 @@ export class MistralTextEmbeddingModel
   }
 
   async doEmbedValues(texts: string[], options: FunctionCallOptions) {
-    const response = await this.callAPI(texts, options);
+    const rawResponse = await this.callAPI(texts, options);
 
     return {
-      response,
-      embeddings: response.data.map((entry) => entry.embedding),
+      rawResponse,
+      embeddings: rawResponse.data.map((entry) => entry.embedding),
     };
   }
 

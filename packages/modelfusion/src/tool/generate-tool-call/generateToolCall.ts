@@ -93,7 +93,7 @@ export async function generateToolCall<
         }
 
         return {
-          response: result.response,
+          rawResponse: result.rawResponse,
           extractedValue: {
             id: toolCall.id,
             name: tool.name,
@@ -120,7 +120,7 @@ export async function generateToolCall<
   return options?.fullResponse
     ? {
         toolCall: fullResponse.value,
-        response: fullResponse.response,
+        response: fullResponse.rawResponse,
         metadata: fullResponse.metadata,
       }
     : fullResponse.value;

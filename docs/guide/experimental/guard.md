@@ -72,7 +72,7 @@ const result = await guard(
   (input, options) =>
     generateText(
       llamacpp
-        .TextGenerator({
+        .CompletionTextGenerator({
           // ...
         })
         .withTextPromptTemplate(Llama2Prompt.instruction()),

@@ -62,7 +62,7 @@ const api = llamacpp.Api({
   // ...
 });
 
-const model = llamacpp.TextGenerator({
+const model = llamacpp.CompletionTextGenerator({
   api,
   // ...
 });
@@ -83,7 +83,8 @@ import { llamacpp, generateText } from "modelfusion";
 
 const text = await generateText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
+      promptTemplate: llamacpp.prompt.Llama2, // Choose the correct prompt template for your model
       maxGenerationTokens: 256,
     })
     .withTextPrompt(),
@@ -102,7 +103,8 @@ import { llamacpp, streamText } from "modelfusion";
 
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
+      promptTemplate: llamacpp.prompt.Llama2, // Choose the correct prompt template for your model
       maxGenerationTokens: 1024,
       temperature: 0.7,
     })
@@ -131,13 +133,13 @@ import { z } from "zod";
 
 const structure = await generateStructure(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
+      promptTemplate: llamacpp.prompt.ChatML,
       maxGenerationTokens: 1024,
       temperature: 0,
       grammar: llamacpp.grammar.json, // force JSON output
     })
-    .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
     .asStructureGenerationModel(jsonStructurePrompt.text()),
 
   zodSchema(
@@ -174,13 +176,13 @@ import { z } from "zod";
 
 const structureStream = await streamStructure(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
+      promptTemplate: llamacpp.prompt.ChatML,
       maxGenerationTokens: 1024,
       temperature: 0,
       grammar: llamacpp.grammar.jsonArray, // force JSON array output
     })
-    .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
     .asStructureGenerationModel(jsonStructurePrompt.text()),
 
   zodSchema(
@@ -251,7 +253,7 @@ You can set the context window size on the model by passing it as a parameter to
 ```ts
 import { llamacpp } from "modelfusion";
 
-const model = llamacpp.TextGenerator({
+const model = llamacpp.CompletionTextGenerator({
   // Assuming Llama2 7B model context window size of 4096 tokens.
   // Change to the context window size of the model you are using:
   contextWindowSize: 4096,
@@ -275,216 +277,13 @@ You can use [prompt templates](#prompt-format) to use higher-level prompt templa
 as instruction and chat prompts and map them to the correct format for your model.
 The prompt template that the model expected is usually described on the model card on HuggingFace.
 
-### Llama 2 prompt template
+Specific [prompt templates for Llama.cpp](/api/namespaces/llamacpp.prompt) models are available under `llamacpp.prompt`:
 
-Llama 2 uses a special prompt template (see "[How to prompt Llama 2 chat](https://www.philschmid.de/llama-2#how-to-prompt-llama-2-chat)"):
-
-#### Text prompt template
-
-You can use [Llama2Prompt.text()](/api/namespaces/Llama2Prompt#text) to create basic text prompts.
-
-```ts
-const textStream = await streamText(
-  llamacpp
-    .TextGenerator({
-      // ...
-    })
-    .withTextPromptTemplate(Llama2Prompt.text()),
-  "Write a short story about a robot learning to love."
-);
-```
-
-#### Instruction prompt template
-
-You can use [Llama2Prompt.instruction()](/api/namespaces/Llama2Prompt#instruction) to create instruction prompts.
-
-```ts
-const textStream = await streamText(
-  llamacpp
-    .TextGenerator({
-      // ...
-    })
-    .withTextPromptTemplate(Llama2Prompt.instruction()),
-  {
-    system: "You are a celebrated poet.",
-    instruction: "Write a short story about a robot learning to love.",
-  }
-);
-```
-
-#### Chat prompt template
-
-You can use [Llama2Prompt.chat()](/api/namespaces/Llama2Prompt#chat) to create chat prompts.
-
-```ts
-const textStream = await streamText(
-  llamacpp
-    .TextGenerator({
-      // ...
-    })
-    .withTextPromptTemplate(Llama2Prompt.chat()),
-  {
-    system: "You are a celebrated poet.",
-    messages: [
-      {
-        role: "user",
-        content: "Suggest a name for a robot.",
-      },
-      {
-        role: "assistant",
-        content: "I suggest the name Robbie",
-      },
-      {
-        role: "user",
-        content: "Write a short story about Robbie learning to love",
-      },
-    ],
-  }
-);
-```
-
-### ChatML prompt template
-
-ChatML is a prompt template that is used by several models, e.g. [OpenHermes-2.5-Mistral](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF).
-
-#### Text prompt template
-
-You can use [ChatMLPrompt.text()](/api/namespaces/ChatMLPrompt#text) to create basic text prompts.
-
-```ts
-const textStream = await streamText(
-  llamacpp
-    .TextGenerator({
-      // ...
-    })
-    .withTextPromptTemplate(ChatMLPrompt.text()),
-  "Write a short story about a robot learning to love."
-);
-```
-
-#### Instruction prompt template
-
-You can use [ChatMLPrompt.instruction()](/api/namespaces/ChatMLPrompt#instruction) to create instruction prompts.
-
-```ts
-const textStream = await streamText(
-  llamacpp
-    .TextGenerator({
-      // ...
-    })
-    .withTextPromptTemplate(ChatMLPrompt.instruction()),
-  {
-    instruction: "Write a short story about a robot learning to love.",
-  }
-);
-```
-
-#### Chat prompt template
-
-You can use [ChatMLPrompt.chat()](/api/namespaces/ChatMLPrompt#chat) to create chat prompts.
-
-```ts
-const textStream = await streamText(
-  llamacpp
-    .TextGenerator({
-      // ...
-    })
-    .withTextPromptTemplate(ChatMLPrompt.chat()),
-  {
-    messages: [
-      {
-        role: "user",
-        content: "Suggest a name for a robot.",
-      },
-      {
-        role: "assistant",
-        content: "I suggest the name Robbie",
-      },
-      {
-        role: "user",
-        content: "Write a short story about Robbie learning to love",
-      },
-    ],
-  }
-);
-```
-
-### Alpaca prompt template
-
-Alpaca and several other models use the [Alpaca prompt template](https://github.com/tatsu-lab/stanford_alpaca#data-release):
-
-#### text prompt template
-
-You can use [AlpacaPrompt.text()](/api/namespaces/AlpacaPrompt#text) to create basic text prompts.
-
-```ts
-const textStream = await streamText(
-  llamacpp
-    .TextGenerator({
-      // ...
-    })
-    .withTextPromptTemplate(AlpacaPrompt.text()),
-  "Write a short story about a robot learning to love."
-);
-```
-
-#### instruction prompt template
-
-You can use [AlpacaPrompt.instruction()](/api/namespaces/AlpacaPrompt#instruction) to create instruction prompts.
-
-:::note
-Setting the system property overrides the Alpaca system prompt and can impact the model responses.
-:::
-
-```ts
-const textStream = await streamText(
-  llamacpp
-    .TextGenerator({
-      // ...
-    })
-    .withTextPromptTemplate(AlpacaPrompt.instruction()),
-  {
-    instruction: "You are a celebrated poet. Write a short story about:",
-    input: "a robot learning to love.", // Alpaca supports optional input field
-  }
-);
-```
-
-### Vicuna prompt template
-
-Vicuna and several other models use the Vicuna prompt template.
-
-#### Chat prompt template
-
-You can use [VicunaPrompt.chat()](/api/namespaces/VicunaPrompt#chat) to create chat prompts.
-
-:::note
-Setting the system property overrides the Vicuna system prompt and can impact the model responses.
-:::
-
-```ts
-const textStream = await streamText(
-  llamacpp
-    .TextGenerator({
-      // ...
-    })
-    .withTextPromptTemplate(VicunaPrompt.chat()),
-  {
-    system: "You are a celebrated poet.",
-    messages: [
-      {
-        role: "user",
-        content: "Suggest a name for a robot.",
-      },
-      {
-        role: "assistant",
-        content: "I suggest the name Robbie",
-      },
-      {
-        role: "user",
-        content: "Write a short story about Robbie learning to love",
-      },
-    ],
-  }
-);
-```
+- `llamacpp.prompt.Text`: Basic text prompt.
+- `llamacpp.prompt.ChatML`: ChatML prompt template.
+- `llamacpp.prompt.Llama2`: Llama 2 prompt template.
+- `llamacpp.prompt.Vicuna`: Vicuna prompt template.
+- `llamacpp.prompt.Alpaca`: Alpaca prompt template.
+- `llamacpp.prompt.NeuralChat`: NeuralChat prompt template.
+- `llamacpp.prompt.Mistral`: Mistral prompt template.
+- `llamacpp.prompt.BakLLaVA1`: BakLLaVA 1 prompt template. Vision prompt that supports images.

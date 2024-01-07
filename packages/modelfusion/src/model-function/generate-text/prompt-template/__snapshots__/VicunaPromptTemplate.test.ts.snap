@@ -24,3 +24,32 @@ ASSISTANT: assistant message
 USER: 2nd user message
 ASSISTANT: "
 `;
+
+exports[`instruction prompt > should format prompt with instruction 1`] = `
+"A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
+
+USER: instruction
+ASSISTANT: "
+`;
+
+exports[`instruction prompt > should format prompt with instruction and response prefix 1`] = `
+"A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
+
+USER: instruction
+ASSISTANT: "
+`;
+
+exports[`instruction prompt > should format prompt with system and instruction 1`] = `
+"system
+
+USER: instruction
+ASSISTANT: "
+`;
+
+exports[`text prompt > should format prompt 1`] = `
+"A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
+
+USER: prompt
+
+ASSISTANT: "
+`;

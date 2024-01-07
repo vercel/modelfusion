@@ -88,7 +88,7 @@ export interface TextGenerationModel<
     prompt: PROMPT,
     options?: FunctionCallOptions
   ): PromiseLike<{
-    response: unknown;
+    rawResponse: unknown;
     textGenerationResults: TextGenerationResult[];
     usage?: {
       promptTokens: number;
@@ -98,7 +98,7 @@ export interface TextGenerationModel<
   }>;
 
   restoreGeneratedTexts(rawResponse: unknown): {
-    response: unknown;
+    rawResponse: unknown;
     textGenerationResults: TextGenerationResult[];
     usage?: {
       promptTokens: number;

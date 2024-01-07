@@ -146,10 +146,12 @@ export class HuggingFaceTextGenerationModel
     );
   }
 
-  processTextGenerationResponse(response: HuggingFaceTextGenerationResponse) {
+  processTextGenerationResponse(
+    rawResponse: HuggingFaceTextGenerationResponse
+  ) {
     return {
-      response,
-      textGenerationResults: response.map((response) => ({
+      rawResponse,
+      textGenerationResults: rawResponse.map((response) => ({
         text: response.generated_text,
         finishReason: "unknown" as const,
       })),

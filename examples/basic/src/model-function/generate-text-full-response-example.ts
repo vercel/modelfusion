@@ -10,7 +10,7 @@ async function main() {
     finishReason,
     texts,
     textGenerationResults,
-    response,
+    rawResponse,
     metadata,
   } = await generateText(
     openai.CompletionTextGenerator({
@@ -25,7 +25,7 @@ async function main() {
   console.log(metadata);
 
   // cast to the response type:
-  for (const choice of (response as OpenAICompletionResponse).choices) {
+  for (const choice of (rawResponse as OpenAICompletionResponse).choices) {
     console.log(choice.text);
     console.log(choice.finish_reason);
     console.log();

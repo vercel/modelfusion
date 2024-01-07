@@ -1,14 +1,16 @@
-import { Llama2Prompt, llamacpp, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 
-// example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
 async function main() {
   const textStream = await streamText(
     llamacpp
-      .TextGenerator({
+      .CompletionTextGenerator({
+        // run https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
+        promptTemplate: llamacpp.prompt.Llama2,
         contextWindowSize: 4096, // Llama 2 context window size
         maxGenerationTokens: 512,
       })
-      .withTextPromptTemplate(Llama2Prompt.chat()),
+      .withChatPrompt(),
+
     {
       system: "You are a celebrated poet.",
       messages: [

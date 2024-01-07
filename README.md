@@ -424,14 +424,15 @@ const text = await generateText(
 #### Instruction Prompt Example
 
 ```ts
-// example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
 const text = await generateText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
+      // run https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
+      promptTemplate: llamacpp.prompt.Llama2, // Set prompt template
       contextWindowSize: 4096, // Llama 2 context window size
-      maxGenerationTokens: 1000,
+      maxGenerationTokens: 512,
     })
-    .withTextPromptTemplate(Llama2Prompt.instruction()),
+    .withInstructionPrompt(),
   {
     system: "You are a story writer.",
     instruction: "Write a short story about a robot learning to love.",
@@ -503,11 +504,11 @@ const image = await generateImage(
 
 ### Metadata and original responses
 
-ModelFusion model functions return rich responses that include the original response and metadata when you set the `fullResponse` option to `true`.
+ModelFusion model functions return rich responses that include the raw (original) response and metadata when you set the `fullResponse` option to `true`.
 
 ```ts
-// access the full response (needs to be typed) and the metadata:
-const { text, response, metadata } = await generateText(
+// access the raw response (needs to be typed) and the metadata:
+const { text, rawResponse, metadata } = await generateText(
   openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxGenerationTokens: 1000,
@@ -519,8 +520,8 @@ const { text, response, metadata } = await generateText(
 
 console.log(metadata);
 
-// cast to the response type:
-for (const choice of (response as OpenAICompletionResponse).choices) {
+// cast to the raw response type:
+for (const choice of (rawResponse as OpenAICompletionResponse).choices) {
   console.log(choice.text);
 }
 ```

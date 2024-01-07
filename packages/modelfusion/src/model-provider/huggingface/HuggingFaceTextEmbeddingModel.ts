@@ -126,11 +126,11 @@ export class HuggingFaceTextEmbeddingModel
   readonly countPromptTokens = undefined;
 
   async doEmbedValues(texts: string[], options: FunctionCallOptions) {
-    const response = await this.callAPI(texts, options);
+    const rawResponse = await this.callAPI(texts, options);
 
     return {
-      response,
-      embeddings: response,
+      rawResponse,
+      embeddings: rawResponse,
     };
   }
 

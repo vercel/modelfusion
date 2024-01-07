@@ -169,10 +169,10 @@ export class CohereTextEmbeddingModel
   }
 
   async doEmbedValues(texts: string[], options: FunctionCallOptions) {
-    const response = await this.callAPI(texts, options);
+    const rawResponse = await this.callAPI(texts, options);
     return {
-      response,
-      embeddings: response.embeddings,
+      rawResponse,
+      embeddings: rawResponse.embeddings,
     };
   }
 

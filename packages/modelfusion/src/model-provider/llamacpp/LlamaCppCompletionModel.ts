@@ -12,6 +12,11 @@ import { parseJSON } from "../../core/schema/parseJSON.js";
 import { validateTypes } from "../../core/schema/validateTypes.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
+import {
+  FlexibleStructureFromTextPromptTemplate,
+  StructureFromTextPromptTemplate,
+} from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
+import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
@@ -19,12 +24,16 @@ import {
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
 import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
 import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
-import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 import { json } from "./LlamaCppGrammars.js";
+import { Text } from "./LlamaCppPrompt.js";
+import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 
 export interface LlamaCppCompletionModelSettings<
   CONTEXT_WINDOW_SIZE extends number | undefined,
@@ -165,6 +174,11 @@ export interface LlamaCppCompletionModelSettings<
    * If is -1 the task will be assigned to a Idle slot (default: -1)
    */
   slotId?: number;
+
+  /**
+   * Prompt template provider that is used when calling `.withTextPrompt()`, `withInstructionPrompt()` or `withChatPrompt()`.
+   */
+  promptTemplate?: TextGenerationPromptTemplateProvider<LlamaCppCompletionPrompt>;
 }
 
 export interface LlamaCppCompletionPrompt {
@@ -337,24 +351,25 @@ export class LlamaCppCompletionModel<
     );
   }
 
-  processTextGenerationResponse(response: LlamaCppTextGenerationResponse) {
+  processTextGenerationResponse(rawResponse: LlamaCppTextGenerationResponse) {
     return {
-      response,
+      rawResponse,
       textGenerationResults: [
         {
-          text: response.content,
+          text: rawResponse.content,
           finishReason:
-            response.stopped_eos || response.stopped_word
+            rawResponse.stopped_eos || rawResponse.stopped_word
               ? ("stop" as const)
-              : response.stopped_limit
+              : rawResponse.stopped_limit
                 ? ("length" as const)
                 : ("unknown" as const),
         },
       ],
       usage: {
-        promptTokens: response.tokens_evaluated,
-        completionTokens: response.tokens_predicted,
-        totalTokens: response.tokens_evaluated + response.tokens_predicted,
+        promptTokens: rawResponse.tokens_evaluated,
+        completionTokens: rawResponse.tokens_predicted,
+        totalTokens:
+          rawResponse.tokens_evaluated + rawResponse.tokens_predicted,
       },
     };
   }
@@ -369,11 +384,31 @@ export class LlamaCppCompletionModel<
     return (delta as LlamaCppTextStreamChunk).content;
   }
 
+  asStructureGenerationModel<INPUT_PROMPT, LlamaCppPrompt>(
+    promptTemplate:
+      | StructureFromTextPromptTemplate<INPUT_PROMPT, LlamaCppPrompt>
+      | FlexibleStructureFromTextPromptTemplate<INPUT_PROMPT, unknown>
+  ) {
+    return "adaptModel" in promptTemplate
+      ? new StructureFromTextStreamingModel({
+          model: promptTemplate.adaptModel(this),
+          template: promptTemplate,
+        })
+      : new StructureFromTextStreamingModel({
+          model: this as TextStreamingModel<LlamaCppPrompt>,
+          template: promptTemplate,
+        });
+  }
+
   withJsonOutput(): this {
     // don't override the grammar if it's already set (to support more restrictive grammars)
     return this.settings.grammar == null
       ? this.withSettings({ grammar: json })
       : this;
+  }
+
+  private get promptTemplateProvider(): TextGenerationPromptTemplateProvider<LlamaCppCompletionPrompt> {
+    return this.settings.promptTemplate ?? Text;
   }
 
   withTextPrompt(): PromptTemplateTextStreamingModel<
@@ -382,39 +417,25 @@ export class LlamaCppCompletionModel<
     LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
-    return this.withPromptTemplate({
-      format(prompt: string) {
-        return { text: prompt };
-      },
-      stopSequences: [],
-    });
+    return this.withPromptTemplate(this.promptTemplateProvider.text());
   }
 
-  /**
-   * Maps the prompt for a text version of the Llama.cpp prompt template (without image support).
-   */
-  withTextPromptTemplate<INPUT_PROMPT>(
-    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
-  ): PromptTemplateTextStreamingModel<
-    INPUT_PROMPT,
-    string,
+  withInstructionPrompt(): PromptTemplateTextStreamingModel<
+    InstructionPrompt,
+    LlamaCppCompletionPrompt,
     LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
-    PromptTemplateTextStreamingModel<
-      string,
-      LlamaCppCompletionPrompt,
-      LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
-      this
-    >
+    this
   > {
-    return new PromptTemplateTextStreamingModel({
-      model: this.withTextPrompt().withSettings({
-        stopSequences: [
-          ...(this.settings.stopSequences ?? []),
-          ...promptTemplate.stopSequences,
-        ],
-      }),
-      promptTemplate,
-    });
+    return this.withPromptTemplate(this.promptTemplateProvider.instruction());
+  }
+
+  withChatPrompt(): PromptTemplateTextStreamingModel<
+    ChatPrompt,
+    LlamaCppCompletionPrompt,
+    LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
+    this
+  > {
+    return this.withPromptTemplate(this.promptTemplateProvider.chat());
   }
 
   /**

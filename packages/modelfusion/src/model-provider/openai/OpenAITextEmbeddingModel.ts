@@ -154,11 +154,11 @@ export class OpenAITextEmbeddingModel
       );
     }
 
-    const response = await this.callAPI(texts, callOptions);
+    const rawResponse = await this.callAPI(texts, callOptions);
 
     return {
-      response,
-      embeddings: response.data.map((data) => data.embedding),
+      rawResponse,
+      embeddings: rawResponse.data.map((data) => data.embedding),
     };
   }
 

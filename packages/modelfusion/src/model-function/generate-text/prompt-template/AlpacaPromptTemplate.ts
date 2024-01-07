@@ -1,4 +1,5 @@
 import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
+import { ChatPrompt } from "./ChatPrompt.js";
 import { validateContentIsString } from "./ContentPart.js";
 import { InstructionPrompt } from "./InstructionPrompt.js";
 
@@ -94,4 +95,11 @@ export function instruction(): TextGenerationPromptTemplate<
       return text;
     },
   };
+}
+
+/**
+ * Not supported by Alpaca.
+ */
+export function chat(): TextGenerationPromptTemplate<ChatPrompt, string> {
+  throw new Error("Chat prompts are not supported by the Alpaca format.");
 }

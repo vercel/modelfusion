@@ -56,7 +56,7 @@ export class TextGenerationToolCallModel<
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
-    const { response, text, metadata } = await generateText(
+    const { rawResponse, text, metadata } = await generateText(
       this.model,
       this.format.createPrompt(prompt, tool),
       {
@@ -67,7 +67,7 @@ export class TextGenerationToolCallModel<
 
     try {
       return {
-        response,
+        rawResponse,
         toolCall: this.format.extractToolCall(text, tool),
         usage: metadata?.usage as
           | {

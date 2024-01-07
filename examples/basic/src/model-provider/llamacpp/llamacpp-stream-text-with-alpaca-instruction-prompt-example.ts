@@ -4,11 +4,14 @@ import { AlpacaPrompt, llamacpp, streamText } from "modelfusion";
 async function main() {
   const textStream = await streamText(
     llamacpp
-      .TextGenerator({
+      .CompletionTextGenerator({
         contextWindowSize: 2048, // context window size of Chronos-13B-v2
         maxGenerationTokens: 1024,
       })
-      .withTextPromptTemplate(AlpacaPrompt.instruction()),
+      // extra setup to return the optional input from the Alpaca prompt:
+      .withPromptTemplate(
+        llamacpp.prompt.asLlamaCppPromptTemplate(AlpacaPrompt.instruction())
+      ),
     {
       instruction: "You are a celebrated poet. Write a short story about:",
       input: "a robot learning to love.", // Alpaca format supports optional input

@@ -11,7 +11,7 @@ export interface TranscriptionModel<
     data: DATA,
     options: FunctionCallOptions
   ) => PromiseLike<{
-    response: unknown;
+    rawResponse: unknown;
     transcription: string;
   }>;
 }

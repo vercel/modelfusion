@@ -61,7 +61,7 @@ export interface BaseModelCallStartedEvent extends BaseFunctionStartedEvent {
 export type BaseModelCallFinishedEventResult =
   | {
       status: "success";
-      response: unknown;
+      rawResponse: unknown;
       value: unknown;
 
       /**

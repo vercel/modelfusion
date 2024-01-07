@@ -12,7 +12,7 @@ export interface EmbeddingStartedEvent extends BaseModelCallStartedEvent {
 export type EmbeddingFinishedEventResult =
   | {
       status: "success";
-      response: unknown;
+      rawResponse: unknown;
       value: Vector | Array<Vector>;
     }
   | { status: "error"; error: unknown }

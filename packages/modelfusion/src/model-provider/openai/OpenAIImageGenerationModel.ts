@@ -176,13 +176,13 @@ export class OpenAIImageGenerationModel
   }
 
   async doGenerateImages(prompt: string, options: FunctionCallOptions) {
-    const response = await this.callAPI(prompt, options, {
+    const rawResponse = await this.callAPI(prompt, options, {
       responseFormat: OpenAIImageGenerationResponseFormat.base64Json,
     });
 
     return {
-      response,
-      base64Images: response.data.map((item) => item.b64_json),
+      rawResponse,
+      base64Images: rawResponse.data.map((item) => item.b64_json),
     };
   }
   withPromptTemplate<INPUT_PROMPT>(

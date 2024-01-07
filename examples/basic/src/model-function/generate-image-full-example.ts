@@ -5,7 +5,7 @@ import fs from "node:fs";
 dotenv.config();
 
 async function main() {
-  const { image, imageBase64, images, imagesBase64, metadata, response } =
+  const { image, imageBase64, images, imagesBase64, metadata, rawResponse } =
     await generateImage(
       stability.ImageGenerator({
         model: "stable-diffusion-v1-6",

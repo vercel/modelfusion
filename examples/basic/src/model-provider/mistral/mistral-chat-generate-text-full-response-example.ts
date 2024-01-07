@@ -10,7 +10,7 @@ async function main() {
     finishReason,
     texts,
     textGenerationResults,
-    response,
+    rawResponse,
     metadata,
   } = await generateText(
     mistral
@@ -24,12 +24,12 @@ async function main() {
   );
 
   console.log("RESPONSE:");
-  console.log(JSON.stringify(response, null, 2));
+  console.log(JSON.stringify(rawResponse, null, 2));
   console.log();
 
   // cast to the response type:
   console.log("CHOICES:");
-  for (const choice of (response as MistralChatResponse).choices) {
+  for (const choice of (rawResponse as MistralChatResponse).choices) {
     console.log(choice.message);
     console.log(choice.finish_reason);
     console.log();

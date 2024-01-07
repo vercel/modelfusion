@@ -14,7 +14,7 @@ export interface ToolCallGenerationModel<
     prompt: PROMPT,
     options?: FunctionOptions
   ): PromiseLike<{
-    response: unknown;
+    rawResponse: unknown;
     toolCall: { id: string; args: unknown } | null;
     usage?: {
       promptTokens: number;

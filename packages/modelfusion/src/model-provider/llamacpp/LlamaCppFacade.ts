@@ -19,7 +19,7 @@ export function Api(settings: PartialBaseUrlPartsApiConfigurationOptions) {
   return new LlamaCppApiConfiguration(settings);
 }
 
-export function TextGenerator<CONTEXT_WINDOW_SIZE extends number>(
+export function CompletionTextGenerator<CONTEXT_WINDOW_SIZE extends number>(
   settings: LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE> = {}
 ) {
   return new LlamaCppCompletionModel<CONTEXT_WINDOW_SIZE>(settings);
@@ -41,3 +41,5 @@ export function Tokenizer(
  * GBNF grammars. You can use them in the `grammar` option of the `TextGenerator` model.
  */
 export * as grammar from "./LlamaCppGrammars.js";
+
+export * as prompt from "./LlamaCppPrompt.js";

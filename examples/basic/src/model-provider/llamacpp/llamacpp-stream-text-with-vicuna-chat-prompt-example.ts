@@ -1,14 +1,15 @@
-import { VicunaPrompt, llamacpp, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 
-// example assumes you are running https://huggingface.co/TheBloke/vicuna-7B-v1.5-GGUF with llama.cpp
 async function main() {
   const textStream = await streamText(
     llamacpp
-      .TextGenerator({
+      .CompletionTextGenerator({
+        // run https://huggingface.co/TheBloke/vicuna-7B-v1.5-GGUF with llama.cpp
+        promptTemplate: llamacpp.prompt.Vicuna,
         contextWindowSize: 2048, // Vicuna v1.5 context window size
         maxGenerationTokens: 512,
       })
-      .withTextPromptTemplate(VicunaPrompt.chat()),
+      .withChatPrompt(),
     {
       system: "You are a celebrated poet.",
       messages: [

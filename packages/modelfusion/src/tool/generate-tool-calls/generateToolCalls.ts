@@ -56,7 +56,7 @@ export async function generateToolCalls<
   options: FunctionOptions & { fullResponse?: boolean }
 ): Promise<{
   value: { text: string | null; toolCalls: Array<ToOutputValue<TOOLS>> };
-  response: unknown;
+  rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
 export async function generateToolCalls<
@@ -74,7 +74,7 @@ export async function generateToolCalls<
         text: string | null;
         toolCalls: Array<ToOutputValue<TOOLS>> | null;
       };
-      response: unknown;
+      rawResponse: unknown;
       metadata: ModelCallMetadata;
     }
 > {
@@ -107,7 +107,7 @@ export async function generateToolCalls<
       // no tool calls:
       if (rawToolCalls == null) {
         return {
-          response: result.response,
+          rawResponse: result.rawResponse,
           extractedValue: { text, toolCalls: null },
           usage: result.usage,
         };
@@ -142,7 +142,7 @@ export async function generateToolCalls<
       });
 
       return {
-        response: result.response,
+        rawResponse: result.rawResponse,
         extractedValue: {
           text,
           toolCalls: toolCalls as Array<ToOutputValue<TOOLS>>,

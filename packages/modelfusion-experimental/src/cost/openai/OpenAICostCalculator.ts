@@ -47,9 +47,9 @@ export class OpenAICostCalculator implements CostCalculator {
         }
 
         if (isOpenAIEmbeddingModel(model)) {
-          const responses = Array.isArray(call.result.response)
-            ? (call.result.response as OpenAITextEmbeddingResponse[])
-            : [call.result.response as OpenAITextEmbeddingResponse];
+          const responses = Array.isArray(call.result.rawResponse)
+            ? (call.result.rawResponse as OpenAITextEmbeddingResponse[])
+            : [call.result.rawResponse as OpenAITextEmbeddingResponse];
 
           return calculateOpenAIEmbeddingCostInMillicents({
             model,
@@ -68,14 +68,14 @@ export class OpenAICostCalculator implements CostCalculator {
         if (isOpenAIChatModel(model)) {
           return calculateOpenAIChatCostInMillicents({
             model,
-            response: call.result.response as OpenAIChatResponse,
+            response: call.result.rawResponse as OpenAIChatResponse,
           });
         }
 
         if (isOpenAICompletionModel(model)) {
           return calculateOpenAICompletionCostInMillicents({
             model,
-            response: call.result.response as OpenAICompletionResponse,
+            response: call.result.rawResponse as OpenAICompletionResponse,
           });
         }
 
@@ -90,7 +90,7 @@ export class OpenAICostCalculator implements CostCalculator {
         return calculateOpenAITranscriptionCostInMillicents({
           model: model as OpenAITranscriptionModelType,
           response: call.result
-            .response as OpenAITranscriptionVerboseJsonResponse,
+            .rawResponse as OpenAITranscriptionVerboseJsonResponse,
         });
       }
 

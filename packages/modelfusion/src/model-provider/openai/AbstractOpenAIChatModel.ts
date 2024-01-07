@@ -205,14 +205,14 @@ export abstract class AbstractOpenAIChatModel<
     );
   }
 
-  processTextGenerationResponse(response: OpenAIChatResponse) {
+  processTextGenerationResponse(rawResponse: OpenAIChatResponse) {
     return {
-      response,
-      textGenerationResults: response.choices.map((choice) => ({
+      rawResponse,
+      textGenerationResults: rawResponse.choices.map((choice) => ({
         text: choice.message.content ?? "",
         finishReason: this.translateFinishReason(choice.finish_reason),
       })),
-      usage: this.extractUsage(response),
+      usage: this.extractUsage(rawResponse),
     };
   }
 
@@ -263,7 +263,7 @@ export abstract class AbstractOpenAIChatModel<
     prompt: OpenAIChatPrompt,
     options: FunctionCallOptions
   ) {
-    const response = await this.callAPI(prompt, options, {
+    const rawResponse = await this.callAPI(prompt, options, {
       responseFormat: OpenAIChatResponseFormat.json,
       toolChoice: {
         type: "function",
@@ -281,10 +281,10 @@ export abstract class AbstractOpenAIChatModel<
       ],
     });
 
-    const toolCalls = response.choices[0]?.message.tool_calls;
+    const toolCalls = rawResponse.choices[0]?.message.tool_calls;
 
     return {
-      response,
+      rawResponse,
       toolCall:
         toolCalls == null || toolCalls.length === 0
           ? null
@@ -292,7 +292,7 @@ export abstract class AbstractOpenAIChatModel<
               id: toolCalls[0].id,
               args: parseJSON({ text: toolCalls[0].function.arguments }),
             },
-      usage: this.extractUsage(response),
+      usage: this.extractUsage(rawResponse),
     };
   }
 
@@ -301,7 +301,7 @@ export abstract class AbstractOpenAIChatModel<
     prompt: OpenAIChatPrompt,
     options: FunctionCallOptions
   ) {
-    const response = await this.callAPI(prompt, options, {
+    const rawResponse = await this.callAPI(prompt, options, {
       responseFormat: OpenAIChatResponseFormat.json,
       toolChoice: "auto",
       tools: tools.map((tool) => ({
@@ -314,10 +314,10 @@ export abstract class AbstractOpenAIChatModel<
       })),
     });
 
-    const message = response.choices[0]?.message;
+    const message = rawResponse.choices[0]?.message;
 
     return {
-      response,
+      rawResponse,
       text: message.content ?? null,
       toolCalls:
         message.tool_calls?.map((toolCall) => ({
@@ -325,7 +325,7 @@ export abstract class AbstractOpenAIChatModel<
           name: toolCall.function.name,
           args: parseJSON({ text: toolCall.function.arguments }),
         })) ?? null,
-      usage: this.extractUsage(response),
+      usage: this.extractUsage(rawResponse),
     };
   }
 

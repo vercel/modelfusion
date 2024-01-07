@@ -1,4 +1,4 @@
-import { LlamaCppBakLLaVA1Prompt, llamacpp, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -12,11 +12,13 @@ async function main() {
 
   const textStream = await streamText(
     llamacpp
-      .TextGenerator({
+      .CompletionTextGenerator({
+        // run BakLLaVA-1 in llama.cpp https://huggingface.co/mys/ggml_bakllava-1/tree/main
+        promptTemplate: llamacpp.prompt.BakLLaVA1,
         maxGenerationTokens: 1024,
         temperature: 0,
       })
-      .withPromptTemplate(LlamaCppBakLLaVA1Prompt.chat()),
+      .withChatPrompt(),
 
     {
       messages: [

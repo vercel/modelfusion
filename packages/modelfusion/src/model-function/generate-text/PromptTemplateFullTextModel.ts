@@ -40,7 +40,7 @@ export class PromptTemplateFullTextModel<
     prompt: PROMPT,
     options?: FunctionOptions | undefined
   ): PromiseLike<{
-    response: unknown;
+    rawResponse: unknown;
     toolCall: { id: string; args: unknown } | null;
     usage?:
       | { promptTokens: number; completionTokens: number; totalTokens: number }
@@ -55,7 +55,7 @@ export class PromptTemplateFullTextModel<
     prompt: PROMPT,
     options?: FunctionOptions | undefined
   ): PromiseLike<{
-    response: unknown;
+    rawResponse: unknown;
     text: string | null;
     toolCalls: { id: string; name: string; args: unknown }[] | null;
     usage?:

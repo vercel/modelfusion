@@ -5,8 +5,8 @@ require("dotenv").config();
 (async () => {
   // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
   const textStream = await streamText(
-    llamaCpp
-      .TextGenerator({
+    llamacpp
+      .CompletionTextGenerator({
         contextWindowSize: 4096, // Llama 2 context window size
         maxGenerationTokens: 512,
       })

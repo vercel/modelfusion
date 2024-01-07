@@ -25,6 +25,7 @@
     "Ollama",
     "openai",
     "openaicompatible",
+    "openhermes",
     "Parallelizable",
     "reprioritize",
     "reprioritizing",

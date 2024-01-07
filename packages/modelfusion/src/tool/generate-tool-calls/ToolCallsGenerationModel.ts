@@ -13,7 +13,7 @@ export interface ToolCallsGenerationModel<
     prompt: PROMPT,
     options?: FunctionOptions
   ): PromiseLike<{
-    response: unknown;
+    rawResponse: unknown;
     text: string | null;
     toolCalls: Array<{ id: string; name: string; args: unknown }> | null;
     usage?: {

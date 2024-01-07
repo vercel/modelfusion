@@ -12,7 +12,7 @@ export interface SpeechGenerationStartedEvent
 export type SpeechGenerationFinishedEventResult =
   | {
       status: "success";
-      response: unknown;
+      rawResponse: unknown;
       value: Buffer;
     }
   | { status: "error"; error: unknown }

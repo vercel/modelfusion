@@ -35,7 +35,7 @@ export async function embedMany<VALUE>(
   options: FunctionOptions & { fullResponse: true }
 ): Promise<{
   embeddings: Vector[];
-  response: unknown;
+  rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
 export async function embedMany<VALUE>(
@@ -46,7 +46,7 @@ export async function embedMany<VALUE>(
   | Vector[]
   | {
       embeddings: Vector[];
-      response: unknown;
+      rawResponse: unknown;
       metadata: ModelCallMetadata;
     }
 > {
@@ -69,7 +69,7 @@ export async function embedMany<VALUE>(
       }
 
       // call the model for each group:
-      let responses: Array<{ response: unknown; embeddings: Vector[] }>;
+      let responses: Array<{ rawResponse: unknown; embeddings: Vector[] }>;
       if (model.isParallelizable) {
         responses = await Promise.all(
           valueGroups.map((valueGroup) =>
@@ -84,14 +84,14 @@ export async function embedMany<VALUE>(
         }
       }
 
-      const rawResponses = responses.map((response) => response.response);
+      const rawResponses = responses.map((response) => response.rawResponse);
       const embeddings: Array<Vector> = [];
       for (const response of responses) {
         embeddings.push(...response.embeddings);
       }
 
       return {
-        response: rawResponses,
+        rawResponse: rawResponses,
         extractedValue: embeddings,
       };
     },
@@ -100,7 +100,7 @@ export async function embedMany<VALUE>(
   return options?.fullResponse
     ? {
         embeddings: fullResponse.value,
-        response: fullResponse.response,
+        rawResponse: fullResponse.rawResponse,
         metadata: fullResponse.metadata,
       }
     : fullResponse.value;
@@ -134,7 +134,7 @@ export async function embed<VALUE>(
   options: FunctionOptions & { fullResponse: true }
 ): Promise<{
   embedding: Vector;
-  response: unknown;
+  rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
 export async function embed<VALUE>(
@@ -142,7 +142,8 @@ export async function embed<VALUE>(
   value: VALUE,
   options?: FunctionOptions & { fullResponse?: boolean }
 ): Promise<
-  Vector | { embedding: Vector; response: unknown; metadata: ModelCallMetadata }
+  | Vector
+  | { embedding: Vector; rawResponse: unknown; metadata: ModelCallMetadata }
 > {
   const fullResponse = await executeStandardCall({
     functionType: "embed",
@@ -152,7 +153,7 @@ export async function embed<VALUE>(
     generateResponse: async (options) => {
       const result = await model.doEmbedValues([value], options);
       return {
-        response: result.response,
+        rawResponse: result.rawResponse,
         extractedValue: result.embeddings[0],
       };
     },
@@ -161,7 +162,7 @@ export async function embed<VALUE>(
   return options?.fullResponse
     ? {
         embedding: fullResponse.value,
-        response: fullResponse.response,
+        rawResponse: fullResponse.rawResponse,
         metadata: fullResponse.metadata,
       }
     : fullResponse.value;

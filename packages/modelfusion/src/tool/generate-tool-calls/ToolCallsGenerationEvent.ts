@@ -11,7 +11,7 @@ export interface ToolCallsGenerationStartedEvent
 export type ToolCallsGenerationFinishedEventResult =
   | {
       status: "success";
-      response: unknown;
+      rawResponse: unknown;
       value: unknown;
 
       usage?: {
