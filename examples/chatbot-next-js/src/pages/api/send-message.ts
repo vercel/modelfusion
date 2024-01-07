@@ -29,7 +29,7 @@ const gpt35turboModel = openai.ChatTextGenerator({
 
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const llama2Model = llamacpp.TextGenerator({
+const llama2Model = llamacpp.CompletionTextGenerator({
   promptTemplate: llamacpp.prompt.Llama2,
   contextWindowSize: 4096, // Llama 2 context window size
   maxGenerationTokens: 512,

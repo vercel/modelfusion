@@ -8,7 +8,7 @@ async function main() {
   });
 
   const textStream = await streamText(
-    llamacpp.TextGenerator({
+    llamacpp.CompletionTextGenerator({
       maxGenerationTokens: 1024,
       temperature: 0,
     }),

@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- **breaking change**: renamed `llamacpp.TextGenerator` to `llamacpp.CompletionTextGenerator`.
+
 ## v0.117.0 - 2024-01-06
 
 ### Added

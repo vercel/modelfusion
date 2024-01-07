@@ -3,7 +3,7 @@ import { llamacpp, streamText } from "modelfusion";
 async function main() {
   const textStream = await streamText(
     llamacpp
-      .TextGenerator({
+      .CompletionTextGenerator({
         // run https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
         promptTemplate: llamacpp.prompt.Llama2,
         contextWindowSize: 4096, // Llama 2 context window size

@@ -4,7 +4,7 @@ import { llamacpp, streamText } from "modelfusion";
 async function main() {
   const textStream = await streamText(
     llamacpp
-      .TextGenerator({
+      .CompletionTextGenerator({
         promptTemplate: llamacpp.prompt.Mistral,
         maxGenerationTokens: 512,
       })

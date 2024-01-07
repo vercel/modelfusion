@@ -13,7 +13,7 @@ async function main() {
     (input, options) =>
       generateText(
         llamacpp
-          .TextGenerator({
+          .CompletionTextGenerator({
             // run https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
             promptTemplate: llamacpp.prompt.Llama2,
             temperature: 0.7,

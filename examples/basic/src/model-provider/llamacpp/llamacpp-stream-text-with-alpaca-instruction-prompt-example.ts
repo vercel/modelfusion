@@ -4,7 +4,7 @@ import { AlpacaPrompt, llamacpp, streamText } from "modelfusion";
 async function main() {
   const textStream = await streamText(
     llamacpp
-      .TextGenerator({
+      .CompletionTextGenerator({
         contextWindowSize: 2048, // context window size of Chronos-13B-v2
         maxGenerationTokens: 1024,
       })

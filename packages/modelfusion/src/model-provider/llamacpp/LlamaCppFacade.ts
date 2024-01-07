@@ -19,7 +19,7 @@ export function Api(settings: PartialBaseUrlPartsApiConfigurationOptions) {
   return new LlamaCppApiConfiguration(settings);
 }
 
-export function TextGenerator<CONTEXT_WINDOW_SIZE extends number>(
+export function CompletionTextGenerator<CONTEXT_WINDOW_SIZE extends number>(
   settings: LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE> = {}
 ) {
   return new LlamaCppCompletionModel<CONTEXT_WINDOW_SIZE>(settings);

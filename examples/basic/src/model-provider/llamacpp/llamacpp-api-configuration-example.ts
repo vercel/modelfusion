@@ -2,7 +2,7 @@ import { llamacpp, streamText } from "modelfusion";
 
 async function main() {
   const textStream = await streamText(
-    llamacpp.TextGenerator({
+    llamacpp.CompletionTextGenerator({
       // Custom API configuration:
       api: llamacpp.Api({
         baseUrl: {

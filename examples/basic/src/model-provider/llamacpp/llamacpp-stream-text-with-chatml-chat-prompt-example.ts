@@ -3,7 +3,7 @@ import { llamacpp, streamText } from "modelfusion";
 async function main() {
   const textStream = await streamText(
     llamacpp
-      .TextGenerator({
+      .CompletionTextGenerator({
         // run https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp
         promptTemplate: llamacpp.prompt.ChatML,
         contextWindowSize: 4096,

@@ -3,7 +3,7 @@ import { generateText, llamacpp } from "modelfusion";
 async function main() {
   const { text, finishReason } = await generateText(
     llamacpp
-      .TextGenerator({
+      .CompletionTextGenerator({
         // run a Llama2 model in llama.cpp
         promptTemplate: llamacpp.prompt.Llama2,
         maxGenerationTokens: 200,

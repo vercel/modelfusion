@@ -427,7 +427,7 @@ const text = await generateText(
 // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-GGUF with llama.cpp
 const text = await generateText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       contextWindowSize: 4096, // Llama 2 context window size
       maxGenerationTokens: 1000,
     })

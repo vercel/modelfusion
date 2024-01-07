@@ -62,7 +62,7 @@ const api = llamacpp.Api({
   // ...
 });
 
-const model = llamacpp.TextGenerator({
+const model = llamacpp.CompletionTextGenerator({
   api,
   // ...
 });
@@ -83,7 +83,7 @@ import { llamacpp, generateText } from "modelfusion";
 
 const text = await generateText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       maxGenerationTokens: 256,
     })
     .withTextPrompt(),
@@ -102,7 +102,7 @@ import { llamacpp, streamText } from "modelfusion";
 
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       maxGenerationTokens: 1024,
       temperature: 0.7,
     })
@@ -131,7 +131,7 @@ import { z } from "zod";
 
 const structure = await generateStructure(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
       maxGenerationTokens: 1024,
       temperature: 0,
@@ -174,7 +174,7 @@ import { z } from "zod";
 
 const structureStream = await streamStructure(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
       maxGenerationTokens: 1024,
       temperature: 0,
@@ -251,7 +251,7 @@ You can set the context window size on the model by passing it as a parameter to
 ```ts
 import { llamacpp } from "modelfusion";
 
-const model = llamacpp.TextGenerator({
+const model = llamacpp.CompletionTextGenerator({
   // Assuming Llama2 7B model context window size of 4096 tokens.
   // Change to the context window size of the model you are using:
   contextWindowSize: 4096,
@@ -286,7 +286,7 @@ You can use [Llama2Prompt.text()](/api/namespaces/Llama2Prompt#text) to create b
 ```ts
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // ...
     })
     .withTextPromptTemplate(Llama2Prompt.text()),
@@ -301,7 +301,7 @@ You can use [Llama2Prompt.instruction()](/api/namespaces/Llama2Prompt#instructio
 ```ts
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // ...
     })
     .withTextPromptTemplate(Llama2Prompt.instruction()),
@@ -319,7 +319,7 @@ You can use [Llama2Prompt.chat()](/api/namespaces/Llama2Prompt#chat) to create c
 ```ts
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // ...
     })
     .withTextPromptTemplate(Llama2Prompt.chat()),
@@ -354,7 +354,7 @@ You can use [ChatMLPrompt.text()](/api/namespaces/ChatMLPrompt#text) to create b
 ```ts
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // ...
     })
     .withTextPromptTemplate(ChatMLPrompt.text()),
@@ -369,7 +369,7 @@ You can use [ChatMLPrompt.instruction()](/api/namespaces/ChatMLPrompt#instructio
 ```ts
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // ...
     })
     .withTextPromptTemplate(ChatMLPrompt.instruction()),
@@ -386,7 +386,7 @@ You can use [ChatMLPrompt.chat()](/api/namespaces/ChatMLPrompt#chat) to create c
 ```ts
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // ...
     })
     .withTextPromptTemplate(ChatMLPrompt.chat()),
@@ -420,7 +420,7 @@ You can use [AlpacaPrompt.text()](/api/namespaces/AlpacaPrompt#text) to create b
 ```ts
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // ...
     })
     .withTextPromptTemplate(AlpacaPrompt.text()),
@@ -439,7 +439,7 @@ Setting the system property overrides the Alpaca system prompt and can impact th
 ```ts
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // ...
     })
     .withTextPromptTemplate(AlpacaPrompt.instruction()),
@@ -465,7 +465,7 @@ Setting the system property overrides the Vicuna system prompt and can impact th
 ```ts
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       // ...
     })
     .withTextPromptTemplate(VicunaPrompt.chat()),

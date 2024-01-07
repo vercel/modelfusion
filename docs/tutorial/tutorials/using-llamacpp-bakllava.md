@@ -49,7 +49,7 @@ import { LlamaCppBakLLaVA1Prompt, llamacpp, streamText } from "modelfusion";
 
 const textStream = await streamText(
   llamacpp
-    .TextGenerator({
+    .CompletionTextGenerator({
       maxGenerationTokens: 1024,
       temperature: 0,
     })
