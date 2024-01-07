@@ -12,7 +12,7 @@ export type StructureFromTextPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> = {
 
   extractStructure: (response: string) => unknown;
 
-  withJsonOutput?: ({
+  withJsonOutput?({
     model,
     schema,
   }: {
@@ -22,7 +22,7 @@ export type StructureFromTextPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> = {
       ): typeof model;
     };
     schema: Schema<unknown> & JsonSchemaProducer;
-  }) => typeof model;
+  }): typeof model;
 };
 
 export type FlexibleStructureFromTextPromptTemplate<
@@ -43,7 +43,7 @@ export type FlexibleStructureFromTextPromptTemplate<
     }
   ) => TextStreamingModel<INTERMEDIATE_PROMPT>;
 
-  withJsonOutput?: ({
+  withJsonOutput?({
     model,
     schema,
   }: {
@@ -53,5 +53,5 @@ export type FlexibleStructureFromTextPromptTemplate<
       ): typeof model;
     };
     schema: Schema<unknown> & JsonSchemaProducer;
-  }) => typeof model;
+  }): typeof model;
 };
