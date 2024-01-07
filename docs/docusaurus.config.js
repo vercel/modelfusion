@@ -95,6 +95,7 @@ const config = {
 
         // docusaurus options:
         out: ".",
+        includeExtension: false, // fixes error with Docusaurus 3
         sidebar: {
           categoryLabel: "API Reference",
           collapsed: false,
