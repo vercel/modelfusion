@@ -38,7 +38,7 @@ You can use various GGUF models with llama.cpp.
 
 Server start example: `./server -m models/llama-2-7b-chat.GGUF.q4_0.bin` (Mac)
 
-## Example Multi-modal Models
+### Example Multi-modal Models
 
 For running multi-modal models, you need to specify the projection with the `--mmproj` flag.
 
