@@ -1,4 +1,4 @@
-import { generateText, llamacpp, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 
 // prompt from https://erichartford.com/dolphin-25-mixtral-8x7b
 const dolphinSystemPrompt =
