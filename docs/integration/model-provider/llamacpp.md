@@ -289,3 +289,11 @@ Specific [prompt templates for Llama.cpp](/api/namespaces/llamacpp.prompt) model
 - `llamacpp.prompt.NeuralChat`: NeuralChat prompt template.
 - `llamacpp.prompt.Mistral`: Mistral prompt template.
 - `llamacpp.prompt.BakLLaVA1`: BakLLaVA 1 prompt template. Vision prompt that supports images.
+
+## Links & Resources
+
+- [llama.cpp GitHub repository](https://github.com/ggerganov/llama.cpp)
+- [llama.cpp server docs](https://github.com/ggerganov/llama.cpp/tree/master/examples/server)
+- [llama.cpp GBNF Grammars](https://github.com/ggerganov/llama.cpp/tree/master/grammars)
+- [HuggingFace GGUF models](https://huggingface.co/models?sort=trending&search=gguf)
+- [Next.js Chatbot starter for llama.cpp](https://github.com/lgrammel/modelfusion-llamacpp-nextjs-starter)
