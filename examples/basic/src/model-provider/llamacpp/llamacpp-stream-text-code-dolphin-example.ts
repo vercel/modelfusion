@@ -26,7 +26,7 @@ async function main() {
       system: dolphinSystemPrompt,
       instruction:
         "Write a React page with React hooks for a simple calculator app. It should support addition, subtraction, multiplication, and division.",
-      responsePrefix: "Here is the program:\n```javascript",
+      responsePrefix: "Here is the program:\n```typescript\n",
     }
   );
 
