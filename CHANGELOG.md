@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.119.1 - 2024-01-08
+
+### Fixed
+
+- Incorrect export. Thanks [@mloenow](https://github.com/mloenow) for the fix!
+
 ## v0.119.0 - 2024-01-07
 
 ### Added
