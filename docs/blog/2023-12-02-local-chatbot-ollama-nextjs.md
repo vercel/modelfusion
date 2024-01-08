@@ -114,9 +114,9 @@ Navigate to the `src/app/api/chat/` directory in your project and create a new f
 The API route requires several important imports from the `ai`, `modelfusion`, and `@modelfusion/vercel-ai` libraries. These imports bring in necessary classes and functions for streaming AI responses and processing chat messages.
 
 ```ts
-import { ModelFusionTextStream } from "@modelfusion/vercel-ai";
+import { ModelFusionTextStream, asChatMessages } from "@modelfusion/vercel-ai";
 import { Message, StreamingTextResponse } from "ai";
-import { ChatMLPrompt, ChatMessage, ollama, streamText } from "modelfusion";
+import { ollama, streamText } from "modelfusion";
 ```
 
 We will use the [edge runtime](https://edge-runtime.vercel.app/):
@@ -136,22 +136,13 @@ export async function POST(req: Request) {
 }
 ```
 
-We initialize a ModelFusion text generation model for calling Ollama and using the OpenHermes 2.5 Mistral model. We set the `maxGenerationTokens` to `-1` to allow for infinite generation, and the `temperature` to `0` to disable randomness. The `raw` option is set to `true`, because we apply the ChatML prompt template (for the OpenHermes model) to the messages using ModelFusion:
+We initialize a ModelFusion text generation model for calling the Ollama chat API with the OpenHermes 2.5 Mistral model. The `.withChatPrompt()` method creates an adapted model for chat prompts:
 
 ```ts
 const model = ollama
-  .CompletionTextGenerator({
-    model: "openhermes2.5-mistral",
-    maxGenerationTokens: -1, // infinite generation
-    temperature: 0,
-    raw: true, // use raw inputs and map to prompt template below
-  })
-  .withPromptTemplate(ChatMLPrompt.chat()); // ChatML prompt
+  .ChatTextGenerator({ model: "openhermes2.5-mistral" })
+  .withChatPrompt();
 ```
-
-:::note
-Different AI models use other prompt templates. The prompt template for a given model is often found in the model card. Using an incorrect prompt template can lead to unexpected results because models are specifically trained to work with a specific prompt template.
-:::
 
 Next, we create a [ModelFusion chat prompt](https://modelfusion.dev/guide/function/generate-text#chat-prompts) from the AI SDK messages:
 
@@ -160,12 +151,11 @@ const prompt = {
   system: "You are an AI chatbot. Follow the user's instructions carefully.",
 
   // map Vercel AI SDK Message to ModelFusion ChatMessage:
-  messages: messages.filter(
-    // only user and assistant roles are supported:
-    (message) => message.role === "user" || message.role === "assistant"
-  ) as ChatMessage[],
+  messages: asChatMessages(messages),
 };
 ```
+
+The `asChatMessages` helper converts the messages from the Vercel AI SDK to ModelFusion chat messages.
 
 With the prompt and the model, you can then use ModelFusion to call Ollama and generate a streaming response:
 
