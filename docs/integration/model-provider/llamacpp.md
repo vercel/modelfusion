@@ -76,7 +76,7 @@ const model = llamacpp.CompletionTextGenerator({
 
 [LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
 
-Consider [mapping the prompt to the prompt template](#prompt-formats) that your model was trained on.
+Consider [mapping the prompt to the prompt template](#prompt-templates) that your model was trained on.
 
 ```ts
 import { llamacpp, generateText } from "modelfusion";
@@ -96,7 +96,7 @@ const text = await generateText(
 
 [LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
 
-Consider [mapping the prompt to the prompt template](#prompt-formats) that your model was trained on.
+Consider [mapping the prompt to the prompt template](#prompt-templates) that your model was trained on.
 
 ```ts
 import { llamacpp, streamText } from "modelfusion";
