@@ -1,4 +1,7 @@
-import { FunctionOptions } from "../core/FunctionOptions.js";
+import {
+  FunctionCallOptions,
+  FunctionOptions,
+} from "../core/FunctionOptions.js";
 import { JsonSchemaProducer } from "../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../core/schema/Schema.js";
 import { ToolDefinition } from "./ToolDefinition.js";
@@ -37,7 +40,7 @@ export class Tool<NAME extends string, PARAMETERS, RESULT>
    */
   readonly execute: (
     args: PARAMETERS,
-    options?: FunctionOptions
+    options: FunctionCallOptions
   ) => PromiseLike<RESULT>;
 
   constructor({

@@ -82,7 +82,7 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
     functionType: "execute-tool" as const,
 
     callId: `call-${createId()}`,
-    parentCallId: options?.parentCallId,
+    parentCallId: options?.callId,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
@@ -101,11 +101,12 @@ async function doExecuteTool<TOOL extends Tool<any, any, any>>(
 
   const result = await runSafe(() =>
     tool.execute(args, {
+      functionType: metadata.functionType,
+      callId: metadata.callId,
       functionId: options?.functionId,
       logging: options?.logging,
       observers: options?.observers,
       run,
-      parentCallId: metadata.callId,
     })
   );
 

@@ -70,7 +70,7 @@ export async function executeStreamCall<
     functionType,
 
     callId: `call-${createId()}`,
-    parentCallId: options?.parentCallId,
+    parentCallId: options?.callId,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
@@ -91,7 +91,7 @@ export async function executeStreamCall<
 
   const result = await runSafe(async () => {
     const deltaIterable = await startStream({
-      functionType: startMetadata.functionType,
+      functionType,
       functionId: options?.functionId,
       callId: startMetadata.callId,
       logging: options?.logging,

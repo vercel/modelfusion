@@ -1,6 +1,6 @@
 import { nanoid as createId } from "nanoid";
 import { FunctionEventSource } from "./FunctionEventSource.js";
-import { FunctionOptions } from "./FunctionOptions.js";
+import { FunctionCallOptions, FunctionOptions } from "./FunctionOptions.js";
 import { getLogFormat } from "./ModelFusionConfiguration.js";
 import { getFunctionObservers } from "./ModelFusionConfiguration.js";
 import { AbortError } from "./api/AbortError.js";
@@ -21,7 +21,7 @@ export async function executeFunctionCall<VALUE>({
   options?: FunctionOptions;
   input: unknown;
   functionType: FunctionEvent["functionType"];
-  execute: (options?: FunctionOptions) => PromiseLike<VALUE>;
+  execute: (options: FunctionCallOptions) => PromiseLike<VALUE>;
   inputPropertyName?: string;
   outputPropertyName?: string;
 }): Promise<VALUE> {
@@ -43,7 +43,7 @@ export async function executeFunctionCall<VALUE>({
     functionType,
 
     callId: `call-${createId()}`,
-    parentCallId: options?.parentCallId,
+    parentCallId: options?.callId,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
@@ -62,11 +62,12 @@ export async function executeFunctionCall<VALUE>({
 
   const result = await runSafe(() =>
     execute({
+      functionType,
       functionId: options?.functionId,
+      callId: startMetadata.callId,
       logging: options?.logging,
       observers: options?.observers,
       run,
-      parentCallId: startMetadata.callId,
     })
   );
 

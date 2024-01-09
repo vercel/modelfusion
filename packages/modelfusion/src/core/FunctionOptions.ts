@@ -37,15 +37,20 @@ export type FunctionOptions = {
 
   /**
    * Unique identifier of the call id of the parent function. Used in events and logging.
+   *
+   * It has the same name as the `callId` in `FunctionCallOptions` to allow for easy
+   * propagation of the call id.
+   *
+   * However, in the `FunctionOptions`, it is the call ID for the parent call, and it is optional.
    */
-  parentCallId?: string | undefined;
+  callId?: string | undefined;
 };
 
 /**
  * Extended options that are passed to models when functions are called. They are passed
  * into e.g. API providers to create custom headers.
  */
-export type FunctionCallOptions = Omit<FunctionOptions, "parentCallId"> & {
+export type FunctionCallOptions = Omit<FunctionOptions, "callId"> & {
   functionType: string;
   callId: string;
 };

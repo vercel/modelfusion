@@ -62,7 +62,7 @@ export async function executeStandardCall<
     functionType,
 
     callId: `call-${createId()}`,
-    parentCallId: options?.parentCallId,
+    parentCallId: options?.callId,
     runId: run?.runId,
     sessionId: run?.sessionId,
     userId: run?.userId,
@@ -83,7 +83,7 @@ export async function executeStandardCall<
 
   const result = await runSafe(() =>
     generateResponse({
-      functionType: startMetadata.functionType,
+      functionType,
       functionId: options?.functionId,
       callId: startMetadata.callId,
       logging: options?.logging,
