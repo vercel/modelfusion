@@ -66,21 +66,32 @@ const detailedObjectObserver: FunctionObserver = {
         return obj;
       }
 
+      if (Array.isArray(obj)) {
+        return obj.map((item) => cleanObject(item));
+      }
+
       if (obj !== null && typeof obj === "object") {
         return Object.fromEntries(
           Object.entries(obj)
-            .filter(
-              (
-                [_, v] // eslint-disable-line @typescript-eslint/no-unused-vars
-              ) =>
-                v !== undefined && // filter all undefined properties
-                !(v instanceof Buffer) // remove all buffers
-            )
-            .map(([k, v]) => [k, cleanObject(v)])
-            .filter(([_, v]) => v !== undefined) // eslint-disable-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            .map(([k, v]) => {
+              if (v === undefined) {
+                return [k, undefined];
+              } else if (v instanceof Buffer) {
+                return [k, "omitted<Buffer>"];
+              } else if (
+                Array.isArray(v) &&
+                v.length > 20 &&
+                v.every((v) => typeof v === "number")
+              ) {
+                return [k, "omitted<Array<number>>"];
+              } else {
+                return [k, cleanObject(v)];
+              }
+            })
+            .filter(([_, v]) => v !== undefined)
         );
       }
-
       return obj;
     }
 
