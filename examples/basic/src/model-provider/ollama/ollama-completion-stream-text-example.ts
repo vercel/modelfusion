@@ -5,10 +5,11 @@ async function main() {
     ollama
       .CompletionTextGenerator({
         model: "mistral",
+        promptTemplate: ollama.prompt.Mistral,
+        raw: true, // required when using custom prompt template
         maxGenerationTokens: 500,
-        raw: true, // use prompt template below
       })
-      .withTextPromptTemplate(MistralInstructPrompt.text()),
+      .withTextPrompt(),
 
     "Write a short story about a robot learning to love:\n\n"
   );

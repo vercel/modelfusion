@@ -1,9 +1,4 @@
-import {
-  MistralInstructPrompt,
-  modelfusion,
-  ollama,
-  useTools,
-} from "modelfusion";
+import { modelfusion, ollama, useTools } from "modelfusion";
 import { mistralMultiToolCallPromptTemplate } from "../../tool/prompts/mistral";
 import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
@@ -15,11 +10,12 @@ async function main() {
     ollama
       .CompletionTextGenerator({
         model: "mixtral",
+        promptTemplate: ollama.prompt.Mistral,
+        raw: true, // required when using custom prompt template
         temperature: 0,
-        raw: true, // use prompt template below
         stopSequences: ["\n\n"], // prevent infinite generation
       })
-      .withTextPromptTemplate(MistralInstructPrompt.instruction())
+      .withInstructionPrompt()
       .asToolCallsOrTextGenerationModel(mistralMultiToolCallPromptTemplate),
 
     [calculator, weather],

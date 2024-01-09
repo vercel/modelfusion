@@ -1,9 +1,8 @@
 import {
-  ChatMLPrompt,
-  zodSchema,
   jsonStructurePrompt,
   ollama,
   streamStructure,
+  zodSchema,
 } from "modelfusion";
 import { z } from "zod";
 
@@ -12,13 +11,13 @@ async function main() {
     ollama
       .CompletionTextGenerator({
         model: "openhermes2.5-mistral",
+        promptTemplate: ollama.prompt.ChatML,
+        raw: true, // required when using custom prompt template
         maxGenerationTokens: 1024,
         temperature: 0,
         format: "json",
-        raw: true, // use prompt template below
         stopSequences: ["\n\n"], // prevent infinite generation
       })
-      .withTextPromptTemplate(ChatMLPrompt.instruction()) // needed for jsonStructurePrompt.text()
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
     zodSchema(

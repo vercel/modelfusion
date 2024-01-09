@@ -36,3 +36,5 @@ export {
   OllamaChatMessage as ChatMessage,
   OllamaChatPrompt as ChatPrompt,
 } from "./OllamaChatModel.js";
+
+export * as prompt from "./OllamaCompletionPrompt.js";

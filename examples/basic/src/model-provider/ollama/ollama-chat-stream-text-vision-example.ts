@@ -8,14 +8,19 @@ async function main() {
   });
 
   const textStream = await streamText(
-    ollama.CompletionTextGenerator({
-      model: "bakllava",
-      maxGenerationTokens: 1024,
-      temperature: 0,
-    }),
+    ollama
+      .ChatTextGenerator({
+        model: "bakllava",
+        maxGenerationTokens: 1024,
+        temperature: 0,
+      })
+      .withInstructionPrompt(),
+
     {
-      prompt: "Describe the image in detail",
-      images: [image],
+      instruction: [
+        { type: "text", text: "Describe the image in detail:\n\n" },
+        { type: "image", base64Image: image, mimeType: "image/png" },
+      ],
     }
   );
 

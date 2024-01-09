@@ -48,7 +48,7 @@ import { ollama, generateText } from "modelfusion";
 
 const text = await generateText(
   ollama.CompletionTextGenerator({
-    model: "mistral",
+    model: "mistral:text", // mistral base model without instruct fine-tuning
     temperature: 0.7,
     maxGenerationTokens: 120,
   }),
@@ -56,43 +56,23 @@ const text = await generateText(
 );
 ```
 
-The Ollama prompt also supports base64-encoded png and jpeg images:
+When using the Ollama completion API, you can use the `raw` mode and set a prompt template on the model.
+This enables you to use the `withChatPrompt`, `withInstructionPrompt` and `withTextPrompt` helpers.
 
 ```ts
-import { ollama, generateText } from "modelfusion";
-
-const image = fs.readFileSync(path.join("data", "comic-mouse.png"), {
-  encoding: "base64",
-});
-
-const text = await generateText(
-  ollama.CompletionTextGenerator({
-    model: "bakllava",
-    maxGenerationTokens: 1024,
-    temperature: 0,
-  }),
-  {
-    prompt: "Describe the image in detail",
-    images: [image],
-  }
-);
-```
-
-If you want a simpler text prompt, you can use the `withTextPrompt` helper:
-
-```ts
-import { ollama, generateText } from "modelfusion";
+import { generateText, ollama } from "modelfusion";
 
 const text = await generateText(
   ollama
     .CompletionTextGenerator({
       model: "mistral",
-      temperature: 0.7,
+      promptTemplate: ollama.prompt.Mistral,
+      raw: true, // required when using custom prompt template
       maxGenerationTokens: 120,
     })
     .withTextPrompt(),
 
-  "Write a short story about a robot learning to love:\n\n"
+  "Write a short story about a robot learning to love."
 );
 ```
 
@@ -116,6 +96,31 @@ const text = await generateText(
       content: "Write a short story about a robot learning to love:",
     },
   ]
+);
+```
+
+The Ollama prompt also supports base64-encoded png and jpeg images, e.g. with an instruction prompt:
+
+```ts
+import { ollama, generateText } from "modelfusion";
+
+const image = fs.readFileSync(path.join("data", "comic-mouse.png"), {
+  encoding: "base64",
+});
+
+const text = await generateText(
+  openai
+    .ChatTextGenerator({
+      model: "gpt-4-vision-preview",
+      maxGenerationTokens: 1000,
+    })
+    .withInstructionPrompt(),
+  {
+    instruction: [
+      { type: "text", text: "Describe the image in detail:\n\n" },
+      { type: "image", base64Image: image, mimeType: "image/png" },
+    ],
+  }
 );
 ```
 
@@ -147,10 +152,12 @@ const textStream = await streamText(
   ollama
     .CompletionTextGenerator({
       model: "mistral",
-      temperature: 0.7,
+      promptTemplate: ollama.prompt.Mistral,
+      raw: true, // required when using custom prompt template
       maxGenerationTokens: 500,
     })
     .withTextPrompt(),
+
   "Write a short story about a robot learning to love:\n\n"
 );
 

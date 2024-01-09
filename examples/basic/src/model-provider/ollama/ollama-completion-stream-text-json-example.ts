@@ -5,11 +5,12 @@ async function main() {
     ollama
       .CompletionTextGenerator({
         model: "mistral",
+        promptTemplate: ollama.prompt.Mistral,
+        raw: true, // required when using custom prompt template
         maxGenerationTokens: 500,
         format: "json",
-        raw: true, // use prompt template below
       })
-      .withTextPromptTemplate(MistralInstructPrompt.text()),
+      .withTextPrompt(),
 
     "Generate 3 character descriptions for a fantasy role playing game. " +
       "Respond using JSON."

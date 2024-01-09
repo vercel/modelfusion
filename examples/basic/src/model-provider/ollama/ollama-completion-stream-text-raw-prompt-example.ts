@@ -3,7 +3,7 @@ import { ollama, streamText } from "modelfusion";
 async function main() {
   const textStream = await streamText(
     ollama.CompletionTextGenerator({
-      model: "mistral:text", // raw mistral model without instruct fine-tuning
+      model: "mistral:text", // mistral base model without instruct fine-tuning
       maxGenerationTokens: 500,
     }),
     { prompt: "Write a short story about a robot learning to love:\n\n" }

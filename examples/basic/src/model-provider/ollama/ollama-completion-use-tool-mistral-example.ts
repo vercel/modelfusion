@@ -1,22 +1,18 @@
 import { MathJsTool } from "@modelfusion/mathjs-tool";
-import {
-  MistralInstructPrompt,
-  jsonToolCallPrompt,
-  ollama,
-  useTool,
-} from "modelfusion";
+import { jsonToolCallPrompt, ollama, useTool } from "modelfusion";
 
 async function main() {
   const { tool, args, toolCall, result } = await useTool(
     ollama
       .CompletionTextGenerator({
         model: "mistral",
+        promptTemplate: ollama.prompt.Mistral,
+        raw: true, // required when using custom prompt template
         format: "json",
         temperature: 0,
-        raw: true, // use prompt template below
         stopSequences: ["\n\n"], // prevent infinite generation
       })
-      .withTextPromptTemplate(MistralInstructPrompt.instruction())
+      .withInstructionPrompt()
       .asToolCallGenerationModel(jsonToolCallPrompt.text()),
 
     new MathJsTool({ name: "calculator" }),

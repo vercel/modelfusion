@@ -8,12 +8,20 @@ import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { validateTypes } from "../../core/schema/validateTypes.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
+import {
+  FlexibleStructureFromTextPromptTemplate,
+  StructureFromTextPromptTemplate,
+} from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
+import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextStreamingModel,
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
+import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider.js";
 import {
   TextGenerationToolCallModel,
   ToolCallPromptTemplate,
@@ -22,6 +30,7 @@ import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/Tex
 import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate.js";
 import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
+import { Text } from "./OllamaCompletionPrompt.js";
 import { failedOllamaCallResponseHandler } from "./OllamaError.js";
 import { OllamaTextGenerationSettings } from "./OllamaTextGenerationSettings.js";
 
@@ -61,6 +70,11 @@ export interface OllamaCompletionModelSettings<
 
   system?: string;
   context?: number[];
+
+  /**
+   * Prompt template provider that is used when calling `.withTextPrompt()`, `withInstructionPrompt()` or `withChatPrompt()`.
+   */
+  promptTemplate?: TextGenerationPromptTemplateProvider<OllamaCompletionPrompt>;
 }
 
 export class OllamaCompletionModel<
@@ -226,6 +240,22 @@ export class OllamaCompletionModel<
     return chunk.done === true ? undefined : chunk.response;
   }
 
+  asStructureGenerationModel<INPUT_PROMPT, OllamaCompletionPrompt>(
+    promptTemplate:
+      | StructureFromTextPromptTemplate<INPUT_PROMPT, OllamaCompletionPrompt>
+      | FlexibleStructureFromTextPromptTemplate<INPUT_PROMPT, unknown>
+  ) {
+    return "adaptModel" in promptTemplate
+      ? new StructureFromTextStreamingModel({
+          model: promptTemplate.adaptModel(this),
+          template: promptTemplate,
+        })
+      : new StructureFromTextStreamingModel({
+          model: this as TextStreamingModel<OllamaCompletionPrompt>,
+          template: promptTemplate,
+        });
+  }
+
   asToolCallGenerationModel<INPUT_PROMPT>(
     promptTemplate: ToolCallPromptTemplate<INPUT_PROMPT, OllamaCompletionPrompt>
   ) {
@@ -247,6 +277,10 @@ export class OllamaCompletionModel<
     });
   }
 
+  private get promptTemplateProvider(): TextGenerationPromptTemplateProvider<OllamaCompletionPrompt> {
+    return this.settings.promptTemplate ?? Text;
+  }
+
   withJsonOutput(): this {
     return this;
   }
@@ -257,39 +291,25 @@ export class OllamaCompletionModel<
     OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
     this
   > {
-    return this.withPromptTemplate({
-      format(prompt: string) {
-        return { prompt };
-      },
-      stopSequences: [],
-    });
+    return this.withPromptTemplate(this.promptTemplateProvider.text());
   }
 
-  /**
-   * Maps the prompt for a text version of the Ollama completion prompt template (without image support).
-   */
-  withTextPromptTemplate<INPUT_PROMPT>(
-    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, string>
-  ): PromptTemplateTextStreamingModel<
-    INPUT_PROMPT,
-    string,
+  withInstructionPrompt(): PromptTemplateTextStreamingModel<
+    InstructionPrompt,
+    OllamaCompletionPrompt,
     OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
-    PromptTemplateTextStreamingModel<
-      string,
-      OllamaCompletionPrompt,
-      OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
-      this
-    >
+    this
   > {
-    return new PromptTemplateTextStreamingModel({
-      model: this.withTextPrompt().withSettings({
-        stopSequences: [
-          ...(this.settings.stopSequences ?? []),
-          ...promptTemplate.stopSequences,
-        ],
-      }),
-      promptTemplate,
-    });
+    return this.withPromptTemplate(this.promptTemplateProvider.instruction());
+  }
+
+  withChatPrompt(): PromptTemplateTextStreamingModel<
+    ChatPrompt,
+    OllamaCompletionPrompt,
+    OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>,
+    this
+  > {
+    return this.withPromptTemplate(this.promptTemplateProvider.chat());
   }
 
   withPromptTemplate<INPUT_PROMPT>(

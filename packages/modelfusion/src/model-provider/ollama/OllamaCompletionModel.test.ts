@@ -6,13 +6,13 @@ import { zodSchema } from "../../core/schema/ZodSchema.js";
 import { jsonStructurePrompt } from "../../model-function/generate-structure/jsonStructurePrompt.js";
 import { streamStructure } from "../../model-function/generate-structure/streamStructure.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
-import * as TextPrompt from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
 import { streamText } from "../../model-function/generate-text/streamText.js";
 import { JsonTestServer } from "../../test/JsonTestServer.js";
 import { StreamingTestServer } from "../../test/StreamingTestServer.js";
 import { arrayFromAsync } from "../../test/arrayFromAsync.js";
 import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
 import { OllamaCompletionModel } from "./OllamaCompletionModel.js";
+import { Text } from "./OllamaCompletionPrompt.js";
 
 describe("generateText", () => {
   const server = new JsonTestServer("http://127.0.0.1:11434/api/generate");
@@ -128,11 +128,10 @@ describe("streamStructure", () => {
     const stream = await streamStructure(
       new OllamaCompletionModel({
         model: "mistral:text",
+        promptTemplate: Text,
         format: "json",
         raw: true,
-      })
-        .withTextPromptTemplate(TextPrompt.instruction())
-        .asStructureGenerationModel(jsonStructurePrompt.text()),
+      }).asStructureGenerationModel(jsonStructurePrompt.text()),
 
       zodSchema(z.object({ name: z.string() })),
       "generate a name"
