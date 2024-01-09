@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.121.0 - 2024-01-09
+
+### Added
+
+- Synthia prompt template
+
+### Changed
+
+- **breaking change**: Renamed `parentCallId` function parameter to `callId` to enable options pass-through.
+- Better output filtering for `detailed-object` log format (e.g. via `modelfusion.setLogFormat("detailed-object")`)
+
 ## v0.120.0 - 2024-01-09
 
 ### Added
