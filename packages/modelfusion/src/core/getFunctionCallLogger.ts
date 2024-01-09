@@ -89,6 +89,7 @@ const detailedObjectObserver: FunctionObserver = {
                 return [k, cleanObject(v)];
               }
             })
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             .filter(([_, v]) => v !== undefined)
         );
       }
