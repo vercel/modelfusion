@@ -5,6 +5,7 @@ import * as llama2Prompt from "../../model-function/generate-text/prompt-templat
 import * as mistralPrompt from "../../model-function/generate-text/prompt-template/MistralInstructPromptTemplate.js";
 import * as neuralChatPrompt from "../../model-function/generate-text/prompt-template/NeuralChatPromptTemplate.js";
 import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider.js";
+import * as synthiaPrompt from "../../model-function/generate-text/prompt-template/SynthiaPromptTemplate.js";
 import * as textPrompt from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
 import * as vicunaPrompt from "../../model-function/generate-text/prompt-template/VicunaPromptTemplate.js";
 import { OllamaCompletionPrompt } from "./OllamaCompletionModel.js";
@@ -78,5 +79,7 @@ export const NeuralChat =
   asOllamaCompletionTextPromptTemplateProvider(neuralChatPrompt);
 export const Alpaca =
   asOllamaCompletionTextPromptTemplateProvider(alpacaPrompt);
+export const Synthia =
+  asOllamaCompletionTextPromptTemplateProvider(synthiaPrompt);
 export const Vicuna =
   asOllamaCompletionTextPromptTemplateProvider(vicunaPrompt);

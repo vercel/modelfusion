@@ -208,6 +208,8 @@ The following prompt templates are available for text prompts:
   for models that use the ChatML prompt template.
 - **NeuralChat**: [NeuralChatPrompt.text()](/api/namespaces/NeuralChatPrompt#text)
   for models that use the neural chat prompt template.
+- **Synthia**: [SynthiaPrompt.text()](/api/namespaces/SynthiaPrompt#text)
+  for models that use the Synthia chat prompt template.
 - **Mistral instruct**: [MistralInstructPrompt.text()](/api/namespaces/MistralInstructPrompt#text)
   for models that use the Mistral instruct prompt template.
 - **Basic text**: [TextPrompt.text()](/api/namespaces/TextPrompt#text)
@@ -284,6 +286,8 @@ The following prompt templates are available for instruction prompts:
   for models that use the ChatML prompt template.
 - **NeuralChat**: [NeuralChatPrompt.instruction()](/api/namespaces/NeuralChatPrompt#instruction)
   for models that use the neural chat prompt template.
+- **Synthia**: [SynthiaPrompt.instruction()](/api/namespaces/SynthiaPrompt#instruction)
+  for models that use the Synthia chat prompt template.
 - **Mistral instruct**: [MistralInstructPrompt.instruction()](/api/namespaces/MistralInstructPrompt#instruction)
   for models that use the Mistral instruct prompt template.
 - **Basic text**: [TextPrompt.instruction()](/api/namespaces/TextPrompt#instruction)
@@ -357,6 +361,8 @@ The following prompt templates are available for chat prompts:
   for models that use the ChatML prompt template.
 - **NeuralChat**: [NeuralChatPrompt.chat()](/api/namespaces/NeuralChatPrompt#chat)
   for models that use the neural chat prompt template.
+- **Synthia**: [SynthiaPrompt.chat()](/api/namespaces/SynthiaPrompt#chat)
+  for models that use the Synthia chat prompt template.
 - **Mistral instruct**: [MistralInstructPrompt.chat()](/api/namespaces/MistralInstructPrompt#chat)
   for models that use the Mistral instruct prompt template.
 - **Basic text**: [TextPrompt.chat()](/api/namespaces/TextPrompt#chat)

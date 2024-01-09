@@ -1,0 +1,42 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`chat prompt > should format prompt with system message and user-assistant-user messages 1`] = `
+"SYSTEM: you are a chatbot
+USER: 1st user message
+ASSISTANT: assistant message
+USER: 2nd user message
+ASSISTANT: "
+`;
+
+exports[`chat prompt > should format prompt with user message 1`] = `
+"USER: user message
+ASSISTANT: "
+`;
+
+exports[`chat prompt > should format prompt with user-assistant-user messages 1`] = `
+"USER: 1st user message
+ASSISTANT: assistant message
+USER: 2nd user message
+ASSISTANT: "
+`;
+
+exports[`instruction prompt > should format prompt with instruction 1`] = `
+"USER: instruction
+ASSISTANT: "
+`;
+
+exports[`instruction prompt > should format prompt with instruction and response prefix 1`] = `
+"USER: instruction
+ASSISTANT: response prefix"
+`;
+
+exports[`instruction prompt > should format prompt with system and instruction 1`] = `
+"SYSTEM: system
+USER: instruction
+ASSISTANT: "
+`;
+
+exports[`text prompt > should format prompt 1`] = `
+"USER: prompt
+ASSISTANT: "
+`;

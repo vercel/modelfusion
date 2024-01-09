@@ -28,25 +28,23 @@ export function text(): TextGenerationPromptTemplate<string, string> {
 /**
  * Formats an instruction prompt as a Vicuna prompt.
  */
-export function instruction(): TextGenerationPromptTemplate<
+export const instruction = (): TextGenerationPromptTemplate<
   InstructionPrompt,
   string
-> {
-  return {
-    format(prompt) {
-      let text =
-        prompt.system != null
-          ? `${prompt.system}\n\n`
-          : `${DEFAULT_SYSTEM_MESSAGE}\n\n`;
+> => ({
+  stopSequences: [`\nUSER:`],
+  format(prompt) {
+    let text =
+      prompt.system != null
+        ? `${prompt.system}\n\n`
+        : `${DEFAULT_SYSTEM_MESSAGE}\n\n`;
 
-      text += `USER: ${validateContentIsString(prompt.instruction, prompt)}\n`;
-      text += `ASSISTANT: `;
+    text += `USER: ${validateContentIsString(prompt.instruction, prompt)}\n`;
+    text += `ASSISTANT: `;
 
-      return text;
-    },
-    stopSequences: [`\nUSER:`],
-  };
-}
+    return text;
+  },
+});
 
 /**
  * Formats a chat prompt as a Vicuna prompt.

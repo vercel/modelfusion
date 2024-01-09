@@ -323,14 +323,15 @@ The prompt template that the model expected is usually described on the model ca
 
 Specific [prompt templates for Llama.cpp](/api/namespaces/llamacpp.prompt) models are available under `llamacpp.prompt`:
 
-- `llamacpp.prompt.Text`: Basic text prompt.
+- `llamacpp.prompt.Alpaca`: Alpaca prompt template.
+- `llamacpp.prompt.BakLLaVA1`: BakLLaVA 1 prompt template. Vision prompt that supports images.
 - `llamacpp.prompt.ChatML`: ChatML prompt template.
 - `llamacpp.prompt.Llama2`: Llama 2 prompt template.
-- `llamacpp.prompt.Vicuna`: Vicuna prompt template.
-- `llamacpp.prompt.Alpaca`: Alpaca prompt template.
-- `llamacpp.prompt.NeuralChat`: NeuralChat prompt template.
 - `llamacpp.prompt.Mistral`: Mistral prompt template.
-- `llamacpp.prompt.BakLLaVA1`: BakLLaVA 1 prompt template. Vision prompt that supports images.
+- `llamacpp.prompt.NeuralChat`: NeuralChat prompt template.
+- `llamacpp.prompt.Synthia`: Synthia prompt template.
+- `llamacpp.prompt.Text`: Basic text prompt (default).
+- `llamacpp.prompt.Vicuna`: Vicuna prompt template.
 
 ## Links & Resources
 

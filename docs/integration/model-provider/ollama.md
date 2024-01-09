@@ -245,13 +245,14 @@ The prompt template that the model expected is usually described on the model ca
 
 Specific [prompt templates for Ollama CompletionTextGenerator](/api/namespaces/ollama.prompt) models are available under `ollama.prompt`:
 
-- `ollama.prompt.Text`: Basic text prompt.
+- `ollama.prompt.Alpaca`: Alpaca prompt template.
 - `ollama.prompt.ChatML`: ChatML prompt template.
 - `ollama.prompt.Llama2`: Llama 2 prompt template.
-- `ollama.prompt.Vicuna`: Vicuna prompt template.
-- `ollama.prompt.Alpaca`: Alpaca prompt template.
-- `ollama.prompt.NeuralChat`: NeuralChat prompt template.
 - `ollama.prompt.Mistral`: Mistral prompt template.
+- `ollama.prompt.NeuralChat`: NeuralChat prompt template.
+- `ollama.prompt.Synthia`: Synthia prompt template.
+- `ollama.prompt.Text`: Basic text prompt (default).
+- `ollama.prompt.Vicuna`: Vicuna prompt template.
 
 ## Links & Resources
 
