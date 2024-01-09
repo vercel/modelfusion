@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Ollama
 
-Generate text and embeddings using [Ollama](https://github.com/jmorganca/ollama). You can run the Ollama server locally or remote.
+Generate text and embeddings using [Ollama](https://ollama.ai). You can run the Ollama server locally or remote.
 
 ## Setup
 
@@ -235,3 +235,27 @@ const embeddings = await embedMany(ollama.TextEmbedder({ model: "llama2" }), [
   "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
 ]);
 ```
+
+## Prompt Templates
+
+Many models are trained on specific prompts.
+You can use [prompt templates](/guide/function/generate-text#prompt-template) to use higher-level prompt templates such
+as instruction and chat prompts and map them to the correct format for your model.
+The prompt template that the model expected is usually described on the model card on HuggingFace.
+
+Specific [prompt templates for Ollama CompletionTextGenerator](/api/namespaces/ollama.prompt) models are available under `ollama.prompt`:
+
+- `ollama.prompt.Text`: Basic text prompt.
+- `ollama.prompt.ChatML`: ChatML prompt template.
+- `ollama.prompt.Llama2`: Llama 2 prompt template.
+- `ollama.prompt.Vicuna`: Vicuna prompt template.
+- `ollama.prompt.Alpaca`: Alpaca prompt template.
+- `ollama.prompt.NeuralChat`: NeuralChat prompt template.
+- `ollama.prompt.Mistral`: Mistral prompt template.
+
+## Links & Resources
+
+- [Ollama website](https://ollama.ai)
+- [Ollama GitHub](https://github.com/jmorganca/ollama)
+- [Ollama model library](https://ollama.ai/library)
+- [Next.js Chatbot starter for Ollama](https://github.com/lgrammel/modelfusion-ollama-nextjs-starter)

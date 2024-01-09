@@ -317,7 +317,7 @@ You can also use `llamacpp.grammar.fromJsonSchema(schema)` to convert a JSON sch
 ## Prompt Templates
 
 Many models are trained on specific prompts.
-You can use [prompt templates](#prompt-format) to use higher-level prompt templates such
+You can use [prompt templates](/guide/function/generate-text#prompt-template) to use higher-level prompt templates such
 as instruction and chat prompts and map them to the correct format for your model.
 The prompt template that the model expected is usually described on the model card on HuggingFace.
 
