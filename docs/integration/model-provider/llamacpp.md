@@ -21,7 +21,7 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 
 ### Llamafile support
 
-[Llamafile](https://github.com/Mozilla-Ocho/llamafile) is a executable format for distributing LLMs.
+[Llamafile](https://github.com/Mozilla-Ocho/llamafile) is an executable format for distributing LLMs.
 The server llamafiles start a llama.cpp server with the model.
 You can call it from ModelFusion in the same way as a regular llama.cpp server.
 
