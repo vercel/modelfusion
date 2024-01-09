@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.120.0 - 2024-01-09
+
+### Added
+
+- `OllamaCompletionModel` supports setting the prompt template in the settings. Prompt formats are available under `ollama.prompt.*`. You can then call `.withTextPrompt()`, `.withInstructionPrompt()` or `.withChatPrompt()` to use a standardized prompt.
+
+  ```ts
+  const model = ollama
+    .CompletionTextGenerator({
+      model: "mistral",
+      promptTemplate: ollama.prompt.Mistral,
+      raw: true, // required when using custom prompt template
+      maxGenerationTokens: 120,
+    })
+    .withTextPrompt();
+  ```
+
+### Removed
+
+- **breaking change**: removed `.withTextPromptTemplate` on `OllamaCompletionModel`.
+
 ## v0.119.1 - 2024-01-08
 
 ### Fixed
