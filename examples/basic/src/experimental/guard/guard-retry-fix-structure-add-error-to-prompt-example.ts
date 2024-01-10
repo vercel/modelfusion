@@ -25,7 +25,7 @@ async function main() {
         zodSchema(
           z.object({
             sentiment: z
-              .enum(["positivee", "neutra", "negaaa"])
+              .enum(["positive", "neutral", "negative"])
               .describe("Sentiment."),
           })
         ),
