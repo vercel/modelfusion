@@ -139,7 +139,7 @@ const config = {
             position: "left",
           },
           {
-            to: "/api/modules/",
+            to: "/api/modules",
             label: "API Reference",
             activeBaseRegex: `/api/`,
             position: "right",
