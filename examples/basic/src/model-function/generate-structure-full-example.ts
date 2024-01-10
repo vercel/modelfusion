@@ -33,12 +33,8 @@ async function main() {
     ),
 
     {
-      system:
-        "You are a sentiment evaluator. " +
-        "Analyze the sentiment of the following product review:",
       instruction:
-        "After I opened the package, I was met by a very unpleasant smell " +
-        "that did not disappear even after washing. Never again!",
+        "Generate 3 character descriptions for a fantasy role playing game.",
     },
 
     { fullResponse: true }
