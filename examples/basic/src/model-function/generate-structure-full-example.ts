@@ -32,8 +32,11 @@ async function main() {
       })
     ),
 
-    { instruction: "Generate 3 character descriptions for a fantasy role playing game." },
-    
+    {
+      instruction:
+        "Generate 3 character descriptions for a fantasy role playing game.",
+    },
+
     { fullResponse: true }
   );
 

@@ -10,17 +10,19 @@ async function main() {
     maxGenerationTokens: 200,
   });
 
-  const messages = openai.ChatMessage.system("Write a short story about a robot learning to love:");
+  const messages = openai.ChatMessage.system(
+    "Write a short story about a robot learning to love:"
+  );
 
   const cache = new MemoryCache();
 
-  const text1 = await generateText(model, [ messages ], { cache } );
+  const text1 = await generateText(model, [messages], { cache });
 
-  console.log({text1});
+  console.log({ text1 });
 
-  const text2 = await generateText(model, [ messages ], { cache } );
-  
-  console.log({text2}); // same text
+  const text2 = await generateText(model, [messages], { cache });
+
+  console.log({ text2 }); // same text
 }
 
 main().catch(console.error);

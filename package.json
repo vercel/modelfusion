@@ -5,7 +5,8 @@
     "clean": "rimraf .turbo node_modules/.cache/turbo && pnpm --filter \"./packages/**\" clean && pnpm --filter \"./examples/**\" clean",
     "lint": "turbo lint",
     "setup": "husky install",
-    "test": "turbo test"
+    "test": "turbo test",
+    "format": "npx prettier --write \"**/*.ts\" --config .prettierrc.json"
   },
   "devDependencies": {
     "copyfiles": "2.4.1",

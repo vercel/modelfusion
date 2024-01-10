@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // kept in a separate file for bundling
 export const duplexStreamingFlowSchema = {
@@ -6,13 +6,13 @@ export const duplexStreamingFlowSchema = {
     prompt: z.string(),
   }),
 
-  events: z.discriminatedUnion('type', [
+  events: z.discriminatedUnion("type", [
     z.object({
-      type: z.literal('text-chunk'),
+      type: z.literal("text-chunk"),
       delta: z.string(),
     }),
     z.object({
-      type: z.literal('speech-chunk'),
+      type: z.literal("speech-chunk"),
       base64Audio: z.string(),
     }),
   ]),
