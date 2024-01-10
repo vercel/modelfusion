@@ -583,7 +583,7 @@ modelfusion.setLogFormat("detailed-object"); // log full events
 
 ### [Examples & Tutorials](https://modelfusion.dev/tutorial)
 
-### [Showcase](https://modelfusion.dev/showcase)
+### [Showcase](https://modelfusion.dev/tutorial/showcase)
 
 ### [API Reference](https://modelfusion.dev/api/modules)
 
