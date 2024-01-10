@@ -12,4 +12,3 @@ packages/*/dist/**
 tools/*/build/**
 tools/*/coverage/**
 tools/*/dist/**
-.favorites.json

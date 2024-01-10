@@ -6,7 +6,7 @@
     "lint": "turbo lint",
     "setup": "husky install",
     "test": "turbo test",
-    "format": "npx prettier --write \"**/*.ts\" --config .prettierrc.json"
+    "format": "prettier --write \"**/*.ts\" --config .prettierrc.json"
   },
   "devDependencies": {
     "copyfiles": "2.4.1",
