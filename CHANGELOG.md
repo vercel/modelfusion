@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.121.1 - 2024-01-10
+
+### Fixed
+
+- Ollama response schema for repeated calls with Ollama 0.1.19
+
 ## v0.121.0 - 2024-01-09
 
 ### Added
