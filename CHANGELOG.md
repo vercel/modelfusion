@@ -1,10 +1,16 @@
 # Changelog
 
+## v0.121.2 - 2024-01-11
+
+### Fixed
+
+- Ollama response schema for repeated calls with Ollama 0.1.19 completion models. Thanks [@jakedetels](https://github.com/Necmttn) for the bugfix!
+
 ## v0.121.1 - 2024-01-10
 
 ### Fixed
 
-- Ollama response schema for repeated calls with Ollama 0.1.19
+- Ollama response schema for repeated calls with Ollama 0.1.19 chat models. Thanks [@jakedetels](https://github.com/jakedetels) for the bug report!
 
 ## v0.121.0 - 2024-01-09
 
