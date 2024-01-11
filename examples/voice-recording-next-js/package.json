@@ -1,0 +1,28 @@
+{
+  "name": "@lgrammel/modelfusion-example-voice-recording-next-js",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "dev": "next dev"
+  },
+  "devDependencies": {
+    "@types/formidable": "^2.0.6",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.1"
+  },
+  "dependencies": {
+    "@emotion/react": "11.10.8",
+    "@emotion/styled": "11.10.8",
+    "@mui/icons-material": "5.11.16",
+    "@mui/material": "5.12.2",
+    "modelfusion": "0.121.2",
+    "modelfusion-experimental": "0.4.0",
+    "formidable": "2.1.1",
+    "next": "13.5.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  }
+}
