@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Ollama response schema for repeated calls with Ollama 0.1.19 completion models. Thanks [@jakedetels](https://github.com/Necmttn) for the bugfix!
+- Ollama response schema for repeated calls with Ollama 0.1.19 completion models. Thanks [@Necmttn](https://github.com/Necmttn) for the bugfix!
 
 ## v0.121.1 - 2024-01-10
 
