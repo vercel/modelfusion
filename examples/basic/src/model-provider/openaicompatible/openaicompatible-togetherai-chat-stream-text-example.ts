@@ -8,6 +8,7 @@ async function main() {
     model: openaicompatible
       .ChatTextGenerator({
         api: openaicompatible.TogetherAIApi(),
+        provider: "openaicompatible-togetherai",
         model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
       })
       .withTextPrompt(),

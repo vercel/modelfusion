@@ -1,20 +1,10 @@
-import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
-import {
-  createJsonResponseHandler,
-  postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import {
-  EmbeddingModel,
-  EmbeddingModelSettings,
-} from "../../model-function/embed/EmbeddingModel.js";
+import { EmbeddingModel } from "../../model-function/embed/EmbeddingModel.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
-import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
-import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
+import {
+  AbstractOpenAITextEmbeddingModel,
+  AbstractOpenAITextEmbeddingModelSettings,
+  OpenAITextEmbeddingResponse,
+} from "./AbstractOpenAITextEmbeddingModel.js";
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
@@ -44,7 +34,7 @@ export const calculateOpenAIEmbeddingCostInMillicents = ({
 
   for (const response of responses) {
     amountInMilliseconds +=
-      response.usage.total_tokens *
+      response.usage!.total_tokens *
       OPENAI_TEXT_EMBEDDING_MODELS[model].tokenCostInMillicents;
   }
 
@@ -52,11 +42,8 @@ export const calculateOpenAIEmbeddingCostInMillicents = ({
 };
 
 export interface OpenAITextEmbeddingModelSettings
-  extends EmbeddingModelSettings {
-  api?: ApiConfiguration;
-  maxValuesPerCall?: number | undefined;
+  extends AbstractOpenAITextEmbeddingModelSettings {
   model: OpenAITextEmbeddingModelType;
-  isUserIdForwardingEnabled?: boolean;
 }
 
 /**
@@ -74,11 +61,11 @@ export interface OpenAITextEmbeddingModelSettings
  * );
  */
 export class OpenAITextEmbeddingModel
-  extends AbstractModel<OpenAITextEmbeddingModelSettings>
+  extends AbstractOpenAITextEmbeddingModel<OpenAITextEmbeddingModelSettings>
   implements EmbeddingModel<string, OpenAITextEmbeddingModelSettings>
 {
   constructor(settings: OpenAITextEmbeddingModelSettings) {
-    super({ settings });
+    super(settings);
 
     this.tokenizer = new TikTokenTokenizer({ model: this.modelName });
     this.contextWindowSize =
@@ -93,12 +80,6 @@ export class OpenAITextEmbeddingModel
     return this.settings.model;
   }
 
-  get maxValuesPerCall() {
-    return this.settings.maxValuesPerCall ?? 2048;
-  }
-
-  readonly isParallelizable = true;
-
   readonly embeddingDimensions: number;
 
   readonly tokenizer: TikTokenTokenizer;
@@ -108,58 +89,8 @@ export class OpenAITextEmbeddingModel
     return countTokens(this.tokenizer, input);
   }
 
-  async callAPI(
-    texts: Array<string>,
-    callOptions: FunctionCallOptions
-  ): Promise<OpenAITextEmbeddingResponse> {
-    const api = this.settings.api ?? new OpenAIApiConfiguration();
-    const abortSignal = callOptions.run?.abortSignal;
-
-    return callWithRetryAndThrottle({
-      retry: api.retry,
-      throttle: api.throttle,
-      call: async () =>
-        postJsonToApi({
-          url: api.assembleUrl("/embeddings"),
-          headers: api.headers({
-            functionType: callOptions.functionType,
-            functionId: callOptions.functionId,
-            run: callOptions.run,
-            callId: callOptions.callId,
-          }),
-          body: {
-            model: this.modelName,
-            input: texts,
-            user: this.settings.isUserIdForwardingEnabled
-              ? callOptions.run?.userId
-              : undefined,
-          },
-          failedResponseHandler: failedOpenAICallResponseHandler,
-          successfulResponseHandler: createJsonResponseHandler(
-            zodSchema(openAITextEmbeddingResponseSchema)
-          ),
-          abortSignal,
-        }),
-    });
-  }
-
   get settingsForEvent(): Partial<OpenAITextEmbeddingModelSettings> {
     return {};
-  }
-
-  async doEmbedValues(texts: string[], callOptions: FunctionCallOptions) {
-    if (texts.length > this.maxValuesPerCall) {
-      throw new Error(
-        `The OpenAI embedding API only supports ${this.maxValuesPerCall} texts per API call.`
-      );
-    }
-
-    const rawResponse = await this.callAPI(texts, callOptions);
-
-    return {
-      rawResponse,
-      embeddings: rawResponse.data.map((data) => data.embedding),
-    };
   }
 
   withSettings(additionalSettings: OpenAITextEmbeddingModelSettings) {
@@ -168,23 +99,3 @@ export class OpenAITextEmbeddingModel
     ) as this;
   }
 }
-
-const openAITextEmbeddingResponseSchema = z.object({
-  object: z.literal("list"),
-  data: z.array(
-    z.object({
-      object: z.literal("embedding"),
-      embedding: z.array(z.number()),
-      index: z.number(),
-    })
-  ),
-  model: z.string(),
-  usage: z.object({
-    prompt_tokens: z.number(),
-    total_tokens: z.number(),
-  }),
-});
-
-export type OpenAITextEmbeddingResponse = z.infer<
-  typeof openAITextEmbeddingResponseSchema
->;

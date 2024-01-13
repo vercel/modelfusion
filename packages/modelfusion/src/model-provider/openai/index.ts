@@ -1,5 +1,6 @@
 export * from "./AbstractOpenAIChatModel.js";
 export * from "./AbstractOpenAICompletionModel.js";
+export * from "./AbstractOpenAITextEmbeddingModel.js";
 export * from "./AzureOpenAIApiConfiguration.js";
 export * from "./OpenAIApiConfiguration.js";
 export * from "./OpenAIChatMessage.js";

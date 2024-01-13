@@ -66,10 +66,10 @@ export function AzureApi(settings: AzureOpenAIApiConfigurationOptions) {
  *   retry: retryWithExponentialBackoff({ maxTries: 5 }),
  * });
  *
- * const text = await generateText(
+ * const text = await generateText({
  *   model,
- *   "Write a short story about a robot learning to love:\n\n"
- * );
+ *   prompt: "Write a short story about a robot learning to love:\n\n"
+ * });
  *
  * @return A new instance of {@link OpenAICompletionModel}.
  */
@@ -91,14 +91,14 @@ export function CompletionTextGenerator(
  *   maxGenerationTokens: 500,
  * });
  *
- * const text = await generateText(
+ * const text = await generateText({
  *   model,
- *   [
+ *   prompt: [
  *     openai.ChatMessage.system(
  *       "Write a short story about a robot learning to love:"
  *     ),
  *   ]
- * );
+ * });
  */
 export function ChatTextGenerator(settings: OpenAIChatSettings) {
   return new OpenAIChatModel(settings);
@@ -110,13 +110,13 @@ export function ChatTextGenerator(settings: OpenAIChatSettings) {
  * @see https://platform.openai.com/docs/api-reference/embeddings
  *
  * @example
- * const embeddings = await embedMany(
- *   openai.TextEmbedder({ model: "text-embedding-ada-002" }),
- *   [
+ * const embeddings = await embedMany({
+ *   model: openai.TextEmbedder({ model: "text-embedding-ada-002" }),
+ *   values: [
  *     "At first, Nox didn't know what to do with the pup.",
  *     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
  *   ]
- * );
+ * });
  *
  * @returns A new instance of {@link OpenAITextEmbeddingModel}.
  */
@@ -143,13 +143,13 @@ export function SpeechGenerator(settings: OpenAISpeechModelSettings) {
  * @example
  * const data = await fs.promises.readFile("data/test.mp3");
  *
- * const transcription = await transcribe(
- *   openai.Transcriber({ model: "whisper-1" }),
- *   {
+ * const transcription = await transcribe({
+ *   model: openai.Transcriber({ model: "whisper-1" }),
+ *   data: {
  *     type: "mp3",
  *     data,
  *   }
- * );
+ * });
  *
  * @returns A new instance of {@link OpenAITranscriptionModel}.
  */
@@ -163,10 +163,10 @@ export function Transcriber(settings: OpenAITranscriptionModelSettings) {
  * @see https://platform.openai.com/docs/api-reference/images/create
  *
  * @example
- * const image = await generateImage(
- *   new OpenAIImageGenerationModel({ size: "512x512" }),
- *   "the wicked witch of the west in the style of early 19th century painting"
- * );
+ * const image = await generateImage({
+ *   model: new OpenAIImageGenerationModel({ size: "512x512" }),
+ *   prompt: "the wicked witch of the west in the style of early 19th century painting"
+ * });
  *
  * @returns A new instance of {@link OpenAIImageGenerationModel}.
  */

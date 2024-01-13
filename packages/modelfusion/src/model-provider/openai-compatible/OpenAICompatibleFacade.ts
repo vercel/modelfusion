@@ -5,6 +5,10 @@ import {
   OpenAICompatibleChatSettings,
 } from "./OpenAICompatibleChatModel.js";
 import { OpenAICompatibleCompletionModel } from "./OpenAICompatibleCompletionModel.js";
+import {
+  OpenAICompatibleTextEmbeddingModel,
+  OpenAICompatibleTextEmbeddingModelSettings,
+} from "./OpenAICompatibleTextEmbeddingModel.js";
 import { TogetherAIApiConfiguration } from "./TogetherAIApiConfiguration.js";
 
 /**
@@ -53,10 +57,10 @@ export function TogetherAIApi(
  *   maxGenerationTokens: 500,
  * });
  *
- * const text = await generateText(
+ * const text = await generateText({
  *   model,
- *   "Write a short story about a robot learning to love:"
- * );
+ *   prompt: "Write a short story about a robot learning to love:"
+ * });
  * ```
  */
 export function CompletionTextGenerator(
@@ -81,16 +85,38 @@ export function CompletionTextGenerator(
  *   maxGenerationTokens: 500,
  * });
  *
- * const text = await generateText(
+ * const text = await generateText({
  *   model,
- *   [
+ *   prompt: [
  *     openai.ChatMessage.user(
  *       "Write a short story about a robot learning to love:"
  *     ),
  *   ]
- * );
+ * });
  * ```
  */
 export function ChatTextGenerator(settings: OpenAICompatibleChatSettings) {
   return new OpenAICompatibleChatModel(settings);
+}
+
+/**
+ * Create a text embedding model that calls the OpenAI embedding API.
+ *
+ * @see https://platform.openai.com/docs/api-reference/embeddings
+ *
+ * @example
+ * const embeddings = await embedMany({
+ *   model: openaicompatible.TextEmbedder({ model: "provider-specific-model-name" }),
+ *   values: [
+ *     "At first, Nox didn't know what to do with the pup.",
+ *     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+ *   ]
+ * });
+ *
+ * @returns A new instance of {@link OpenAITextEmbeddingModel}.
+ */
+export function TextEmbedder(
+  settings: OpenAICompatibleTextEmbeddingModelSettings
+) {
+  return new OpenAICompatibleTextEmbeddingModel(settings);
 }

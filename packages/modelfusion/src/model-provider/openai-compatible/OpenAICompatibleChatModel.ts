@@ -1,3 +1,4 @@
+import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import {
   FlexibleStructureFromTextPromptTemplate,
   StructureFromTextPromptTemplate,
@@ -21,6 +22,7 @@ import { OpenAICompatibleProviderName } from "./OpenAICompatibleProviderName.js"
 
 export interface OpenAICompatibleChatSettings
   extends AbstractOpenAIChatSettings {
+  api: ApiConfiguration; // enforce API configuration
   provider?: OpenAICompatibleProviderName;
 }
 

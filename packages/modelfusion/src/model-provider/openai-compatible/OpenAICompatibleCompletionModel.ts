@@ -1,3 +1,4 @@
+import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextStreamingModel,
@@ -12,6 +13,7 @@ import { OpenAICompatibleProviderName } from "./OpenAICompatibleProviderName.js"
 
 export interface OpenAICompatibleCompletionModelSettings
   extends AbstractOpenAICompletionModelSettings {
+  api: ApiConfiguration; // enforce API configuration
   provider?: OpenAICompatibleProviderName;
 }
 /**

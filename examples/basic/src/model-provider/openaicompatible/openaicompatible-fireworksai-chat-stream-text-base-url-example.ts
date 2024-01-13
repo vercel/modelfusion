@@ -17,6 +17,7 @@ async function main() {
             Authorization: `Bearer ${process.env.FIREWORKS_API_KEY}`,
           },
         }),
+        provider: "openaicompatible-fireworksai",
         model: "accounts/fireworks/models/mistral-7b",
       })
       .withTextPrompt(),
