@@ -4,6 +4,7 @@ export * from "./ModelCallEvent.js";
 export * from "./ModelCallMetadata.js";
 export * from "./ModelInformation.js";
 export * from "./PromptTemplate.js";
+export * from "./classify/index.js";
 export * from "./embed/EmbeddingEvent.js";
 export * from "./embed/EmbeddingModel.js";
 export * from "./embed/embed.js";
