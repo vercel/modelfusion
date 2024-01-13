@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.0 - 2021-01-13
+
+Compatibility update to ModelFusion `v0.122.0`
+
 ## v0.4.0 - 2021-01-07
 
 Compatibility update.
