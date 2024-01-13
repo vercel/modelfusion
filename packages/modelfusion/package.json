@@ -1,7 +1,7 @@
 {
   "name": "modelfusion",
   "description": "The TypeScript library for building AI applications.",
-  "version": "0.122.0",
+  "version": "0.123.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [

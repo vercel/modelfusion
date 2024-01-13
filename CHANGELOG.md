@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.123.0 - 2024-01-13
+
+### Added
+
+- `classify` model function ([docs](https://modelfusion.dev/guide/function/classify)) for classifying values. The `SemanticClassifier` has been renamed to `EmbeddingSimilarityClassifier` and can be used in conjunction with `classify`:
+
+  ```ts
+  import { classify, EmbeddingSimilarityClassifier, openai } from "modelfusion";
+
+  const classifier = new EmbeddingSimilarityClassifier({
+    embeddingModel: openai.TextEmbedder({ model: "text-embedding-ada-002" }),
+    similarityThreshold: 0.82,
+    clusters: [
+      {
+        name: "politics" as const,
+        values: [
+          "they will save the country!",
+          // ...
+        ],
+      },
+      {
+        name: "chitchat" as const,
+        values: [
+          "how's the weather today?",
+          // ...
+        ],
+      },
+    ],
+  });
+
+  // strongly typed result:
+  const result = await classify({
+    model: classifier,
+    value: "don't you love politics?",
+  });
+  ```
+
 ## v0.122.0 - 2024-01-13
 
 ### Changed
