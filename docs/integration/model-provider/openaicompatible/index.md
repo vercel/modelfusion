@@ -127,7 +127,7 @@ for await (const textPart of textStream) {
 
 ### Embed Text
 
-[OpenAITextCompatibleEmbeddingModel API](/api/classes/OpenAITextCompatibleEmbeddingModel)
+[OpenAITextCompatibleEmbeddingModel API](/api/classes/OpenAICompatibleTextEmbeddingModel)
 
 ```ts
 import { embed, openaicompatible } from "modelfusion";

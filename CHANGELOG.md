@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.124.0 - 2024-01-13
+
+### Added
+
+- [Embedding-support for OpenAI-compatible providers](https://modelfusion.dev/integration/model-provider/openaicompatible/#embed-text). You can for example use the Together AI embedding endpoint:
+
+  ```ts
+  import { embed, openaicompatible } from "modelfusion";
+
+  const embedding = await embed({
+    model: openaicompatible.TextEmbedder({
+      api: openaicompatible.TogetherAIApi(),
+      provider: "openaicompatible-togetherai",
+      model: "togethercomputer/m2-bert-80M-8k-retrieval",
+    }),
+    value: "At first, Nox didn't know what to do with the pup.",
+  });
+  ```
+
 ## v0.123.0 - 2024-01-13
 
 ### Added
