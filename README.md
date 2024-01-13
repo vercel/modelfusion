@@ -291,6 +291,8 @@ Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider
 Create embeddings for text and other values. Embeddings are vectors that represent the essence of the values in the context of the model.
 
 ```ts
+import { embed, embedMany, openai } from "modelfusion";
+
 // embed single value:
 const embedding = await embed({
   model: openai.TextEmbedder({ model: "text-embedding-ada-002" }),
@@ -308,6 +310,43 @@ const embeddings = await embedMany({
 ```
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Mistral](https://modelfusion.dev/integration/model-provider/mistral), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface), [Cohere](https://modelfusion.dev/integration/model-provider/cohere)
+
+### [Classify Value](https://modelfusion.dev/guide/function/classify)
+
+Classifies a value into a category.
+
+```ts
+import { classify, EmbeddingSimilarityClassifier, openai } from "modelfusion";
+
+const classifier = new EmbeddingSimilarityClassifier({
+  embeddingModel: openai.TextEmbedder({ model: "text-embedding-ada-002" }),
+  similarityThreshold: 0.82,
+  clusters: [
+    {
+      name: "politics" as const,
+      values: [
+        "they will save the country!",
+        // ...
+      ],
+    },
+    {
+      name: "chitchat" as const,
+      values: [
+        "how's the weather today?",
+        // ...
+      ],
+    },
+  ],
+});
+
+// strongly typed result:
+const result = await classify({
+  model: classifier,
+  value: "don't you love politics?",
+});
+```
+
+Classifiers: [EmbeddingSimilarityClassifier](https://modelfusion.dev/guide/function/classify#embeddingsimilarityclassifier)
 
 ### [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
 
@@ -552,6 +591,7 @@ modelfusion.setLogFormat("detailed-object"); // log full events
   - [Generate transcription](https://modelfusion.dev/guide/function/generation-transcription)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
+  - [Classify Value](https://modelfusion.dev/guide/function/classify)
 - [Tools](https://modelfusion.dev/guide/tools)
   - [Use Tool](https://modelfusion.dev/guide/tools/use-tool)
   - [Use Tools](https://modelfusion.dev/guide/tools/use-tools)
