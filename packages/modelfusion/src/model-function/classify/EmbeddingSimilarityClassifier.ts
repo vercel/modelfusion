@@ -19,6 +19,11 @@ export interface EmbeddingSimilarityClassifierSettings<
   similarityThreshold: number;
 }
 
+/**
+ * Classifies values based on their distance to the values from a set of clusters.
+ * When the distance is below a certain threshold, the value is classified as belonging to the cluster,
+ * and the cluster name is returned. Otherwise, the value is classified as null.
+ */
 export class EmbeddingSimilarityClassifier<
   VALUE,
   CLUSTERS extends Array<ValueCluster<VALUE, string>>,
