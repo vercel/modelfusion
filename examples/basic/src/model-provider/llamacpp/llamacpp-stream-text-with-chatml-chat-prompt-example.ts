@@ -1,8 +1,8 @@
 import { llamacpp, streamText } from "modelfusion";
 
 async function main() {
-  const textStream = await streamText(
-    llamacpp
+  const textStream = await streamText({
+    model: llamacpp
       .CompletionTextGenerator({
         // run https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp
         promptTemplate: llamacpp.prompt.ChatML,
@@ -11,7 +11,7 @@ async function main() {
       })
       .withChatPrompt(),
 
-    {
+    prompt: {
       system: "You are a celebrated poet.",
       messages: [
         {
@@ -27,8 +27,8 @@ async function main() {
           content: "Write a short story about Robbie learning to love",
         },
       ],
-    }
-  );
+    },
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

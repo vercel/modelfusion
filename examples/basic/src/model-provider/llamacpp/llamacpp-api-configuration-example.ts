@@ -1,8 +1,8 @@
 import { llamacpp, streamText } from "modelfusion";
 
 async function main() {
-  const textStream = await streamText(
-    llamacpp.CompletionTextGenerator({
+  const textStream = await streamText({
+    model: llamacpp.CompletionTextGenerator({
       // Custom API configuration:
       api: llamacpp.Api({
         baseUrl: {
@@ -14,8 +14,8 @@ async function main() {
       maxGenerationTokens: 256,
       temperature: 0.7,
     }),
-    { text: "Write a short story about a robot learning to love:\n\n" }
-  );
+    prompt: { text: "Write a short story about a robot learning to love:\n\n" },
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

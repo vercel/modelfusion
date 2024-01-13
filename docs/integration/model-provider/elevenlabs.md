@@ -37,15 +37,16 @@ const model = elevenlabs.SpeechGenerator({
 ```ts
 import { elevenlabs, generateSpeech } from "modelfusion";
 
-const speech = await generateSpeech(
-  elevenlabs.SpeechGenerator({
+const speech = await generateSpeech({
+  model: elevenlabs.SpeechGenerator({
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
   }),
-  "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
+  text:
+    "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
     "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
     "fresh tunes in nearly twenty years, featuring the illustrious Lady Gaga, the " +
-    "magical Stevie Wonder, and the final beats from the late Charlie Watts."
-);
+    "magical Stevie Wonder, and the final beats from the late Charlie Watts.",
+});
 
 const path = `./elevenlabs-speech-example.mp3`;
 fs.writeFileSync(path, speech);
@@ -56,8 +57,8 @@ fs.writeFileSync(path, speech);
 ```ts
 const textStream = await streamText(/* ... */);
 
-const speechStream = await streamSpeech(
-  elevenlabs.SpeechGenerator({
+const speechStream = await streamSpeech({
+  model: elevenlabs.SpeechGenerator({
     model: "eleven_turbo_v2",
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     optimizeStreamingLatency: 1,
@@ -66,8 +67,8 @@ const speechStream = await streamSpeech(
       chunkLengthSchedule: [50, 90, 120, 150, 200],
     },
   }),
-  textStream
-);
+  text: textStream,
+});
 
 for await (const part of speechStream) {
   // each part is a Buffer with MP3 audio data

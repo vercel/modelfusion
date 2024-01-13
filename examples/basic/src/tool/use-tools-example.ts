@@ -5,11 +5,11 @@ import { calculator } from "./tools/calculator-tool";
 dotenv.config();
 
 async function main() {
-  const { text, toolResults } = await useTools(
-    openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-    [calculator /* ... */],
-    [openai.ChatMessage.user("What's fourteen times twelve?")]
-  );
+  const { text, toolResults } = await useTools({
+    model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
+    tools: [calculator /* ... */],
+    prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
+  });
 
   if (text != null) {
     console.log(`TEXT: ${text}`);

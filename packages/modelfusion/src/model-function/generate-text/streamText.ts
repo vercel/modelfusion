@@ -13,10 +13,10 @@ import { TextStreamingModel } from "./TextGenerationModel.js";
  * @see https://modelfusion.dev/guide/function/generate-text
  *
  * @example
- * const textStream = await streamText(
- *   openai.CompletionTextGenerator(...),
- *   "Write a short story about a robot learning to love:\n\n"
- * );
+ * const textStream = await streamText({
+ *   model: openai.CompletionTextGenerator(...),
+ *   prompt: "Write a short story about a robot learning to love:\n\n"
+ * });
  *
  * for await (const textPart of textStream) {
  *   // ...
@@ -29,24 +29,33 @@ import { TextStreamingModel } from "./TextGenerationModel.js";
  * @returns {AsyncIterableResultPromise<string>} An async iterable promise that yields the generated text.
  */
 export async function streamText<PROMPT>(
-  model: TextStreamingModel<PROMPT>,
-  prompt: PROMPT,
-  options?: FunctionOptions & { fullResponse?: false }
+  args: {
+    model: TextStreamingModel<PROMPT>;
+    prompt: PROMPT;
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<AsyncIterable<string>>;
 export async function streamText<PROMPT>(
-  model: TextStreamingModel<PROMPT>,
-  prompt: PROMPT,
-  options: FunctionOptions & { fullResponse: true }
+  args: {
+    model: TextStreamingModel<PROMPT>;
+    prompt: PROMPT;
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   textStream: AsyncIterable<string>;
   text: PromiseLike<string>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
-export async function streamText<PROMPT>(
-  model: TextStreamingModel<PROMPT>,
-  prompt: PROMPT,
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+export async function streamText<PROMPT>({
+  model,
+  prompt,
+  fullResponse,
+  ...options
+}: {
+  model: TextStreamingModel<PROMPT>;
+  prompt: PROMPT;
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | AsyncIterable<string>
   | {
       textStream: AsyncIterable<string>;
@@ -65,7 +74,7 @@ export async function streamText<PROMPT>(
     resolveText = resolve;
   });
 
-  const fullResponse = await executeStreamCall({
+  const callResponse = await executeStreamCall({
     functionType: "stream-text",
     input: prompt,
     model,
@@ -103,11 +112,11 @@ export async function streamText<PROMPT>(
     },
   });
 
-  return options?.fullResponse
+  return fullResponse
     ? {
-        textStream: fullResponse.value,
+        textStream: callResponse.value,
         text: textPromise,
-        metadata: fullResponse.metadata,
+        metadata: callResponse.metadata,
       }
-    : fullResponse.value;
+    : callResponse.value;
 }

@@ -65,14 +65,14 @@ async function runBabyBeeAGI({
 
   // ### Tool functions ##############################
   const textCompletionTool = async (prompt: string) =>
-    generateText(
-      openai.CompletionTextGenerator({
+    generateText({
+      model: openai.CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
         temperature: 0.5,
         maxGenerationTokens: 1500,
       }),
-      prompt
-    );
+      prompt,
+    });
 
   const webSearchTool = async (query: string) => {
     const searchResults = await getJson({
@@ -206,16 +206,16 @@ async function runBabyBeeAGI({
 
     console.log(chalk.gray.italic(`\nRunning task manager agent...`));
 
-    const text = await generateText(
-      openai.ChatTextGenerator({
+    const text = await generateText({
+      model: openai.ChatTextGenerator({
         model: "gpt-4",
         temperature: 0.2,
       }),
-      [
+      prompt: [
         openai.ChatMessage.system("You are a task manager AI."),
         openai.ChatMessage.user(prompt),
-      ]
-    );
+      ],
+    });
 
     console.log(chalk.gray.italic(`\nDone!\n`));
 
@@ -245,18 +245,18 @@ async function runBabyBeeAGI({
   }
 
   async function summarizerAgent(input: string) {
-    return await generateText(
-      openai.CompletionTextGenerator({
+    return await generateText({
+      model: openai.CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
         temperature: 0.5,
         maxGenerationTokens: 100,
       }),
-      [
+      prompt: [
         `Please summarize the following text:`,
         input.substring(0, 4000),
         `Summary:`,
-      ].join("\n")
-    );
+      ].join("\n"),
+    });
   }
 
   async function overviewAgent(lastTaskId: number) {
@@ -269,20 +269,20 @@ async function runBabyBeeAGI({
       )
       .join("\n");
 
-    return await generateText(
-      openai.CompletionTextGenerator({
+    return await generateText({
+      model: openai.CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
         temperature: 0.5,
         maxGenerationTokens: 200,
       }),
-      [
+      prompt: [
         `Here is the current session summary:`,
         sessionSummary,
         `The last completed task is task ${lastTaskId}. Please update the session summary with the information of the last task:`,
         completedTasksText,
         `Updated session summary, which should describe all tasks in chronological order:`,
-      ].join("\n")
-    );
+      ].join("\n"),
+    });
   }
 
   // ### Main Loop ##############################

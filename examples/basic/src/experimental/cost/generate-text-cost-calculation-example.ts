@@ -11,15 +11,15 @@ dotenv.config();
 async function main() {
   const run = new DefaultRun();
 
-  const text = await generateText(
-    openai.CompletionTextGenerator({
+  const text = await generateText({
+    model: openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,
       maxGenerationTokens: 500,
     }),
-    "Write a short story about a robot learning to love:\n\n",
-    { run }
-  );
+    prompt: "Write a short story about a robot learning to love:\n\n",
+    run,
+  });
 
   console.log(text);
 

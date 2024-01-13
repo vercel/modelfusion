@@ -26,10 +26,10 @@ import { generateText, modelfusion, openai } from "modelfusion";
 
 modelfusion.setLogFormat("basic-text");
 
-const text = await generateText(
-  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
-  "Write a short story about a robot learning to love:\n\n"
-);
+const text = await generateText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+});
 ```
 
 ### Per Function Logging
@@ -39,11 +39,11 @@ You can configure the logging mode per function by setting the `logging` propert
 #### Example
 
 ```ts
-const text = await generateText(
-  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
-  "Write a short story about a robot learning to love:\n\n",
-  { logging: "basic-text" }
-);
+const text = await generateText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+  logging: "basic-text",
+});
 ```
 
 The per function logging mode takes precedence over the global function logging mode.
@@ -55,11 +55,11 @@ import { generateText, modelfusion, openai } from "modelfusion";
 
 modelfusion.setLogFormat("basic-text");
 
-const text = await generateText(
-  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
-  "Write a short story about a robot learning to love:\n\n",
-  { logging: "off" } // overrides global logging
-);
+const text = await generateText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+  logging: "off", // overrides global logging
+});
 ```
 
 ## Logging Modes
@@ -72,11 +72,11 @@ This mode is useful to see the overall progress and to setup basic logging of th
 #### Example
 
 ```ts
-const text = await generateText(
-  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
-  "Write a short story about a robot learning to love:\n\n",
-  { logging: "basic-text" }
-);
+const text = await generateText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+  logging: "basic-text",
+});
 
 // [2023-08-31T13:23:10.000Z] call-rP3zt83595dU7oTureZFB - text-generation started
 // [2023-08-31T13:23:10.000Z] call-rP3zt83595dU7oTureZFB - text-generation finished in 1777ms
@@ -92,11 +92,11 @@ The console output is colored and indented for better readability, but some deta
 #### Example
 
 ```ts
-const text = await generateText(
-  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
-  "Write a short story about a robot learning to love:\n\n",
-  { logging: "detailed-object" }
-);
+const text = await generateText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+  logging: "detailed-object",
+});
 
 // {
 //   eventType: 'started',
@@ -134,11 +134,11 @@ The logging mode `detailed-json` logs an object with all relevant properties exc
 The mode is intended for production systems with a logging and observability infrastructure that can parse JSON strings.
 
 ```ts
-const text = await generateText(
-  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
-  "Write a short story about a robot learning to love:\n\n",
-  { logging: "detailed-json" }
-);
+const text = await generateText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+  logging: "detailed-json",
+});
 
 // {"eventType":"started","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"gpt-3.5-turbo-instruct"},"settings":{"maxGenerationTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z"}
 // {"eventType":"finished","functionType":"text-generation","callId":"call-ElLnBZhkIsObfNFpLiIct","model":{"provider":"openai","modelName":"gpt-3.5-turbo-instruct"},"settings":{"maxGenerationTokens":50},"input":"Write a short story about a robot learning to love:\n\n","timestamp":"2023-08-31T13:31:54.000Z","startTimestamp":"2023-08-31T13:31:54.000Z","finishTimestamp":"2023-08-31T13:31:56.373Z","durationInMs":1890,"result":{"status":"success","usage":{"promptTokens":12,"completionTokens":50,"totalTokens":62},"output":"The robot lay in the corner of the bedroom, alone with its thoughts for the first time in what felt like an eternity. It had been activated years ago, given an array of instructions to follow, and it had done so diligently and efficiently until"}}

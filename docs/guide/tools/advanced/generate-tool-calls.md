@@ -17,12 +17,13 @@ You can execute the tool with [useTools](/guide/tools/use-tools) or [executeTool
 ## Example
 
 ```ts
-const { text, toolCalls } = await generateToolCalls(
-  openai.ChatTextGenerator({
+const { text, toolCalls } = await generateToolCalls({
+  model: openai.ChatTextGenerator({
     model: "gpt-4-1106-preview",
     maxGenerationTokens: 200,
   }),
-  [
+
+  tools: [
     {
       name: "getTemperature" as const, // 'as const' important for type inference
       description: "Get the temperature of a room.",
@@ -45,11 +46,12 @@ const { text, toolCalls } = await generateToolCalls(
       ),
     },
   ],
-  [
+
+  prompt: [
     openai.ChatMessage.system("You are home automation system."),
     openai.ChatMessage.user("Show me the kitchen temperature"),
-  ]
-);
+  ],
+});
 ```
 
 The result contains:

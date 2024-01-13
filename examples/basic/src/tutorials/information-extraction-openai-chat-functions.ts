@@ -7,8 +7,8 @@ dotenv.config();
 
 async function main() {
   const extractNameAndPopulation = async (text: string) =>
-    generateStructure(
-      openai
+    generateStructure({
+      model: openai
         .ChatTextGenerator({
           model: "gpt-4",
           temperature: 0, // remove randomness as much as possible
@@ -20,7 +20,7 @@ async function main() {
         })
         .withInstructionPrompt(),
 
-      zodSchema(
+      schema: zodSchema(
         z.object({
           city: z
             .object({
@@ -32,7 +32,7 @@ async function main() {
         })
       ),
 
-      {
+      prompt: {
         system: [
           "Extract the name and the population of the city.",
           // escape hatch to limit extractions to city information:
@@ -40,8 +40,8 @@ async function main() {
           "If it is not, set city to null.",
         ].join("\n"),
         instruction: text,
-      }
-    );
+      },
+    });
 
   const sanFranciscoWikipedia = JSON.parse(
     fs.readFileSync("data/san-francisco-wikipedia.json", "utf8")

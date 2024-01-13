@@ -4,8 +4,8 @@ import { generateStructure, openai, uncheckedSchema } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const sentiment = await generateStructure(
-    openai
+  const sentiment = await generateStructure({
+    model: openai
       .ChatTextGenerator({
         model: "gpt-3.5-turbo",
         temperature: 0,
@@ -17,7 +17,7 @@ async function main() {
       })
       .withInstructionPrompt(),
 
-    uncheckedSchema({
+    schema: uncheckedSchema({
       $schema: "http://json-schema.org/draft-07/schema#",
       type: "object",
       properties: {
@@ -31,15 +31,15 @@ async function main() {
       additionalProperties: false,
     }),
 
-    {
+    prompt: {
       system:
         "You are a sentiment evaluator. " +
         "Analyze the sentiment of the following product review:",
       instruction:
         "After I opened the package, I was met by a very unpleasant smell " +
         "that did not disappear even after washing. Never again!",
-    }
-  );
+    },
+  });
 
   console.log(JSON.stringify(sentiment, null, 2));
 }

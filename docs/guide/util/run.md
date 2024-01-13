@@ -19,11 +19,11 @@ To link a model call with a run, you can pass the run as the second parameter to
 ```ts
 const run = new DefaultRun();
 
-const text = await generateText(
-  openai.CompletionTextGenerator(/* ... */),
-  "Write a short story about a robot learning to love:\n\n",
-  { run } // pass in the run in the second parameter
-);
+const text = await generateText({
+  model: openai.CompletionTextGenerator(/* ... */),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+  run, // pass in the run in the second parameter
+});
 
 console.log(run.successfulModelCalls);
 ```
@@ -46,14 +46,14 @@ withRun(run, async () => {
   // this code could be somewhere deep in your application:
 
   // automatically uses the run stored in the AsyncLocalStorage:
-  const text = await generateText(
-    openai.CompletionTextGenerator({
+  const text = await generateText({
+    model: openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,
       maxGenerationTokens: 500,
     }),
-    "Write a short story about a robot learning to love:\n\n"
-  );
+    prompt: "Write a short story about a robot learning to love:\n\n",
+  });
 
   const run = getRun();
   // do something with the run...

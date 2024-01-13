@@ -8,8 +8,8 @@ import {
 dotenv.config();
 
 async function main() {
-  const textStream = await streamText(
-    openaicompatible
+  const textStream = await streamText({
+    model: openaicompatible
       .ChatTextGenerator({
         api: new BaseUrlApiConfiguration({
           baseUrl: "https://api.fireworks.ai/inference/v1",
@@ -21,8 +21,8 @@ async function main() {
       })
       .withTextPrompt(),
 
-    "Write a story about a robot learning to love"
-  );
+    prompt: "Write a story about a robot learning to love",
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

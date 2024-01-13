@@ -1,8 +1,8 @@
 import { llamacpp, streamText } from "modelfusion";
 
 async function main() {
-  const textStream = await streamText(
-    llamacpp
+  const textStream = await streamText({
+    model: llamacpp
       .CompletionTextGenerator({
         // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
         promptTemplate: llamacpp.prompt.ChatML,
@@ -12,8 +12,9 @@ async function main() {
       })
       .withTextPrompt(),
 
-    "List the top 10 tourist attractions in Paris. Only mention the name of each attraction."
-  );
+    prompt:
+      "List the top 10 tourist attractions in Paris. Only mention the name of each attraction.",
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

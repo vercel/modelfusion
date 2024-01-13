@@ -9,12 +9,12 @@ async function main() {
   console.log("Logging: detailed-object");
   console.log();
 
-  const { tool, result } = await useTool(
-    openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-    calculator,
-    [openai.ChatMessage.user("What's fourteen times twelve?")],
-    { logging: "detailed-object" }
-  );
+  const { tool, result } = await useTool({
+    model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
+    tool: calculator,
+    prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
+    logging: "detailed-object",
+  });
 }
 
 main().catch(console.error);

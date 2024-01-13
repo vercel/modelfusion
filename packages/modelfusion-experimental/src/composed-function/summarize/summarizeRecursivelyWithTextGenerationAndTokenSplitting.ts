@@ -49,7 +49,7 @@ export async function summarizeRecursivelyWithTextGenerationAndTokenSplitting<
         maxTokensPerChunk: tokenLimit - emptyPromptTokens,
       }),
       summarize: async (input: { text: string }) =>
-        generateText(model, await prompt(input), options),
+        generateText({ model, prompt: await prompt(input), ...options }),
       join,
       text,
     },

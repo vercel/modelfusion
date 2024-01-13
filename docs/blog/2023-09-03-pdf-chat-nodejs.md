@@ -236,13 +236,13 @@ const chat = readline.createInterface({
 while (true) {
   const question = await chat.question("You: ");
 
-  const hypotheticalAnswer = await generateText(
-    openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
-    [
+  const hypotheticalAnswer = await generateText({
+    model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
+    prompt: [
       openai.ChatMessage.system(`Answer the user's question.`),
       openai.ChatMessage.user(question),
-    ]
-  );
+    ],
+  });
 
   const information = await retrieve(
     new VectorIndexRetriever({
@@ -254,9 +254,9 @@ while (true) {
     hypotheticalAnswer
   );
 
-  const textStream = await streamText(
-    openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
-    [
+  const textStream = await streamText({
+    model: openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
+    prompt: [
       openai.ChatMessage.system(
         `Answer the user's question using only the provided information.\n` +
           `Include the page number of the information that you are using.\n` +
@@ -268,8 +268,8 @@ while (true) {
         fnName: "getInformation",
         content: JSON.stringify(information),
       }),
-    ]
-  );
+    ],
+  });
 
   process.stdout.write("\nAI : ");
   for await (const textPart of textStream) {
@@ -301,13 +301,13 @@ We use the Node.js `readline` package for collecting user input from the termina
 ### Generate a hypothetical answer
 
 ```typescript
-const hypotheticalAnswer = await generateText(
-  openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
-  [
+const hypotheticalAnswer = await generateText({
+  model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
+  prompt: [
     openai.ChatMessage.system(`Answer the user's question.`),
     openai.ChatMessage.user(question),
-  ]
-);
+  ],
+});
 ```
 
 We use the `gpt-3.5-turbo` model from OpenAI to create a hypothetical answer first.
@@ -336,9 +336,9 @@ We limit the results to 5 and set a similarity threshold of 0.75. You can play w
 ### Generate an answer using text chunks
 
 ```typescript
-const textStream = await streamText(
-  openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
-  [
+const textStream = await streamText({
+  model: openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
+  prompt: [
     openai.ChatMessage.system(
       `Answer the user's question using only the provided information.\n` +
         `Include the page number of the information that you are using.\n` +
@@ -350,8 +350,8 @@ const textStream = await streamText(
       "getInformation",
       JSON.stringify(information)
     ),
-  ]
-);
+  ],
+});
 ```
 
 We use `gpt-4` to generate a final answer based on the retrieved text chunks.

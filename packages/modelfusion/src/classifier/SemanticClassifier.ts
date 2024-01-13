@@ -50,10 +50,10 @@ export class SemanticClassifier<
     }> = [];
 
     for (const cluster of this.clusters) {
-      const clusterEmbeddings = await embedMany(
-        this.embeddingModel,
-        cluster.values
-      );
+      const clusterEmbeddings = await embedMany({
+        model: this.embeddingModel,
+        values: cluster.values,
+      });
 
       for (let i = 0; i < clusterEmbeddings.length; i++) {
         embeddings.push({
@@ -70,7 +70,10 @@ export class SemanticClassifier<
   }
 
   async classify(value: VALUE): Promise<ClusterNames<CLUSTERS> | null> {
-    const valueEmbedding = await embed(this.embeddingModel, value);
+    const valueEmbedding = await embed({
+      model: this.embeddingModel,
+      value,
+    });
     const clusterEmbeddings = await this.getEmbeddings();
 
     const allMatches: Array<{

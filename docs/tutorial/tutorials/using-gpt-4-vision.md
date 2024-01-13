@@ -31,18 +31,19 @@ Now that we have our image encoded, we can call the OpenAI GPT-4 Vision model to
 ```ts
 import { openai, streamText } from "modelfusion";
 
-const textStream = await streamText(
-  openai.ChatTextGenerator({
+const textStream = await streamText({
+  model: openai.ChatTextGenerator({
     model: "gpt-4-vision-preview",
     maxGenerationTokens: 1000,
   }),
-  [
+
+  prompt: [
     openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
-  ]
-);
+  ],
+});
 ```
 
 #### Alternative: Use an instruction prompt
@@ -50,20 +51,21 @@ const textStream = await streamText(
 Alternatively, you can use the `withInstructionPrompt()` method which allows you to use an abstracted prompt template for a single instruction:
 
 ```ts
-const textStream = await streamText(
-  openai
+const textStream = await streamText({
+  model: openai
     .ChatTextGenerator({
       model: "gpt-4-vision-preview",
       maxGenerationTokens: 1000,
     })
     .withInstructionPrompt(),
-  {
+
+  prompt: {
     instruction: [
       { type: "text", text: "Describe the image in detail:\n\n" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ],
-  }
-);
+  },
+});
 ```
 
 #### Stream the Output to the Terminal

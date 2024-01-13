@@ -12,40 +12,48 @@ import {
  * @see https://modelfusion.dev/guide/function/generate-speech
  *
  * @example
- * const speech = await generateSpeech(
- *   lmnt.SpeechGenerator(...),
- *   "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
+ * const speech = await generateSpeech({
+ *   model: lmnt.SpeechGenerator(...),
+ *   text: "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
  *    "as The Rolling Stones unveil 'Hackney Diamonds.'
- * );
+ * });
  *
  * @param {SpeechGenerationModel<SpeechGenerationModelSettings>} model - The speech generation model.
  * @param {string} text - The text to be converted to speech.
- * @param {FunctionOptions} [options] - Optional function options.
  *
  * @returns {Promise<Buffer>} - A promise that resolves to a buffer containing the synthesized speech.
  */
 export async function generateSpeech(
-  model: SpeechGenerationModel<SpeechGenerationModelSettings>,
-  text: string,
-  options?: FunctionOptions & { fullResponse?: false }
+  args: {
+    model: SpeechGenerationModel<SpeechGenerationModelSettings>;
+    text: string;
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<Buffer>;
 export async function generateSpeech(
-  model: SpeechGenerationModel<SpeechGenerationModelSettings>,
-  text: string,
-  options: FunctionOptions & { fullResponse: true }
+  args: {
+    model: SpeechGenerationModel<SpeechGenerationModelSettings>;
+    text: string;
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   speech: Buffer;
   rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
-export async function generateSpeech(
-  model: SpeechGenerationModel<SpeechGenerationModelSettings>,
-  text: string,
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+export async function generateSpeech({
+  model,
+  text,
+  fullResponse,
+  ...options
+}: {
+  model: SpeechGenerationModel<SpeechGenerationModelSettings>;
+  text: string;
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   Buffer | { speech: Buffer; rawResponse: unknown; metadata: ModelCallMetadata }
 > {
-  const fullResponse = await executeStandardCall({
+  const callResponse = await executeStandardCall({
     functionType: "generate-speech",
     input: text,
     model,
@@ -60,11 +68,11 @@ export async function generateSpeech(
     },
   });
 
-  return options?.fullResponse
+  return fullResponse
     ? {
-        speech: fullResponse.value,
-        rawResponse: fullResponse.rawResponse,
-        metadata: fullResponse.metadata,
+        speech: callResponse.value,
+        rawResponse: callResponse.rawResponse,
+        metadata: callResponse.metadata,
       }
-    : fullResponse.value;
+    : callResponse.value;
 }

@@ -14,16 +14,16 @@ function contentRequiresModeration(text: string): boolean {
 
 async function main() {
   const story = await guard(
-    (input, options) =>
-      generateText(
-        openai.CompletionTextGenerator({
+    (prompt, options) =>
+      generateText({
+        model: openai.CompletionTextGenerator({
           model: "gpt-3.5-turbo-instruct",
           temperature: 0.7,
           maxGenerationTokens: 250,
         }),
-        input,
-        options
-      ),
+        prompt,
+        ...options,
+      }),
     "Write a short story about a robot called Nox:\n\n", // without including the word Nox
     async (result) => {
       // If there's no error and the content needs moderation, throw a custom error.

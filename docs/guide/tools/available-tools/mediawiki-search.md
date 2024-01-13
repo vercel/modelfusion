@@ -32,7 +32,10 @@ const searchWikipedia = new MediaWikiSearchTool({
 You can then use the tool with `useTool` or `executeTool`:
 
 ```ts
-const result = await executeTool(searchWikipedia, {
-  query: "Albert Einstein",
+const result = await executeTool({
+  tool: searchWikipedia,
+  args: {
+    query: "Albert Einstein",
+  },
 });
 ```

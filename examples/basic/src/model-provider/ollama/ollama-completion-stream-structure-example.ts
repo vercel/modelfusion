@@ -7,8 +7,8 @@ import {
 import { z } from "zod";
 
 async function main() {
-  const structureStream = await streamStructure(
-    ollama
+  const structureStream = await streamStructure({
+    model: ollama
       .CompletionTextGenerator({
         model: "openhermes2.5-mistral",
         promptTemplate: ollama.prompt.ChatML,
@@ -20,7 +20,7 @@ async function main() {
       })
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
-    zodSchema(
+    schema: zodSchema(
       z.object({
         characters: z.array(
           z.object({
@@ -34,8 +34,9 @@ async function main() {
       })
     ),
 
-    "Generate 3 character descriptions for a fantasy role playing game. "
-  );
+    prompt:
+      "Generate 3 character descriptions for a fantasy role playing game.",
+  });
 
   for await (const part of structureStream) {
     if (part.isComplete) {

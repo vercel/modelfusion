@@ -17,11 +17,11 @@ An essential behavior of chat agents is to be able to choose from different tool
 ## Example
 
 ```ts
-const { text, toolResults } = await useTools(
-  openai.ChatTextGenerator({ model: "gpt-4-1106-preview" }),
-  [toolA, toolB, toolC],
-  [openai.ChatMessage.user(query)]
-);
+const { text, toolResults } = await useTools({
+  model: openai.ChatTextGenerator({ model: "gpt-4-1106-preview" }),
+  tools: [toolA, toolB, toolC],
+  prompt: [openai.ChatMessage.user(query)],
+});
 
 if (text != null) {
   console.log(`TEXT: ${text}`);

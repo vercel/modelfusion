@@ -19,10 +19,10 @@ Generate an embedding for a single value.
 ```ts
 import { embed, openai } from "modelfusion";
 
-const embedding = await embed(
-  openai.TextEmbedder(/* ... */),
-  "At first, Nox didn't know what to do with the pup."
-);
+const embedding = await embed({
+  model: openai.TextEmbedder(/* ... */),
+  value: "At first, Nox didn't know what to do with the pup.",
+});
 ```
 
 ### embedMany
@@ -34,15 +34,15 @@ Generate embeddings for multiple values.
 #### With OpenAI text embeddings
 
 ```ts
-const embeddings = await embedMany(
-  openai.TextEmbedder({
+const embeddings = await embedMany({
+  model: openai.TextEmbedder({
     /* ... */
   }),
-  [
+  values: [
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-  ]
-);
+  ],
+});
 ```
 
 ## Available Providers

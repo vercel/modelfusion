@@ -16,10 +16,12 @@ export async function generateToolCall<
   NAME extends string,
   SETTINGS extends ToolCallGenerationModelSettings,
 >(
-  model: ToolCallGenerationModel<PROMPT, SETTINGS>,
-  tool: ToolDefinition<NAME, PARAMETERS>,
-  prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: false }
+  params: {
+    model: ToolCallGenerationModel<PROMPT, SETTINGS>;
+    tool: ToolDefinition<NAME, PARAMETERS>;
+    prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT);
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<ToolCall<NAME, PARAMETERS>>;
 export async function generateToolCall<
   PARAMETERS,
@@ -27,13 +29,15 @@ export async function generateToolCall<
   NAME extends string,
   SETTINGS extends ToolCallGenerationModelSettings,
 >(
-  model: ToolCallGenerationModel<PROMPT, SETTINGS>,
-  tool: ToolDefinition<NAME, PARAMETERS>,
-  prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT),
-  options: FunctionOptions & { fullResponse: true }
+  params: {
+    model: ToolCallGenerationModel<PROMPT, SETTINGS>;
+    tool: ToolDefinition<NAME, PARAMETERS>;
+    prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT);
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   toolCall: ToolCall<NAME, PARAMETERS>;
-  response: unknown;
+  rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
 export async function generateToolCall<
@@ -41,16 +45,22 @@ export async function generateToolCall<
   PROMPT,
   NAME extends string,
   SETTINGS extends ToolCallGenerationModelSettings,
->(
-  model: ToolCallGenerationModel<PROMPT, SETTINGS>,
-  tool: ToolDefinition<NAME, PARAMETERS>,
-  prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+>({
+  model,
+  tool,
+  prompt,
+  fullResponse,
+  ...options
+}: {
+  model: ToolCallGenerationModel<PROMPT, SETTINGS>;
+  tool: ToolDefinition<NAME, PARAMETERS>;
+  prompt: PROMPT | ((tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT);
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | ToolCall<NAME, PARAMETERS>
   | {
       toolCall: ToolCall<NAME, PARAMETERS>;
-      response: unknown;
+      rawResponse: unknown;
       metadata: ModelCallMetadata;
     }
 > {
@@ -60,7 +70,7 @@ export async function generateToolCall<
       ? (prompt as (tool: ToolDefinition<NAME, PARAMETERS>) => PROMPT)(tool)
       : prompt;
 
-  const fullResponse = await executeStandardCall({
+  const callResponse = await executeStandardCall({
     functionType: "generate-tool-call",
     input: expandedPrompt,
     model,
@@ -117,11 +127,11 @@ export async function generateToolCall<
     },
   });
 
-  return options?.fullResponse
+  return fullResponse
     ? {
-        toolCall: fullResponse.value,
-        response: fullResponse.rawResponse,
-        metadata: fullResponse.metadata,
+        toolCall: callResponse.value,
+        rawResponse: callResponse.rawResponse,
+        metadata: callResponse.metadata,
       }
-    : fullResponse.value;
+    : callResponse.value;
 }

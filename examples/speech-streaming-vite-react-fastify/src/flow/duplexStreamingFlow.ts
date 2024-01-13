@@ -5,19 +5,20 @@ import { DefaultFlow } from "modelfusion-experimental/fastify-server";
 export const duplexStreamingFlow = new DefaultFlow({
   schema: duplexStreamingFlowSchema,
   async process({ input, run }) {
-    const textStream = await streamText(
-      openai
+    const textStream = await streamText({
+      model: openai
         .ChatTextGenerator({
           model: "gpt-4",
           temperature: 0.7,
           maxGenerationTokens: 1000,
         })
-        .withInstructionPrompt(),
-      { instruction: input.prompt }
-    );
+        .withTextPrompt(),
 
-    const speechStream = await streamSpeech(
-      elevenlabs.SpeechGenerator({
+      prompt: input.prompt,
+    });
+
+    const speechStream = await streamSpeech({
+      model: elevenlabs.SpeechGenerator({
         model: "eleven_turbo_v2",
         voice: "pNInz6obpgDQGcFmaJgB", // Adam
         optimizeStreamingLatency: 1,
@@ -29,8 +30,8 @@ export const duplexStreamingFlow = new DefaultFlow({
           chunkLengthSchedule: [50, 90, 120, 150, 200],
         },
       }),
-      textStream
-    );
+      text: textStream,
+    });
 
     // Run in parallel:
     await Promise.allSettled([

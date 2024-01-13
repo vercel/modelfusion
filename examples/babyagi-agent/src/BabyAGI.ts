@@ -29,10 +29,6 @@ async function runBabyAGI({
   objective: string;
   firstTask: string;
 }) {
-  const model = openai.CompletionTextGenerator({
-    model: "gpt-3.5-turbo-instruct",
-  });
-
   async function executeTask({
     objective,
     task,
@@ -40,13 +36,17 @@ async function runBabyAGI({
     objective: string;
     task: string;
   }) {
-    return await generateText(
-      model.withSettings({ temperature: 0.7, maxGenerationTokens: 2000 }),
-      [
+    return await generateText({
+      model: openai.CompletionTextGenerator({
+        model: "gpt-3.5-turbo-instruct",
+        temperature: 0.7,
+        maxGenerationTokens: 2000,
+      }),
+      prompt: [
         `You are an AI who performs one task based on the following objective: ${objective}. Your task: ${task}`,
         `Response:`,
-      ].join("\n")
-    );
+      ].join("\n"),
+    });
   }
 
   async function generateNewTasks({
@@ -60,17 +60,21 @@ async function runBabyAGI({
     completedTaskResult: string;
     existingTasks: string[];
   }) {
-    const newTasksText = await generateText(
-      model.withSettings({ temperature: 0.5, maxGenerationTokens: 100 }),
-      [
+    const newTasksText = await generateText({
+      model: openai.CompletionTextGenerator({
+        model: "gpt-3.5-turbo-instruct",
+        temperature: 0.5,
+        maxGenerationTokens: 100,
+      }),
+      prompt: [
         `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.`,
         `The last completed task has the result: ${completedTaskResult}.`,
         `This result was based on this task description: ${completedTask}.`,
         `These are the incomplete tasks: ${existingTasks.join(", ")}.`,
         `Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.`,
         `Return the tasks as an array.`,
-      ].join("\n")
-    );
+      ].join("\n"),
+    });
 
     return newTasksText.split("\n");
   }
@@ -84,9 +88,13 @@ async function runBabyAGI({
     objective: string;
     nextTaskId: number;
   }) {
-    const prioritizedTasksText = await generateText(
-      model.withSettings({ temperature: 0.5, maxGenerationTokens: 1000 }),
-      [
+    const prioritizedTasksText = await generateText({
+      model: openai.CompletionTextGenerator({
+        model: "gpt-3.5-turbo-instruct",
+        temperature: 0.5,
+        maxGenerationTokens: 1000,
+      }),
+      prompt: [
         `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:`,
         tasks.join(", "),
         `Consider the ultimate objective of your team: ${objective}.`,
@@ -95,8 +103,8 @@ async function runBabyAGI({
         `#. First task`,
         `#. Second task`,
         `Start the task list with number ${nextTaskId}.`,
-      ].join("\n")
-    );
+      ].join("\n"),
+    });
 
     return prioritizedTasksText.split("\n").map((task) => {
       const [_idPart, ...rest] = task.trim().split(".");

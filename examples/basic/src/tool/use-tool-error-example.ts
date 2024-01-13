@@ -24,11 +24,11 @@ export const calculatorThatThrowsError = new Tool({
 });
 
 async function main() {
-  const { tool, toolCall, args, ok, result } = await useTool(
-    openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-    calculatorThatThrowsError,
-    [openai.ChatMessage.user("What's fourteen times twelve?")]
-  );
+  const { tool, toolCall, args, ok, result } = await useTool({
+    model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
+    tool: calculatorThatThrowsError,
+    prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
+  });
 
   console.log(`Tool call:`, toolCall);
   console.log(`Tool:`, tool);

@@ -31,14 +31,14 @@ describe("streamText", () => {
       "data: [DONE]\n\n",
     ];
 
-    const stream = await streamText(
-      new OpenAIChatModel({
+    const stream = await streamText({
+      model: new OpenAIChatModel({
         api: new OpenAIApiConfiguration({ apiKey: "test-key" }),
         model: "gpt-3.5-turbo",
         numberOfGenerations: 2,
       }).withTextPrompt(),
-      "test prompt"
-    );
+      prompt: "test prompt",
+    });
 
     expect(await arrayFromAsync(stream)).toStrictEqual(["A"]);
   });
@@ -87,8 +87,8 @@ describe("streamStructure", () => {
       `data: [DONE]\n\n`,
     ];
 
-    const stream = await streamStructure(
-      new OpenAIChatModel({
+    const stream = await streamStructure({
+      model: new OpenAIChatModel({
         api: new OpenAIApiConfiguration({ apiKey: "test-key" }),
         model: "gpt-3.5-turbo",
       })
@@ -97,11 +97,9 @@ describe("streamStructure", () => {
           fnDescription: "Generate character descriptions.",
         })
         .withTextPrompt(),
-
-      zodSchema(z.object({ name: z.string() })),
-
-      "generate a name"
-    );
+      schema: zodSchema(z.object({ name: z.string() })),
+      prompt: "generate a name",
+    });
 
     // note: space moved to last chunk bc of trimming
     expect(await arrayFromAsync(stream)).toStrictEqual([

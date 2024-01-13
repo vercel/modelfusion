@@ -5,8 +5,8 @@ import { ImageGeneratorTool } from "../../tool/tools/image-generator-tool";
 modelfusion.setLogFormat("detailed-object");
 
 async function main() {
-  const { text, toolResults } = await useTools(
-    ollama
+  const { text, toolResults } = await useTools({
+    model: ollama
       .ChatTextGenerator({
         model: "mixtral",
         temperature: 0,
@@ -14,7 +14,7 @@ async function main() {
       .withInstructionPrompt()
       .asToolCallsOrTextGenerationModel(XmlTagToolCallsPromptTemplate.text()),
 
-    [
+    tools: [
       new ImageGeneratorTool({
         model: automatic1111
           .ImageGenerator({ model: "rpg_v5" })
@@ -22,8 +22,8 @@ async function main() {
       }),
     ],
 
-    "Create a picture of a knight fighting a dragon"
-  );
+    prompt: "Create a picture of a knight fighting a dragon",
+  });
 
   if (text != null) {
     console.log(`TEXT: ${text}`);

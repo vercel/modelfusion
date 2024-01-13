@@ -56,14 +56,12 @@ export class TextGenerationToolCallModel<
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
-    const { rawResponse, text, metadata } = await generateText(
-      this.model,
-      this.format.createPrompt(prompt, tool),
-      {
-        ...options,
-        fullResponse: true,
-      }
-    );
+    const { rawResponse, text, metadata } = await generateText({
+      model: this.model,
+      prompt: this.format.createPrompt(prompt, tool),
+      fullResponse: true,
+      ...options,
+    });
 
     try {
       return {

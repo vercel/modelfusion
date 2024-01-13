@@ -15,11 +15,11 @@ With [useTool](/api/modules/#usetool), you can invoke a single tool with a model
 ## Example: Using a Calculator
 
 ```ts
-const { tool, toolCall, args, ok, result } = await useTool(
-  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-  calculator,
-  [openai.ChatMessage.user("What's fourteen times twelve?")]
-);
+const { tool, toolCall, args, ok, result } = await useTool({
+  model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
+  tool: calculator,
+  prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
+});
 
 console.log(`Tool call:`, toolCall);
 console.log(`Tool:`, tool);

@@ -16,10 +16,10 @@ import {
  * @example
  * const textStream = await streamText(...);
  *
- * const speechStream = await streamSpeech(
- *   elevenlabs.SpeechGenerator(...),
- *   textStream
- * );
+ * const speechStream = await streamSpeech({
+ *   model: elevenlabs.SpeechGenerator(...),
+ *   text: textStream
+ * });
  *
  * for await (const speechPart of speechStream) {
  *   // ...
@@ -32,23 +32,32 @@ import {
  * @returns {AsyncIterableResultPromise<Buffer>} An async iterable promise that contains the synthesized speech chunks.
  */
 export async function streamSpeech(
-  model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>,
-  text: AsyncIterable<string> | string,
-  options?: FunctionOptions & { fullResponse?: false }
+  args: {
+    model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>;
+    text: AsyncIterable<string> | string;
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<AsyncIterable<Buffer>>;
 export async function streamSpeech(
-  model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>,
-  text: AsyncIterable<string> | string,
-  options: FunctionOptions & { fullResponse: true }
+  args: {
+    model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>;
+    text: AsyncIterable<string> | string;
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   speechStream: AsyncIterable<Buffer>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
-export async function streamSpeech(
-  model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>,
-  text: AsyncIterable<string> | string,
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+export async function streamSpeech({
+  model,
+  text,
+  fullResponse,
+  ...options
+}: {
+  model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>;
+  text: AsyncIterable<string> | string;
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | AsyncIterable<Buffer>
   | {
       speechStream: AsyncIterable<Buffer>;
@@ -67,7 +76,7 @@ export async function streamSpeech(
     textStream = text;
   }
 
-  const fullResponse = await executeStreamCall({
+  const callResponse = await executeStreamCall({
     functionType: "stream-speech",
     input: text,
     model,
@@ -77,10 +86,10 @@ export async function streamSpeech(
     processDelta: (delta) => delta.deltaValue,
   });
 
-  return options?.fullResponse
+  return fullResponse
     ? {
-        speechStream: fullResponse.value,
-        metadata: fullResponse.metadata,
+        speechStream: callResponse.value,
+        metadata: callResponse.metadata,
       }
-    : fullResponse.value;
+    : callResponse.value;
 }

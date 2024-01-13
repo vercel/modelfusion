@@ -12,15 +12,15 @@ async function main() {
     textGenerationResults,
     rawResponse,
     metadata,
-  } = await generateText(
-    openai.CompletionTextGenerator({
+  } = await generateText({
+    model: openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       numberOfGenerations: 2,
       maxGenerationTokens: 1000,
     }),
-    "Write a short story about a robot learning to love:\n\n",
-    { fullResponse: true }
-  );
+    prompt: "Write a short story about a robot learning to love:\n\n",
+    fullResponse: true,
+  });
 
   console.log(metadata);
 

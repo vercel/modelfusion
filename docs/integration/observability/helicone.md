@@ -27,14 +27,14 @@ import {
   openai,
 } from "modelfusion";
 
-const text = await generateText(
-  openai.ChatTextGenerator({
+const text = await generateText({
+  model: openai.ChatTextGenerator({
     // uses the API keys from the OPENAI_API_KEY and HELICONE_API_KEY environment variables
     api: new HeliconeOpenAIApiConfiguration(),
     model: "gpt-3.5-turbo",
-  })
+  }),
   // ....
-);
+});
 ```
 
 ### Example: Helicone & OpenAI chat with API keys
@@ -46,16 +46,16 @@ import {
   openai,
 } from "modelfusion";
 
-const text = await generateText(
-  openai.ChatTextGenerator({
+const text = await generateText({
+  model: openai.ChatTextGenerator({
     api: new HeliconeOpenAIApiConfiguration({
       openAIApiKey: myOpenAIApiKey,
       heliconeApiKey: myHeliconeApiKey,
     }),
     model: "gpt-3.5-turbo",
-  })
+  }),
   // ....
-);
+});
 ```
 
 ### Example: Helicone with custom call headers
@@ -67,8 +67,10 @@ import {
   openai,
 } from "modelfusion";
 
-const text = await generateText(
-  openai
+const text = await generateText({
+  functionId: "example-function", // function id is passed into the call headers
+
+  model: openai
     .ChatTextGenerator({
       api: new HeliconeOpenAIApiConfiguration({
         customCallHeaders: ({ functionId, callId }) => ({
@@ -82,8 +84,6 @@ const text = await generateText(
     })
     .withTextPrompt(),
 
-  "Write a short story about a robot learning to love",
-
-  { functionId: "example-function" }
-);
+  prompt: "Write a short story about a robot learning to love",
+});
 ```

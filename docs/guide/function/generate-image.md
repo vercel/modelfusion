@@ -29,10 +29,11 @@ The settings can be set in the constructor of the model, or in the `withSettings
 ```ts
 import { generateImage, openai } from "modelfusion";
 
-const imageBuffer = await generateImage(
-  openai.ImageGenerator(/* ... */),
-  "the wicked witch of the west in the style of early 19th century painting"
-);
+const imageBuffer = await generateImage({
+  model: openai.ImageGenerator(/* ... */),
+  prompt:
+    "the wicked witch of the west in the style of early 19th century painting",
+});
 ```
 
 #### Stability AI image buffer
@@ -40,10 +41,13 @@ const imageBuffer = await generateImage(
 ```ts
 import { generateImage, stability } from "modelfusion";
 
-const imageBuffer = await generateImage(stability.ImageGenerator(/* ... */), [
-  { text: "the wicked witch of the west" },
-  { text: "style of early 19th century painting", weight: 0.5 },
-]);
+const imageBuffer = await generateImage({
+  model: stability.ImageGenerator(/* ... */),
+  prompt: [
+    { text: "the wicked witch of the west" },
+    { text: "style of early 19th century painting", weight: 0.5 },
+  ],
+});
 ```
 
 #### OpenAI DALL·E base64 image
@@ -53,11 +57,12 @@ You can use the `fullResponse` setting to get a base-64 encoded string instead o
 ```ts
 import { generateImage, openai } from "modelfusion";
 
-const { imageBase64 } = await generateImage(
-  openai.ImageGenerator(/* ... */),
-  "the wicked witch of the west in the style of early 19th century painting",
-  { fullResponse: true }
-);
+const { imageBase64 } = await generateImage({
+  model: openai.ImageGenerator(/* ... */),
+  prompt:
+    "the wicked witch of the west in the style of early 19th century painting",
+  fullResponse: true,
+});
 ```
 
 #### Stability AI multiple image buffers
@@ -67,17 +72,17 @@ You can use the `numberOfGenerations` setting to generate multiple images. The r
 ```ts
 import { generateImage, stability } from "modelfusion";
 
-const { images } = await generateImage(
-  stability.ImageGenerator({
+const { images } = await generateImage({
+  model: stability.ImageGenerator({
     numberOfGenerations: 2,
     // ...
   }),
-  [
+  prompt: [
     { text: "the wicked witch of the west" },
     { text: "style of early 19th century painting", weight: 0.5 },
   ],
-  { fullResponse: true }
-);
+  fullResponse: true,
+});
 ```
 
 ## Prompt Template
@@ -105,10 +110,11 @@ const model = stability
 You can now generate images using a text prompt:
 
 ```ts
-const image = await generateImage(
+const image = await generateImage({
   model,
-  "the wicked witch of the west in the style of early 19th century painting"
-);
+  prompt:
+    "the wicked witch of the west in the style of early 19th century painting",
+});
 ```
 
 #### Prompt Templates

@@ -12,16 +12,18 @@ async function main() {
     textGenerationResults,
     rawResponse,
     metadata,
-  } = await generateText(
-    mistral
+  } = await generateText({
+    model: mistral
       .ChatTextGenerator({
         model: "mistral-medium",
         maxGenerationTokens: 120,
       })
       .withTextPrompt(),
-    "Write a short story about a robot learning to love:\n\n",
-    { fullResponse: true }
-  );
+
+    prompt: "Write a short story about a robot learning to love:\n\n",
+
+    fullResponse: true,
+  });
 
   console.log("RESPONSE:");
   console.log(JSON.stringify(rawResponse, null, 2));

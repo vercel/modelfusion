@@ -4,13 +4,14 @@ import { openai, streamText } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const textStream = await streamText(
-    openai
+  const textStream = await streamText({
+    model: openai
       .ChatTextGenerator({
         model: "gpt-3.5-turbo",
       })
       .withChatPrompt(),
-    {
+
+    prompt: {
       system: "You are a celebrated poet.",
       messages: [
         {
@@ -26,8 +27,8 @@ async function main() {
           content: "Write a short story about Robbie learning to love",
         },
       ],
-    }
-  );
+    },
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

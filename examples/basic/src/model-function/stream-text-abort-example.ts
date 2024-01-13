@@ -13,14 +13,14 @@ async function main() {
   })();
 
   try {
-    const textStream = await streamText(
-      openai.CompletionTextGenerator({
+    const textStream = await streamText({
+      model: openai.CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
         maxGenerationTokens: 500,
       }),
-      "Write a short story about a robot learning to love:\n\n",
-      { run: { abortSignal: abortController.signal } }
-    );
+      prompt: "Write a short story about a robot learning to love:\n\n",
+      run: { abortSignal: abortController.signal },
+    });
 
     for await (const textPart of textStream) {
       process.stdout.write(textPart);

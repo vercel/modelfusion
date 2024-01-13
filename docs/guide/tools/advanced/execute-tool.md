@@ -9,10 +9,13 @@ You can directly invoke a tool with [executeTool](/api/modules/#executetool). It
 ## Example
 
 ```ts
-const result = await executeTool(calculator, {
-  a: 14,
-  b: 12,
-  operator: "*",
+const result = await executeTool({
+  tool: calculator,
+  args: {
+    a: 14,
+    b: 12,
+    operator: "*",
+  },
 });
 ```
 

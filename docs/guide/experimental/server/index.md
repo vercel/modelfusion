@@ -115,13 +115,11 @@ export const myFlow = new DefaultFlow({
   schema: myFlowSchema,
   async process({ input, run }) {
     // Call some AI model:
-    const transcription = await generateTranscription(
-      openai.Transcriber({ model: "whisper-1" }),
-      {
-        /* ... */
-      },
-      { functionId: "transcribe" } // optional: provide functionId for logging
-    );
+    const transcription = await generateTranscription({
+      model: openai.Transcriber({ model: "whisper-1" }),
+      /* ... */
+      functionId: "transcribe", // optional: provide functionId for logging
+    });
 
     run.publishEvent({ type: "my-event", input: transcription });
 

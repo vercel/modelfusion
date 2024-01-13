@@ -25,7 +25,7 @@ export async function safeExecuteToolCall<
       toolCall,
       args: toolCall.args,
       ok: true,
-      result: await executeTool(tool, toolCall.args, options),
+      result: await executeTool({ tool, args: toolCall.args, ...options }),
     };
   } catch (error) {
     // If the error is an AbortError, rethrow it.

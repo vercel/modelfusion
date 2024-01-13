@@ -7,8 +7,8 @@ import {
 import { z } from "zod";
 
 async function main() {
-  const structureStream = await streamStructure(
-    llamacpp
+  const structureStream = await streamStructure({
+    model: llamacpp
       .CompletionTextGenerator({
         // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
         promptTemplate: llamacpp.prompt.ChatML,
@@ -18,7 +18,7 @@ async function main() {
       // automatically restrict the output to your schema using GBNF:
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
-    zodSchema(
+    schema: zodSchema(
       z.array(
         z.object({
           name: z.string(),
@@ -30,8 +30,9 @@ async function main() {
       )
     ),
 
-    "Generate 3 character descriptions for a fantasy role playing game. "
-  );
+    prompt:
+      "Generate 3 character descriptions for a fantasy role playing game. ",
+  });
 
   for await (const part of structureStream) {
     if (part.isComplete) {

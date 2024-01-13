@@ -39,8 +39,8 @@ const model = stability.ImageGenerator({
 ```ts
 import { stability, generateImage } from "modelfusion";
 
-const imageBase64 = await generateImage(
-  stability.ImageGenerator({
+const imageBase64 = await generateImage({
+  model: stability.ImageGenerator({
     model: "stable-diffusion-v1-6",
     cfgScale: 7,
     clipGuidancePreset: "FAST_BLUE",
@@ -48,11 +48,12 @@ const imageBase64 = await generateImage(
     width: 512,
     steps: 30,
   }),
-  [
+
+  prompt: [
     { text: "the wicked witch of the west" },
     { text: "style of early 19th century painting", weight: 0.5 },
-  ]
-);
+  ],
+});
 ```
 
 ## Prompt Template
@@ -62,12 +63,14 @@ const imageBase64 = await generateImage(
 You an use [mapBasicPromptToStabilityFormat()](/api/modules#mapbasicprompttostabilityformat) to use text prompts with Stability models. It is available as a shorthand method:
 
 ```ts
-const image = await generateImage(
-  stability
+const image = await generateImage({
+  model: stability
     .ImageGenerator({
       //...
     })
     .withTextPrompt(),
-  "the wicked witch of the west in the style of early 19th century painting"
-);
+
+  prompt:
+    "the wicked witch of the west in the style of early 19th century painting",
+});
 ```

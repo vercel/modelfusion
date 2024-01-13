@@ -9,7 +9,7 @@ import {
 dotenv.config();
 
 async function callModel(model: SpeechGenerationModel) {
-  return await generateSpeech(model, "Hello, World!");
+  return await generateSpeech({ model, text: "Hello, World!" });
 }
 async function main() {
   const model =

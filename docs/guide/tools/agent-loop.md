@@ -33,17 +33,17 @@ const chat: ChatPrompt = {
 // agent loop:
 while (true) {
   // call the language model and execute the tools:
-  const { text, toolResults } = await useTools(
-    openai
+  const { text, toolResults } = await useTools({
+    model: openai
       .ChatTextGenerator({
         model: "gpt-4-1106-preview",
         temperature: 0,
         maxGenerationTokens: 500,
       })
       .withChatPrompt(),
-    [new MathJsTool({ name: "calculator" })],
-    chat
-  );
+    tools: [new MathJsTool({ name: "calculator" })],
+    prompt: chat,
+  });
 
   // add the result to the messages for the next iteration:
   chat.messages.push(

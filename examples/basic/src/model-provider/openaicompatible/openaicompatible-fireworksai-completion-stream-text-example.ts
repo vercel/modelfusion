@@ -4,15 +4,15 @@ import { openaicompatible, streamText } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const textStream = await streamText(
-    openaicompatible.CompletionTextGenerator({
+  const textStream = await streamText({
+    model: openaicompatible.CompletionTextGenerator({
       api: openaicompatible.FireworksAIApi(),
       model: "accounts/fireworks/models/mistral-7b",
       maxGenerationTokens: 500,
     }),
 
-    "Write a story about a robot learning to love"
-  );
+    prompt: "Write a story about a robot learning to love",
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

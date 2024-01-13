@@ -8,8 +8,9 @@ import {
 dotenv.config();
 
 async function main() {
-  const text = await generateText(
-    openai
+  const text = await generateText({
+    functionId: "example-function",
+    model: openai
       .ChatTextGenerator({
         api: new HeliconeOpenAIApiConfiguration({
           customCallHeaders: ({ functionId, callId }) => ({
@@ -23,10 +24,8 @@ async function main() {
       })
       .withTextPrompt(),
 
-    "Write a short story about a robot learning to love",
-
-    { functionId: "example-function" }
-  );
+    prompt: "Write a short story about a robot learning to love",
+  });
 
   console.log(text);
 }

@@ -61,18 +61,16 @@ export class StructureFromTextGenerationModel<
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
-    const { rawResponse: response, text } = await generateText(
-      this.getModelWithJsonOutput(schema),
-      this.template.createPrompt(prompt, schema),
-      {
-        ...options,
-        fullResponse: true,
-      }
-    );
+    const { rawResponse, text } = await generateText({
+      model: this.model,
+      prompt: this.template.createPrompt(prompt, schema),
+      fullResponse: true,
+      ...options,
+    });
 
     try {
       return {
-        response,
+        rawResponse,
         value: this.template.extractStructure(text),
         valueText: text,
       };

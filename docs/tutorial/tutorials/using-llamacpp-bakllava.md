@@ -47,8 +47,8 @@ Now that we have our image encoded, we can call the BakLLaVA model with an instr
 ```ts
 import { LlamaCppBakLLaVA1Prompt, llamacpp, streamText } from "modelfusion";
 
-const textStream = await streamText(
-  llamacpp
+const textStream = await streamText({
+  model: llamacpp
     .CompletionTextGenerator({
       promptTemplate: llamacpp.prompt.BakLLaVA1,
       maxGenerationTokens: 1024,
@@ -56,13 +56,13 @@ const textStream = await streamText(
     })
     .withInstructionPrompt(),
 
-  {
+  prompt: {
     instruction: [
       { type: "text", text: "Describe the image in detail:\n\n" },
       { type: "image", base64Image: image },
     ],
-  }
-);
+  },
+});
 ```
 
 #### Stream the Output to the Terminal

@@ -5,13 +5,14 @@ import { z } from "zod";
 dotenv.config();
 
 async function main() {
-  const { id, name, args } = await generateToolCall(
-    openai.ChatTextGenerator({
+  const { id, name, args } = await generateToolCall({
+    model: openai.ChatTextGenerator({
       model: "gpt-4-1106-preview",
       temperature: 0,
       maxGenerationTokens: 200,
     }),
-    {
+
+    tool: {
       name: "getTemperature",
       description: "Get the temperature of a room.",
       parameters: zodSchema(
@@ -21,13 +22,14 @@ async function main() {
         })
       ),
     },
-    [
+
+    prompt: [
       openai.ChatMessage.system("You are home automation system."),
       openai.ChatMessage.user(
         "Show me the temperature for kitchen in Celsius."
       ),
-    ]
-  );
+    ],
+  });
 
   console.log(`Tool ID: ${id}`);
   console.log(`Tool name: ${name}`);

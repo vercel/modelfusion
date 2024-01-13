@@ -27,14 +27,15 @@ async function main() {
         { functionId: "fetch-image", ...options }
       );
 
-      const imageGenerationPrompt = await generateText(
-        openai
+      const imageGenerationPrompt = await generateText({
+        model: openai
           .ChatTextGenerator({
             model: "gpt-4-vision-preview",
             maxGenerationTokens: 128,
           })
           .withInstructionPrompt(),
-        {
+
+        prompt: {
           instruction: [
             {
               type: "text",
@@ -45,19 +46,20 @@ async function main() {
             },
             { type: "image", base64Image },
           ],
-        }
-      );
+        },
+      });
 
-      return generateImage(
-        stability.ImageGenerator({
+      return generateImage({
+        functionId: "generate-image",
+        model: stability.ImageGenerator({
           model: "stable-diffusion-v1-6",
           height: 512,
           width: 512,
           steps: 30,
         }),
-        [{ text: imageGenerationPrompt }],
-        { functionId: "generate-image", ...options }
-      );
+        prompt: [{ text: imageGenerationPrompt }],
+        ...options,
+      });
     },
     "https://upload.wikimedia.org/wikipedia/commons/d/d8/Steam_train%2C_Seahill_%281985%29_-_geograph.org.uk_-_3789663.jpg",
     { functionId: "enhance-image" }

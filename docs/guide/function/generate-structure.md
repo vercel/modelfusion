@@ -116,24 +116,26 @@ It allows you to create text or instruction prompts. You can pass a custom schem
 import { openai, zodSchema, generateStructure } from "modelfusion";
 import { z } from "zod";
 
-const sentiment = await generateStructure(
+const sentiment = await generateStructure({
   model,
-  zodSchema(
+
+  schema: zodSchema(
     z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
         .describe("Sentiment."),
     })
   ),
-  {
+
+  prompt: {
     system:
       "You are a sentiment evaluator. " +
       "Analyze the sentiment of the following product review:",
     instruction:
       "After I opened the package, I was met by a very unpleasant smell " +
       "that did not disappear even after washing. Never again!",
-  }
-);
+  },
+});
 ```
 
 ### streamStructure
@@ -158,9 +160,10 @@ When using Llama.cpp with a JSON array grammar, you can generate a top-level arr
 :::
 
 ```ts
-const structureStream = await streamStructure(
+const structureStream = await streamStructure({
   model,
-  zodSchema(
+
+  schema: zodSchema(
     z.object({
       characters: z.array(
         z.object({
@@ -173,11 +176,12 @@ const structureStream = await streamStructure(
       ),
     })
   ),
-  {
+
+  prompt: {
     instruction:
       "Generate 3 character descriptions for a fantasy role playing game.",
-  }
-);
+  },
+});
 
 for await (const part of structureStream) {
   if (!part.isComplete) {

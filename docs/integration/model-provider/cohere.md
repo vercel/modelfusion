@@ -39,14 +39,14 @@ const model = cohere.TextGenerator({
 ```ts
 import { cohere, generateText } from "modelfusion";
 
-const text = await generateText(
-  cohere.TextGenerator({
+const text = await generateText({
+  model: cohere.TextGenerator({
     model: "command",
     temperature: 0.7,
     maxGenerationTokens: 500,
   }),
-  "Write a short story about a robot learning to love:\n\n"
-);
+  prompt: "Write a short story about a robot learning to love:\n\n",
+});
 ```
 
 ### Stream Text
@@ -56,14 +56,14 @@ const text = await generateText(
 ```ts
 import { cohere, streamText } from "modelfusion";
 
-const textStream = await streamText(
-  cohere.TextGenerator({
+const textStream = await streamText({
+  model: cohere.TextGenerator({
     model: "command",
     temperature: 0.7,
     maxGenerationTokens: 500,
   }),
-  "Write a short story about a robot learning to love:\n\n"
-);
+  prompt: "Write a short story about a robot learning to love:\n\n",
+});
 
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
@@ -77,13 +77,13 @@ for await (const textPart of textStream) {
 ```ts
 import { cohere, embedMany } from "modelfusion";
 
-const embeddings = await embedMany(
-  cohere.TextEmbedder({ model: "embed-english-light-v2.0" }),
-  [
+const embeddings = await embedMany({
+  model: cohere.TextEmbedder({ model: "embed-english-light-v2.0" }),
+  values: [
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-  ]
-);
+  ],
+});
 ```
 
 ### Tokenize Text

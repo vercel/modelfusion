@@ -18,10 +18,12 @@ describe("streamText", () => {
         `"eval_count":317,"eval_duration":4639772000}\n`,
     ];
 
-    const stream = await streamText(
-      new OllamaChatModel({ model: "mistral:text" }).withTextPrompt(),
-      "hello"
-    );
+    const stream = await streamText({
+      model: new OllamaChatModel({
+        model: "mistral:text",
+      }).withTextPrompt(),
+      prompt: "hello",
+    });
 
     // note: space moved to last chunk bc of trimming
     expect(await arrayFromAsync(stream)).toStrictEqual([

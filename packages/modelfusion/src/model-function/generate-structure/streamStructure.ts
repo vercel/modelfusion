@@ -25,9 +25,9 @@ export type StructureStreamPart<STRUCTURE> =
  * @see https://modelfusion.dev/guide/function/generate-structure
  *
  * @example
- * const structureStream = await streamStructure(
- *   openai.ChatTextGenerator(...).asFunctionCallStructureGenerationModel(...),
- *   zodSchema(
+ * const structureStream = await streamStructure({
+ *   structureGenerator: openai.ChatTextGenerator(...).asFunctionCallStructureGenerationModel(...),
+ *   schema: zodSchema(
  *     z.array(
  *       z.object({
  *         name: z.string(),
@@ -37,12 +37,12 @@ export type StructureStreamPart<STRUCTURE> =
  *         description: z.string(),
  *       })
  *     ),
- *   [
+ *   prompt: [
  *     openai.ChatMessage.user(
  *       "Generate 3 character descriptions for a fantasy role playing game."
  *     ),
  *   ]
- * );
+ * });
  *
  * for await (const part of structureStream) {
  *   if (!part.isComplete) {
@@ -55,7 +55,7 @@ export type StructureStreamPart<STRUCTURE> =
  *   }
  * }
  *
- * @param {StructureStreamingModel<PROMPT>} model - The model to use for streaming
+ * @param {StructureStreamingModel<PROMPT>} structureGenerator - The model to use for streaming
  * @param {Schema<STRUCTURE>} schema - The schema to be used.
  * @param {PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT)} prompt
  * The prompt to be used.
@@ -69,26 +69,36 @@ export type StructureStreamPart<STRUCTURE> =
  * and a value that is either the partial structure or the final structure.
  */
 export async function streamStructure<STRUCTURE, PROMPT>(
-  model: StructureStreamingModel<PROMPT>,
-  schema: Schema<STRUCTURE> & JsonSchemaProducer,
-  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: false }
+  args: {
+    model: StructureStreamingModel<PROMPT>;
+    schema: Schema<STRUCTURE> & JsonSchemaProducer;
+    prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT);
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<AsyncIterable<StructureStreamPart<STRUCTURE>>>;
 export async function streamStructure<STRUCTURE, PROMPT>(
-  model: StructureStreamingModel<PROMPT>,
-  schema: Schema<STRUCTURE> & JsonSchemaProducer,
-  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options: FunctionOptions & { fullResponse: true }
+  args: {
+    model: StructureStreamingModel<PROMPT>;
+    schema: Schema<STRUCTURE> & JsonSchemaProducer;
+    prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT);
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   structureStream: AsyncIterable<StructureStreamPart<STRUCTURE>>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
-export async function streamStructure<STRUCTURE, PROMPT>(
-  model: StructureStreamingModel<PROMPT>,
-  schema: Schema<STRUCTURE> & JsonSchemaProducer,
-  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+export async function streamStructure<STRUCTURE, PROMPT>({
+  model,
+  schema,
+  prompt,
+  fullResponse,
+  ...options
+}: {
+  model: StructureStreamingModel<PROMPT>;
+  schema: Schema<STRUCTURE> & JsonSchemaProducer;
+  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT);
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | AsyncIterable<StructureStreamPart<STRUCTURE>>
   | {
       structureStream: AsyncIterable<StructureStreamPart<STRUCTURE>>;
@@ -104,7 +114,7 @@ export async function streamStructure<STRUCTURE, PROMPT>(
   let accumulatedText = "";
   let lastStructure: unknown | undefined;
 
-  const fullResponse = await executeStreamCall<
+  const callResponse = await executeStreamCall<
     unknown,
     StructureStreamPart<STRUCTURE>,
     StructureStreamingModel<PROMPT>
@@ -158,10 +168,10 @@ export async function streamStructure<STRUCTURE, PROMPT>(
     },
   });
 
-  return options?.fullResponse
+  return fullResponse
     ? {
-        structureStream: fullResponse.value,
-        metadata: fullResponse.metadata,
+        structureStream: callResponse.value,
+        metadata: callResponse.metadata,
       }
-    : fullResponse.value;
+    : callResponse.value;
 }

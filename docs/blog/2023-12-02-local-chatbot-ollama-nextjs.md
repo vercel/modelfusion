@@ -160,7 +160,7 @@ The `asChatMessages` helper converts the messages from the Vercel AI SDK to Mode
 With the prompt and the model, you can then use ModelFusion to call Ollama and generate a streaming response:
 
 ```ts
-const textStream = await streamText(model, prompt);
+const textStream = await streamText({ model, prompt });
 ```
 
 Finally you can return the streaming text response with the Vercel AI SDK. The `ModelFusionTextStream` adapts ModelFusion's streaming response to the Vercel AI SDK's streaming response:

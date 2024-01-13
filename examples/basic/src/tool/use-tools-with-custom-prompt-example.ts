@@ -7,12 +7,12 @@ dotenv.config();
 modelfusion.setLogFormat("basic-text");
 
 async function main() {
-  const { text, toolResults } = await useTools(
-    openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-    [calculator /* ... */],
+  const { text, toolResults } = await useTools({
+    model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
+    tools: [calculator /* ... */],
     // Instead of using a curried function,
     // you can also work with the tools directly:
-    (tools) => [
+    prompt: (tools) => [
       openai.ChatMessage.system(
         // Here the available tools are used to create
         // a more precise prompt that reduces errors:
@@ -23,8 +23,8 @@ async function main() {
       openai.ChatMessage.user("What's fourteen times twelve?"),
       // openai.ChatMessage.user("What's twelve plus 1234?"),
       // openai.ChatMessage.user("Tell me about Berlin"),
-    ]
-  );
+    ],
+  });
 
   if (text != null) {
     console.log(`TEXT: ${text}`);

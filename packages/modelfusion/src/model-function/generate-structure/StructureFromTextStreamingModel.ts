@@ -36,11 +36,11 @@ export class StructureFromTextStreamingModel<
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
-    const textStream = await streamText(
-      this.getModelWithJsonOutput(schema),
-      this.template.createPrompt(prompt, schema),
-      options
-    );
+    const textStream = await streamText({
+      model: this.model,
+      prompt: this.template.createPrompt(prompt, schema),
+      ...options,
+    });
 
     const queue = new AsyncQueue<Delta<string>>();
 

@@ -5,8 +5,8 @@ import fs from "node:fs";
 dotenv.config();
 
 async function main() {
-  const { images } = await generateImage(
-    stability.ImageGenerator({
+  const { images } = await generateImage({
+    model: stability.ImageGenerator({
       model: "stable-diffusion-v1-6",
       numberOfGenerations: 2,
       cfgScale: 7,
@@ -15,12 +15,14 @@ async function main() {
       width: 512,
       steps: 30,
     }),
-    [
+
+    prompt: [
       { text: "the wicked witch of the west" },
       { text: "style of early 19th century painting", weight: 0.5 },
     ],
-    { fullResponse: true }
-  );
+
+    fullResponse: true,
+  });
 
   for (let i = 0; i < images.length; i++) {
     const path = `./stability-image-example-${i}.png`;

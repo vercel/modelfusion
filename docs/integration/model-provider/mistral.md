@@ -42,18 +42,18 @@ const model = mistral.ChatTextGenerator({
 ```ts
 import { generateText, mistral } from "modelfusion";
 
-const text = await generateText(
-  mistral.ChatTextGenerator({
+const text = await generateText({
+  model: mistral.ChatTextGenerator({
     model: "mistral-medium",
     maxGenerationTokens: 120,
   }),
-  [
+  prompt: [
     {
       role: "user",
       content: "Write a short story about a robot learning to love:",
     },
-  ]
-);
+  ],
+});
 ```
 
 ### Stream Text
@@ -63,18 +63,18 @@ const text = await generateText(
 ```ts
 import { mistral, streamText } from "modelfusion";
 
-const textStream = await streamText(
-  mistral.ChatTextGenerator({
+const textStream = await streamText({
+  model: mistral.ChatTextGenerator({
     model: "mistral-medium",
     maxGenerationTokens: 120,
   }),
-  [
+  prompt: [
     {
       role: "user",
       content: "Write a short story about a robot learning to love:",
     },
-  ]
-);
+  ],
+});
 
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
@@ -88,13 +88,13 @@ for await (const textPart of textStream) {
 ```ts
 import { embedMany, mistral } from "modelfusion";
 
-const embeddings = await embedMany(
-  mistral.TextEmbedder({ model: "mistral-embed" }),
-  [
+const embeddings = await embedMany({
+  model: mistral.TextEmbedder({ model: "mistral-embed" }),
+  values: [
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-  ]
-);
+  ],
+});
 ```
 
 ## Prompt Template
@@ -103,49 +103,52 @@ const embeddings = await embedMany(
 
 #### Text prompt
 
-[MistralChatprompt.text()](/api/namespaces/MistralChatprompt) lets you use basic text prompts with Mistral text generation models. It is available as a shorthand method:
+[MistralChatPrompt.text()](/api/namespaces/MistralChatPrompt) lets you use basic text prompts with Mistral text generation models. It is available as a shorthand method:
 
 ```ts
-const textStream = await streamText(
-  mistral
+const textStream = await streamText({
+  model: mistral
     .ChatTextGenerator({
       // ...
     })
     .withTextPrompt(),
-  "Write a short story about a robot learning to love."
-);
+
+  prompt: "Write a short story about a robot learning to love.",
+});
 ```
 
 #### Instruction prompt
 
-[MistralChatprompt.instruction()](/api/namespaces/MistralChatprompt) lets you use [instruction prompts](/api/interfaces/InstructionPrompt) with Mistral text generation models. It is available as a shorthand method:
+[MistralChatPrompt.instruction()](/api/namespaces/MistralChatPrompt) lets you use [instruction prompts](/api/interfaces/InstructionPrompt) with Mistral text generation models. It is available as a shorthand method:
 
 ```ts
-const textStream = await streamText(
-  mistral
+const textStream = await streamText({
+  model: mistral
     .ChatTextGenerator({
       // ...
     })
     .withInstructionPrompt(),
-  {
+
+  prompt: {
     system: "You are a celebrated poet.",
     instruction: "Write a short story about a robot learning to love.",
-  }
-);
+  },
+});
 ```
 
 #### Chat prompt
 
-[MistralChatprompt.chat()](/api/namespaces/MistralChatprompt) lets you use [chat prompts](/api/interfaces/ChatPrompt) with Mistral text generation models. It is available as a shorthand method:
+[MistralChatPrompt.chat()](/api/namespaces/MistralChatPrompt) lets you use [chat prompts](/api/interfaces/ChatPrompt) with Mistral text generation models. It is available as a shorthand method:
 
 ```ts
-const textStream = await streamText(
-  mistral
+const textStream = await streamText({
+  prompt: mistral
     .ChatTextGenerator({
       // ...
     })
     .withChatPrompt(),
-  {
+
+  model: {
     system: "You are a celebrated poet.",
     messages: [
       {
@@ -161,6 +164,6 @@ const textStream = await streamText(
         content: "Write a short story about Robbie learning to love",
       },
     ],
-  }
-);
+  },
+});
 ```

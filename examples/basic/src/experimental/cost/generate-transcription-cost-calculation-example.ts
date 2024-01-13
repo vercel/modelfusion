@@ -14,11 +14,11 @@ async function main() {
 
   const run = new DefaultRun();
 
-  const transcription = await generateTranscription(
-    openai.Transcriber({ model: "whisper-1" }),
-    { type: "mp3", data },
-    { run }
-  );
+  const transcription = await generateTranscription({
+    model: openai.Transcriber({ model: "whisper-1" }),
+    data: { type: "mp3", data },
+    run,
+  });
 
   console.log(transcription);
 

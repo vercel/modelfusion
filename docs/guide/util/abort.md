@@ -11,7 +11,9 @@ Model calls can be expensive and long running. In interactive user interfaces su
 ```ts
 const abortController = new AbortController();
 
-generateText(model, "Write a short story about a robot learning to love:\n\n", {
+generateText({
+  model,
+  prompt: "Write a short story about a robot learning to love:\n\n",
   run: { abortSignal: abortController.signal },
 })
   .then(/* ... */)

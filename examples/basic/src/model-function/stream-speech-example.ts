@@ -5,25 +5,25 @@ import fs from "node:fs";
 dotenv.config();
 
 async function main() {
-  const textStream = await streamText(
-    openai.CompletionTextGenerator({
+  const textStream = await streamText({
+    model: openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       temperature: 0.7,
       maxGenerationTokens: 100,
     }),
-    "Write a short story about a robot learning to love:\n\n"
-  );
+    prompt: "Write a short story about a robot learning to love:\n\n",
+  });
 
-  const speechStream = await streamSpeech(
-    elevenlabs.SpeechGenerator({
+  const speechStream = await streamSpeech({
+    model: elevenlabs.SpeechGenerator({
       voice: "pNInz6obpgDQGcFmaJgB", // Adam
       voiceSettings: {
         stability: 1,
         similarityBoost: 0.35,
       },
     }),
-    textStream
-  );
+    text: textStream,
+  });
 
   // delete output file if it already exists:
   if (fs.existsSync("./stream-text-example.mp3")) {

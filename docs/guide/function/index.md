@@ -11,21 +11,21 @@ You can call these functions with a model, a prompt, and additional [FunctionOpt
 ```ts
 import { generateText, openai } from "modelfusion";
 
-const text = await generateText(
-  // model:
-  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+const text = await generateText({
+  // model (determines the prompt type)
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
 
   // prompt (type depends on model):
-  "Write a short story about a robot learning to love:\n\n",
+  prompt: "Write a short story about a robot learning to love:\n\n",
 
   // additional configuration (all optional):
-  {
-    functionId, // function identifier for logging
-    logging, // logging configuration
-    observers, // call observers
-    run, // run object
-  }
-);
+  functionId, // function identifier for logging
+  callId, // call ID of the parent ModelFusion call (for tracing)
+  logging, // logging configuration
+  observers, // call observers
+  run, // run object
+  cache, // optional catch (only supported by generateText at the moment)
+});
 ```
 
 ## Streaming Functions
@@ -41,15 +41,16 @@ Model functions return rich results that include the original response and metad
 import { generateText, openai } from "modelfusion";
 
 // access the raw (original) response (needs to be typed) and the metadata:
-const { text, texts, rawResponse, metadata } = await generateText(
-  openai.CompletionTextGenerator({
+const { text, texts, rawResponse, metadata } = await generateText({
+  model: openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxGenerationTokens: 1000,
     n: 2, // generate 2 completions
   }),
-  "Write a short story about a robot learning to love:\n\n"
-  { fullResponse: true }
-);
+  prompt: "Write a short story about a robot learning to love:\n\n",
+
+  fullResponse: true, // enable rich response
+});
 
 console.log(metadata);
 

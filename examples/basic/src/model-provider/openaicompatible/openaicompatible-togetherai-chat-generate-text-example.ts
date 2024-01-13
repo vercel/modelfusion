@@ -4,8 +4,8 @@ import { generateText, openaicompatible } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const text = await generateText(
-    openaicompatible
+  const text = await generateText({
+    model: openaicompatible
       .ChatTextGenerator({
         api: openaicompatible.TogetherAIApi(),
         model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
@@ -13,8 +13,8 @@ async function main() {
       })
       .withTextPrompt(),
 
-    "Write a story about a robot learning to love"
-  );
+    prompt: "Write a story about a robot learning to love",
+  });
 
   console.log(text);
 }

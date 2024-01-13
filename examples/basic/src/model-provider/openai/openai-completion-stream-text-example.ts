@@ -4,13 +4,14 @@ import { openai, streamText } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const textStream = await streamText(
-    openai.CompletionTextGenerator({
+  const textStream = await streamText({
+    model: openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       maxGenerationTokens: 1000,
     }),
-    "You are a story writer. Write a story about a robot learning to love"
-  );
+    prompt:
+      "You are a story writer. Write a story about a robot learning to love",
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

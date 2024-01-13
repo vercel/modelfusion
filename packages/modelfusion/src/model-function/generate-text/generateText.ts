@@ -20,26 +20,29 @@ import {
  * @see https://modelfusion.dev/guide/function/generate-text
  *
  * @example
- * const text = await generateText(
- *   openai.CompletionTextGenerator(...),
- *   "Write a short story about a robot learning to love:\n\n"
- * );
+ * const text = await generateText({
+ *   model: openai.CompletionTextGenerator(...),
+ *   prompt: "Write a short story about a robot learning to love:\n\n"
+ * });
  *
  * @param {TextGenerationModel<PROMPT, TextGenerationModelSettings>} model - The text generation model to use.
  * @param {PROMPT} prompt - The prompt to use for text generation.
- * @param {FunctionOptions} [options] - Optional parameters for the function.
  *
  * @returns {Promise<string>} - A promise that resolves to the generated text.
  */
 export async function generateText<PROMPT>(
-  model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
-  prompt: PROMPT,
-  options?: FunctionOptions & { fullResponse?: false }
+  args: {
+    model: TextGenerationModel<PROMPT, TextGenerationModelSettings>;
+    prompt: PROMPT;
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<string>;
 export async function generateText<PROMPT>(
-  model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
-  prompt: PROMPT,
-  options: FunctionOptions & { fullResponse: true }
+  args: {
+    model: TextGenerationModel<PROMPT, TextGenerationModelSettings>;
+    prompt: PROMPT;
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   text: string;
   finishReason: TextGenerationFinishReason;
@@ -48,11 +51,16 @@ export async function generateText<PROMPT>(
   rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
-export async function generateText<PROMPT>(
-  model: TextGenerationModel<PROMPT, TextGenerationModelSettings>,
-  prompt: PROMPT,
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+export async function generateText<PROMPT>({
+  model,
+  prompt,
+  fullResponse,
+  ...options
+}: {
+  model: TextGenerationModel<PROMPT, TextGenerationModelSettings>;
+  prompt: PROMPT;
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | string
   | {
       text: string;
@@ -63,7 +71,7 @@ export async function generateText<PROMPT>(
       metadata: ModelCallMetadata;
     }
 > {
-  const fullResponse = await executeStandardCall({
+  const callResponse = await executeStandardCall({
     functionType: "generate-text",
     input: prompt,
     model,
@@ -136,10 +144,10 @@ export async function generateText<PROMPT>(
     },
   });
 
-  const textGenerationResults = fullResponse.value;
+  const textGenerationResults = callResponse.value;
   const firstResult = textGenerationResults[0];
 
-  return options?.fullResponse
+  return fullResponse
     ? {
         text: firstResult.text,
         finishReason: firstResult.finishReason,
@@ -147,8 +155,8 @@ export async function generateText<PROMPT>(
           (textGeneration) => textGeneration.text
         ),
         textGenerationResults,
-        rawResponse: fullResponse.rawResponse,
-        metadata: fullResponse.metadata,
+        rawResponse: callResponse.rawResponse,
+        metadata: callResponse.metadata,
       }
     : firstResult.text;
 }

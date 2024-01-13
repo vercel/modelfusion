@@ -9,8 +9,11 @@ import {
 dotenv.config();
 
 async function callModel(model: TextStreamingModel<InstructionPrompt>) {
-  return streamText(model, {
-    instruction: "Write a short story about a robot learning to love.",
+  return streamText({
+    model,
+    prompt: {
+      instruction: "Write a short story about a robot learning to love.",
+    },
   });
 }
 

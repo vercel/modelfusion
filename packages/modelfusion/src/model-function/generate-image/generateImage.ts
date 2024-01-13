@@ -15,34 +15,33 @@ import {
  * @see https://modelfusion.dev/guide/function/generate-image
  *
  * @example
- * const image = await generateImage(
- *   stability.ImageGenerator(...),
- *   [
+ * const image = await generateImage({
+ *   imageGenerator: stability.ImageGenerator(...),
+ *   prompt: [
  *     { text: "the wicked witch of the west" },
  *     { text: "style of early 19th century painting", weight: 0.5 },
  *   ]
- * );
+ * });
  *
  * @param {ImageGenerationModel<PROMPT, ImageGenerationModelSettings>} model - The image generation model to be used.
  * @param {PROMPT} prompt - The prompt to be used for image generation.
- * @param {FunctionOptions} [options] - Optional settings for the function.
  *
  * @returns {Promise} - Returns a promise that resolves to the generated image.
  * The image is a Buffer containing the image data in PNG format.
  */
 export async function generateImage<PROMPT>(
-  model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>,
-  prompt: PROMPT,
-  options?: FunctionOptions & {
+  args: {
+    model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>;
+    prompt: PROMPT;
     fullResponse?: false;
-  }
+  } & FunctionOptions
 ): Promise<Buffer>;
 export async function generateImage<PROMPT>(
-  model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>,
-  prompt: PROMPT,
-  options: FunctionOptions & {
+  args: {
+    model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>;
+    prompt: PROMPT;
     fullResponse: true;
-  }
+  } & FunctionOptions
 ): Promise<{
   image: Buffer;
   imageBase64: string;
@@ -51,13 +50,16 @@ export async function generateImage<PROMPT>(
   rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
-export async function generateImage<PROMPT>(
-  model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>,
-  prompt: PROMPT,
-  options?: FunctionOptions & {
-    fullResponse?: boolean;
-  }
-): Promise<
+export async function generateImage<PROMPT>({
+  model,
+  prompt,
+  fullResponse,
+  ...options
+}: {
+  model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>;
+  prompt: PROMPT;
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | Buffer
   | string
   | {
@@ -69,7 +71,7 @@ export async function generateImage<PROMPT>(
       metadata: ModelCallMetadata;
     }
 > {
-  const fullResponse = await executeStandardCall({
+  const callResponse = await executeStandardCall({
     functionType: "generate-image",
     input: prompt,
     model,
@@ -84,19 +86,19 @@ export async function generateImage<PROMPT>(
     },
   });
 
-  const imagesBase64 = fullResponse.value;
+  const imagesBase64 = callResponse.value;
   const images = imagesBase64.map((imageBase64) =>
     Buffer.from(imageBase64, "base64")
   );
 
-  return options?.fullResponse
+  return fullResponse
     ? {
         image: images[0],
         imageBase64: imagesBase64[0],
         images,
         imagesBase64,
-        rawResponse: fullResponse.rawResponse,
-        metadata: fullResponse.metadata,
+        rawResponse: callResponse.rawResponse,
+        metadata: callResponse.metadata,
       }
     : images[0];
 }

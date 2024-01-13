@@ -16,8 +16,8 @@ Depending on the context, it can be important to provide an escape hatch when th
 
 ```ts
 const extractNameAndPopulation = async (text: string) =>
-  generateStructure(
-    openai
+  generateStructure({
+    model: openai
       .ChatTextGenerator({
         model: "gpt-4",
         temperature: 0, // remove randomness as much as possible
@@ -29,7 +29,7 @@ const extractNameAndPopulation = async (text: string) =>
       })
       .withInstructionPrompt(),
 
-    zodSchema(
+    schema: zodSchema(
       z.object({
         city: z
           .object({
@@ -41,7 +41,7 @@ const extractNameAndPopulation = async (text: string) =>
       })
     ),
 
-    {
+    prompt: {
       system: [
         "Extract the name and the population of the city.",
         // escape hatch to limit extractions to city information:
@@ -49,8 +49,8 @@ const extractNameAndPopulation = async (text: string) =>
         "If it is not, set city to null.",
       ].join("\n"),
       instruction: text,
-    }
-  );
+    },
+  });
 
 const extractedInformation1 = await extractNameAndPopulation(
   sanFranciscoWikipedia.slice(0, 2000)
@@ -73,13 +73,14 @@ This approach generates a text output and the input needs to fit into the chat p
 
 ```ts
 function extractText({ text, topic }: { text: string; topic: string }) {
-  return generateText(
-    openai.ChatTextGenerator({
+  return generateText({
+    model: openai.ChatTextGenerator({
       model: "gpt-4",
       temperature: 0,
       maxGenerationTokens: 500,
     }),
-    [
+
+    prompt: [
       openai.ChatMessage.system(
         [
           `## ROLE`,
@@ -90,8 +91,8 @@ function extractText({ text, topic }: { text: string; topic: string }) {
       ),
       openai.ChatMessage.user(`## TOPIC\n${topic}`),
       openai.ChatMessage.user(`## TEXT\n${text}`),
-    ]
-  );
+    ],
+  });
 }
 
 const extractedInformation = await extractText({

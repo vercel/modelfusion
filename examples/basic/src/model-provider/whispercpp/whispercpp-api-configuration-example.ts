@@ -7,8 +7,8 @@ dotenv.config();
 async function main() {
   const data = await fs.promises.readFile("data/test.wav");
 
-  const transcription = await generateTranscription(
-    whispercpp.Transcriber({
+  const transcription = await generateTranscription({
+    model: whispercpp.Transcriber({
       // Custom API configuration:
       api: whispercpp.Api({
         baseUrl: {
@@ -17,11 +17,11 @@ async function main() {
         },
       }),
     }),
-    {
+    data: {
       type: "wav",
       data,
-    }
-  );
+    },
+  });
 
   console.log(transcription);
 }

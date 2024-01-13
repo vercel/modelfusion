@@ -32,13 +32,13 @@ async function main() {
   };
 
   while (true) {
-    const { text, toolResults } = await useTools(
-      openai
+    const { text, toolResults } = await useTools({
+      model: openai
         .ChatTextGenerator({ model: "gpt-4-1106-preview", temperature: 0 })
         .withChatPrompt(),
-      [searchWikipedia, readWikipediaArticle],
-      chat
-    );
+      tools: [searchWikipedia, readWikipediaArticle],
+      prompt: chat,
+    });
 
     // add the assistant and tool messages to the chat:
     chat.messages.push(

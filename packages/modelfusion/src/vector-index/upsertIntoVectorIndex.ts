@@ -33,11 +33,11 @@ export async function upsertIntoVectorIndex<VALUE, OBJECT>(
     inputPropertyName: "objects",
     execute: async (options) => {
       // many embedding models support bulk embedding, so we first embed all texts:
-      const embeddings = await embedMany(
-        embeddingModel,
-        objects.map(getValueToEmbed),
-        options
-      );
+      const embeddings = await embedMany({
+        model: embeddingModel,
+        values: objects.map(getValueToEmbed),
+        ...options,
+      });
 
       await vectorIndex.upsertMany(
         objects.map((object, i) => ({

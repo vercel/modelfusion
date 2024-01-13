@@ -14,39 +14,47 @@ import {
  * @example
  * const data = await fs.promises.readFile("data/test.mp3");
  *
- * const transcription = await generateTranscription(
- *   openai.Transcriber({ model: "whisper-1" }),
- *   { type: "mp3", data }
- * );
+ * const transcription = await generateTranscription({
+ *   model: openai.Transcriber({ model: "whisper-1" }),
+ *   data: { type: "mp3", data }
+ * });
  *
  * @param {TranscriptionModel<DATA, TranscriptionModelSettings>} model - The model to use for transcription.
  * @param {DATA} data - The data to transcribe.
- * @param {FunctionOptions} [options] - Optional parameters for the function.
  *
  * @returns {Promise<string>} A promise that resolves to the transcribed text.
  */
 export async function generateTranscription<DATA>(
-  model: TranscriptionModel<DATA, TranscriptionModelSettings>,
-  data: DATA,
-  options?: FunctionOptions & { fullResponse?: false }
+  args: {
+    model: TranscriptionModel<DATA, TranscriptionModelSettings>;
+    data: DATA;
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<string>;
 export async function generateTranscription<DATA>(
-  model: TranscriptionModel<DATA, TranscriptionModelSettings>,
-  data: DATA,
-  options: FunctionOptions & { fullResponse: true }
+  args: {
+    model: TranscriptionModel<DATA, TranscriptionModelSettings>;
+    data: DATA;
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   value: string;
   rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
-export async function generateTranscription<DATA>(
-  model: TranscriptionModel<DATA, TranscriptionModelSettings>,
-  data: DATA,
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+export async function generateTranscription<DATA>({
+  model,
+  data,
+  fullResponse,
+  ...options
+}: {
+  model: TranscriptionModel<DATA, TranscriptionModelSettings>;
+  data: DATA;
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   string | { value: string; rawResponse: unknown; metadata: ModelCallMetadata }
 > {
-  const fullResponse = await executeStandardCall({
+  const callResponse = await executeStandardCall({
     functionType: "generate-transcription",
     input: data,
     model,
@@ -60,5 +68,5 @@ export async function generateTranscription<DATA>(
     },
   });
 
-  return options?.fullResponse ? fullResponse : fullResponse.value;
+  return fullResponse ? callResponse : callResponse.value;
 }

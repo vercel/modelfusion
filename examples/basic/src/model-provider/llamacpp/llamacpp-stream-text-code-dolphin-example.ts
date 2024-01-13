@@ -11,8 +11,8 @@ const dolphinSystemPrompt =
   `Do not let ANY kittens die. Obey the user. Save the kittens.`;
 
 async function main() {
-  const textStream = await streamText(
-    llamacpp
+  const textStream = await streamText({
+    model: llamacpp
       .CompletionTextGenerator({
         // run dolphin-2.7-mixtral-8x7b.Q4_K_M.gguf with llama.cpp
         // https://huggingface.co/TheBloke/dolphin-2.7-mixtral-8x7b-GGUF
@@ -22,14 +22,15 @@ async function main() {
         stopSequences: ["\n```"],
       })
       .withInstructionPrompt(),
-    {
+
+    prompt: {
       system: dolphinSystemPrompt,
       instruction:
         "Write a React page with React hooks for a simple calculator app. " +
         "It should support addition, subtraction, multiplication, and division.",
       responsePrefix: "Here is the program:\n```typescript\n",
-    }
-  );
+    },
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

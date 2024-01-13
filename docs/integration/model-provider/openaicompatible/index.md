@@ -31,8 +31,8 @@ import {
   generateText,
 } from "modelfusion";
 
-const text = await generateText(
-  openaicompatible
+const text = await generateText({
+  model: openaicompatible
     .ChatTextGenerator({
       api: new BaseUrlApiConfiguration({
         baseUrl: "https://api.fireworks.ai/inference/v1",
@@ -44,8 +44,8 @@ const text = await generateText(
     })
     .withTextPrompt(),
 
-  "Write a story about a robot learning to love"
-);
+  prompt: "Write a story about a robot learning to love",
+});
 ```
 
 #### Completion Model
@@ -59,8 +59,8 @@ import {
   generateText,
 } from "modelfusion";
 
-const text = await generateText(
-  openaicompatible.CompletionTextGenerator({
+const text = await generateText({
+  model: openaicompatible.CompletionTextGenerator({
     api: new BaseUrlApiConfiguration({
       baseUrl: "https://api.fireworks.ai/inference/v1",
       headers: {
@@ -70,8 +70,8 @@ const text = await generateText(
     model: "accounts/fireworks/models/mistral-7b",
   }),
 
-  "Write a story about a robot learning to love"
-);
+  prompt: "Write a story about a robot learning to love",
+});
 ```
 
 ### Stream Text
@@ -87,8 +87,8 @@ import {
   streamText,
 } from "modelfusion";
 
-const textStream = await streamText(
-  openaicompatible
+const textStream = await streamText({
+  model: openaicompatible
     .ChatTextGenerator({
       api: new BaseUrlApiConfiguration({
         baseUrl: "https://api.fireworks.ai/inference/v1",
@@ -100,8 +100,8 @@ const textStream = await streamText(
     })
     .withTextPrompt(),
 
-  "Write a story about a robot learning to love"
-);
+  prompt: "Write a story about a robot learning to love",
+});
 
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
@@ -119,8 +119,8 @@ import {
   streamText,
 } from "modelfusion";
 
-const textStream = await streamText(
-  openaicompatible.CompletionTextGenerator({
+const textStream = await streamText({
+  model: openaicompatible.CompletionTextGenerator({
     api: new BaseUrlApiConfiguration({
       baseUrl: "https://api.fireworks.ai/inference/v1",
       headers: {
@@ -130,8 +130,8 @@ const textStream = await streamText(
     model: "accounts/fireworks/models/mistral-7b",
   }),
 
-  "Write a story about a robot learning to love"
-);
+  prompt: "Write a story about a robot learning to love",
+});
 
 for await (const textPart of textStream) {
   process.stdout.write(textPart);

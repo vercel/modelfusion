@@ -46,14 +46,17 @@ The `OllamaCompletionModel` uses the Ollama completion API to generate text.
 ```ts
 import { ollama, generateText } from "modelfusion";
 
-const text = await generateText(
-  ollama.CompletionTextGenerator({
-    model: "mistral:text", // mistral base model without instruct fine-tuning
-    temperature: 0.7,
-    maxGenerationTokens: 120,
-  }),
-  { prompt: "Write a short story about a robot learning to love:\n\n" }
-);
+const text = await generateText({
+  model: ollama
+    .CompletionTextGenerator({
+      model: "mistral:text", // mistral base model without instruct fine-tuning (no prompt template)
+      temperature: 0.7,
+      maxGenerationTokens: 120,
+    })
+    .withTextPrompt(), // use text prompt style
+
+  prompt: "Write a short story about a robot learning to love:\n\n",
+});
 ```
 
 When using the Ollama completion API, you can use the `raw` mode and set a prompt template on the model.
@@ -62,18 +65,18 @@ This enables you to use the `withChatPrompt`, `withInstructionPrompt` and `withT
 ```ts
 import { generateText, ollama } from "modelfusion";
 
-const text = await generateText(
-  ollama
+const text = await generateText({
+  model: ollama
     .CompletionTextGenerator({
       model: "mistral",
       promptTemplate: ollama.prompt.Mistral,
       raw: true, // required when using custom prompt template
       maxGenerationTokens: 120,
     })
-    .withTextPrompt(),
+    .withTextPrompt(), // use text prompt style
 
-  "Write a short story about a robot learning to love."
-);
+  prompt: "Write a short story about a robot learning to love.",
+});
 ```
 
 ### Generate Text (Chat)
@@ -85,18 +88,18 @@ The `OllamaChatModel` uses the Ollama chat API to generate text.
 ```ts
 import { ollama, generateText } from "modelfusion";
 
-const text = await generateText(
-  ollama.ChatTextGenerator({
+const text = await generateText({
+  model: ollama.ChatTextGenerator({
     model: "llama2:chat",
     maxGenerationTokens: 500,
   }),
-  [
+  prompt: [
     {
       role: "user",
       content: "Write a short story about a robot learning to love:",
     },
-  ]
-);
+  ],
+});
 ```
 
 The Ollama prompt also supports base64-encoded png and jpeg images, e.g. with an instruction prompt:
@@ -108,20 +111,21 @@ const image = fs.readFileSync(path.join("data", "comic-mouse.png"), {
   encoding: "base64",
 });
 
-const text = await generateText(
-  openai
+const text = await generateText({
+  model: openai
     .ChatTextGenerator({
       model: "gpt-4-vision-preview",
       maxGenerationTokens: 1000,
     })
     .withInstructionPrompt(),
-  {
+
+  prompt: {
     instruction: [
       { type: "text", text: "Describe the image in detail:\n\n" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ],
-  }
-);
+  },
+});
 ```
 
 You can use [prompt templates](/guide/function/generate-text#prompt-template), e.g. using the `.withTextPrompt()` helper:
@@ -129,16 +133,16 @@ You can use [prompt templates](/guide/function/generate-text#prompt-template), e
 ```ts
 import { ollama, generateText } from "modelfusion";
 
-const text = await generateText(
-  ollama
+const text = await generateText({
+  model: ollama
     .ChatTextGenerator({
       model: "llama2:chat",
       maxGenerationTokens: 500,
     })
     .withTextPrompt(),
 
-  "Write a short story about a robot learning to love:"
-);
+  prompt: "Write a short story about a robot learning to love:",
+});
 ```
 
 ### Stream Text (Completion)
@@ -148,8 +152,8 @@ const text = await generateText(
 ```ts
 import { ollama, streamText } from "modelfusion";
 
-const textStream = await streamText(
-  ollama
+const textStream = await streamText({
+  model: ollama
     .CompletionTextGenerator({
       model: "mistral",
       promptTemplate: ollama.prompt.Mistral,
@@ -158,8 +162,8 @@ const textStream = await streamText(
     })
     .withTextPrompt(),
 
-  "Write a short story about a robot learning to love:\n\n"
-);
+  prompt: "Write a short story about a robot learning to love:",
+});
 
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
@@ -173,18 +177,18 @@ for await (const textPart of textStream) {
 ```ts
 import { ollama, streamText } from "modelfusion";
 
-const textStream = await streamText(
-  ollama.ChatTextGenerator({
+const textStream = await streamText({
+  model: ollama.ChatTextGenerator({
     model: "llama2:chat",
     maxGenerationTokens: 500,
   }),
-  [
+  prompt: [
     {
       role: "user",
       content: "Write a short story about a robot learning to love:",
     },
-  ]
-);
+  ],
+});
 ```
 
 ### Generate Structure (Chat)
@@ -203,24 +207,26 @@ const model = ollama
   })
   .asStructureGenerationModel(jsonStructurePrompt.text());
 
-const sentiment = await generateStructure(
+const sentiment = await generateStructure({
   model,
-  zodSchema(
+
+  schema: zodSchema(
     z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
         .describe("Sentiment."),
     })
   ),
-  {
+
+  prompt: {
     system:
       "You are a sentiment evaluator. " +
       "Analyze the sentiment of the following product review:",
     instruction:
       "After I opened the package, I was met by a very unpleasant smell " +
       "that did not disappear even after washing. Never again!",
-  }
-);
+  },
+});
 ```
 
 ### Embed Text
@@ -230,10 +236,13 @@ const sentiment = await generateStructure(
 ```ts
 import { embedMany, ollama } from "modelfusion";
 
-const embeddings = await embedMany(ollama.TextEmbedder({ model: "llama2" }), [
-  "At first, Nox didn't know what to do with the pup.",
-  "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-]);
+const embeddings = await embedMany({
+  model: ollama.TextEmbedder({ model: "llama2" }),
+  values: [
+    "At first, Nox didn't know what to do with the pup.",
+    "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
+  ],
+});
 ```
 
 ## Prompt Templates

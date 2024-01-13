@@ -26,10 +26,10 @@ async function main() {
       })
       .withChatPrompt();
 
-    const textStream = await streamText(
+    const textStream = await streamText({
       model,
-      await trimChatPrompt({ prompt: chat, model })
-    );
+      prompt: await trimChatPrompt({ prompt: chat, model }),
+    });
 
     let fullResponse = "";
     process.stdout.write("\nAssistant : ");

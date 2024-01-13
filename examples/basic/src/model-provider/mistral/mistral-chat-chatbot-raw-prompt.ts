@@ -19,10 +19,10 @@ async function main() {
 
     chat.push({ role: "user", content: userInput });
 
-    const textStream = await streamText(
-      mistral.ChatTextGenerator({ model: "mistral-medium" }),
-      chat
-    );
+    const textStream = await streamText({
+      model: mistral.ChatTextGenerator({ model: "mistral-medium" }),
+      prompt: chat,
+    });
 
     let fullResponse = "";
     process.stdout.write("\nAssistant : ");

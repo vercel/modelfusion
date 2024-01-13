@@ -8,8 +8,8 @@ import {
 dotenv.config();
 
 async function main() {
-  const textStream = await streamText(
-    openai
+  const textStream = await streamText({
+    model: openai
       .ChatTextGenerator({
         api: new HeliconeOpenAIApiConfiguration(),
         model: "gpt-3.5-turbo",
@@ -18,8 +18,8 @@ async function main() {
       })
       .withTextPrompt(),
 
-    "Write a short story about a robot learning to love"
-  );
+    prompt: "Write a short story about a robot learning to love",
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

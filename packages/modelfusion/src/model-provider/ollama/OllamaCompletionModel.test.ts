@@ -36,12 +36,12 @@ describe("generateText", () => {
       eval_duration: 1325948000,
     };
 
-    const result = await generateText(
-      new OllamaCompletionModel({
+    const result = await generateText({
+      model: new OllamaCompletionModel({
         model: "test-model",
       }).withTextPrompt(),
-      "test prompt"
-    );
+      prompt: "test prompt",
+    });
 
     expect(result).toEqual("test response");
   });
@@ -55,15 +55,15 @@ describe("generateText", () => {
     };
 
     try {
-      await generateText(
-        new OllamaCompletionModel({
+      await generateText({
+        model: new OllamaCompletionModel({
           api: new OllamaApiConfiguration({
             retry: retryNever(),
           }),
           model: "test-model",
         }).withTextPrompt(),
-        "test prompt"
-      );
+        prompt: "test prompt",
+      });
       fail("Should have thrown ApiCallError");
     } catch (expectedError) {
       expect(expectedError).toBeInstanceOf(ApiCallError);
@@ -87,10 +87,12 @@ describe("streamText", () => {
         `"prompt_eval_count":5,"prompt_eval_duration":193273000,"eval_count":136,"eval_duration":1966852000}\n`,
     ];
 
-    const stream = await streamText(
-      new OllamaCompletionModel({ model: "mistral:text" }).withTextPrompt(),
-      "hello"
-    );
+    const stream = await streamText({
+      model: new OllamaCompletionModel({
+        model: "mistral:text",
+      }).withTextPrompt(),
+      prompt: "hello",
+    });
 
     // note: space moved to last chunk bc of trimming
     expect(await arrayFromAsync(stream)).toStrictEqual([
@@ -125,17 +127,17 @@ describe("streamStructure", () => {
         `"eval_count":12,"eval_duration":215282000}\n`,
     ];
 
-    const stream = await streamStructure(
-      new OllamaCompletionModel({
+    const stream = await streamStructure({
+      model: new OllamaCompletionModel({
         model: "mistral:text",
         promptTemplate: Text,
         format: "json",
         raw: true,
       }).asStructureGenerationModel(jsonStructurePrompt.text()),
 
-      zodSchema(z.object({ name: z.string() })),
-      "generate a name"
-    );
+      schema: zodSchema(z.object({ name: z.string() })),
+      prompt: "generate a name",
+    });
 
     // note: space moved to last chunk bc of trimming
     expect(await arrayFromAsync(stream)).toStrictEqual([
