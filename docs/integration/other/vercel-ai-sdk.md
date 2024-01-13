@@ -7,7 +7,7 @@ title: Vercel AI SDK
 
 The [Vercel AI SDK](https://github.com/vercel/ai) is a library for building AI-powered streaming text and chat UIs. It provides hooks for React, Svelte, Vue, and Solid to easily integrate streaming AI responses into your web application. You can use the Vercel AI SDK with ModelFusion streams out of the box.
 
-The ModelFusion extension `@modelfusion/vercel-ai` ([source code](https://github.com/lgrammel/modelfusion/tree/main/extensions/vercel-ai)) provides a helper function to convert ModelFusion streams to a format that is compatible with the Vercel AI SDK.
+The ModelFusion extension `@modelfusion/vercel-ai` ([source code](https://github.com/lgrammel/modelfusion/tree/main/packages/%40modelfusion-vercel-ai)) provides a helper function to convert ModelFusion streams to a format that is compatible with the Vercel AI SDK.
 
 You can install it using npm:
 

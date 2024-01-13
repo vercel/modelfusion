@@ -1,56 +1,77 @@
 ---
-description: Tutorial on how to build a local chatbot with Next.js, Ollama, ModelFusion and the Vercel AI SDK.
-slug: ollama-nextjs-chatbot
+description: Tutorial on how to build a local chatbot with Next.js, Llama.cpp, ModelFusion and the Vercel AI SDK.
+slug: llamacpp-nextjs-chatbot
 authors:
   - name: Lars Grammel
     title: AI Engineer
     url: https://github.com/lgrammel
     image_url: https://avatars.githubusercontent.com/u/205036
-tags: [tutorial, chatbot, ollama, nextjs, modelfusion, vercel-ai-sdk]
-image: /img/blog/2023-12-02-local-chatbot-ollama-nextjs.png
+tags: [tutorial, chatbot, llamacpp, nextjs, modelfusion, vercel-ai-sdk]
+image: /img/blog/2024-01-13-local-chatbot-llamacpp-nextjs.png
 hide_table_of_contents: false
 ---
 
-# Create Your Own Local Chatbot with Next.js, Ollama, and ModelFusion
+# Create Your Own Local Chatbot with Next.js, Llama.cpp, and ModelFusion
 
-<img src="/img/blog/2023-12-02-local-chatbot-ollama-nextjs.png"></img>
+<img src="/img/blog/2024-01-13-local-chatbot-llamacpp-nextjs.png"></img>
 
-In this blog post, we'll build a [Next.js](https://nextjs.org/) chatbot that runs on your computer. We'll use [Ollama](https://ollama.ai/) to serve the [OpenHermes 2.5 Mistral](https://ollama.ai/library/openhermes2.5-mistral) LLM (large language model) locally, the [Vercel AI SDK](https://github.com/vercel/ai) to handle stream forwarding and rendering, and [ModelFusion](https://modelfusion.ai/) to integrate Ollama with the Vercel AI SDK. The chatbot will be able to generate responses to user messages in real-time.
+In this blog post, we'll build a [Next.js](https://nextjs.org/) chatbot that runs on your computer. We'll use [Llama.cpp](https://github.com/ggerganov/llama.cpp) to serve the [OpenHermes 2.5 Mistral](https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B) LLM (large language model) locally, the [Vercel AI SDK](https://github.com/vercel/ai) to handle stream forwarding and rendering, and [ModelFusion](https://modelfusion.ai/) to integrate Llama.cpp with the Vercel AI SDK. The chatbot will be able to generate responses to user messages in real-time.
 
 The architecture looks like this:
 
-<img src="/img/blog/2023-12-02-local-chatbot-ollama-nextjs-diagram.png"></img>
+<img src="/img/blog/2024-01-13-local-chatbot-llamacpp-nextjs-diagram.png"></img>
 
-You can find a full Next.js, Vercel AI SDK, Ollama & ModelFusion starter with more examples here: [github/com/lgrammel/modelfusion-ollama-nextjs-starter](https://github.com/lgrammel/modelfusion-ollama-nextjs-starter)
+You can find a full Next.js, Vercel AI SDK, Llama.cpp & ModelFusion starter with more examples here: [github/com/lgrammel/modelfusion-Llamacpp-nextjs-starter](https://github.com/lgrammel/modelfusion-llamacpp-nextjs-starter)
 
 This blog post explains step by step how to build the chatbot. Let's get started!
 
-## Installing Ollama
+## Setup Llama.cpp
 
-The first step to getting started with our local chatbot is installing [Ollama](https://ollama.ai/). Ollama is a versatile platform that allows us to run LLMs like [OpenHermes 2.5 Mistral](https://ollama.ai/library/openhermes2.5-mistral) on your machine. This is crucial for our chatbot as it forms the backbone of its AI capabilities.
+The first step to getting started with our local chatbot is to setup [Llama.cpp](https://github.com/ggerganov/llama.cpp).
 
-### Step 1: Download Ollama
+Llama.cpp is an LLM (large language model) inference engine implemented in C++ that allows us to run LLMs like [OpenHermes 2.5 Mistral](https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B) on your machine. This is crucial for our chatbot as it forms the backbone of its AI capabilities.
 
-1. Visit the official [Ollama website](https://ollama.ai/).
-1. Follow the instructions provided on the site to download and install Ollama on your machine.
+### Step 1: Build Llama.cpp
 
-### Step 2: Pulling OpenHermes 2.5 Mistral
-
-Once Ollama is installed, you'll need to pull the specific LLM we will be using for this project, [OpenHermes 2.5 Mistral](https://ollama.ai/library/openhermes2.5-mistral). As of November 2023, it is one of the best open-source LLMs in the 7B parameter class. You need at least a MacBook M1 with 8GB of RAM or a similarly compatible computer to run it.
+Llama.cpp requires you to clone the repository and build it on your machine. Please follow the instructions on the [Llama.cpp README](https://github.com/ggerganov/llama.cpp?tab=readme-ov-file#usage):
 
 1. Open your terminal or command prompt.
-2. Run the following command:
+
+1. Clone the repository:
+
    ```sh
-   ollama pull openhermes2.5-mistral
+   git clone https://github.com/ggerganov/llama.cpp
+   cd llama.cpp
    ```
 
-This command will download the LLM and store it on your machine. You can now use it to generate text.
+1. Compile llama.cpp:
 
-:::tip
-You can find the best-performing open-source LLMs on the [HuggingFace Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard). They are ranked using a mix of benchmarks and grouped into different parameter classes so you can choose the best LLM for your machine. Many of the LLMs on the leaderboard are available on Ollama.
+   1. Linux/Mac: Run `make`
+   1. Windows or other setups: Please follow the instructions on the [Llama.cpp README](https://github.com/ggerganov/llama.cpp?tab=readme-ov-file#build).
+
+### Step 2: Downloading OpenHermes 2.5 Mistral GGUF
+
+Once Llama.cpp is ready, you'll need to pull the specific LLM we will be using for this project, [OpenHermes 2.5 Mistral](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF).
+
+1. [Download the OpenHermes 2.5 Mistral model from HuggingFace](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF/tree/main). I'll use `openhermes-2.5-mistral-7b.Q4_K_M.gguf` in this tutorial.
+
+2. Move the model file into the `models/` directory of your local Llama.cpp repository.
+
+Llama.cpp runs LLMs in a format called `GGUF` (GPT-Generated Unified Format). You can find many [GGUF models on HuggingFace](https://huggingface.co/models?sort=trending&search=gguf). 4-bit quantized models that fit in your machine's memory, e.g. 7B param models on a 8GB or 16GB machine, are usually the best models to run.
+
+:::info
+Quantization involves reducing the precision of the numerical values representing the model's weights, often from 32-bit floating points to lower precision formats like 4-bit. This decreases the model's memory footprint and computational requirements.
 :::
 
-After completing these steps, your system is equipped with Ollama and the OpenHermes 2.5 Mistral model, ready to be integrated into our Next.js chatbot.
+### Step 3: Start the Llama.cpp Server
+
+You can now start the Llama.cpp server by running the following command in your terminal (Mac/Linux):
+
+```sh
+./server -m models/openhermes-2.5-mistral-7b.Q4_K_M.gguf
+```
+
+After completing these steps, your system is running a Llama.cpp server with the OpenHermes 2.5 Mistral model, ready to be integrated into our Next.js chatbot.
 
 ## Creating the Next.js Project
 
@@ -61,7 +82,7 @@ Here are the steps to create the Next.js project:
 1. Execute the following command in your terminal to create a new Next.js project:
 
    ```sh
-   npx create-next-app@latest ollama-nextjs-chatbot
+   npx create-next-app@latest llamacpp-nextjs-chatbot
    ```
 
 2. You will be prompted to configure various aspects of your Next.js application. Here are the settings for our chatbot project:
@@ -80,10 +101,10 @@ Here are the steps to create the Next.js project:
 3. Once the project is initialized, navigate to the project directory:
 
    ```sh
-   cd ollama-nextjs-chatbot
+   cd llamacpp-nextjs-chatbot
    ```
 
-By following these steps, you have successfully created and configured your Next.js project. This forms the base of our chatbot application, where we will later integrate the AI functionalities using Ollama and ModelFusion. The next part of the tutorial will guide you through installing additional libraries and setting up the backend logic for the chatbot.
+By following these steps, you have successfully created and configured your Next.js project. This forms the base of our chatbot application, where we will later integrate the AI functionalities using Llama.cpp and ModelFusion. The next part of the tutorial will guide you through installing additional libraries and setting up the backend logic for the chatbot.
 
 :::tip
 You can verify your setup by running `npm run dev` in your terminal and navigating to [http://localhost:3000](http://localhost:3000) in your browser. You should see the default Next.js page.
@@ -94,7 +115,7 @@ You can verify your setup by running `npm run dev` in your terminal and navigati
 We will use several libraries to build our chatbot. Here is an overview of the libraries we will use:
 
 - **Vercel AI SDK**: The [Vercel AI SDK](https://github.com/vercel/ai) provides React hooks for creating chats (`useChat`) as well as streams that forward AI responses to the frontend (`StreamingTextResponse`).
-- **ModelFusion**: [ModelFusion](https://github.com/lgrammel/modelfusion) is a library for building multi-modal AI applications that I've been working on. It provides a `streamText` function that calls AI models and returns a streaming response. ModelFusion also contains an Ollama integration that we will use to access the OpenHermes 2.5 Mistral model.
+- **ModelFusion**: [ModelFusion](https://github.com/lgrammel/modelfusion) is a library for building multi-modal AI applications that I've been working on. It provides a `streamText` function that calls AI models and returns a streaming response. ModelFusion also contains a [Llama.cpp integration](https://modelfusion.dev/integration/model-provider/llamacpp) that we will use to access the OpenHermes 2.5 Mistral model.
 - **ModelFusion Vercel AI SDK Integration**: The [@modelfusion/vercel-ai](https://github.com/lgrammel/modelfusion/tree/main/packages/%40modelfusion-vercel-ai) integration provides a `ModelFusionTextStream` that adapts ModelFusion's text streaming to the Vercel AI SDK's streaming response.
 
 You can run the following command in the chatbot project directory to install all libraries:
@@ -116,7 +137,7 @@ The API route requires several important imports from the `ai`, `modelfusion`, a
 ```ts
 import { ModelFusionTextStream, asChatMessages } from "@modelfusion/vercel-ai";
 import { Message, StreamingTextResponse } from "ai";
-import { ollama, streamText } from "modelfusion";
+import { llamacpp, streamText } from "modelfusion";
 ```
 
 We will use the [edge runtime](https://edge-runtime.vercel.app/):
@@ -136,11 +157,16 @@ export async function POST(req: Request) {
 }
 ```
 
-We initialize a ModelFusion text generation model for calling the Ollama chat API with the OpenHermes 2.5 Mistral model. The `.withChatPrompt()` method creates an adapted model for chat prompts:
+We initialize a ModelFusion text generation model for calling the Llama.cpp chat API with the OpenHermes 2.5 Mistral model. The `.withChatPrompt()` method creates an adapted model for chat prompts:
 
 ```ts
-const model = ollama
-  .ChatTextGenerator({ model: "openhermes2.5-mistral" })
+const model = llamacpp
+  .CompletionTextGenerator({
+    promptTemplate: llamacpp.prompt.ChatML, // OpenHermes uses the ChatML prompt format
+    temperature: 0,
+    cachePrompt: true, // Cache previous processing for fast responses
+    maxGenerationTokens: 1024, // Room for answer
+  })
   .withChatPrompt();
 ```
 
@@ -157,7 +183,7 @@ const prompt = {
 
 The `asChatMessages` helper converts the messages from the Vercel AI SDK to ModelFusion chat messages.
 
-With the prompt and the model, you can then use ModelFusion to call Ollama and generate a streaming response:
+With the prompt and the model, you can then use ModelFusion to call Llama.cpp and generate a streaming response:
 
 ```ts
 const textStream = await streamText({ model, prompt });
@@ -233,10 +259,10 @@ You can now navigate to [http://localhost:3000](http://localhost:3000) in your b
 
 Below is a screenshot of what you can expect your chatbot interface to look like when you run the application:
 
-<img src="/img/blog/2023-12-02-local-chatbot-ollama-nextjs-screenshot.png"></img>
+<img src="/img/blog/2024-01-13-local-chatbot-llamacpp-nextjs-screenshot.png"></img>
 
 ## Conclusion
 
-And there you have it—a fully functional local chatbot built with Next.js, Ollama, and ModelFusion at your fingertips. We've traversed the path from setting up our development environment, integrating a robust language model, and spinning up a user-friendly chat interface.
+And there you have it—a fully functional local chatbot built with Next.js, Llama.cpp, and ModelFusion at your fingertips. We've traversed the path from setting up our development environment, integrating a robust language model, and spinning up a user-friendly chat interface.
 
 The code is intended as a starting point for your projects. Have fun exploring!
