@@ -1,5 +1,45 @@
 # Changelog
 
+## v0.122.0 - 2024-01-13
+
+### Changed
+
+- **breaking change**: Switch from positional parameters to named parameters (parameter object) for all model and tool functions. The parameter object is the first and only parameter of the function. Additional options (last parameter before) are now part of the parameter object. Example:
+
+  ```ts
+  // old:
+  const text = await generateText(
+    openai
+      .ChatTextGenerator({
+        model: "gpt-3.5-turbo",
+        maxGenerationTokens: 1000,
+      })
+      .withTextPrompt(),
+
+    "Write a short story about a robot learning to love",
+
+    {
+      functionId: "example-function",
+    }
+  );
+
+  // new:
+  const text = await generateText({
+    model: openai
+      .ChatTextGenerator({
+        model: "gpt-3.5-turbo",
+        maxGenerationTokens: 1000,
+      })
+      .withTextPrompt(),
+
+    prompt: "Write a short story about a robot learning to love",
+
+    functionId: "example-function",
+  });
+  ```
+
+  This change was made to make the API more flexible and to allow for future extensions.
+
 ## v0.121.2 - 2024-01-11
 
 ### Fixed
