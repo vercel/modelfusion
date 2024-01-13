@@ -14,7 +14,7 @@ sidebar_position: 0
 - **Built for production**: ModelFusion is fully tree-shakeable, can be used in serverless environments, and only uses a minimal set of dependencies.
 
 :::note
-ModelFusion is getting closer to a stable v1, which is expected in Q1/2024. The main API is now mostly stable, but until version 1.0 there may be breaking changes. Feedback and suggestions are welcome.
+ModelFusion is getting closer to a stable v1, which is expected in Q2/2024. The main API is now mostly stable, but until version 1.0 there may be breaking changes. Feedback and suggestions are welcome.
 :::
 
 ## Installation
