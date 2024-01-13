@@ -12,6 +12,10 @@ import {
 } from "../tool/generate-tool-calls/ToolCallsGenerationEvent.js";
 import { ModelInformation } from "./ModelInformation.js";
 import {
+  ClassifyFinishedEvent,
+  ClassifyStartedEvent,
+} from "./classify/ClassifyEvent.js";
+import {
   EmbeddingFinishedEvent,
   EmbeddingStartedEvent,
 } from "./embed/EmbeddingEvent.js";
@@ -97,6 +101,7 @@ export interface BaseModelCallFinishedEvent extends BaseFunctionFinishedEvent {
 }
 
 export type ModelCallStartedEvent =
+  | ClassifyStartedEvent
   | EmbeddingStartedEvent
   | ImageGenerationStartedEvent
   | SpeechGenerationStartedEvent
@@ -110,6 +115,7 @@ export type ModelCallStartedEvent =
   | TranscriptionStartedEvent;
 
 export type ModelCallFinishedEvent =
+  | ClassifyFinishedEvent
   | EmbeddingFinishedEvent
   | ImageGenerationFinishedEvent
   | SpeechGenerationFinishedEvent
