@@ -68,14 +68,17 @@ async function main() {
     const question = await chat.question("You: ");
 
     // hypothetical document embeddings:
-    const hypotheticalAnswer = await generateText(
+    const hypotheticalAnswer = await generateText({
       // use cheaper model to generate hypothetical answer:
-      openai.ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 0 }),
-      [
+      model: openai.ChatTextGenerator({
+        model: "gpt-3.5-turbo",
+        temperature: 0,
+      }),
+      prompt: [
         openai.ChatMessage.system(`Answer the user's question.`),
         openai.ChatMessage.user(question),
-      ]
-    );
+      ],
+    });
 
     // search for text chunks that are similar to the hypothetical answer:
     const information = await retrieve(
@@ -89,10 +92,10 @@ async function main() {
     );
 
     // answer the user's question using the retrieved information:
-    const textStream = await streamText(
+    const textStream = await streamText({
       // use stronger model to answer the question:
-      openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
-      [
+      model: openai.ChatTextGenerator({ model: "gpt-4", temperature: 0 }),
+      prompt: [
         openai.ChatMessage.system(
           // Instruct the model on how to answer:
           `Answer the user's question using only the provided information.\n` +
@@ -108,8 +111,8 @@ async function main() {
           fnName: "getInformation",
           content: JSON.stringify(information),
         }),
-      ]
-    );
+      ],
+    });
 
     // stream the answer to the terminal:
     process.stdout.write("\nAI : ");

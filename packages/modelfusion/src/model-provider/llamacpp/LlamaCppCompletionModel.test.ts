@@ -28,10 +28,10 @@ describe("streamText", () => {
         `"tokens_predicted":69,"truncated":false}\n\n`,
     ];
 
-    const stream = await streamText(
-      new LlamaCppCompletionModel().withTextPrompt(),
-      "hello"
-    );
+    const stream = await streamText({
+      model: new LlamaCppCompletionModel().withTextPrompt(),
+      prompt: "hello",
+    });
 
     // note: space moved to last chunk bc of trimming
     expect(await arrayFromAsync(stream)).toStrictEqual([

@@ -11,15 +11,16 @@ dotenv.config();
 async function main() {
   const run = new DefaultRun();
 
-  const image = await generateImage(
-    openai.ImageGenerator({
+  const image = await generateImage({
+    model: openai.ImageGenerator({
       model: "dall-e-3",
       size: "1024x1024",
       quality: "hd",
     }),
-    "the wicked witch of the west in the style of early 19th century painting",
-    { run }
-  );
+    prompt:
+      "the wicked witch of the west in the style of early 19th century painting",
+    run,
+  });
 
   const cost = await calculateCost({
     calls: extractSuccessfulModelCalls(run.events),

@@ -24,14 +24,15 @@ const base64Image = Buffer.from(await imageResponse.arrayBuffer()).toString(
 After obtaining the base image, the next step is to create an image generation prompt using GPT 4 Vision. This prompt will instruct Dall-E 3 to generate a description for creating a cyberpunk-style version of the original image.
 
 ```ts
-const imageGenerationPrompt = await generateText(
-  openai
+const imageGenerationPrompt = await generateText({
+  model: openai
     .ChatTextGenerator({
       model: "gpt-4-vision-preview",
       maxGenerationTokens: 128,
     })
     .withInstructionPrompt(),
-  {
+
+  prompt: {
     instruction: [
       {
         type: "text",
@@ -42,8 +43,8 @@ const imageGenerationPrompt = await generateText(
       },
       { type: "image", base64Image },
     ],
-  }
-);
+  },
+});
 
 console.log(`Image generation prompt:`);
 console.log(imageGenerationPrompt);
@@ -52,14 +53,14 @@ console.log(imageGenerationPrompt);
 Dall-E 3 will interpret the prompt and create a new image in the specified cyberpunk style.
 
 ```ts
-const image = await generateImage(
-  openai.ImageGenerator({
+const image = await generateImage({
+  model: openai.ImageGenerator({
     model: "dall-e-3",
     quality: "hd",
     size: "1024x1024",
   }),
-  imageGenerationPrompt
-);
+  prompt: imageGenerationPrompt,
+});
 ```
 
 Once the recreated image has been generated, the last step is to save it to disk.

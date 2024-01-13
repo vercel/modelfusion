@@ -4,16 +4,17 @@ import { openai, streamText } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const { textStream, text, metadata } = await streamText(
-    openai
+  const { textStream, text, metadata } = await streamText({
+    model: openai
       .CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
         maxGenerationTokens: 500,
       })
       .withInstructionPrompt(),
-    { instruction: "Write a story about a robot learning to love" },
-    { fullResponse: true }
-  );
+
+    prompt: { instruction: "Write a story about a robot learning to love" },
+    fullResponse: true,
+  });
 
   console.log("\n\nMETADATA:");
   console.log(JSON.stringify(metadata));

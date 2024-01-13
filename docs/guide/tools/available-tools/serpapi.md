@@ -39,7 +39,10 @@ const websearchTool = new SerpapiGoogleWebSearchTool({
 You can then use the tool with `useTool` or `executeTool`:
 
 ```ts
-const result = await executeTool(websearchTool, {
-  query: "modelfusion",
+const result = await executeTool({
+  tool: websearchTool,
+  args: {
+    query: "modelfusion",
+  },
 });
 ```

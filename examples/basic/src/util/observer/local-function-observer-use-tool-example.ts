@@ -7,12 +7,12 @@ dotenv.config();
 
 async function main() {
   // Set the observer on the function call:
-  const { tool, result } = await useTool(
-    openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-    calculator,
-    [openai.ChatMessage.user("What's fourteen times twelve?")],
-    { observers: [customObserver] }
-  );
+  const { tool, result } = await useTool({
+    model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
+    tool: calculator,
+    prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
+    observers: [customObserver],
+  });
 }
 
 main().catch(console.error);

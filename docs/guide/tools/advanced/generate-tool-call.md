@@ -15,11 +15,11 @@ You can execute the tool with [useTool](/guide/tools/use-tool) or [executeTool](
 ## Example
 
 ```ts
-const { id, name, args } = await generateToolCall(
-  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-  calculator,
-  [openai.ChatMessage.user("What's fourteen times twelve?")]
-);
+const { id, name, args } = await generateToolCall({
+  model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
+  tool: calculator,
+  prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
+});
 
 console.log(`Tool ID: ${id}`);
 console.log(`Tool name: ${name}`);

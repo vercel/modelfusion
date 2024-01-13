@@ -40,13 +40,14 @@ const chunks = await retrieve(
 #### Generate an answer from the retrieved information:
 
 ```ts
-const answer = await generateText(
-  openai.ChatTextGenerator({
+const answer = await generateText({
+  model: openai.ChatTextGenerator({
     model: "gpt-4",
     temperature: 0, // remove randomness as much as possible
     maxGenerationTokens: 500,
   }),
-  [
+
+  prompt: [
     openai.ChatMessage.system(
       [
         // Instruct the model on how to answer:
@@ -59,6 +60,6 @@ const answer = await generateText(
     ),
     openai.ChatMessage.user(`## QUESTION\n${question}`),
     openai.ChatMessage.user(`## INFORMATION\n${JSON.stringify(chunks)}`),
-  ]
-);
+  ],
+});
 ```

@@ -19,10 +19,12 @@ async function main() {
 
     chat.messages.push({ role: "user", content: userInput });
 
-    const textStream = await streamText(
-      openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }).withChatPrompt(),
-      chat
-    );
+    const textStream = await streamText({
+      model: openai
+        .ChatTextGenerator({ model: "gpt-3.5-turbo" })
+        .withChatPrompt(),
+      prompt: chat,
+    });
 
     let fullResponse = "";
     process.stdout.write("\nAssistant : ");

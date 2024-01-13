@@ -16,10 +16,10 @@ async function main() {
 
     chat.push({ role: "user", content: userInput });
 
-    const textStream = await streamText(
-      ollama.ChatTextGenerator({ model: "llama2:chat" }),
-      chat
-    );
+    const textStream = await streamText({
+      model: ollama.ChatTextGenerator({ model: "llama2:chat" }),
+      prompt: chat,
+    });
 
     process.stdout.write("\nAssistant : ");
 

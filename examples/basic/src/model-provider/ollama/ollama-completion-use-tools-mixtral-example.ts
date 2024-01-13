@@ -6,8 +6,8 @@ import { weather } from "../../tool/tools/weather-tool";
 modelfusion.setLogFormat("detailed-object");
 
 async function main() {
-  const { text, toolResults } = await useTools(
-    ollama
+  const { text, toolResults } = await useTools({
+    model: ollama
       .CompletionTextGenerator({
         model: "mixtral",
         promptTemplate: ollama.prompt.Mistral,
@@ -18,11 +18,11 @@ async function main() {
       .withInstructionPrompt()
       .asToolCallsOrTextGenerationModel(mistralMultiToolCallPromptTemplate),
 
-    [calculator, weather],
+    tools: [calculator, weather],
 
-    // "What's fourteen times twelve?"
-    "What's the weather like in Boston?"
-  );
+    // prompt: "What's fourteen times twelve?"
+    prompt: "What's the weather like in Boston?",
+  });
 
   if (text != null) {
     console.log(`TEXT: ${text}`);

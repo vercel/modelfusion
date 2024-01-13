@@ -6,16 +6,16 @@ dotenv.config();
 async function main() {
   const abortController = new AbortController();
 
-  generateText(
-    openai.CompletionTextGenerator({
+  generateText({
+    model: openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       maxGenerationTokens: 500,
     }),
-    "Write a short story about a robot learning to love:\n\n",
-    {
-      run: { abortSignal: abortController.signal },
-    }
-  )
+
+    prompt: "Write a short story about a robot learning to love:\n\n",
+
+    run: { abortSignal: abortController.signal },
+  })
     .then((text) => {
       console.log(text);
     })

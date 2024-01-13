@@ -7,8 +7,8 @@ dotenv.config();
 modelfusion.setLogFormat("detailed-object");
 
 async function main() {
-  const sentiment = await generateStructure(
-    openai
+  const sentiment = await generateStructure({
+    model: openai
       .ChatTextGenerator({
         model: "gpt-3.5-turbo",
         temperature: 0,
@@ -20,7 +20,7 @@ async function main() {
       })
       .withInstructionPrompt(),
 
-    zodSchema(
+    schema: zodSchema(
       z.object({
         sentiment: z
           .enum(["positive", "neutral", "negative"])
@@ -28,19 +28,15 @@ async function main() {
       })
     ),
 
-    {
+    prompt: {
       system:
         "You are a sentiment evaluator. " +
         "Analyze the sentiment of the following product review:",
       instruction:
         "After I opened the package, I was met by a very unpleasant smell " +
         "that did not disappear even after washing. Never again!",
-    }
-
-    // {
-    //   cache: blablaCache,
-    // }
-  );
+    },
+  });
 
   console.log(JSON.stringify(sentiment, null, 2));
 }

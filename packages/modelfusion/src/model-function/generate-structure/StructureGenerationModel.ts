@@ -16,7 +16,7 @@ export interface StructureGenerationModel<
     prompt: PROMPT,
     options?: FunctionOptions
   ): PromiseLike<{
-    response: unknown;
+    rawResponse: unknown;
     valueText: string;
     value: unknown;
     usage?: {

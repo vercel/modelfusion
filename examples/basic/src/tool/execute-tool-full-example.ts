@@ -5,15 +5,11 @@ import { calculator } from "./tools/calculator-tool";
 dotenv.config();
 
 async function main() {
-  const { metadata, output } = await executeTool(
-    calculator,
-    {
-      a: 14,
-      b: 12,
-      operator: "*" as const,
-    },
-    { fullResponse: true }
-  );
+  const { metadata, output } = await executeTool({
+    tool: calculator,
+    args: { a: 14, b: 12, operator: "*" },
+    fullResponse: true,
+  });
 
   console.log(`Result: ${output}`);
   console.log(`Duration: ${metadata.durationInMs}ms`);

@@ -33,13 +33,13 @@ describe("streamText", () => {
     });
 
     it("should return a text stream", async () => {
-      const stream = await streamText(
-        new MistralChatModel({
+      const stream = await streamText({
+        model: new MistralChatModel({
           api: new MistralApiConfiguration({ apiKey: "test-key" }),
           model: "mistral-tiny",
         }).withTextPrompt(),
-        "hello"
-      );
+        prompt: "hello",
+      });
 
       // note: space moved to last chunk bc of trimming
       expect(await arrayFromAsync(stream)).toStrictEqual([
@@ -50,14 +50,14 @@ describe("streamText", () => {
     });
 
     it("should return text", async () => {
-      const { text } = await streamText(
-        new MistralChatModel({
+      const { text } = await streamText({
+        model: new MistralChatModel({
           api: new MistralApiConfiguration({ apiKey: "test-key" }),
           model: "mistral-tiny",
         }).withTextPrompt(),
-        "hello",
-        { fullResponse: true }
-      );
+        prompt: "hello",
+        fullResponse: true,
+      });
 
       expect(await text).toStrictEqual("Hello, world!");
     });

@@ -16,20 +16,19 @@ const customObserver: FunctionObserver = {
 };
 
 async function main() {
-  const { textStream, metadata } = await streamText(
-    openai
+  const { textStream, metadata } = await streamText({
+    model: openai
       .CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
         maxGenerationTokens: 500,
       })
       .withInstructionPrompt(),
-    { instruction: "Write a story about a robot learning to love" },
-    {
-      functionId: "generate-story",
-      fullResponse: true,
-      observers: [customObserver],
-    }
-  );
+    prompt: { instruction: "Write a story about a robot learning to love" },
+
+    fullResponse: true,
+    functionId: "generate-story",
+    observers: [customObserver],
+  });
 
   console.log("\n\nMETADATA:");
   console.log(JSON.stringify(metadata));

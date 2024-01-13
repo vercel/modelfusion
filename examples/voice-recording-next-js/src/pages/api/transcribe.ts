@@ -52,8 +52,8 @@ export default async function handler(
       return;
     }
 
-    const transcription = await generateTranscription(
-      openai.Transcriber({
+    const transcription = await generateTranscription({
+      model: openai.Transcriber({
         // explicit API configuration needed for NextJS environment
         // (otherwise env variables are not available):
         api: new OpenAIApiConfiguration({
@@ -61,11 +61,11 @@ export default async function handler(
         }),
         model: "whisper-1",
       }),
-      {
+      data: {
         type: getAudioFileExtension(mimeType),
         data: fileData,
-      }
-    );
+      },
+    });
 
     // Remove temporary file
     fs.unlinkSync(audioFile.filepath);

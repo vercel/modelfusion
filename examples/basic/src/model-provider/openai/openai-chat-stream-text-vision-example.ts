@@ -10,18 +10,19 @@ async function main() {
     encoding: "base64",
   });
 
-  const textStream = await streamText(
-    openai.ChatTextGenerator({
+  const textStream = await streamText({
+    model: openai.ChatTextGenerator({
       model: "gpt-4-vision-preview",
       maxGenerationTokens: 1000,
     }),
-    [
+
+    prompt: [
       openai.ChatMessage.user([
         { type: "text", text: "Describe the image in detail:\n\n" },
         { type: "image", base64Image: image, mimeType: "image/png" },
       ]),
-    ]
-  );
+    ],
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

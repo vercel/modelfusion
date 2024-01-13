@@ -38,10 +38,12 @@ export async function generateToolCalls<
   TOOLS extends Array<ToolDefinition<any, any>>,
   PROMPT,
 >(
-  model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>,
-  tools: TOOLS,
-  prompt: PROMPT | ((tools: TOOLS) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: false }
+  params: {
+    model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>;
+    tools: TOOLS;
+    prompt: PROMPT | ((tools: TOOLS) => PROMPT);
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<{
   text: string | null;
   toolCalls: Array<ToOutputValue<TOOLS>> | null;
@@ -50,10 +52,12 @@ export async function generateToolCalls<
   TOOLS extends ToolDefinition<any, any>[],
   PROMPT,
 >(
-  model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>,
-  tools: TOOLS,
-  prompt: PROMPT | ((tools: TOOLS) => PROMPT),
-  options: FunctionOptions & { fullResponse?: boolean }
+  params: {
+    model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>;
+    tools: TOOLS;
+    prompt: PROMPT | ((tools: TOOLS) => PROMPT);
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   value: { text: string | null; toolCalls: Array<ToOutputValue<TOOLS>> };
   rawResponse: unknown;
@@ -62,12 +66,18 @@ export async function generateToolCalls<
 export async function generateToolCalls<
   TOOLS extends ToolDefinition<any, any>[],
   PROMPT,
->(
-  model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>,
-  tools: TOOLS,
-  prompt: PROMPT | ((tools: TOOLS) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+>({
+  model,
+  tools,
+  prompt,
+  fullResponse,
+  ...options
+}: {
+  model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>;
+  tools: TOOLS;
+  prompt: PROMPT | ((tools: TOOLS) => PROMPT);
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | { text: string | null; toolCalls: Array<ToOutputValue<TOOLS>> | null }
   | {
       value: {
@@ -84,7 +94,7 @@ export async function generateToolCalls<
       ? (prompt as (structures: TOOLS) => PROMPT)(tools)
       : prompt;
 
-  const fullResponse = await executeStandardCall<
+  const callResponse = await executeStandardCall<
     {
       text: string | null;
       toolCalls: Array<ToOutputValue<TOOLS>> | null;
@@ -152,5 +162,5 @@ export async function generateToolCalls<
     },
   });
 
-  return options?.fullResponse ? fullResponse : fullResponse.value;
+  return fullResponse ? callResponse : callResponse.value;
 }

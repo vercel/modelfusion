@@ -25,12 +25,16 @@ export async function useTool<
   // Using 'any' is required to allow for flexibility in the inputs. The actual types are
   // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
   TOOL extends Tool<string, any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
->(
-  model: ToolCallGenerationModel<PROMPT, ToolCallGenerationModelSettings>,
-  tool: TOOL,
-  prompt: PROMPT | ((tool: TOOL) => PROMPT),
-  options?: FunctionOptions
-): Promise<
+>({
+  model,
+  tool,
+  prompt,
+  ...options
+}: {
+  model: ToolCallGenerationModel<PROMPT, ToolCallGenerationModelSettings>;
+  tool: TOOL;
+  prompt: PROMPT | ((tool: TOOL) => PROMPT);
+} & FunctionOptions): Promise<
   ToolCallResult<
     TOOL["name"],
     TOOL["parameters"],
@@ -55,7 +59,7 @@ export async function useTool<
           PROMPT,
           TOOL["name"],
           ToolCallGenerationModelSettings
-        >(model, tool, expandedPrompt, options),
+        >({ model, tool, prompt: expandedPrompt, ...options }),
         options
       ),
   });

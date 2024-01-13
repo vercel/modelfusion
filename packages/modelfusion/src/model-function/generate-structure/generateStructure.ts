@@ -15,14 +15,16 @@ import { StructureValidationError } from "./StructureValidationError.js";
  * @see https://modelfusion.dev/guide/function/generate-structure
  *
  * @example
- * const sentiment = await generateStructure(
- *   openai.ChatTextGenerator(...).asFunctionCallStructureGenerationModel(...),
- *   zodSchema(z.object({
+ * const sentiment = await generateStructure({
+ *   model: openai.ChatTextGenerator(...).asFunctionCallStructureGenerationModel(...),
+ *
+ *   schema: zodSchema(z.object({
  *     sentiment: z
  *       .enum(["positive", "neutral", "negative"])
  *       .describe("Sentiment."),
  *   })),
- *   [
+ *
+ *   prompt: [
  *     openai.ChatMessage.system(
  *       "You are a sentiment evaluator. " +
  *         "Analyze the sentiment of the following product review:"
@@ -32,14 +34,13 @@ import { StructureValidationError } from "./StructureValidationError.js";
  *         "that did not disappear even after washing. Never again!"
  *     ),
  *   ]
- * );
+ * });
  *
  * @param {StructureGenerationModel<PROMPT, SETTINGS>} model - The model to generate the structure.
  * @param {Schema<STRUCTURE>} schema - The schema to be used.
  * @param {PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT)} prompt
  * The prompt to be used.
  * You can also pass a function that takes the schema as an argument and returns the prompt.
- * @param {FunctionOptions} [options] - Optional function options.
  *
  * @returns {Promise<STRUCTURE>} - Returns a promise that resolves to the generated structure.
  */
@@ -48,20 +49,24 @@ export async function generateStructure<
   PROMPT,
   SETTINGS extends StructureGenerationModelSettings,
 >(
-  model: StructureGenerationModel<PROMPT, SETTINGS>,
-  schema: Schema<STRUCTURE> & JsonSchemaProducer,
-  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: false }
+  args: {
+    model: StructureGenerationModel<PROMPT, SETTINGS>;
+    schema: Schema<STRUCTURE> & JsonSchemaProducer;
+    prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT);
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<STRUCTURE>;
 export async function generateStructure<
   STRUCTURE,
   PROMPT,
   SETTINGS extends StructureGenerationModelSettings,
 >(
-  model: StructureGenerationModel<PROMPT, SETTINGS>,
-  schema: Schema<STRUCTURE> & JsonSchemaProducer,
-  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options: FunctionOptions & { fullResponse: true }
+  args: {
+    model: StructureGenerationModel<PROMPT, SETTINGS>;
+    schema: Schema<STRUCTURE> & JsonSchemaProducer;
+    prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT);
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   structure: STRUCTURE;
   rawResponse: unknown;
@@ -71,12 +76,18 @@ export async function generateStructure<
   STRUCTURE,
   PROMPT,
   SETTINGS extends StructureGenerationModelSettings,
->(
-  model: StructureGenerationModel<PROMPT, SETTINGS>,
-  schema: Schema<STRUCTURE> & JsonSchemaProducer,
-  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT),
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+>({
+  model,
+  schema,
+  prompt,
+  fullResponse,
+  ...options
+}: {
+  model: StructureGenerationModel<PROMPT, SETTINGS>;
+  schema: Schema<STRUCTURE> & JsonSchemaProducer;
+  prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT);
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | STRUCTURE
   | {
       structure: STRUCTURE;
@@ -90,7 +101,7 @@ export async function generateStructure<
       ? (prompt as (schema: Schema<STRUCTURE>) => PROMPT)(schema)
       : prompt;
 
-  const fullResponse = await executeStandardCall({
+  const callResponse = await executeStandardCall({
     functionType: "generate-structure",
     input: {
       schema,
@@ -119,18 +130,18 @@ export async function generateStructure<
       const value = parseResult.data;
 
       return {
-        rawResponse: result.response,
+        rawResponse: result.rawResponse,
         extractedValue: value,
         usage: result.usage,
       };
     },
   });
 
-  return options?.fullResponse
+  return fullResponse
     ? {
-        structure: fullResponse.value,
-        rawResponse: fullResponse.rawResponse,
-        metadata: fullResponse.metadata,
+        structure: callResponse.value,
+        rawResponse: callResponse.rawResponse,
+        metadata: callResponse.metadata,
       }
-    : fullResponse.value;
+    : callResponse.value;
 }

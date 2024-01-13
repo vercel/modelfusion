@@ -2,8 +2,8 @@ import { automatic1111, generateImage } from "modelfusion";
 import fs from "node:fs";
 
 async function main() {
-  const image = await generateImage(
-    automatic1111.ImageGenerator({
+  const image = await generateImage({
+    model: automatic1111.ImageGenerator({
       // Custom API configuration:
       api: automatic1111.Api({
         baseUrl: {
@@ -18,7 +18,8 @@ async function main() {
       width: 512,
       height: 512,
     }),
-    {
+
+    prompt: {
       prompt:
         "zprgstyle, lonely inn at the edge of a forest and at the side of a lake, " +
         "late spring evening before sunset, clear sky, plains, nordic climate, " +
@@ -29,8 +30,8 @@ async function main() {
         "bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), " +
         "disconnected limbs, mutation, mutated, ugly, blurry, amputation, (watermark), (label), (signature), " +
         "(text), (cropped), (castle), (mountain), (monastery)", // optional negative prompt
-    }
-  );
+    },
+  });
 
   const path = `./a1111-image-example.png`;
   fs.writeFileSync(path, image);

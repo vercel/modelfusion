@@ -127,7 +127,7 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
   ) {
     const expandedPrompt = this.promptTemplate.format(prompt);
 
-    const response = await this.model
+    const rawResponse = await this.model
       .withSettings({
         stopSequences: [
           ...(this.settings.stopSequences ?? []),
@@ -146,14 +146,14 @@ export class OpenAIChatFunctionCallStructureGenerationModel<
         ],
       });
 
-    const valueText = response.choices[0]!.message.function_call!.arguments;
+    const valueText = rawResponse.choices[0]!.message.function_call!.arguments;
 
     try {
       return {
-        response,
+        rawResponse,
         valueText,
         value: SecureJSON.parse(valueText),
-        usage: this.model.extractUsage(response),
+        usage: this.model.extractUsage(rawResponse),
       };
     } catch (error) {
       throw new StructureParseError({

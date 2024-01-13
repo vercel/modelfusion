@@ -6,17 +6,15 @@ import { customObserver } from "./custom-observer";
 dotenv.config();
 
 async function main() {
-  const result = await executeTool(
-    calculator,
-    {
+  const result = await executeTool({
+    tool: calculator,
+    args: {
       a: 14,
       b: 12,
       operator: "*" as const,
     },
-    {
-      observers: [customObserver],
-    }
-  );
+    observers: [customObserver],
+  });
 }
 
 main().catch(console.error);

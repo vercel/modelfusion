@@ -9,8 +9,8 @@ async function main() {
     encoding: "base64",
   });
 
-  const textStream = await streamText(
-    llamacpp
+  const textStream = await streamText({
+    model: llamacpp
       .CompletionTextGenerator({
         promptTemplate: llamacpp.prompt.BakLLaVA1,
         maxGenerationTokens: 1024,
@@ -18,13 +18,13 @@ async function main() {
       })
       .withInstructionPrompt(),
 
-    {
+    prompt: {
       instruction: [
         { type: "text", text: "Describe the image in detail:\n\n" },
         { type: "image", base64Image: image },
       ],
-    }
-  );
+    },
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

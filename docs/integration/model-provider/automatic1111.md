@@ -62,22 +62,21 @@ const api = automatic1111.Api({
 ```ts
 import { automatic1111, generateImage } from "modelfusion";
 
-const image = await generateImage(
-  automatic1111.ImageGenerator({
+const image = await generateImage({
+  model: automatic1111.ImageGenerator({
     model: "aZovyaRPGArtistTools_v4.safetensors",
     steps: 30,
     sampler: "DPM++ 2M Karras",
     width: 512,
     height: 512,
   }),
-  {
+  prompt: {
     prompt:
       "(the wicked witch of the west) (style of early 19th century painting)",
     negativePrompt:
       "poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb", // optional negative prompt
-    seed: 123, // optional seed
-  }
-);
+  },
+});
 ```
 
 ## Prompt Template
@@ -87,12 +86,14 @@ const image = await generateImage(
 You an use [mapBasicPromptToAutomatic1111Format()](/api/modules#mapbasicprompttoautomatic1111format) to use text prompts with Automatic1111 models. It is available as a shorthand method:
 
 ```ts
-const image = await generateImage(
-  automatic1111
+const image = await generateImage({
+  model: automatic1111
     .ImageGenerator({
       //...
     })
     .withTextPrompt(),
-  "the wicked witch of the west in the style of early 19th century painting"
-);
+
+  prompt:
+    "the wicked witch of the west in the style of early 19th century painting",
+});
 ```

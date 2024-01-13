@@ -10,8 +10,8 @@ import { z } from "zod";
 dotenv.config();
 
 async function main() {
-  const structure = await generateStructure(
-    openai
+  const structure = await generateStructure({
+    model: openai
       .ChatTextGenerator({
         model: "gpt-4-1106-preview",
         maxGenerationTokens: 1024,
@@ -19,7 +19,7 @@ async function main() {
       })
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
-    zodSchema(
+    schema: zodSchema(
       z.object({
         characters: z.array(
           z.object({
@@ -33,8 +33,9 @@ async function main() {
       })
     ),
 
-    "Generate 3 character descriptions for a fantasy role playing game. "
-  );
+    prompt:
+      "Generate 3 character descriptions for a fantasy role playing game. ",
+  });
 
   console.log(structure.characters);
 }

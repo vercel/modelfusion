@@ -5,8 +5,8 @@ dotenv.config();
 
 async function main() {
   try {
-    const text = await generateText(
-      openai.CompletionTextGenerator({
+    const text = await generateText({
+      model: openai.CompletionTextGenerator({
         api: openai.Api({
           baseUrl: { host: "invalid-host" },
         }),
@@ -14,8 +14,8 @@ async function main() {
         temperature: 0.7,
         maxGenerationTokens: 500,
       }),
-      "Write a short story about a robot learning to love:\n\n"
-    );
+      prompt: "Write a short story about a robot learning to love:\n\n",
+    });
 
     console.log(text);
   } catch (error) {

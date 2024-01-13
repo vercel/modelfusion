@@ -8,16 +8,16 @@ modelfusion.setLogFormat("detailed-object");
 
 async function main() {
   const story = await guard(
-    (input, options) =>
-      generateText(
-        openai.CompletionTextGenerator({
+    (prompt, options) =>
+      generateText({
+        model: openai.CompletionTextGenerator({
           model: "gpt-3.5-turbo-instruct",
           temperature: 0.7,
           maxGenerationTokens: 500,
         }),
-        input,
-        options
-      ),
+        prompt,
+        ...options,
+      }),
     "Write a short story about a robot called Nox:\n\n",
     async (result) => {
       if (result.type === "value") {

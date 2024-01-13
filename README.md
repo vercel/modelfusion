@@ -53,10 +53,10 @@ You can use [prompt templates](https://modelfusion.dev/guide/function/generate-t
 ```ts
 import { generateText, openai } from "modelfusion";
 
-const text = await generateText(
-  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
-  "Write a short story about a robot learning to love:\n\n"
-);
+const text = await generateText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+});
 ```
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Mistral](https://modelfusion.dev/integration/model-provider/mistral), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface), [Cohere](https://modelfusion.dev/integration/model-provider/cohere)
@@ -66,10 +66,10 @@ Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), 
 ```ts
 import { streamText, openai } from "modelfusion";
 
-const textStream = await streamText(
-  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
-  "Write a short story about a robot learning to love:\n\n"
-);
+const textStream = await streamText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+});
 
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
@@ -88,15 +88,15 @@ import { readFileSync } from "fs";
 
 const image = readFileSync("./image.png").toString("base64");
 
-const textStream = await streamText(
-  openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
-  [
+const textStream = await streamText({
+  model: openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
+  prompt: [
     openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
-  ]
-);
+  ],
+});
 
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
@@ -121,9 +121,8 @@ import {
   jsonStructurePrompt,
 } from "modelfusion";
 
-const sentiment = await generateStructure(
-  // model:
-  ollama
+const sentiment = await generateStructure({
+  model: ollama
     .ChatTextGenerator({
       model: "openhermes2.5-mistral",
       maxGenerationTokens: 1024,
@@ -131,8 +130,7 @@ const sentiment = await generateStructure(
     })
     .asStructureGenerationModel(jsonStructurePrompt.instruction()),
 
-  // schema:
-  zodSchema(
+  schema: zodSchema(
     z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
@@ -140,16 +138,15 @@ const sentiment = await generateStructure(
     })
   ),
 
-  // prompt:
-  {
+  prompt: {
     system:
       "You are a sentiment evaluator. " +
       "Analyze the sentiment of the following product review:",
     instruction:
       "After I opened the package, I was met by a very unpleasant smell " +
       "that did not disappear even after washing. Never again!",
-  }
-);
+  },
+});
 ```
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Ollama](https://modelfusion.dev//integration/model-provider/ollama), [Llama.cpp](https://modelfusion.dev//integration/model-provider/llama.cpp)
@@ -161,8 +158,8 @@ Stream a structure that matches a schema. Partial structures before the final pa
 ```ts
 import { zodSchema, openai, streamStructure } from "modelfusion";
 
-const structureStream = await streamStructure(
-  openai
+const structureStream = await streamStructure({
+  model: openai
     .ChatTextGenerator(/* ... */)
     .asFunctionCallStructureGenerationModel({
       fnName: "generateCharacter",
@@ -170,7 +167,7 @@ const structureStream = await streamStructure(
     })
     .withTextPrompt(),
 
-  zodSchema(
+  schema: zodSchema(
     z.object({
       characters: z.array(
         z.object({
@@ -184,8 +181,8 @@ const structureStream = await streamStructure(
     })
   ),
 
-  "Generate 3 character descriptions for a fantasy role playing game."
-);
+  prompt: "Generate 3 character descriptions for a fantasy role playing game.",
+});
 
 for await (const part of structureStream) {
   if (!part.isComplete) {
@@ -207,10 +204,11 @@ Generate an image from a prompt.
 ```ts
 import { generateImage, openai } from "modelfusion";
 
-const image = await generateImage(
-  openai.ImageGenerator({ model: "dall-e-3", size: "1024x1024" }),
-  "the wicked witch of the west in the style of early 19th century painting"
-);
+const image = await generateImage({
+  model: openai.ImageGenerator({ model: "dall-e-3", size: "1024x1024" }),
+  prompt:
+    "the wicked witch of the west in the style of early 19th century painting",
+});
 ```
 
 Providers: [OpenAI (Dall·E)](https://modelfusion.dev/integration/model-provider/openai), [Stability AI](https://modelfusion.dev/integration/model-provider/stability), [Automatic1111](https://modelfusion.dev/integration/model-provider/automatic1111)
@@ -227,15 +225,16 @@ Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 import { generateSpeech, lmnt } from "modelfusion";
 
 // `speech` is a Buffer with MP3 audio data
-const speech = await generateSpeech(
-  lmnt.SpeechGenerator({
+const speech = await generateSpeech({
+  model: lmnt.SpeechGenerator({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
   }),
-  "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
+  text:
+    "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
     "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
     "fresh tunes in nearly twenty years, featuring the illustrious Lady Gaga, the " +
-    "magical Stevie Wonder, and the final beats from the late Charlie Watts."
-);
+    "magical Stevie Wonder, and the final beats from the late Charlie Watts.",
+});
 ```
 
 Providers: [Eleven Labs](https://modelfusion.dev/integration/model-provider/elevenlabs), [LMNT](https://modelfusion.dev/integration/model-provider/lmnt), [OpenAI](https://modelfusion.dev/integration/model-provider/openai)
@@ -249,8 +248,8 @@ import { streamSpeech, elevenlabs } from "modelfusion";
 
 const textStream: AsyncIterable<string>;
 
-const speechStream = await streamSpeech(
-  elevenlabs.SpeechGenerator({
+const speechStream = await streamSpeech({
+  model: elevenlabs.SpeechGenerator({
     model: "eleven_turbo_v2",
     voice: "pNInz6obpgDQGcFmaJgB", // Adam
     optimizeStreamingLatency: 1,
@@ -259,8 +258,8 @@ const speechStream = await streamSpeech(
       chunkLengthSchedule: [50, 90, 120, 150, 200],
     },
   }),
-  textStream
-);
+  text: textStream,
+});
 
 for await (const part of speechStream) {
   // each part is a Buffer with MP3 audio data
@@ -276,13 +275,13 @@ Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 ```ts
 import { generateTranscription, openai } from "modelfusion";
 
-const transcription = await generateTranscription(
-  openai.Transcriber({ model: "whisper-1" }),
-  {
+const transcription = await generateTranscription({
+  model: openai.Transcriber({ model: "whisper-1" }),
+  data: {
     type: "mp3",
     data: await fs.promises.readFile("data/test.mp3"),
-  }
-);
+  },
+});
 ```
 
 Providers: [OpenAI (Whisper)](https://modelfusion.dev/integration/model-provider/openai), [Whisper.cpp](https://modelfusion.dev/integration/model-provider/whispercpp)
@@ -293,19 +292,19 @@ Create embeddings for text and other values. Embeddings are vectors that represe
 
 ```ts
 // embed single value:
-const embedding = await embed(
-  openai.TextEmbedder({ model: "text-embedding-ada-002" }),
-  "At first, Nox didn't know what to do with the pup."
-);
+const embedding = await embed({
+  model: openai.TextEmbedder({ model: "text-embedding-ada-002" }),
+  value: "At first, Nox didn't know what to do with the pup.",
+});
 
 // embed many values:
-const embeddings = await embedMany(
-  openai.TextEmbedder({ model: "text-embedding-ada-002" }),
-  [
+const embeddings = await embedMany({
+  model: openai.TextEmbedder({ model: "text-embedding-ada-002" }),
+  values: [
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-  ]
-);
+  ],
+});
 ```
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama), [Mistral](https://modelfusion.dev/integration/model-provider/mistral), [Hugging Face](https://modelfusion.dev/integration/model-provider/huggingface), [Cohere](https://modelfusion.dev/integration/model-provider/cohere)
@@ -339,11 +338,11 @@ ModelFusion offers several tools out-of-the-box: [Math.js](https://modelfusion.d
 With `useTool`, you can ask a tool-compatible language model (e.g. OpenAI chat) to invoke a single tool. `useTool` first generates a tool call and then executes the tool with the arguments.
 
 ```ts
-const { tool, toolCall, args, ok, result } = await useTool(
-  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-  calculator,
-  [openai.ChatMessage.user("What's fourteen times twelve?")]
-);
+const { tool, toolCall, args, ok, result } = await useTool({
+  model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
+  too: calculator,
+  prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
+});
 
 console.log(`Tool call:`, toolCall);
 console.log(`Tool:`, tool);
@@ -357,11 +356,11 @@ console.log(`Result or Error:`, result);
 With `useTools`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function executes the tools.
 
 ```ts
-const { text, toolResults } = await useTools(
-  openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-  [calculator /* ... */],
-  [openai.ChatMessage.user("What's fourteen times twelve?")]
-);
+const { text, toolResults } = await useTools({
+  model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
+  tools: [calculator /* ... */],
+  prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
+});
 ```
 
 #### [Agent Loop](https://modelfusion.dev/guide/tools/agent-loop)
@@ -411,21 +410,22 @@ Prompt templates let you use higher level prompt structures (such as text, instr
 #### Text Prompt Example
 
 ```ts
-const text = await generateText(
-  openai
+const text = await generateText({
+  model: openai
     .ChatTextGenerator({
       // ...
     })
     .withTextPrompt(),
-  "Write a short story about a robot learning to love"
-);
+
+  prompt: "Write a short story about a robot learning to love",
+});
 ```
 
 #### Instruction Prompt Example
 
 ```ts
-const text = await generateText(
-  llamacpp
+const text = await generateText({
+  model: llamacpp
     .CompletionTextGenerator({
       // run https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
       promptTemplate: llamacpp.prompt.Llama2, // Set prompt template
@@ -433,11 +433,12 @@ const text = await generateText(
       maxGenerationTokens: 512,
     })
     .withInstructionPrompt(),
-  {
+
+  prompt: {
     system: "You are a story writer.",
     instruction: "Write a short story about a robot learning to love.",
-  }
-);
+  },
+});
 ```
 
 They can also be accessed through the shorthand methods `.withTextPrompt()`, `.withChatPrompt()` and `.withInstructionPrompt()` for many models:
@@ -445,13 +446,14 @@ They can also be accessed through the shorthand methods `.withTextPrompt()`, `.w
 #### Chat Prompt Example
 
 ```ts
-const textStream = await streamText(
-  openai
+const textStream = await streamText({
+  model: openai
     .ChatTextGenerator({
       model: "gpt-3.5-turbo",
     })
     .withChatPrompt(),
-  {
+
+  prompt: {
     system: "You are a celebrated poet.",
     messages: [
       {
@@ -467,8 +469,8 @@ const textStream = await streamText(
         content: "Write a short story about Robbie learning to love",
       },
     ],
-  }
-);
+  },
+});
 ```
 
 | Prompt Template  | Text Prompt | Instruction Prompt | Chat Prompt |
@@ -504,19 +506,19 @@ const image = await generateImage(
 
 ### Metadata and original responses
 
-ModelFusion model functions return rich responses that include the raw (original) response and metadata when you set the `fullResponse` option to `true`.
+ModelFusion model functions return rich responses that include the raw (original) response and metadata when you set the `fullResponse` argument to `true`.
 
 ```ts
 // access the raw response (needs to be typed) and the metadata:
-const { text, rawResponse, metadata } = await generateText(
-  openai.CompletionTextGenerator({
+const { text, rawResponse, metadata } = await generateText({
+  model: openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxGenerationTokens: 1000,
     n: 2, // generate 2 completions
   }),
-  "Write a short story about a robot learning to love:\n\n",
-  { fullResponse: true }
-);
+  prompt: "Write a short story about a robot learning to love:\n\n",
+  fullResponse: true,
+});
 
 console.log(metadata);
 

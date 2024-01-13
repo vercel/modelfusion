@@ -8,8 +8,8 @@ import {
 dotenv.config();
 
 async function main() {
-  const text = await generateText(
-    openai
+  const text = await generateText({
+    model: openai
       .ChatTextGenerator({
         api: new HeliconeOpenAIApiConfiguration(),
         model: "gpt-3.5-turbo",
@@ -18,8 +18,8 @@ async function main() {
       })
       .withTextPrompt(),
 
-    "Write a short story about a robot learning to love"
-  );
+    prompt: "Write a short story about a robot learning to love",
+  });
 
   console.log(text);
 }

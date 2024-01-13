@@ -5,8 +5,8 @@ import { z } from "zod";
 dotenv.config();
 
 async function main() {
-  const { structure, metadata, rawResponse } = await generateStructure(
-    openai
+  const { structure, metadata, rawResponse } = await generateStructure({
+    model: openai
       .ChatTextGenerator({
         model: "gpt-3.5-turbo",
         temperature: 0,
@@ -18,7 +18,7 @@ async function main() {
       })
       .withInstructionPrompt(),
 
-    zodSchema(
+    schema: zodSchema(
       z.object({
         characters: z.array(
           z.object({
@@ -32,13 +32,13 @@ async function main() {
       })
     ),
 
-    {
+    prompt: {
       instruction:
         "Generate 3 character descriptions for a fantasy role playing game.",
     },
 
-    { fullResponse: true }
-  );
+    fullResponse: true,
+  });
 
   console.log(JSON.stringify(structure, null, 2));
 }

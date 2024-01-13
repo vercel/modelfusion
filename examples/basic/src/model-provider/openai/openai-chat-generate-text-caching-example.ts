@@ -16,11 +16,11 @@ async function main() {
 
   const cache = new MemoryCache();
 
-  const text1 = await generateText(model, [messages], { cache });
+  const text1 = await generateText({ model, prompt: [messages], cache });
 
   console.log({ text1 });
 
-  const text2 = await generateText(model, [messages], { cache });
+  const text2 = await generateText({ model, prompt: [messages], cache });
 
   console.log({ text2 }); // same text
 }

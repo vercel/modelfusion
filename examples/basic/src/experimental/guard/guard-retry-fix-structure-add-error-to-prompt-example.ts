@@ -10,8 +10,8 @@ modelfusion.setLogFormat("basic-text");
 async function main() {
   const sentiment = await guard(
     (input, options) =>
-      generateStructure(
-        openai
+      generateStructure({
+        model: openai
           .ChatTextGenerator({
             model: "gpt-3.5-turbo",
             temperature: 0,
@@ -22,16 +22,17 @@ async function main() {
             fnDescription: "Write the sentiment analysis",
           }),
 
-        zodSchema(
+        schema: zodSchema(
           z.object({
             sentiment: z
               .enum(["positivee", "neutra", "negaaa"])
               .describe("Sentiment."),
           })
         ),
-        input,
-        options
-      ),
+
+        prompt: input,
+        ...options,
+      }),
     [
       openai.ChatMessage.system(
         "You are a sentiment evaluator. " +

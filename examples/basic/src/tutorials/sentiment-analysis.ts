@@ -6,8 +6,8 @@ dotenv.config();
 
 async function main() {
   const analyzeSentiment = async (productReview: string) =>
-    generateStructure(
-      openai
+    generateStructure({
+      model: openai
         .ChatTextGenerator({
           model: "gpt-4",
           temperature: 0, // remove randomness
@@ -19,7 +19,7 @@ async function main() {
         })
         .withInstructionPrompt(),
 
-      zodSchema(
+      schema: zodSchema(
         z.object({
           // Reason first to improve results:
           reasoning: z.string().describe("Reasoning to explain the sentiment."),
@@ -30,13 +30,13 @@ async function main() {
         })
       ),
 
-      {
+      prompt: {
         system:
           "You are a sentiment evaluator. " +
           "Analyze the sentiment of the following product review:",
         instruction: productReview,
-      }
-    );
+      },
+    });
 
   const result1 = await analyzeSentiment(
     "After I opened the package, I was met by a very unpleasant smell " +

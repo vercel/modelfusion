@@ -10,14 +10,14 @@ async function main() {
     observers: [customObserver],
   });
 
-  const text = await generateText(
-    openai.CompletionTextGenerator({
+  const text = await generateText({
+    model: openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       maxGenerationTokens: 50,
     }),
-    "Write a short story about a robot named Pam:\n\n",
-    { run }
-  );
+    prompt: "Write a short story about a robot named Pam:\n\n",
+    run,
+  });
 }
 
 main().catch(console.error);

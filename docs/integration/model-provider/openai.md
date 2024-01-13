@@ -61,14 +61,14 @@ openai.ChatTextGenerator({
 ```ts
 import { openai, generateText } from "modelfusion";
 
-const text = await generateText(
-  openai.CompletionTextGenerator({
+const text = await generateText({
+  model: openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     temperature: 0.7,
     maxGenerationTokens: 500,
   }),
-  "Write a short story about a robot learning to love:\n\n"
-);
+  prompt: "Write a short story about a robot learning to love:\n\n",
+});
 ```
 
 #### Chat Model
@@ -80,18 +80,18 @@ The OpenAI chat models include GPT-3.5-turbo and GPT-4.
 ```ts
 import { openai, generateText } from "modelfusion";
 
-const text = await generateText(
-  openai.ChatTextGenerator({
+const text = await generateText({
+  model: openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     temperature: 0.7,
     maxGenerationTokens: 500,
   }),
-  [
+  prompt: [
     openai.ChatMessage.user(
       "Write a short story about a robot learning to love:"
     ),
-  ]
-);
+  ],
+});
 ```
 
 :::note
@@ -101,15 +101,15 @@ You can use your fine-tuned `gpt-3.5-turbo` models similarly to the base models.
 You can provide an image reference in the user message when you are using vision models such as `gpt-4-vision-preview`:
 
 ```ts
-const text = await generateText(
-  openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
-  [
+const text = await generateText({
+  model: openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
+  prompt: [
     openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
-  ]
-);
+  ],
+});
 ```
 
 The tutorial "[Using OpenAI GPT-4 Turbo Vision](/tutorial/tutorials/using-gpt-4-vision)" provides more details.
@@ -123,13 +123,14 @@ The tutorial "[Using OpenAI GPT-4 Turbo Vision](/tutorial/tutorials/using-gpt-4-
 ```ts
 import { OpenAICompletionModel, streamText } from "modelfusion";
 
-const textStream = await streamText(
-  openai.CompletionTextGenerator({
+const textStream = await streamText({
+  model: openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxGenerationTokens: 1000,
   }),
-  "You are a story writer. Write a story about a robot learning to love"
-);
+  prompt:
+    "You are a story writer. Write a story about a robot learning to love",
+});
 
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
@@ -143,16 +144,16 @@ for await (const textPart of textStream) {
 ```ts
 import { openai, streamText } from "modelfusion";
 
-const textStream = await streamText(
-  openai.ChatTextGenerator({
+const textStream = await streamText({
+  model: openai.ChatTextGenerator({
     model: "gpt-3.5-turbo",
     maxGenerationTokens: 1000,
   }),
-  [
+  prompt: [
     openai.ChatMessage.system("You are a story writer. Write a story about:"),
     openai.ChatMessage.user("A robot learning to love"),
-  ]
-);
+  ],
+});
 
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
@@ -173,8 +174,8 @@ The mapped model will use the [OpenAI GPT function calling API](https://platform
 import { openai, zodSchema, generateStructure } from "modelfusion";
 import { z } from "zod";
 
-const sentiment = await generateStructure(
-  openai
+const sentiment = await generateStructure({
+  model: openai
     .ChatTextGenerator({
       model: "gpt-3.5-turbo",
       temperature: 0,
@@ -186,7 +187,7 @@ const sentiment = await generateStructure(
     })
     .withInstructionPrompt(),
 
-  zodSchema(
+  schema: zodSchema(
     z.object({
       sentiment: z
         .enum(["positive", "neutral", "negative"])
@@ -194,15 +195,15 @@ const sentiment = await generateStructure(
     })
   ),
 
-  {
+  prompt: {
     system:
       "You are a sentiment evaluator. " +
       "Analyze the sentiment of the following product review:",
     instruction:
       "After I opened the package, I was met by a very unpleasant smell " +
       "that did not disappear even after washing. Never again!",
-  }
-);
+  },
+});
 ```
 
 ### Embed Text
@@ -212,13 +213,13 @@ const sentiment = await generateStructure(
 ```ts
 import { OpenAITextEmbeddingModel, embedMany } from "modelfusion";
 
-const embeddings = await embedMany(
-  openai.TextEmbedder({ model: "text-embedding-ada-002" }),
-  [
+const embeddings = await embedMany({
+  model: openai.TextEmbedder({ model: "text-embedding-ada-002" }),
+  values: [
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-  ]
-);
+  ],
+});
 ```
 
 ### Tokenize Text
@@ -248,10 +249,10 @@ import { openai, generateTranscription } from "modelfusion";
 
 const data = await fs.promises.readFile("data/test.mp3");
 
-const transcription = await generateTranscription(
-  openai.Transcriber({ model: "whisper-1" }),
-  { type: "mp3", data }
-);
+const transcription = await generateTranscription({
+  model: openai.Transcriber({ model: "whisper-1" }),
+  data: { type: "mp3", data },
+});
 ```
 
 ### Generate Image
@@ -263,13 +264,14 @@ OpenAI provides a model called DALL-E that can generate images from text descrip
 ```ts
 import { openai, generateImage } from "modelfusion";
 
-const image = await generateImage(
-  openai.ImageGenerator({
+const image = await generateImage({
+  model: openai.ImageGenerator({
     model: "dall-e-3",
     size: "1024x1024",
   }),
-  "the wicked witch of the west in the style of early 19th century painting"
-);
+  prompt:
+    "the wicked witch of the west in the style of early 19th century painting",
+});
 ```
 
 ### Generate Speech
@@ -277,16 +279,17 @@ const image = await generateImage(
 ```ts
 import { openai, generateSpeech } from "modelfusion";
 
-const speech = await generateSpeech(
-  openai.SpeechGenerator({
+const speech = await generateSpeech({
+  model: openai.SpeechGenerator({
     model: "tts-1",
     voice: "onyx",
   }),
-  "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
+  text:
+    "Good evening, ladies and gentlemen! Exciting news on the airwaves tonight " +
     "as The Rolling Stones unveil 'Hackney Diamonds,' their first collection of " +
     "fresh tunes in nearly twenty years, featuring the illustrious Lady Gaga, the " +
-    "magical Stevie Wonder, and the final beats from the late Charlie Watts."
-);
+    "magical Stevie Wonder, and the final beats from the late Charlie Watts.",
+});
 
 const path = `./openai-speech-example.mp3`;
 fs.writeFileSync(path, speech);
@@ -301,14 +304,15 @@ fs.writeFileSync(path, speech);
 [OpenAIChatPrompt.text()](/api/namespaces/OpenAIChatPrompt) lets you use basic text prompts with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
-const textStream = await streamText(
-  openai
+const textStream = await streamText({
+  model: openai
     .ChatTextGenerator({
       // ...
     })
     .withTextPrompt(),
-  "Write a short story about a robot learning to love."
-);
+
+  prompt: "Write a short story about a robot learning to love.",
+});
 ```
 
 #### Instruction prompt
@@ -316,17 +320,18 @@ const textStream = await streamText(
 [OpenAIChatPrompt.instruction()](/api/namespaces/OpenAIChatPrompt) lets you use [instruction prompts](/api/interfaces/InstructionPrompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
-const textStream = await streamText(
-  openai
+const textStream = await streamText({
+  model: openai
     .ChatTextGenerator({
       // ...
     })
     .withInstructionPrompt(),
-  {
+
+  prompt: {
     system: "You are a celebrated poet.",
     instruction: "Write a short story about a robot learning to love.",
-  }
-);
+  },
+});
 ```
 
 #### Chat prompt
@@ -334,13 +339,14 @@ const textStream = await streamText(
 [OpenAIChatPrompt.chat()](/api/namespaces/OpenAIChatPrompt) lets you use [chat prompts](/api/interfaces/ChatPrompt) with OpenAI chat models. It is available as a shorthand method:
 
 ```ts
-const textStream = await streamText(
-  openai
+const textStream = await streamText({
+  model: openai
     .ChatTextGenerator({
       // ...
     })
     .withChatPrompt(),
-  {
+
+  prompt: {
     system: "You are a celebrated poet.",
     messages: [
       {
@@ -356,6 +362,6 @@ const textStream = await streamText(
         content: "Write a short story about Robbie learning to love",
       },
     ],
-  }
-);
+  },
+});
 ```

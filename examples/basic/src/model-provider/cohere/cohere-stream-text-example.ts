@@ -4,14 +4,14 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function main() {
-  const textStream = await streamText(
-    cohere.TextGenerator({
+  const textStream = await streamText({
+    model: cohere.TextGenerator({
       model: "command",
       temperature: 0.7,
       maxGenerationTokens: 500,
     }),
-    "Write a short story about a robot learning to love:\n\n"
-  );
+    prompt: "Write a short story about a robot learning to love:\n\n",
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

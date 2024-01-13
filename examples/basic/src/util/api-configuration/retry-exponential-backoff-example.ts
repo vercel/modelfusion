@@ -4,8 +4,8 @@ import { generateText, openai, api } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const text = await generateText(
-    openai.CompletionTextGenerator({
+  const text = await generateText({
+    model: openai.CompletionTextGenerator({
       api: openai.Api({
         // configure retries as part of the API configuration
         retry: api.retryWithExponentialBackoff({
@@ -16,8 +16,8 @@ async function main() {
       }),
       model: "gpt-3.5-turbo-instruct",
     }),
-    "Write a short story about a robot learning to love:\n\n"
-  );
+    prompt: "Write a short story about a robot learning to love:\n\n",
+  });
 
   console.log(text);
 }

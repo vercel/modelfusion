@@ -12,10 +12,9 @@ async function main() {
   });
 
   withRun(run, async () => {
-    const result = await executeTool(calculator, {
-      a: 14,
-      b: 12,
-      operator: "*" as const,
+    const result = await executeTool({
+      tool: calculator,
+      args: { a: 14, b: 12, operator: "*" },
     });
   });
 }

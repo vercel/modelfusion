@@ -54,9 +54,9 @@ import { whispercpp, generateTranscription } from "modelfusion";
 
 const data = await fs.promises.readFile("data/test.wav");
 
-const transcription = await generateTranscription(
+const transcription = await generateTranscription({
   // Whisper.cpp model:
-  whispercpp.Transcriber(),
-  { type: "wav", data }
-);
+  model: whispercpp.Transcriber(),
+  data: { type: "wav", data },
+});
 ```

@@ -76,10 +76,10 @@ const sendMessage = async (request: Request): Promise<Response> => {
   // change this to your preferred model:
   const chatModel = gpt35turboModel.withChatPrompt();
 
-  const textStream = await streamText(
-    chatModel,
+  const textStream = await streamText({
+    model: chatModel,
     // limit the size of the prompt to leave room for the answer:
-    await trimChatPrompt({
+    prompt: await trimChatPrompt({
       model: chatModel,
       prompt: {
         system:
@@ -90,8 +90,8 @@ const sendMessage = async (request: Request): Promise<Response> => {
     }),
 
     // forward the abort signal:
-    { run: { abortSignal: controller.signal } }
-  );
+    run: { abortSignal: controller.signal },
+  });
 
   return new Response(createEventSourceStream(textStream), {
     headers: {

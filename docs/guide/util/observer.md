@@ -88,13 +88,13 @@ import { generateText, openai, modelfusion } from "modelfusion";
 // Set a global function observer:
 modelfusion.setFunctionObservers([customObserver]);
 
-const text = await generateText(
-  openai.CompletionTextGenerator({
+const text = await generateText({
+  model: openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxGenerationTokens: 50,
   }),
-  "Write a short story about a robot name Evo:\n\n"
-);
+  prompt: "Write a short story about a robot name Evo:\n\n",
+});
 ```
 
 ### Function-scoped function observers
@@ -104,14 +104,14 @@ You can set function observers for specific functions in the function options.
 #### Example
 
 ```ts
-const text = await generateText(
-  openai.CompletionTextGenerator({
+const text = await generateText({
+  model: openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxGenerationTokens: 50,
   }),
-  "Write a short story about a robot named Nox:\n\n",
-  { observers: [observer] }
-);
+  prompt: "Write a short story about a robot named Nox:\n\n",
+  observers: [observer],
+});
 ```
 
 ### Run-scoped function observers
@@ -125,14 +125,14 @@ const run = new DefaultRun({
   observers: [observer],
 });
 
-const text = await generateText(
-  openai.CompletionTextGenerator({
+const text = await generateText({
+  model: openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxGenerationTokens: 50,
   }),
-  "Write a short story about a robot named Pam:\n\n",
-  { run }
-);
+  prompt: "Write a short story about a robot named Pam:\n\n",
+  run,
+});
 ```
 
 ### Model-scoped function observers
@@ -142,12 +142,12 @@ You can set function observers for all functions calls that use a model instance
 #### Example
 
 ```ts
-const text = await generateText(
-  openai.CompletionTextGenerator({
+const text = await generateText({
+  model: openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     maxGenerationTokens: 50,
     observers: [observer],
   }),
-  "Write a short story about a robot name Bud:\n\n"
-);
+  prompt: "Write a short story about a robot name Bud:\n\n",
+});
 ```

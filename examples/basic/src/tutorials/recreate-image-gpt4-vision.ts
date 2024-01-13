@@ -14,14 +14,15 @@ async function main() {
     "base64"
   );
 
-  const imageGenerationPrompt = await generateText(
-    openai
+  const imageGenerationPrompt = await generateText({
+    model: openai
       .ChatTextGenerator({
         model: "gpt-4-vision-preview",
         maxGenerationTokens: 128,
       })
       .withInstructionPrompt(),
-    {
+
+    prompt: {
       instruction: [
         {
           type: "text",
@@ -32,21 +33,21 @@ async function main() {
         },
         { type: "image", base64Image },
       ],
-    }
-  );
+    },
+  });
 
   console.log();
   console.log(`Image generation prompt:`);
   console.log(imageGenerationPrompt);
 
-  const image = await generateImage(
-    openai.ImageGenerator({
+  const image = await generateImage({
+    model: openai.ImageGenerator({
       model: "dall-e-3",
       quality: "hd",
       size: "1024x1024",
     }),
-    imageGenerationPrompt
-  );
+    prompt: imageGenerationPrompt,
+  });
 
   const path = `./enhanced-image-example.png`;
   fs.writeFileSync(path, image);

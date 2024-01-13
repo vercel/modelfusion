@@ -69,16 +69,16 @@ import { guard } from "modelfusion-experimental";
 const OPENAI_KEY_REGEXP = new RegExp("sk-[a-zA-Z0-9]{24}", "gi");
 
 const result = await guard(
-  (input, options) =>
-    generateText(
-      llamacpp
+  (prompt, options) =>
+    generateText({
+      model: llamacpp
         .CompletionTextGenerator({
           // ...
         })
         .withTextPromptTemplate(Llama2Prompt.instruction()),
-      input,
-      options // pass through options (for tracing)
-    ),
+      prompt,
+      ...options, // pass through options (for tracing)
+    }),
   {
     instruction:
       "Show me how to use OpenAI's completion API in JavaScript, " +
@@ -113,15 +113,15 @@ function contentRequiresModeration(text: string): boolean {
 }
 
 const story = await guard(
-  (input) =>
-    generateText(
-      openai.CompletionTextGenerator({
+  (prompt) =>
+    generateText({
+      model: openai.CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
         temperature: 0.7,
         maxGenerationTokens: 250,
       }),
-      input
-    ),
+      prompt,
+    }),
   "Write a short story about a robot called Nox:\n\n", // without including the word Nox
   async (result) => {
     // If there's no error and the content needs moderation, throw a custom error.
@@ -145,17 +145,19 @@ import { generateStructure, openai, zodSchema } from "modelfusion";
 import { guard, fixStructure } from "modelfusion-experimental";
 
 const result = await guard(
-  (input, options) =>
-    generateStructure(
-      openai.ChatTextGenerator(/*...*/).asFunctionCallStructureGenerationModel({
-        fnName: "myFunction",
-      }),
-      zodSchema({
+  (prompt, options) =>
+    generateStructure({
+      model: openai
+        .ChatTextGenerator(/*...*/)
+        .asFunctionCallStructureGenerationModel({
+          fnName: "myFunction",
+        }),
+      schema: zodSchema({
         // ...
       }),
-      input,
-      options
-    ),
+      prompt,
+      ...options,
+    }),
   [
     // ...
   ],
@@ -192,14 +194,14 @@ import { guard, fixStructure } from "modelfusion-experimental";
 
 const result = await guard(
   (input: { model: OpenAIChatModelType; prompt: openai.ChatPrompt }, options) =>
-    generateStructure(
-      openai
+    generateStructure({
+      model: openai
         .ChatTextGenerator({ model: input.model })
         .asFunctionCallStructureGenerationModel(/*...*/),
-      zodSchema(/*...*/),
-      input.prompt,
-      options
-    ),
+      schema: zodSchema(/*...*/),
+      prompt: input.prompt,
+      ...options,
+    }),
   {
     model: "gpt-3.5-turbo",
     prompt: [

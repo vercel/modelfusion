@@ -1,8 +1,8 @@
 import { generateText, ollama } from "modelfusion";
 
 async function main() {
-  const text = await generateText(
-    ollama
+  const text = await generateText({
+    model: ollama
       .CompletionTextGenerator({
         model: "mistral",
         promptTemplate: ollama.prompt.Mistral,
@@ -11,8 +11,8 @@ async function main() {
       })
       .withTextPrompt(),
 
-    "Write a short story about a robot learning to love."
-  );
+    prompt: "Write a short story about a robot learning to love.",
+  });
 
   console.log(text);
 }

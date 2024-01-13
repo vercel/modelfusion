@@ -16,8 +16,8 @@ This is helpful to quickly develop initial product versions and prototypes.
 
 ```ts
 const analyzeSentiment = async (productReview: string) =>
-  generateStructure(
-    openai
+  generateStructure({
+    model: openai
       .ChatTextGenerator({
         model: "gpt-4",
         temperature: 0, // remove randomness
@@ -29,7 +29,7 @@ const analyzeSentiment = async (productReview: string) =>
       })
       .withInstructionPrompt(),
 
-    zodSchema(
+    schema: zodSchema(
       z.object({
         // Reason first to improve results:
         reasoning: z.string().describe("Reasoning to explain the sentiment."),
@@ -40,13 +40,13 @@ const analyzeSentiment = async (productReview: string) =>
       })
     ),
 
-    {
+    prompt: {
       system:
         "You are a sentiment evaluator. " +
         "Analyze the sentiment of the following product review:",
       instruction: productReview,
-    }
-  );
+    },
+  });
 ```
 
 #### Use destructuring to get the sentiment:

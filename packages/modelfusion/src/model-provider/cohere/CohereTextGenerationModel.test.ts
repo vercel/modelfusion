@@ -21,13 +21,13 @@ describe("streamText", () => {
         `"prompt":"hello"}}\n`,
     ];
 
-    const stream = await streamText(
-      new CohereTextGenerationModel({
+    const stream = await streamText({
+      model: new CohereTextGenerationModel({
         api: new CohereApiConfiguration({ apiKey: "test-key" }),
         model: "command-light",
       }),
-      "hello"
-    );
+      prompt: "hello",
+    });
 
     // note: space moved to last chunk bc of trimming
     expect(await arrayFromAsync(stream)).toStrictEqual([

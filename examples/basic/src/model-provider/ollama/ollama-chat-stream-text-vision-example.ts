@@ -7,8 +7,8 @@ async function main() {
     encoding: "base64",
   });
 
-  const textStream = await streamText(
-    ollama
+  const textStream = await streamText({
+    model: ollama
       .ChatTextGenerator({
         model: "bakllava",
         maxGenerationTokens: 1024,
@@ -16,13 +16,13 @@ async function main() {
       })
       .withInstructionPrompt(),
 
-    {
+    prompt: {
       instruction: [
         { type: "text", text: "Describe the image in detail:\n\n" },
         { type: "image", base64Image: image, mimeType: "image/png" },
       ],
-    }
-  );
+    },
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

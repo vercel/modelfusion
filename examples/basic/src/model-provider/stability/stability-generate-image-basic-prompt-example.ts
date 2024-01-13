@@ -5,8 +5,8 @@ import fs from "node:fs";
 dotenv.config();
 
 async function main() {
-  const image = await generateImage(
-    stability
+  const image = await generateImage({
+    model: stability
       .ImageGenerator({
         model: "stable-diffusion-v1-6",
         cfgScale: 7,
@@ -16,8 +16,10 @@ async function main() {
         steps: 30,
       })
       .withTextPrompt(),
-    "the wicked witch of the west in the style of early 19th century painting"
-  );
+
+    prompt:
+      "the wicked witch of the west in the style of early 19th century painting",
+  });
 
   const path = `./stability-image-example.png`;
   fs.writeFileSync(path, image);

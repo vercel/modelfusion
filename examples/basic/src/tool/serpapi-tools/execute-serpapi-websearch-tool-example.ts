@@ -11,8 +11,11 @@ async function main() {
     num: 3,
   });
 
-  const result = await executeTool(websearchTool, {
-    query: "modelfusion",
+  const result = await executeTool({
+    tool: websearchTool,
+    args: {
+      query: "modelfusion",
+    },
   });
 
   console.log(result);

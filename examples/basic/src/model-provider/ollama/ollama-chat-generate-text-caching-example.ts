@@ -9,19 +9,19 @@ const model = ollama
 async function main() {
   const cache = new MemoryCache();
 
-  const text1 = await generateText(
+  const text1 = await generateText({
     model,
-    "Write a short story about a robot learning to love:",
-    { cache }
-  );
+    prompt: "Write a short story about a robot learning to love:",
+    cache,
+  });
 
   console.log(text1);
 
-  const text2 = await generateText(
+  const text2 = await generateText({
     model,
-    "Write a short story about a robot learning to love:", // same text
-    { cache }
-  );
+    prompt: "Write a short story about a robot learning to love:", // same prompt
+    cache,
+  });
 
   console.log(text2);
 }

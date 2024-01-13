@@ -13,15 +13,15 @@ async function main() {
     encoding: "base64",
   });
 
-  const textStream = await streamText(
-    openai
+  const textStream = await streamText({
+    model: openai
       .ChatTextGenerator({
         model: "gpt-4-vision-preview",
         maxGenerationTokens: 1000,
       })
       .withChatPrompt(),
 
-    {
+    prompt: {
       messages: [
         {
           role: "user",
@@ -37,8 +37,8 @@ async function main() {
           ],
         },
       ],
-    }
-  );
+    },
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

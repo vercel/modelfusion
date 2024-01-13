@@ -43,7 +43,11 @@ export class VectorIndexRetriever<OBJECT, VALUE, INDEX, FILTER>
   }
 
   async retrieve(query: VALUE, options?: FunctionOptions): Promise<OBJECT[]> {
-    const embedding = await embed(this.embeddingModel, query, options);
+    const embedding = await embed({
+      model: this.embeddingModel,
+      value: query,
+      ...options,
+    });
 
     const queryResult = await this.vectorIndex.queryByVector({
       queryVector: embedding,

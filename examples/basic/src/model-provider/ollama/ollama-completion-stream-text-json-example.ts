@@ -1,8 +1,8 @@
 import { MistralInstructPrompt, ollama, streamText } from "modelfusion";
 
 async function main() {
-  const textStream = await streamText(
-    ollama
+  const textStream = await streamText({
+    model: ollama
       .CompletionTextGenerator({
         model: "mistral",
         promptTemplate: ollama.prompt.Mistral,
@@ -12,9 +12,10 @@ async function main() {
       })
       .withTextPrompt(),
 
-    "Generate 3 character descriptions for a fantasy role playing game. " +
-      "Respond using JSON."
-  );
+    prompt:
+      "Generate 3 character descriptions for a fantasy role playing game. " +
+      "Respond using JSON.",
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

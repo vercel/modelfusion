@@ -12,8 +12,11 @@ async function main() {
     maxResults: 5,
   });
 
-  const result = await executeTool(wikipediaSearchTool, {
-    query: "javascript",
+  const result = await executeTool({
+    tool: wikipediaSearchTool,
+    args: {
+      query: "javascript",
+    },
   });
 
   console.log(result);

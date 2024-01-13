@@ -28,39 +28,52 @@ export type ExecuteToolMetadata = {
  * `executeTool` executes a tool with the given parameters.
  */
 export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
-  tool: TOOL,
-  args: TOOL["parameters"]["_type"],
-  options?: FunctionOptions & { fullResponse?: false }
+  params: {
+    tool: TOOL;
+    args: TOOL["parameters"]["_type"];
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<ReturnType<TOOL["execute"]>>;
 export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
-  tool: TOOL,
-  args: TOOL["parameters"]["_type"],
-  options: FunctionOptions & { fullResponse: true }
+  params: {
+    tool: TOOL;
+    args: TOOL["parameters"]["_type"];
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   output: Awaited<ReturnType<TOOL["execute"]>>;
   metadata: ExecuteToolMetadata;
 }>;
-export async function executeTool<TOOL extends Tool<any, any, any>>( // eslint-disable-line @typescript-eslint/no-explicit-any
-  tool: TOOL,
-  args: TOOL["parameters"]["_type"],
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function executeTool<TOOL extends Tool<any, any, any>>({
+  tool,
+  args,
+  fullResponse,
+  ...options
+}: {
+  tool: TOOL;
+  args: TOOL["parameters"]["_type"];
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | ReturnType<TOOL["execute"]>
   | {
       output: Awaited<ReturnType<TOOL["execute"]>>;
       metadata: ExecuteToolMetadata;
     }
 > {
-  const fullResponse = await doExecuteTool(tool, args, options);
-  return options?.fullResponse ? fullResponse : fullResponse.output;
+  const callResponse = await doExecuteTool({ tool, args, ...options });
+  return fullResponse ? callResponse : callResponse.output;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function doExecuteTool<TOOL extends Tool<any, any, any>>(
-  tool: TOOL,
-  args: TOOL["parameters"]["_type"],
-  options?: FunctionOptions
-): Promise<{
+async function doExecuteTool<TOOL extends Tool<any, any, any>>({
+  tool,
+  args,
+  ...options
+}: {
+  tool: TOOL;
+  args: TOOL["parameters"]["_type"];
+} & FunctionOptions): Promise<{
   output: Awaited<ReturnType<TOOL["execute"]>>;
   metadata: ExecuteToolMetadata;
 }> {

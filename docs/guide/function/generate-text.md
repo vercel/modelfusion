@@ -40,10 +40,10 @@ You can generate text and get a single completion string response by using the `
 ```ts
 import { generateText, openai } from "modelfusion";
 
-const text = await generateText(
-  openai.CompletionTextGenerator(/* ... */),
-  "Write a short story about a robot learning to love:\n\n"
-);
+const text = await generateText({
+  model: openai.CompletionTextGenerator(/* ... */),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+});
 ```
 
 #### Example: OpenAI chat model
@@ -51,11 +51,14 @@ const text = await generateText(
 ```ts
 import { generateText, openai } from "modelfusion";
 
-const text = await generateText(openai.ChatTextGenerator(/* ... */), [
-  openai.ChatMessage.system(
-    "Write a short story about a robot learning to love:"
-  ),
-]);
+const text = await generateText({
+  model: openai.ChatTextGenerator(/* ... */),
+  prompt: [
+    openai.ChatMessage.system(
+      "Write a short story about a robot learning to love:"
+    ),
+  ],
+});
 ```
 
 #### Example: OpenAI chat model with multi-modal input
@@ -65,15 +68,15 @@ Multi-modal vision models such as GPT 4 Vision can process images as part of the
 ```ts
 import { generateText, openai } from "modelfusion";
 
-const text = await generateText(
-  openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
-  [
+const text = await generateText({
+  model: openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
+  prompt: [
     openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ]),
-  ]
-);
+  ],
+});
 ```
 
 When you set the `fullResponse` option to `true`, you get get a rich response object with the following properties:
@@ -90,14 +93,14 @@ When you set the `fullResponse` option to `true`, you get get a rich response ob
 ```ts
 import { generateText, openai } from "modelfusion";
 
-const { texts } = await generateText(
-  openai.CompletionTextGenerator({
+const { texts } = await generateText({
+  model: openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     numberOfGenerations: 2,
   }),
-  "Write a short story about a robot learning to love:",
-  { fullResponse: true }
-);
+  prompt: "Write a short story about a robot learning to love:",
+  fullResponse: true,
+});
 ```
 
 #### Example: Accessing the finish reason
@@ -105,11 +108,11 @@ const { texts } = await generateText(
 ```ts
 import { generateText, openai } from "modelfusion";
 
-const { text, finishReason } = await generateText(
-  openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
-  "Write a short story about a robot learning to love:",
-  { fullResponse: true }
-);
+const { text, finishReason } = await generateText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:",
+  fullResponse: true,
+});
 ```
 
 ### streamText
@@ -123,10 +126,13 @@ You can use most text generation models in streaming mode. Just use the `streamT
 ```ts
 import { streamText, openai } from "modelfusion";
 
-const textStream = await streamText(openai.ChatTextGenerator(/* ... */), [
-  openai.ChatMessage.system("You are a story writer. Write a story about:"),
-  openai.ChatMessage.user("A robot learning to love"),
-]);
+const textStream = await streamText({
+  model: openai.ChatTextGenerator(/* ... */),
+  prompt: [
+    openai.ChatMessage.system("You are a story writer. Write a story about:"),
+    openai.ChatMessage.user("A robot learning to love"),
+  ],
+});
 
 for await (const textPart of textStream) {
   process.stdout.write(textPart);
@@ -144,11 +150,11 @@ When you set the `fullResponse` option to `true`, you get get a rich response ob
 ```ts
 import { streamText, openai } from "modelfusion";
 
-const { textStream, text, metadata } = await streamText(
-  openai.CompletionTextGenerator(/* ... */),
-  "Write a story about a robot learning to love",
-  { fullResponse: true }
-);
+const { textStream, text, metadata } = await streamText({
+  model: openai.CompletionTextGenerator(/* ... */),
+  prompt: "Write a story about a robot learning to love",
+  fullResponse: true,
+});
 ```
 
 ## Prompt Template
@@ -188,10 +194,10 @@ const model = openai
 You can now generate text using a basic text prompt:
 
 ```ts
-const text = await generateText(
+const text = await generateText({
   model,
-  "Write a story about a robot learning to love"
-);
+  prompt: "Write a story about a robot learning to love",
+});
 ```
 
 #### Prompt Templates
@@ -246,9 +252,12 @@ const model = cohere
 You can now generate text using an instruction prompt:
 
 ```ts
-const text = await generateText(model, {
-  system: "You are a celebrated poet.", // optional
-  instruction: "Write a story about a robot learning to love",
+const text = await generateText({
+  model,
+  prompt: {
+    system: "You are a celebrated poet.", // optional
+    instruction: "Write a story about a robot learning to love",
+  },
 });
 ```
 
@@ -257,19 +266,19 @@ const text = await generateText(model, {
 Multi-modal vision models such as GPT 4 Vision support multi-modal prompts:
 
 ```ts
-const textStream = await streamText(
-  openai
+const textStream = await streamText({
+  model: openai
     .ChatTextGenerator({
       model: "gpt-4-vision-preview",
     })
     .withInstructionPrompt(),
-  {
+  prompt: {
     instruction: [
       { type: "text", text: "Describe the image in detail:\n\n" },
       { type: "image", base64Image: image, mimeType: "image/png" },
     ],
-  }
-);
+  },
+});
 ```
 
 #### Prompt Templates
@@ -328,22 +337,25 @@ const model = openai
 You can now generate text using a chat prompt:
 
 ```ts
-const textStream = await streamText(model, {
-  system: "You are a celebrated poet.",
-  messages: [
-    {
-      role: "user",
-      content: "Suggest a name for a robot.",
-    },
-    {
-      role: "assistant",
-      content: "I suggest the name Robbie",
-    },
-    {
-      role: "user",
-      content: "Write a short story about Robbie learning to love",
-    },
-  ],
+const textStream = await streamText({
+  model,
+  prompt: {
+    system: "You are a celebrated poet.",
+    messages: [
+      {
+        role: "user",
+        content: "Suggest a name for a robot.",
+      },
+      {
+        role: "assistant",
+        content: "I suggest the name Robbie",
+      },
+      {
+        role: "user",
+        content: "Write a short story about Robbie learning to love",
+      },
+    ],
+  },
 });
 ```
 
@@ -388,10 +400,10 @@ const chat: ChatPrompt = {
   ],
 };
 
-const textStream = await streamText(
+const textStream = await streamText({
   model,
-  await trimChatPrompt({ prompt: chat, model })
-);
+  prompt: await trimChatPrompt({ prompt: chat, model }),
+});
 ```
 
 ### Custom Prompt Templates

@@ -43,12 +43,16 @@ type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
 export async function useTools<
   PROMPT,
   TOOLS extends Array<Tool<any, any, any>>,
->(
-  model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>,
-  tools: TOOLS,
-  prompt: PROMPT | ((tools: TOOLS) => PROMPT),
-  options?: FunctionOptions
-): Promise<{
+>({
+  model,
+  tools,
+  prompt,
+  ...options
+}: {
+  model: ToolCallsGenerationModel<PROMPT, ToolCallsGenerationModelSettings>;
+  tools: TOOLS;
+  prompt: PROMPT | ((tools: TOOLS) => PROMPT);
+} & FunctionOptions): Promise<{
   text: string | null;
   toolResults: Array<ToOutputValue<TOOLS>> | null;
 }> {
@@ -63,12 +67,13 @@ export async function useTools<
     input: expandedPrompt,
     functionType: "use-tools",
     execute: async (options) => {
-      const modelResponse = await generateToolCalls(
+      const modelResponse = await generateToolCalls({
         model,
         tools,
-        expandedPrompt,
-        { ...options, fullResponse: false }
-      );
+        prompt: expandedPrompt,
+        fullResponse: false,
+        ...options,
+      });
 
       const { toolCalls, text } = modelResponse;
 

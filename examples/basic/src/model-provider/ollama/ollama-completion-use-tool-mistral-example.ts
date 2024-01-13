@@ -2,8 +2,8 @@ import { MathJsTool } from "@modelfusion/mathjs-tool";
 import { jsonToolCallPrompt, ollama, useTool } from "modelfusion";
 
 async function main() {
-  const { tool, args, toolCall, result } = await useTool(
-    ollama
+  const { tool, args, toolCall, result } = await useTool({
+    model: ollama
       .CompletionTextGenerator({
         model: "mistral",
         promptTemplate: ollama.prompt.Mistral,
@@ -15,9 +15,9 @@ async function main() {
       .withInstructionPrompt()
       .asToolCallGenerationModel(jsonToolCallPrompt.text()),
 
-    new MathJsTool({ name: "calculator" }),
-    "What's fourteen times twelve?"
-  );
+    tool: new MathJsTool({ name: "calculator" }),
+    prompt: "What's fourteen times twelve?",
+  });
 
   console.log(`Tool call`, toolCall);
   console.log(`Tool: ${tool}`);

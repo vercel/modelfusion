@@ -17,13 +17,16 @@ modelfusion.setLogFormat("detailed-object");
 async function main() {
   const sentiment = await guard(
     (
-      input: { model: OpenAIChatModelType; prompt: InstructionPrompt },
+      {
+        model,
+        prompt,
+      }: { model: OpenAIChatModelType; prompt: InstructionPrompt },
       options
     ) =>
-      generateStructure(
-        openai
+      generateStructure({
+        model: openai
           .ChatTextGenerator({
-            model: input.model,
+            model,
             temperature: 0,
             maxGenerationTokens: 50,
           })
@@ -33,16 +36,16 @@ async function main() {
           })
           .withInstructionPrompt(),
 
-        zodSchema(
+        schema: zodSchema(
           z.object({
             sentiment: z
               .enum(["positivee", "neutra", "negaaa"])
               .describe("Sentiment."),
           })
         ),
-        input.prompt,
-        options
-      ),
+        prompt,
+        ...options,
+      }),
     {
       model: "gpt-3.5-turbo",
       prompt: {

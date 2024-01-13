@@ -20,15 +20,15 @@ import {
 
 const run = new DefaultRun();
 
-const text = await generateText(
-  openai.CompletionTextGenerator({
+const text = await generateText({
+  model: openai.CompletionTextGenerator({
     model: "gpt-3.5-turbo-instruct",
     temperature: 0.7,
     maxGenerationTokens: 500,
   }),
-  "Write a short story about a robot learning to love:\n\n",
-  { run } // pass in the run into the model calls
-);
+  prompt: "Write a short story about a robot learning to love:\n\n",
+  run, // pass in the run into the model calls
+});
 
 // calculate the overall cost of the run for the successful calls:
 const cost = await calculateCost({

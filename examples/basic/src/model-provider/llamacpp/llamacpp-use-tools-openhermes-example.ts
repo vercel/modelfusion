@@ -4,8 +4,8 @@ import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
 
 async function main() {
-  const { text, toolResults } = await useTools(
-    llamacpp
+  const { text, toolResults } = await useTools({
+    model: llamacpp
       .CompletionTextGenerator({
         // run https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp
         promptTemplate: llamacpp.prompt.ChatML,
@@ -13,10 +13,12 @@ async function main() {
       })
       .withInstructionPrompt()
       .asToolCallsOrTextGenerationModel(XmlTagToolCallsPromptTemplate.text()),
-    [calculator, weather],
-    "What's fourteen times twelve?"
-    // "What's the weather like in Boston?"
-  );
+
+    tools: [calculator, weather],
+
+    prompt: "What's fourteen times twelve?",
+    // prompt: "What's the weather like in Boston?"
+  });
 
   if (text != null) {
     console.log(`TEXT: ${text}`);

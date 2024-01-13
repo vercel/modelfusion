@@ -40,7 +40,10 @@ const searchWikipedia = new GoogleCustomSearchTool({
 You can then use the tool with `useTool` or `executeTool`:
 
 ```ts
-const result = await executeTool(searchWikipedia, {
-  query: "Pablo Picasso",
+const result = await executeTool({
+  tool: searchWikipedia,
+  args: {
+    query: "Pablo Picasso",
+  },
 });
 ```

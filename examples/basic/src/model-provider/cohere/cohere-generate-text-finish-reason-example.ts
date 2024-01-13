@@ -4,15 +4,15 @@ import { cohere, generateText } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const { text, finishReason } = await generateText(
-    cohere.TextGenerator({
+  const { text, finishReason } = await generateText({
+    model: cohere.TextGenerator({
       model: "command",
       temperature: 0.7,
       maxGenerationTokens: 200,
     }),
-    "Write a short story about a robot learning to love:\n\n",
-    { fullResponse: true }
-  );
+    prompt: "Write a short story about a robot learning to love:\n\n",
+    fullResponse: true,
+  });
 
   console.log(text);
   console.log();

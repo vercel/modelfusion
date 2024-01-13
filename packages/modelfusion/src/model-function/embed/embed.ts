@@ -10,39 +10,47 @@ import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel.js";
  * @see https://modelfusion.dev/guide/function/embed
  *
  * @example
- * const embeddings = await embedMany(
- *   openai.TextEmbedder(...),
- *   [
+ * const embeddings = await embedMany({
+ *   embedder: openai.TextEmbedder(...),
+ *   values: [
  *     "At first, Nox didn't know what to do with the pup.",
  *     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
  *   ]
- * );
+ * });
  *
  * @param {EmbeddingModel<VALUE, EmbeddingModelSettings>} model - The model to use for generating embeddings.
  * @param {VALUE[]} values - The values to generate embeddings for.
- * @param {FunctionOptions} [options] - Optional settings for the function.
  *
  * @returns {Promise<Vector[]>} - A promise that resolves to an array of vectors representing the embeddings.
  */
 export async function embedMany<VALUE>(
-  model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
-  values: VALUE[],
-  options?: FunctionOptions & { fullResponse?: false }
+  args: {
+    model: EmbeddingModel<VALUE, EmbeddingModelSettings>;
+    values: VALUE[];
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<Vector[]>;
 export async function embedMany<VALUE>(
-  model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
-  values: VALUE[],
-  options: FunctionOptions & { fullResponse: true }
+  args: {
+    model: EmbeddingModel<VALUE, EmbeddingModelSettings>;
+    values: VALUE[];
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   embeddings: Vector[];
   rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
-export async function embedMany<VALUE>(
-  model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
-  values: VALUE[],
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+export async function embedMany<VALUE>({
+  model,
+  values,
+  fullResponse,
+  ...options
+}: {
+  model: EmbeddingModel<VALUE, EmbeddingModelSettings>;
+  values: VALUE[];
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | Vector[]
   | {
       embeddings: Vector[];
@@ -50,7 +58,7 @@ export async function embedMany<VALUE>(
       metadata: ModelCallMetadata;
     }
 > {
-  const fullResponse = await executeStandardCall({
+  const callResponse = await executeStandardCall({
     functionType: "embed",
     input: values,
     model,
@@ -97,13 +105,13 @@ export async function embedMany<VALUE>(
     },
   });
 
-  return options?.fullResponse
+  return fullResponse
     ? {
-        embeddings: fullResponse.value,
-        rawResponse: fullResponse.rawResponse,
-        metadata: fullResponse.metadata,
+        embeddings: callResponse.value,
+        rawResponse: callResponse.rawResponse,
+        metadata: callResponse.metadata,
       }
-    : fullResponse.value;
+    : callResponse.value;
 }
 
 /**
@@ -112,40 +120,48 @@ export async function embedMany<VALUE>(
  * @see https://modelfusion.dev/guide/function/embed
  *
  * @example
- * const embedding = await embed(
- *   openai.TextEmbedder(...),
- *   "At first, Nox didn't know what to do with the pup."
- * );
+ * const embedding = await embed({
+ *   model: openai.TextEmbedder(...),
+ *   value: "At first, Nox didn't know what to do with the pup."
+ * });
  *
  * @param {EmbeddingModel<VALUE, EmbeddingModelSettings>} model - The model to use for generating the embedding.
  * @param {VALUE} value - The value to generate an embedding for.
- * @param {FunctionOptions} [options] - Optional settings for the function.
  *
  * @returns {Promise<Vector>} - A promise that resolves to a vector representing the embedding.
  */
 export async function embed<VALUE>(
-  model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
-  value: VALUE,
-  options?: FunctionOptions & { fullResponse?: false }
+  args: {
+    model: EmbeddingModel<VALUE, EmbeddingModelSettings>;
+    value: VALUE;
+    fullResponse?: false;
+  } & FunctionOptions
 ): Promise<Vector>;
 export async function embed<VALUE>(
-  model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
-  value: VALUE,
-  options: FunctionOptions & { fullResponse: true }
+  args: {
+    model: EmbeddingModel<VALUE, EmbeddingModelSettings>;
+    value: VALUE;
+    fullResponse: true;
+  } & FunctionOptions
 ): Promise<{
   embedding: Vector;
   rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
-export async function embed<VALUE>(
-  model: EmbeddingModel<VALUE, EmbeddingModelSettings>,
-  value: VALUE,
-  options?: FunctionOptions & { fullResponse?: boolean }
-): Promise<
+export async function embed<VALUE>({
+  model,
+  value,
+  fullResponse,
+  ...options
+}: {
+  model: EmbeddingModel<VALUE, EmbeddingModelSettings>;
+  value: VALUE;
+  fullResponse?: boolean;
+} & FunctionOptions): Promise<
   | Vector
   | { embedding: Vector; rawResponse: unknown; metadata: ModelCallMetadata }
 > {
-  const fullResponse = await executeStandardCall({
+  const callResponse = await executeStandardCall({
     functionType: "embed",
     input: value,
     model,
@@ -159,11 +175,11 @@ export async function embed<VALUE>(
     },
   });
 
-  return options?.fullResponse
+  return fullResponse
     ? {
-        embedding: fullResponse.value,
-        rawResponse: fullResponse.rawResponse,
-        metadata: fullResponse.metadata,
+        embedding: callResponse.value,
+        rawResponse: callResponse.rawResponse,
+        metadata: callResponse.metadata,
       }
-    : fullResponse.value;
+    : callResponse.value;
 }

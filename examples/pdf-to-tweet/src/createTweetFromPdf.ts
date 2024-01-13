@@ -50,9 +50,10 @@ export async function createTweetFromPdf({
     );
 
   // generate a draft tweet:
-  const draftTweet = await generateText(
-    model.withSettings({ temperature: 0.5 }),
-    [
+  const draftTweet = await generateText({
+    functionId: "draft-tweet",
+    model: model.withSettings({ temperature: 0.5 }),
+    prompt: [
       openai.ChatMessage.user(`## TOPIC\n${topic}`),
       openai.ChatMessage.system(
         [
@@ -64,8 +65,7 @@ export async function createTweetFromPdf({
       ),
       openai.ChatMessage.user(`## CONTENT\n${informationOnTopic}`),
     ],
-    { functionId: "draft-tweet" }
-  );
+  });
 
   // search for similar tweets:
   const similarTweets = await retrieve(
@@ -89,15 +89,15 @@ export async function createTweetFromPdf({
   }
 
   // rewrite the tweet:
-  return await generateText(
-    model.withSettings({ temperature: 0.5 }),
-    [
+  return await generateText({
+    functionId: "rewrite-tweet",
+    model: model.withSettings({ temperature: 0.5 }),
+    prompt: [
       openai.ChatMessage.system(
         `## TASK\nRewrite the draft tweet on ${topic} using the style from the example tweet.`
       ),
       openai.ChatMessage.user(`## DRAFT TWEET\n${draftTweet}`),
       openai.ChatMessage.user(`## STYLE EXAMPLE\n${similarTweets[0]}`),
     ],
-    { functionId: "rewrite-tweet" }
-  );
+  });
 }

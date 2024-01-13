@@ -40,16 +40,14 @@ export class ImageGeneratorTool<NAME extends string> extends Tool<
         })
       ),
       execute: async ({ numberOfImages, description }, options) => {
-        const { imagesBase64 } = await generateImage(
-          this.model.withSettings({
+        const { imagesBase64 } = await generateImage({
+          model: this.model.withSettings({
             numberOfGenerations: numberOfImages ?? 1,
           }),
-          description,
-          {
-            ...options,
-            fullResponse: true,
-          }
-        );
+          prompt: description,
+          fullResponse: true,
+          ...options,
+        });
 
         return imagesBase64;
       },

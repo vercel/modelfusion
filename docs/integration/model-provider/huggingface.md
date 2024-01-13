@@ -43,14 +43,14 @@ You can override this behavior by setting `waitForModel` to `false` in the model
 ```ts
 import { huggingface, generateText } from "modelfusion";
 
-const text = await generateText(
-  huggingface.TextGenerator({
+const text = await generateText({
+  model: huggingface.TextGenerator({
     model: "tiiuae/falcon-7b",
     temperature: 700,
     maxNewTokens: 500,
   }),
-  "Write a short story about a robot learning to love:\n\n"
-);
+  prompt: "Write a short story about a robot learning to love:\n\n",
+});
 ```
 
 ### Embed Text
@@ -62,14 +62,14 @@ Text embeddings are using the HuggingFace feature extract pipeline.
 ```ts
 import { huggingface, embedMany } from "modelfusion";
 
-const embeddings = await embedMany(
-  huggingface.TextEmbedder({
+const embeddings = await embedMany({
+  model: huggingface.TextEmbedder({
     model: "intfloat/e5-base-v2",
     embeddingDimensions: 768,
   }),
-  [
+  values: [
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
-  ]
-);
+  ],
+});
 ```

@@ -16,8 +16,8 @@ export default async function handler(
 
   const { text: description } = req.body;
 
-  const { imageBase64 } = await generateImage(
-    stability.ImageGenerator({
+  const { imageBase64 } = await generateImage({
+    model: stability.ImageGenerator({
       // explicit API configuration needed for NextJS environment
       // (otherwise env variables are not available):
       api: stability.Api({ apiKey: process.env.STABILITY_API_KEY }),
@@ -28,12 +28,12 @@ export default async function handler(
       width: 512,
       steps: 30,
     }),
-    [
+    prompt: [
       { text: description },
       { text: "style of early 19th century painting", weight: 0.5 },
     ],
-    { fullResponse: true }
-  );
+    fullResponse: true,
+  });
 
   try {
     res.status(200).json(imageBase64);

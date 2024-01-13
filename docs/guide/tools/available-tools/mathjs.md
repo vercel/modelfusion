@@ -28,7 +28,10 @@ const mathTool = new MathJsTool({
 You can then use the tool with `useTool` or `executeTool`:
 
 ```ts
-const result = await executeTool(mathTool, {
-  expression: "2 + 2",
+const result = await executeTool({
+  tool: mathTool,
+  args: {
+    expression: "2 + 2",
+  },
 });
 ```

@@ -8,14 +8,14 @@ async function main() {
   console.log("Logging: detailed-object");
   console.log();
 
-  const text = await generateText(
-    openai.CompletionTextGenerator({
+  const text = await generateText({
+    model: openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       maxGenerationTokens: 50,
     }),
-    "Write a short story about a robot learning to love:\n\n",
-    { logging: "detailed-object" }
-  );
+    prompt: "Write a short story about a robot learning to love:\n\n",
+    logging: "detailed-object",
+  });
 }
 
 main().catch(console.error);

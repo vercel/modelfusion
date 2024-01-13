@@ -12,13 +12,13 @@ async function main() {
     },
   });
 
-  const text = await generateText(
-    openai.CompletionTextGenerator({
+  const text = await generateText({
+    model: openai.CompletionTextGenerator({
       model: "gpt-3.5-turbo-instruct",
       api,
     }),
-    "Write a short story about a robot learning to love:\n\n"
-  );
+    prompt: "Write a short story about a robot learning to love:\n\n",
+  });
 
   console.log(text);
 }

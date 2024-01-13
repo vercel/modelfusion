@@ -24,13 +24,13 @@ describe("streamText", () => {
       "data: [DONE]\n\n",
     ];
 
-    const stream = await streamText(
-      new OpenAICompletionModel({
+    const stream = await streamText({
+      model: new OpenAICompletionModel({
         api: new OpenAIApiConfiguration({ apiKey: "test-key" }),
         model: "gpt-3.5-turbo-instruct",
       }),
-      "hello"
-    );
+      prompt: "hello",
+    });
 
     // note: space moved to last chunk bc of trimming
     expect(await arrayFromAsync(stream)).toStrictEqual([
@@ -53,14 +53,14 @@ describe("streamText", () => {
       "data: [DONE]\n\n",
     ];
 
-    const stream = await streamText(
-      new OpenAICompletionModel({
+    const stream = await streamText({
+      model: new OpenAICompletionModel({
         api: new OpenAIApiConfiguration({ apiKey: "test-key" }),
         model: "gpt-3.5-turbo-instruct",
         numberOfGenerations: 2,
       }),
-      "test prompt"
-    );
+      prompt: "test prompt",
+    });
 
     expect(await arrayFromAsync(stream)).toStrictEqual(["A"]);
   });

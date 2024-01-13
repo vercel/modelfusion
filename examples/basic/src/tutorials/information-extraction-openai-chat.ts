@@ -6,13 +6,14 @@ dotenv.config();
 
 async function main() {
   function extractText({ text, topic }: { text: string; topic: string }) {
-    return generateText(
-      openai.ChatTextGenerator({
+    return generateText({
+      model: openai.ChatTextGenerator({
         model: "gpt-4",
         temperature: 0, // remove randomness as much as possible
         maxGenerationTokens: 500,
       }),
-      [
+
+      prompt: [
         openai.ChatMessage.system(
           [
             `## ROLE`,
@@ -23,8 +24,8 @@ async function main() {
         ),
         openai.ChatMessage.user(`## TOPIC\n${topic}`),
         openai.ChatMessage.user(`## TEXT\n${text}`),
-      ]
-    );
+      ],
+    });
   }
 
   const sanFranciscoWikipedia = JSON.parse(

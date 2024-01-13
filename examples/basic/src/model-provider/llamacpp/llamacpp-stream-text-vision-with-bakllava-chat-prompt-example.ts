@@ -10,8 +10,8 @@ async function main() {
     encoding: "base64",
   });
 
-  const textStream = await streamText(
-    llamacpp
+  const textStream = await streamText({
+    model: llamacpp
       .CompletionTextGenerator({
         // run BakLLaVA-1 in llama.cpp https://huggingface.co/mys/ggml_bakllava-1/tree/main
         promptTemplate: llamacpp.prompt.BakLLaVA1,
@@ -20,7 +20,7 @@ async function main() {
       })
       .withChatPrompt(),
 
-    {
+    prompt: {
       messages: [
         {
           role: "user",
@@ -36,8 +36,8 @@ async function main() {
           ],
         },
       ],
-    }
-  );
+    },
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);
