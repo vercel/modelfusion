@@ -48,6 +48,7 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 ### [Embed Value](/guide/function/embed)
 
 - [OpenAI](/integration/model-provider/openai)
+- [OpenAI Compatible](/integration/model-provider/openaicompatible)
 - [Llama.cpp](/integration/model-provider/llamacpp)
 - [Ollama](/integration/model-provider/ollama)
 - [Mistral](/integration/model-provider/mistral)

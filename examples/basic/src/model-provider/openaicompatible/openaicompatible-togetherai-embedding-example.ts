@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { embed, openaicompatible, streamText } from "modelfusion";
+import { embed, openaicompatible } from "modelfusion";
 
 dotenv.config();
 

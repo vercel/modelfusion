@@ -211,7 +211,7 @@ const sentiment = await generateStructure({
 [OpenAITextEmbeddingModel API](/api/classes/OpenAITextEmbeddingModel)
 
 ```ts
-import { OpenAITextEmbeddingModel, embedMany } from "modelfusion";
+import { openai, embedMany } from "modelfusion";
 
 const embeddings = await embedMany({
   model: openai.TextEmbedder({ model: "text-embedding-ada-002" }),
