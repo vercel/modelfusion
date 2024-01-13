@@ -25,9 +25,11 @@ That's why I created **[ModelFusion](https://github.com/lgrammel/modelfusion)**.
 Here's a simple example demonstrating how you might use ModelFusion to generate text with OpenAI:
 
 ```ts
+import { generateText, openai } from "modelfusion";
+
 const text = await generateText({
   model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
-  prompt: "Write a short story about a robot learning to love:\n\n",
+  prompt: "Write a short story about a robot learning to love: ",
 });
 ```
 
