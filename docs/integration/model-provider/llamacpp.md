@@ -346,3 +346,4 @@ Specific [prompt templates for Llama.cpp](/api/namespaces/llamacpp.prompt) model
 - [llama.cpp GBNF Grammars](https://github.com/ggerganov/llama.cpp/tree/master/grammars)
 - [HuggingFace GGUF models](https://huggingface.co/models?sort=trending&search=gguf)
 - [Next.js Chatbot starter for llama.cpp](https://github.com/lgrammel/modelfusion-llamacpp-nextjs-starter)
+- [Blog Post: Create Your Own Local Chatbot with Next.js, Llama.cpp, and ModelFusion](/blog/llamacpp-nextjs-chatbot)
