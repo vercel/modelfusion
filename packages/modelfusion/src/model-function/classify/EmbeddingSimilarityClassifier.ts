@@ -5,35 +5,35 @@ import { EmbeddingModel } from "../embed/EmbeddingModel.js";
 import { embed, embedMany } from "../embed/embed.js";
 import { Classifier, ClassifierSettings } from "./Classifier.js";
 
-export interface SemanticCluster<VALUE, NAME extends string> {
+export interface ValueCluster<VALUE, NAME extends string> {
   name: NAME;
   values: VALUE[];
 }
 
-export interface SemanticClassifierSettings<
+export interface EmbeddingSimilarityClassifierSettings<
   VALUE,
-  CLUSTERS extends Array<SemanticCluster<VALUE, string>>,
+  CLUSTERS extends Array<ValueCluster<VALUE, string>>,
 > extends ClassifierSettings {
   clusters: CLUSTERS;
   embeddingModel: EmbeddingModel<VALUE>;
   similarityThreshold: number;
 }
 
-export class SemanticClassifier<
+export class EmbeddingSimilarityClassifier<
   VALUE,
-  CLUSTERS extends Array<SemanticCluster<VALUE, string>>,
+  CLUSTERS extends Array<ValueCluster<VALUE, string>>,
 > implements
     Classifier<
       VALUE,
       ClusterNames<CLUSTERS> | null,
-      SemanticClassifierSettings<VALUE, CLUSTERS>
+      EmbeddingSimilarityClassifierSettings<VALUE, CLUSTERS>
     >
 {
-  readonly settings: SemanticClassifierSettings<VALUE, CLUSTERS>;
+  readonly settings: EmbeddingSimilarityClassifierSettings<VALUE, CLUSTERS>;
 
   readonly modelInformation = {
     provider: "modelfusion",
-    modelName: "SemanticClassifier",
+    modelName: "EmbeddingSimilarityClassifier",
   };
 
   private embeddings:
@@ -44,7 +44,9 @@ export class SemanticClassifier<
       }>
     | undefined;
 
-  constructor(settings: SemanticClassifierSettings<VALUE, CLUSTERS>) {
+  constructor(
+    settings: EmbeddingSimilarityClassifierSettings<VALUE, CLUSTERS>
+  ) {
     this.settings = settings;
   }
 
@@ -119,12 +121,17 @@ export class SemanticClassifier<
     };
   }
 
-  get settingsForEvent(): Partial<SemanticClassifierSettings<VALUE, CLUSTERS>> {
+  get settingsForEvent(): Partial<
+    EmbeddingSimilarityClassifierSettings<VALUE, CLUSTERS>
+  > {
     const eventSettingProperties: Array<string> = [
       "clusters",
       "embeddingModel",
       "similarityThreshold",
-    ] satisfies (keyof SemanticClassifierSettings<VALUE, CLUSTERS>)[];
+    ] satisfies (keyof EmbeddingSimilarityClassifierSettings<
+      VALUE,
+      CLUSTERS
+    >)[];
 
     return Object.fromEntries(
       Object.entries(this.settings).filter(([key]) =>
@@ -134,16 +141,18 @@ export class SemanticClassifier<
   }
 
   withSettings(
-    additionalSettings: Partial<SemanticClassifierSettings<VALUE, CLUSTERS>>
+    additionalSettings: Partial<
+      EmbeddingSimilarityClassifierSettings<VALUE, CLUSTERS>
+    >
   ) {
-    return new SemanticClassifier(
+    return new EmbeddingSimilarityClassifier(
       Object.assign({}, this.settings, additionalSettings)
     ) as this;
   }
 }
 
 type ClusterNames<CLUSTERS> = CLUSTERS extends Array<
-  SemanticCluster<unknown, infer NAME>
+  ValueCluster<unknown, infer NAME>
 >
   ? NAME
   : never;

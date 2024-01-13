@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
-import { SemanticClassifier, classify, openai } from "modelfusion";
+import { EmbeddingSimilarityClassifier, classify, openai } from "modelfusion";
 
 dotenv.config();
 
-const classifier = new SemanticClassifier({
+const classifier = new EmbeddingSimilarityClassifier({
   embeddingModel: openai.TextEmbedder({
     model: "text-embedding-ada-002",
   }),
