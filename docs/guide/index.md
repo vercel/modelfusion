@@ -23,15 +23,15 @@ ModelFusion is getting closer to a stable v1, which is expected in Q2/2024. The 
 npm install modelfusion
 ```
 
-Or use a template:
+Or use a start template:
 
 - [ModelFusion terminal app starter](https://github.com/lgrammel/modelfusion-terminal-app-starter)
 - [Next.js, Vercel AI SDK, Llama.cpp & ModelFusion starter](https://github.com/lgrammel/modelfusion-llamacpp-nextjs-starter)
 - [Next.js, Vercel AI SDK, Ollama & ModelFusion starter](https://github.com/lgrammel/modelfusion-ollama-nextjs-starter)
 
-:::tip
-The basic examples are a great way to get started and to explore in parallel with the documentation. You can find them in the [examples/basic](https://github.com/lgrammel/modelfusion/tree/main/examples/basic) folder.
-:::
+## Next Step
+
+[Learn about models and functions](/guide/function/)
 
 ## Getting Support
 

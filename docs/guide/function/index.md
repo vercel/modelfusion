@@ -28,6 +28,10 @@ const text = await generateText({
 });
 ```
 
+:::tip
+The basic examples are a great way to get started and to explore in parallel with this documentation. You can find them in the [examples/basic](https://github.com/lgrammel/modelfusion/tree/main/examples/basic) folder.
+:::
+
 ## Streaming Functions
 
 Some model functions have a streaming variant, e.g. `streamText` or `streamSpeech`. The streaming functions return `AsyncIterable` objects and might only work with some models.
