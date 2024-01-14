@@ -75,9 +75,9 @@ Models provide a unified interface to AI models from different [providers](/inte
 
 ### Usage
 
-#### new Model
+#### Creating Models
 
-Models are created using a constructor call. The constructors take a single configuration object as an argument. The configuration object is specific to the model.
+Models are created using the provider facades. Each provider is exposed as a namespace, e.g. `openai`, and contains factory functions for creating models, e.g. `CompletionTextGenerator` or `ChatTextGenerator`. These factory functions take a single configuration object as an argument. The configuration object is specific to the model.
 
 ```ts
 import { openai } from "modelfusion";
@@ -88,7 +88,7 @@ const model = openai.CompletionTextGenerator({
 });
 ```
 
-You can pass API configuration objects to the model constructors to configure the underlying API calls. There are preconfigured API configurations for each provider that you can use. The [API configuration](/api/interfaces/ApiConfiguration) contains api keys, base URLs, as well as throttling and retry functions.
+You can pass [API configuration](/guide/util/api-configuration/) objects to the factory functions to configure the underlying API calls. There are pre-configured API configurations for each provider that you can use. The API configuration contains api keys, base URLs, as well as throttling and retry functions.
 
 ```ts
 import { api, openai } from "modelfusion";
