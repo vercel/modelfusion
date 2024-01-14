@@ -25,51 +25,6 @@ Generate text using [llama.cpp](https://github.com/ggerganov/llama.cpp). You can
 The server llamafiles start a llama.cpp server with the model.
 You can call it from ModelFusion in the same way as a regular llama.cpp server.
 
-## Models
-
-You can use various GGUF models with llama.cpp.
-
-### Example Text Models
-
-- [Search for GGUF models on Hugging Face](https://huggingface.co/models?sort=trending&search=gguf)
-- [Llama 2 7b Chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF)
-- [Mistral 7b Instruct v0.2](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF)
-- [Mixtral 8X7B Instruct v0.1](https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF)
-- [Dolphin 2.7 Mixtral 8X7B](https://huggingface.co/TheBloke/dolphin-2.7-mixtral-8x7b-GGUF)
-- [Openhermes 2.5 Mistral 7B](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF)
-
-Server start example: `./server -m models/llama-2-7b-chat.GGUF.q4_0.bin` (Mac)
-
-### Example Multi-modal Models
-
-For running multi-modal models, you need to specify the projection with the `--mmproj` flag.
-
-- [BakLlava](https://huggingface.co/mys/ggml_bakllava-1/tree/main)
-- [Llava](https://huggingface.co/mys/ggml_llava-v1.5-7b/tree/main)
-
-Server start example: `./server -m models/bakllava/ggml-model-q4_k.gguf --mmproj models/bakllava/mmproj-model-f16.gguf` (Mac)
-
-## Configuration
-
-### API Configuration
-
-[Llama.cpp API Configuration](/api/classes/LlamaCppApiConfiguration)
-
-```ts
-const api = llamacpp.Api({
-  baseUrl: {
-    host: "localhost",
-    port: "9000",
-  },
-  // ...
-});
-
-const model = llamacpp.CompletionTextGenerator({
-  api,
-  // ...
-});
-```
-
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/llamacpp)
@@ -78,7 +33,7 @@ const model = llamacpp.CompletionTextGenerator({
 
 [LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
 
-Consider [mapping the prompt to the prompt template](#prompt-templates) that your model was trained on.
+Consider using the [prompt to the prompt template](#prompt-templates) from the model card.
 
 ```ts
 import { llamacpp, generateText } from "modelfusion";
@@ -86,12 +41,12 @@ import { llamacpp, generateText } from "modelfusion";
 const text = await generateText({
   model: llamacpp
     .CompletionTextGenerator({
-      promptTemplate: llamacpp.prompt.Llama2, // Choose the correct prompt template for your model
-      maxGenerationTokens: 256,
+      promptTemplate: llamacpp.prompt.Llama2, // Choose the prompt template from the model card
+      maxGenerationTokens: 1024, // limit the output size
     })
-    .withTextPrompt(),
+    .withTextPrompt(), // use simple text prompt style
 
-  prompt: "Write a short story about a robot learning to love:\n\n",
+  prompt: "Write a short story about a robot learning to love.",
 });
 ```
 
@@ -99,7 +54,7 @@ const text = await generateText({
 
 [LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
 
-Consider [mapping the prompt to the prompt template](#prompt-templates) that your model was trained on.
+Consider using the [prompt to the prompt template](#prompt-templates) from the model card.
 
 ```ts
 import { llamacpp, streamText } from "modelfusion";
@@ -107,13 +62,13 @@ import { llamacpp, streamText } from "modelfusion";
 const textStream = await streamText({
   model: llamacpp
     .CompletionTextGenerator({
-      promptTemplate: llamacpp.prompt.Llama2, // Choose the correct prompt template for your model
+      promptTemplate: llamacpp.prompt.Llama2, // Choose the prompt template from the model card
       maxGenerationTokens: 1024,
       temperature: 0.7,
     })
     .withTextPrompt(),
 
-  prompt: "Write a short story about a robot learning to love:\n\n",
+  prompt: "Write a short story about a robot learning to love.",
 });
 
 for await (const textPart of textStream) {
@@ -121,7 +76,7 @@ for await (const textPart of textStream) {
 }
 ```
 
-Example for generating code:
+#### Code Generation Example
 
 ````ts
 import { llamacpp, streamText } from "modelfusion";
@@ -291,6 +246,27 @@ console.log("countTokens", tokenCount);
 console.log("tokenize", tokens);
 ```
 
+## Configuration
+
+### API Configuration
+
+[Llama.cpp API Configuration](/api/classes/LlamaCppApiConfiguration)
+
+```ts
+const api = llamacpp.Api({
+  baseUrl: {
+    host: "localhost",
+    port: "9000",
+  },
+  // ...
+});
+
+const model = llamacpp.CompletionTextGenerator({
+  api,
+  // ...
+});
+```
+
 ### Context Window Size
 
 You can serve models with different context window sizes with your Llama.cpp server.
@@ -307,6 +283,29 @@ const model = llamacpp.CompletionTextGenerator({
   contextWindowSize: 4096,
 });
 ```
+
+## Models
+
+You can use various GGUF models with llama.cpp (see [GGUF models on Hugging Face](https://huggingface.co/models?sort=trending&search=gguf))
+
+### Example Text Models
+
+- [Llama 2 7b Chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF)
+- [Mistral 7b Instruct v0.2](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF)
+- [Mixtral 8X7B Instruct v0.1](https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF)
+- [Dolphin 2.7 Mixtral 8X7B](https://huggingface.co/TheBloke/dolphin-2.7-mixtral-8x7b-GGUF)
+- [Openhermes 2.5 Mistral 7B](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF)
+
+Server start example: `./server -m models/llama-2-7b-chat.GGUF.q4_0.bin` (Mac)
+
+### Example Multi-modal Models
+
+For running multi-modal models, you need to specify the projection with the `--mmproj` flag.
+
+- [BakLlava](https://huggingface.co/mys/ggml_bakllava-1/tree/main)
+- [Llava](https://huggingface.co/mys/ggml_llava-v1.5-7b/tree/main)
+
+Server start example: `./server -m models/bakllava/ggml-model-q4_k.gguf --mmproj models/bakllava/mmproj-model-f16.gguf` (Mac)
 
 ## GBNF Grammars
 

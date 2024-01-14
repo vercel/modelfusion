@@ -10,24 +10,6 @@ title: Cohere
 1. You can get an API key from [Cohere](https://cohere.com/).
 1. The API key can be configured as an environment variable (`COHERE_API_KEY`) or passed in as an option into the model constructor.
 
-## Configuration
-
-### API Configuration
-
-[Cohere API Configuration](/api/classes/CohereApiConfiguration)
-
-```ts
-const api = cohere.Api({
-  apiKey: "my-api-key",
-  // ...
-});
-
-const model = cohere.TextGenerator({
-  api,
-  // ...
-});
-```
-
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/cohere)
@@ -101,4 +83,22 @@ const tokenCount = await countTokens(tokenizer, text);
 const tokens = await tokenizer.tokenize(text);
 const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
 const reconstructedText = await tokenizer.detokenize(tokens);
+```
+
+## Configuration
+
+### API Configuration
+
+[Cohere API Configuration](/api/classes/CohereApiConfiguration)
+
+```ts
+const api = cohere.Api({
+  apiKey: "my-api-key",
+  // ...
+});
+
+const model = cohere.TextGenerator({
+  api,
+  // ...
+});
 ```

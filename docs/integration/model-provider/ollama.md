@@ -13,26 +13,6 @@ Generate text and embeddings using [Ollama](https://ollama.ai). You can run the 
    - [List of models](https://ollama.ai/library)
 1. Start Ollama in server mode: `ollama serve`
 
-## Configuration
-
-### API Configuration
-
-[Ollama API Configuration](/api/classes/OllamaApiConfiguration)
-
-```ts
-const api = ollama.Api({
-  baseUrl: {
-    port: "12345",
-  },
-  // ...
-});
-
-const model = ollama.CompletionTextGenerator({
-  api,
-  // ...
-});
-```
-
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/ollama)
@@ -242,6 +222,26 @@ const embeddings = await embedMany({
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
   ],
+});
+```
+
+## Configuration
+
+### API Configuration
+
+[Ollama API Configuration](/api/classes/OllamaApiConfiguration)
+
+```ts
+const api = ollama.Api({
+  baseUrl: {
+    port: "12345",
+  },
+  // ...
+});
+
+const model = ollama.CompletionTextGenerator({
+  api,
+  // ...
 });
 ```
 

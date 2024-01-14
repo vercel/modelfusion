@@ -10,24 +10,6 @@ title: Hugging Face
 1. You can get an API key from [Hugging Face](https://huggingface.co/).
 1. The API key can be configured as an environment variable (`HUGGINGFACE_API_KEY`) or passed in as an option into the model constructor.
 
-## Configuration
-
-### API Configuration
-
-[Hugging Face API Configuration](/api/classes/HuggingFaceApiConfiguration)
-
-```ts
-const api = huggingface.Api({
-  apiKey: "my-api-key",
-  // ...
-});
-
-const model = huggingface.TextGenerator({
-  api,
-  // ...
-});
-```
-
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/huggingface)
@@ -71,5 +53,23 @@ const embeddings = await embedMany({
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
   ],
+});
+```
+
+## Configuration
+
+### API Configuration
+
+[Hugging Face API Configuration](/api/classes/HuggingFaceApiConfiguration)
+
+```ts
+const api = huggingface.Api({
+  apiKey: "my-api-key",
+  // ...
+});
+
+const model = huggingface.TextGenerator({
+  api,
+  // ...
 });
 ```

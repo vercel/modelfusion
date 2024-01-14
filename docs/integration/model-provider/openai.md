@@ -10,44 +10,6 @@ title: OpenAI
 1. You can sign up for a developer account at [OpenAI](https://platform.openai.com/overview). You can then [create an API key](https://platform.openai.com/account/api-keys) for accessing the OpenAI API.
 1. The API key can be configured as an environment variable (`OPENAI_API_KEY`) or passed in as an option into the model constructor.
 
-## Configuration
-
-### API Configuration (OpenAI)
-
-[OpenAI API Configuration](/api/classes/OpenAIApiConfiguration)
-
-```ts
-const api = openai.Api({
-  apiKey: "my-api-key", // optional; default: process.env.OPENAI_API_KEY
-  // ...
-});
-
-const model = openai.ChatTextGenerator({
-  api,
-  // ...
-});
-```
-
-### API Configuration (Azure)
-
-[Azure OpenAI API Configuration](/api/classes/AzureOpenAIApiConfiguration)
-
-This configuration is for using [OpenAI with Azure](https://azure.microsoft.com/en-us/products/ai-services/openai-service).
-
-You need to configure the API as `AZURE_OPENAI_API_KEY` if you want to use it as an environment variable and configure the API as follows:
-
-```ts
-openai.ChatTextGenerator({
-  api: openai.AzureApi({
-    // apiKey: automatically uses process.env.AZURE_OPENAI_API_KEY,
-    resourceName: "my-resource-name",
-    deploymentId: "my-deployment-id",
-    apiVersion: "my-api-version",
-  }),
-  // ...
-});
-```
-
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/openai)
@@ -293,6 +255,44 @@ const speech = await generateSpeech({
 
 const path = `./openai-speech-example.mp3`;
 fs.writeFileSync(path, speech);
+```
+
+## Configuration
+
+### API Configuration (OpenAI)
+
+[OpenAI API Configuration](/api/classes/OpenAIApiConfiguration)
+
+```ts
+const api = openai.Api({
+  apiKey: "my-api-key", // optional; default: process.env.OPENAI_API_KEY
+  // ...
+});
+
+const model = openai.ChatTextGenerator({
+  api,
+  // ...
+});
+```
+
+### API Configuration (Azure)
+
+[Azure OpenAI API Configuration](/api/classes/AzureOpenAIApiConfiguration)
+
+This configuration is for using [OpenAI with Azure](https://azure.microsoft.com/en-us/products/ai-services/openai-service).
+
+You need to configure the API as `AZURE_OPENAI_API_KEY` if you want to use it as an environment variable and configure the API as follows:
+
+```ts
+openai.ChatTextGenerator({
+  api: openai.AzureApi({
+    // apiKey: automatically uses process.env.AZURE_OPENAI_API_KEY,
+    resourceName: "my-resource-name",
+    deploymentId: "my-deployment-id",
+    apiVersion: "my-api-version",
+  }),
+  // ...
+});
 ```
 
 ## Prompt Templates

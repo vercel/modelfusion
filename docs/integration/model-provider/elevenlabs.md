@@ -9,24 +9,6 @@ sidebar_position: 80
 1. You can get an API key from [ElevenLabs](https://elevenlabs.io/).
 1. The API key can be configured as an environment variable (`ELEVENLABS_API_KEY`) or passed in as an option into the model constructor.
 
-## Configuration
-
-### API Configuration
-
-[ElevenLabs API Configuration](/api/classes/ElevenLabsApiConfiguration)
-
-```ts
-const api = elevenlabs.Api({
-  apiKey: "my-api-key",
-  // ...
-});
-
-const model = elevenlabs.SpeechGenerator({
-  api,
-  // ...
-});
-```
-
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/elevenlabs)
@@ -73,4 +55,22 @@ const speechStream = await streamSpeech({
 for await (const part of speechStream) {
   // each part is a Buffer with MP3 audio data
 }
+```
+
+## Configuration
+
+### API Configuration
+
+[ElevenLabs API Configuration](/api/classes/ElevenLabsApiConfiguration)
+
+```ts
+const api = elevenlabs.Api({
+  apiKey: "my-api-key",
+  // ...
+});
+
+const model = elevenlabs.SpeechGenerator({
+  api,
+  // ...
+});
 ```

@@ -10,24 +10,6 @@ title: Stability AI
 1. You can get an API key from [Stability AI](https://platform.stability.ai/docs/getting-started/authentication).
 1. The API key can be configured as an environment variable (`STABILITY_API_KEY`) or passed in as an option into the model constructor.
 
-## Configuration
-
-### API Configuration
-
-[Stability API Configuration](/api/classes/StabilityApiConfiguration)
-
-```ts
-const api = stability.Api({
-  apiKey: "my-api-key",
-  // ...
-});
-
-const model = stability.ImageGenerator({
-  api,
-  // ...
-});
-```
-
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/stability)
@@ -72,5 +54,23 @@ const image = await generateImage({
 
   prompt:
     "the wicked witch of the west in the style of early 19th century painting",
+});
+```
+
+## Configuration
+
+### API Configuration
+
+[Stability API Configuration](/api/classes/StabilityApiConfiguration)
+
+```ts
+const api = stability.Api({
+  apiKey: "my-api-key",
+  // ...
+});
+
+const model = stability.ImageGenerator({
+  api,
+  // ...
 });
 ```

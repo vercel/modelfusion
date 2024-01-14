@@ -11,26 +11,6 @@ Generate text and embeddings using the [Mistral platform](https://mistral.ai).
 1. Sign up for the [Mistral platform](https://console.mistral.ai/), activate your subscription and and generate an API key.
 1. The API key can be configured as an environment variable (`MISTRAL_API_KEY`) or passed in as an option into the model constructor.
 
-## Configuration
-
-### API Configuration
-
-[Mistral API Configuration](/api/classes/MistralApiConfiguration)
-
-```ts
-import { mistral } from "modelfusion";
-
-const api = mistral.Api({
-  apiKey: "my-api-key", // optional; default: process.env.MISTRAL_API_KEY
-  // ...
-});
-
-const model = mistral.ChatTextGenerator({
-  api,
-  // ...
-});
-```
-
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/mistral)
@@ -94,6 +74,26 @@ const embeddings = await embedMany({
     "At first, Nox didn't know what to do with the pup.",
     "He keenly observed and absorbed everything around him, from the birds in the sky to the trees in the forest.",
   ],
+});
+```
+
+## Configuration
+
+### API Configuration
+
+[Mistral API Configuration](/api/classes/MistralApiConfiguration)
+
+```ts
+import { mistral } from "modelfusion";
+
+const api = mistral.Api({
+  apiKey: "my-api-key", // optional; default: process.env.MISTRAL_API_KEY
+  // ...
+});
+
+const model = mistral.ChatTextGenerator({
+  api,
+  // ...
 });
 ```
 

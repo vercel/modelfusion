@@ -19,26 +19,6 @@ Without the `--convert` parameter, the server expects WAV files with 16kHz sampl
 `ffmpeg -i input.mp3 -ar 16000 -ac 1 -c:a pcm_s16le output.wav`
 :::
 
-## Configuration
-
-### API Configuration
-
-[Whisper.cpp API Configuration](/api/classes/WhisperCppApiConfiguration)
-
-```ts
-const api = whispercpp.Api({
-  baseUrl: {
-    host: "localhost",
-    port: "9000",
-  },
-  // ...
-});
-
-const model = whispercpp.Transcriber({
-  api,
-  // ...
-});
-```
 
 ## Model Functions
 
@@ -58,5 +38,26 @@ const transcription = await generateTranscription({
   // Whisper.cpp model:
   model: whispercpp.Transcriber(),
   data: { type: "wav", data },
+});
+```
+
+## Configuration
+
+### API Configuration
+
+[Whisper.cpp API Configuration](/api/classes/WhisperCppApiConfiguration)
+
+```ts
+const api = whispercpp.Api({
+  baseUrl: {
+    host: "localhost",
+    port: "9000",
+  },
+  // ...
+});
+
+const model = whispercpp.Transcriber({
+  api,
+  // ...
 });
 ```

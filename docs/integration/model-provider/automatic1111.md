@@ -13,6 +13,34 @@ Create images with Stable Diffusion using the [AUTOMATIC1111/stable-diffusion-we
 2. Start the web UI with the API enabled: `./webui.sh --api` (Mac)
    - Tip: `--nowebui` disables the UI (port changes to 7861)
 
+## Model Functions
+
+[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/a1111)
+
+### Generate Image
+
+[Automatic1111ImageGenerationModel API](/api/classes/Automatic1111ImageGenerationModel)
+
+```ts
+import { automatic1111, generateImage } from "modelfusion";
+
+const image = await generateImage({
+  model: automatic1111.ImageGenerator({
+    model: "aZovyaRPGArtistTools_v4.safetensors",
+    steps: 30,
+    sampler: "DPM++ 2M Karras",
+    width: 512,
+    height: 512,
+  }),
+  prompt: {
+    prompt:
+      "(the wicked witch of the west) (style of early 19th century painting)",
+    negativePrompt:
+      "poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb", // optional negative prompt
+  },
+});
+```
+
 ## Configuration
 
 ### API Configuration
@@ -47,34 +75,6 @@ const api = automatic1111.Api({
     Authorization: `Basic ${Buffer.from(`${user}:${password}`).toString(
       "base64"
     )}`,
-  },
-});
-```
-
-## Model Functions
-
-[Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/a1111)
-
-### Generate Image
-
-[Automatic1111ImageGenerationModel API](/api/classes/Automatic1111ImageGenerationModel)
-
-```ts
-import { automatic1111, generateImage } from "modelfusion";
-
-const image = await generateImage({
-  model: automatic1111.ImageGenerator({
-    model: "aZovyaRPGArtistTools_v4.safetensors",
-    steps: 30,
-    sampler: "DPM++ 2M Karras",
-    width: 512,
-    height: 512,
-  }),
-  prompt: {
-    prompt:
-      "(the wicked witch of the west) (style of early 19th century painting)",
-    negativePrompt:
-      "poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb", // optional negative prompt
   },
 });
 ```

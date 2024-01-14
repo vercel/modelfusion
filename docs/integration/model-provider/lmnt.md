@@ -9,24 +9,6 @@ sidebar_position: 81
 1. You can get an API key from [LMNT](https://lmnt.com/).
 1. The API key can be configured as an environment variable (`LMNT_API_KEY`) or passed in as an option into the model constructor.
 
-## Configuration
-
-### API Configuration
-
-[LMNT API Configuration](/api/classes/LmntApiConfiguration)
-
-```ts
-const api = lmnt.Api({
-  apiKey: "my-api-key",
-  // ...
-});
-
-const model = lmnt.SpeechGenerator({
-  api,
-  // ...
-});
-```
-
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/lmnt)
@@ -50,4 +32,22 @@ const speech = await generateSpeech({
 
 const path = `./lmnt-speech-example.mp3`;
 fs.writeFileSync(path, speech);
+```
+
+## Configuration
+
+### API Configuration
+
+[LMNT API Configuration](/api/classes/LmntApiConfiguration)
+
+```ts
+const api = lmnt.Api({
+  apiKey: "my-api-key",
+  // ...
+});
+
+const model = lmnt.SpeechGenerator({
+  api,
+  // ...
+});
 ```
