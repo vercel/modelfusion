@@ -9,8 +9,9 @@ Many AI hosting providers offer an OpenAI-compatible API. ModelFusion supports t
 
 You only need to provide an API configuration, e.g. using [custom API configurations](/guide/util/api-configuration/). For several OpenAI-compatible providers ModelFusion contains pre-configured API configurations:
 
-- [Fireworks AI](/api/classes/FireworksAIApiConfiguration)
-- [Together AI](/api/classes/TogetherAIApiConfiguration)
+- [Fireworks AI](/api/classes/FireworksAIApiConfiguration): `openaicompatible.FireworksAIApi()`
+- [Together AI](/api/classes/TogetherAIApiConfiguration): `openaicompatible.TogetherAIApi()`
+- [Perplexity](/api/classes/PerplexityApiConfiguration): `openaicompatible.PerplexityApi()`
 
 :::note
 Please note that many providers implement the OpenAI API with slight differences, which can cause
@@ -39,7 +40,7 @@ const text = await generateText({
     .ChatTextGenerator({
       api: openaicompatible.FireworksAIApi(), // or other OpenAI-compatible API
       provider: "openaicompatible-fireworksai", // optional
-      model: "accounts/fireworks/models/mistral-7b",
+      model: "accounts/fireworks/models/llama-v2-7b-chat",
     })
     .withTextPrompt(),
 
@@ -87,7 +88,7 @@ const textStream = await streamText({
     .ChatTextGenerator({
       api: openaicompatible.FireworksAIApi(), // or other OpenAI-compatible API
       provider: "openaicompatible-fireworksai", // optional
-      model: "accounts/fireworks/models/mistral-7b",
+      model: "accounts/fireworks/models/llama-v2-7b-chat",
     })
     .withTextPrompt(),
 

@@ -9,6 +9,7 @@ import {
   OpenAICompatibleTextEmbeddingModel,
   OpenAICompatibleTextEmbeddingModelSettings,
 } from "./OpenAICompatibleTextEmbeddingModel.js";
+import { PerplexityApiConfiguration } from "./PerplexityApiConfiguration.js";
 import { TogetherAIApiConfiguration } from "./TogetherAIApiConfiguration.js";
 
 /**
@@ -24,6 +25,21 @@ export function FireworksAIApi(
   } = {}
 ) {
   return new FireworksAIApiConfiguration(settings);
+}
+
+/**
+ * Configuration for the Perplexity API.
+ *
+ * It calls the API at https://api.perplexity.ai/ and uses the `PERPLEXITY_API_KEY` api key environment variable.
+ *
+ * @see https://docs.perplexity.ai/reference/post_chat_completions
+ */
+export function PerplexityApi(
+  settings: PartialBaseUrlPartsApiConfigurationOptions & {
+    apiKey?: string;
+  } = {}
+) {
+  return new PerplexityApiConfiguration(settings);
 }
 
 /**

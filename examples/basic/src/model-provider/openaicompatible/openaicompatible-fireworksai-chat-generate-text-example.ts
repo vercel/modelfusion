@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
-import { openaicompatible, streamText } from "modelfusion";
+import { generateText, openaicompatible } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const textStream = await streamText({
+  const text = await generateText({
     model: openaicompatible
       .ChatTextGenerator({
         api: openaicompatible.FireworksAIApi(),
@@ -16,9 +16,7 @@ async function main() {
     prompt: "Write a story about a robot learning to love",
   });
 
-  for await (const textPart of textStream) {
-    process.stdout.write(textPart);
-  }
+  console.log(text);
 }
 
 main().catch(console.error);

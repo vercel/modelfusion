@@ -12,7 +12,7 @@ async function main() {
       maxGenerationTokens: 500,
     }),
 
-    prompt: "Write a story about a robot learning to love",
+    prompt: "Write a story about a robot learning to love:\n\n",
   });
 
   for await (const textPart of textStream) {

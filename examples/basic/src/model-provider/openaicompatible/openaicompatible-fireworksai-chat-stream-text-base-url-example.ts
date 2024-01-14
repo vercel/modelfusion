@@ -18,7 +18,7 @@ async function main() {
           },
         }),
         provider: "openaicompatible-fireworksai",
-        model: "accounts/fireworks/models/mistral-7b",
+        model: "accounts/fireworks/models/llama-v2-7b-chat",
       })
       .withTextPrompt(),
 

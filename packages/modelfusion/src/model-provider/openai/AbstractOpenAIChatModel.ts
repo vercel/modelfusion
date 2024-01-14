@@ -168,7 +168,7 @@ export abstract class AbstractOpenAIChatModel<
             temperature: this.settings.temperature,
             top_p: this.settings.topP,
             n: this.settings.numberOfGenerations,
-            stop: this.settings.stopSequences,
+            stop: stopSequences,
             max_tokens: this.settings.maxGenerationTokens,
             presence_penalty: this.settings.presencePenalty,
             frequency_penalty: this.settings.frequencyPenalty,
@@ -243,7 +243,10 @@ export abstract class AbstractOpenAIChatModel<
   extractTextDelta(delta: unknown) {
     const chunk = delta as OpenAIChatChunk;
 
-    if (chunk.object !== "chat.completion.chunk") {
+    if (
+      chunk.object !== "chat.completion.chunk" &&
+      chunk.object !== "chat.completion" // for OpenAI-compatible models
+    ) {
       return undefined;
     }
 
@@ -392,7 +395,7 @@ const openAIChatResponseSchema = z.object({
 export type OpenAIChatResponse = z.infer<typeof openAIChatResponseSchema>;
 
 const openaiChatChunkSchema = z.object({
-  object: z.literal("chat.completion.chunk"),
+  object: z.string(), // generalized for openai compatible providers, z.literal("chat.completion.chunk")
   id: z.string(),
   choices: z.array(
     z.object({

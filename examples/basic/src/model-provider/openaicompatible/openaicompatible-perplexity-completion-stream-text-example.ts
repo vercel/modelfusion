@@ -7,13 +7,14 @@ async function main() {
   const textStream = await streamText({
     model: openaicompatible
       .ChatTextGenerator({
-        api: openaicompatible.FireworksAIApi(),
-        provider: "openaicompatible-fireworksai",
-        model: "accounts/fireworks/models/llama-v2-7b-chat",
+        api: openaicompatible.PerplexityApi(),
+        provider: "openaicompatible-perplexity",
+        model: "pplx-70b-online", // online model with access to web search
+        maxGenerationTokens: 500,
       })
       .withTextPrompt(),
 
-    prompt: "Write a story about a robot learning to love",
+    prompt: "What is RAG in AI?",
   });
 
   for await (const textPart of textStream) {
