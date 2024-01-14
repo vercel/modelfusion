@@ -219,6 +219,7 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Lars Grammel.`,
       },
       prism: {
+        additionalLanguages: ["bash", "diff", "json"],
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
