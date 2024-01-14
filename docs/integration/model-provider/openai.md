@@ -14,9 +14,7 @@ title: OpenAI
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/openai)
 
-### Generate Text
-
-#### Text Model
+### Generate Text (Completion)
 
 [OpenAICompletionModel API](/api/classes/OpenAICompletionModel)
 
@@ -29,30 +27,30 @@ const text = await generateText({
     temperature: 0.7,
     maxGenerationTokens: 500,
   }),
+
   prompt: "Write a short story about a robot learning to love:\n\n",
 });
 ```
 
-#### Chat Model
-
-The OpenAI chat models include GPT-3.5-turbo and GPT-4.
+### Generate Text (Chat)
 
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)
+
+The OpenAI chat models include GPT-3.5-turbo and GPT-4.
 
 ```ts
 import { openai, generateText } from "modelfusion";
 
 const text = await generateText({
-  model: openai.ChatTextGenerator({
-    model: "gpt-3.5-turbo",
-    temperature: 0.7,
-    maxGenerationTokens: 500,
-  }),
-  prompt: [
-    openai.ChatMessage.user(
-      "Write a short story about a robot learning to love:"
-    ),
-  ],
+  model: openai
+    .ChatTextGenerator({
+      model: "gpt-3.5-turbo",
+      temperature: 0.7,
+      maxGenerationTokens: 500,
+    })
+    .withTextPrompt(),
+
+  prompt: "Write a short story about a robot learning to love:",
 });
 ```
 
@@ -60,7 +58,9 @@ const text = await generateText({
 You can use your fine-tuned `gpt-3.5-turbo` models similarly to the base models. Learn more about [OpenAI fine-tuning](https://platform.openai.com/docs/guides/fine-tuning).
 :::
 
-You can provide an image reference in the user message when you are using vision models such as `gpt-4-vision-preview`:
+#### Using vision models
+
+You can provide an image in the user message when you are using vision models such as `gpt-4-vision-preview`:
 
 ```ts
 const text = await generateText({
@@ -76,9 +76,29 @@ const text = await generateText({
 
 The tutorial "[Using OpenAI GPT-4 Turbo Vision](/tutorial/tutorials/using-gpt-4-vision)" provides more details.
 
-### Stream Text
+#### Using raw messages
 
-#### Text Model
+The `openai.ChatMessage` functions are convenience helpers for creating a prompt. You can also use a raw OpenAI message list:
+
+```ts
+const text = await generateText({
+  model: openai.ChatTextGenerator({
+    model: "gpt-3.5-turbo",
+  }),
+  prompt: [
+    {
+      role: "system",
+      content: "You are a story writer.",
+    },
+    {
+      role: "user",
+      content: "Write a short story about a robot learning to love",
+    },
+  ],
+});
+```
+
+### Stream Text (Completion)
 
 [OpenAICompletionModel API](/api/classes/OpenAICompletionModel)
 
@@ -90,8 +110,7 @@ const textStream = await streamText({
     model: "gpt-3.5-turbo-instruct",
     maxGenerationTokens: 1000,
   }),
-  prompt:
-    "You are a story writer. Write a story about a robot learning to love",
+  prompt: "Write a story about a robot learning to love",
 });
 
 for await (const textPart of textStream) {
@@ -99,7 +118,7 @@ for await (const textPart of textStream) {
 }
 ```
 
-#### Chat Model
+### Stream Text (Chat)
 
 [OpenAIChatModel API](/api/classes/OpenAIChatModel)
 
@@ -107,14 +126,14 @@ for await (const textPart of textStream) {
 import { openai, streamText } from "modelfusion";
 
 const textStream = await streamText({
-  model: openai.ChatTextGenerator({
-    model: "gpt-3.5-turbo",
-    maxGenerationTokens: 1000,
-  }),
-  prompt: [
-    openai.ChatMessage.system("You are a story writer. Write a story about:"),
-    openai.ChatMessage.user("A robot learning to love"),
-  ],
+  model: openai
+    .ChatTextGenerator({
+      model: "gpt-3.5-turbo",
+      maxGenerationTokens: 1000,
+    })
+    .withTextPrompt(),
+
+  prompt: "Write a story about a robot learning to love",
 });
 
 for await (const textPart of textStream) {
