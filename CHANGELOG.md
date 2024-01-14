@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.125.0 - 2024-01-14
+
+### Added
+
+- Perplexity AI chat completion support. Example:
+
+  ```ts
+  import { openaicompatible, streamText } from "modelfusion";
+
+  const textStream = await streamText({
+    model: openaicompatible
+      .ChatTextGenerator({
+        api: openaicompatible.PerplexityApi(),
+        provider: "openaicompatible-perplexity",
+        model: "pplx-70b-online", // online model with access to web search
+        maxGenerationTokens: 500,
+      })
+      .withTextPrompt(),
+
+    prompt: "What is RAG in AI?",
+  });
+  ```
+
 ## v0.124.0 - 2024-01-13
 
 ### Added
@@ -2022,3 +2045,7 @@ Since this change already affected all JSON generation calls and tools, I includ
 1. Recursive Character Splitter: A feature to split text into characters recursively for more detailed text analysis.
 1. Recursive Text Mapping: This enables recursive mapping of text, beneficial for tasks like summarization or extraction.
 1. Split-Map-Filter-Reduce for Text Processing: A process chain developed for sophisticated text handling, allowing operations to split, map, filter, and reduce text data.
+
+```
+
+```
