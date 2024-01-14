@@ -46,7 +46,7 @@ You can provide API keys for the different [integrations](https://modelfusion.de
 ### [Generate Text](https://modelfusion.dev/guide/function/generate-text)
 
 Generate text using a language model and a prompt. You can stream the text if it is supported by the model. You can use images for multi-modal prompting if the model supports it (e.g. with [llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp)).
-You can use [prompt templates](https://modelfusion.dev/guide/function/generate-text#prompt-template) to change the prompt template of a model.
+You can use [prompt styles](https://modelfusion.dev/guide/function/generate-text#prompt-styles) to use text, instruction, or chat prompts.
 
 #### generateText
 
@@ -442,11 +442,11 @@ const retrievedTexts = await retrieve(
 
 Available Vector Stores: [Memory](https://modelfusion.dev/integration/vector-index/memory), [SQLite VSS](https://modelfusion.dev/integration/vector-index/sqlite-vss), [Pinecone](https://modelfusion.dev/integration/vector-index/pinecone)
 
-### [Text Generation Prompt Templates](https://modelfusion.dev/guide/function/generate-text#prompt-format)
+### [Text Generation Prompt Styles](https://modelfusion.dev/guide/function/generate-text#prompt-styles)
 
-Prompt templates let you use higher level prompt structures (such as text, instruction or chat prompts) for different models.
+You can use different prompt styles (such as text, instruction or chat prompts) with ModelFusion text generation models. These prompt styles can be accessed through the methods `.withTextPrompt()`, `.withChatPrompt()` and `.withInstructionPrompt()`:
 
-#### Text Prompt Example
+#### Text Prompt Style
 
 ```ts
 const text = await generateText({
@@ -460,7 +460,7 @@ const text = await generateText({
 });
 ```
 
-#### Instruction Prompt Example
+#### Instruction Prompt Style
 
 ```ts
 const text = await generateText({
@@ -480,9 +480,7 @@ const text = await generateText({
 });
 ```
 
-They can also be accessed through the shorthand methods `.withTextPrompt()`, `.withChatPrompt()` and `.withInstructionPrompt()` for many models:
-
-#### Chat Prompt Example
+#### Chat Prompt Style
 
 ```ts
 const textStream = await streamText({
@@ -511,17 +509,6 @@ const textStream = await streamText({
   },
 });
 ```
-
-| Prompt Template  | Text Prompt | Instruction Prompt | Chat Prompt |
-| ---------------- | ----------- | ------------------ | ----------- |
-| Alpaca           | ✅          | ✅                 | ❌          |
-| ChatML           | ✅          | ✅                 | ✅          |
-| Llama 2          | ✅          | ✅                 | ✅          |
-| Mistral Instruct | ✅          | ✅                 | ✅          |
-| NeuralChat       | ✅          | ✅                 | ✅          |
-| Synthia          | ✅          | ✅                 | ✅          |
-| Vicuna           | ✅          | ✅                 | ✅          |
-| Generic Text     | ✅          | ✅                 | ✅          |
 
 ### [Image Generation Prompt Templates](https://modelfusion.dev/guide/function/generate-image/prompt-format)
 

@@ -328,15 +328,17 @@ The prompt template that the model expected is usually described on the model ca
 
 Specific [prompt templates for Llama.cpp](/api/namespaces/llamacpp.prompt) models are available under `llamacpp.prompt`:
 
-- `llamacpp.prompt.Alpaca`: Alpaca prompt template.
-- `llamacpp.prompt.BakLLaVA1`: BakLLaVA 1 prompt template. Vision prompt that supports images.
-- `llamacpp.prompt.ChatML`: ChatML prompt template.
-- `llamacpp.prompt.Llama2`: Llama 2 prompt template.
-- `llamacpp.prompt.Mistral`: Mistral prompt template.
-- `llamacpp.prompt.NeuralChat`: NeuralChat prompt template.
-- `llamacpp.prompt.Synthia`: Synthia prompt template.
-- `llamacpp.prompt.Text`: Basic text prompt (default).
-- `llamacpp.prompt.Vicuna`: Vicuna prompt template.
+| Prompt Template        | Llama.cpp Prompt Template    | Text Prompt | Instruction Prompt | Chat Prompt      |
+| ---------------------- | ---------------------------- | ----------- | ------------------ | ---------------- |
+| Alpaca                 | `llamacpp.prompt.Alpaca`     | ✅          | ✅                 | ❌               |
+| BakLLaVA 1             | `llamacpp.prompt.BakLLaVA1`  | ✅          | ✅ (multi-modal)   | ✅ (multi-modal) |
+| ChatML                 | `llamacpp.prompt.ChatML`     | ✅          | ✅                 | ✅               |
+| Llama 2                | `llamacpp.prompt.Llama2`     | ✅          | ✅                 | ✅               |
+| Mistral Instruct       | `llamacpp.prompt.Mistral`    | ✅          | ✅                 | ✅               |
+| NeuralChat             | `llamacpp.prompt.NeuralChat` | ✅          | ✅                 | ✅               |
+| Synthia                | `llamacpp.prompt.Synthia`    | ✅          | ✅                 | ✅               |
+| Vicuna                 | `llamacpp.prompt.Vicuna`     | ✅          | ✅                 | ✅               |
+| Generic Text (default) | `llamacpp.prompt.Text`       | ✅          | ✅                 | ✅               |
 
 ## Links & Resources
 

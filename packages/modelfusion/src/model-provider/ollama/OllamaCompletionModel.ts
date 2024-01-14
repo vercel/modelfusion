@@ -15,6 +15,7 @@ import {
 import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
+  TextStreamingBaseModel,
   TextStreamingModel,
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
@@ -82,7 +83,7 @@ export class OllamaCompletionModel<
   >
   extends AbstractModel<OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>>
   implements
-    TextStreamingModel<
+    TextStreamingBaseModel<
       OllamaCompletionPrompt,
       OllamaCompletionModelSettings<CONTEXT_WINDOW_SIZE>
     >

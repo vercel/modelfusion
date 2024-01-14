@@ -69,16 +69,14 @@ The `OllamaChatModel` uses the Ollama chat API to generate text.
 import { ollama, generateText } from "modelfusion";
 
 const text = await generateText({
-  model: ollama.ChatTextGenerator({
-    model: "llama2:chat",
-    maxGenerationTokens: 500,
-  }),
-  prompt: [
-    {
-      role: "user",
-      content: "Write a short story about a robot learning to love:",
-    },
-  ],
+  model: ollama
+    .ChatTextGenerator({
+      model: "llama2:chat",
+      maxGenerationTokens: 500,
+    })
+    .withTextPrompt(),
+
+  prompt: "Write a short story about a robot learning to love:",
 });
 ```
 
@@ -105,23 +103,6 @@ const text = await generateText({
       { type: "image", base64Image: image, mimeType: "image/png" },
     ],
   },
-});
-```
-
-You can use [prompt templates](/guide/function/generate-text#prompt-template), e.g. using the `.withTextPrompt()` helper:
-
-```ts
-import { ollama, generateText } from "modelfusion";
-
-const text = await generateText({
-  model: ollama
-    .ChatTextGenerator({
-      model: "llama2:chat",
-      maxGenerationTokens: 500,
-    })
-    .withTextPrompt(),
-
-  prompt: "Write a short story about a robot learning to love:",
 });
 ```
 
@@ -158,16 +139,14 @@ for await (const textPart of textStream) {
 import { ollama, streamText } from "modelfusion";
 
 const textStream = await streamText({
-  model: ollama.ChatTextGenerator({
-    model: "llama2:chat",
-    maxGenerationTokens: 500,
-  }),
-  prompt: [
-    {
-      role: "user",
-      content: "Write a short story about a robot learning to love:",
-    },
-  ],
+  model: ollama
+    .ChatTextGenerator({
+      model: "llama2:chat",
+      maxGenerationTokens: 500,
+    })
+    .withTextPrompt(),
+
+  prompt: "Write a short story about a robot learning to love:",
 });
 ```
 
@@ -179,16 +158,14 @@ Structure generation is possible with capable open-source models like [OpenHerme
 import { ollama, zodSchema, generateStructure } from "modelfusion";
 import { z } from "zod";
 
-const model = ollama
-  .ChatTextGenerator({
-    model: "openhermes2.5-mistral",
-    maxGenerationTokens: 1024,
-    temperature: 0,
-  })
-  .asStructureGenerationModel(jsonStructurePrompt.text());
-
 const sentiment = await generateStructure({
-  model,
+  model: ollama
+    .ChatTextGenerator({
+      model: "openhermes2.5-mistral",
+      maxGenerationTokens: 1024,
+      temperature: 0,
+    })
+    .asStructureGenerationModel(jsonStructurePrompt.instruction()),
 
   schema: zodSchema(
     z.object({
@@ -254,14 +231,16 @@ The prompt template that the model expected is usually described on the model ca
 
 Specific [prompt templates for Ollama CompletionTextGenerator](/api/namespaces/ollama.prompt) models are available under `ollama.prompt`:
 
-- `ollama.prompt.Alpaca`: Alpaca prompt template.
-- `ollama.prompt.ChatML`: ChatML prompt template.
-- `ollama.prompt.Llama2`: Llama 2 prompt template.
-- `ollama.prompt.Mistral`: Mistral prompt template.
-- `ollama.prompt.NeuralChat`: NeuralChat prompt template.
-- `ollama.prompt.Synthia`: Synthia prompt template.
-- `ollama.prompt.Text`: Basic text prompt (default).
-- `ollama.prompt.Vicuna`: Vicuna prompt template.
+| Prompt Template        | Ollama Prompt Template     | Text Prompt | Instruction Prompt | Chat Prompt |
+| ---------------------- | -------------------------- | ----------- | ------------------ | ----------- |
+| Alpaca                 | `ollama.prompt.Alpaca`     | ✅          | ✅                 | ❌          |
+| ChatML                 | `ollama.prompt.ChatML`     | ✅          | ✅                 | ✅          |
+| Llama 2                | `ollama.prompt.Llama2`     | ✅          | ✅                 | ✅          |
+| Mistral Instruct       | `ollama.prompt.Mistral`    | ✅          | ✅                 | ✅          |
+| NeuralChat             | `ollama.prompt.NeuralChat` | ✅          | ✅                 | ✅          |
+| Synthia                | `ollama.prompt.Synthia`    | ✅          | ✅                 | ✅          |
+| Vicuna                 | `ollama.prompt.Vicuna`     | ✅          | ✅                 | ✅          |
+| Generic Text (default) | `ollama.prompt.Text`       | ✅          | ✅                 | ✅          |
 
 ## Links & Resources
 

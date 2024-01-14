@@ -15,6 +15,7 @@ import {
 import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
+  TextStreamingBaseModel,
   TextStreamingModel,
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
@@ -52,7 +53,7 @@ export interface OllamaChatModelSettings extends OllamaTextGenerationSettings {
  */
 export class OllamaChatModel
   extends AbstractModel<OllamaChatModelSettings>
-  implements TextStreamingModel<OllamaChatPrompt, OllamaChatModelSettings>
+  implements TextStreamingBaseModel<OllamaChatPrompt, OllamaChatModelSettings>
 {
   constructor(settings: OllamaChatModelSettings) {
     super({ settings });
@@ -226,23 +227,14 @@ export class OllamaChatModel
         });
   }
 
-  /**
-   * Returns this model with a text prompt template.
-   */
   withTextPrompt() {
     return this.withPromptTemplate(text());
   }
 
-  /**
-   * Returns this model with an instruction prompt template.
-   */
   withInstructionPrompt() {
     return this.withPromptTemplate(instruction());
   }
 
-  /**
-   * Returns this model with a chat prompt template.
-   */
   withChatPrompt() {
     return this.withPromptTemplate(chat());
   }

@@ -1068,7 +1068,7 @@ Ollama edge case and error handling improvements.
 ### Changed
 
 - **breaking change**: `ChatPrompt` structure and terminology has changed to align more closely with OpenAI and similar chat prompts. This is also in preparation for integrating images and function calls results into chat prompts.
-- **breaking change**: Prompt formats are namespaced. Use e.g. `Llama2PromptFormat.chat()` instead of `mapChatPromptToLlama2Format()`. See [Prompt Format](https://modelfusion.dev/guide/function/generate-text#prompt-format) for documentation of the new prompt formats.
+- **breaking change**: Prompt formats are namespaced. Use e.g. `Llama2PromptFormat.chat()` instead of `mapChatPromptToLlama2Format()`. See [Prompt Format](https://modelfusion.dev/guide/function/generate-text#prompt-styles) for documentation of the new prompt formats.
 
 ## v0.69.0 - 2023-11-15
 

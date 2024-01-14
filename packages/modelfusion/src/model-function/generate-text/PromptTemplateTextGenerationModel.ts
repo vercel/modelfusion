@@ -120,25 +120,6 @@ export class PromptTemplateTextGenerationModel<
     }) as this;
   }
 
-  withPromptTemplate<INPUT_PROMPT>(
-    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>
-  ): PromptTemplateTextGenerationModel<INPUT_PROMPT, PROMPT, SETTINGS, this> {
-    return new PromptTemplateTextGenerationModel<
-      INPUT_PROMPT,
-      PROMPT,
-      SETTINGS,
-      this
-    >({
-      model: this.withSettings({
-        stopSequences: [
-          ...(this.settings.stopSequences ?? []),
-          ...promptTemplate.stopSequences,
-        ],
-      } as Partial<SETTINGS>),
-      promptTemplate,
-    });
-  }
-
   withSettings(additionalSettings: Partial<SETTINGS>): this {
     return new PromptTemplateTextGenerationModel({
       model: this.model.withSettings(additionalSettings),

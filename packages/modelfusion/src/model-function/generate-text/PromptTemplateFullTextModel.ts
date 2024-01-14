@@ -66,25 +66,6 @@ export class PromptTemplateFullTextModel<
     return this.model.doGenerateToolCalls(tools, mappedPrompt, options);
   }
 
-  withPromptTemplate<INPUT_PROMPT>(
-    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>
-  ): PromptTemplateFullTextModel<INPUT_PROMPT, PROMPT, SETTINGS, this> {
-    return new PromptTemplateFullTextModel<
-      INPUT_PROMPT,
-      PROMPT,
-      SETTINGS,
-      this
-    >({
-      model: this.withSettings({
-        stopSequences: [
-          ...(this.settings.stopSequences ?? []),
-          ...promptTemplate.stopSequences,
-        ],
-      } as Partial<SETTINGS>),
-      promptTemplate,
-    });
-  }
-
   withSettings(additionalSettings: Partial<SETTINGS>): this {
     return new PromptTemplateFullTextModel({
       model: this.model.withSettings(additionalSettings),

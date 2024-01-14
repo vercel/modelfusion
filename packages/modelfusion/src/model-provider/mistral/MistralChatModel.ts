@@ -13,7 +13,7 @@ import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
-  TextStreamingModel,
+  TextStreamingBaseModel,
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
@@ -73,7 +73,8 @@ export interface MistralChatModelSettings extends TextGenerationModelSettings {
 
 export class MistralChatModel
   extends AbstractModel<MistralChatModelSettings>
-  implements TextStreamingModel<MistralChatPrompt, MistralChatModelSettings>
+  implements
+    TextStreamingBaseModel<MistralChatPrompt, MistralChatModelSettings>
 {
   constructor(settings: MistralChatModelSettings) {
     super({ settings });
@@ -201,23 +202,14 @@ export class MistralChatModel
     return chunk.choices[0].delta.content ?? undefined;
   }
 
-  /**
-   * Returns this model with a text prompt template.
-   */
   withTextPrompt() {
     return this.withPromptTemplate(text());
   }
 
-  /**
-   * Returns this model with an instruction prompt template.
-   */
   withInstructionPrompt() {
     return this.withPromptTemplate(instruction());
   }
 
-  /**
-   * Returns this model with a chat prompt template.
-   */
   withChatPrompt() {
     return this.withPromptTemplate(chat());
   }

@@ -6,6 +6,8 @@ import { Model, ModelSettings } from "../Model.js";
 import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
 import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate.js";
 import { TextGenerationResult } from "./TextGenerationResult.js";
+import { ChatPrompt } from "./prompt-template/ChatPrompt.js";
+import { InstructionPrompt } from "./prompt-template/InstructionPrompt.js";
 
 export const textGenerationModelProperties = [
   "maxGenerationTokens",
@@ -109,15 +111,35 @@ export interface TextGenerationModel<
     };
   };
 
-  withPromptTemplate<INPUT_PROMPT>(
-    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>
-  ): TextGenerationModel<INPUT_PROMPT, SETTINGS>;
-
   /**
    * When possible, limit the output generation to the specified JSON schema,
    * or super sets of it (e.g. JSON in general).
    */
   withJsonOutput(schema: Schema<unknown> & JsonSchemaProducer): this;
+}
+
+export interface TextGenerationBaseModel<
+  PROMPT,
+  SETTINGS extends TextGenerationModelSettings = TextGenerationModelSettings,
+> extends TextGenerationModel<PROMPT, SETTINGS> {
+  /**
+   * Returns this model with a text prompt template.
+   */
+  withTextPrompt(): TextGenerationModel<string, SETTINGS>;
+
+  /**
+   * Returns this model with an instruction prompt template.
+   */
+  withInstructionPrompt(): TextGenerationModel<InstructionPrompt, SETTINGS>;
+
+  /**
+   * Returns this model with a chat prompt template.
+   */
+  withChatPrompt(): TextGenerationModel<ChatPrompt, SETTINGS>;
+
+  withPromptTemplate<INPUT_PROMPT>(
+    promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>
+  ): TextGenerationModel<INPUT_PROMPT, SETTINGS>;
 }
 
 export interface TextStreamingModel<
@@ -130,6 +152,26 @@ export interface TextStreamingModel<
   ): PromiseLike<AsyncIterable<Delta<unknown>>>;
 
   extractTextDelta(delta: unknown): string | undefined;
+}
+
+export interface TextStreamingBaseModel<
+  PROMPT,
+  SETTINGS extends TextGenerationModelSettings = TextGenerationModelSettings,
+> extends TextStreamingModel<PROMPT, SETTINGS> {
+  /**
+   * Returns this model with a text prompt template.
+   */
+  withTextPrompt(): TextStreamingModel<string, SETTINGS>;
+
+  /**
+   * Returns this model with an instruction prompt template.
+   */
+  withInstructionPrompt(): TextStreamingModel<InstructionPrompt, SETTINGS>;
+
+  /**
+   * Returns this model with a chat prompt template.
+   */
+  withChatPrompt(): TextStreamingModel<ChatPrompt, SETTINGS>;
 
   withPromptTemplate<INPUT_PROMPT>(
     promptTemplate: TextGenerationPromptTemplate<INPUT_PROMPT, PROMPT>

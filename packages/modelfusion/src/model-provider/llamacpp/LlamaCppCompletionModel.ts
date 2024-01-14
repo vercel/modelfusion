@@ -22,6 +22,7 @@ import { StructureFromTextStreamingModel } from "../../model-function/generate-s
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
+  TextStreamingBaseModel,
   TextStreamingModel,
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
@@ -200,7 +201,7 @@ export class LlamaCppCompletionModel<
   >
   extends AbstractModel<LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>>
   implements
-    TextStreamingModel<
+    TextStreamingBaseModel<
       LlamaCppCompletionPrompt,
       LlamaCppCompletionModelSettings<CONTEXT_WINDOW_SIZE>
     >

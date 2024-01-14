@@ -1,10 +1,15 @@
 import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
-  TextStreamingModel,
+  TextStreamingBaseModel,
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import {
+  chat,
+  instruction,
+  text,
+} from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
 import {
   AbstractOpenAICompletionModel,
   AbstractOpenAICompletionModelSettings,
@@ -27,7 +32,7 @@ export interface OpenAICompatibleCompletionModelSettings
 export class OpenAICompatibleCompletionModel
   extends AbstractOpenAICompletionModel<OpenAICompatibleCompletionModelSettings>
   implements
-    TextStreamingModel<string, OpenAICompatibleCompletionModelSettings>
+    TextStreamingBaseModel<string, OpenAICompatibleCompletionModelSettings>
 {
   constructor(settings: OpenAICompatibleCompletionModelSettings) {
     super(settings);
@@ -66,6 +71,18 @@ export class OpenAICompatibleCompletionModel
         eventSettingProperties.includes(key)
       )
     );
+  }
+
+  withTextPrompt() {
+    return this.withPromptTemplate(text());
+  }
+
+  withInstructionPrompt() {
+    return this.withPromptTemplate(instruction());
+  }
+
+  withChatPrompt(options?: { user?: string; assistant?: string }) {
+    return this.withPromptTemplate(chat(options));
   }
 
   withPromptTemplate<INPUT_PROMPT>(

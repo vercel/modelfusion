@@ -13,7 +13,7 @@ import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
-  TextStreamingModel,
+  TextStreamingBaseModel,
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
@@ -21,6 +21,7 @@ import { TextGenerationFinishReason } from "../../model-function/generate-text/T
 import {
   chat,
   instruction,
+  text,
 } from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler.js";
@@ -77,7 +78,7 @@ export interface CohereTextGenerationModelSettings
  */
 export class CohereTextGenerationModel
   extends AbstractModel<CohereTextGenerationModelSettings>
-  implements TextStreamingModel<string, CohereTextGenerationModelSettings>
+  implements TextStreamingBaseModel<string, CohereTextGenerationModelSettings>
 {
   constructor(settings: CohereTextGenerationModelSettings) {
     super({ settings });
@@ -227,22 +228,20 @@ export class CohereTextGenerationModel
     return chunk.is_finished === true ? "" : chunk.text;
   }
 
-  /**
-   * Returns this model with an instruction prompt template.
-   */
+  withJsonOutput(): this {
+    return this;
+  }
+
+  withTextPrompt() {
+    return this.withPromptTemplate(text());
+  }
+
   withInstructionPrompt() {
     return this.withPromptTemplate(instruction());
   }
 
-  /**
-   * Returns this model with a chat prompt template.
-   */
   withChatPrompt(options?: { user?: string; assistant?: string }) {
     return this.withPromptTemplate(chat(options));
-  }
-
-  withJsonOutput(): this {
-    return this;
   }
 
   withPromptTemplate<INPUT_PROMPT>(

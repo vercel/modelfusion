@@ -1,12 +1,13 @@
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
-  TextStreamingModel,
+  TextStreamingBaseModel,
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import {
   chat,
   instruction,
+  text,
 } from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
 import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
 import {
@@ -87,7 +88,7 @@ export interface OpenAICompletionModelSettings
  */
 export class OpenAICompletionModel
   extends AbstractOpenAICompletionModel<OpenAICompletionModelSettings>
-  implements TextStreamingModel<string, OpenAICompletionModelSettings>
+  implements TextStreamingBaseModel<string, OpenAICompletionModelSettings>
 {
   constructor(settings: OpenAICompletionModelSettings) {
     super(settings);
@@ -137,16 +138,14 @@ export class OpenAICompletionModel
     );
   }
 
-  /**
-   * Returns this model with an instruction prompt template.
-   */
+  withTextPrompt() {
+    return this.withPromptTemplate(text());
+  }
+
   withInstructionPrompt() {
     return this.withPromptTemplate(instruction());
   }
 
-  /**
-   * Returns this model with a chat prompt template.
-   */
   withChatPrompt(options?: { user?: string; assistant?: string }) {
     return this.withPromptTemplate(chat(options));
   }

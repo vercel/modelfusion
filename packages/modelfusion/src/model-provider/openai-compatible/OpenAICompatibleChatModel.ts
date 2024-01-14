@@ -6,6 +6,7 @@ import {
 import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
 import { PromptTemplateFullTextModel } from "../../model-function/generate-text/PromptTemplateFullTextModel.js";
 import {
+  TextStreamingBaseModel,
   TextStreamingModel,
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel.js";
@@ -37,7 +38,7 @@ export interface OpenAICompatibleChatSettings
 export class OpenAICompatibleChatModel
   extends AbstractOpenAIChatModel<OpenAICompatibleChatSettings>
   implements
-    TextStreamingModel<OpenAIChatPrompt, OpenAICompatibleChatSettings>,
+    TextStreamingBaseModel<OpenAIChatPrompt, OpenAICompatibleChatSettings>,
     ToolCallGenerationModel<OpenAIChatPrompt, OpenAICompatibleChatSettings>,
     ToolCallsGenerationModel<OpenAIChatPrompt, OpenAICompatibleChatSettings>
 {
@@ -95,23 +96,14 @@ export class OpenAICompatibleChatModel
         });
   }
 
-  /**
-   * Returns this model with a text prompt template.
-   */
   withTextPrompt() {
     return this.withPromptTemplate(text());
   }
 
-  /**
-   * Returns this model with an instruction prompt template.
-   */
   withInstructionPrompt() {
     return this.withPromptTemplate(instruction());
   }
 
-  /**
-   * Returns this model with a chat prompt template.
-   */
   withChatPrompt() {
     return this.withPromptTemplate(chat());
   }
