@@ -93,7 +93,7 @@ You can pass [API configuration](/guide/util/api-configuration/) objects to the 
 ```ts
 import { api, openai } from "modelfusion";
 
-openai.CompletionTextGenerator({
+const model = openai.CompletionTextGenerator({
   model: "gpt-3.5-turbo-instruct",
   api: openai.Api({
     // all parameters are optional:
