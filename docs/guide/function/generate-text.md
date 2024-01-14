@@ -313,7 +313,7 @@ After a while, including all messages from a chat in the prompt can become infea
 When you use chat prompts, you can limit the included messages with the [trimChatPrompt()](/api/modules#trimchatprompt) function.
 It keeps only the most recent messages in the prompt, while leaving enough space for the completion.
 
-It automatically uses the [context window size](/api/interfaces/TextGenerationModel#contextwindowsize), the [maximum number of completion tokens](/api/interfaces/TextGenerationModel#maxGenerationTokens) and the [tokenizer](/api/interfaces/TextGenerationModel#tokenizer) of the model to determine how many messages to keep. The system message is always included.
+It automatically uses the [context window size](/api/interfaces/TextGenerationModel#contextwindowsize), the [maximum number of generation tokens](/api/interfaces/TextGenerationModelSettings#maxgenerationtokens) and the [tokenizer](/api/interfaces/TextGenerationModel#tokenizer) of the model to determine how many messages to keep. The system message is always included.
 
 #### Example
 

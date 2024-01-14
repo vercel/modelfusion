@@ -33,7 +33,7 @@ You can call it from ModelFusion in the same way as a regular llama.cpp server.
 
 [LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
 
-Consider using the [prompt to the prompt template](#prompt-templates) from the model card.
+Consider using the [the prompt template](#prompt-templates) from the model card.
 
 ```ts
 import { llamacpp, generateText } from "modelfusion";
@@ -54,7 +54,7 @@ const text = await generateText({
 
 [LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
 
-Consider using the [prompt to the prompt template](#prompt-templates) from the model card.
+Consider using the [the prompt template](#prompt-templates) from the model card.
 
 ```ts
 import { llamacpp, streamText } from "modelfusion";
