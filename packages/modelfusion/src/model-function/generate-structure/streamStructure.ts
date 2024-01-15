@@ -1,3 +1,4 @@
+import type { PartialDeep } from "type-fest";
 import { FunctionOptions } from "../../core/FunctionOptions.js";
 import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../../core/schema/Schema.js";
@@ -6,19 +7,8 @@ import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStreamCall } from "../executeStreamCall.js";
 import { StructureStreamingModel } from "./StructureGenerationModel.js";
 
-export type StructureStreamPart<STRUCTURE> =
-  | { isComplete: false; value: unknown }
-  | { isComplete: true; value: STRUCTURE };
-
 /**
  * Generate and stream an object for a prompt and a structure definition.
- *
- * The final object is typed according to the structure definition.
- * The partial objects are of unknown type,
- * but are supposed to be partial version of the final object
- * (unless the underlying model returns invalid data).
- *
- * The structure definition is used as part of the final prompt.
  *
  * For the OpenAI chat model, this generates and parses a function call with a single function.
  *
@@ -44,15 +34,8 @@ export type StructureStreamPart<STRUCTURE> =
  *   ]
  * });
  *
- * for await (const part of structureStream) {
- *   if (!part.isComplete) {
- *     const unknownPartialStructure = part.value;
- *     // use your own logic to handle partial structures, e.g. with Zod .deepPartial()
- *     // it depends on your application at which points you want to act on the partial structures
- *   } else {
- *     const fullyTypedStructure = part.value;
- *     // ...
- *   }
+ * for await (const partialStructure of structureStream) {
+ *   // ...
  * }
  *
  * @param {StructureStreamingModel<PROMPT>} structureGenerator - The model to use for streaming
@@ -60,13 +43,10 @@ export type StructureStreamPart<STRUCTURE> =
  * @param {PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT)} prompt
  * The prompt to be used.
  * You can also pass a function that takes the schema as an argument and returns the prompt.
- * @param {FunctionOptions} [options] - Optional function options
  *
  * @returns {AsyncIterableResultPromise<StructureStreamPart<STRUCTURE>>}
  * The async iterable result promise.
- * Each part of the stream is either a partial structure or the final structure.
- * It contains a isComplete flag to indicate whether the structure is complete,
- * and a value that is either the partial structure or the final structure.
+ * Each part of the stream is a partial structure.
  */
 export async function streamStructure<STRUCTURE, PROMPT>(
   args: {
@@ -75,7 +55,7 @@ export async function streamStructure<STRUCTURE, PROMPT>(
     prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT);
     fullResponse?: false;
   } & FunctionOptions
-): Promise<AsyncIterable<StructureStreamPart<STRUCTURE>>>;
+): Promise<AsyncIterable<PartialDeep<STRUCTURE, { recurseIntoArrays: true }>>>;
 export async function streamStructure<STRUCTURE, PROMPT>(
   args: {
     model: StructureStreamingModel<PROMPT>;
@@ -84,7 +64,10 @@ export async function streamStructure<STRUCTURE, PROMPT>(
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
-  structureStream: AsyncIterable<StructureStreamPart<STRUCTURE>>;
+  structureStream: AsyncIterable<
+    PartialDeep<STRUCTURE, { recurseIntoArrays: true }>
+  >;
+  structurePromise: PromiseLike<STRUCTURE>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
 export async function streamStructure<STRUCTURE, PROMPT>({
@@ -99,9 +82,12 @@ export async function streamStructure<STRUCTURE, PROMPT>({
   prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT);
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
-  | AsyncIterable<StructureStreamPart<STRUCTURE>>
+  | AsyncIterable<PartialDeep<STRUCTURE, { recurseIntoArrays: true }>>
   | {
-      structureStream: AsyncIterable<StructureStreamPart<STRUCTURE>>;
+      structureStream: AsyncIterable<
+        PartialDeep<STRUCTURE, { recurseIntoArrays: true }>
+      >;
+      structurePromise: PromiseLike<STRUCTURE>;
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }
 > {
@@ -114,9 +100,16 @@ export async function streamStructure<STRUCTURE, PROMPT>({
   let accumulatedText = "";
   let lastStructure: unknown | undefined;
 
+  let resolveStructure: (value: STRUCTURE) => void;
+  let rejectStructure: (reason: unknown) => void;
+  const structurePromise = new Promise<STRUCTURE>((resolve, reject) => {
+    resolveStructure = resolve;
+    rejectStructure = reject;
+  });
+
   const callResponse = await executeStreamCall<
     unknown,
-    StructureStreamPart<STRUCTURE>,
+    PartialDeep<STRUCTURE>,
     StructureStreamingModel<PROMPT>
   >({
     functionType: "stream-structure",
@@ -143,34 +136,30 @@ export async function streamStructure<STRUCTURE, PROMPT>({
       // only send a new part into the stream when the partial structure has changed:
       if (!isDeepEqualData(lastStructure, latestStructure)) {
         lastStructure = latestStructure;
-
-        return {
-          isComplete: false,
-          value: lastStructure,
-        } satisfies StructureStreamPart<STRUCTURE>;
+        return lastStructure as PartialDeep<
+          STRUCTURE,
+          { recurseIntoArrays: true }
+        >;
       }
 
       return undefined;
     },
-    processFinished: () => {
+    onDone: () => {
       // process the final result (full type validation):
       const parseResult = schema.validate(lastStructure);
 
-      if (!parseResult.success) {
-        reportError(parseResult.error);
-        throw parseResult.error;
+      if (parseResult.success) {
+        resolveStructure(parseResult.data);
+      } else {
+        rejectStructure(parseResult.error);
       }
-
-      return {
-        isComplete: true,
-        value: parseResult.data,
-      };
     },
   });
 
   return fullResponse
     ? {
         structureStream: callResponse.value,
+        structurePromise,
         metadata: callResponse.metadata,
       }
     : callResponse.value;

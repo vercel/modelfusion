@@ -119,6 +119,8 @@ for await (const textPart of textStream) {
 
 ### Generate Structure
 
+[Generate Structure Docs](/guide/function/generate-structure)
+
 Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). When you use `jsonStructurePrompt` with Llama.cpp, it automatically uses a GBNF grammar for the JSON schema that you provide.
 
 ```ts
@@ -162,6 +164,8 @@ const structure = await generateStructure({
 
 ### Stream Structure
 
+[Stream Structure Docs](/guide/function/generate-structure#stream-structure)
+
 Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). When you use `jsonStructurePrompt` with Llama.cpp, it automatically uses a GBNF grammar for the JSON schema that you provide.
 
 ```ts
@@ -201,20 +205,15 @@ const structureStream = await streamStructure({
   schema: "Generate 3 character descriptions for a fantasy role playing game.",
 });
 
-for await (const part of structureStream) {
-  if (part.isComplete) {
-    const fullyTypedStructure = part.value;
-    console.log("final value", fullyTypedStructure);
-  } else {
-    const unknownPartialStructure = part.value;
-    console.log("partial value", unknownPartialStructure);
-  }
+for await (const partialStructure of structureStream) {
+  console.clear();
+  console.log(partialStructure);
 }
 ```
 
 ### Text Embedding
 
-[LlamaCppTextEmbeddingModel API](/api/classes/LlamaCppTextEmbeddingModel)
+[Embed Value Docs](/guide/function/embed) | [LlamaCppTextEmbeddingModel API](/api/classes/LlamaCppTextEmbeddingModel)
 
 ```ts
 import { llamacpp, embedMany } from "modelfusion";

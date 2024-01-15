@@ -184,14 +184,9 @@ const structureStream = await streamStructure({
   prompt: "Generate 3 character descriptions for a fantasy role playing game.",
 });
 
-for await (const part of structureStream) {
-  if (!part.isComplete) {
-    const unknownPartialStructure = part.value;
-    console.log("partial value", unknownPartialStructure);
-  } else {
-    const fullyTypedStructure = part.value;
-    console.log("final value", fullyTypedStructure);
-  }
+for await (const partialStructure of structureStream) {
+  console.clear();
+  console.log(partialStructure);
 }
 ```
 

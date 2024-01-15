@@ -144,12 +144,9 @@ const sentiment = await generateStructure({
 
 `streamStructure` returns an async iterable over partial results.
 
-The `value` property of the result contains the current value.
-The `isComplete` flag of the result indicates whether result is complete.
-
-For complete results, type inference is executed and `value` will be typed.
-For partial results `value` is JSON of the type `unknown`.
-You can do your own type inference on partial results if needed.
+:::note
+The partial results are typed, but not validated. You can use your own logic to handle partial structures, e.g. with Zod `.deepPartial()`, to add validation.
+:::
 
 #### Example: RPG character generation
 
@@ -183,18 +180,59 @@ const structureStream = await streamStructure({
   },
 });
 
-for await (const part of structureStream) {
-  if (!part.isComplete) {
-    // use your own logic to handle partial structures, e.g. with Zod .deepPartial()
-    // it depends on your application at which points you want to act on the partial structures
-    const unknownPartialStructure = part.value;
-    console.log("partial value", unknownPartialStructure);
-  } else {
-    // the final structure is fully typed:
-    const fullyTypedStructure = part.value;
-    console.log("final value", fullyTypedStructure);
-  }
+for await (const partialStructure of structureStream) {
+  console.clear();
+  console.log(partialStructure);
 }
+```
+
+### Example: Full response with structure promise
+
+You can use the `fullResponse` property to get a full response with an additional promise to the fully typed and validated structure.
+
+```ts
+const { structureStream, structurePromise, metadata } = await streamStructure({
+  model: openai
+    .ChatTextGenerator({
+      model: "gpt-3.5-turbo",
+      temperature: 0,
+      maxGenerationTokens: 2000,
+    })
+    .asFunctionCallStructureGenerationModel({
+      fnName: "generateCharacter",
+      fnDescription: "Generate character descriptions.",
+    })
+    .withTextPrompt(),
+
+  schema: zodSchema(
+    z.object({
+      characters: z.array(
+        z.object({
+          name: z.string(),
+          class: z
+            .string()
+            .describe("Character class, e.g. warrior, mage, or thief."),
+          description: z.string(),
+        })
+      ),
+    })
+  ),
+
+  prompt: "Generate 3 character descriptions for a fantasy role playing game.",
+
+  fullResponse: true,
+});
+
+for await (const partialStructure of structureStream) {
+  console.clear();
+  console.log(partialStructure);
+}
+
+const structure = await structurePromise;
+
+console.clear();
+console.log("FINAL STRUCTURE");
+console.log(structure);
 ```
 
 ## Available Providers
