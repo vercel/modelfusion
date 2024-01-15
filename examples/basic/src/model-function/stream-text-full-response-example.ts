@@ -4,7 +4,7 @@ import { openai, streamText } from "modelfusion";
 dotenv.config();
 
 async function main() {
-  const { textStream, text, metadata } = await streamText({
+  const { textStream, textPromise, metadata } = await streamText({
     model: openai
       .CompletionTextGenerator({
         model: "gpt-3.5-turbo-instruct",
@@ -25,7 +25,7 @@ async function main() {
   }
 
   console.log("\n\nTEXT:");
-  console.log(await text); // available once stream is finished
+  console.log(await textPromise); // available once stream is finished
 }
 
 main().catch(console.error);

@@ -140,7 +140,7 @@ for await (const textPart of textStream) {
 When you set the `fullResponse` option to `true`, you get get a rich response object with the following properties:
 
 - **textStream**: The generated text stream of the first result.
-- **text**: The generated of the first result. It's a promise that resolves when the stream is finished.
+- **textPromise**: The generated of the first result. It's a promise that resolves when the stream is finished.
 - **metadata**: The metadata for model call.
 
 #### Example: Full response
@@ -148,7 +148,7 @@ When you set the `fullResponse` option to `true`, you get get a rich response ob
 ```ts
 import { streamText, openai } from "modelfusion";
 
-const { textStream, text, metadata } = await streamText({
+const { textStream, textPromise, metadata } = await streamText({
   model: openai.CompletionTextGenerator(/* ... */),
   prompt: "Write a story about a robot learning to love",
   fullResponse: true,

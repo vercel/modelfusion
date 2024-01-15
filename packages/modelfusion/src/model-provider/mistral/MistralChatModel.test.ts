@@ -50,7 +50,7 @@ describe("streamText", () => {
     });
 
     it("should return text", async () => {
-      const { text } = await streamText({
+      const { textPromise } = await streamText({
         model: new MistralChatModel({
           api: new MistralApiConfiguration({ apiKey: "test-key" }),
           model: "mistral-tiny",
@@ -59,7 +59,7 @@ describe("streamText", () => {
         fullResponse: true,
       });
 
-      expect(await text).toStrictEqual("Hello, world!");
+      expect(await textPromise).toStrictEqual("Hello, world!");
     });
   });
 });

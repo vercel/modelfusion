@@ -43,7 +43,7 @@ export async function streamText<PROMPT>(
   } & FunctionOptions
 ): Promise<{
   textStream: AsyncIterable<string>;
-  text: PromiseLike<string>;
+  textPromise: PromiseLike<string>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
 export async function streamText<PROMPT>({
@@ -59,7 +59,7 @@ export async function streamText<PROMPT>({
   | AsyncIterable<string>
   | {
       textStream: AsyncIterable<string>;
-      text: PromiseLike<string>;
+      textPromise: PromiseLike<string>;
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }
 > {
@@ -115,7 +115,7 @@ export async function streamText<PROMPT>({
   return fullResponse
     ? {
         textStream: callResponse.value,
-        text: textPromise,
+        textPromise,
         metadata: callResponse.metadata,
       }
     : callResponse.value;
