@@ -4,7 +4,7 @@
 
 Agent that solves middle school math problems. It uses a calculator tool.
 
-Note: GPT-4 can solve these problems without a calculator. This example is just to show how to use tools in an agent.
+Note: GPT-4 can solve these problems without a calculator. This example is just to show how to run tools in an agent.
 
 ## Usage
 

@@ -2,7 +2,7 @@
 sidebar_position: 20
 ---
 
-# Use Tool
+# Run Tool
 
 With [runTool](/api/modules/#runTool), you can invoke a single tool with a model prompt. The model that you provide needs to support tools calls (e.g. OpenAI chat).
 

@@ -2,7 +2,7 @@
 sidebar_position: 25
 ---
 
-# Use Tools
+# Run Tools
 
 An essential behavior of chat agents is to be able to choose from different tools or to respond to the user. The agent needs to be able to make the choice of which tools, if any, to use and how, and to generate text to respond to the user.
 
