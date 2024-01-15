@@ -1,21 +1,18 @@
 import {
-  generateStructure,
   jsonStructurePrompt,
   ollama,
+  streamStructure,
   zodSchema,
 } from "modelfusion";
 import { z } from "zod";
 
 async function main() {
-  const structure = await generateStructure({
+  const { structureStream, structurePromise } = await streamStructure({
     model: ollama
-      .CompletionTextGenerator({
+      .ChatTextGenerator({
         model: "openhermes2.5-mistral",
-        promptTemplate: ollama.prompt.ChatML,
-        raw: true, // required when using custom prompt template
         maxGenerationTokens: 1024,
         temperature: 0,
-        stopSequences: ["\n\n"], // prevent infinite generation
       })
       .asStructureGenerationModel(jsonStructurePrompt.text()),
 
@@ -35,9 +32,20 @@ async function main() {
 
     prompt:
       "Generate 3 character descriptions for a fantasy role playing game.",
+
+    fullResponse: true,
   });
 
-  console.log(structure.characters);
+  for await (const partialStructure of structureStream) {
+    console.clear();
+    console.log(partialStructure);
+  }
+
+  const structure = await structurePromise;
+
+  console.clear();
+  console.log("FINAL STRUCTURE");
+  console.log(structure);
 }
 
 main().catch(console.error);
