@@ -37,7 +37,7 @@ const searchWikipedia = new GoogleCustomSearchTool({
 });
 ```
 
-You can then use the tool with `useTool` or `executeTool`:
+You can then use the tool with `runTool` or `executeTool`:
 
 ```ts
 const result = await executeTool({

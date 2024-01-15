@@ -11,7 +11,7 @@ You can use [generateToolCalls](/api/modules/#generateToolCalls) for this purpos
 :::note
 `generateToolCalls` function does not execute the tools.
 It only generates the arguments for the tool calls (or a text response).
-You can execute the tool with [useTools](/guide/tools/use-tools) or [executeTool](/guide/tools/advanced/execute-tool).
+You can execute the tool with [runTools](/guide/tools/run-tools) or [executeTool](/guide/tools/advanced/execute-tool).
 :::
 
 ## Example

@@ -1,11 +1,11 @@
-import { automatic1111, modelfusion, ollama, useTools } from "modelfusion";
+import { automatic1111, modelfusion, ollama, runTools } from "modelfusion";
 import { XmlTagToolCallsPromptTemplate } from "../../tool/prompts/XmlTagToolCallsPromptTemplate";
 import { ImageGeneratorTool } from "../../tool/tools/image-generator-tool";
 
 modelfusion.setLogFormat("detailed-object");
 
 async function main() {
-  const { text, toolResults } = await useTools({
+  const { text, toolResults } = await runTools({
     model: ollama
       .ChatTextGenerator({
         model: "mixtral",

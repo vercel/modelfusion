@@ -1,8 +1,8 @@
 import { MathJsTool } from "@modelfusion/mathjs-tool";
-import { jsonToolCallPrompt, ollama, useTool } from "modelfusion";
+import { jsonToolCallPrompt, ollama, runTool } from "modelfusion";
 
 async function main() {
-  const { tool, args, toolCall, result } = await useTool({
+  const { tool, args, toolCall, result } = await runTool({
     model: ollama
       .CompletionTextGenerator({
         model: "mistral",

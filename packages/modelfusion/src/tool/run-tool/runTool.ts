@@ -10,7 +10,7 @@ import {
 import { generateToolCall } from "../generate-tool-call/generateToolCall.js";
 
 /**
- * `useTool` uses `generateToolCall` to generate parameters for a tool and
+ * `runTool` uses `generateToolCall` to generate parameters for a tool and
  * then executes the tool with the parameters using `executeTool`.
  *
  * @returns The result contains the name of the tool (`tool` property),
@@ -20,7 +20,7 @@ import { generateToolCall } from "../generate-tool-call/generateToolCall.js";
  * @see {@link generateToolCall}
  * @see {@link executeTool}
  */
-export async function useTool<
+export async function runTool<
   PROMPT,
   // Using 'any' is required to allow for flexibility in the inputs. The actual types are
   // retrieved through lookups such as TOOL["name"], such that any does not affect any client.
@@ -50,7 +50,7 @@ export async function useTool<
   return executeFunctionCall({
     options,
     input: expandedPrompt,
-    functionType: "use-tool",
+    functionType: "run-tool",
     execute: async (options) =>
       safeExecuteToolCall(
         tool,

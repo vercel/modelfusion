@@ -11,13 +11,13 @@ import {
   ExecuteToolStartedEvent,
 } from "../tool/execute-tool/ExecuteToolEvent.js";
 import {
-  UseToolFinishedEvent,
-  UseToolStartedEvent,
-} from "../tool/use-tool/UseToolEvent.js";
+  runToolFinishedEvent,
+  runToolStartedEvent,
+} from "../tool/run-tool/RunToolEvent.js";
 import {
-  useToolsFinishedEvent,
-  useToolsStartedEvent,
-} from "../tool/use-tools/UseToolsEvent.js";
+  runToolsFinishedEvent,
+  runToolsStartedEvent,
+} from "../tool/run-tools/RunToolsEvent.js";
 import {
   UpsertIntoVectorIndexFinishedEvent,
   UpsertIntoVectorIndexStartedEvent,
@@ -135,7 +135,7 @@ export type FunctionEvent =
   | RetrieveFinishedEvent
   | UpsertIntoVectorIndexStartedEvent
   | UpsertIntoVectorIndexFinishedEvent
-  | UseToolStartedEvent
-  | UseToolFinishedEvent
-  | useToolsStartedEvent
-  | useToolsFinishedEvent;
+  | runToolStartedEvent
+  | runToolFinishedEvent
+  | runToolsStartedEvent
+  | runToolsFinishedEvent;

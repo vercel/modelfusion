@@ -8,8 +8,8 @@ Tools are functions and descriptions of their parameters and purpose. They can b
 
 ModelFusion comes with two main functions for invoking tools:
 
-- [Use Tool](/guide/tools/use-tool): a function that generates a single tool call and executes the tool with the generated arguments.
-- [Use Tools](/guide/tools/use-tools): a function that generates multiple tool calls and/or text from a prompt, and then executes the tools.
+- [Use Tool](/guide/tools/run-tool): a function that generates a single tool call and executes the tool with the generated arguments.
+- [Use Tools](/guide/tools/run-tools): a function that generates multiple tool calls and/or text from a prompt, and then executes the tools.
 
 ModelFusion also provides several tools as standalone packages. You can also create your own tools:
 

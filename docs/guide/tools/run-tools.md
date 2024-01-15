@@ -6,9 +6,9 @@ sidebar_position: 25
 
 An essential behavior of chat agents is to be able to choose from different tools or to respond to the user. The agent needs to be able to make the choice of which tools, if any, to use and how, and to generate text to respond to the user.
 
-`useTools` supports exactly this use case. It generates tool calls and text from a prompt, and then executes the tools. The model that you provide needs to support tool calls (e.g. OpenAI Chat).
+`runTools` supports exactly this use case. It generates tool calls and text from a prompt, and then executes the tools. The model that you provide needs to support tool calls (e.g. OpenAI Chat).
 
-`useTools` does the following:
+`runTools` does the following:
 
 1. It calls `generateToolCalls` to generate text and multiple tool calls from a prompt.
 2. It calls `executeTool` for each tool call in parallel to run the tool with the provided arguments.
@@ -17,7 +17,7 @@ An essential behavior of chat agents is to be able to choose from different tool
 ## Example
 
 ```ts
-const { text, toolResults } = await useTools({
+const { text, toolResults } = await runTools({
   model: openai.ChatTextGenerator({ model: "gpt-4-1106-preview" }),
   tools: [toolA, toolB, toolC],
   prompt: [openai.ChatMessage.user(query)],
@@ -41,7 +41,7 @@ The type of `result` for each tool call depends on the `ok` flag and the tool. I
 
 ## Error Handling
 
-When the tool execution fails, `useTool` will set `ok` to `false` and `result` to a [ToolCallError](/api/classes/ToolCallError) that contains the tool call and the cause.
+When the tool execution fails, `runTool` will set `ok` to `false` and `result` to a [ToolCallError](/api/classes/ToolCallError) that contains the tool call and the cause.
 
 Only error during the tool execution are caught. In particular, the following errors are not caught:
 

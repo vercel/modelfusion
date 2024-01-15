@@ -1,4 +1,4 @@
-import { modelfusion, ollama, useTools } from "modelfusion";
+import { modelfusion, ollama, runTools } from "modelfusion";
 import { mistralMultiToolCallPromptTemplate } from "../../tool/prompts/mistral";
 import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
@@ -6,7 +6,7 @@ import { weather } from "../../tool/tools/weather-tool";
 modelfusion.setLogFormat("detailed-object");
 
 async function main() {
-  const { text, toolResults } = await useTools({
+  const { text, toolResults } = await runTools({
     model: ollama
       .CompletionTextGenerator({
         model: "mixtral",

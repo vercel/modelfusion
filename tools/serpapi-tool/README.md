@@ -33,7 +33,7 @@ const websearchTool = new SerpapiGoogleWebSearchTool({
 });
 ```
 
-You can then use the tool with `useTool` or `executeTool`:
+You can then use the tool with `runTool` or `executeTool`:
 
 ```ts
 const result = await executeTool(websearchTool, {

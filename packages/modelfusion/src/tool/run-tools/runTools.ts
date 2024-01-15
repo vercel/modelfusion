@@ -40,7 +40,7 @@ type ToToolCallUnion<T> = {
 type ToOutputValue<TOOLS extends ToolArray<Tool<any, any, any>[]>> =
   ToToolCallUnion<ToToolMap<TOOLS>>;
 
-export async function useTools<
+export async function runTools<
   PROMPT,
   TOOLS extends Array<Tool<any, any, any>>,
 >({
@@ -65,7 +65,7 @@ export async function useTools<
   return executeFunctionCall({
     options,
     input: expandedPrompt,
-    functionType: "use-tools",
+    functionType: "run-tools",
     execute: async (options) => {
       const modelResponse = await generateToolCalls({
         model,

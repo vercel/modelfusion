@@ -9,7 +9,7 @@ You can translate a prompt into arguments for a single tool call with [generateT
 :::note
 `generateToolCall` function does not execute the tool.
 It only generates the arguments for the tool call.
-You can execute the tool with [useTool](/guide/tools/use-tool) or [executeTool](/guide/tools/advanced/execute-tool).
+You can execute the tool with [runTool](/guide/tools/run-tool) or [executeTool](/guide/tools/advanced/execute-tool).
 :::
 
 ## Example

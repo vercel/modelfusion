@@ -1,10 +1,10 @@
-import { llamacpp, useTools } from "modelfusion";
+import { llamacpp, runTools } from "modelfusion";
 import { XmlTagToolCallsPromptTemplate } from "../../tool/prompts/XmlTagToolCallsPromptTemplate";
 import { calculator } from "../../tool/tools/calculator-tool";
 import { weather } from "../../tool/tools/weather-tool";
 
 async function main() {
-  const { text, toolResults } = await useTools({
+  const { text, toolResults } = await runTools({
     model: llamacpp
       .CompletionTextGenerator({
         // run https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp

@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { Command } from "commander";
 import dotenv from "dotenv";
-import { ChatMessage, ChatPrompt, openai, useTools } from "modelfusion";
+import { ChatMessage, ChatPrompt, openai, runTools } from "modelfusion";
 import { readWikipediaArticle } from "./ReadWikipediaArticleTool";
 import { searchWikipedia } from "./SearchWikipediaTool";
 
@@ -32,7 +32,7 @@ async function main() {
   };
 
   while (true) {
-    const { text, toolResults } = await useTools({
+    const { text, toolResults } = await runTools({
       model: openai
         .ChatTextGenerator({ model: "gpt-4-1106-preview", temperature: 0 })
         .withChatPrompt(),

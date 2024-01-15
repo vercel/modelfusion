@@ -372,12 +372,12 @@ Tools are functions (and associated metadata) that can be executed by an AI mode
 
 ModelFusion offers several tools out-of-the-box: [Math.js](https://modelfusion.dev/guide/tools/available-tools/mathjs), [MediaWiki Search](https://modelfusion.dev/guide/tools/available-tools/mediawiki-search), [SerpAPI](https://modelfusion.dev/guide/tools/available-tools/serpapi), [Google Custom Search](https://modelfusion.dev/guide/tools/available-tools/google-custom-search). You can also create [custom tools](https://modelfusion.dev/guide/tools).
 
-#### [useTool](https://modelfusion.dev/guide/tools/use-tool)
+#### [runTool](https://modelfusion.dev/guide/tools/run-tool)
 
-With `useTool`, you can ask a tool-compatible language model (e.g. OpenAI chat) to invoke a single tool. `useTool` first generates a tool call and then executes the tool with the arguments.
+With `runTool`, you can ask a tool-compatible language model (e.g. OpenAI chat) to invoke a single tool. `runTool` first generates a tool call and then executes the tool with the arguments.
 
 ```ts
-const { tool, toolCall, args, ok, result } = await useTool({
+const { tool, toolCall, args, ok, result } = await runTool({
   model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   too: calculator,
   prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
@@ -390,12 +390,12 @@ console.log(`Ok:`, ok);
 console.log(`Result or Error:`, result);
 ```
 
-#### [useTools](https://modelfusion.dev/guide/tools/use-tools)
+#### [runTools](https://modelfusion.dev/guide/tools/run-tools)
 
-With `useTools`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function executes the tools.
+With `runTools`, you can ask a language model to generate several tool calls as well as text. The model will choose which tools (if any) should be called with which arguments. Both the text and the tool calls are optional. This function executes the tools.
 
 ```ts
-const { text, toolResults } = await useTools({
+const { text, toolResults } = await runTools({
   model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
   tools: [calculator /* ... */],
   prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
@@ -404,7 +404,7 @@ const { text, toolResults } = await useTools({
 
 #### [Agent Loop](https://modelfusion.dev/guide/tools/agent-loop)
 
-You can use `useTools` to implement an agent loop that responds to user messages and executes tools. [Learn more](https://modelfusion.dev/guide/tools/agent-loop).
+You can use `runTools` to implement an agent loop that responds to user messages and executes tools. [Learn more](https://modelfusion.dev/guide/tools/agent-loop).
 
 ### [Vector Indices](https://modelfusion.dev/guide/vector-index)
 
@@ -580,8 +580,8 @@ modelfusion.setLogFormat("detailed-object"); // log full events
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
   - [Classify Value](https://modelfusion.dev/guide/function/classify)
 - [Tools](https://modelfusion.dev/guide/tools)
-  - [Use Tool](https://modelfusion.dev/guide/tools/use-tool)
-  - [Use Tools](https://modelfusion.dev/guide/tools/use-tools)
+  - [Use Tool](https://modelfusion.dev/guide/tools/run-tool)
+  - [Use Tools](https://modelfusion.dev/guide/tools/run-tools)
   - [Agent Loop](https://modelfusion.dev/guide/tools/agent-loop)
   - [Available Tools](https://modelfusion.dev/guide/tools/available-tools/)
   - [Custom Tools](https://modelfusion.dev/guide/tools/custom-tools)

@@ -1,6 +1,6 @@
 import { MathJsTool } from "@modelfusion/mathjs-tool";
 import dotenv from "dotenv";
-import { ChatMessage, ChatPrompt, openai, useTools } from "modelfusion";
+import { ChatMessage, ChatPrompt, openai, runTools } from "modelfusion";
 import { questions } from "./Questions";
 
 dotenv.config();
@@ -24,7 +24,7 @@ async function main() {
   // agent loop:
   while (true) {
     // call the language model and execute the tools:
-    const { text, toolResults } = await useTools({
+    const { text, toolResults } = await runTools({
       model: openai
         .ChatTextGenerator({
           model: "gpt-4-1106-preview",

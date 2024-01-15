@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { modelfusion, openai, useTools } from "modelfusion";
+import { modelfusion, openai, runTools } from "modelfusion";
 import { calculator } from "./tools/calculator-tool";
 
 dotenv.config();
@@ -7,7 +7,7 @@ dotenv.config();
 modelfusion.setLogFormat("basic-text");
 
 async function main() {
-  const { text, toolResults } = await useTools({
+  const { text, toolResults } = await runTools({
     model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
     tools: [calculator /* ... */],
     // Instead of using a curried function,
