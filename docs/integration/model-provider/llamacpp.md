@@ -31,7 +31,7 @@ You can call it from ModelFusion in the same way as a regular llama.cpp server.
 
 ### Generate Text
 
-[LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
+[Generate Text Docs](/guide/function/generate-text) | [LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
 
 Consider using the [the prompt template](#prompt-templates) from the model card.
 
@@ -52,7 +52,7 @@ const text = await generateText({
 
 ### Stream Text
 
-[LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
+[Stream Text Docs](/guide/function/generate-text#streamtext) | [LlamaCppCompletionModel API](/api/classes/LlamaCppCompletionModel)
 
 Consider using the [the prompt template](#prompt-templates) from the model card.
 
@@ -164,7 +164,7 @@ const structure = await generateStructure({
 
 ### Stream Structure
 
-[Stream Structure Docs](/guide/function/generate-structure#stream-structure)
+[Stream Structure Docs](/guide/function/generate-structure#streamstructure)
 
 Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). When you use `jsonStructurePrompt` with Llama.cpp, it automatically uses a GBNF grammar for the JSON schema that you provide.
 
@@ -211,7 +211,7 @@ for await (const partialStructure of structureStream) {
 }
 ```
 
-### Text Embedding
+### Embed Text
 
 [Embed Value Docs](/guide/function/embed) | [LlamaCppTextEmbeddingModel API](/api/classes/LlamaCppTextEmbeddingModel)
 
@@ -229,7 +229,7 @@ const embeddings = await embedMany({
 
 ### Tokenize Text
 
-[LlamaCppTokenizer API](/api/classes/LlamaCppTokenizer)
+[Tokenize Text Docs](/guide/function/tokenize-text) | [LlamaCppTokenizer API](/api/classes/LlamaCppTokenizer)
 
 ```ts
 import { llamacpp, countTokens } from "modelfusion";

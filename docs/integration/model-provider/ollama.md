@@ -19,7 +19,7 @@ Generate text and embeddings using [Ollama](https://ollama.ai). You can run the 
 
 ### Generate Text (Completion)
 
-[OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
+[Generate Text Docs](/guide/function/generate-text) | [OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
 
 The `OllamaCompletionModel` uses the Ollama completion API to generate text.
 
@@ -61,7 +61,7 @@ const text = await generateText({
 
 ### Generate Text (Chat)
 
-[OllamaChatModel API](/api/classes/OllamaChatModel)
+[Generate Text Docs](/guide/function/generate-text) | [OllamaChatModel API](/api/classes/OllamaChatModel)
 
 The `OllamaChatModel` uses the Ollama chat API to generate text.
 
@@ -108,7 +108,7 @@ const text = await generateText({
 
 ### Stream Text (Completion)
 
-[OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
+[Stream Text Docs](/guide/function/generate-text#streamtext) | [OllamaCompletionModel API](/api/classes/OllamaCompletionModel)
 
 ```ts
 import { ollama, streamText } from "modelfusion";
@@ -133,7 +133,7 @@ for await (const textPart of textStream) {
 
 ### Stream Text (Chat)
 
-[OllamaChatModel API](/api/classes/OllamaChatModel)
+[Stream Text Docs](/guide/function/generate-text#streamtext) | [OllamaChatModel API](/api/classes/OllamaChatModel)
 
 ```ts
 import { ollama, streamText } from "modelfusion";
@@ -151,6 +151,8 @@ const textStream = await streamText({
 ```
 
 ### Generate Structure (Chat)
+
+[Generate Structure Docs](/guide/function/generate-structure)
 
 Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://ollama.ai/library/openhermes).
 
@@ -186,9 +188,54 @@ const sentiment = await generateStructure({
 });
 ```
 
+### Stream Structure (Chat)
+
+[Stream Structure Docs](/guide/function/generate-structure#streamstructure)
+
+```ts
+import {
+  jsonStructurePrompt,
+  ollama,
+  streamStructure,
+  zodSchema,
+} from "modelfusion";
+import { z } from "zod";
+
+const structureStream = await streamStructure({
+  model: ollama
+    .ChatTextGenerator({
+      model: "openhermes2.5-mistral",
+      maxGenerationTokens: 1024,
+      temperature: 0,
+    })
+    .asStructureGenerationModel(jsonStructurePrompt.text()),
+
+  schema: zodSchema(
+    z.object({
+      characters: z.array(
+        z.object({
+          name: z.string(),
+          class: z
+            .string()
+            .describe("Character class, e.g. warrior, mage, or thief."),
+          description: z.string(),
+        })
+      ),
+    })
+  ),
+
+  prompt: "Generate 3 character descriptions for a fantasy role playing game. ",
+});
+
+for await (const partialStructure of structureStream) {
+  console.clear();
+  console.log(partialStructure);
+}
+```
+
 ### Embed Text
 
-[OllamaTextEmbeddingModel API](/api/classes/OllamaTextEmbeddingModel)
+[Embed Value Docs](/guide/function/embed) | [OllamaTextEmbeddingModel API](/api/classes/OllamaTextEmbeddingModel)
 
 ```ts
 import { embedMany, ollama } from "modelfusion";
