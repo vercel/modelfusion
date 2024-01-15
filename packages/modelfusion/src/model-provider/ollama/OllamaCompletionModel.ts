@@ -282,8 +282,8 @@ export class OllamaCompletionModel<
     return this.settings.promptTemplate ?? Text;
   }
 
-  withJsonOutput(): this {
-    return this;
+  withJsonOutput() {
+    return this.withSettings({ format: "json" });
   }
 
   withTextPrompt(): PromptTemplateTextStreamingModel<
