@@ -379,7 +379,7 @@ const ollamaCompletionStreamChunkSchema = z.discriminatedUnion("done", [
     load_duration: z.number().optional(),
     sample_count: z.number().optional(),
     sample_duration: z.number().optional(),
-    prompt_eval_count: z.number(),
+    prompt_eval_count: z.number().optional(),
     prompt_eval_duration: z.number().optional(),
     eval_count: z.number(),
     eval_duration: z.number(),
