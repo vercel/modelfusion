@@ -101,13 +101,11 @@ describe("streamStructure", () => {
       prompt: "generate a name",
     });
 
-    // note: space moved to last chunk bc of trimming
     expect(await arrayFromAsync(stream)).toStrictEqual([
-      { isComplete: false, value: {} },
-      { isComplete: false, value: { name: "" } },
-      { isComplete: false, value: { name: "M" } },
-      { isComplete: false, value: { name: "Mike" } },
-      { isComplete: true, value: { name: "Mike" } },
+      {},
+      { name: "" },
+      { name: "M" },
+      { name: "Mike" },
     ]);
   });
 });
