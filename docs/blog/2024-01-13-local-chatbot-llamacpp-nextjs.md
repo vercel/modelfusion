@@ -130,7 +130,7 @@ You have now installed all the libraries required for building the chatbot. The 
 
 Creating the API route for the [Next.js app router](https://nextjs.org/docs/app) is the next step in building our chatbot. The API route will handle the chat interactions between the user and the AI.
 
-Navigate to the `src/app/api/chat/` directory in your project and create a new file named `route.ts` to serve as our API route file.
+Create the `api/chat/` directory in `src/app/` directory of your project and create a new file named `route.ts` to serve as our API route file.
 
 The API route requires several important imports from the `ai`, `modelfusion`, and `@modelfusion/vercel-ai` libraries. These imports bring in necessary classes and functions for streaming AI responses and processing chat messages.
 
