@@ -296,3 +296,4 @@ Specific [prompt templates for Ollama CompletionTextGenerator](/api/namespaces/o
 - [Ollama model library](https://ollama.ai/library)
 - [Next.js Chatbot starter for Ollama](https://github.com/lgrammel/modelfusion-ollama-nextjs-starter)
 - [Blog Post: Create Your Own Local Chatbot with Next.js, Ollama, and ModelFusion](/blog/ollama-nextjs-chatbot)
+- [Blog Post: Effortlessly Generate Structured Information with Ollama, Zod, and ModelFusion](/blog/generate-structured-information-ollama)

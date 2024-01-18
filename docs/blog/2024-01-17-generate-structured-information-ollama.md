@@ -25,7 +25,7 @@ For this task, we'll use several tools:
 - [Ollama](https://ollama.ai) is an application for running large language models (LLMs) on your local machine.
 - [Nous-Hermes-2 Mixtral 8x7B](https://huggingface.co/NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO), a state-of-the-art open-source language model released in January 2024, provides the AI backbone for our task.
 - [Zod](https://github.com/colinhacks/zod), a type validation library, ensures the structured data we generate is correctly formatted and typed.
-- [ModelFusion](https://modelfusion.dev) is an open-source library I'm developing to integrate AI models seamlessly into TypeScript projects. It provides an Ollama client and handles the client-side steps necessary to generate structured information.
+- [ModelFusion](https://modelfusion.dev) is an open-source library I'm developing to integrate AI models seamlessly into TypeScript projects. It provides an [Ollama client](https://modelfusion.dev/integration/model-provider/ollama) and a [generateStructure function](https://modelfusion.dev/guide/function/generate-structure).
 
 By the end of this post, you’ll see how these technologies work together to create a powerful solution for generating typed, structured data on your local machine. The example code is available in the [ModelFusion repository](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/use-cases/generate-structured-information-city-destinations-ollama.ts).
 
