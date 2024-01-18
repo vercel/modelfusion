@@ -21,6 +21,7 @@
     "logprobs",
     "Millicents",
     "mirostat",
+    "Mixtral",
     "modelfusion",
     "Ollama",
     "openai",

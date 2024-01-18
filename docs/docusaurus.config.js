@@ -222,6 +222,12 @@ const config = {
         additionalLanguages: ["bash", "diff", "json"],
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+        magicComments: [
+          {
+            className: "code-block-highlight-line",
+            block: { start: "highlight-start", end: "highlight-end" },
+          },
+        ],
       },
     }),
 };
