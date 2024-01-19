@@ -1,14 +1,16 @@
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { EmbeddingModel } from "../../model-function/embed/EmbeddingModel.js";
 import {
   AbstractOpenAITextEmbeddingModel,
   AbstractOpenAITextEmbeddingModelSettings,
 } from "../openai/AbstractOpenAITextEmbeddingModel.js";
-import { OpenAICompatibleProviderName } from "./OpenAICompatibleProviderName.js";
+import {
+  OpenAICompatibleApiConfiguration,
+  OpenAICompatibleProviderName,
+} from "./OpenAICompatibleApiConfiguration.js";
 
 export interface OpenAICompatibleTextEmbeddingModelSettings
   extends AbstractOpenAITextEmbeddingModelSettings {
-  api: ApiConfiguration; // enforce API configuration
+  api: OpenAICompatibleApiConfiguration; // required
   provider?: OpenAICompatibleProviderName;
   model: string;
   embeddingDimensions?: number;
@@ -23,7 +25,9 @@ export class OpenAICompatibleTextEmbeddingModel
   }
 
   get provider(): OpenAICompatibleProviderName {
-    return this.settings.provider ?? "openaicompatible";
+    return (
+      this.settings.provider ?? this.settings.api.provider ?? "openaicompatible"
+    );
   }
 
   get modelName() {

@@ -8,7 +8,6 @@ async function main() {
     model: openaicompatible
       .ChatTextGenerator({
         api: openaicompatible.PerplexityApi(),
-        provider: "openaicompatible-perplexity",
         model: "pplx-70b-online", // online model with access to web search
         maxGenerationTokens: 500,
       })

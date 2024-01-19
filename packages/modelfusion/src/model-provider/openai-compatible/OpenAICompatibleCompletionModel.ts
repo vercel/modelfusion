@@ -1,4 +1,3 @@
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextStreamingBaseModel,
@@ -14,13 +13,17 @@ import {
   AbstractOpenAICompletionModel,
   AbstractOpenAICompletionModelSettings,
 } from "../openai/AbstractOpenAICompletionModel.js";
-import { OpenAICompatibleProviderName } from "./OpenAICompatibleProviderName.js";
+import {
+  OpenAICompatibleApiConfiguration,
+  OpenAICompatibleProviderName,
+} from "./OpenAICompatibleApiConfiguration.js";
 
 export interface OpenAICompatibleCompletionModelSettings
   extends AbstractOpenAICompletionModelSettings {
-  api: ApiConfiguration; // enforce API configuration
+  api: OpenAICompatibleApiConfiguration; // required
   provider?: OpenAICompatibleProviderName;
 }
+
 /**
  * Create a text generation model that calls an API that is compatible with OpenAI's completion API.
  *
@@ -39,7 +42,9 @@ export class OpenAICompatibleCompletionModel
   }
 
   get provider(): OpenAICompatibleProviderName {
-    return this.settings.provider ?? "openaicompatible";
+    return (
+      this.settings.provider ?? this.settings.api.provider ?? "openaicompatible"
+    );
   }
 
   get modelName() {

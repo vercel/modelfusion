@@ -3,6 +3,7 @@ import {
   PartialBaseUrlPartsApiConfigurationOptions,
 } from "../../core/api/BaseUrlApiConfiguration.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
+import { OpenAICompatibleApiConfiguration } from "./OpenAICompatibleApiConfiguration.js";
 
 /**
  * Configuration for the Perplexity API.
@@ -11,7 +12,10 @@ import { loadApiKey } from "../../core/api/loadApiKey.js";
  *
  * @see https://docs.perplexity.ai/reference/post_chat_completions
  */
-export class PerplexityApiConfiguration extends BaseUrlApiConfigurationWithDefaults {
+export class PerplexityApiConfiguration
+  extends BaseUrlApiConfigurationWithDefaults
+  implements OpenAICompatibleApiConfiguration
+{
   constructor(
     settings: PartialBaseUrlPartsApiConfigurationOptions & {
       apiKey?: string;
@@ -34,4 +38,6 @@ export class PerplexityApiConfiguration extends BaseUrlApiConfigurationWithDefau
       },
     });
   }
+
+  readonly provider = "openaicompatible-perplexity";
 }

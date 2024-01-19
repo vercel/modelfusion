@@ -3,6 +3,7 @@ import {
   PartialBaseUrlPartsApiConfigurationOptions,
 } from "../../core/api/BaseUrlApiConfiguration.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
+import { OpenAICompatibleApiConfiguration } from "./OpenAICompatibleApiConfiguration.js";
 
 /**
  * Configuration for the Together.ai API.
@@ -11,7 +12,10 @@ import { loadApiKey } from "../../core/api/loadApiKey.js";
  *
  * @see https://docs.together.ai/docs/openai-api-compatibility
  */
-export class TogetherAIApiConfiguration extends BaseUrlApiConfigurationWithDefaults {
+export class TogetherAIApiConfiguration
+  extends BaseUrlApiConfigurationWithDefaults
+  implements OpenAICompatibleApiConfiguration
+{
   constructor(
     settings: PartialBaseUrlPartsApiConfigurationOptions & {
       apiKey?: string;
@@ -34,4 +38,6 @@ export class TogetherAIApiConfiguration extends BaseUrlApiConfigurationWithDefau
       },
     });
   }
+
+  readonly provider = "openaicompatible-togetherai";
 }

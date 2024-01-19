@@ -38,8 +38,14 @@ import {
 const text = await generateText({
   model: openaicompatible
     .ChatTextGenerator({
-      api: openaicompatible.FireworksAIApi(), // or other OpenAI-compatible API
-      provider: "openaicompatible-fireworksai", // optional
+      // Base URL configuration - you can also use pre-defined configurations (see below)
+      api: new BaseUrlApiConfiguration({
+        baseUrl: "https://api.fireworks.ai/inference/v1",
+        headers: {
+          Authorization: `Bearer ${process.env.FIREWORKS_API_KEY}`,
+        },
+      }),
+      provider: "openaicompatible-fireworksai", // optional, only needed for logging and custom configs
       model: "accounts/fireworks/models/llama-v2-7b-chat",
     })
     .withTextPrompt(),
@@ -62,7 +68,6 @@ import {
 const text = await generateText({
   model: openaicompatible.CompletionTextGenerator({
     api: openaicompatible.FireworksAIApi(), // or other OpenAI-compatible API
-    provider: "openaicompatible-fireworksai", // optional
     model: "accounts/fireworks/models/mistral-7b",
   }),
 
@@ -87,7 +92,6 @@ const textStream = await streamText({
   model: openaicompatible
     .ChatTextGenerator({
       api: openaicompatible.FireworksAIApi(), // or other OpenAI-compatible API
-      provider: "openaicompatible-fireworksai", // optional
       model: "accounts/fireworks/models/llama-v2-7b-chat",
     })
     .withTextPrompt(),
@@ -114,7 +118,6 @@ import {
 const textStream = await streamText({
   model: openaicompatible.CompletionTextGenerator({
     api: openaicompatible.FireworksAIApi(), // or other OpenAI-compatible API
-    provider: "openaicompatible-fireworksai", // optional
     model: "accounts/fireworks/models/mistral-7b",
   }),
 
@@ -136,7 +139,6 @@ import { embed, openaicompatible } from "modelfusion";
 const embedding = await embed({
   model: openaicompatible.TextEmbedder({
     api: openaicompatible.TogetherAIApi(), // or other OpenAI-compatible API
-    provider: "openaicompatible-togetherai", //optional
     model: "togethercomputer/m2-bert-80M-8k-retrieval",
   }),
   value: "At first, Nox didn't know what to do with the pup.",

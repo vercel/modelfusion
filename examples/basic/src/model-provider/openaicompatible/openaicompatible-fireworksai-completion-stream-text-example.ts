@@ -7,7 +7,6 @@ async function main() {
   const textStream = await streamText({
     model: openaicompatible.CompletionTextGenerator({
       api: openaicompatible.FireworksAIApi(),
-      provider: "openaicompatible-fireworksai",
       model: "accounts/fireworks/models/mistral-7b",
       maxGenerationTokens: 500,
     }),

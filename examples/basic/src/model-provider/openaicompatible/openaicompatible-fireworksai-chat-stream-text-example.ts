@@ -8,7 +8,6 @@ async function main() {
     model: openaicompatible
       .ChatTextGenerator({
         api: openaicompatible.FireworksAIApi(),
-        provider: "openaicompatible-fireworksai",
         model: "accounts/fireworks/models/llama-v2-7b-chat",
       })
       .withTextPrompt(),

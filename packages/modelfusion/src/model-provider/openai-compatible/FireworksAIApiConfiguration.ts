@@ -3,6 +3,7 @@ import {
   PartialBaseUrlPartsApiConfigurationOptions,
 } from "../../core/api/BaseUrlApiConfiguration.js";
 import { loadApiKey } from "../../core/api/loadApiKey.js";
+import { OpenAICompatibleApiConfiguration } from "./OpenAICompatibleApiConfiguration.js";
 
 /**
  * Configuration for the Fireworks.ai API.
@@ -11,7 +12,10 @@ import { loadApiKey } from "../../core/api/loadApiKey.js";
  *
  * @see https://readme.fireworks.ai/docs/openai-compatibility
  */
-export class FireworksAIApiConfiguration extends BaseUrlApiConfigurationWithDefaults {
+export class FireworksAIApiConfiguration
+  extends BaseUrlApiConfigurationWithDefaults
+  implements OpenAICompatibleApiConfiguration
+{
   constructor(
     settings: PartialBaseUrlPartsApiConfigurationOptions & {
       apiKey?: string;
@@ -34,4 +38,6 @@ export class FireworksAIApiConfiguration extends BaseUrlApiConfigurationWithDefa
       },
     });
   }
+
+  readonly provider = "openaicompatible-fireworksai";
 }

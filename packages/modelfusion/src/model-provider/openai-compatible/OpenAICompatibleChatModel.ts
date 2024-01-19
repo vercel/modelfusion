@@ -1,4 +1,3 @@
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
 import {
   FlexibleStructureFromTextPromptTemplate,
   StructureFromTextPromptTemplate,
@@ -19,11 +18,14 @@ import {
   OpenAIChatPrompt,
 } from "../openai/AbstractOpenAIChatModel.js";
 import { chat, instruction, text } from "../openai/OpenAIChatPromptTemplate.js";
-import { OpenAICompatibleProviderName } from "./OpenAICompatibleProviderName.js";
+import {
+  OpenAICompatibleApiConfiguration,
+  OpenAICompatibleProviderName,
+} from "./OpenAICompatibleApiConfiguration.js";
 
 export interface OpenAICompatibleChatSettings
   extends AbstractOpenAIChatSettings {
-  api: ApiConfiguration; // enforce API configuration
+  api: OpenAICompatibleApiConfiguration; // required
   provider?: OpenAICompatibleProviderName;
 }
 
@@ -47,7 +49,9 @@ export class OpenAICompatibleChatModel
   }
 
   get provider(): OpenAICompatibleProviderName {
-    return this.settings.provider ?? "openaicompatible";
+    return (
+      this.settings.provider ?? this.settings.api.provider ?? "openaicompatible"
+    );
   }
 
   get modelName() {
