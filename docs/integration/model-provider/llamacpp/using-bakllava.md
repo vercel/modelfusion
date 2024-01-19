@@ -1,6 +1,6 @@
 ---
 sidebar_position: 20
-title: Using BakLLaVA with llama.cpp
+title: Using BakLLaVA
 ---
 
 # Using BakLLaVA with llama.cpp and ModelFusion
