@@ -1,8 +1,9 @@
 ---
-sidebar_position: 22
+sidebar_position: 50
+title: Re-imagine Images
 ---
 
-# Recreate images using GPT-4 Vision and Dall-E 3
+# Re-imagine images using GPT-4 Vision and Dall-E 3
 
 You can use a combination of multi-modal text generation models and image generation models to recreate an image in a new style.
 
