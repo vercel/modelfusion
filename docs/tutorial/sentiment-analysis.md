@@ -15,7 +15,7 @@ This is helpful to quickly develop initial product versions and prototypes.
 #### Define a sentiment analysis function:
 
 ```ts
-const analyzeSentiment = async (productReview: string) =>
+const analyzeSentiment = (productReview: string) =>
   generateStructure({
     model: openai
       .ChatTextGenerator({
