@@ -21,11 +21,11 @@ HUGGINGFACE_API_KEY="YOUR_HUGGINGFACE_API_KEY"
 2. Setup:
 
 ```sh
-npm install
+pnpm install
 ```
 
-3. Run any example:
+3. Run any example. You can explore the `src` folder to find the examples:
 
 ```sh
-npx tsx src/path/to/example.ts
+pnpm tsx src/path/to/example.ts
 ```

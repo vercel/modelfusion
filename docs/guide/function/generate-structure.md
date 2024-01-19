@@ -11,8 +11,8 @@ First, a language model is invoked with a schema and a prompt. When possible and
 You can use this for e.g. the following tasks:
 
 - information generation, e.g. generating a list of characters for a role playing game
-- [information extraction](/tutorial/tutorials/information-extraction), e.g. extracting structured information from websites
-- classification, e.g. [sentiment analysis](/tutorial/tutorials/sentiment-analysis).
+- [information extraction](/tutorial/information-extraction), e.g. extracting structured information from websites
+- classification, e.g. [sentiment analysis](/tutorial/sentiment-analysis).
 
 ## Usage
 
