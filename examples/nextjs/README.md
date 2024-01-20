@@ -9,7 +9,7 @@ Examples of using ModelFusion with Next.js 14 (App Router):
 
 ## Usage
 
-1. Create .env.local file with the following content:
+1. Create a `.env.local` file with the following content:
 
 ```
 OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
