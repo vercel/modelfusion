@@ -13,13 +13,11 @@ This tutorial demonstrates how to recreate an image in a cyberpunk style using O
 To use the OpenAI GPT-4 Vision with ModelFusion, you need to have an [OpenAI API key](https://platform.openai.com/) and access to the `gpt-4-vision-preview` model.
 :::
 
-First we need to obtain the image that we want to recreate. This involves fetching the image from a URL and converting it into a Base64 string.
+First we need to obtain the image that we want to recreate. Here we fetch the image from a URL.
 
 ```ts
 const imageResponse = await fetch(imageUrl);
-const base64Image = Buffer.from(await imageResponse.arrayBuffer()).toString(
-  "base64"
-);
+const originalImage = Buffer.from(await imageResponse.arrayBuffer());
 ```
 
 After obtaining the base image, the next step is to create an image generation prompt using GPT 4 Vision. This prompt will instruct Dall-E 3 to generate a description for creating a cyberpunk-style version of the original image.
@@ -42,7 +40,7 @@ const imageGenerationPrompt = await generateText({
           "that resembles the attached image. " +
           "Capture the essence of the image in 1-2 sentences.",
       },
-      { type: "image", base64Image },
+      { type: "image", image: originalImage },
     ],
   },
 });

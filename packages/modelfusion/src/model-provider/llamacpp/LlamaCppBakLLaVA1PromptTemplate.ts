@@ -1,6 +1,9 @@
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart.js";
+import {
+  getImageAsBase64,
+  validateContentIsString,
+} from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError.js";
 import { text as vicunaText } from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
@@ -59,7 +62,7 @@ export function instruction(): TextGenerationPromptTemplate<
             }
             case "image": {
               text += `[img-${imageCounter}]`;
-              images[imageCounter.toString()] = content.base64Image;
+              images[imageCounter.toString()] = getImageAsBase64(content.image);
               imageCounter++;
               break;
             }
@@ -109,7 +112,9 @@ export function chat(): TextGenerationPromptTemplate<
                 }
                 case "image": {
                   text += `[img-${imageCounter}]`;
-                  images[imageCounter.toString()] = part.base64Image;
+                  images[imageCounter.toString()] = getImageAsBase64(
+                    part.image
+                  );
                   imageCounter++;
                   break;
                 }

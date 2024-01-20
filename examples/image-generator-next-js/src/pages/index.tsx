@@ -57,8 +57,8 @@ export default function Home() {
       });
 
       if (response.ok) {
-        const base64Image = await response.json();
-        setImageSrc(`data:image/png;base64,${base64Image}`);
+        const image = await response.json();
+        setImageSrc(`data:image/png;base64,${image}`);
       }
     } finally {
       setIsLoading(false);

@@ -1,6 +1,7 @@
 import {
   ImagePart,
   TextPart,
+  getImageAsBase64,
 } from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { ToolCall } from "../../tool/ToolCall.js";
 
@@ -76,17 +77,17 @@ export const OpenAIChatMessage = {
       content:
         typeof content === "string"
           ? content
-          : content.map((element) => {
-              switch (element.type) {
+          : content.map((part) => {
+              switch (part.type) {
                 case "text": {
-                  return { type: "text", text: element.text };
+                  return { type: "text", text: part.text };
                 }
                 case "image": {
                   return {
                     type: "image_url",
                     image_url: `data:${
-                      element.mimeType ?? "image/jpeg"
-                    };base64,${element.base64Image}`,
+                      part.mimeType ?? "image/jpeg"
+                    };base64,${getImageAsBase64(part.image)}`,
                   };
                 }
               }

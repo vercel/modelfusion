@@ -100,7 +100,7 @@ const text = await generateText({
   prompt: {
     instruction: [
       { type: "text", text: "Describe the image in detail:\n\n" },
-      { type: "image", base64Image: image, mimeType: "image/png" },
+      { type: "image", image, mimeType: "image/png" },
     ],
   },
 });

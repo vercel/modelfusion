@@ -59,7 +59,7 @@ const textStream = await streamText({
   prompt: {
     instruction: [
       { type: "text", text: "Describe the image in detail:\n\n" },
-      { type: "image", base64Image: image },
+      { type: "image", image },
     ],
   },
 });

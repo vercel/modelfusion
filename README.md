@@ -93,7 +93,7 @@ const textStream = await streamText({
   prompt: [
     openai.ChatMessage.user([
       { type: "text", text: "Describe the image in detail:" },
-      { type: "image", base64Image: image, mimeType: "image/png" },
+      { type: "image", image, mimeType: "image/png" },
     ]),
   ],
 });

@@ -1,3 +1,4 @@
+import { uint8ArrayToBase64 } from "../../../util/UInt8Utils.js";
 import { InvalidPromptError } from "./InvalidPromptError.js";
 
 export interface TextPart {
@@ -13,9 +14,9 @@ export interface ImagePart {
   type: "image";
 
   /**
-   * Base-64 encoded image.
+   * Image data. Can either be a base64-encoded string or a Uint8Array.
    */
-  base64Image: string;
+  image: string | Uint8Array;
 
   /**
    * Optional mime type of the image.
@@ -36,6 +37,14 @@ export interface ToolResponsePart {
 
   id: string;
   response: unknown;
+}
+
+export function getImageAsBase64(image: string | Uint8Array): string {
+  if (typeof image === "string") {
+    return image;
+  }
+
+  return uint8ArrayToBase64(image);
 }
 
 export function validateContentIsString(

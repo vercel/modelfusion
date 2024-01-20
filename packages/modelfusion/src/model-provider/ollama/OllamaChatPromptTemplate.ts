@@ -3,7 +3,10 @@ import {
   ChatPrompt,
   UserContent,
 } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart.js";
+import {
+  getImageAsBase64,
+  validateContentIsString,
+} from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError.js";
 import { OllamaChatPrompt } from "./OllamaChatModel.js";
@@ -122,7 +125,7 @@ function extractUserContent(input: UserContent) {
     if (part.type === "text") {
       content += part.text;
     } else {
-      images.push(part.base64Image);
+      images.push(getImageAsBase64(part.image));
     }
   }
 

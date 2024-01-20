@@ -31,6 +31,27 @@ export function base64ToUint8Array(base64String: string) {
   );
 }
 
+// Reference: https://phuoc.ng/collection/this-vs-that/concat-vs-push/
+const MAX_BLOCK_SIZE = 65_535;
+
+export function uint8ArrayToBase64(array: Uint8Array) {
+  let base64;
+
+  if (array.length < MAX_BLOCK_SIZE) {
+    // Required as `btoa` and `atob` don't properly support Unicode: https://developer.mozilla.org/en-US/docs/Glossary/Base64#the_unicode_problem
+    base64 = globalThis.btoa(String.fromCodePoint(...array));
+  } else {
+    base64 = "";
+    for (const value of array) {
+      base64 += String.fromCodePoint(value);
+    }
+
+    base64 = globalThis.btoa(base64);
+  }
+
+  return base64;
+}
+
 function base64UrlToBase64(base64url: string) {
   return base64url.replaceAll("-", "+").replaceAll("_", "/");
 }

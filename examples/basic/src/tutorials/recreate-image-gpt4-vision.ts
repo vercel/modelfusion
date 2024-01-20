@@ -10,9 +10,7 @@ const imageUrl =
 
 async function main() {
   const imageResponse = await fetch(imageUrl);
-  const base64Image = Buffer.from(await imageResponse.arrayBuffer()).toString(
-    "base64"
-  );
+  const originalImage = Buffer.from(await imageResponse.arrayBuffer());
 
   const imageGenerationPrompt = await generateText({
     model: openai
@@ -31,7 +29,7 @@ async function main() {
             "that resembles the attached image. " +
             "Capture the essence of the image in 1-2 sentences.",
         },
-        { type: "image", base64Image },
+        { type: "image", image: originalImage },
       ],
     },
   });

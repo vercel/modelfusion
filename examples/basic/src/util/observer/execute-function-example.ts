@@ -16,12 +16,10 @@ modelfusion.setLogFormat("detailed-object");
 async function main() {
   const image = await executeFunction(
     async (imageUrl, options) => {
-      const base64Image = await executeFunction(
+      const originalImage = await executeFunction(
         async (imageUrl) => {
           const imageResponse = await fetch(imageUrl);
-          return Buffer.from(await imageResponse.arrayBuffer()).toString(
-            "base64"
-          );
+          return Buffer.from(await imageResponse.arrayBuffer());
         },
         imageUrl,
         { functionId: "fetch-image", ...options }
@@ -44,7 +42,7 @@ async function main() {
                 "that resembles the attached image. " +
                 "Capture the essence of the image in 1-2 sentences.",
             },
-            { type: "image", base64Image },
+            { type: "image", image: originalImage },
           ],
         },
       });

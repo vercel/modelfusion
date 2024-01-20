@@ -26,9 +26,9 @@ async function main() {
           role: "user",
           content: [
             { type: "text", text: "First image:" },
-            { type: "image", base64Image: catImage },
+            { type: "image", image: catImage },
             { type: "text", text: "\n\nSecond image:" },
-            { type: "image", base64Image: mouseImage },
+            { type: "image", image: mouseImage },
             {
               type: "text",
               text: "\n\nWrite a story about the characters from both the first and the second image.",
