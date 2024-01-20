@@ -26,6 +26,7 @@ export async function POST(req: Request) {
     });
 
     return Response.json(imageBase64);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error(error);
     return new Response(error.message, { status: 500 });
