@@ -11,13 +11,13 @@
   "devDependencies": {
     "copyfiles": "2.4.1",
     "husky": "8.0.3",
-    "prettier": "3.1.1",
-    "lint-staged": "15.1.0",
+    "prettier": "3.2.4",
+    "lint-staged": "15.2.0",
     "rimraf": "5.0.5",
     "tsx": "4.7.0",
-    "turbo": "1.11.2",
+    "turbo": "1.11.3",
     "typescript": "5.3.3",
-    "vite": "5.0.10",
-    "vitest": "1.0.4"
+    "vite": "5.0.12",
+    "vitest": "1.2.1"
   }
 }
