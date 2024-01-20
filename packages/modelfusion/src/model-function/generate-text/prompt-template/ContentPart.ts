@@ -14,9 +14,9 @@ export interface ImagePart {
   type: "image";
 
   /**
-   * Image data. Can either be a base64-encoded string or a Uint8Array.
+   * Image data. Can either be a base64-encoded string, a Uint8Array, or a Buffer.
    */
-  image: string | Uint8Array;
+  image: string | Uint8Array | Buffer;
 
   /**
    * Optional mime type of the image.
@@ -39,7 +39,7 @@ export interface ToolResponsePart {
   response: unknown;
 }
 
-export function getImageAsBase64(image: string | Uint8Array): string {
+export function getImageAsBase64(image: string | Uint8Array | Buffer): string {
   if (typeof image === "string") {
     return image;
   }
