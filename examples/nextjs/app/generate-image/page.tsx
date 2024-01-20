@@ -15,6 +15,7 @@ export default function () {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     setIsLoading(true);
     setImageSrc(null);
     setError(null);
@@ -22,9 +23,7 @@ export default function () {
     try {
       const response = await fetch("/api/generate-image", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: inputValue }),
       });
 
