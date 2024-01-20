@@ -47,7 +47,7 @@ export const duplexStreamingFlow = new DefaultFlow({
         for await (const speechPart of speechStream) {
           run.publishEvent({
             type: "speech-chunk",
-            base64Audio: speechPart.toString("base64"),
+            base64Audio: Buffer.from(speechPart).toString("base64"),
           });
         }
       })(),
