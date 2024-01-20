@@ -3,7 +3,7 @@ import { generateImage, stability } from "modelfusion";
 export const runtime = "edge";
 
 export async function POST(req: Request) {
-  const { text: description } = await req.json();
+  const { imageDescription } = await req.json();
 
   try {
     const { imageBase64 } = await generateImage({
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         steps: 30,
       }),
       prompt: [
-        { text: description },
+        { text: imageDescription },
         { text: "style of early 19th century painting", weight: 0.5 },
       ],
       fullResponse: true,

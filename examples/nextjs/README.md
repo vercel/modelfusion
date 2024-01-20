@@ -7,6 +7,7 @@
 1. Create .env.local file with the following content:
 
 ```
+OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 STABILITY_API_KEY="YOUR_STABILITY_API_KEY"
 ```
 
