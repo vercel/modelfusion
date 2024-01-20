@@ -16,11 +16,11 @@ A web chat with an AI assistant, implemented as a Next.js app.
 
 Ask questions about a PDF document and get answers from the document.
 
-### [Image generator (Next.js)](https://github.com/lgrammel/modelfusion/tree/main/examples/image-generator-next-js)
+### [Next.js / ModelFusion Demos](https://github.com/lgrammel/modelfusion/tree/main/examples/nextjs)
 
-> _Next.js app_, _Stability AI image generation_
+> _Next.js app_, _image generation_
 
-Create an 19th century painting image for your input.
+Various examples of using ModelFusion with Next.js: Image generation.
 
 ### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/modelfusion/tree/main/examples/voice-recording-next-js)
 
