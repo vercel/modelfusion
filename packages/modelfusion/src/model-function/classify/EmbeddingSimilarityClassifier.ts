@@ -156,8 +156,5 @@ export class EmbeddingSimilarityClassifier<
   }
 }
 
-type ClusterNames<CLUSTERS> = CLUSTERS extends Array<
-  ValueCluster<unknown, infer NAME>
->
-  ? NAME
-  : never;
+type ClusterNames<CLUSTERS> =
+  CLUSTERS extends Array<ValueCluster<unknown, infer NAME>> ? NAME : never;
