@@ -2,8 +2,6 @@
 
 > _Next.js app_, _Stability AI image generation_
 
-Create an 19th century painting image for your input.
-
 ## Usage
 
 1. Create .env.local file with the following content:
@@ -23,4 +21,6 @@ pnpm dev
 
 ### Generate Image
 
-Go to http://localhost:3000/generate-image in your browser
+> _Create an 19th century painting image for your input._
+
+Go to http://localhost:3000/generate-image in your browser.
