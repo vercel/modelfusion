@@ -3,7 +3,9 @@ import fs from "node:fs";
 import path from "node:path";
 
 async function main() {
-  const image = fs.readFileSync(path.join("data", "comic-mouse.png"));
+  const image = fs.readFileSync(path.join("data", "comic-mouse.png"), {
+    encoding: "base64",
+  });
 
   const textStream = await streamText({
     model: llamacpp.CompletionTextGenerator({
