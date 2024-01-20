@@ -1,6 +1,11 @@
 # Next.js ModelFusion Demo
 
-> _Next.js app_, _Stability AI image generation_
+> _Next.js app_, _image generation_, _transcription_, _OpenAI_, _Stability AI_
+
+Examples of using ModelFusion with Next.js 14 (App Router):
+
+- image generation
+- voice recording & transcription
 
 ## Usage
 

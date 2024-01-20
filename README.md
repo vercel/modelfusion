@@ -639,7 +639,7 @@ Ask questions about a PDF document and get answers from the document.
 
 > _Next.js app_, _image generation_, _transcription_, _OpenAI_, _Stability AI_
 
-Examples of using ModelFusion with Next.js:
+Examples of using ModelFusion with Next.js 14 (App Router):
 
 - image generation
 - voice recording & transcription
