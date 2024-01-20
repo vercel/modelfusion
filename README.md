@@ -637,9 +637,12 @@ Ask questions about a PDF document and get answers from the document.
 
 ### [Next.js / ModelFusion Demos](https://github.com/lgrammel/modelfusion/tree/main/examples/nextjs)
 
-> _Next.js app_, _image generation_
+> _Next.js app_, _image generation_, _transcription_, _OpenAI_, _Stability AI_
 
-Various examples of using ModelFusion with Next.js: Image generation, voice recording & transcription.
+Examples of using ModelFusion with Next.js:
+
+- image generation
+- voice recording & transcription
 
 ### [Duplex Speech Streaming (using Vite/React & ModelFusion Server/Fastify)](https://github.com/lgrammel/modelfusion/tree/main/examples/speech-streaming-vite-react-fastify)
 
