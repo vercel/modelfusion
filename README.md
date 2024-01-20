@@ -639,13 +639,7 @@ Ask questions about a PDF document and get answers from the document.
 
 > _Next.js app_, _image generation_
 
-Various examples of using ModelFusion with Next.js: Image generation.
-
-### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/modelfusion/tree/main/examples/voice-recording-next-js)
-
-> _Next.js app_, _OpenAI Whisper_
-
-Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
+Various examples of using ModelFusion with Next.js: Image generation, voice recording & transcription.
 
 ### [Duplex Speech Streaming (using Vite/React & ModelFusion Server/Fastify)](https://github.com/lgrammel/modelfusion/tree/main/examples/speech-streaming-vite-react-fastify)
 
