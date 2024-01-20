@@ -1,10 +1,9 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { ErrorAlert } from "@/components/ui/error-alert";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 
 export default function () {
@@ -50,6 +49,7 @@ export default function () {
           Generate images in the style of 19th century paintings.
         </p>
       </div>
+
       <div className="w-full max-w-sm space-y-2 pt-6 pb-8">
         <form className="flex space-x-2" onSubmit={handleSubmit}>
           <Input
@@ -65,13 +65,9 @@ export default function () {
           </Button>
         </form>
       </div>
-      {error && (
-        <Alert variant="destructive">
-          <ExclamationTriangleIcon className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+
+      {error && <ErrorAlert error={error} />}
+
       <div className="w-[512px] h-[512px] space-y-2">
         {isLoading ? (
           <Skeleton className="h-[512px] w-[512px]" />
