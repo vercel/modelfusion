@@ -86,7 +86,7 @@ Multi-modal vision models such as GPT 4 Vision can process images as part of the
 import { streamText, openai } from "modelfusion";
 import { readFileSync } from "fs";
 
-const image = readFileSync("./image.png").toString("base64");
+const image = readFileSync("./image.png");
 
 const textStream = await streamText({
   model: openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
