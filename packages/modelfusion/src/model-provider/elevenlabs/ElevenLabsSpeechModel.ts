@@ -17,6 +17,7 @@ import {
 } from "../../model-function/generate-speech/SpeechGenerationModel.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
+import { base64ToUint8Array } from "../../util/UInt8Utils.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 
 const elevenLabsModels = [
@@ -88,7 +89,7 @@ export class ElevenLabsSpeechModel
   private async callAPI(
     text: string,
     callOptions: FunctionCallOptions
-  ): Promise<Buffer> {
+  ): Promise<Uint8Array> {
     const api = this.settings.api ?? new ElevenLabsApiConfiguration();
     const abortSignal = callOptions?.run?.abortSignal;
 
@@ -137,8 +138,8 @@ export class ElevenLabsSpeechModel
   async doGenerateSpeechStreamDuplex(
     textStream: AsyncIterable<string>
     // options?: FunctionOptions | undefined
-  ): Promise<AsyncIterable<Delta<Buffer>>> {
-    const queue = new AsyncQueue<Delta<Buffer>>();
+  ): Promise<AsyncIterable<Delta<Uint8Array>>> {
+    const queue = new AsyncQueue<Delta<Uint8Array>>();
 
     const model = this.settings.model ?? defaultModel;
     const socket = await createSimpleWebSocket(
@@ -225,7 +226,7 @@ export class ElevenLabsSpeechModel
       if (!response.isFinal) {
         queue.push({
           type: "delta",
-          deltaValue: Buffer.from(response.audio, "base64"),
+          deltaValue: base64ToUint8Array(response.audio),
         });
       }
     };

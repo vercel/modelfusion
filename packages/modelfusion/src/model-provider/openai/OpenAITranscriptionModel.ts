@@ -88,7 +88,7 @@ export type OpenAITranscriptionInput = {
     | "ogg"
     | "wav"
     | "webm";
-  data: Buffer;
+  data: Uint8Array;
 };
 
 /**

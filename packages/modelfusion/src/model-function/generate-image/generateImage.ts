@@ -1,4 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { base64ToUint8Array } from "../../util/UInt8Utils.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStandardCall } from "../executeStandardCall.js";
 import {
@@ -27,7 +28,7 @@ import {
  * @param {PROMPT} prompt - The prompt to be used for image generation.
  *
  * @returns {Promise} - Returns a promise that resolves to the generated image.
- * The image is a Buffer containing the image data in PNG format.
+ * The image is a Uint8Array containing the image data in PNG format.
  */
 export async function generateImage<PROMPT>(
   args: {
@@ -35,7 +36,7 @@ export async function generateImage<PROMPT>(
     prompt: PROMPT;
     fullResponse?: false;
   } & FunctionOptions
-): Promise<Buffer>;
+): Promise<Uint8Array>;
 export async function generateImage<PROMPT>(
   args: {
     model: ImageGenerationModel<PROMPT, ImageGenerationModelSettings>;
@@ -43,9 +44,9 @@ export async function generateImage<PROMPT>(
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
-  image: Buffer;
+  image: Uint8Array;
   imageBase64: string;
-  images: Buffer[];
+  images: Uint8Array[];
   imagesBase64: string[];
   rawResponse: unknown;
   metadata: ModelCallMetadata;
@@ -60,12 +61,12 @@ export async function generateImage<PROMPT>({
   prompt: PROMPT;
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
-  | Buffer
+  | Uint8Array
   | string
   | {
-      image: Buffer;
+      image: Uint8Array;
       imageBase64: string;
-      images: Buffer[];
+      images: Uint8Array[];
       imagesBase64: string[];
       rawResponse: unknown;
       metadata: ModelCallMetadata;
@@ -87,9 +88,7 @@ export async function generateImage<PROMPT>({
   });
 
   const imagesBase64 = callResponse.value;
-  const images = imagesBase64.map((imageBase64) =>
-    Buffer.from(imageBase64, "base64")
-  );
+  const images = imagesBase64.map(base64ToUint8Array);
 
   return fullResponse
     ? {

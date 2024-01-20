@@ -22,7 +22,7 @@ export interface WhisperCppTranscriptionModelSettings
 
 export type WhisperCppTranscriptionInput = {
   type: "wav";
-  data: Buffer;
+  data: Uint8Array;
 };
 
 export class WhisperCppTranscriptionModel

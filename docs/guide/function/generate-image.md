@@ -24,24 +24,24 @@ The settings can be set in the constructor of the model, or in the `withSettings
 
 [generateImage API](/api/modules#generateimage)
 
-#### OpenAI DALL·E image buffer
+#### OpenAI DALL·E image Uint8Array
 
 ```ts
 import { generateImage, openai } from "modelfusion";
 
-const imageBuffer = await generateImage({
+const image: Uint8Array = await generateImage({
   model: openai.ImageGenerator(/* ... */),
   prompt:
     "the wicked witch of the west in the style of early 19th century painting",
 });
 ```
 
-#### Stability AI image buffer
+#### Stability AI image Uint8Array
 
 ```ts
 import { generateImage, stability } from "modelfusion";
 
-const imageBuffer = await generateImage({
+const image: Uint8Array = await generateImage({
   model: stability.ImageGenerator(/* ... */),
   prompt: [
     { text: "the wicked witch of the west" },
@@ -50,9 +50,9 @@ const imageBuffer = await generateImage({
 });
 ```
 
-#### OpenAI DALL·E base64 image
+#### OpenAI DALL·E image base64 text
 
-You can use the `fullResponse` setting to get a base-64 encoded string instead of a binary buffer.
+You can use the `fullResponse` setting to get a base-64 encoded string instead of an Uint8Array.
 
 ```ts
 import { generateImage, openai } from "modelfusion";
@@ -65,9 +65,9 @@ const { imageBase64 } = await generateImage({
 });
 ```
 
-#### Stability AI multiple image buffers
+#### Stability AI multiple images
 
-You can use the `numberOfGenerations` setting to generate multiple images. The result will be an array of image buffers in the `images` respose property that is available when you set the `fullResponse` setting to `true`.
+You can use the `numberOfGenerations` setting to generate multiple images. The result will be an array of image Uint8Array in the `images` response property that is available when you set the `fullResponse` setting to `true`.
 
 ```ts
 import { generateImage, stability } from "modelfusion";

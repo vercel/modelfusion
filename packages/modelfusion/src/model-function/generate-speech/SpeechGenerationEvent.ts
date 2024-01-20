@@ -13,7 +13,7 @@ export type SpeechGenerationFinishedEventResult =
   | {
       status: "success";
       rawResponse: unknown;
-      value: Buffer;
+      value: Uint8Array;
     }
   | { status: "error"; error: unknown }
   | { status: "abort" };

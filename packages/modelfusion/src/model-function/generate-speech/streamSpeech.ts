@@ -29,7 +29,7 @@ import {
  * @param {AsyncIterable<string> | string} text - The text to be converted to speech. Can be a string or an async iterable of strings.
  * @param {FunctionOptions} [options] - Optional function options.
  *
- * @returns {AsyncIterableResultPromise<Buffer>} An async iterable promise that contains the synthesized speech chunks.
+ * @returns {AsyncIterableResultPromise<Uint8Array>} An async iterable promise that contains the synthesized speech chunks.
  */
 export async function streamSpeech(
   args: {
@@ -37,7 +37,7 @@ export async function streamSpeech(
     text: AsyncIterable<string> | string;
     fullResponse?: false;
   } & FunctionOptions
-): Promise<AsyncIterable<Buffer>>;
+): Promise<AsyncIterable<Uint8Array>>;
 export async function streamSpeech(
   args: {
     model: StreamingSpeechGenerationModel<SpeechGenerationModelSettings>;
@@ -45,7 +45,7 @@ export async function streamSpeech(
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
-  speechStream: AsyncIterable<Buffer>;
+  speechStream: AsyncIterable<Uint8Array>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
 export async function streamSpeech({
@@ -58,9 +58,9 @@ export async function streamSpeech({
   text: AsyncIterable<string> | string;
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
-  | AsyncIterable<Buffer>
+  | AsyncIterable<Uint8Array>
   | {
-      speechStream: AsyncIterable<Buffer>;
+      speechStream: AsyncIterable<Uint8Array>;
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }
 > {

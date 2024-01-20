@@ -77,8 +77,8 @@ const detailedObjectObserver: FunctionObserver = {
             .map(([k, v]) => {
               if (v === undefined) {
                 return [k, undefined];
-              } else if (v instanceof Buffer) {
-                return [k, "omitted<Buffer>"];
+              } else if (v instanceof Uint8Array) {
+                return [k, "omitted<Uint8Array>"];
               } else if (
                 Array.isArray(v) &&
                 v.length > 20 &&

@@ -9,12 +9,12 @@ export interface SpeechGenerationModel<
     SpeechGenerationModelSettings = SpeechGenerationModelSettings,
 > extends Model<SETTINGS> {
   /**
-   * Generates an mp3 audio buffer that contains the speech for the given text.
+   * Generates an mp3 audio Uint8Array that contains the speech for the given text.
    */
   doGenerateSpeechStandard(
     text: string,
     options: FunctionCallOptions
-  ): PromiseLike<Buffer>;
+  ): PromiseLike<Uint8Array>;
 }
 
 export interface StreamingSpeechGenerationModel<
@@ -24,5 +24,5 @@ export interface StreamingSpeechGenerationModel<
   doGenerateSpeechStreamDuplex(
     textStream: AsyncIterable<string>,
     options: FunctionCallOptions
-  ): PromiseLike<AsyncIterable<Delta<Buffer>>>;
+  ): PromiseLike<AsyncIterable<Delta<Uint8Array>>>;
 }

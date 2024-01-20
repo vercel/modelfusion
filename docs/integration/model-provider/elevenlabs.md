@@ -53,7 +53,7 @@ const speechStream = await streamSpeech({
 });
 
 for await (const part of speechStream) {
-  // each part is a Buffer with MP3 audio data
+  // each part is a Uint8Array with MP3 audio data
 }
 ```
 

@@ -72,9 +72,7 @@ const api = automatic1111.Api({
     port: "7861", // default port when starting with --nowebui
   },
   headers: {
-    Authorization: `Basic ${Buffer.from(`${user}:${password}`).toString(
-      "base64"
-    )}`,
+    Authorization: `Basic ${btoa(`${user}:${password}`)}`,
   },
 });
 ```

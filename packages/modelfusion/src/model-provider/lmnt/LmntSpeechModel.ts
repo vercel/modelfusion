@@ -13,6 +13,7 @@ import {
   SpeechGenerationModel,
   SpeechGenerationModelSettings,
 } from "../../model-function/generate-speech/SpeechGenerationModel.js";
+import { base64ToUint8Array } from "../../util/UInt8Utils.js";
 import { LmntApiConfiguration } from "./LmntApiConfiguration.js";
 
 export interface LmntSpeechModelSettings extends SpeechGenerationModelSettings {
@@ -124,7 +125,7 @@ export class LmntSpeechModel
 
   async doGenerateSpeechStandard(text: string, options: FunctionCallOptions) {
     const response = await this.callAPI(text, options);
-    return Buffer.from(response.audio, "base64");
+    return base64ToUint8Array(response.audio);
   }
 
   withSettings(additionalSettings: Partial<LmntSpeechModelSettings>) {

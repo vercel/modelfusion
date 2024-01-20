@@ -1,3 +1,4 @@
+import { toUint8Array } from "../../util/UInt8Utils.js";
 import { Schema } from "../schema/Schema.js";
 import { parseJSON, safeParseJSON } from "../schema/parseJSON.js";
 import { ApiCallError } from "./ApiCallError.js";
@@ -110,7 +111,7 @@ export const createTextResponseHandler =
     response.text();
 
 export const createAudioMpegResponseHandler =
-  (): ResponseHandler<Buffer> =>
+  (): ResponseHandler<Uint8Array> =>
   async ({ response, url, requestBodyValues }) => {
     if (response.headers.get("Content-Type") !== "audio/mpeg") {
       throw new ApiCallError({
@@ -121,8 +122,7 @@ export const createAudioMpegResponseHandler =
       });
     }
 
-    const arrayBuffer = await response.arrayBuffer();
-    return Buffer.from(arrayBuffer);
+    return toUint8Array(await response.arrayBuffer());
   };
 
 export const postJsonToApi = async <T>({
@@ -166,7 +166,7 @@ export const postToApi = async <T>({
   url: string;
   headers?: Record<string, string>;
   body: {
-    content: string | FormData | Buffer;
+    content: string | FormData | Uint8Array;
     values: unknown;
   };
   failedResponseHandler: ResponseHandler<Error>;

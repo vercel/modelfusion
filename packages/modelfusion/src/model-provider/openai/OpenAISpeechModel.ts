@@ -96,7 +96,7 @@ export class OpenAISpeechModel
   private async callAPI(
     text: string,
     callOptions: FunctionCallOptions
-  ): Promise<Buffer> {
+  ): Promise<Uint8Array> {
     const api = this.settings.api ?? new OpenAIApiConfiguration();
     const abortSignal = callOptions.run?.abortSignal;
 

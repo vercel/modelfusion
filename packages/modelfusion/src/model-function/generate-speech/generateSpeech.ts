@@ -21,7 +21,7 @@ import {
  * @param {SpeechGenerationModel<SpeechGenerationModelSettings>} model - The speech generation model.
  * @param {string} text - The text to be converted to speech.
  *
- * @returns {Promise<Buffer>} - A promise that resolves to a buffer containing the synthesized speech.
+ * @returns {Promise<Uint8Array>} - A promise that resolves to a Uint8Array containing the synthesized speech.
  */
 export async function generateSpeech(
   args: {
@@ -29,7 +29,7 @@ export async function generateSpeech(
     text: string;
     fullResponse?: false;
   } & FunctionOptions
-): Promise<Buffer>;
+): Promise<Uint8Array>;
 export async function generateSpeech(
   args: {
     model: SpeechGenerationModel<SpeechGenerationModelSettings>;
@@ -37,7 +37,7 @@ export async function generateSpeech(
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
-  speech: Buffer;
+  speech: Uint8Array;
   rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
@@ -51,7 +51,8 @@ export async function generateSpeech({
   text: string;
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
-  Buffer | { speech: Buffer; rawResponse: unknown; metadata: ModelCallMetadata }
+  | Uint8Array
+  | { speech: Uint8Array; rawResponse: unknown; metadata: ModelCallMetadata }
 > {
   const callResponse = await executeStandardCall({
     functionType: "generate-speech",
