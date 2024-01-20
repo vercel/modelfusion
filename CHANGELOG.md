@@ -8,9 +8,7 @@
 - **breaking change**: Image content in multi-modal instruction and chat inputs (e.g. for GPT Vision) is passed in the `image` property (instead of `base64Image`) and supports both base64 strings and `Uint8Array` inputs:
 
   ```ts
-  const image = fs.readFileSync(path.join("data", "example-image.png"), {
-    encoding: "base64",
-  });
+  const image = fs.readFileSync(path.join("data", "example-image.png"));
 
   const textStream = await streamText({
     model: openai.ChatTextGenerator({

@@ -6,12 +6,8 @@ import path from "node:path";
 dotenv.config();
 
 async function main() {
-  const catImage = fs.readFileSync(path.join("data", "comic-cat.png"), {
-    encoding: "base64",
-  });
-  const mouseImage = fs.readFileSync(path.join("data", "comic-mouse.png"), {
-    encoding: "base64",
-  });
+  const catImage = fs.readFileSync(path.join("data", "comic-cat.png"));
+  const mouseImage = fs.readFileSync(path.join("data", "comic-mouse.png"));
 
   const textStream = await streamText({
     model: openai

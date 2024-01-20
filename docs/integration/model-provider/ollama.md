@@ -85,9 +85,7 @@ The Ollama prompt also supports base64-encoded png and jpeg images, e.g. with an
 ```ts
 import { ollama, generateText } from "modelfusion";
 
-const image = fs.readFileSync(path.join("data", "comic-mouse.png"), {
-  encoding: "base64",
-});
+const image = fs.readFileSync(path.join("data", "comic-mouse.png"));
 
 const text = await generateText({
   model: openai

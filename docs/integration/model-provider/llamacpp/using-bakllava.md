@@ -35,9 +35,7 @@ Before we can process an image, we first need to read it into our program. In th
 import fs from "node:fs";
 import path from "node:path";
 
-const image = fs.readFileSync(path.join("data", "example-image.png"), {
-  encoding: "base64",
-});
+const image = fs.readFileSync(path.join("data", "example-image.png"));
 ```
 
 #### Call the Model
