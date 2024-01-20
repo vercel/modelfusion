@@ -32,8 +32,7 @@ export default function () {
         return;
       }
 
-      const errorText = await response.text();
-      setError(errorText);
+      setError(await response.text());
     } finally {
       setIsLoading(false);
     }
