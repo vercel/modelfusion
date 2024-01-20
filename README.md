@@ -219,7 +219,7 @@ Synthesize speech (audio) from text. Also called TTS (text-to-speech).
 ```ts
 import { generateSpeech, lmnt } from "modelfusion";
 
-// `speech` is a Buffer with MP3 audio data
+// `speech` is a Uint8Array with MP3 audio data
 const speech = await generateSpeech({
   model: lmnt.SpeechGenerator({
     voice: "034b632b-df71-46c8-b440-86a42ffc3cf3", // Henry
@@ -257,7 +257,7 @@ const speechStream = await streamSpeech({
 });
 
 for await (const part of speechStream) {
-  // each part is a Buffer with MP3 audio data
+  // each part is a Uint8Array with MP3 audio data
 }
 ```
 
