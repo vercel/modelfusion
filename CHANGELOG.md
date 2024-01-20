@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.129.0 - 2024-01-20
+
+### Changed
+
+- **breaking change**: Usage of Node `async_hooks` has been renamed from `node:async_hooks` to `async_hooks` for easier Webpack configuration. To exclude the `async_hooks` from client-side bundling, you can use the following config for Next.js (`next.config.mjs` or `next.config.js`):
+
+  ```js
+  /**
+   * @type {import('next').NextConfig}
+   */
+  const nextConfig = {
+    webpack: (config, { isServer }) => {
+      if (isServer) {
+        return config;
+      }
+
+      config.resolve = config.resolve ?? {};
+      config.resolve.fallback = config.resolve.fallback ?? {};
+
+      // async hooks is not available in the browser:
+      config.resolve.fallback.async_hooks = false;
+
+      return config;
+    },
+  };
+  ```
+
 ## v0.128.0 - 2024-01-20
 
 ### Changed

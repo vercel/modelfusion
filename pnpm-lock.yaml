@@ -103,7 +103,7 @@ importers:
         specifier: ^22.1.0
         version: 22.1.0
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       serpapi:
         specifier: ^2.0.0
@@ -143,7 +143,7 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
         specifier: 0.5.0
@@ -186,7 +186,7 @@ importers:
         specifier: 5.12.2
         version: 5.12.2(@emotion/react@11.10.8)(@emotion/styled@11.10.8)(@types/react@18.2.15)(react-dom@18.2.0)(react@18.2.0)
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
         specifier: 0.5.0
@@ -229,7 +229,7 @@ importers:
   examples/cloudflare-workers:
     dependencies:
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
     devDependencies:
       '@cloudflare/workers-types':
@@ -251,7 +251,7 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       zod:
         specifier: 3.22.4
@@ -279,7 +279,7 @@ importers:
         specifier: ^0.312.0
         version: 0.312.0(react@18.2.0)
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
         specifier: 0.5.0
@@ -331,7 +331,7 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       pdfjs-dist:
         specifier: 3.6.172
@@ -350,7 +350,7 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
         specifier: 0.5.0
@@ -390,7 +390,7 @@ importers:
         specifier: ^4.23.2
         version: 4.25.1
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
         specifier: 0.5.0
@@ -472,7 +472,7 @@ importers:
         specifier: ^22.1.0
         version: 22.1.0
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
         specifier: 0.5.0
@@ -512,7 +512,7 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../modelfusion/dist
     publishDirectory: dist
 
@@ -540,7 +540,7 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../modelfusion/dist
       sqlite-vss:
         specifier: ^0.1.2
@@ -571,7 +571,7 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../modelfusion/dist
     publishDirectory: dist
 
@@ -656,7 +656,7 @@ importers:
         specifier: ^4.0.0
         version: 4.25.1
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../modelfusion/dist
     publishDirectory: dist
 
@@ -666,7 +666,7 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
 
   test-environments/esm:
@@ -696,7 +696,7 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       zod:
         specifier: 3.22.4
@@ -725,7 +725,7 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       zod:
         specifier: 3.22.4
@@ -750,7 +750,7 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       zod:
         specifier: 3.22.4
@@ -779,7 +779,7 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
       modelfusion:
-        specifier: 0.128.0
+        specifier: 0.129.0
         version: link:../../packages/modelfusion/dist
       zod:
         specifier: 3.22.4

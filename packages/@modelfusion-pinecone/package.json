@@ -54,7 +54,7 @@
     "@typescript-eslint/parser": "^6.1.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
-    "modelfusion": "0.128.0"
+    "modelfusion": "0.129.0"
   },
   "peerDependencies": {
     "modelfusion": ">=0.72.0 <1.0.0-0",
