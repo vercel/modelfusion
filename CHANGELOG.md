@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.128.0 - 2024-01-20
+
+### Changed
+
+- **breaking change**: ModelFusion uses `Uint8Array` instead of `Buffer` for better cross-platform compatibility (see also ["Goodbye, Node.js Buffer"](https://sindresorhus.com/blog/goodbye-nodejs-buffer)). This can lead to breaking changes in your code if you use `Buffer`-specific methods.
+- **breaking change**: Image content in multi-modal instruction and chat inputs (e.g. for GPT Vision) is passed in the `image` property (instead of `base64Image`) and supports both base64 strings and `Uint8Array` inputs:
+
+  ```ts
+  const image = fs.readFileSync(path.join("data", "example-image.png"), {
+    encoding: "base64",
+  });
+
+  const textStream = await streamText({
+    model: openai.ChatTextGenerator({
+      model: "gpt-4-vision-preview",
+      maxGenerationTokens: 1000,
+    }),
+
+    prompt: [
+      openai.ChatMessage.user([
+        { type: "text", text: "Describe the image in detail:\n\n" },
+        { type: "image", image, mimeType: "image/png" },
+      ]),
+    ],
+  });
+  ```
+
+- OpenAI-compatible providers with predefined API configurations have a customized provider name that shows up in the events.
+
 ## v0.127.0 - 2024-01-15
 
 ### Changed
