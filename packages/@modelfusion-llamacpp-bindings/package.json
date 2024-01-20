@@ -1,0 +1,33 @@
+{
+  "main": "lib/binding.js",
+  "dependencies": {
+    "node-addon-api": "^7.0.0"
+  },
+  "scripts": {
+    "pretest": "tsc",
+    "test": "node --napi-modules ./test/test_binding.js"
+  },
+  "gypfile": true,
+  "name": "@modelfusion/llamacpp-bindings",
+  "version": "0.0.1",
+  "description": "llama.cpp bindings for ModelFusion",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lgrammel/modelfusion.git"
+  },
+  "keywords": [
+    "modelfusion",
+    "llamacpp",
+    "llama"
+  ],
+  "author": "Nick Nance",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lgrammel/modelfusion/issues"
+  },
+  "homepage": "https://github.com/lgrammel/modelfusion#readme",
+  "devDependencies": {
+    "@types/node": "^20.11.3",
+    "typescript": "^5.3.3"
+  }
+}
