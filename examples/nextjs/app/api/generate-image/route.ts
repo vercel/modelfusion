@@ -1,8 +1,6 @@
 import { generateImage, stability } from "modelfusion";
 
-export const config = {
-  api: { bodyParser: true },
-};
+export const runtime = "edge";
 
 export async function POST(req: Request) {
   const { text: description } = await req.json();
