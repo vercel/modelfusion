@@ -18,12 +18,13 @@ Ask questions about a PDF document and get answers from the document.
 
 ### [Next.js / ModelFusion Demos](https://github.com/lgrammel/modelfusion/tree/main/examples/nextjs)
 
-> _Next.js app_, _image generation_, _transcription_, _OpenAI_, _Stability AI_
+> _Next.js app_, _image generation_, _transcription_, _structure streaming_, _OpenAI_, _Stability AI_, _Ollama_
 
 Examples of using ModelFusion with Next.js 14 (App Router):
 
 - image generation
 - voice recording & transcription
+- structure streaming (client-side)
 
 ### [Duplex Speech Streaming (using Vite/React & ModelFusion Server/Fastify)](https://github.com/lgrammel/modelfusion/tree/main/examples/speech-streaming-vite-react-fastify)
 
