@@ -22,7 +22,7 @@ The [BakLLaVA GGUF models are available on HuggingFace](https://huggingface.co/m
 Once you have downloaded the model, you can start the llama.cpp server with the model and the multi-modal projection file. Here is an example for Mac. Make sure that you adjust the paths to the model and the projection file:
 
 ```sh
-./server -m models/bakllava/ggml-model-q4_k.gguf --mmproj models/bakllava/mmproj-model-f16.gguf`
+./server -m models/bakllava/ggml-model-q4_k.gguf --mmproj models/bakllava/mmproj-model-f16.gguf
 ```
 
 This will run the [llama.cpp server](https://github.com/ggerganov/llama.cpp/tree/master/examples/server) on port 8080. You can now use the [ModelFusion Llama.cpp integration](/integration/model-provider/llamacpp) to call the model.

@@ -12,7 +12,7 @@ Depending on the context, it can be important to provide an escape hatch when th
 
 ### Example
 
-[Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorials/information-extraction-openai-chat-functions.ts)
+[Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorial/information-extraction-openai-chat-functions.ts)
 
 ```ts
 const extractNameAndPopulation = async (text: string) =>
