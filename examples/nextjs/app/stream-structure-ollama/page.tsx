@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { PartialDeep } from "type-fest";
 import {
   jsonStructurePrompt,
   ollama,
@@ -13,63 +12,67 @@ import {
 import React, { useState } from "react";
 import { z } from "zod";
 
-const itinerarySchema = z.array(
+const itinerarySchema = zodSchema(
   z.object({
-    theme: z.string(),
-    activities: z.array(
+    days: z.array(
       z.object({
-        name: z.string(),
-        description: z.string(),
-        duration: z.number(),
+        theme: z.string(),
+        activities: z.array(
+          z.object({
+            name: z.string(),
+            description: z.string(),
+            duration: z.number(),
+          })
+        ),
       })
     ),
   })
 );
 
-type Itinerary = PartialDeep<
-  z.infer<typeof itinerarySchema>,
-  { recurseIntoArrays: true }
->;
+type Itinerary = (typeof itinerarySchema._partialType)["days"];
 
 export default function () {
   const [destination, setDestination] = useState("");
   const [lengthOfStay, setLengthOfStay] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const [itinerary, setItinerary] = useState<Itinerary>([]);
+  const [itinerary, setItinerary] = useState<Itinerary>();
 
   const handleGenerateItinerary = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
 
-    const stream = await streamStructure({
-      model: ollama
-        .ChatTextGenerator({
-          model: "mixtral",
-          maxGenerationTokens: 2500,
-        })
-        .asStructureGenerationModel(jsonStructurePrompt.instruction()),
+    setItinerary(undefined);
+    setIsGenerating(true);
 
-      schema: zodSchema(
-        z.object({
-          days: itinerarySchema,
-        })
-      ),
+    try {
+      const stream = await streamStructure({
+        // Note: this is fine assuming Ollama runs locally and you are using it.
+        // When you use e.g. OpenAI, you should not expose your API key in the client.
+        model: ollama
+          .ChatTextGenerator({
+            model: "openhermes",
+            maxGenerationTokens: 2500,
+          })
+          .asStructureGenerationModel(jsonStructurePrompt.instruction()),
 
-      prompt: {
-        system:
-          "You help planning travel itineraries. " +
-          "Respond to the users' request with a list of the best stops to make in their destination." +
-          "The stops for each day should be in the order they should be visited.",
+        schema: itinerarySchema,
 
-        instruction: `I am planning a trip to ${destination} for ${lengthOfStay} days.`,
-      },
-    });
+        prompt: {
+          system:
+            "You help planning travel itineraries. " +
+            "Respond to the users' request with a list of the best stops to make in their destination.",
 
-    for await (const part of stream) {
-      if (part.days != null) {
+          instruction: `I am planning a trip to ${destination} for ${lengthOfStay} days.`,
+        },
+      });
+
+      for await (const part of stream) {
         setItinerary(part.days);
       }
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -86,6 +89,7 @@ export default function () {
             placeholder="Enter your destination"
             required
             value={destination}
+            disabled={isGenerating}
             onChange={(e) => setDestination(e.target.value)}
           />
         </div>
@@ -99,25 +103,26 @@ export default function () {
             min="1" // Minimum length of stay
             max="7" // Maximum length of stay
             value={lengthOfStay}
+            disabled={isGenerating}
             onChange={(e) => setLengthOfStay(e.target.value)}
           />
         </div>
-        <Button className="w-full" type="submit">
+        <Button className="w-full" type="submit" disabled={isGenerating}>
           Generate Itinerary
         </Button>
       </form>
-      {itinerary.length > 0 && <ItineraryComponent itinerary={itinerary} />}
+      {itinerary && <ItineraryView itinerary={itinerary} />}
     </div>
   );
 }
 
-const ItineraryComponent = ({ itinerary }: { itinerary: Itinerary }) => (
+const ItineraryView = ({ itinerary }: { itinerary: Itinerary }) => (
   <div className="mt-8">
     <h2 className="text-xl font-bold mb-4">Your Itinerary</h2>
     <div className="space-y-4">
-      {itinerary.map(
+      {itinerary?.map(
         (day, index) =>
-          day != null && (
+          day && (
             <div key={index} className="border rounded-lg p-4">
               <h3 className="font-bold">{day.theme ?? ""}</h3>
 
@@ -125,11 +130,15 @@ const ItineraryComponent = ({ itinerary }: { itinerary: Itinerary }) => (
                 (activity, index) =>
                   activity != null && (
                     <div key={index} className="mt-4">
-                      <h4 className="font-bold">{activity.name ?? ""}</h4>
-                      <p className="text-gray-500">
-                        {activity.description ?? ""}
-                      </p>
-                      <p className="text-sm text-gray-400">{`Duration: ${activity.duration ?? ""} hours`}</p>
+                      {activity.name && (
+                        <h4 className="font-bold">{activity.name}</h4>
+                      )}
+                      {activity.description && (
+                        <p className="text-gray-500">{activity.description}</p>
+                      )}
+                      {activity.duration && (
+                        <p className="text-sm text-gray-400">{`Duration: ${activity.duration} hours`}</p>
+                      )}
                     </div>
                   )
               )}

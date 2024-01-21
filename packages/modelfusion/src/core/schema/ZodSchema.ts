@@ -2,6 +2,7 @@ import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { JsonSchemaProducer } from "./JsonSchemaProducer.js";
 import { Schema } from "./Schema.js";
+import { PartialDeep } from "type-fest";
 
 export function zodSchema<STRUCTURE>(zodSchema: z.Schema<STRUCTURE>) {
   return new ZodSchema(zodSchema);
@@ -26,5 +27,13 @@ export class ZodSchema<STRUCTURE>
     return zodToJsonSchema(this.zodSchema);
   }
 
+  /**
+   * Use only for typing purposes. The value is always `undefined`.
+   */
   readonly _type: STRUCTURE;
+
+  /**
+   * Use only for typing purposes. The value is always `undefined`.
+   */
+  readonly _partialType: PartialDeep<STRUCTURE, { recurseIntoArrays: true }>;
 }
