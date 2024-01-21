@@ -3,7 +3,6 @@ import {
   generateTranscription,
   openai,
 } from "modelfusion";
-import { getAudioFileExtension } from "modelfusion-experimental";
 
 export const runtime = "edge";
 
@@ -27,10 +26,8 @@ export async function POST(req: Request) {
         }),
         model: "whisper-1",
       }),
-      data: {
-        type: getAudioFileExtension(audioFile.type),
-        data: new Uint8Array(fileData),
-      },
+      mimeType: audioFile.type,
+      audioData: fileData,
     });
 
     return Response.json(transcription);

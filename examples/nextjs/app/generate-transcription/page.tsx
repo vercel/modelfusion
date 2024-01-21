@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { MicIcon } from "@/components/ui/mic-icon";
-import { getAudioFileExtension } from "modelfusion-experimental";
+import { getAudioFileExtension } from "modelfusion";
 import { useRef, useState } from "react";
 
 export default function () {

@@ -5,14 +5,12 @@ import fs from "node:fs";
 dotenv.config();
 
 async function main() {
-  const data = await fs.promises.readFile("data/test.mp3");
+  const audioData = await fs.promises.readFile("data/test.mp3");
 
   const transcription = await generateTranscription({
     model: openai.Transcriber({ model: "whisper-1" }),
-    data: {
-      type: "mp3",
-      data,
-    },
+    mimeType: "audio/mp3",
+    audioData,
   });
 
   console.log(transcription);

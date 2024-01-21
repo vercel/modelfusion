@@ -12,18 +12,6 @@
 
 // copied from: https://github.com/sindresorhus/uint8array-extras/blob/main/index.js
 
-export function toUint8Array(value: unknown) {
-  if (value instanceof ArrayBuffer) {
-    return new Uint8Array(value);
-  }
-
-  if (ArrayBuffer.isView(value)) {
-    return new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
-  }
-
-  throw new TypeError(`Unsupported value, got \`${typeof value}\`.`);
-}
-
 export function base64ToUint8Array(base64String: string) {
   return Uint8Array.from(
     globalThis.atob(base64UrlToBase64(base64String)),

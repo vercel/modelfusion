@@ -5,22 +5,17 @@ import fs from "node:fs";
 dotenv.config();
 
 async function main() {
-  const data = await fs.promises.readFile("data/test.wav");
+  const audioData = await fs.promises.readFile("data/test.wav");
 
   const transcription = await generateTranscription({
     model: whispercpp.Transcriber({
       // Custom API configuration:
       api: whispercpp.Api({
-        baseUrl: {
-          host: "localhost",
-          port: "8080",
-        },
+        baseUrl: { host: "localhost", port: "8080" },
       }),
     }),
-    data: {
-      type: "wav",
-      data,
-    },
+    mimeType: "audio/wav",
+    audioData,
   });
 
   console.log(transcription);

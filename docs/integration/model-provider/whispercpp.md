@@ -19,12 +19,11 @@ Without the `--convert` parameter, the server expects WAV files with 16kHz sampl
 `ffmpeg -i input.mp3 -ar 16000 -ac 1 -c:a pcm_s16le output.wav`
 :::
 
-
 ## Model Functions
 
 [Examples](https://github.com/lgrammel/modelfusion/tree/main/examples/basic/src/model-provider/whispercpp)
 
-### Generate Transcription
+### [Generate Transcription](/guide/function/generate-transcription)
 
 [WhisperCppTranscriptionModel API](/api/classes/WhisperCppTranscriptionModel)
 
@@ -32,12 +31,10 @@ Without the `--convert` parameter, the server expects WAV files with 16kHz sampl
 import fs from "node:fs";
 import { whispercpp, generateTranscription } from "modelfusion";
 
-const data = await fs.promises.readFile("data/test.wav");
-
 const transcription = await generateTranscription({
-  // Whisper.cpp model:
   model: whispercpp.Transcriber(),
-  data: { type: "wav", data },
+  mimeType: "audio/wav",
+  audioData: await fs.promises.readFile("data/test.wav"),
 });
 ```
 

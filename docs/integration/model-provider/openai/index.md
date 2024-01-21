@@ -220,19 +220,18 @@ const tokensAndTokenTexts = await tokenizer.tokenizeWithTexts(text);
 const reconstructedText = await tokenizer.detokenize(tokens);
 ```
 
-### Generate Transcription
+### [Generate Transcription](/guide/function/generate-transcription)
 
 [OpenAITranscriptionModel API](/api/classes/OpenAITranscriptionModel)
 
 ```ts
+import { generateTranscription, openai } from "modelfusion";
 import fs from "node:fs";
-import { openai, generateTranscription } from "modelfusion";
-
-const data = await fs.promises.readFile("data/test.mp3");
 
 const transcription = await generateTranscription({
   model: openai.Transcriber({ model: "whisper-1" }),
-  data: { type: "mp3", data },
+  mimeType: "audio/mp3",
+  audioData: await fs.promises.readFile("data/test.mp3"),
 });
 ```
 

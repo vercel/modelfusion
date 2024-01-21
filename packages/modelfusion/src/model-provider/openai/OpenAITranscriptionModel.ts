@@ -14,6 +14,11 @@ import {
   TranscriptionModel,
   TranscriptionModelSettings,
 } from "../../model-function/generate-transcription/TranscriptionModel.js";
+import { getAudioFileExtension } from "../../util/audio/getAudioFileExtension.js";
+import {
+  DataContent,
+  convertDataContentToUint8Array,
+} from "../../util/format/DataContent.js";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
 import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
 
@@ -77,20 +82,6 @@ export interface OpenAITranscriptionModelSettings
   prompt?: string;
 }
 
-export type OpenAITranscriptionInput = {
-  type:
-    | "flac"
-    | "m4a"
-    | "mp3"
-    | "mp4"
-    | "mpeg"
-    | "mpga"
-    | "ogg"
-    | "wav"
-    | "webm";
-  data: Uint8Array;
-};
-
 /**
  * Create a transcription model that calls the OpenAI transcription API.
  *
@@ -109,11 +100,7 @@ export type OpenAITranscriptionInput = {
  */
 export class OpenAITranscriptionModel
   extends AbstractModel<OpenAITranscriptionModelSettings>
-  implements
-    TranscriptionModel<
-      OpenAITranscriptionInput,
-      OpenAITranscriptionModelSettings
-    >
+  implements TranscriptionModel<OpenAITranscriptionModelSettings>
 {
   constructor(settings: OpenAITranscriptionModelSettings) {
     super({ settings });
@@ -125,12 +112,23 @@ export class OpenAITranscriptionModel
   }
 
   async doTranscribe(
-    data: OpenAITranscriptionInput,
+    {
+      audioData,
+      mimeType,
+    }: {
+      audioData: DataContent;
+      mimeType: string;
+    },
     options: FunctionCallOptions
   ) {
-    const rawResponse = await this.callAPI(data, options, {
-      responseFormat: OpenAITranscriptionResponseFormat.verboseJson,
-    });
+    const rawResponse = await this.callAPI(
+      {
+        fileExtension: getAudioFileExtension(mimeType),
+        audioData: convertDataContentToUint8Array(audioData),
+      },
+      options,
+      { responseFormat: OpenAITranscriptionResponseFormat.verboseJson }
+    );
 
     return {
       rawResponse,
@@ -139,7 +137,10 @@ export class OpenAITranscriptionModel
   }
 
   async callAPI<RESULT>(
-    data: OpenAITranscriptionInput,
+    input: {
+      fileExtension: string;
+      audioData: Uint8Array;
+    },
     callOptions: FunctionCallOptions,
     options: {
       responseFormat: OpenAITranscriptionResponseFormatType<RESULT>;
@@ -152,10 +153,10 @@ export class OpenAITranscriptionModel
       retry: api.retry,
       throttle: api.throttle,
       call: async () => {
-        const fileName = `audio.${data.type}`;
+        const fileName = `audio.${input.fileExtension}`;
 
         const formData = new FormData();
-        formData.append("file", new Blob([data.data]), fileName);
+        formData.append("file", new Blob([input.audioData]), fileName);
         formData.append("model", this.settings.model);
 
         if (this.settings.prompt != null) {

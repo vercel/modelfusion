@@ -17,7 +17,7 @@ import {
 } from "../../model-function/generate-speech/SpeechGenerationModel.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
 import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
-import { base64ToUint8Array } from "../../util/UInt8Utils.js";
+import { base64ToUint8Array } from "../../util/format/UInt8Utils.js";
 import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
 
 const elevenLabsModels = [

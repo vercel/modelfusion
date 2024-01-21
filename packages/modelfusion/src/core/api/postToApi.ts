@@ -1,4 +1,4 @@
-import { toUint8Array } from "../../util/UInt8Utils.js";
+import { convertDataContentToUint8Array } from "../../util/format/DataContent.js";
 import { Schema } from "../schema/Schema.js";
 import { parseJSON, safeParseJSON } from "../schema/parseJSON.js";
 import { ApiCallError } from "./ApiCallError.js";
@@ -122,7 +122,7 @@ export const createAudioMpegResponseHandler =
       });
     }
 
-    return toUint8Array(await response.arrayBuffer());
+    return convertDataContentToUint8Array(await response.arrayBuffer());
   };
 
 export const postJsonToApi = async <T>({

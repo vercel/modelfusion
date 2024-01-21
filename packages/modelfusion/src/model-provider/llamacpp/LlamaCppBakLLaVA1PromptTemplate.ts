@@ -1,12 +1,10 @@
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
 import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import {
-  getImageAsBase64,
-  validateContentIsString,
-} from "../../model-function/generate-text/prompt-template/ContentPart.js";
+import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
 import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError.js";
 import { text as vicunaText } from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
+import { convertDataContentToBase64String } from "../../util/format/DataContent.js";
 import { LlamaCppCompletionPrompt } from "./LlamaCppCompletionModel.js";
 
 // default Vicuna 1 system message
@@ -62,7 +60,8 @@ export function instruction(): TextGenerationPromptTemplate<
             }
             case "image": {
               text += `[img-${imageCounter}]`;
-              images[imageCounter.toString()] = getImageAsBase64(content.image);
+              images[imageCounter.toString()] =
+                convertDataContentToBase64String(content.image);
               imageCounter++;
               break;
             }
@@ -112,9 +111,8 @@ export function chat(): TextGenerationPromptTemplate<
                 }
                 case "image": {
                   text += `[img-${imageCounter}]`;
-                  images[imageCounter.toString()] = getImageAsBase64(
-                    part.image
-                  );
+                  images[imageCounter.toString()] =
+                    convertDataContentToBase64String(part.image);
                   imageCounter++;
                   break;
                 }
