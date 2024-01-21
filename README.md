@@ -17,7 +17,7 @@
 - **Vendor-neutral**: ModelFusion is a non-commercial open source project that is community-driven. You can use it with any supported provider.
 - **Multi-modal**: ModelFusion supports a wide range of models including text generation, image generation, vision, text-to-speech, speech-to-text, and embedding models.
 - **Type inference and validation**: ModelFusion infers TypeScript types wherever possible and validates model responses.
-- **Observability and logging**: ModelFusion provides an observer framework and out-of-the-box logging support.
+- **Observability and logging**: ModelFusion provides an observer framework and logging support.
 - **Resilience and robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
 - **Built for production**: ModelFusion is fully tree-shakeable, can be used in serverless environments, and only uses a minimal set of dependencies.
 
@@ -553,7 +553,7 @@ for (const choice of (rawResponse as OpenAICompletionResponse).choices) {
 
 ### Logging and Observability
 
-ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/observer) and [out-of-the-box logging support](https://modelfusion.dev/guide/util/logging). You can easily trace runs and call hierarchies, and you can add your own observers.
+ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/observer) and [logging support](https://modelfusion.dev/guide/util/logging). You can easily trace runs and call hierarchies, and you can add your own observers.
 
 #### Enabling Logging on a Function Call
 
