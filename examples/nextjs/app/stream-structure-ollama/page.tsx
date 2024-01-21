@@ -3,85 +3,28 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  jsonStructurePrompt,
-  ollama,
-  streamStructure,
-  zodSchema,
-} from "modelfusion";
-import React, { useState } from "react";
-import { z } from "zod";
-
-const itinerarySchema = zodSchema(
-  z.object({
-    days: z.array(
-      z.object({
-        theme: z.string(),
-        activities: z.array(
-          z.object({
-            name: z.string(),
-            description: z.string(),
-            duration: z.number(),
-          })
-        ),
-      })
-    ),
-  })
-);
-
-type Itinerary = (typeof itinerarySchema._partialType)["days"];
+import { useState } from "react";
+import { Itinerary, useItinerary } from "./useItinerary";
 
 export default function () {
   const [destination, setDestination] = useState("");
   const [lengthOfStay, setLengthOfStay] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
 
-  const [itinerary, setItinerary] = useState<Itinerary>();
-
-  const handleGenerateItinerary = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault();
-
-    setItinerary(undefined);
-    setIsGenerating(true);
-
-    try {
-      const stream = await streamStructure({
-        // Note: this is fine assuming Ollama runs locally and you are using it.
-        // When you use e.g. OpenAI, you should not expose your API key in the client.
-        model: ollama
-          .ChatTextGenerator({
-            model: "openhermes",
-            maxGenerationTokens: 2500,
-          })
-          .asStructureGenerationModel(jsonStructurePrompt.instruction()),
-
-        schema: itinerarySchema,
-
-        prompt: {
-          system:
-            "You help planning travel itineraries. " +
-            "Respond to the users' request with a list of the best stops to make in their destination.",
-
-          instruction: `I am planning a trip to ${destination} for ${lengthOfStay} days.`,
-        },
-      });
-
-      for await (const part of stream) {
-        setItinerary(part.days);
-      }
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  const { isGeneratingItinerary, generateItinerary, itinerary } =
+    useItinerary();
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 md:p-6 lg:p-8">
       <h1 className="text-2xl font-bold text-center mb-6">
         City Travel Itinerary Planner
       </h1>
-      <form className="space-y-4" onSubmit={handleGenerateItinerary}>
+      <form
+        className="space-y-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          generateItinerary({ destination, lengthOfStay });
+        }}
+      >
         <div className="space-y-2">
           <Label htmlFor="destination">Destination</Label>
           <Input
@@ -89,7 +32,7 @@ export default function () {
             placeholder="Enter your destination"
             required
             value={destination}
-            disabled={isGenerating}
+            disabled={isGeneratingItinerary}
             onChange={(e) => setDestination(e.target.value)}
           />
         </div>
@@ -103,11 +46,15 @@ export default function () {
             min="1" // Minimum length of stay
             max="7" // Maximum length of stay
             value={lengthOfStay}
-            disabled={isGenerating}
+            disabled={isGeneratingItinerary}
             onChange={(e) => setLengthOfStay(e.target.value)}
           />
         </div>
-        <Button className="w-full" type="submit" disabled={isGenerating}>
+        <Button
+          className="w-full"
+          type="submit"
+          disabled={isGeneratingItinerary}
+        >
           Generate Itinerary
         </Button>
       </form>
