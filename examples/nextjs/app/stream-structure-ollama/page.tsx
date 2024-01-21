@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { Itinerary, useItinerary } from "./useItinerary";
+import { ItineraryView } from "./ItineraryView";
+import { useItinerary } from "./useItinerary";
 
 export default function () {
   const [destination, setDestination] = useState("");
@@ -18,6 +19,7 @@ export default function () {
       <h1 className="text-2xl font-bold text-center mb-6">
         City Travel Itinerary Planner
       </h1>
+
       <form
         className="space-y-4"
         onSubmit={(e) => {
@@ -58,40 +60,8 @@ export default function () {
           Generate Itinerary
         </Button>
       </form>
-      {itinerary && <ItineraryView itinerary={itinerary} />}
+
+      <ItineraryView itinerary={itinerary} />
     </div>
   );
 }
-
-const ItineraryView = ({ itinerary }: { itinerary: Itinerary }) => (
-  <div className="mt-8">
-    <h2 className="text-xl font-bold mb-4">Your Itinerary</h2>
-    <div className="space-y-4">
-      {itinerary?.map(
-        (day, index) =>
-          day && (
-            <div key={index} className="border rounded-lg p-4">
-              <h3 className="font-bold">{day.theme ?? ""}</h3>
-
-              {day.activities?.map(
-                (activity, index) =>
-                  activity != null && (
-                    <div key={index} className="mt-4">
-                      {activity.name && (
-                        <h4 className="font-bold">{activity.name}</h4>
-                      )}
-                      {activity.description && (
-                        <p className="text-gray-500">{activity.description}</p>
-                      )}
-                      {activity.duration && (
-                        <p className="text-sm text-gray-400">{`Duration: ${activity.duration} hours`}</p>
-                      )}
-                    </div>
-                  )
-              )}
-            </div>
-          )
-      )}
-    </div>
-  </div>
-);
