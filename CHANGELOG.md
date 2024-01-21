@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.130.0 - 2024-01-21
+
+### Changed
+
+- **breaking change**: updated `generateTranscription` interface. The function now takes a `mimeType` and `audioData` (base64-encoded string, `Uint8Array`, `Buffer` or `ArrayBuffer`). Example:
+
+  ```ts
+  import { generateTranscription, openai } from "modelfusion";
+  import fs from "node:fs";
+
+  const transcription = await generateTranscription({
+    model: openai.Transcriber({ model: "whisper-1" }),
+    mimeType: "audio/mp3",
+    audioData: await fs.promises.readFile("data/test.mp3"),
+  });
+  ```
+
+- Images in instruction and chat prompts can be `Buffer` or `ArrayBuffer` instances (in addition to base64-encoded strings and `Uint8Array` instances).
+
 ## v0.129.0 - 2024-01-20
 
 ### Changed
