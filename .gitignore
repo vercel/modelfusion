@@ -9,6 +9,7 @@ examples/*/build/**
 packages/*/build/**
 packages/*/coverage/**
 packages/*/dist/**
+packages/*/lib/**
 tools/*/build/**
 tools/*/coverage/**
 tools/*/dist/**
