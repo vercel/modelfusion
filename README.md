@@ -510,14 +510,16 @@ const textStream = await streamText({
 You an use prompt templates with image models as well, e.g. to use a basic text prompt. It is available as a shorthand method:
 
 ```ts
-const image = await generateImage(
-  stability
+const image = await generateImage({
+  model: stability
     .ImageGenerator({
       //...
     })
     .withTextPrompt(),
-  "the wicked witch of the west in the style of early 19th century painting"
-);
+
+  prompt:
+    "the wicked witch of the west in the style of early 19th century painting",
+});
 ```
 
 | Prompt Template | Text Prompt |
@@ -553,12 +555,16 @@ for (const choice of (rawResponse as OpenAICompletionResponse).choices) {
 
 ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/observer) and [out-of-the-box logging support](https://modelfusion.dev/guide/util/logging). You can easily trace runs and call hierarchies, and you can add your own observers.
 
-#### Global Logging Example
+#### Enabling Logging on a Function Call
 
 ```ts
-import { modelfusion } from "modelfusion";
+import { generateText, openai } from "modelfusion";
 
-modelfusion.setLogFormat("detailed-object"); // log full events
+const text = await generateText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+  logging: "detailed-object",
+});
 ```
 
 ## Documentation
