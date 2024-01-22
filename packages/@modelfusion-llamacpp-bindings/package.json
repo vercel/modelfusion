@@ -30,6 +30,7 @@
   "homepage": "https://github.com/lgrammel/modelfusion#readme",
   "devDependencies": {
     "@types/node": "^20.11.3",
+    "cmake-js": "^7.3.0",
     "typescript": "^5.3.3"
   }
 }

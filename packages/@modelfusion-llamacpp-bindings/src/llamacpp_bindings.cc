@@ -1,4 +1,5 @@
 #include "llamacpp_bindings.h"
+#include <llama.h>
 
 using namespace Napi;
 
@@ -56,10 +57,16 @@ Napi::Function llamacppBindings::GetClass(Napi::Env env)
                                                 });
 }
 
+Napi::Value systemInfo(const Napi::CallbackInfo &info)
+{
+    return Napi::String::From(info.Env(), llama_print_system_info());
+}
+
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
     Napi::String name = Napi::String::New(env, "llamacppBindings");
     exports.Set(name, llamacppBindings::GetClass(env));
+    exports.Set(Napi::String::New(env, "systemInfo"), Napi::Function::New(env, systemInfo));
     return exports;
 }
 

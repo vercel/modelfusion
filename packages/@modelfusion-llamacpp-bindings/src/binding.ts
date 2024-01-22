@@ -16,6 +16,11 @@ class llamacppBindings {
 
   // private members
   private _addonInstance: IllamacppBindingsNative;
+
+  // static members
+  static getSystemInfo(): string {
+    return addon.systemInfo();
+  }
 }
 
 export = llamacppBindings;
