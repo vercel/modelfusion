@@ -1,3 +1,5 @@
+import * as Runtime from "./detectRuntime.js";
+
 export interface SimpleWebSocket {
   send(data: string): void;
   onmessage: ((event: MessageEvent) => void) | null;
@@ -13,12 +15,21 @@ export interface SimpleWebSocket {
 export async function createSimpleWebSocket(
   url: string
 ): Promise<SimpleWebSocket> {
-  if (typeof window === "undefined") {
-    // Use ws library in Node.js:
-    const { default: WebSocket } = await import("ws");
-    return new WebSocket(url) as SimpleWebSocket;
-  } else {
-    // Use native WebSocket in browser:
-    return new WebSocket(url) as SimpleWebSocket;
+  switch (Runtime.detectRuntime()) {
+    case "vercel-edge":
+    case "cloudflare-workers":
+    case "browser": {
+      return new WebSocket(url) as SimpleWebSocket;
+    }
+
+    case "node": {
+      // Use ws library (for Node.js):
+      const { default: WebSocket } = await import("ws");
+      return new WebSocket(url) as SimpleWebSocket;
+    }
+
+    default: {
+      throw new Error("Unknown runtime");
+    }
   }
 }
