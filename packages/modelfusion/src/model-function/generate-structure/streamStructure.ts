@@ -7,6 +7,12 @@ import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStreamCall } from "../executeStreamCall.js";
 import { StructureStreamingModel } from "./StructureGenerationModel.js";
 
+type StructureStream<STRUCTURE> = AsyncIterable<{
+  partialStructure: PartialDeep<STRUCTURE, { recurseIntoArrays: true }>;
+  partialText: string;
+  textDelta: string;
+}>;
+
 /**
  * Generate and stream an object for a prompt and a structure definition.
  *
@@ -34,7 +40,7 @@ import { StructureStreamingModel } from "./StructureGenerationModel.js";
  *   ]
  * });
  *
- * for await (const partialStructure of structureStream) {
+ * for await (const { partialStructure } of structureStream) {
  *   // ...
  * }
  *
@@ -55,7 +61,7 @@ export async function streamStructure<STRUCTURE, PROMPT>(
     prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT);
     fullResponse?: false;
   } & FunctionOptions
-): Promise<AsyncIterable<PartialDeep<STRUCTURE, { recurseIntoArrays: true }>>>;
+): Promise<StructureStream<STRUCTURE>>;
 export async function streamStructure<STRUCTURE, PROMPT>(
   args: {
     model: StructureStreamingModel<PROMPT>;
@@ -64,9 +70,7 @@ export async function streamStructure<STRUCTURE, PROMPT>(
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
-  structureStream: AsyncIterable<
-    PartialDeep<STRUCTURE, { recurseIntoArrays: true }>
-  >;
+  structureStream: StructureStream<STRUCTURE>;
   structurePromise: PromiseLike<STRUCTURE>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
@@ -82,11 +86,9 @@ export async function streamStructure<STRUCTURE, PROMPT>({
   prompt: PROMPT | ((schema: Schema<STRUCTURE>) => PROMPT);
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
-  | AsyncIterable<PartialDeep<STRUCTURE, { recurseIntoArrays: true }>>
+  | StructureStream<STRUCTURE>
   | {
-      structureStream: AsyncIterable<
-        PartialDeep<STRUCTURE, { recurseIntoArrays: true }>
-      >;
+      structureStream: StructureStream<STRUCTURE>;
       structurePromise: PromiseLike<STRUCTURE>;
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }
@@ -98,6 +100,7 @@ export async function streamStructure<STRUCTURE, PROMPT>({
       : prompt;
 
   let accumulatedText = "";
+  let accumulatedTextDelta = "";
   let lastStructure: unknown | undefined;
 
   let resolveStructure: (value: STRUCTURE) => void;
@@ -109,7 +112,11 @@ export async function streamStructure<STRUCTURE, PROMPT>({
 
   const callResponse = await executeStreamCall<
     unknown,
-    PartialDeep<STRUCTURE>,
+    {
+      partialStructure: PartialDeep<STRUCTURE>;
+      partialText: string;
+      textDelta: string;
+    },
     StructureStreamingModel<PROMPT>
   >({
     functionType: "stream-structure",
@@ -121,7 +128,8 @@ export async function streamStructure<STRUCTURE, PROMPT>({
     options,
     startStream: async (options) =>
       model.doStreamStructure(schema, expandedPrompt, options),
-    processDelta: (delta) => {
+
+    processDelta(delta) {
       const textDelta = model.extractStructureTextDelta(delta.deltaValue);
 
       if (textDelta == null) {
@@ -129,6 +137,7 @@ export async function streamStructure<STRUCTURE, PROMPT>({
       }
 
       accumulatedText += textDelta;
+      accumulatedTextDelta += textDelta;
 
       const latestStructure =
         model.parseAccumulatedStructureText(accumulatedText);
@@ -136,15 +145,39 @@ export async function streamStructure<STRUCTURE, PROMPT>({
       // only send a new part into the stream when the partial structure has changed:
       if (!isDeepEqualData(lastStructure, latestStructure)) {
         lastStructure = latestStructure;
-        return lastStructure as PartialDeep<
-          STRUCTURE,
-          { recurseIntoArrays: true }
-        >;
+
+        // reset delta accumulation:
+        const currentAccumulatedTextDelta = accumulatedTextDelta;
+        accumulatedTextDelta = "";
+
+        // TODO add type checking
+        return {
+          partialStructure: lastStructure as PartialDeep<
+            STRUCTURE,
+            { recurseIntoArrays: true }
+          >,
+          partialText: accumulatedText,
+          textDelta: currentAccumulatedTextDelta,
+        };
       }
 
       return undefined;
     },
-    onDone: () => {
+
+    // The last structure is processed and returned, even if it was already returned previously.
+    // The reason is that the full text delta should be returned (and no characters should be omitted).
+    processFinished() {
+      return {
+        partialStructure: lastStructure as PartialDeep<
+          STRUCTURE,
+          { recurseIntoArrays: true }
+        >,
+        partialText: accumulatedText,
+        textDelta: accumulatedTextDelta,
+      };
+    },
+
+    onDone() {
       // process the final result (full type validation):
       const parseResult = schema.validate(lastStructure);
 

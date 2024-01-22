@@ -180,7 +180,7 @@ const structureStream = await streamStructure({
   },
 });
 
-for await (const partialStructure of structureStream) {
+for await (const { partialStructure } of structureStream) {
   console.clear();
   console.log(partialStructure);
 }
@@ -223,7 +223,7 @@ const { structureStream, structurePromise, metadata } = await streamStructure({
   fullResponse: true,
 });
 
-for await (const partialStructure of structureStream) {
+for await (const { partialStructure } of structureStream) {
   console.clear();
   console.log(partialStructure);
 }

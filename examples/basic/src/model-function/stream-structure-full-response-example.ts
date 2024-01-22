@@ -40,9 +40,12 @@ async function main() {
     }
   );
 
-  for await (const partialStructure of structureStream) {
-    console.clear();
-    console.log(partialStructure);
+  for await (const {
+    partialStructure,
+    partialText,
+    textDelta,
+  } of structureStream) {
+    process.stdout.write(textDelta);
   }
 
   const structure = await structurePromise;

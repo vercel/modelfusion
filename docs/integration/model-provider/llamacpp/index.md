@@ -205,7 +205,7 @@ const structureStream = await streamStructure({
   schema: "Generate 3 character descriptions for a fantasy role playing game.",
 });
 
-for await (const partialStructure of structureStream) {
+for await (const { partialStructure } of structureStream) {
   console.clear();
   console.log(partialStructure);
 }

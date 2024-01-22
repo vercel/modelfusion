@@ -44,7 +44,7 @@ async function main() {
     },
   });
 
-  for await (const partialStructure of structureStream) {
+  for await (const { partialStructure } of structureStream) {
     console.clear();
     console.log(partialStructure);
   }
