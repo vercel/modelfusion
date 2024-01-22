@@ -6,12 +6,7 @@ import { isDeepEqualData } from "../../util/isDeepEqualData.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStreamCall } from "../executeStreamCall.js";
 import { StructureStreamingModel } from "./StructureGenerationModel.js";
-
-type StructureStream<STRUCTURE> = AsyncIterable<{
-  partialStructure: PartialDeep<STRUCTURE, { recurseIntoArrays: true }>;
-  partialText: string;
-  textDelta: string;
-}>;
+import { StructureStream } from "./StructureStream.js";
 
 /**
  * Generate and stream an object for a prompt and a structure definition.

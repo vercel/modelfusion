@@ -1,4 +1,4 @@
-import { parseJsonStreamResponse } from "modelfusion";
+import { parseStructureStreamResponse } from "modelfusion";
 import { useState } from "react";
 import { Itinerary } from "./itinerarySchema";
 
@@ -17,7 +17,7 @@ export function useItinerary() {
     setIsGenerating(true);
 
     try {
-      await parseJsonStreamResponse<Itinerary>({
+      await parseStructureStreamResponse<Itinerary>({
         response: await fetch("/api/stream-structure-openai", {
           method: "POST",
           body: JSON.stringify({ destination, lengthOfStay }),

@@ -1,4 +1,9 @@
-import { jsonStructurePrompt, openai, streamStructure } from "modelfusion";
+import {
+  createStructureStream,
+  jsonStructurePrompt,
+  openai,
+  streamStructure,
+} from "modelfusion";
 import { itinerarySchema } from "../../stream-structure-openai/itinerarySchema";
 
 export const runtime = "edge";
@@ -25,25 +30,8 @@ export async function POST(req: Request) {
     },
   });
 
-  const textEncoder = new TextEncoder();
-
-  return new Response(
-    new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const { textDelta } of stream) {
-            controller.enqueue(textEncoder.encode(textDelta));
-          }
-        } finally {
-          controller.close();
-        }
-      },
-    }),
-    {
-      status: 200,
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-      },
-    }
-  );
+  return new Response(createStructureStream(stream), {
+    status: 200,
+    headers: { "Content-Type": "text/plain; charset=utf-8" },
+  });
 }
