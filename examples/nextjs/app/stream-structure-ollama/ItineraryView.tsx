@@ -1,13 +1,14 @@
 "use client";
-import { Itinerary } from "./useItinerary";
 
-export const ItineraryView = ({ itinerary }: { itinerary: Itinerary }) => (
+import { Itinerary } from "./itinerarySchema";
+
+export const ItineraryView = ({ itinerary }: { itinerary?: Itinerary }) => (
   <div className="mt-8">
-    {itinerary && (
+    {itinerary?.days && (
       <>
         <h2 className="text-xl font-bold mb-4">Your Itinerary</h2>
         <div className="space-y-4">
-          {itinerary.map(
+          {itinerary.days.map(
             (day, index) =>
               day && (
                 <div key={index} className="border rounded-lg p-4">

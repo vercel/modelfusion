@@ -1,30 +1,6 @@
-import {
-  jsonStructurePrompt,
-  ollama,
-  streamStructure,
-  zodSchema,
-} from "modelfusion";
+import { jsonStructurePrompt, ollama, streamStructure } from "modelfusion";
 import { useState } from "react";
-import { z } from "zod";
-
-const itinerarySchema = zodSchema(
-  z.object({
-    days: z.array(
-      z.object({
-        theme: z.string(),
-        activities: z.array(
-          z.object({
-            name: z.string(),
-            description: z.string(),
-            duration: z.number(),
-          })
-        ),
-      })
-    ),
-  })
-);
-
-export type Itinerary = (typeof itinerarySchema._partialType)["days"];
+import { Itinerary, itinerarySchema } from "./itinerarySchema";
 
 export function useItinerary() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -62,8 +38,8 @@ export function useItinerary() {
         },
       });
 
-      for await (const part of stream) {
-        setItinerary(part.days);
+      for await (const { partialStructure } of stream) {
+        setItinerary(partialStructure);
       }
     } finally {
       setIsGenerating(false);
