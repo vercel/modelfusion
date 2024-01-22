@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.130.1 - 2024-01-22
+
+### Fixed
+
+- Duplex speech streaming works in Vercel Edge Functions.
+
 ## v0.130.0 - 2024-01-21
 
 ### Changed
