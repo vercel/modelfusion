@@ -1,5 +1,5 @@
 const llamacppBindings = require("../dist/binding.js");
-const assert = require("assert");
+import * as assert from "assert";
 
 assert(llamacppBindings, "The expected module is undefined");
 assert(llamacppBindings.getSystemInfo, "The expected method is undefined");
@@ -17,7 +17,7 @@ function testInvalidParams()
     const instance = new llamacppBindings();
 }
 
-assert.doesNotThrow(testBasic, undefined, "testBasic threw an expection");
-assert.throws(testInvalidParams, undefined, "testInvalidParams didn't throw");
+assert.doesNotThrow(testBasic, "testBasic threw an expection");
+assert.throws(testInvalidParams, "testInvalidParams didn't throw");
 
 console.log("Tests passed- everything looks OK!");
