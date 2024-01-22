@@ -89,13 +89,16 @@ import { readFileSync } from "fs";
 const image = readFileSync("./image.png");
 
 const textStream = await streamText({
-  model: openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
-  prompt: [
-    openai.ChatMessage.user([
-      { type: "text", text: "Describe the image in detail:" },
+  model: openai
+    .ChatTextGenerator({ model: "gpt-4-vision-preview" })
+    .withInstructionPrompt(),
+
+  prompt: {
+    instruction: [
+      { type: "text", text: "Describe the image in detail." },
       { type: "image", image, mimeType: "image/png" },
-    ]),
-  ],
+    ],
+  },
 });
 
 for await (const textPart of textStream) {
