@@ -18,13 +18,18 @@ export function useItinerary() {
       setIsGenerating(true);
 
       try {
-        await parseStructureStreamResponse<Itinerary>({
-          response: await fetch("/api/stream-structure-openai", {
-            method: "POST",
-            body: JSON.stringify({ destination, lengthOfStay }),
-          }),
-          onChunk: setItinerary,
+        const response = await fetch("/api/stream-structure-openai", {
+          method: "POST",
+          body: JSON.stringify({ destination, lengthOfStay }),
         });
+
+        const stream = parseStructureStreamResponse<Itinerary>({
+          response,
+        });
+
+        for await (const partialStructure of stream) {
+          setItinerary(partialStructure);
+        }
       } finally {
         setIsGenerating(false);
       }

@@ -7,12 +7,10 @@ export type StructureStream<STRUCTURE> = AsyncIterable<{
   textDelta: string;
 }>;
 
-export async function parseStructureStreamResponse<T>({
+export async function* parseStructureStreamResponse<T>({
   response,
-  onChunk,
 }: {
   response: Response;
-  onChunk: (chunk: T) => void;
 }) {
   let text = "";
 
@@ -26,7 +24,7 @@ export async function parseStructureStreamResponse<T>({
 
     text += new TextDecoder().decode(value);
 
-    onChunk(parsePartialJson(text) as T); // TODO partial parsing?
+    yield parsePartialJson(text) as T; // TODO partial parsing?
   }
 }
 
