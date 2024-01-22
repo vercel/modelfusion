@@ -1,4 +1,4 @@
-import { parseStructureStreamResponse } from "modelfusion";
+import { StructureStreamFromResponse } from "modelfusion";
 import { useCallback, useState } from "react";
 import { Itinerary } from "./itinerarySchema";
 
@@ -23,7 +23,7 @@ export function useItinerary() {
           body: JSON.stringify({ destination, lengthOfStay }),
         });
 
-        const stream = parseStructureStreamResponse<Itinerary>({
+        const stream = StructureStreamFromResponse<Itinerary>({
           response,
         });
 

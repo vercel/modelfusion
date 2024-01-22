@@ -1,5 +1,5 @@
 import {
-  createStructureStream,
+  StructureStreamResponse,
   jsonStructurePrompt,
   openai,
   streamStructure,
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     },
   });
 
-  return new Response(createStructureStream(stream), {
+  return new StructureStreamResponse(stream, {
     status: 200,
     headers: { "Content-Type": "text/plain; charset=utf-8" },
   });

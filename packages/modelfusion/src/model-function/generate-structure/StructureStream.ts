@@ -7,7 +7,13 @@ export type StructureStream<STRUCTURE> = AsyncIterable<{
   textDelta: string;
 }>;
 
-export async function* parseStructureStreamResponse<T>({
+export class StructureStreamResponse extends Response {
+  constructor(stream: StructureStream<unknown>, init?: ResponseInit) {
+    super(StructureStreamToTextStream(stream), init);
+  }
+}
+
+export async function* StructureStreamFromResponse<T>({
   response,
 }: {
   response: Response;
@@ -28,7 +34,7 @@ export async function* parseStructureStreamResponse<T>({
   }
 }
 
-export function createStructureStream(stream: StructureStream<unknown>) {
+function StructureStreamToTextStream(stream: StructureStream<unknown>) {
   const textEncoder = new TextEncoder();
   return new ReadableStream({
     async start(controller) {
