@@ -4,8 +4,8 @@ import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../../core/schema/Schema.js";
 import { StructureStreamingModel } from "../../model-function/generate-structure/StructureGenerationModel.js";
 import { StructureParseError } from "../../model-function/generate-structure/StructureParseError.js";
-import { parsePartialJson } from "../../model-function/generate-structure/parsePartialJson.js";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import { parsePartialJson } from "../../util/parsePartialJson.js";
 import {
   OpenAIChatChunk,
   OpenAIChatPrompt,

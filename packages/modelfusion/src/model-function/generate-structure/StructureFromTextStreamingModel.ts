@@ -4,6 +4,7 @@ import { Schema } from "../../core/schema/Schema.js";
 import { Delta } from "../../model-function/Delta.js";
 import { streamText } from "../../model-function/generate-text/streamText.js";
 import { AsyncQueue } from "../../util/AsyncQueue.js";
+import { parsePartialJson } from "../../util/parsePartialJson.js";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
@@ -11,7 +12,6 @@ import {
 import { StructureFromTextGenerationModel } from "./StructureFromTextGenerationModel.js";
 import { StructureFromTextPromptTemplate } from "./StructureFromTextPromptTemplate.js";
 import { StructureStreamingModel } from "./StructureGenerationModel.js";
-import { parsePartialJson } from "./parsePartialJson.js";
 
 export class StructureFromTextStreamingModel<
     SOURCE_PROMPT,
