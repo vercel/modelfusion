@@ -11,7 +11,7 @@ export const runtime = "edge";
 export async function POST(req: Request) {
   const { destination, lengthOfStay } = await req.json();
 
-  const stream = await streamStructure({
+  const structureStream = await streamStructure({
     model: openai
       .ChatTextGenerator({
         model: "gpt-4-1106-preview",
@@ -30,8 +30,5 @@ export async function POST(req: Request) {
     },
   });
 
-  return new StructureStreamResponse(stream, {
-    status: 200,
-    headers: { "Content-Type": "text/plain; charset=utf-8" },
-  });
+  return new StructureStreamResponse(structureStream);
 }

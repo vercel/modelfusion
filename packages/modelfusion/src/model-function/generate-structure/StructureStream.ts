@@ -10,7 +10,11 @@ export type StructureStream<STRUCTURE> = AsyncIterable<{
 
 export class StructureStreamResponse extends Response {
   constructor(stream: StructureStream<unknown>, init?: ResponseInit) {
-    super(StructureStreamToTextStream(stream), init);
+    super(StructureStreamToTextStream(stream), {
+      ...init,
+      status: 200,
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
   }
 }
 
