@@ -578,7 +578,7 @@ const text = await generateText({
   - [Generate object](https://modelfusion.dev/guide/function/generate-object)
   - [Generate image](https://modelfusion.dev/guide/function/generate-image)
   - [Generate speech](https://modelfusion.dev/guide/function/generate-speech)
-  - [Generate transcription](https://modelfusion.dev/guide/function/generation-transcription)
+  - [Generate transcription](https://modelfusion.dev/guide/function/generate-transcription)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
   - [Classify Value](https://modelfusion.dev/guide/function/classify)
