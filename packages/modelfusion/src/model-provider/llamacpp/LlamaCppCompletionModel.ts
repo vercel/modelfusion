@@ -15,10 +15,10 @@ import { validateTypes } from "../../core/schema/validateTypes.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import { Delta } from "../../model-function/Delta.js";
 import {
-  FlexibleStructureFromTextPromptTemplate,
-  StructureFromTextPromptTemplate,
-} from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
-import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
+  FlexibleObjectFromTextPromptTemplate,
+  ObjectFromTextPromptTemplate,
+} from "../../model-function/generate-object/ObjectFromTextPromptTemplate.js";
+import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextGenerationModelSettings,
@@ -348,7 +348,7 @@ export class LlamaCppCompletionModel<
   restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
       validateTypes({
-        structure: rawResponse,
+        value: rawResponse,
         schema: zodSchema(llamaCppTextGenerationResponseSchema),
       })
     );
@@ -387,17 +387,17 @@ export class LlamaCppCompletionModel<
     return (delta as LlamaCppTextStreamChunk).content;
   }
 
-  asStructureGenerationModel<INPUT_PROMPT, LlamaCppPrompt>(
+  asObjectGenerationModel<INPUT_PROMPT, LlamaCppPrompt>(
     promptTemplate:
-      | StructureFromTextPromptTemplate<INPUT_PROMPT, LlamaCppPrompt>
-      | FlexibleStructureFromTextPromptTemplate<INPUT_PROMPT, unknown>
+      | ObjectFromTextPromptTemplate<INPUT_PROMPT, LlamaCppPrompt>
+      | FlexibleObjectFromTextPromptTemplate<INPUT_PROMPT, unknown>
   ) {
     return "adaptModel" in promptTemplate
-      ? new StructureFromTextStreamingModel({
+      ? new ObjectFromTextStreamingModel({
           model: promptTemplate.adaptModel(this),
           template: promptTemplate,
         })
-      : new StructureFromTextStreamingModel({
+      : new ObjectFromTextStreamingModel({
           model: this as TextStreamingModel<LlamaCppPrompt>,
           template: promptTemplate,
         });

@@ -3,8 +3,8 @@ import { z } from "zod";
 import { ApiCallError } from "../../core/api/ApiCallError.js";
 import { retryNever } from "../../core/api/retryNever.js";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { jsonStructurePrompt } from "../../model-function/generate-structure/jsonStructurePrompt.js";
-import { streamStructure } from "../../model-function/generate-structure/streamStructure.js";
+import { jsonObjectPrompt } from "../../model-function/generate-object/jsonObjectPrompt.js";
+import { streamObject } from "../../model-function/generate-object/streamObject.js";
 import { generateText } from "../../model-function/generate-text/generateText.js";
 import { streamText } from "../../model-function/generate-text/streamText.js";
 import { JsonTestServer } from "../../test/JsonTestServer.js";
@@ -103,7 +103,7 @@ describe("streamText", () => {
   });
 });
 
-describe("streamStructure", () => {
+describe("streamObject", () => {
   const server = new StreamingTestServer("http://127.0.0.1:11434/api/generate");
 
   server.setupTestEnvironment();
@@ -127,13 +127,13 @@ describe("streamStructure", () => {
         `"eval_count":12,"eval_duration":215282000}\n`,
     ];
 
-    const stream = await streamStructure({
+    const stream = await streamObject({
       model: new OllamaCompletionModel({
         model: "mistral:text",
         promptTemplate: Text,
         format: "json",
         raw: true,
-      }).asStructureGenerationModel(jsonStructurePrompt.text()),
+      }).asObjectGenerationModel(jsonObjectPrompt.text()),
 
       schema: zodSchema(z.object({ name: z.string() })),
       prompt: "generate a name",

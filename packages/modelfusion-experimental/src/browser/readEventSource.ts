@@ -32,7 +32,7 @@ export function readEventSource<T>({
         return;
       }
 
-      onEvent(parseResult.data, eventSource);
+      onEvent(parseResult.value, eventSource);
     } catch (error) {
       onError(error, eventSource);
     }

@@ -8,7 +8,7 @@ Structured data generation using large language models (LLMs) is a technique tha
 
 The main idea is that language models compress the information that they were trained on. Concepts that are well represented in the training data can be extracted through prompting. However, it is important to note that the LLM might hallucinate information for concepts that are not well represented in the training data. This can be fine for some use cases such as fictional data or test data, but it can also be problematic for other use cases such as seeding databases.
 
-You can use the [generateStructure](/guide/function/generate-structure) function to generate structured data. Here is an example:
+You can use the [generateObject](/guide/function/generate-object) function to generate structured data. Here is an example:
 
 ## Generating city travel destinations with Ollama
 
@@ -16,13 +16,13 @@ In this example, we use [Ollama](/integration/model-provider/ollama) and [OpenHe
 
 ```ts
 const listCityDestinations = (country: string) =>
-  generateStructure({
+  generateObject({
     model: ollama
       .ChatTextGenerator({
         model: "openhermes",
         temperature: 0,
       })
-      .asStructureGenerationModel(jsonStructurePrompt.text()),
+      .asObjectGenerationModel(jsonObjectPrompt.text()),
 
     schema: zodSchema(
       z.object({
@@ -44,4 +44,4 @@ const listCityDestinations = (country: string) =>
 
 ## Resources
 
-- [Blog Post: Effortlessly Generate Structured Information with Ollama, Zod, and ModelFusion](/blog/generate-structured-information-ollama)
+- [Blog Post: Effortlessly Generate Objectd Information with Ollama, Zod, and ModelFusion](/blog/generate-objectd-information-ollama)

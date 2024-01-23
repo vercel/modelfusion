@@ -117,23 +117,23 @@ for await (const textPart of textStream) {
 }
 ````
 
-### Generate Structure
+### Generate Object
 
-[Generate Structure Docs](/guide/function/generate-structure)
+[Generate Object Docs](/guide/function/generate-object)
 
-Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). When you use `jsonStructurePrompt` with Llama.cpp, it automatically uses a GBNF grammar for the JSON schema that you provide.
+Object generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). When you use `jsonObjectPrompt` with Llama.cpp, it automatically uses a GBNF grammar for the JSON schema that you provide.
 
 ```ts
 import {
   ChatMLPrompt,
-  generateStructure,
-  jsonStructurePrompt,
+  generateObject,
+  jsonObjectPrompt,
   llamacpp,
   zodSchema,
 } from "modelfusion";
 import { z } from "zod";
 
-const structure = await generateStructure({
+const object = await generateObject({
   model: llamacpp
     .CompletionTextGenerator({
       // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
@@ -142,7 +142,7 @@ const structure = await generateStructure({
       temperature: 0,
     })
     // automatically restrict the output to your schema using GBNF:
-    .asStructureGenerationModel(jsonStructurePrompt.text()),
+    .asObjectGenerationModel(jsonObjectPrompt.text()),
 
   schema: zodSchema(
     z.object({
@@ -162,23 +162,23 @@ const structure = await generateStructure({
 });
 ```
 
-### Stream Structure
+### Stream Object
 
-[Stream Structure Docs](/guide/function/generate-structure#streamstructure)
+[Stream Object Docs](/guide/function/generate-object#streamobject)
 
-Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). When you use `jsonStructurePrompt` with Llama.cpp, it automatically uses a GBNF grammar for the JSON schema that you provide.
+Object generation is possible with capable open-source models like [OpenHermes 2.5](https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF). When you use `jsonObjectPrompt` with Llama.cpp, it automatically uses a GBNF grammar for the JSON schema that you provide.
 
 ```ts
 import {
   ChatMLPrompt,
-  jsonStructurePrompt,
+  jsonObjectPrompt,
   llamacpp,
-  streamStructure,
+  streamObject,
   zodSchema,
 } from "modelfusion";
 import { z } from "zod";
 
-const structureStream = await streamStructure({
+const objectStream = await streamObject({
   model: llamacpp
     .CompletionTextGenerator({
       // run openhermes-2.5-mistral-7b.Q4_K_M.gguf in llama.cpp
@@ -187,7 +187,7 @@ const structureStream = await streamStructure({
       temperature: 0,
     })
     // automatically restrict the output to your schema using GBNF:
-    .asStructureGenerationModel(jsonStructurePrompt.text()),
+    .asObjectGenerationModel(jsonObjectPrompt.text()),
 
   prompt: zodSchema(
     // With grammar.jsonArray, it is possible to output arrays as top level structures:
@@ -205,9 +205,9 @@ const structureStream = await streamStructure({
   schema: "Generate 3 character descriptions for a fantasy role playing game.",
 });
 
-for await (const { partialStructure } of structureStream) {
+for await (const { partialObject } of objectStream) {
   console.clear();
-  console.log(partialStructure);
+  console.log(partialObject);
 }
 ```
 

@@ -102,7 +102,7 @@ export const createJsonResponseHandler =
       });
     }
 
-    return parsedResult.data;
+    return parsedResult.value;
   };
 
 export const createTextResponseHandler =

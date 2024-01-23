@@ -199,7 +199,7 @@ export abstract class AbstractOpenAIChatModel<
   restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
       validateTypes({
-        structure: rawResponse,
+        value: rawResponse,
         schema: zodSchema(openAIChatResponseSchema),
       })
     );

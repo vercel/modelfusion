@@ -107,7 +107,7 @@ export async function generateToolCall<
           extractedValue: {
             id: toolCall.id,
             name: tool.name,
-            args: parseResult.data,
+            args: parseResult.value,
           },
           usage: result.usage,
         };

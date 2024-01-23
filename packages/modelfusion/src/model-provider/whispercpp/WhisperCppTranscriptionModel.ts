@@ -146,9 +146,9 @@ const successfulResponseHandler: ResponseHandler<{
     });
   }
 
-  if ("error" in parsedResult.data) {
+  if ("error" in parsedResult.value) {
     throw new ApiCallError({
-      message: parsedResult.data.error,
+      message: parsedResult.value.error,
       statusCode: response.status,
       responseBody,
       url,
@@ -157,7 +157,7 @@ const successfulResponseHandler: ResponseHandler<{
   }
 
   return {
-    text: parsedResult.data.text.trim(),
+    text: parsedResult.value.text.trim(),
   };
 };
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * Performs a deep-equal comparison of two parsed JSON structures.
+ * Performs a deep-equal comparison of two parsed JSON objects.
  *
  * @param {any} obj1 - The first object to compare.
  * @param {any} obj2 - The second object to compare.

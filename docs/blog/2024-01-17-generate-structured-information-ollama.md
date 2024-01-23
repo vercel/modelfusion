@@ -1,6 +1,6 @@
 ---
-description: Effortlessly Generate Structured Information with Ollama, Zod, and ModelFusion
-slug: generate-structured-information-ollama
+description: Effortlessly Generate Objectd Information with Ollama, Zod, and ModelFusion
+slug: generate-objectd-information-ollama
 authors:
   - name: Lars Grammel
     title: AI Engineer
@@ -8,13 +8,13 @@ authors:
     image_url: https://avatars.githubusercontent.com/u/205036
 tags:
   [tutorial, chatbot, ollama, zod, modelfusion, structure, types, typescript]
-image: /img/blog/2024-01-17-generate-structured-information-ollama.png
+image: /img/blog/2024-01-17-generate-objectd-information-ollama.png
 hide_table_of_contents: false
 ---
 
-# Effortlessly Generate Structured Information with Ollama, Zod, and ModelFusion
+# Effortlessly Generate Objectd Information with Ollama, Zod, and ModelFusion
 
-<img src="/img/blog/2024-01-17-generate-structured-information-ollama.png"></img>
+<img src="/img/blog/2024-01-17-generate-objectd-information-ollama.png"></img>
 
 **Have you ever wondered how to turn a simple text prompt into structured, typed information immediately usable in your JavaScript applications?**
 
@@ -25,9 +25,9 @@ For this task, we'll use several tools:
 - [Ollama](https://ollama.ai) is an application for running large language models (LLMs) on your local machine.
 - [Nous-Hermes-2 Mixtral 8x7B](https://huggingface.co/NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO), a state-of-the-art open-source language model released in January 2024, provides the AI backbone for our task.
 - [Zod](https://github.com/colinhacks/zod), a type validation library, ensures the structured data we generate is correctly formatted and typed.
-- [ModelFusion](https://modelfusion.dev) is an open-source library I'm developing to integrate AI models seamlessly into TypeScript projects. It provides an [Ollama client](https://modelfusion.dev/integration/model-provider/ollama) and a [generateStructure function](https://modelfusion.dev/guide/function/generate-structure).
+- [ModelFusion](https://modelfusion.dev) is an open-source library I'm developing to integrate AI models seamlessly into TypeScript projects. It provides an [Ollama client](https://modelfusion.dev/integration/model-provider/ollama) and a [generateObject function](https://modelfusion.dev/guide/function/generate-object).
 
-By the end of this post, you’ll see how these technologies work together to create a powerful solution for generating typed, structured data on your local machine. The example code is available in the [ModelFusion repository](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/use-cases/generate-structured-information-city-destinations-ollama.ts).
+By the end of this post, you’ll see how these technologies work together to create a powerful solution for generating typed, structured data on your local machine. The example code is available in the [ModelFusion repository](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/use-cases/generate-objectd-information-city-destinations-ollama.ts).
 
 ## The Power and Limits of Generating Structured Information
 
@@ -78,8 +78,8 @@ Now, we can start writing our code. First, we need to add the imports:
 
 ```ts
 import {
-  generateStructure,
-  jsonStructurePrompt,
+  generateObject,
+  jsonObjectPrompt,
   ollama,
   zodSchema,
 } from "modelfusion";
@@ -90,26 +90,26 @@ Then, we add a `listCityDestinations` function that takes a country as input and
 
 ```ts
 const listCityDestinations = (country: string) =>
-  generateStructure({
+  generateObject({
     model: // ...
     schema: // ...
     prompt: // ...
   });
 ```
 
-Let's look at this code in more detail. We use the `generateStructure` function from ModelFusion to generate the list of cities. It has three main parts: the `model`, the `schema`, and the `prompt`.
+Let's look at this code in more detail. We use the `generateObject` function from ModelFusion to generate the list of cities. It has three main parts: the `model`, the `schema`, and the `prompt`.
 
 #### Defining the Model
 
 ```ts
-generateStructure({
+generateObject({
   // highlight-start
   model: ollama
     .ChatTextGenerator({
       model: "nous-hermes2-mixtral",
       temperature: 0,
     })
-    .asStructureGenerationModel(jsonStructurePrompt.text()),
+    .asObjectGenerationModel(jsonObjectPrompt.text()),
   // highlight-end
   //...
 });
@@ -117,14 +117,14 @@ generateStructure({
 
 The `model` property specifies the LLM and the provider we want to use. We use the Ollama provider with their chat API by calling `ollama.ChatTextGenerator`, and specify the model that we want to use. We use the [Nous-Hermes-2 Mixtral 8x7B DPO model](https://huggingface.co/NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO) by specifying `model: "nous-hermes2-mixtral"` (or `openhermes2.5-mistral` for the smaller model). We also set the temperature to 0 to reduce the randomness in the output.
 
-The `asStructureGenerationModel` function adapts the text generator to a structure generator. `jsonStructurePrompt` is a text-to-JSON mapping for structure generation. It automatically enables JSON mode on Ollama API calls, injects the JSON schema into the prompt, and parses the JSON output.
+The `asObjectGenerationModel` function adapts the text generator to an object generator. `jsonObjectPrompt` is a text-to-JSON mapping for object generation. It automatically enables JSON mode on Ollama API calls, injects the JSON schema into the prompt, and parses the JSON output.
 
-`jsonStructurePrompt.text()` supports simple [text prompts](https://modelfusion.dev/guide/function/generate-text#text-prompt). You could also use `jsonStructurePrompt.instruction()` for more complex [instruction prompts](https://modelfusion.dev/guide/function/generate-text#instruction-prompt).
+`jsonObjectPrompt.text()` supports simple [text prompts](https://modelfusion.dev/guide/function/generate-text#text-prompt). You could also use `jsonObjectPrompt.instruction()` for more complex [instruction prompts](https://modelfusion.dev/guide/function/generate-text#instruction-prompt).
 
 #### Specifying the Schema
 
 ```ts
-generateStructure({
+generateObject({
   // ...
   // highlight-start
   schema: zodSchema(
@@ -152,7 +152,7 @@ The schema is converted to a JSON schema and injected into the prompt for the la
 #### Defining the Prompt
 
 ```ts
-generateStructure({
+generateObject({
   // ...
   // highlight-start
   prompt:
@@ -162,7 +162,7 @@ generateStructure({
 });
 ```
 
-The prompt definition is quite simple. We use a template string to define the prompt. The `${country}` part is replaced with the country that we pass into the function. The prompt is a simple string since we use `jsonStructurePrompt.text()`.
+The prompt definition is quite simple. We use a template string to define the prompt. The `${country}` part is replaced with the country that we pass into the function. The prompt is a simple string since we use `jsonObjectPrompt.text()`.
 
 #### Calling the Function
 
@@ -182,21 +182,21 @@ This is the complete code for `src/main.ts`:
 
 ```ts
 import {
-  generateStructure,
-  jsonStructurePrompt,
+  generateObject,
+  jsonObjectPrompt,
   ollama,
   zodSchema,
 } from "modelfusion";
 import { z } from "zod";
 
 const listCityDestinations = (country: string) =>
-  generateStructure({
+  generateObject({
     model: ollama
       .ChatTextGenerator({
         model: "nous-hermes2-mixtral",
         temperature: 0,
       })
-      .asStructureGenerationModel(jsonStructurePrompt.text()),
+      .asObjectGenerationModel(jsonObjectPrompt.text()),
 
     schema: zodSchema(
       z.object({
@@ -273,4 +273,4 @@ Here is some example output:
 
 In this post, we've explored how to use LLMs to generate structured information for JavaScript applications with Ollama, Zod, and ModelFusion. This approach illustrates one way to integrate AI into your projects.
 
-You can experiment and adapt this example to your requirements. The possibilities are vast, and by tweaking the model, schema, and prompts, you can tailor the output to suit a wide range of applications. The example code is available in the [ModelFusion repository](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/use-cases/generate-structured-information-city-destinations-ollama.ts).
+You can experiment and adapt this example to your requirements. The possibilities are vast, and by tweaking the model, schema, and prompts, you can tailor the output to suit a wide range of applications. The example code is available in the [ModelFusion repository](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/use-cases/generate-objectd-information-city-destinations-ollama.ts).

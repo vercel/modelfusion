@@ -1,19 +1,19 @@
 import {
-  generateStructure,
-  jsonStructurePrompt,
+  generateObject,
+  jsonObjectPrompt,
   ollama,
   zodSchema,
 } from "modelfusion";
 import { z } from "zod";
 
 const listCityDestinations = (country: string) =>
-  generateStructure({
+  generateObject({
     model: ollama
       .ChatTextGenerator({
         model: "nous-hermes2-mixtral",
         temperature: 0,
       })
-      .asStructureGenerationModel(jsonStructurePrompt.text()),
+      .asObjectGenerationModel(jsonObjectPrompt.text()),
 
     schema: zodSchema(
       z.object({

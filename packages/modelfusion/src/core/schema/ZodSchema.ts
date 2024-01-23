@@ -4,23 +4,25 @@ import { JsonSchemaProducer } from "./JsonSchemaProducer.js";
 import { Schema } from "./Schema.js";
 import { PartialDeep } from "type-fest";
 
-export function zodSchema<STRUCTURE>(zodSchema: z.Schema<STRUCTURE>) {
+export function zodSchema<OBJECT>(zodSchema: z.Schema<OBJECT>) {
   return new ZodSchema(zodSchema);
 }
 
-export class ZodSchema<STRUCTURE>
-  implements Schema<STRUCTURE>, JsonSchemaProducer
-{
-  readonly zodSchema: z.Schema<STRUCTURE>;
+export class ZodSchema<OBJECT> implements Schema<OBJECT>, JsonSchemaProducer {
+  readonly zodSchema: z.Schema<OBJECT>;
 
-  constructor(zodSchema: z.Schema<STRUCTURE>) {
+  constructor(zodSchema: z.Schema<OBJECT>) {
     this.zodSchema = zodSchema;
   }
 
   validate(
-    data: unknown
-  ): { success: true; data: STRUCTURE } | { success: false; error: unknown } {
-    return this.zodSchema.safeParse(data);
+    value: unknown
+  ): { success: true; value: OBJECT } | { success: false; error: unknown } {
+    const result = this.zodSchema.safeParse(value);
+
+    return result.success
+      ? { success: true, value: result.data }
+      : { success: false, error: result.error };
   }
 
   getJsonSchema(): unknown {
@@ -30,10 +32,10 @@ export class ZodSchema<STRUCTURE>
   /**
    * Use only for typing purposes. The value is always `undefined`.
    */
-  readonly _type: STRUCTURE;
+  readonly _type: OBJECT;
 
   /**
    * Use only for typing purposes. The value is always `undefined`.
    */
-  readonly _partialType: PartialDeep<STRUCTURE, { recurseIntoArrays: true }>;
+  readonly _partialType: PartialDeep<OBJECT, { recurseIntoArrays: true }>;
 }

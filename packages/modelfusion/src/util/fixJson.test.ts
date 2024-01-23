@@ -218,7 +218,7 @@ describe("nesting", () => {
     );
   });
 
-  test("should handle deeply nested structures", () => {
+  test("should handle deeply nested objects", () => {
     assert.strictEqual(
       fixJson('{"a": {"b": {"c": {"d":'),
       '{"a": {"b": {"c": {}}}}'

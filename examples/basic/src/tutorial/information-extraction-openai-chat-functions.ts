@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { zodSchema, generateStructure, openai } from "modelfusion";
+import { zodSchema, generateObject, openai } from "modelfusion";
 import fs from "node:fs";
 import { z } from "zod";
 
@@ -7,14 +7,14 @@ dotenv.config();
 
 async function main() {
   const extractNameAndPopulation = async (text: string) =>
-    generateStructure({
+    generateObject({
       model: openai
         .ChatTextGenerator({
           model: "gpt-4",
           temperature: 0, // remove randomness as much as possible
           maxGenerationTokens: 200, // only a few tokens needed for the response
         })
-        .asFunctionCallStructureGenerationModel({
+        .asFunctionCallObjectGenerationModel({
           fnName: "storeCity",
           fnDescription: "Save information about the city",
         })
