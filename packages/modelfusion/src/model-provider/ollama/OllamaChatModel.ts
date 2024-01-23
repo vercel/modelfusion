@@ -9,10 +9,10 @@ import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { validateTypes } from "../../core/schema/validateTypes.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
-  FlexibleStructureFromTextPromptTemplate,
-  StructureFromTextPromptTemplate,
-} from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
-import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
+  FlexibleObjectFromTextPromptTemplate,
+  ObjectFromTextPromptTemplate,
+} from "../../model-function/generate-object/ObjectFromTextPromptTemplate.js";
+import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextStreamingBaseModel,
@@ -164,7 +164,7 @@ export class OllamaChatModel
   restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
       validateTypes({
-        structure: rawResponse,
+        value: rawResponse,
         schema: zodSchema(ollamaChatResponseSchema),
       })
     );
@@ -211,17 +211,17 @@ export class OllamaChatModel
     });
   }
 
-  asStructureGenerationModel<INPUT_PROMPT, OllamaChatPrompt>(
+  asObjectGenerationModel<INPUT_PROMPT, OllamaChatPrompt>(
     promptTemplate:
-      | StructureFromTextPromptTemplate<INPUT_PROMPT, OllamaChatPrompt>
-      | FlexibleStructureFromTextPromptTemplate<INPUT_PROMPT, unknown>
+      | ObjectFromTextPromptTemplate<INPUT_PROMPT, OllamaChatPrompt>
+      | FlexibleObjectFromTextPromptTemplate<INPUT_PROMPT, unknown>
   ) {
     return "adaptModel" in promptTemplate
-      ? new StructureFromTextStreamingModel({
+      ? new ObjectFromTextStreamingModel({
           model: promptTemplate.adaptModel(this),
           template: promptTemplate,
         })
-      : new StructureFromTextStreamingModel({
+      : new ObjectFromTextStreamingModel({
           model: this as TextStreamingModel<OllamaChatPrompt>,
           template: promptTemplate,
         });
@@ -351,7 +351,7 @@ export const OllamaChatResponseFormat = {
         });
       }
 
-      if (parsedResult.data.done === false) {
+      if (parsedResult.value.done === false) {
         throw new ApiCallError({
           message: "Incomplete Ollama response received",
           statusCode: response.status,
@@ -362,7 +362,7 @@ export const OllamaChatResponseFormat = {
         });
       }
 
-      return parsedResult.data;
+      return parsedResult.value;
     }) satisfies ResponseHandler<OllamaChatResponse>,
   } satisfies OllamaChatResponseFormatType<OllamaChatResponse>,
 

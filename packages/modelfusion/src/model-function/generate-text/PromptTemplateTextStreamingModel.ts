@@ -1,8 +1,8 @@
 import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
 import { Schema } from "../../core/schema/Schema.js";
-import { StructureFromTextPromptTemplate } from "../generate-structure/StructureFromTextPromptTemplate.js";
-import { StructureFromTextStreamingModel } from "../generate-structure/StructureFromTextStreamingModel.js";
+import { ObjectFromTextPromptTemplate } from "../generate-object/ObjectFromTextPromptTemplate.js";
+import { ObjectFromTextStreamingModel } from "../generate-object/ObjectFromTextStreamingModel.js";
 import { PromptTemplateTextGenerationModel } from "./PromptTemplateTextGenerationModel.js";
 import {
   TextGenerationModelSettings,
@@ -40,10 +40,10 @@ export class PromptTemplateTextStreamingModel<
     return this.model.extractTextDelta(delta);
   }
 
-  asStructureGenerationModel<INPUT_PROMPT>(
-    promptTemplate: StructureFromTextPromptTemplate<INPUT_PROMPT, PROMPT>
+  asObjectGenerationModel<INPUT_PROMPT>(
+    promptTemplate: ObjectFromTextPromptTemplate<INPUT_PROMPT, PROMPT>
   ) {
-    return new StructureFromTextStreamingModel({
+    return new ObjectFromTextStreamingModel({
       model: this,
       template: promptTemplate,
     });

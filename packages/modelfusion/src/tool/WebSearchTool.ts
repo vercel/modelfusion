@@ -17,7 +17,7 @@ const RETURN_TYPE_SCHEMA = zodSchema(
 
 // expose the schemas to library consumers:
 const createParameters = (description: string) =>
-  // same structure, but with description:
+  // same schema, but with description:
   zodSchema(
     z.object({
       query: z.string().describe(description),

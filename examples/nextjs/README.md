@@ -1,12 +1,12 @@
 # Next.js ModelFusion Demo
 
-> _Next.js app_, _image generation_, _transcription_, _structure streaming_, _OpenAI_, _Stability AI_, _Ollama_
+> _Next.js app_, _image generation_, _transcription_, _object streaming_, _OpenAI_, _Stability AI_, _Ollama_
 
 Examples of using ModelFusion with Next.js 14 (App Router):
 
 - image generation
 - voice recording & transcription
-- structure streaming (client-side)
+- object streaming
 
 ## Usage
 
@@ -42,10 +42,10 @@ You need to set up the `OPENAI_API_KEY` environment variable to run this demo.
 
 Go to http://localhost:3000/generate-transcription in your browser.
 
-### Stream Structures (Ollama)
+### Stream Objects (Ollama)
 
 > _Generate travel itineraries using Ollama_
 
 You need to install [Ollama](https://ollama.ai/) and download the `openhermes` model to run this demo.
 
-Go to http://localhost:3000/stream-structure-ollama in your browser.
+Go to http://localhost:3000/stream-object-ollama in your browser.

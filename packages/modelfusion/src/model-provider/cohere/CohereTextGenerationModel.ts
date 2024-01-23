@@ -184,7 +184,7 @@ export class CohereTextGenerationModel
   restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
       validateTypes({
-        structure: rawResponse,
+        value: rawResponse,
         schema: zodSchema(cohereTextGenerationResponseSchema),
       })
     );

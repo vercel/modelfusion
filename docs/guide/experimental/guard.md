@@ -135,21 +135,21 @@ const story = await guard(
 );
 ```
 
-### Retry structure parsing with error message
+### Retry object parsing with error message
 
-During structure generation, models may occasionally produce outputs that either cannot be parsed or do not pass certain validation checks.
-With the `fixStructure` guard, you can retry generating the structure with a modified input that includes the error message.
+During object generation, models may occasionally produce outputs that either cannot be parsed or do not pass certain validation checks.
+With the `fixObject` guard, you can retry generating the structure with a modified input that includes the error message.
 
 ```ts
-import { generateStructure, openai, zodSchema } from "modelfusion";
-import { guard, fixStructure } from "modelfusion-experimental";
+import { generateObject, openai, zodSchema } from "modelfusion";
+import { guard, fixObject } from "modelfusion-experimental";
 
 const result = await guard(
   (prompt, options) =>
-    generateStructure({
+    generateObject({
       model: openai
         .ChatTextGenerator(/*...*/)
-        .asFunctionCallStructureGenerationModel({
+        .asFunctionCallObjectGenerationModel({
           fnName: "myFunction",
         }),
       schema: zodSchema({
@@ -161,7 +161,7 @@ const result = await guard(
   [
     // ...
   ],
-  fixStructure({
+  fixObject({
     modifyInputForRetry: async ({ input, error }) => [
       ...input,
       openai.ChatMessage.assistant(null, {
@@ -185,19 +185,19 @@ In this example, `gpt-3.5-turbo` is used initially. If structure parsing fails, 
 
 ```ts
 import {
-  generateStructure,
+  generateObject,
   openai,
   OpenAIChatModelType,
   zodSchema,
 } from "modelfusion";
-import { guard, fixStructure } from "modelfusion-experimental";
+import { guard, fixObject } from "modelfusion-experimental";
 
 const result = await guard(
   (input: { model: OpenAIChatModelType; prompt: openai.ChatPrompt }, options) =>
-    generateStructure({
+    generateObject({
       model: openai
         .ChatTextGenerator({ model: input.model })
-        .asFunctionCallStructureGenerationModel(/*...*/),
+        .asFunctionCallObjectGenerationModel(/*...*/),
       schema: zodSchema(/*...*/),
       prompt: input.prompt,
       ...options,
@@ -208,7 +208,7 @@ const result = await guard(
       // ...
     ],
   },
-  fixStructure({
+  fixObject({
     modifyInputForRetry: async ({ input, error }) => ({
       model: "gpt-4" as const,
       prompt: input.prompt,

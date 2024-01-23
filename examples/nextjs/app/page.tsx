@@ -16,11 +16,8 @@ export default function Home() {
           </a>
         </p>
         <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-          <a
-            href="/stream-structure-ollama"
-            className="text-blue-500 underline"
-          >
-            Structure streaming with Ollama (City Travel Itinerary Planner)
+          <a href="/stream-object-ollama" className="text-blue-500 underline">
+            Object streaming with Ollama (City Travel Itinerary Planner)
           </a>
         </p>
       </div>

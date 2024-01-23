@@ -29,7 +29,7 @@ export function text(): TextGenerationPromptTemplate<
 }
 
 /**
- * BakLLaVA 1 uses a Vicuna 1 prompt. This mapping combines it with the LlamaCpp prompt structure.
+ * BakLLaVA 1 uses a Vicuna 1 prompt. This mapping combines it with the LlamaCpp prompt.
  *
  * @see https://github.com/SkunkworksAI/BakLLaVA
  */

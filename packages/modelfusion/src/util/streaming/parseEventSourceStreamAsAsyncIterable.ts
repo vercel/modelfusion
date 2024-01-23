@@ -41,7 +41,7 @@ export async function parseEventSourceStreamAsAsyncIterable<T>({
             continue;
           }
 
-          const completionChunk = parseResult.data;
+          const completionChunk = parseResult.value;
 
           queue.push({
             type: "delta",

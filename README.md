@@ -12,7 +12,7 @@
 
 ## Introduction
 
-**ModelFusion** is an abstraction layer for integrating AI models into JavaScript and TypeScript applications, unifying the API for common operations such as **text streaming**, **structure generation**, and **tool usage**. It provides features to support production environments, including observability hooks, logging, and automatic retries. You can use ModelFusion to build AI applications, chatbots, and agents.
+**ModelFusion** is an abstraction layer for integrating AI models into JavaScript and TypeScript applications, unifying the API for common operations such as **text streaming**, **object generation**, and **tool usage**. It provides features to support production environments, including observability hooks, logging, and automatic retries. You can use ModelFusion to build AI applications, chatbots, and agents.
 
 - **Vendor-neutral**: ModelFusion is a non-commercial open source project that is community-driven. You can use it with any supported provider.
 - **Multi-modal**: ModelFusion supports a wide range of models including text generation, image generation, vision, text-to-speech, speech-to-text, and embedding models.
@@ -108,30 +108,30 @@ for await (const textPart of textStream) {
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama)
 
-### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure)
+### [Generate Object](https://modelfusion.dev/guide/function/generate-object)
 
 Generate typed objects using a language model and a schema.
 
-#### generateStructure
+#### generateObject
 
-Generate a structure that matches a schema.
+Generate an object that matches a schema.
 
 ```ts
 import {
   ollama,
   zodSchema,
-  generateStructure,
-  jsonStructurePrompt,
+  generateObject,
+  jsonObjectPrompt,
 } from "modelfusion";
 
-const sentiment = await generateStructure({
+const sentiment = await generateObject({
   model: ollama
     .ChatTextGenerator({
       model: "openhermes2.5-mistral",
       maxGenerationTokens: 1024,
       temperature: 0,
     })
-    .asStructureGenerationModel(jsonStructurePrompt.instruction()),
+    .asObjectGenerationModel(jsonObjectPrompt.instruction()),
 
   schema: zodSchema(
     z.object({
@@ -154,17 +154,17 @@ const sentiment = await generateStructure({
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Ollama](https://modelfusion.dev//integration/model-provider/ollama), [Llama.cpp](https://modelfusion.dev//integration/model-provider/llama.cpp)
 
-#### streamStructure
+#### streamObject
 
-Stream a structure that matches a schema. Partial structures before the final part are untyped JSON.
+Stream a object that matches a schema. Partial objects before the final part are untyped JSON.
 
 ```ts
-import { zodSchema, openai, streamStructure } from "modelfusion";
+import { zodSchema, openai, streamObject } from "modelfusion";
 
-const structureStream = await streamStructure({
+const objectStream = await streamObject({
   model: openai
     .ChatTextGenerator(/* ... */)
-    .asFunctionCallStructureGenerationModel({
+    .asFunctionCallObjectGenerationModel({
       fnName: "generateCharacter",
       fnDescription: "Generate character descriptions.",
     })
@@ -187,9 +187,9 @@ const structureStream = await streamStructure({
   prompt: "Generate 3 character descriptions for a fantasy role playing game.",
 });
 
-for await (const partialStructure of structureStream) {
+for await (const { partialObject } of objectStream) {
   console.clear();
-  console.log(partialStructure);
+  console.log(partialObject);
 }
 ```
 
@@ -575,7 +575,7 @@ const text = await generateText({
 
 - [Model Functions](https://modelfusion.dev/guide/function/)
   - [Generate text](https://modelfusion.dev/guide/function/generate-text)
-  - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
+  - [Generate object](https://modelfusion.dev/guide/function/generate-object)
   - [Generate image](https://modelfusion.dev/guide/function/generate-image)
   - [Generate speech](https://modelfusion.dev/guide/function/generate-speech)
   - [Generate transcription](https://modelfusion.dev/guide/function/generation-transcription)
@@ -627,7 +627,7 @@ Examples for almost all of the individual functions and objects. Highly recommen
 
 ### [StoryTeller](https://github.com/lgrammel/storyteller)
 
-> _multi-modal_, _structure streaming_, _image generation_, _text to speech_, _speech to text_, _text generation_, _structure generation_, _embeddings_
+> _multi-modal_, _object streaming_, _image generation_, _text to speech_, _speech to text_, _text generation_, _object generation_, _embeddings_
 
 StoryTeller is an exploratory web application that creates short audio stories for pre-school kids.
 
@@ -645,13 +645,13 @@ Ask questions about a PDF document and get answers from the document.
 
 ### [Next.js / ModelFusion Demos](https://github.com/lgrammel/modelfusion/tree/main/examples/nextjs)
 
-> _Next.js app_, _image generation_, _transcription_, _structure streaming_, _OpenAI_, _Stability AI_, _Ollama_
+> _Next.js app_, _image generation_, _transcription_, _object streaming_, _OpenAI_, _Stability AI_, _Ollama_
 
 Examples of using ModelFusion with Next.js 14 (App Router):
 
 - image generation
 - voice recording & transcription
-- structure streaming (client-side)
+- object streaming
 
 ### [Duplex Speech Streaming (using Vite/React & ModelFusion Server/Fastify)](https://github.com/lgrammel/modelfusion/tree/main/examples/speech-streaming-vite-react-fastify)
 

@@ -216,7 +216,7 @@ export class ElevenLabsSpeechModel
         return;
       }
 
-      const response = parseResult.data;
+      const response = parseResult.value;
 
       if ("error" in response) {
         queue.push({ type: "error", error: response });

@@ -13,7 +13,7 @@ export * from "./generate-image/ImageGenerationModel.js";
 export * from "./generate-image/PromptTemplateImageGenerationModel.js";
 export * from "./generate-image/generateImage.js";
 export * from "./generate-speech/index.js";
-export * from "./generate-structure/index.js";
+export * from "./generate-object/index.js";
 export * from "./generate-text/index.js";
 export * from "./generate-transcription/TranscriptionEvent.js";
 export * from "./generate-transcription/TranscriptionModel.js";

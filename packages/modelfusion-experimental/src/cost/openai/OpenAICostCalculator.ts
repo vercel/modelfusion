@@ -59,7 +59,7 @@ export class OpenAICostCalculator implements CostCalculator {
         break;
       }
 
-      case "generate-structure":
+      case "generate-object":
       case "generate-text": {
         if (model == null) {
           return null;

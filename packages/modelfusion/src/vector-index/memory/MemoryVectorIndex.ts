@@ -38,7 +38,7 @@ export class MemoryVectorIndex<DATA>
     serializedData: string;
     schema?: Schema<DATA>;
   }) {
-    // validate the outer structure:
+    // validate the outer value:
     const json = parseJSON({ text: serializedData, schema: jsonDataSchema });
 
     if (schema != null) {

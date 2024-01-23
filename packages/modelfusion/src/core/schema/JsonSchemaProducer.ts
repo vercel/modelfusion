@@ -1,5 +1,5 @@
 /**
- * Schema defines a structure for a JSON object.
+ * A schema defines the typed structure of a JSON object.
  */
 export interface JsonSchemaProducer {
   /**

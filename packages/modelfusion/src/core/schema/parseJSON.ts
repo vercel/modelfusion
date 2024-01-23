@@ -34,13 +34,13 @@ export function parseJSON<T>({
   schema?: Schema<T>;
 }): T {
   try {
-    const json = SecureJSON.parse(text);
+    const value = SecureJSON.parse(text);
 
     if (schema == null) {
-      return json;
+      return value;
     }
 
-    return validateTypes({ structure: json, schema });
+    return validateTypes({ value, schema });
   } catch (error) {
     if (
       error instanceof JSONParseError ||
@@ -64,10 +64,10 @@ export function safeParseJSON({
 }: {
   text: string;
 }):
-  | { success: true; data: unknown }
+  | { success: true; value: unknown }
   | { success: false; error: JSONParseError | TypeValidationError };
 /**
- * Safely parses a JSON string into a strongly-typed object, using a provided schema to validate the structure.
+ * Safely parses a JSON string into a strongly-typed object, using a provided schema to validate the object.
  *
  * @template T - The type of the object to parse the JSON into.
  * @param {string} text - The JSON string to parse.
@@ -81,7 +81,7 @@ export function safeParseJSON<T>({
   text: string;
   schema: Schema<T>;
 }):
-  | { success: true; data: T }
+  | { success: true; value: T }
   | { success: false; error: JSONParseError | TypeValidationError };
 export function safeParseJSON<T>({
   text,
@@ -90,19 +90,19 @@ export function safeParseJSON<T>({
   text: string;
   schema?: Schema<T>;
 }):
-  | { success: true; data: T }
+  | { success: true; value: T }
   | { success: false; error: JSONParseError | TypeValidationError } {
   try {
-    const json = SecureJSON.parse(text);
+    const value = SecureJSON.parse(text);
 
     if (schema == null) {
       return {
         success: true,
-        data: json as T,
+        value: value as T,
       };
     }
 
-    return safeValidateTypes({ structure: json, schema });
+    return safeValidateTypes({ value, schema });
   } catch (error) {
     return {
       success: false,

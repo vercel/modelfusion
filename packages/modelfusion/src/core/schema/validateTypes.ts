@@ -6,34 +6,34 @@ import { TypeValidationError } from "./TypeValidationError.js";
  * return a strongly-typed object.
  *
  * @template T - The type of the object to validate.
- * @param {string} structure - The JSON structure to validate.
- * @param {Schema<T>} schema - The schema to use for validating the JSON.
+ * @param {string} options.value - The object to validate.
+ * @param {Schema<T>} options.schema - The schema to use for validating the JSON.
  * @returns {T} - The typed object.
  */
 export function validateTypes<T>({
-  structure,
+  value,
   schema,
 }: {
-  structure: unknown;
+  value: unknown;
   schema: Schema<T>;
 }): T {
   try {
-    const validationResult = schema.validate(structure);
+    const validationResult = schema.validate(value);
 
     if (!validationResult.success) {
       throw new TypeValidationError({
-        structure,
+        value,
         cause: validationResult.error,
       });
     }
 
-    return validationResult.data;
+    return validationResult.value;
   } catch (error) {
     if (error instanceof TypeValidationError) {
       throw error;
     }
 
-    throw new TypeValidationError({ structure: structure, cause: error });
+    throw new TypeValidationError({ value, cause: error });
   }
 }
 
@@ -42,21 +42,21 @@ export function validateTypes<T>({
  * return a strongly-typed object.
  *
  * @template T - The type of the object to validate.
- * @param {string} structure - The JSON object to validate.
- * @param {Schema<T>} schema - The schema to use for validating the JSON.
+ * @param {string} options.value - The JSON object to validate.
+ * @param {Schema<T>} options.schema - The schema to use for validating the JSON.
  * @returns An object with either a `success` flag and the parsed and typed data, or a `success` flag and an error object.
  */
 export function safeValidateTypes<T>({
-  structure,
+  value,
   schema,
 }: {
-  structure: unknown;
+  value: unknown;
   schema: Schema<T>;
 }):
-  | { success: true; data: T }
+  | { success: true; value: T }
   | { success: false; error: TypeValidationError } {
   try {
-    const validationResult = schema.validate(structure);
+    const validationResult = schema.validate(value);
 
     if (validationResult.success) {
       return validationResult;
@@ -65,7 +65,7 @@ export function safeValidateTypes<T>({
     return {
       success: false,
       error: new TypeValidationError({
-        structure: structure,
+        value,
         cause: validationResult.error,
       }),
     };
@@ -75,7 +75,7 @@ export function safeValidateTypes<T>({
       error:
         error instanceof TypeValidationError
           ? error
-          : new TypeValidationError({ structure: structure, cause: error }),
+          : new TypeValidationError({ value, cause: error }),
     };
   }
 }

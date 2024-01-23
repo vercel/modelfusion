@@ -24,7 +24,7 @@ export function readEventSourceStream<T>({
             continue;
           }
 
-          queue.push(validationResult.data);
+          queue.push(validationResult.value);
         }
       } catch (error) {
         errorHandler?.(error);

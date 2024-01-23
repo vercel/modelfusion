@@ -1,19 +1,19 @@
 import dotenv from "dotenv";
-import { zodSchema, generateStructure, openai } from "modelfusion";
+import { zodSchema, generateObject, openai } from "modelfusion";
 import { z } from "zod";
 
 dotenv.config();
 
 async function main() {
   const analyzeSentiment = async (productReview: string) =>
-    generateStructure({
+    generateObject({
       model: openai
         .ChatTextGenerator({
           model: "gpt-4",
           temperature: 0, // remove randomness
           maxGenerationTokens: 500, // enough tokens for reasoning and sentiment
         })
-        .asFunctionCallStructureGenerationModel({
+        .asFunctionCallObjectGenerationModel({
           fnName: "sentiment",
           fnDescription: "Write the sentiment analysis",
         })

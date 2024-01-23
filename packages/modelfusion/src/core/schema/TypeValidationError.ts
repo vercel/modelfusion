@@ -1,20 +1,20 @@
 import { getErrorMessage } from "../../util/getErrorMessage.js";
 
 export class TypeValidationError extends Error {
-  readonly structure: unknown;
+  readonly value: unknown;
   readonly cause: unknown;
 
-  constructor({ structure, cause }: { structure: unknown; cause: unknown }) {
+  constructor({ value, cause }: { value: unknown; cause: unknown }) {
     super(
       `Type validation failed: ` +
-        `Structure: ${JSON.stringify(structure)}.\n` +
+        `Value: ${JSON.stringify(value)}.\n` +
         `Error message: ${getErrorMessage(cause)}`
     );
 
     this.name = "TypeValidationError";
 
     this.cause = cause;
-    this.structure = structure;
+    this.value = value;
   }
 
   toJSON() {
@@ -24,7 +24,7 @@ export class TypeValidationError extends Error {
       cause: this.cause,
       stack: this.stack,
 
-      object: this.structure,
+      value: this.value,
     };
   }
 }

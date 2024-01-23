@@ -1,7 +1,7 @@
 import { PromptTemplate } from "../PromptTemplate.js";
 
 /**
- * Prompt templates format a source prompt into the structure of a target prompt.
+ * Prompt templates format a source prompt as a target prompt.
  */
 export interface TextGenerationPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT>
   extends PromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> {

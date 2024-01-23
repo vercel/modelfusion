@@ -161,7 +161,7 @@ export class MistralChatModel
   restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
       validateTypes({
-        structure: rawResponse,
+        value: rawResponse,
         schema: zodSchema(mistralChatResponseSchema),
       })
     );

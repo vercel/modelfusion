@@ -141,28 +141,28 @@ for await (const textPart of textStream) {
 }
 ```
 
-### Generate Structure
+### Generate Object
 
 #### Chat Model (function call)
 
-You can map the chat model to a `StructureGenerationModel` by using the `asFunctionCallStructureGenerationModel` method.
+You can map the chat model to a `ObjectGenerationModel` by using the `asFunctionCallObjectGenerationModel` method.
 
 The mapped model will use the [OpenAI GPT function calling API](https://platform.openai.com/docs/guides/gpt/function-calling). It provides a single function specification and instructs the model to provide parameters for calling the function. The result is returned as parsed JSON.
 
 [OpenAIChatModel API](/api/classes/OpenAIChatModel) |
 
 ```ts
-import { openai, zodSchema, generateStructure } from "modelfusion";
+import { openai, zodSchema, generateObject } from "modelfusion";
 import { z } from "zod";
 
-const sentiment = await generateStructure({
+const sentiment = await generateObject({
   model: openai
     .ChatTextGenerator({
       model: "gpt-3.5-turbo",
       temperature: 0,
       maxGenerationTokens: 50,
     })
-    .asFunctionCallStructureGenerationModel({
+    .asFunctionCallObjectGenerationModel({
       fnName: "sentiment",
       fnDescription: "Write the sentiment analysis",
     })

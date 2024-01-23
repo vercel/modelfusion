@@ -87,7 +87,7 @@ export class SQLiteVectorIndex<DATA extends object | undefined>
 
       return {
         id: row.id,
-        data: validationResult.data,
+        data: validationResult.value,
         similarity: 1 - row.distance,
       };
     });
