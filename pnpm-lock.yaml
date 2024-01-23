@@ -128,7 +128,7 @@ importers:
         specifier: 0.3.0
         version: link:../../packages/@modelfusion-pinecone/dist
       '@modelfusion/serpapi-tool':
-        specifier: 0.10.0
+        specifier: 0.11.0
         version: link:../../tools/serpapi-tool/dist
       '@modelfusion/sqlite-vss':
         specifier: 0.3.0
