@@ -1,5 +1,63 @@
 # Changelog
 
+## v0.131.0 - 2024-01-23
+
+### Added
+
+- `ObjectStreamResponse` and `ObjectStreamFromResponse` serialization functions for using server-generated object streams in web applications.
+
+  Server example:
+
+  ```ts
+  export async function POST(req: Request) {
+    const { myArgs } = await req.json();
+
+    const objectStream = await streamObject({
+      // ...
+    });
+
+    // serialize the object stream to a response:
+    return new ObjectStreamResponse(objectStream);
+  }
+  ```
+
+  Client example:
+
+  ```ts
+  const response = await fetch("/api/stream-object-openai", {
+    method: "POST",
+    body: JSON.stringify({ myArgs }),
+  });
+
+  // deserialize (result object is simpler than the full response)
+  const stream = ObjectStreamFromResponse({
+    schema: itinerarySchema,
+    response,
+  });
+
+  for await (const { partialObject } of stream) {
+    // do something, e.g. setting a React state
+  }
+  ```
+
+### Changed
+
+- **breaking change**: rename `generateStructure` to `generateObject` and `streamStructure` to `streamObject`. Related names have been changed accordingly.
+- **breaking change**: the `streamObject` result stream contains additional data. You need to use `stream.partialObject` or destructuring to access it:
+
+  ```ts
+  const objectStream = await streamObject({
+    // ...
+  });
+
+  for await (const { partialObject } of objectStream) {
+    console.clear();
+    console.log(partialObject);
+  }
+  ```
+
+- **breaking change**: the result from successful `Schema` validations is stored in the `value` property (before: `data`).
+
 ## v0.130.1 - 2024-01-22
 
 ### Fixed
