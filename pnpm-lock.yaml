@@ -119,7 +119,7 @@ importers:
   examples/basic:
     dependencies:
       '@modelfusion/google-custom-search-tool':
-        specifier: 0.9.0
+        specifier: 0.10.0
         version: link:../../tools/google-custom-search-tool/dist
       '@modelfusion/mathjs-tool':
         specifier: 0.1.1
