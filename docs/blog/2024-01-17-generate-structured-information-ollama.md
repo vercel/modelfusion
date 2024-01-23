@@ -273,4 +273,4 @@ Here is some example output:
 
 In this post, we've explored how to use LLMs to generate structured information for JavaScript applications with Ollama, Zod, and ModelFusion. This approach illustrates one way to integrate AI into your projects.
 
-You can experiment and adapt this example to your requirements. The possibilities are vast, and by tweaking the model, schema, and prompts, you can tailor the output to suit a wide range of applications. The example code is available in the [ModelFusion repository](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/use-cases/generate-objectd-information-city-destinations-ollama.ts).
+You can experiment and adapt this example to your requirements. The possibilities are vast, and by tweaking the model, schema, and prompts, you can tailor the output to suit a wide range of applications. The example code is available in the [ModelFusion repository](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/use-cases/generate-structured-information-city-destinations-ollama.ts).
