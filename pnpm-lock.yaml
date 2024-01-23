@@ -125,7 +125,7 @@ importers:
         specifier: 0.1.1
         version: link:../../tools/mathjs-tool/dist
       '@modelfusion/pinecone':
-        specifier: 0.3.0
+        specifier: 0.4.0
         version: link:../../packages/@modelfusion-pinecone/dist
       '@modelfusion/serpapi-tool':
         specifier: 0.11.0
