@@ -30,7 +30,7 @@
 npm install modelfusion
 ```
 
-Or use a start template:
+Or use a starter template:
 
 - [ModelFusion terminal app starter](https://github.com/lgrammel/modelfusion-terminal-app-starter)
 - [Next.js, Vercel AI SDK, Llama.cpp & ModelFusion starter](https://github.com/lgrammel/modelfusion-llamacpp-nextjs-starter)
