@@ -146,7 +146,7 @@ importers:
         specifier: 0.131.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
-        specifier: 0.5.0
+        specifier: 0.6.0
         version: link:../../packages/modelfusion-experimental/dist
       nanoid:
         specifier: 3.3.6
@@ -189,7 +189,7 @@ importers:
         specifier: 0.131.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
-        specifier: 0.5.0
+        specifier: 0.6.0
         version: link:../../packages/modelfusion-experimental/dist
       next:
         specifier: 13.5.1
@@ -285,7 +285,7 @@ importers:
         specifier: 0.131.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
-        specifier: 0.5.0
+        specifier: 0.6.0
         version: link:../../packages/modelfusion-experimental/dist
       next:
         specifier: 14.1.0
@@ -359,7 +359,7 @@ importers:
         specifier: 0.131.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
-        specifier: 0.5.0
+        specifier: 0.6.0
         version: link:../../packages/modelfusion-experimental/dist
       pdfjs-dist:
         specifier: 3.6.172
@@ -399,7 +399,7 @@ importers:
         specifier: 0.131.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
-        specifier: 0.5.0
+        specifier: 0.6.0
         version: link:../../packages/modelfusion-experimental/dist
       react:
         specifier: ^18.2.0
@@ -481,7 +481,7 @@ importers:
         specifier: 0.131.0
         version: link:../../packages/modelfusion/dist
       modelfusion-experimental:
-        specifier: 0.5.0
+        specifier: 0.6.0
         version: link:../../packages/modelfusion-experimental/dist
       zod:
         specifier: 3.22.4
