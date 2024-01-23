@@ -1,4 +1,5 @@
 import type { PartialDeep } from "type-fest";
+import { Schema } from "../../core/schema/Schema.js";
 import { parsePartialJson } from "../../util/parsePartialJson.js";
 
 export type StructureStream<STRUCTURE> = AsyncIterable<{
@@ -16,6 +17,7 @@ export class StructureStreamResponse extends Response {
 export async function* StructureStreamFromResponse<T>({
   response,
 }: {
+  schema: Schema<T>;
   response: Response;
 }) {
   let text = "";
@@ -30,7 +32,9 @@ export async function* StructureStreamFromResponse<T>({
 
     text += new TextDecoder().decode(value);
 
-    yield parsePartialJson(text) as T; // TODO partial parsing?
+    const partialStructure = parsePartialJson(text) as T;
+
+    yield { partialStructure };
   }
 }
 

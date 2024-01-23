@@ -1,6 +1,6 @@
 import { StructureStreamFromResponse } from "modelfusion";
 import { useCallback, useState } from "react";
-import { Itinerary } from "./itinerarySchema";
+import { Itinerary, itinerarySchema } from "./itinerarySchema";
 
 export function useItinerary() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -24,10 +24,11 @@ export function useItinerary() {
         });
 
         const stream = StructureStreamFromResponse<Itinerary>({
+          schema: itinerarySchema,
           response,
         });
 
-        for await (const partialStructure of stream) {
+        for await (const { partialStructure } of stream) {
           setItinerary(partialStructure);
         }
       } finally {
