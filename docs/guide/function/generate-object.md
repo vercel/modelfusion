@@ -186,7 +186,7 @@ for await (const { partialObject } of objectStream) {
 }
 ```
 
-### Example: Full response with object promise
+#### Example: Full response with object promise
 
 You can use the `fullResponse` property to get a full response with an additional promise to the fully typed and validated object.
 
