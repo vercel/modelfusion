@@ -101,11 +101,14 @@ describe("streamObject", () => {
       prompt: "generate a name",
     });
 
-    expect(await arrayFromAsync(stream)).toStrictEqual([
+    const streamAsArray = await arrayFromAsync(stream);
+
+    expect(streamAsArray.map((entry) => entry.partialObject)).toStrictEqual([
       {},
       { name: "" },
       { name: "M" },
       { name: "Mike" },
+      { name: "Mike" }, // double occurrence on purpose (stream text)
     ]);
   });
 });
