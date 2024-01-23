@@ -44,4 +44,4 @@ const listCityDestinations = (country: string) =>
 
 ## Resources
 
-- [Blog Post: Effortlessly Generate Objectd Information with Ollama, Zod, and ModelFusion](/blog/generate-objectd-information-ollama)
+- [Blog Post: Effortlessly Generate Structured Information with Ollama, Zod, and ModelFusion](/blog/generate-structured-information-ollama)

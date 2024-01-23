@@ -1,6 +1,6 @@
 ---
-description: Effortlessly Generate Objectd Information with Ollama, Zod, and ModelFusion
-slug: generate-objectd-information-ollama
+description: Effortlessly Generate Structured Information with Ollama, Zod, and ModelFusion
+slug: generate-structured-information-ollama
 authors:
   - name: Lars Grammel
     title: AI Engineer
@@ -8,13 +8,13 @@ authors:
     image_url: https://avatars.githubusercontent.com/u/205036
 tags:
   [tutorial, chatbot, ollama, zod, modelfusion, structure, types, typescript]
-image: /img/blog/2024-01-17-generate-objectd-information-ollama.png
+image: /img/blog/2024-01-17-generate-structured-information-ollama.png
 hide_table_of_contents: false
 ---
 
-# Effortlessly Generate Objectd Information with Ollama, Zod, and ModelFusion
+# Effortlessly Generate Structured Information with Ollama, Zod, and ModelFusion
 
-<img src="/img/blog/2024-01-17-generate-objectd-information-ollama.png"></img>
+<img src="/img/blog/2024-01-17-generate-structured-information-ollama.png"></img>
 
 **Have you ever wondered how to turn a simple text prompt into structured, typed information immediately usable in your JavaScript applications?**
 
@@ -27,7 +27,7 @@ For this task, we'll use several tools:
 - [Zod](https://github.com/colinhacks/zod), a type validation library, ensures the structured data we generate is correctly formatted and typed.
 - [ModelFusion](https://modelfusion.dev) is an open-source library I'm developing to integrate AI models seamlessly into TypeScript projects. It provides an [Ollama client](https://modelfusion.dev/integration/model-provider/ollama) and a [generateObject function](https://modelfusion.dev/guide/function/generate-object).
 
-By the end of this post, you’ll see how these technologies work together to create a powerful solution for generating typed, structured data on your local machine. The example code is available in the [ModelFusion repository](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/use-cases/generate-objectd-information-city-destinations-ollama.ts).
+By the end of this post, you’ll see how these technologies work together to create a powerful solution for generating typed, structured data on your local machine. The example code is available in the [ModelFusion repository](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/use-cases/generate-structured-information-city-destinations-ollama.ts).
 
 ## The Power and Limits of Generating Structured Information
 
