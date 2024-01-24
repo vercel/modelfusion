@@ -91,7 +91,7 @@ export async function generateToolCalls<
   // Note: PROMPT must not be a function.
   const expandedPrompt =
     typeof prompt === "function"
-      ? (prompt as (structures: TOOLS) => PROMPT)(tools)
+      ? (prompt as (objects: TOOLS) => PROMPT)(tools)
       : prompt;
 
   const callResponse = await executeStandardCall<
@@ -147,7 +147,7 @@ export async function generateToolCalls<
         return {
           id: rawToolCall.id,
           name: tool.name,
-          args: parseResult.data,
+          args: parseResult.value,
         };
       });
 

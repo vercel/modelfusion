@@ -2,8 +2,7 @@ import { llamacpp, streamText } from "modelfusion";
 import fs from "node:fs";
 import path from "node:path";
 
-// see https://modelfusion.dev/tutorial/tutorials/using-llamacpp-bakllava
-// for setup instructions
+// see https://modelfusion.dev/integration/model-provider/llamacpp/using-bakllava for instructions
 async function main() {
   const image = fs.readFileSync(path.join("data", "comic-mouse.png"));
 

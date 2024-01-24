@@ -13,7 +13,7 @@ import {
   SpeechGenerationModel,
   SpeechGenerationModelSettings,
 } from "../../model-function/generate-speech/SpeechGenerationModel.js";
-import { base64ToUint8Array } from "../../util/UInt8Utils.js";
+import { base64ToUint8Array } from "../../util/format/UInt8Utils.js";
 import { LmntApiConfiguration } from "./LmntApiConfiguration.js";
 
 export interface LmntSpeechModelSettings extends SpeechGenerationModelSettings {

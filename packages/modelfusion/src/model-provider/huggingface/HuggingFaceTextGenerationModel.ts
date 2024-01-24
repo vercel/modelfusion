@@ -140,7 +140,7 @@ export class HuggingFaceTextGenerationModel
   restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
       validateTypes({
-        structure: rawResponse,
+        value: rawResponse,
         schema: zodSchema(huggingFaceTextGenerationResponseSchema),
       })
     );

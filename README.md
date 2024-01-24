@@ -12,12 +12,12 @@
 
 ## Introduction
 
-**ModelFusion** is an abstraction layer for integrating AI models into JavaScript and TypeScript applications, unifying the API for common operations such as **text streaming**, **structure generation**, and **tool usage**. It provides features to support production environments, including observability hooks, logging, and automatic retries. You can use ModelFusion to build AI applications, chatbots, and agents.
+**ModelFusion** is an abstraction layer for integrating AI models into JavaScript and TypeScript applications, unifying the API for common operations such as **text streaming**, **object generation**, and **tool usage**. It provides features to support production environments, including observability hooks, logging, and automatic retries. You can use ModelFusion to build AI applications, chatbots, and agents.
 
 - **Vendor-neutral**: ModelFusion is a non-commercial open source project that is community-driven. You can use it with any supported provider.
 - **Multi-modal**: ModelFusion supports a wide range of models including text generation, image generation, vision, text-to-speech, speech-to-text, and embedding models.
 - **Type inference and validation**: ModelFusion infers TypeScript types wherever possible and validates model responses.
-- **Observability and logging**: ModelFusion provides an observer framework and out-of-the-box logging support.
+- **Observability and logging**: ModelFusion provides an observer framework and logging support.
 - **Resilience and robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
 - **Built for production**: ModelFusion is fully tree-shakeable, can be used in serverless environments, and only uses a minimal set of dependencies.
 
@@ -30,7 +30,7 @@
 npm install modelfusion
 ```
 
-Or use a start template:
+Or use a starter template:
 
 - [ModelFusion terminal app starter](https://github.com/lgrammel/modelfusion-terminal-app-starter)
 - [Next.js, Vercel AI SDK, Llama.cpp & ModelFusion starter](https://github.com/lgrammel/modelfusion-llamacpp-nextjs-starter)
@@ -89,13 +89,16 @@ import { readFileSync } from "fs";
 const image = readFileSync("./image.png");
 
 const textStream = await streamText({
-  model: openai.ChatTextGenerator({ model: "gpt-4-vision-preview" }),
-  prompt: [
-    openai.ChatMessage.user([
-      { type: "text", text: "Describe the image in detail:" },
+  model: openai
+    .ChatTextGenerator({ model: "gpt-4-vision-preview" })
+    .withInstructionPrompt(),
+
+  prompt: {
+    instruction: [
+      { type: "text", text: "Describe the image in detail." },
       { type: "image", image, mimeType: "image/png" },
-    ]),
-  ],
+    ],
+  },
 });
 
 for await (const textPart of textStream) {
@@ -105,30 +108,30 @@ for await (const textPart of textStream) {
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [OpenAI compatible](https://modelfusion.dev/integration/model-provider/openaicompatible), [Llama.cpp](https://modelfusion.dev/integration/model-provider/llamacpp), [Ollama](https://modelfusion.dev/integration/model-provider/ollama)
 
-### [Generate Structure](https://modelfusion.dev/guide/function/generate-structure)
+### [Generate Object](https://modelfusion.dev/guide/function/generate-object)
 
 Generate typed objects using a language model and a schema.
 
-#### generateStructure
+#### generateObject
 
-Generate a structure that matches a schema.
+Generate an object that matches a schema.
 
 ```ts
 import {
   ollama,
   zodSchema,
-  generateStructure,
-  jsonStructurePrompt,
+  generateObject,
+  jsonObjectPrompt,
 } from "modelfusion";
 
-const sentiment = await generateStructure({
+const sentiment = await generateObject({
   model: ollama
     .ChatTextGenerator({
       model: "openhermes2.5-mistral",
       maxGenerationTokens: 1024,
       temperature: 0,
     })
-    .asStructureGenerationModel(jsonStructurePrompt.instruction()),
+    .asObjectGenerationModel(jsonObjectPrompt.instruction()),
 
   schema: zodSchema(
     z.object({
@@ -151,17 +154,17 @@ const sentiment = await generateStructure({
 
 Providers: [OpenAI](https://modelfusion.dev/integration/model-provider/openai), [Ollama](https://modelfusion.dev//integration/model-provider/ollama), [Llama.cpp](https://modelfusion.dev//integration/model-provider/llama.cpp)
 
-#### streamStructure
+#### streamObject
 
-Stream a structure that matches a schema. Partial structures before the final part are untyped JSON.
+Stream a object that matches a schema. Partial objects before the final part are untyped JSON.
 
 ```ts
-import { zodSchema, openai, streamStructure } from "modelfusion";
+import { zodSchema, openai, streamObject } from "modelfusion";
 
-const structureStream = await streamStructure({
+const objectStream = await streamObject({
   model: openai
     .ChatTextGenerator(/* ... */)
-    .asFunctionCallStructureGenerationModel({
+    .asFunctionCallObjectGenerationModel({
       fnName: "generateCharacter",
       fnDescription: "Generate character descriptions.",
     })
@@ -184,9 +187,9 @@ const structureStream = await streamStructure({
   prompt: "Generate 3 character descriptions for a fantasy role playing game.",
 });
 
-for await (const partialStructure of structureStream) {
+for await (const { partialObject } of objectStream) {
   console.clear();
-  console.log(partialStructure);
+  console.log(partialObject);
 }
 ```
 
@@ -269,13 +272,12 @@ Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 
 ```ts
 import { generateTranscription, openai } from "modelfusion";
+import fs from "node:fs";
 
 const transcription = await generateTranscription({
   model: openai.Transcriber({ model: "whisper-1" }),
-  data: {
-    type: "mp3",
-    data: await fs.promises.readFile("data/test.mp3"),
-  },
+  mimeType: "audio/mp3",
+  audioData: await fs.promises.readFile("data/test.mp3"),
 });
 ```
 
@@ -510,14 +512,16 @@ const textStream = await streamText({
 You an use prompt templates with image models as well, e.g. to use a basic text prompt. It is available as a shorthand method:
 
 ```ts
-const image = await generateImage(
-  stability
+const image = await generateImage({
+  model: stability
     .ImageGenerator({
       //...
     })
     .withTextPrompt(),
-  "the wicked witch of the west in the style of early 19th century painting"
-);
+
+  prompt:
+    "the wicked witch of the west in the style of early 19th century painting",
+});
 ```
 
 | Prompt Template | Text Prompt |
@@ -551,14 +555,18 @@ for (const choice of (rawResponse as OpenAICompletionResponse).choices) {
 
 ### Logging and Observability
 
-ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/observer) and [out-of-the-box logging support](https://modelfusion.dev/guide/util/logging). You can easily trace runs and call hierarchies, and you can add your own observers.
+ModelFusion provides an [observer framework](https://modelfusion.dev/guide/util/observer) and [logging support](https://modelfusion.dev/guide/util/logging). You can easily trace runs and call hierarchies, and you can add your own observers.
 
-#### Global Logging Example
+#### Enabling Logging on a Function Call
 
 ```ts
-import { modelfusion } from "modelfusion";
+import { generateText, openai } from "modelfusion";
 
-modelfusion.setLogFormat("detailed-object"); // log full events
+const text = await generateText({
+  model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
+  prompt: "Write a short story about a robot learning to love:\n\n",
+  logging: "detailed-object",
+});
 ```
 
 ## Documentation
@@ -567,10 +575,10 @@ modelfusion.setLogFormat("detailed-object"); // log full events
 
 - [Model Functions](https://modelfusion.dev/guide/function/)
   - [Generate text](https://modelfusion.dev/guide/function/generate-text)
-  - [Generate structure](https://modelfusion.dev/guide/function/generate-structure)
+  - [Generate object](https://modelfusion.dev/guide/function/generate-object)
   - [Generate image](https://modelfusion.dev/guide/function/generate-image)
   - [Generate speech](https://modelfusion.dev/guide/function/generate-speech)
-  - [Generate transcription](https://modelfusion.dev/guide/function/generation-transcription)
+  - [Generate transcription](https://modelfusion.dev/guide/function/generate-transcription)
   - [Tokenize Text](https://modelfusion.dev/guide/function/tokenize-text)
   - [Embed Value](https://modelfusion.dev/guide/function/embed)
   - [Classify Value](https://modelfusion.dev/guide/function/classify)
@@ -619,7 +627,7 @@ Examples for almost all of the individual functions and objects. Highly recommen
 
 ### [StoryTeller](https://github.com/lgrammel/storyteller)
 
-> _multi-modal_, _structure streaming_, _image generation_, _text to speech_, _speech to text_, _text generation_, _structure generation_, _embeddings_
+> _multi-modal_, _object streaming_, _image generation_, _text to speech_, _speech to text_, _text generation_, _object generation_, _embeddings_
 
 StoryTeller is an exploratory web application that creates short audio stories for pre-school kids.
 
@@ -637,15 +645,13 @@ Ask questions about a PDF document and get answers from the document.
 
 ### [Next.js / ModelFusion Demos](https://github.com/lgrammel/modelfusion/tree/main/examples/nextjs)
 
-> _Next.js app_, _image generation_
+> _Next.js app_, _image generation_, _transcription_, _object streaming_, _OpenAI_, _Stability AI_, _Ollama_
 
-Various examples of using ModelFusion with Next.js: Image generation.
+Examples of using ModelFusion with Next.js 14 (App Router):
 
-### [Voice recording and transcription (Next.js)](https://github.com/lgrammel/modelfusion/tree/main/examples/voice-recording-next-js)
-
-> _Next.js app_, _OpenAI Whisper_
-
-Record audio with push-to-talk and transcribe it using Whisper, implemented as a Next.js app. The app shows a list of the transcriptions.
+- image generation
+- voice recording & transcription
+- object streaming
 
 ### [Duplex Speech Streaming (using Vite/React & ModelFusion Server/Fastify)](https://github.com/lgrammel/modelfusion/tree/main/examples/speech-streaming-vite-react-fastify)
 

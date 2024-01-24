@@ -1,7 +1,7 @@
 {
   "name": "@modelfusion/google-custom-search-tool",
   "description": "Google Custom Search tool for ModelFusion",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
@@ -42,11 +42,12 @@
   "scripts": {
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist .turbo node_modules",
+    "clean:build": "rimraf build dist",
     "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
     "build:copy-files": "copyfiles --flat package.json README.md ../../LICENSE dist",
-    "dist": "pnpm clean && pnpm lint && pnpm test && pnpm build"
+    "dist": "pnpm clean:build && pnpm lint && pnpm build"
   },
   "dependencies": {},
   "devDependencies": {
@@ -55,11 +56,11 @@
     "@typescript-eslint/parser": "^6.1.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
-    "modelfusion": "0.128.0",
+    "modelfusion": "0.131.0",
     "zod": "3.22.4"
   },
   "peerDependencies": {
     "zod": "^3.22",
-    "modelfusion": ">=0.72.0 <1.0.0-0"
+    "modelfusion": ">=0.131.0 <1.0.0-0"
   }
 }

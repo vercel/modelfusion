@@ -75,4 +75,4 @@ In summary, this tutorial demonstrates a simple yet powerful way to use AI for t
 
 ## References
 
-- [Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorials/recreate-image-gpt4-vision.ts)
+- [Source Code](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorial/reimagine-image-gpt4-vision.ts)

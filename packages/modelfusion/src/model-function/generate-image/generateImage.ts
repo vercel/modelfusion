@@ -1,5 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { base64ToUint8Array } from "../../util/UInt8Utils.js";
+import { base64ToUint8Array } from "../../util/format/UInt8Utils.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStandardCall } from "../executeStandardCall.js";
 import {

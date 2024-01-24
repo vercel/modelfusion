@@ -7,8 +7,8 @@ import {
 } from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
 import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/TextGenerationToolCallsModel.js";
 import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate.js";
-import { StructureFromTextGenerationModel } from "../generate-structure/StructureFromTextGenerationModel.js";
-import { StructureFromTextPromptTemplate } from "../generate-structure/StructureFromTextPromptTemplate.js";
+import { ObjectFromTextGenerationModel } from "../generate-object/ObjectFromTextGenerationModel.js";
+import { ObjectFromTextPromptTemplate } from "../generate-object/ObjectFromTextPromptTemplate.js";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
@@ -104,10 +104,10 @@ export class PromptTemplateTextGenerationModel<
     });
   }
 
-  asStructureGenerationModel<INPUT_PROMPT>(
-    promptTemplate: StructureFromTextPromptTemplate<INPUT_PROMPT, PROMPT>
+  asObjectGenerationModel<INPUT_PROMPT>(
+    promptTemplate: ObjectFromTextPromptTemplate<INPUT_PROMPT, PROMPT>
   ) {
-    return new StructureFromTextGenerationModel({
+    return new ObjectFromTextGenerationModel({
       model: this,
       template: promptTemplate,
     });

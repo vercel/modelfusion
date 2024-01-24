@@ -1,14 +1,17 @@
+import { DataContent } from "../../util/format/DataContent.js";
 import { FunctionCallOptions } from "../../core/FunctionOptions.js";
 import { Model, ModelSettings } from "../Model.js";
 
 export interface TranscriptionModelSettings extends ModelSettings {}
 
 export interface TranscriptionModel<
-  DATA,
   SETTINGS extends TranscriptionModelSettings = TranscriptionModelSettings,
 > extends Model<SETTINGS> {
   doTranscribe: (
-    data: DATA,
+    input: {
+      mimeType: string;
+      audioData: DataContent;
+    },
     options: FunctionCallOptions
   ) => PromiseLike<{
     rawResponse: unknown;

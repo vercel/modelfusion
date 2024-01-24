@@ -11,6 +11,11 @@ import {
   TranscriptionModel,
   TranscriptionModelSettings,
 } from "../../model-function/generate-transcription/TranscriptionModel.js";
+import { getAudioFileExtension } from "../../util/audio/getAudioFileExtension.js";
+import {
+  DataContent,
+  convertDataContentToUint8Array,
+} from "../../util/format/DataContent.js";
 import { WhisperCppApiConfiguration } from "./WhisperCppApiConfiguration.js";
 
 export interface WhisperCppTranscriptionModelSettings
@@ -20,18 +25,9 @@ export interface WhisperCppTranscriptionModelSettings
   temperature?: number;
 }
 
-export type WhisperCppTranscriptionInput = {
-  type: "wav";
-  data: Uint8Array;
-};
-
 export class WhisperCppTranscriptionModel
   extends AbstractModel<WhisperCppTranscriptionModelSettings>
-  implements
-    TranscriptionModel<
-      WhisperCppTranscriptionInput,
-      WhisperCppTranscriptionModelSettings
-    >
+  implements TranscriptionModel<WhisperCppTranscriptionModelSettings>
 {
   constructor(settings: WhisperCppTranscriptionModelSettings) {
     super({ settings });
@@ -41,10 +37,22 @@ export class WhisperCppTranscriptionModel
   readonly modelName = null;
 
   async doTranscribe(
-    data: WhisperCppTranscriptionInput,
+    {
+      audioData,
+      mimeType,
+    }: {
+      audioData: DataContent;
+      mimeType: string;
+    },
     options: FunctionCallOptions
   ) {
-    const rawResponse = await this.callAPI(data, options);
+    const rawResponse = await this.callAPI(
+      {
+        fileExtension: getAudioFileExtension(mimeType),
+        audioData: convertDataContentToUint8Array(audioData),
+      },
+      options
+    );
 
     return {
       rawResponse,
@@ -53,7 +61,10 @@ export class WhisperCppTranscriptionModel
   }
 
   async callAPI(
-    data: WhisperCppTranscriptionInput,
+    input: {
+      fileExtension: string;
+      audioData: Uint8Array;
+    },
     callOptions: FunctionCallOptions
   ) {
     const { temperature } = this.settings;
@@ -65,7 +76,11 @@ export class WhisperCppTranscriptionModel
       throttle: api.throttle,
       call: async () => {
         const formData = new FormData();
-        formData.append("file", new Blob([data.data]), `audio.${data.type}`);
+        formData.append(
+          "file",
+          new Blob([input.audioData]),
+          `audio.${input.fileExtension}`
+        );
         formData.append("response_format", "json");
 
         if (temperature != null) {
@@ -131,9 +146,9 @@ const successfulResponseHandler: ResponseHandler<{
     });
   }
 
-  if ("error" in parsedResult.data) {
+  if ("error" in parsedResult.value) {
     throw new ApiCallError({
-      message: parsedResult.data.error,
+      message: parsedResult.value.error,
       statusCode: response.status,
       responseBody,
       url,
@@ -142,7 +157,7 @@ const successfulResponseHandler: ResponseHandler<{
   }
 
   return {
-    text: parsedResult.data.text.trim(),
+    text: parsedResult.value.text.trim(),
   };
 };
 

@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
-  generateStructure,
-  jsonStructurePrompt,
+  generateObject,
+  jsonObjectPrompt,
   openai,
   zodSchema,
 } from "modelfusion";
@@ -14,14 +14,14 @@ dotenv.config();
  * in a structured format.
  */
 const listCityDestinations = (country: string) =>
-  generateStructure({
+  generateObject({
     model: openai
       .ChatTextGenerator({
         model: "gpt-4-1106-preview",
         temperature: 0,
         maxGenerationTokens: 4096,
       })
-      .asStructureGenerationModel(jsonStructurePrompt.text()),
+      .asObjectGenerationModel(jsonObjectPrompt.text()),
 
     schema: zodSchema(
       z.object({

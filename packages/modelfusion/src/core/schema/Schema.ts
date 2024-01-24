@@ -1,17 +1,17 @@
 /**
- * Validates that the structure of `data` matches the structure of this schema.
+ * Validates that the structure of a value matches this schema.
  */
-export interface Schema<STRUCTURE> {
+export interface Schema<OBJECT> {
   /**
-   * Validates that the structure of `data` matches the structure of this schema,
-   * and returns a typed version of data if it does.
+   * Validates that the structure of a value matches this schema,
+   * and returns a typed version of the value if it does.
    */
   validate(
-    data: unknown
-  ): { success: true; data: STRUCTURE } | { success: false; error: unknown };
+    value: unknown
+  ): { success: true; value: OBJECT } | { success: false; error: unknown };
 
   /**
    * Only used for type inference.
    */
-  readonly _type: STRUCTURE;
+  readonly _type: OBJECT;
 }

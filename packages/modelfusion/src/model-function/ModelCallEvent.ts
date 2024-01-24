@@ -30,13 +30,13 @@ import {
   SpeechStreamingStartedEvent,
 } from "./generate-speech/SpeechGenerationEvent.js";
 import {
-  StructureGenerationFinishedEvent,
-  StructureGenerationStartedEvent,
-} from "./generate-structure/StructureGenerationEvent.js";
+  ObjectGenerationFinishedEvent,
+  ObjectGenerationStartedEvent,
+} from "./generate-object/ObjectGenerationEvent.js";
 import {
-  StructureStreamingFinishedEvent,
-  StructureStreamingStartedEvent,
-} from "./generate-structure/StructureStreamingEvent.js";
+  ObjectStreamingFinishedEvent,
+  ObjectStreamingStartedEvent,
+} from "./generate-object/ObjectStreamingEvent.js";
 import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
@@ -106,8 +106,8 @@ export type ModelCallStartedEvent =
   | ImageGenerationStartedEvent
   | SpeechGenerationStartedEvent
   | SpeechStreamingStartedEvent
-  | StructureGenerationStartedEvent
-  | StructureStreamingStartedEvent
+  | ObjectGenerationStartedEvent
+  | ObjectStreamingStartedEvent
   | TextGenerationStartedEvent
   | TextStreamingStartedEvent
   | ToolCallGenerationStartedEvent
@@ -120,8 +120,8 @@ export type ModelCallFinishedEvent =
   | ImageGenerationFinishedEvent
   | SpeechGenerationFinishedEvent
   | SpeechStreamingFinishedEvent
-  | StructureGenerationFinishedEvent
-  | StructureStreamingFinishedEvent
+  | ObjectGenerationFinishedEvent
+  | ObjectStreamingFinishedEvent
   | TextGenerationFinishedEvent
   | TextStreamingFinishedEvent
   | ToolCallGenerationFinishedEvent

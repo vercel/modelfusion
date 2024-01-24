@@ -1,5 +1,115 @@
 # Changelog
 
+## v0.131.0 - 2024-01-23
+
+### Added
+
+- `ObjectStreamResponse` and `ObjectStreamFromResponse` serialization functions for using server-generated object streams in web applications.
+
+  Server example:
+
+  ```ts
+  export async function POST(req: Request) {
+    const { myArgs } = await req.json();
+
+    const objectStream = await streamObject({
+      // ...
+    });
+
+    // serialize the object stream to a response:
+    return new ObjectStreamResponse(objectStream);
+  }
+  ```
+
+  Client example:
+
+  ```ts
+  const response = await fetch("/api/stream-object-openai", {
+    method: "POST",
+    body: JSON.stringify({ myArgs }),
+  });
+
+  // deserialize (result object is simpler than the full response)
+  const stream = ObjectStreamFromResponse({
+    schema: itinerarySchema,
+    response,
+  });
+
+  for await (const { partialObject } of stream) {
+    // do something, e.g. setting a React state
+  }
+  ```
+
+### Changed
+
+- **breaking change**: rename `generateStructure` to `generateObject` and `streamStructure` to `streamObject`. Related names have been changed accordingly.
+- **breaking change**: the `streamObject` result stream contains additional data. You need to use `stream.partialObject` or destructuring to access it:
+
+  ```ts
+  const objectStream = await streamObject({
+    // ...
+  });
+
+  for await (const { partialObject } of objectStream) {
+    console.clear();
+    console.log(partialObject);
+  }
+  ```
+
+- **breaking change**: the result from successful `Schema` validations is stored in the `value` property (before: `data`).
+
+## v0.130.1 - 2024-01-22
+
+### Fixed
+
+- Duplex speech streaming works in Vercel Edge Functions.
+
+## v0.130.0 - 2024-01-21
+
+### Changed
+
+- **breaking change**: updated `generateTranscription` interface. The function now takes a `mimeType` and `audioData` (base64-encoded string, `Uint8Array`, `Buffer` or `ArrayBuffer`). Example:
+
+  ```ts
+  import { generateTranscription, openai } from "modelfusion";
+  import fs from "node:fs";
+
+  const transcription = await generateTranscription({
+    model: openai.Transcriber({ model: "whisper-1" }),
+    mimeType: "audio/mp3",
+    audioData: await fs.promises.readFile("data/test.mp3"),
+  });
+  ```
+
+- Images in instruction and chat prompts can be `Buffer` or `ArrayBuffer` instances (in addition to base64-encoded strings and `Uint8Array` instances).
+
+## v0.129.0 - 2024-01-20
+
+### Changed
+
+- **breaking change**: Usage of Node `async_hooks` has been renamed from `node:async_hooks` to `async_hooks` for easier Webpack configuration. To exclude the `async_hooks` from client-side bundling, you can use the following config for Next.js (`next.config.mjs` or `next.config.js`):
+
+  ```js
+  /**
+   * @type {import('next').NextConfig}
+   */
+  const nextConfig = {
+    webpack: (config, { isServer }) => {
+      if (isServer) {
+        return config;
+      }
+
+      config.resolve = config.resolve ?? {};
+      config.resolve.fallback = config.resolve.fallback ?? {};
+
+      // async hooks is not available in the browser:
+      config.resolve.fallback.async_hooks = false;
+
+      return config;
+    },
+  };
+  ```
+
 ## v0.128.0 - 2024-01-20
 
 ### Changed

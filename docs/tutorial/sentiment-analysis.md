@@ -8,22 +8,22 @@ Sentiment analysis is a natural language processing technique used to determine 
 It is often implemented using models that are specifically trained for this task, but can also be done with language models.
 This is helpful to quickly develop initial product versions and prototypes.
 
-### Using generateStructure and OpenAI Chat Model
+### Using generateObject and OpenAI Chat Model
 
-[Example](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorials/sentiment-analysis.ts)
+[Example](https://github.com/lgrammel/modelfusion/blob/main/examples/basic/src/tutorial/sentiment-analysis.ts)
 
 #### Define a sentiment analysis function:
 
 ```ts
 const analyzeSentiment = (productReview: string) =>
-  generateStructure({
+  generateObject({
     model: openai
       .ChatTextGenerator({
         model: "gpt-4",
         temperature: 0, // remove randomness
         maxGenerationTokens: 500, // enough tokens for reasoning and sentiment
       })
-      .asFunctionCallStructureGenerationModel({
+      .asFunctionCallObjectGenerationModel({
         fnName: "sentiment",
         fnDescription: "Write the sentiment analysis",
       })

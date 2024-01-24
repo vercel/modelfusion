@@ -1,9 +1,9 @@
 import {
   ImagePart,
   TextPart,
-  getImageAsBase64,
 } from "../../model-function/generate-text/prompt-template/ContentPart.js";
 import { ToolCall } from "../../tool/ToolCall.js";
+import { convertDataContentToBase64String } from "../../util/format/DataContent.js";
 
 export type OpenAIChatMessage =
   | {
@@ -87,7 +87,7 @@ export const OpenAIChatMessage = {
                     type: "image_url",
                     image_url: `data:${
                       part.mimeType ?? "image/jpeg"
-                    };base64,${getImageAsBase64(part.image)}`,
+                    };base64,${convertDataContentToBase64String(part.image)}`,
                   };
                 }
               }

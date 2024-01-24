@@ -12,19 +12,19 @@ You can call these functions with a model, a prompt, and additional [FunctionOpt
 import { generateText, openai } from "modelfusion";
 
 const text = await generateText({
-  // model (determines the prompt type)
+  // model (determines the prompt type - you can use raw, text, instruction, chat, or custom prompts)
   model: openai.CompletionTextGenerator({ model: "gpt-3.5-turbo-instruct" }),
 
   // prompt (type depends on model):
   prompt: "Write a short story about a robot learning to love:\n\n",
 
-  // additional configuration (all optional):
+  // additional configuration options (all optional):
   functionId, // function identifier for logging
   callId, // call ID of the parent ModelFusion call (for tracing)
-  logging, // logging configuration
+  logging, // logging configuration for this call
   observers, // call observers
-  run, // run object
-  cache, // optional catch (only supported by generateText at the moment)
+  run, // run object (for cross-call use cases and tracing)
+  cache, // store for cached values (only supported by generateText at the moment)
 });
 ```
 

@@ -18,7 +18,7 @@ Model providers (e.g., OpenAI) offer APIs (either local or in the cloud) for usi
 | [Hugging Face](/integration/model-provider/huggingface)           | ✅                                             |                                              |                                                |
 | [Cohere](/integration/model-provider/cohere)                      | ✅                                             | ✅                                           | full                                           |
 
-### [Generate Structure](/guide/function/generate-structure)
+### [Generate Object](/guide/function/generate-object)
 
 - [OpenAI](/integration/model-provider/openai) chat models (function call, json mode)
 - [Ollama](/integration/model-provider/ollama) json mode, with compatible models

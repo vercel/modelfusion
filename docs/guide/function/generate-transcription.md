@@ -12,19 +12,18 @@ Transcribe speech (audio) data into text. Also called speech-to-text (STT).
 
 [generateTranscription API](/api/modules#generatetranscription)
 
+`generateTranscription` uses a model, audio data, and a mime type to generate a transcription.
+
 #### With OpenAI transcription model
 
 ```ts
 import { generateTranscription, openai } from "modelfusion";
-
-const data = await fs.promises.readFile("data/test.mp3");
+import fs from "node:fs";
 
 const transcription = await generateTranscription({
   model: openai.Transcriber({ model: "whisper-1" }),
-  data: {
-    type: "mp3",
-    data,
-  },
+  mimeType: "audio/mp3",
+  audioData: await fs.promises.readFile("data/test.mp3"),
 });
 ```
 

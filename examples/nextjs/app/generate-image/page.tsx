@@ -23,7 +23,7 @@ export default function () {
       const response = await fetch("/api/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: inputValue }),
+        body: JSON.stringify({ imageDescription: inputValue }),
       });
 
       if (response.ok) {

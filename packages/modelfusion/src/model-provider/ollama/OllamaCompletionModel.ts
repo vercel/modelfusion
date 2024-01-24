@@ -9,10 +9,10 @@ import { safeParseJSON } from "../../core/schema/parseJSON.js";
 import { validateTypes } from "../../core/schema/validateTypes.js";
 import { AbstractModel } from "../../model-function/AbstractModel.js";
 import {
-  FlexibleStructureFromTextPromptTemplate,
-  StructureFromTextPromptTemplate,
-} from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
-import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
+  FlexibleObjectFromTextPromptTemplate,
+  ObjectFromTextPromptTemplate,
+} from "../../model-function/generate-object/ObjectFromTextPromptTemplate.js";
+import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel.js";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
 import {
   TextStreamingBaseModel,
@@ -211,7 +211,7 @@ export class OllamaCompletionModel<
   restoreGeneratedTexts(rawResponse: unknown) {
     return this.processTextGenerationResponse(
       validateTypes({
-        structure: rawResponse,
+        value: rawResponse,
         schema: zodSchema(ollamaCompletionResponseSchema),
       })
     );
@@ -241,17 +241,17 @@ export class OllamaCompletionModel<
     return chunk.done === true ? undefined : chunk.response;
   }
 
-  asStructureGenerationModel<INPUT_PROMPT, OllamaCompletionPrompt>(
+  asObjectGenerationModel<INPUT_PROMPT, OllamaCompletionPrompt>(
     promptTemplate:
-      | StructureFromTextPromptTemplate<INPUT_PROMPT, OllamaCompletionPrompt>
-      | FlexibleStructureFromTextPromptTemplate<INPUT_PROMPT, unknown>
+      | ObjectFromTextPromptTemplate<INPUT_PROMPT, OllamaCompletionPrompt>
+      | FlexibleObjectFromTextPromptTemplate<INPUT_PROMPT, unknown>
   ) {
     return "adaptModel" in promptTemplate
-      ? new StructureFromTextStreamingModel({
+      ? new ObjectFromTextStreamingModel({
           model: promptTemplate.adaptModel(this),
           template: promptTemplate,
         })
-      : new StructureFromTextStreamingModel({
+      : new ObjectFromTextStreamingModel({
           model: this as TextStreamingModel<OllamaCompletionPrompt>,
           template: promptTemplate,
         });
@@ -431,7 +431,7 @@ export const OllamaCompletionResponseFormat = {
         });
       }
 
-      if (parsedResult.data.done === false) {
+      if (parsedResult.value.done === false) {
         throw new ApiCallError({
           message: "Incomplete Ollama response received",
           statusCode: response.status,
@@ -442,7 +442,7 @@ export const OllamaCompletionResponseFormat = {
         });
       }
 
-      return parsedResult.data;
+      return parsedResult.value;
     }) satisfies ResponseHandler<OllamaCompletionResponse>,
   } satisfies OllamaCompletionResponseFormatType<OllamaCompletionResponse>,
 

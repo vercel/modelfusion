@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { streamStructure } from "../../model-function/generate-structure/streamStructure.js";
+import { streamObject } from "../../model-function/generate-object/streamObject.js";
 import { streamText } from "../../model-function/generate-text/streamText.js";
 import { StreamingTestServer } from "../../test/StreamingTestServer.js";
 import { arrayFromAsync } from "../../test/arrayFromAsync.js";
@@ -44,7 +44,7 @@ describe("streamText", () => {
   });
 });
 
-describe("streamStructure", () => {
+describe("streamObject", () => {
   const server = new StreamingTestServer(
     "https://api.openai.com/v1/chat/completions"
   );
@@ -87,12 +87,12 @@ describe("streamStructure", () => {
       `data: [DONE]\n\n`,
     ];
 
-    const stream = await streamStructure({
+    const stream = await streamObject({
       model: new OpenAIChatModel({
         api: new OpenAIApiConfiguration({ apiKey: "test-key" }),
         model: "gpt-3.5-turbo",
       })
-        .asFunctionCallStructureGenerationModel({
+        .asFunctionCallObjectGenerationModel({
           fnName: "generateCharacter",
           fnDescription: "Generate character descriptions.",
         })
@@ -101,11 +101,14 @@ describe("streamStructure", () => {
       prompt: "generate a name",
     });
 
-    expect(await arrayFromAsync(stream)).toStrictEqual([
+    const streamAsArray = await arrayFromAsync(stream);
+
+    expect(streamAsArray.map((entry) => entry.partialObject)).toStrictEqual([
       {},
       { name: "" },
       { name: "M" },
       { name: "Mike" },
+      { name: "Mike" }, // double occurrence on purpose (stream text)
     ]);
   });
 });

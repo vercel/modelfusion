@@ -1,8 +1,8 @@
 import {
-  FlexibleStructureFromTextPromptTemplate,
-  StructureFromTextPromptTemplate,
-} from "../../model-function/generate-structure/StructureFromTextPromptTemplate.js";
-import { StructureFromTextStreamingModel } from "../../model-function/generate-structure/StructureFromTextStreamingModel.js";
+  FlexibleObjectFromTextPromptTemplate,
+  ObjectFromTextPromptTemplate,
+} from "../../model-function/generate-object/ObjectFromTextPromptTemplate.js";
+import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel.js";
 import { PromptTemplateFullTextModel } from "../../model-function/generate-text/PromptTemplateFullTextModel.js";
 import {
   TextStreamingBaseModel,
@@ -84,17 +84,17 @@ export class OpenAICompatibleChatModel
     );
   }
 
-  asStructureGenerationModel<INPUT_PROMPT, OpenAIChatPrompt>(
+  asObjectGenerationModel<INPUT_PROMPT, OpenAIChatPrompt>(
     promptTemplate:
-      | StructureFromTextPromptTemplate<INPUT_PROMPT, OpenAIChatPrompt>
-      | FlexibleStructureFromTextPromptTemplate<INPUT_PROMPT, unknown>
+      | ObjectFromTextPromptTemplate<INPUT_PROMPT, OpenAIChatPrompt>
+      | FlexibleObjectFromTextPromptTemplate<INPUT_PROMPT, unknown>
   ) {
     return "adaptModel" in promptTemplate
-      ? new StructureFromTextStreamingModel({
+      ? new ObjectFromTextStreamingModel({
           model: promptTemplate.adaptModel(this),
           template: promptTemplate,
         })
-      : new StructureFromTextStreamingModel({
+      : new ObjectFromTextStreamingModel({
           model: this as TextStreamingModel<OpenAIChatPrompt>,
           template: promptTemplate,
         });

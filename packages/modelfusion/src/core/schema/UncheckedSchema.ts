@@ -1,24 +1,24 @@
 import { JsonSchemaProducer } from "./JsonSchemaProducer.js";
 import { Schema } from "./Schema.js";
 
-export function uncheckedSchema<STRUCTURE>(jsonSchema?: unknown) {
-  return new UncheckedSchema<STRUCTURE>(jsonSchema);
+export function uncheckedSchema<OBJECT>(jsonSchema?: unknown) {
+  return new UncheckedSchema<OBJECT>(jsonSchema);
 }
 
-export class UncheckedSchema<STRUCTURE>
-  implements Schema<STRUCTURE>, JsonSchemaProducer
+export class UncheckedSchema<OBJECT>
+  implements Schema<OBJECT>, JsonSchemaProducer
 {
   constructor(private readonly jsonSchema?: unknown) {}
 
   validate(
-    data: unknown
-  ): { success: true; data: STRUCTURE } | { success: false; error: unknown } {
-    return { success: true, data: data as STRUCTURE };
+    value: unknown
+  ): { success: true; value: OBJECT } | { success: false; error: unknown } {
+    return { success: true, value: value as OBJECT };
   }
 
   getJsonSchema(): unknown {
     return this.jsonSchema;
   }
 
-  readonly _type: STRUCTURE;
+  readonly _type: OBJECT;
 }

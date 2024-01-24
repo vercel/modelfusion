@@ -57,7 +57,7 @@ export class SerpapiGoogleWebSearchTool<
           throw validationResult.error;
         }
 
-        return validationResult.data;
+        return validationResult.value;
       },
     });
 

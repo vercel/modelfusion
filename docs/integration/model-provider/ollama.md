@@ -148,24 +148,24 @@ const textStream = await streamText({
 });
 ```
 
-### Generate Structure (Chat)
+### Generate Object (Chat)
 
-[Generate Structure Docs](/guide/function/generate-structure)
+[Generate Object Docs](/guide/function/generate-object)
 
-Structure generation is possible with capable open-source models like [OpenHermes 2.5](https://ollama.ai/library/openhermes).
+Object generation is possible with capable open-source models like [OpenHermes 2.5](https://ollama.ai/library/openhermes).
 
 ```ts
-import { ollama, zodSchema, generateStructure } from "modelfusion";
+import { ollama, zodSchema, generateObject } from "modelfusion";
 import { z } from "zod";
 
-const sentiment = await generateStructure({
+const sentiment = await generateObject({
   model: ollama
     .ChatTextGenerator({
       model: "openhermes2.5-mistral",
       maxGenerationTokens: 1024,
       temperature: 0,
     })
-    .asStructureGenerationModel(jsonStructurePrompt.instruction()),
+    .asObjectGenerationModel(jsonObjectPrompt.instruction()),
 
   schema: zodSchema(
     z.object({
@@ -186,27 +186,22 @@ const sentiment = await generateStructure({
 });
 ```
 
-### Stream Structure (Chat)
+### Stream Object (Chat)
 
-[Stream Structure Docs](/guide/function/generate-structure#streamstructure)
+[Stream Object Docs](/guide/function/generate-object#streamobject)
 
 ```ts
-import {
-  jsonStructurePrompt,
-  ollama,
-  streamStructure,
-  zodSchema,
-} from "modelfusion";
+import { jsonObjectPrompt, ollama, streamObject, zodSchema } from "modelfusion";
 import { z } from "zod";
 
-const structureStream = await streamStructure({
+const objectStream = await streamObject({
   model: ollama
     .ChatTextGenerator({
       model: "openhermes2.5-mistral",
       maxGenerationTokens: 1024,
       temperature: 0,
     })
-    .asStructureGenerationModel(jsonStructurePrompt.text()),
+    .asObjectGenerationModel(jsonObjectPrompt.text()),
 
   schema: zodSchema(
     z.object({
@@ -225,9 +220,9 @@ const structureStream = await streamStructure({
   prompt: "Generate 3 character descriptions for a fantasy role playing game. ",
 });
 
-for await (const partialStructure of structureStream) {
+for await (const { partialObject } of objectStream) {
   console.clear();
-  console.log(partialStructure);
+  console.log(partialObject);
 }
 ```
 

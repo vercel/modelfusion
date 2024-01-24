@@ -1,6 +1,6 @@
 import {
-  generateStructure,
-  jsonStructurePrompt,
+  generateObject,
+  jsonObjectPrompt,
   llamacpp,
   zodSchema,
 } from "modelfusion";
@@ -11,14 +11,14 @@ import { z } from "zod";
  * in a structured format.
  */
 const listCityDestinations = (country: string) =>
-  generateStructure({
+  generateObject({
     model: llamacpp
       .CompletionTextGenerator({
         // run Mistral or Mixtral instruct model with llama.cpp
         promptTemplate: llamacpp.prompt.Mistral,
         temperature: 0,
       })
-      .asStructureGenerationModel(jsonStructurePrompt.text()),
+      .asObjectGenerationModel(jsonObjectPrompt.text()),
 
     schema: zodSchema(
       z.array(

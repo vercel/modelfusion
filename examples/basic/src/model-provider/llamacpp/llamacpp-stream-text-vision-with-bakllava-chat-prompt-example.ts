@@ -9,7 +9,7 @@ async function main() {
   const textStream = await streamText({
     model: llamacpp
       .CompletionTextGenerator({
-        // run BakLLaVA-1 in llama.cpp https://huggingface.co/mys/ggml_bakllava-1/tree/main
+        // see https://modelfusion.dev/integration/model-provider/llamacpp/using-bakllava for instructions
         promptTemplate: llamacpp.prompt.BakLLaVA1,
         maxGenerationTokens: 1024,
         temperature: 0,

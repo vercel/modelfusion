@@ -1,4 +1,6 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { AudioMimeType } from "../../util/audio/AudioMimeType.js";
+import { DataContent } from "../../util/format/DataContent.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStandardCall } from "../executeStandardCall.js";
 import {
@@ -12,29 +14,33 @@ import {
  * @see https://modelfusion.dev/guide/function/generate-transcription
  *
  * @example
- * const data = await fs.promises.readFile("data/test.mp3");
+ * const audioData = await fs.promises.readFile("data/test.mp3");
  *
  * const transcription = await generateTranscription({
  *   model: openai.Transcriber({ model: "whisper-1" }),
- *   data: { type: "mp3", data }
+ *   mimeType: "audio/mp3",
+ *   audioData,
  * });
  *
- * @param {TranscriptionModel<DATA, TranscriptionModelSettings>} model - The model to use for transcription.
- * @param {DATA} data - The data to transcribe.
+ * @param {TranscriptionModel<DATA, TranscriptionModelSettings>} options.model - The model to use for transcription.
+ * @param {AudioMimeType} options.model - The MIME type of the audio data.
+ * @param {DataContent} options.model - The audio data to transcribe. Can be a base64-encoded string, a Uint8Array, or a Buffer.
  *
  * @returns {Promise<string>} A promise that resolves to the transcribed text.
  */
-export async function generateTranscription<DATA>(
+export async function generateTranscription(
   args: {
-    model: TranscriptionModel<DATA, TranscriptionModelSettings>;
-    data: DATA;
+    model: TranscriptionModel<TranscriptionModelSettings>;
+    mimeType: AudioMimeType | (string & {}); // eslint-disable-line @typescript-eslint/ban-types
+    audioData: DataContent;
     fullResponse?: false;
   } & FunctionOptions
 ): Promise<string>;
-export async function generateTranscription<DATA>(
+export async function generateTranscription(
   args: {
-    model: TranscriptionModel<DATA, TranscriptionModelSettings>;
-    data: DATA;
+    model: TranscriptionModel<TranscriptionModelSettings>;
+    mimeType: AudioMimeType | (string & {}); // eslint-disable-line @typescript-eslint/ban-types
+    audioData: DataContent;
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
@@ -42,25 +48,29 @@ export async function generateTranscription<DATA>(
   rawResponse: unknown;
   metadata: ModelCallMetadata;
 }>;
-export async function generateTranscription<DATA>({
+export async function generateTranscription({
   model,
-  data,
+  audioData,
+  mimeType,
   fullResponse,
   ...options
 }: {
-  model: TranscriptionModel<DATA, TranscriptionModelSettings>;
-  data: DATA;
+  model: TranscriptionModel<TranscriptionModelSettings>;
+  mimeType: AudioMimeType | (string & {}); // eslint-disable-line @typescript-eslint/ban-types
+  audioData: DataContent;
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
   string | { value: string; rawResponse: unknown; metadata: ModelCallMetadata }
 > {
+  const input = { mimeType, audioData };
+
   const callResponse = await executeStandardCall({
     functionType: "generate-transcription",
-    input: data,
+    input,
     model,
     options,
     generateResponse: async (options) => {
-      const result = await model.doTranscribe(data, options);
+      const result = await model.doTranscribe(input, options);
       return {
         rawResponse: result.rawResponse,
         extractedValue: result.transcription,

@@ -18,7 +18,8 @@ async function ensureLoaded() {
   if (!isNode) return Promise.resolve();
 
   if (!runStorage) {
-    const { AsyncLocalStorage } = await import("node:async_hooks");
+    // Note: using "async_hooks" instead of "node:async_hooks" to avoid webpack fallback problems.
+    const { AsyncLocalStorage } = await import("async_hooks");
     runStorage = new AsyncLocalStorage<Run>();
   }
   return Promise.resolve();
