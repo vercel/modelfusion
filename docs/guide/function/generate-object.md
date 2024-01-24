@@ -237,6 +237,130 @@ console.log("FINAL OBJECT");
 console.log(object);
 ```
 
+### Forwarding Object Streams to the Browser
+
+You can use the `ObjectStream` and `ObjectStreamFromResponse` to serialize and deserialize object streams. This allows you to forward object streams to the browser.
+
+#### Example: Next.js 14 route & OpenAI
+
+[Source Code](https://github.com/lgrammel/modelfusion/tree/main/examples/nextjs/app/stream-object-openai)
+
+Schema:
+
+```ts
+import { zodSchema } from "modelfusion";
+import { z } from "zod";
+
+export const itinerarySchema = zodSchema(
+  z.object({
+    days: z.array(
+      z.object({
+        theme: z.string(),
+        activities: z.array(
+          z.object({
+            name: z.string(),
+            description: z.string(),
+            duration: z.number(),
+          })
+        ),
+      })
+    ),
+  })
+);
+
+export type Itinerary = typeof itinerarySchema._partialType;
+```
+
+Server:
+
+```ts
+import {
+  ObjectStreamResponse,
+  jsonObjectPrompt,
+  openai,
+  streamObject,
+} from "modelfusion";
+import { itinerarySchema } from "../../stream-object-openai/itinerarySchema";
+
+export const runtime = "edge";
+
+export async function POST(req: Request) {
+  const { destination, lengthOfStay } = await req.json();
+
+  const objectStream = await streamObject({
+    model: openai
+      .ChatTextGenerator({
+        model: "gpt-4-1106-preview",
+        maxGenerationTokens: 2500,
+      })
+      .asObjectGenerationModel(jsonObjectPrompt.instruction()),
+
+    schema: itinerarySchema,
+
+    prompt: {
+      system:
+        "You help planning travel itineraries. " +
+        "Respond to the users' request with a list of the best stops to make in their destination.",
+
+      instruction: `I am planning a trip to ${destination} for ${lengthOfStay} days.`,
+    },
+  });
+
+  return new ObjectStreamResponse(objectStream);
+}
+```
+
+Client (React Hook):
+
+```ts
+import { ObjectStreamFromResponse } from "modelfusion";
+import { useCallback, useState } from "react";
+import { Itinerary, itinerarySchema } from "./itinerarySchema";
+
+export function useItinerary() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [itinerary, setItinerary] = useState<Itinerary>();
+
+  const generateItinerary = useCallback(
+    async ({
+      destination,
+      lengthOfStay,
+    }: {
+      destination: string;
+      lengthOfStay: string;
+    }) => {
+      setItinerary(undefined);
+      setIsGenerating(true);
+
+      try {
+        const response = await fetch("/api/stream-object-openai", {
+          method: "POST",
+          body: JSON.stringify({ destination, lengthOfStay }),
+        });
+
+        const stream = ObjectStreamFromResponse({
+          schema: itinerarySchema,
+          response,
+        });
+
+        for await (const { partialObject } of stream) {
+          setItinerary(partialObject);
+        }
+      } finally {
+        setIsGenerating(false);
+      }
+    },
+    []
+  );
+
+  return {
+    isGeneratingItinerary: isGenerating,
+    generateItinerary,
+    itinerary,
+  };
+}
+```
+
 ## Available Providers
 
 - [OpenAI](/integration/model-provider/openai)
