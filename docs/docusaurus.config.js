@@ -52,6 +52,10 @@ const config = {
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
+        blog: {
+          blogSidebarTitle: "All posts",
+          blogSidebarCount: "ALL",
+        },
       }),
     ],
   ],
