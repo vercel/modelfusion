@@ -42,7 +42,15 @@ You need to set up the `OPENAI_API_KEY` environment variable to run this demo.
 
 Go to http://localhost:3000/generate-transcription in your browser.
 
-### Stream Objects (Ollama)
+### Stream Objects through Server (OpenAI)
+
+> _Generate travel itineraries using OpenAI_
+
+You need to set up the `OPENAI_API_KEY` environment variable to run this demo.
+
+Go to http://localhost:3000/stream-object-openai in your browser.
+
+### Stream Objects on Client (Ollama)
 
 > _Generate travel itineraries using Ollama_
 

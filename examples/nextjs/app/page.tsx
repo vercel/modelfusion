@@ -7,17 +7,22 @@ export default function Home() {
         </h2>
         <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
           <a href="/generate-image" className="text-blue-500 underline">
-            Generate images in the style of 19th century paintings.
+            Image generation
           </a>
         </p>
         <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
           <a href="/generate-transcription" className="text-blue-500 underline">
-            Voice recording & transcription.
+            Voice recording & transcription
+          </a>
+        </p>{" "}
+        <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+          <a href="/stream-object-openai" className="text-blue-500 underline">
+            Object streaming through Server with OpenAI
           </a>
         </p>
         <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
           <a href="/stream-object-ollama" className="text-blue-500 underline">
-            Object streaming with Ollama (City Travel Itinerary Planner)
+            Object streaming on Client with Ollama
           </a>
         </p>
       </div>
