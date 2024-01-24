@@ -6,8 +6,7 @@ authors:
     title: AI Engineer
     url: https://github.com/lgrammel
     image_url: https://avatars.githubusercontent.com/u/205036
-tags:
-  [tutorial, chatbot, ollama, zod, modelfusion, structure, types, typescript]
+tags: [tutorial, ollama, zod, modelfusion, structure, types, typescript]
 image: /img/blog/2024-01-17-generate-structured-information-ollama.png
 hide_table_of_contents: false
 ---
