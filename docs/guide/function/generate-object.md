@@ -142,19 +142,15 @@ const sentiment = await generateObject({
 
 [streamObject API](/api/modules#streamobject)
 
-`streamObject` returns an async iterable over partial results.
+You can stream partial object results with `streamObject`. This is useful for long-running tasks, e.g. when generating a large number of objects and streaming them to a UI.
 
-:::note
-The partial results are typed, but not validated. You can use your own logic to handle partial objects, e.g. with Zod `.deepPartial()`, to add validation.
-:::
+`streamObject` returns an `ObjectStream`. The `ObjectStream` is an async iterable over partial results. It returns objects with the following properties:
+
+- `partialObject`: the partial object result. It is typed, but not validated. You can use your own logic to validate partial objects, e.g. with Zod `.deepPartial()`.
+- `partialText`: the partial text that was used to generate the partial object.
+- `textDelta`: the text that was received since the last partial result.
 
 #### Example: RPG character generation
-
-:::note
-With most models, you need to have an object at the top level. If you want to produce arrays, you need to use a property in that object. For example, you can use a `characters` property to generate an array of characters.
-
-When using Llama.cpp with a JSON array grammar, you can generate a top-level array and do not need to use a property.
-:::
 
 ```ts
 const objectStream = await streamObject({
@@ -185,6 +181,12 @@ for await (const { partialObject } of objectStream) {
   console.log(partialObject);
 }
 ```
+
+:::note
+With most models, you need to have an object at the top level. If you want to produce arrays, you need to use a property in that object. For example, you can use a `characters` property to generate an array of characters.
+
+When using Llama.cpp with a JSON array grammar, you can generate a top-level array and do not need to use a property.
+:::
 
 #### Example: Full response with object promise
 
