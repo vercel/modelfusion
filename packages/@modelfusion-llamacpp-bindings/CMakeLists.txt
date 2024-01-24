@@ -18,9 +18,13 @@ execute_process(COMMAND node -p "require('node-addon-api').include.slice(1,-1)"
 
 include_directories(${NODE_ADDON_API_DIR} ${CMAKE_JS_INC})
 
-add_subdirectory("lib/llamacpp")
-include_directories("lib/llamacpp")
-include_directories("./lib/llamacpp/common")
+if(EXISTS ${CMAKE_SOURCE_DIR}/lib/llamacpp)
+  add_subdirectory(${CMAKE_SOURCE_DIR}/lib/llamacpp)
+  include_directories(${CMAKE_SOURCE_DIR}/lib/llamacpp)
+  include_directories(${CMAKE_SOURCE_DIR}/lib/llamacpp/common)
+else()
+  message(FATAL_ERROR "Directory 'lib/llamacpp' does not exist. Run ./update_submodules.sh")
+endif()
 
 file(GLOB SOURCE_FILES "src/llamacpp_bindings.cc")
 

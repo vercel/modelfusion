@@ -4,6 +4,7 @@
     "node-addon-api": "^7.0.0"
   },
   "scripts": {
+    "setup": "./update_submodules.sh",
     "build": "node-gyp rebuild && tsc",
     "clean": "node-gyp clean && tsc --build --clean",
     "pretest": "tsc",
@@ -31,6 +32,10 @@
   "devDependencies": {
     "@types/node": "^20.11.3",
     "cmake-js": "^7.3.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "modelfusion": "0.131.0"
+  },
+  "peerDependencies": {
+    "modelfusion": ">=0.131.0"
   }
 }

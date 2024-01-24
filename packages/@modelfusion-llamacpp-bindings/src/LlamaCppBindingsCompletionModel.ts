@@ -1,17 +1,15 @@
-import { AbstractModel } from "model-function/AbstractModel";
 import {
   TextGenerationBaseModel,
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider.js";
-import {
+  TextGenerationPromptTemplateProvider,
   InstructionPrompt,
   ChatPrompt,
   BasicTokenizer,
   FullTokenizer,
   TextGenerationResult,
-} from "index.js";
+} from "modelfusion";
+import { AbstractModel } from "modelfusion/model-function/AbstractModel";
 
 export interface LlamaCppBindingsCompletionPrompt {
   /**
