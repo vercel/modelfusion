@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.131.1 - 2024-01-25
+
+### Fixed
+
+- Add `type-fest` as dependency to fix type inference errors.
+
 ## v0.131.0 - 2024-01-23
 
 ### Added
