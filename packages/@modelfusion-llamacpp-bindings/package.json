@@ -8,7 +8,7 @@
     "build": "node-gyp rebuild && tsc",
     "clean": "node-gyp clean && tsc --build --clean",
     "pretest": "tsc",
-    "test": "node --napi-modules ./dist/binding.test.js"
+    "test": "vitest --run src"
   },
   "gypfile": true,
   "name": "@modelfusion/llamacpp-bindings",
