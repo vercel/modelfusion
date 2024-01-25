@@ -599,4 +599,4 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 In this tutorial, we built a travel planner application using Next.js, GPT-4, and ModelFusion. This application shows how to generate and stream structured data from GPT-4 to a web browser. It also demonstrates how to display this data using React components.
 
-You can apply this method to develop various applications. These applications can generate and send structured information from large AI models. It's a new way to use AI outputs in user interfaces. If you want to explore more, experiment with the code. For more ideas and examples, check out the [ModelFusion repository](https://github.com/lgrammel/modelfusion). Happy coding!
+You can apply this method to develop various applications. These applications can generate and send structured information from large AI models. It's a new way to use AI outputs in user interfaces. If you want to explore more, experiment with the code. Happy coding!
