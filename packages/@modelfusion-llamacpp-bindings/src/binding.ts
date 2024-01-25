@@ -1,12 +1,19 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const addon = require("../build/Release/llamacpp-bindings-native");
+// Import the native addon
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const addon = require("../build/Release/llamacpp-bindings-native.node");
 
-interface IllamacppBindingsNative {
+// Correct the spelling in the interface name
+export interface ILlamaCppBindingsNative {
   greet(strName: string): string;
 }
 
-class llamacppBindings {
+export class LlamaCppBindings {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _addonInstance: ILlamaCppBindingsNative;
+
   constructor(name: string) {
+    // Use the static _addon member to create a new instance
     this._addonInstance = new addon.llamacppBindings(name);
   }
 
@@ -14,13 +21,8 @@ class llamacppBindings {
     return this._addonInstance.greet(strName);
   }
 
-  // private members
-  private _addonInstance: IllamacppBindingsNative;
-
   // static members
-  static getSystemInfo(): string {
+  static async getSystemInfo(): Promise<string> {
     return addon.systemInfo();
   }
 }
-
-export = llamacppBindings;

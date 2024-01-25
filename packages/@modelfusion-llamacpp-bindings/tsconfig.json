@@ -2,14 +2,16 @@
   "compilerOptions": {
     "declaration": true,
     "lib": ["esnext"],
-    "module": "commonjs",
+    "module": "ES2020",
+    "moduleResolution": "node",
     "outDir": "./dist",
     "rootDir": "./src",
     "skipLibCheck": true,
     "strict": true,
-    "target": "es6",
+    "target": "ES2020",
     "types": ["node"],
     "typeRoots": ["node_modules/@types"],
+    "allowSyntheticDefaultImports": true,
   },
   "include": ["src/**/*.ts"],
 }

@@ -18,6 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/lgrammel/modelfusion.git"
   },
+  "type": "module",
   "keywords": [
     "modelfusion",
     "llamacpp",
