@@ -29,9 +29,10 @@ Or use a starter template:
 - [Next.js, Vercel AI SDK, Llama.cpp & ModelFusion starter](https://github.com/lgrammel/modelfusion-llamacpp-nextjs-starter)
 - [Next.js, Vercel AI SDK, Ollama & ModelFusion starter](https://github.com/lgrammel/modelfusion-ollama-nextjs-starter)
 
-## Next Step
+## Next Steps
 
-[Learn about models and functions](/guide/function/)
+- [Learn about models and functions](/guide/function/)
+- [Check out the GitHub repository](https://github.com/lgrammel/modelfusion)
 
 ## Getting Support
 

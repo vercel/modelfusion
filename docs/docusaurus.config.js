@@ -207,7 +207,7 @@ const config = {
               },
               {
                 label: "Twitter",
-                href: "https://twitter.com/lgrammel",
+                href: "https://twitter.com/modelfusionjs",
               },
               {
                 label: "Discord",
