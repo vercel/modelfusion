@@ -1,5 +1,3 @@
-"use client";
-
 import { Itinerary } from "./itinerarySchema";
 
 export const ItineraryView = ({ itinerary }: { itinerary?: Itinerary }) => (
@@ -16,7 +14,7 @@ export const ItineraryView = ({ itinerary }: { itinerary?: Itinerary }) => (
 
                   {day.activities?.map(
                     (activity, index) =>
-                      activity != null && (
+                      activity && (
                         <div key={index} className="mt-4">
                           {activity.name && (
                             <h4 className="font-bold">{activity.name}</h4>
