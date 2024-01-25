@@ -8,6 +8,17 @@ import {
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
+  "text-embedding-3-small": {
+    contextWindowSize: 8192,
+    embeddingDimensions: 1536,
+    tokenCostInMillicents: 0.002,
+  },
+  "text-embedding-3-large": {
+    contextWindowSize: 8192,
+    embeddingDimensions: 3072,
+    tokenCostInMillicents: 0.013,
+  },
+
   "text-embedding-ada-002": {
     contextWindowSize: 8192,
     embeddingDimensions: 1536,
