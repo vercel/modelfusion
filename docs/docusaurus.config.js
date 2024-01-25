@@ -52,6 +52,10 @@ const config = {
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
+        blog: {
+          blogSidebarTitle: "All posts",
+          blogSidebarCount: "ALL",
+        },
       }),
     ],
   ],
@@ -203,7 +207,7 @@ const config = {
               },
               {
                 label: "Twitter",
-                href: "https://twitter.com/lgrammel",
+                href: "https://twitter.com/modelfusionjs",
               },
               {
                 label: "Discord",

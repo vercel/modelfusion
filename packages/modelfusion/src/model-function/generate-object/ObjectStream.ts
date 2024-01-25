@@ -8,6 +8,14 @@ export type ObjectStream<OBJECT> = AsyncIterable<{
   textDelta: string;
 }>;
 
+/**
+ * Response for ObjectStream. The object stream is encoded as a text stream.
+ *
+ * Example:
+ * ```ts
+ * return new ObjectStreamResponse(objectStream);
+ * ```
+ */
 export class ObjectStreamResponse extends Response {
   constructor(stream: ObjectStream<unknown>, init?: ResponseInit) {
     super(ObjectStreamToTextStream(stream), {
@@ -18,6 +26,12 @@ export class ObjectStreamResponse extends Response {
   }
 }
 
+/**
+ * Convert a Response to a lightweight ObjectStream. The response must be created
+ * using ObjectStreamResponse on the server.
+ *
+ * @see ObjectStreamResponse
+ */
 export async function* ObjectStreamFromResponse<OBJECT>({
   response,
 }: {

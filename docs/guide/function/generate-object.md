@@ -142,19 +142,15 @@ const sentiment = await generateObject({
 
 [streamObject API](/api/modules#streamobject)
 
-`streamObject` returns an async iterable over partial results.
+You can stream partial object results with `streamObject`. This is useful for long-running tasks, e.g. when generating a large number of objects and streaming them to a UI.
 
-:::note
-The partial results are typed, but not validated. You can use your own logic to handle partial objects, e.g. with Zod `.deepPartial()`, to add validation.
-:::
+`streamObject` returns an `ObjectStream`. The `ObjectStream` is an async iterable over partial results. It returns objects with the following properties:
+
+- `partialObject`: the partial object result. It is typed, but not validated. You can use your own logic to validate partial objects, e.g. with Zod `.deepPartial()`.
+- `partialText`: the partial text that was used to generate the partial object.
+- `textDelta`: the text that was received since the last partial result.
 
 #### Example: RPG character generation
-
-:::note
-With most models, you need to have an object at the top level. If you want to produce arrays, you need to use a property in that object. For example, you can use a `characters` property to generate an array of characters.
-
-When using Llama.cpp with a JSON array grammar, you can generate a top-level array and do not need to use a property.
-:::
 
 ```ts
 const objectStream = await streamObject({
@@ -185,6 +181,12 @@ for await (const { partialObject } of objectStream) {
   console.log(partialObject);
 }
 ```
+
+:::note
+With most models, you need to have an object at the top level. If you want to produce arrays, you need to use a property in that object. For example, you can use a `characters` property to generate an array of characters.
+
+When using Llama.cpp with a JSON array grammar, you can generate a top-level array and do not need to use a property.
+:::
 
 #### Example: Full response with object promise
 
@@ -233,6 +235,130 @@ const object = await objectPromise;
 console.clear();
 console.log("FINAL OBJECT");
 console.log(object);
+```
+
+### Forwarding Object Streams to the Browser
+
+You can use the `ObjectStream` and `ObjectStreamFromResponse` to serialize and deserialize object streams. This allows you to forward object streams to the browser.
+
+#### Example: Next.js 14 route & OpenAI
+
+[Source Code](https://github.com/lgrammel/modelfusion/tree/main/examples/nextjs/app/stream-object-openai)
+
+Schema:
+
+```ts
+import { zodSchema } from "modelfusion";
+import { z } from "zod";
+
+export const itinerarySchema = zodSchema(
+  z.object({
+    days: z.array(
+      z.object({
+        theme: z.string(),
+        activities: z.array(
+          z.object({
+            name: z.string(),
+            description: z.string(),
+            duration: z.number(),
+          })
+        ),
+      })
+    ),
+  })
+);
+
+export type Itinerary = typeof itinerarySchema._partialType;
+```
+
+Server:
+
+```ts
+import {
+  ObjectStreamResponse,
+  jsonObjectPrompt,
+  openai,
+  streamObject,
+} from "modelfusion";
+import { itinerarySchema } from "../../stream-object-openai/itinerarySchema";
+
+export const runtime = "edge";
+
+export async function POST(req: Request) {
+  const { destination, lengthOfStay } = await req.json();
+
+  const objectStream = await streamObject({
+    model: openai
+      .ChatTextGenerator({
+        model: "gpt-4-1106-preview",
+        maxGenerationTokens: 2500,
+      })
+      .asObjectGenerationModel(jsonObjectPrompt.instruction()),
+
+    schema: itinerarySchema,
+
+    prompt: {
+      system:
+        "You help planning travel itineraries. " +
+        "Respond to the users' request with a list of the best stops to make in their destination.",
+
+      instruction: `I am planning a trip to ${destination} for ${lengthOfStay} days.`,
+    },
+  });
+
+  return new ObjectStreamResponse(objectStream);
+}
+```
+
+Client (React Hook):
+
+```ts
+import { ObjectStreamFromResponse } from "modelfusion";
+import { useCallback, useState } from "react";
+import { Itinerary, itinerarySchema } from "./itinerarySchema";
+
+export function useItinerary() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [itinerary, setItinerary] = useState<Itinerary>();
+
+  const generateItinerary = useCallback(
+    async ({
+      destination,
+      lengthOfStay,
+    }: {
+      destination: string;
+      lengthOfStay: string;
+    }) => {
+      setItinerary(undefined);
+      setIsGenerating(true);
+
+      try {
+        const response = await fetch("/api/stream-object-openai", {
+          method: "POST",
+          body: JSON.stringify({ destination, lengthOfStay }),
+        });
+
+        const stream = ObjectStreamFromResponse({
+          schema: itinerarySchema,
+          response,
+        });
+
+        for await (const { partialObject } of stream) {
+          setItinerary(partialObject);
+        }
+      } finally {
+        setIsGenerating(false);
+      }
+    },
+    []
+  );
+
+  return {
+    isGeneratingItinerary: isGenerating,
+    generateItinerary,
+    itinerary,
+  };
+}
 ```
 
 ## Available Providers
