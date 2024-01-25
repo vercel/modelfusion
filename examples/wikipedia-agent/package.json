@@ -14,7 +14,7 @@
     "dotenv": "16.3.1",
     "html-to-text": "9.0.5",
     "jsdom": "^22.1.0",
-    "modelfusion": "0.131.1",
+    "modelfusion": "0.132.0",
     "modelfusion-experimental": "0.6.0",
     "zod": "3.22.4"
   },

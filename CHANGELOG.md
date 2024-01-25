@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.132.0 - 2024-02-15
+
+### Added
+
+- Support for OpenAI `text-embedding-3-small` and `text-embedding-3-large` embedding models.
+- Support for OpenAI `gpt-4-turbo-preview`, `gpt-4-0125-preview`, and `gpt-3.5-turbo-0125` chat models.
+
 ## v0.131.1 - 2024-01-25
 
 ### Fixed
