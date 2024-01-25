@@ -67,6 +67,7 @@
     "js-tiktoken": "1.0.7",
     "nanoid": "3.3.6",
     "secure-json-parse": "2.7.0",
+    "type-fest": "4.9.0",
     "ws": "8.14.2",
     "zod": "3.22.4",
     "zod-to-json-schema": "3.22.3"
@@ -80,7 +81,6 @@
     "@vitest/ui": "1.1.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
-    "msw": "2.1.2",
-    "type-fest": "4.9.0"
+    "msw": "2.1.2"
   }
 }

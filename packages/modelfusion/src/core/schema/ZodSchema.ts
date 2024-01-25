@@ -1,8 +1,8 @@
+import { PartialDeep } from "type-fest";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { JsonSchemaProducer } from "./JsonSchemaProducer.js";
 import { Schema } from "./Schema.js";
-import { PartialDeep } from "type-fest";
 
 export function zodSchema<OBJECT>(zodSchema: z.Schema<OBJECT>) {
   return new ZodSchema(zodSchema);
