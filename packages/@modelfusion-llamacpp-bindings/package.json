@@ -4,7 +4,7 @@
     "node-addon-api": "^7.0.0"
   },
   "scripts": {
-    "setup": "./update_submodules.sh",
+    "setup": "./bin/update_submodules.sh",
     "build": "node-gyp rebuild && tsc",
     "clean": "node-gyp clean && tsc --build --clean",
     "pretest": "tsc",
