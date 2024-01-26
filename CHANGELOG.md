@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.133.0 - 2024-01-26
+
+### Added
+
+- Support for OpenAI embedding custom dimensions.
+
+### Changed
+
+- **breaking change**: renamed `embeddingDimensions` setting to `dimensions`
+
 ## v0.132.0 - 2024-01-25
 
 ### Added
