@@ -53,7 +53,7 @@ export class MistralTextEmbeddingModel
    */
   readonly isParallelizable = false;
 
-  readonly embeddingDimensions = 1024;
+  readonly dimensions = 1024;
 
   async callAPI(
     texts: Array<string>,

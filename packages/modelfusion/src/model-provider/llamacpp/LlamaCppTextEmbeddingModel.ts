@@ -19,7 +19,7 @@ import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
 export interface LlamaCppTextEmbeddingModelSettings
   extends EmbeddingModelSettings {
   api?: ApiConfiguration;
-  embeddingDimensions?: number;
+  dimensions?: number;
   isParallelizable?: boolean;
 }
 
@@ -44,8 +44,8 @@ export class LlamaCppTextEmbeddingModel
   }
 
   readonly contextWindowSize = undefined;
-  get embeddingDimensions() {
-    return this.settings.embeddingDimensions;
+  get dimensions() {
+    return this.settings.dimensions;
   }
 
   private readonly tokenizer: LlamaCppTokenizer;
@@ -91,7 +91,7 @@ export class LlamaCppTextEmbeddingModel
 
   get settingsForEvent(): Partial<LlamaCppTextEmbeddingModelSettings> {
     return {
-      embeddingDimensions: this.settings.embeddingDimensions,
+      dimensions: this.settings.dimensions,
     };
   }
 

@@ -47,7 +47,7 @@ import { huggingface, embedMany } from "modelfusion";
 const embeddings = await embedMany({
   model: huggingface.TextEmbedder({
     model: "intfloat/e5-base-v2",
-    embeddingDimensions: 768,
+    dimensions: 768,
   }),
   values: [
     "At first, Nox didn't know what to do with the pup.",

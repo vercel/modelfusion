@@ -20,31 +20,31 @@ import { CohereTokenizer } from "./CohereTokenizer.js";
 export const COHERE_TEXT_EMBEDDING_MODELS = {
   "embed-english-light-v2.0": {
     contextWindowSize: 512,
-    embeddingDimensions: 1024,
+    dimensions: 1024,
   },
   "embed-english-v2.0": {
     contextWindowSize: 512,
-    embeddingDimensions: 4096,
+    dimensions: 4096,
   },
   "embed-multilingual-v2.0": {
     contextWindowSize: 256,
-    embeddingDimensions: 768,
+    dimensions: 768,
   },
   "embed-english-v3.0": {
     contextWindowSize: 512,
-    embeddingDimensions: 1024,
+    dimensions: 1024,
   },
   "embed-english-light-v3.0": {
     contextWindowSize: 512,
-    embeddingDimensions: 384,
+    dimensions: 384,
   },
   "embed-multilingual-v3.0": {
     contextWindowSize: 512,
-    embeddingDimensions: 1024,
+    dimensions: 1024,
   },
   "embed-multilingual-light-v3.0": {
     contextWindowSize: 512,
-    embeddingDimensions: 384,
+    dimensions: 384,
   },
 };
 
@@ -94,8 +94,7 @@ export class CohereTextEmbeddingModel
       model: this.settings.model,
     });
 
-    this.embeddingDimensions =
-      COHERE_TEXT_EMBEDDING_MODELS[this.modelName].embeddingDimensions;
+    this.dimensions = COHERE_TEXT_EMBEDDING_MODELS[this.modelName].dimensions;
   }
 
   readonly provider = "cohere" as const;
@@ -105,7 +104,7 @@ export class CohereTextEmbeddingModel
 
   readonly maxValuesPerCall = 96;
   readonly isParallelizable = true;
-  readonly embeddingDimensions: number;
+  readonly dimensions: number;
 
   readonly contextWindowSize: number;
   private readonly tokenizer: CohereTokenizer;

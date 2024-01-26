@@ -22,7 +22,7 @@ export interface HuggingFaceTextEmbeddingModelSettings
   model: string;
 
   maxValuesPerCall?: number;
-  embeddingDimensions?: number;
+  dimensions?: number;
 
   options?: {
     useCache?: boolean;
@@ -59,7 +59,7 @@ export class HuggingFaceTextEmbeddingModel
 
     // There is no limit documented in the HuggingFace API. Use 1024 as a reasonable default.
     this.maxValuesPerCall = settings.maxValuesPerCall ?? 1024;
-    this.embeddingDimensions = settings.embeddingDimensions;
+    this.dimensions = settings.dimensions;
   }
 
   readonly provider = "huggingface";
@@ -71,7 +71,7 @@ export class HuggingFaceTextEmbeddingModel
   readonly isParallelizable = true;
 
   readonly contextWindowSize = undefined;
-  readonly embeddingDimensions;
+  readonly dimensions;
 
   readonly tokenizer = undefined;
 
@@ -118,7 +118,7 @@ export class HuggingFaceTextEmbeddingModel
 
   get settingsForEvent(): Partial<HuggingFaceTextEmbeddingModelSettings> {
     return {
-      embeddingDimensions: this.settings.embeddingDimensions,
+      dimensions: this.settings.dimensions,
       options: this.settings.options,
     };
   }
