@@ -81,7 +81,10 @@ export class OpenAITextEmbeddingModel
     this.tokenizer = new TikTokenTokenizer({ model: this.modelName });
     this.contextWindowSize =
       OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].contextWindowSize;
-    this.dimensions = OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].dimensions;
+
+    this.dimensions =
+      this.settings.dimensions ??
+      OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].dimensions;
   }
 
   readonly provider = "openai" as const;
