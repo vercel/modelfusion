@@ -1,4 +1,5 @@
-import { Run } from "./Run";
+import { detectRuntime } from "../util/detectRuntime.js";
+import { Run } from "./Run.js";
 
 interface RunStorage {
   getStore: () => Run | undefined;
@@ -8,20 +9,12 @@ interface RunStorage {
 let runStorage: RunStorage | undefined;
 
 async function ensureLoaded() {
-  // Note: using process[versions] instead of process.versions to avoid Next.js edge runtime warnings.
-  const versions = "versions";
-  const isNode =
-    typeof process !== "undefined" &&
-    process[versions] != null &&
-    process[versions].node != null;
-
-  if (!isNode) return Promise.resolve();
-
-  if (!runStorage) {
+  if (detectRuntime() === "node" && !runStorage) {
     // Note: using "async_hooks" instead of "node:async_hooks" to avoid webpack fallback problems.
     const { AsyncLocalStorage } = await import("async_hooks");
     runStorage = new AsyncLocalStorage<Run>();
   }
+
   return Promise.resolve();
 }
 

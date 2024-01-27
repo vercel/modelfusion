@@ -19,7 +19,7 @@ export interface OllamaTextEmbeddingModelSettings
   extends EmbeddingModelSettings {
   api?: ApiConfiguration;
   model: string;
-  embeddingDimensions?: number;
+  dimensions?: number;
   isParallelizable?: boolean;
 }
 
@@ -41,8 +41,8 @@ export class OllamaTextEmbeddingModel
     return this.settings.isParallelizable ?? false;
   }
 
-  get embeddingDimensions() {
-    return this.settings.embeddingDimensions;
+  get dimensions() {
+    return this.settings.dimensions;
   }
 
   async callAPI(
@@ -85,7 +85,7 @@ export class OllamaTextEmbeddingModel
 
   get settingsForEvent(): Partial<OllamaTextEmbeddingModelSettings> {
     return {
-      embeddingDimensions: this.settings.embeddingDimensions,
+      dimensions: this.settings.dimensions,
     };
   }
 

@@ -13,7 +13,7 @@ export interface OpenAICompatibleTextEmbeddingModelSettings
   api: OpenAICompatibleApiConfiguration; // required
   provider?: OpenAICompatibleProviderName;
   model: string;
-  embeddingDimensions?: number;
+  dimensions?: number;
 }
 
 export class OpenAICompatibleTextEmbeddingModel
@@ -34,13 +34,13 @@ export class OpenAICompatibleTextEmbeddingModel
     return this.settings.model;
   }
 
-  get embeddingDimensions() {
-    return this.settings.embeddingDimensions;
+  get dimensions() {
+    return this.settings.dimensions;
   }
 
   get settingsForEvent(): Partial<OpenAICompatibleTextEmbeddingModelSettings> {
     return {
-      embeddingDimensions: this.settings.embeddingDimensions,
+      dimensions: this.settings.dimensions,
     };
   }
 

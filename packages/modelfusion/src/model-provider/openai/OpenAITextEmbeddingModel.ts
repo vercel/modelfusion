@@ -8,9 +8,20 @@ import {
 import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
+  "text-embedding-3-small": {
+    contextWindowSize: 8192,
+    dimensions: 1536,
+    tokenCostInMillicents: 0.002,
+  },
+  "text-embedding-3-large": {
+    contextWindowSize: 8192,
+    dimensions: 3072,
+    tokenCostInMillicents: 0.013,
+  },
+
   "text-embedding-ada-002": {
     contextWindowSize: 8192,
-    embeddingDimensions: 1536,
+    dimensions: 1536,
     tokenCostInMillicents: 0.01,
   },
 };
@@ -71,8 +82,9 @@ export class OpenAITextEmbeddingModel
     this.contextWindowSize =
       OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].contextWindowSize;
 
-    this.embeddingDimensions =
-      OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].embeddingDimensions;
+    this.dimensions =
+      this.settings.dimensions ??
+      OPENAI_TEXT_EMBEDDING_MODELS[this.modelName].dimensions;
   }
 
   readonly provider = "openai" as const;
@@ -80,7 +92,7 @@ export class OpenAITextEmbeddingModel
     return this.settings.model;
   }
 
-  readonly embeddingDimensions: number;
+  readonly dimensions: number;
 
   readonly tokenizer: TikTokenTokenizer;
   readonly contextWindowSize: number;

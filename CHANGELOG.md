@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.133.0 - 2024-01-26
+
+### Added
+
+- Support for OpenAI embedding custom dimensions.
+
+### Changed
+
+- **breaking change**: renamed `embeddingDimensions` setting to `dimensions`
+
+## v0.132.0 - 2024-01-25
+
+### Added
+
+- Support for OpenAI `text-embedding-3-small` and `text-embedding-3-large` embedding models.
+- Support for OpenAI `gpt-4-turbo-preview`, `gpt-4-0125-preview`, and `gpt-3.5-turbo-0125` chat models.
+
+## v0.131.1 - 2024-01-25
+
+### Fixed
+
+- Add `type-fest` as dependency to fix type inference errors.
+
 ## v0.131.0 - 2024-01-23
 
 ### Added

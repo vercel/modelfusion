@@ -11,7 +11,7 @@ export interface EmbeddingModel<
   /**
    * The size of the embedding vector.
    */
-  readonly embeddingDimensions: number | undefined;
+  readonly dimensions: number | undefined;
 
   /**
    * Limit of how many values can be sent in a single API call.

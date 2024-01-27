@@ -18,6 +18,7 @@ export interface AbstractOpenAITextEmbeddingModelSettings
 
   model: string;
 
+  dimensions?: number;
   maxValuesPerCall?: number | undefined;
   isUserIdForwardingEnabled?: boolean;
 }
@@ -62,6 +63,7 @@ export abstract class AbstractOpenAITextEmbeddingModel<
           body: {
             model: this.modelName,
             input: texts,
+            dimensions: this.settings.dimensions,
             user: this.settings.isUserIdForwardingEnabled
               ? callOptions.run?.userId
               : undefined,

@@ -12,7 +12,7 @@
     "commander": "10.0.1",
     "dotenv": "16.3.1",
     "jsdom": "^22.1.0",
-    "modelfusion": "0.131.0",
+    "modelfusion": "0.133.0",
     "serpapi": "^2.0.0"
   },
   "devDependencies": {
