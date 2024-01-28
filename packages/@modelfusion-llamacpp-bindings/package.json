@@ -1,5 +1,4 @@
 {
-  "main": "lib/binding.js",
   "dependencies": {
     "node-addon-api": "^7.0.0"
   },
@@ -19,6 +18,19 @@
     "url": "git+https://github.com/lgrammel/modelfusion.git"
   },
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "directory": "dist",
+    "linkDirectory": true
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    }
+  },
   "keywords": [
     "modelfusion",
     "llamacpp",
