@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "scripts": {
     "clean": "rimraf build dist .turbo node_modules && pnpm clear",
     "client": "vite",
