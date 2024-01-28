@@ -4,7 +4,7 @@
 
 ### Added
 
-- Added prompt function support to `generateText`, `streamText`, `generateStructure`, and `streamStructure`. You can create prompt functions for text, instruction, and chat prompts using `createTextPrompt`, `createInstructionPrompt`, and `createChatPrompt`. Prompt functions allow you to load prompts from external sources and improve the prompt logging. Example:
+- Added prompt function support to `generateText`, `streamText`, `generateObject`, and `streamObject`. You can create prompt functions for text, instruction, and chat prompts using `createTextPrompt`, `createInstructionPrompt`, and `createChatPrompt`. Prompt functions allow you to load prompts from external sources and improve the prompt logging. Example:
 
   ```ts
   const storyPrompt = createInstructionPrompt(
