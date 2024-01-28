@@ -40,7 +40,7 @@ importers:
         version: 5.0.12(@types/node@18.11.9)
       vitest:
         specifier: 1.2.1
-        version: 1.2.1(@types/node@18.11.9)(@vitest/ui@1.1.0)
+        version: 1.2.1(@types/node@18.11.9)(@vitest/ui@1.2.1)
 
   docs:
     dependencies:
@@ -627,8 +627,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(vitest@1.2.1)
       '@vitest/ui':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.2.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.2.1)
       eslint:
         specifier: ^8.45.0
         version: 8.56.0
@@ -5359,7 +5359,7 @@ packages:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.2.1(@types/node@18.11.9)(@vitest/ui@1.1.0)
+      vitest: 1.2.1(@types/node@18.11.9)(@vitest/ui@1.2.1)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5394,27 +5394,19 @@ packages:
       tinyspy: 2.2.0
     dev: true
 
-  /@vitest/ui@1.1.0(vitest@1.2.1):
-    resolution: {integrity: sha512-7yU1QRFBplz0xJqcgt+agcbrNFdBmLo8UUppdKkFmYx+Ih0+yMYQOyr7kOB+YoggJY/p5ZzXxdbiOz7NBX2y+w==}
+  /@vitest/ui@1.2.1(vitest@1.2.1):
+    resolution: {integrity: sha512-5kyEDpH18TB13Keutk5VScWG+LUDfPJOL2Yd1hqX+jv6+V74tp4ZYcmTgx//WDngiZA5PvX3qCHQ5KrhGzPbLg==}
     peerDependencies:
       vitest: ^1.0.0
     dependencies:
-      '@vitest/utils': 1.1.0
+      '@vitest/utils': 1.2.1
       fast-glob: 3.3.2
       fflate: 0.8.1
       flatted: 3.2.9
       pathe: 1.1.1
       picocolors: 1.0.0
-      sirv: 2.0.3
-      vitest: 1.2.1(@types/node@18.11.9)(@vitest/ui@1.1.0)
-    dev: true
-
-  /@vitest/utils@1.1.0:
-    resolution: {integrity: sha512-z+s510fKmYz4Y41XhNs3vcuFTFhcij2YF7F8VQfMEYAAUfqQh0Zfg7+w9xdgFGhPf3tX3TicAe+8BDITk6ampQ==}
-    dependencies:
-      diff-sequences: 29.6.3
-      loupe: 2.3.7
-      pretty-format: 29.7.0
+      sirv: 2.0.4
+      vitest: 1.2.1(@types/node@18.11.9)(@vitest/ui@1.2.1)
     dev: true
 
   /@vitest/utils@1.2.1:
@@ -11305,8 +11297,8 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
-  /mrmime@1.0.1:
-    resolution: {integrity: sha512-hzzEagAgDyoU1Q6yg5uI+AorQgdvMCur3FcKf7NhMKWsaYg+RnbTyHRa/9IlLF9rf455MOCtcqqrQQ83pPP7Uw==}
+  /mrmime@2.0.0:
+    resolution: {integrity: sha512-eu38+hdgojoyq63s+yTpN4XMBdt5l8HhMhc4VKLO9KM5caLIBvUm4thi7fFaxyTmCKeNnXZ5pAlBwCUnhA09uw==}
     engines: {node: '>=10'}
 
   /ms@2.0.0:
@@ -13719,12 +13711,12 @@ packages:
       once: 1.4.0
       simple-concat: 1.0.1
 
-  /sirv@2.0.3:
-    resolution: {integrity: sha512-O9jm9BsID1P+0HOi81VpXPoDxYP374pkOLzACAoyUQ/3OUVndNpsz6wMnY2z+yOxzbllCKZrM+9QrWsv4THnyA==}
+  /sirv@2.0.4:
+    resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
     engines: {node: '>= 10'}
     dependencies:
       '@polka/url': 1.0.0-next.24
-      mrmime: 1.0.1
+      mrmime: 2.0.0
       totalist: 3.0.1
 
   /sisteransi@1.0.5:
@@ -15134,7 +15126,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vitest@1.2.1(@types/node@18.11.9)(@vitest/ui@1.1.0):
+  /vitest@1.2.1(@types/node@18.11.9)(@vitest/ui@1.2.1):
     resolution: {integrity: sha512-TRph8N8rnSDa5M2wKWJCMnztCZS9cDcgVTQ6tsTFTG/odHJ4l5yNVqvbeDJYJRZ6is3uxaEpFs8LL6QM+YFSdA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -15164,7 +15156,7 @@ packages:
       '@vitest/runner': 1.2.1
       '@vitest/snapshot': 1.2.1
       '@vitest/spy': 1.2.1
-      '@vitest/ui': 1.1.0(vitest@1.2.1)
+      '@vitest/ui': 1.2.1(vitest@1.2.1)
       '@vitest/utils': 1.2.1
       acorn-walk: 8.3.2
       cac: 6.7.14
@@ -15283,7 +15275,7 @@ packages:
       is-plain-object: 5.0.0
       opener: 1.5.2
       picocolors: 1.0.0
-      sirv: 2.0.3
+      sirv: 2.0.4
       ws: 7.5.9
     transitivePeerDependencies:
       - bufferutil
