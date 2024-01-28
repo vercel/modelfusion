@@ -46,6 +46,7 @@
     "./internal": {
       "types": "./internal/index.d.ts",
       "import": "./internal/index.js",
+      "module": "./internal/index.js",
       "require": "./internal/index.cjs"
     }
   },
