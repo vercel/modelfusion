@@ -20,10 +20,8 @@ import {
   textGenerationModelProperties,
 } from "../../model-function/generate-text/TextGenerationModel";
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
-import {
-  TextGenerationToolCallModel,
-  ToolCallPromptTemplate,
-} from "../../tool/generate-tool-call/TextGenerationToolCallModel";
+import { TextGenerationToolCallModel } from "../../tool/generate-tool-call/TextGenerationToolCallModel";
+import { ToolCallPromptTemplate } from "../../tool/generate-tool-call/ToolCallPromptTemplate";
 import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/TextGenerationToolCallsModel";
 import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate";
 import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler";
@@ -198,7 +196,7 @@ export class OllamaChatModel
   ) {
     return new TextGenerationToolCallModel({
       model: this,
-      format: promptTemplate,
+      template: promptTemplate,
     });
   }
 

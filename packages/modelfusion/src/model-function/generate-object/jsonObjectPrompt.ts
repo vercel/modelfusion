@@ -9,7 +9,7 @@ import {
 
 const DEFAULT_SCHEMA_PREFIX = "JSON schema:";
 const DEFAULT_SCHEMA_SUFFIX =
-  "\nYou MUST answer with a JSON object matches the above schema.";
+  "\nYou MUST answer with a JSON object that matches the JSON schema above.";
 
 export const jsonObjectPrompt = {
   custom<SOURCE_PROMPT, TARGET_PROMPT>(
@@ -85,6 +85,7 @@ function createSystemPrompt({
 }) {
   return [
     originalSystemPrompt,
+    originalSystemPrompt != null ? "" : null,
     schemaPrefix,
     JSON.stringify(schema.getJsonSchema()),
     schemaSuffix,

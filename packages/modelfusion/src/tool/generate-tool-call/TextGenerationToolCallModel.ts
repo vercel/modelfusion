@@ -1,23 +1,15 @@
 import { FunctionOptions } from "../../core/FunctionOptions";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
 } from "../../model-function/generate-text/TextGenerationModel";
 import { generateText } from "../../model-function/generate-text/generateText";
-import { ToolCallParseError } from "./ToolCallParseError";
 import { ToolDefinition } from "../ToolDefinition";
 import { ToolCallGenerationModel } from "./ToolCallGenerationModel";
-
-export interface ToolCallPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> {
-  createPrompt: (
-    prompt: SOURCE_PROMPT,
-    tool: ToolDefinition<string, unknown>
-  ) => TARGET_PROMPT;
-  extractToolCall: (
-    response: string,
-    tool: ToolDefinition<string, unknown>
-  ) => { id: string; args: unknown } | null;
-}
+import { ToolCallParseError } from "./ToolCallParseError";
+import { ToolCallPromptTemplate } from "./ToolCallPromptTemplate";
 
 export class TextGenerationToolCallModel<
   SOURCE_PROMPT,
@@ -26,17 +18,20 @@ export class TextGenerationToolCallModel<
 > implements ToolCallGenerationModel<SOURCE_PROMPT, MODEL["settings"]>
 {
   private readonly model: MODEL;
-  private readonly format: ToolCallPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT>;
+  private readonly template: ToolCallPromptTemplate<
+    SOURCE_PROMPT,
+    TARGET_PROMPT
+  >;
 
   constructor({
     model,
-    format,
+    template,
   }: {
     model: MODEL;
-    format: ToolCallPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT>;
+    template: ToolCallPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT>;
   }) {
     this.model = model;
-    this.format = format;
+    this.template = template;
   }
 
   get modelInformation() {
@@ -51,14 +46,25 @@ export class TextGenerationToolCallModel<
     return this.model.settingsForEvent;
   }
 
+  getModelWithJsonOutput(schema: Schema<unknown> & JsonSchemaProducer) {
+    if (this.template.withJsonOutput != null) {
+      return this.template.withJsonOutput({
+        model: this.model,
+        schema,
+      }) as MODEL;
+    }
+
+    return this.model;
+  }
+
   async doGenerateToolCall(
     tool: ToolDefinition<string, unknown>,
     prompt: SOURCE_PROMPT,
     options?: FunctionOptions
   ) {
     const { rawResponse, text, metadata } = await generateText({
-      model: this.model,
-      prompt: this.format.createPrompt(prompt, tool),
+      model: this.getModelWithJsonOutput(tool.parameters),
+      prompt: this.template.createPrompt(prompt, tool),
       fullResponse: true,
       ...options,
     });
@@ -66,7 +72,7 @@ export class TextGenerationToolCallModel<
     try {
       return {
         rawResponse,
-        toolCall: this.format.extractToolCall(text, tool),
+        toolCall: this.template.extractToolCall(text, tool),
         usage: metadata?.usage as
           | {
               promptTokens: number;
@@ -87,7 +93,7 @@ export class TextGenerationToolCallModel<
   withSettings(additionalSettings: Partial<MODEL["settings"]>): this {
     return new TextGenerationToolCallModel({
       model: this.model.withSettings(additionalSettings),
-      format: this.format,
+      template: this.template,
     }) as this;
   }
 }

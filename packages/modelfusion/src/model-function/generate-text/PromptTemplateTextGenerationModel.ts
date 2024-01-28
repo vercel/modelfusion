@@ -1,10 +1,8 @@
 import { FunctionCallOptions } from "../../core/FunctionOptions";
 import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
 import { Schema } from "../../core/schema/Schema";
-import {
-  TextGenerationToolCallModel,
-  ToolCallPromptTemplate,
-} from "../../tool/generate-tool-call/TextGenerationToolCallModel";
+import { TextGenerationToolCallModel } from "../../tool/generate-tool-call/TextGenerationToolCallModel";
+import { ToolCallPromptTemplate } from "../../tool/generate-tool-call/ToolCallPromptTemplate";
 import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/TextGenerationToolCallsModel";
 import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate";
 import { ObjectFromTextGenerationModel } from "../generate-object/ObjectFromTextGenerationModel";
@@ -91,7 +89,7 @@ export class PromptTemplateTextGenerationModel<
   ) {
     return new TextGenerationToolCallModel({
       model: this,
-      format: promptTemplate,
+      template: promptTemplate,
     });
   }
 
