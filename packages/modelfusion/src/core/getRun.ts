@@ -1,5 +1,5 @@
-import { detectRuntime } from "../util/detectRuntime.js";
-import { Run } from "./Run.js";
+import { detectRuntime } from "../util/detectRuntime";
+import { Run } from "./Run";
 
 interface RunStorage {
   getStore: () => Run | undefined;

@@ -1,15 +1,15 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { PromptFunction, expandPrompt } from "../../core/PromptFunction.js";
-import { executeStandardCall } from "../executeStandardCall.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { PromptFunction, expandPrompt } from "../../core/PromptFunction";
+import { executeStandardCall } from "../executeStandardCall";
+import { ModelCallMetadata } from "../ModelCallMetadata";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "./TextGenerationModel.js";
+} from "./TextGenerationModel";
 import {
   TextGenerationFinishReason,
   TextGenerationResult,
-} from "./TextGenerationResult.js";
+} from "./TextGenerationResult";
 
 /**
  * Generate text for a prompt and return it as a string.

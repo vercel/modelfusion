@@ -1,6 +1,6 @@
-import { executeFunctionCall } from "../core/executeFunctionCall.js";
-import { FunctionOptions } from "../core/FunctionOptions.js";
-import { Retriever } from "./Retriever.js";
+import { executeFunctionCall } from "../core/executeFunctionCall";
+import { FunctionOptions } from "../core/FunctionOptions";
+import { Retriever } from "./Retriever";
 
 export async function retrieve<OBJECT, QUERY>(
   retriever: Retriever<OBJECT, QUERY>,

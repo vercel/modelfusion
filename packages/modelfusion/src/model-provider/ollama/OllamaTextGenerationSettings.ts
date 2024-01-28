@@ -1,4 +1,4 @@
-import { TextGenerationModelSettings } from "../../model-function/generate-text/TextGenerationModel.js";
+import { TextGenerationModelSettings } from "../../model-function/generate-text/TextGenerationModel";
 
 export interface OllamaTextGenerationSettings
   extends TextGenerationModelSettings {

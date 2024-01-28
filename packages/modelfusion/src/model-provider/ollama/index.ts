@@ -1,7 +1,7 @@
-export * from "./OllamaApiConfiguration.js";
-export * from "./OllamaChatModel.js";
-export * from "./OllamaCompletionModel.js";
-export { OllamaErrorData } from "./OllamaError.js";
-export * as ollama from "./OllamaFacade.js";
-export * from "./OllamaTextEmbeddingModel.js";
-export * from "./OllamaTextGenerationSettings.js";
+export * from "./OllamaApiConfiguration";
+export * from "./OllamaChatModel";
+export * from "./OllamaCompletionModel";
+export { OllamaErrorData } from "./OllamaError";
+export * as ollama from "./OllamaFacade";
+export * from "./OllamaTextEmbeddingModel";
+export * from "./OllamaTextGenerationSettings";

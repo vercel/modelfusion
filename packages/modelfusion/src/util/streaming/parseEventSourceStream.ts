@@ -1,6 +1,6 @@
 import { ParsedEvent } from "eventsource-parser";
-import { convertReadableStreamToAsyncIterable } from "./convertReadableStreamToAsyncIterable.js";
-import { EventSourceParserStream } from "./EventSourceParserStream.js";
+import { convertReadableStreamToAsyncIterable } from "./convertReadableStreamToAsyncIterable";
+import { EventSourceParserStream } from "./EventSourceParserStream";
 
 export async function parseEventSourceStream({
   stream,

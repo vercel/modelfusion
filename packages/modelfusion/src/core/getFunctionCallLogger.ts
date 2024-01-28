@@ -1,6 +1,6 @@
-import { FunctionOptions } from "./FunctionOptions.js";
-import { FunctionEvent } from "./FunctionEvent.js";
-import { FunctionObserver } from "./FunctionObserver.js";
+import { FunctionOptions } from "./FunctionOptions";
+import { FunctionEvent } from "./FunctionEvent";
+import { FunctionObserver } from "./FunctionObserver";
 
 export function getFunctionCallLogger(
   logging: FunctionOptions["logging"]

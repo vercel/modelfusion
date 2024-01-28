@@ -1,13 +1,13 @@
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
 import {
   ChatPrompt,
   UserContent,
-} from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart.js";
-import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
-import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError.js";
-import { convertDataContentToBase64String } from "../../util/format/DataContent.js";
-import { OllamaChatPrompt } from "./OllamaChatModel.js";
+} from "../../model-function/generate-text/prompt-template/ChatPrompt";
+import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt";
+import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError";
+import { convertDataContentToBase64String } from "../../util/format/DataContent";
+import { OllamaChatPrompt } from "./OllamaChatModel";
 
 /**
  * OllamaChatPrompt identity chat format.

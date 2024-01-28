@@ -1,4 +1,4 @@
-import { ModelInformation } from "./ModelInformation.js";
+import { ModelInformation } from "./ModelInformation";
 
 export type ModelCallMetadata = {
   model: ModelInformation;

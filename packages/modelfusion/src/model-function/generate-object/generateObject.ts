@@ -2,17 +2,17 @@ import {
   PromptFunction,
   expandPrompt,
   isPromptFunction,
-} from "../../core/PromptFunction.js";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStandardCall } from "../executeStandardCall.js";
+} from "../../core/PromptFunction";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStandardCall } from "../executeStandardCall";
 import {
   ObjectGenerationModel,
   ObjectGenerationModelSettings,
-} from "./ObjectGenerationModel.js";
-import { ObjectValidationError } from "./ObjectValidationError.js";
+} from "./ObjectGenerationModel";
+import { ObjectValidationError } from "./ObjectValidationError";
 
 /**
  * Generate a typed object for a prompt and a schema.

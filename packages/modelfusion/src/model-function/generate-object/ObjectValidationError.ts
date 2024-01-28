@@ -1,4 +1,4 @@
-import { getErrorMessage } from "../../util/getErrorMessage.js";
+import { getErrorMessage } from "../../util/getErrorMessage";
 
 export class ObjectValidationError extends Error {
   readonly cause: unknown;

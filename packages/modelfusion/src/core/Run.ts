@@ -1,5 +1,5 @@
-import { ErrorHandler } from "../util/ErrorHandler.js";
-import { FunctionObserver } from "./FunctionObserver.js";
+import { ErrorHandler } from "../util/ErrorHandler";
+import { FunctionObserver } from "./FunctionObserver";
 
 export interface Run {
   /**

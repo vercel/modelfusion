@@ -1,33 +1,33 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { validateTypes } from "../../core/schema/validateTypes.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { validateTypes } from "../../core/schema/validateTypes";
+import { AbstractModel } from "../../model-function/AbstractModel";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel";
 import {
   TextGenerationModelSettings,
   TextStreamingBaseModel,
   textGenerationModelProperties,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
+} from "../../model-function/generate-text/TextGenerationModel";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult";
 import {
   chat,
   instruction,
   text,
-} from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
-import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
-import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler.js";
-import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
-import { failedCohereCallResponseHandler } from "./CohereError.js";
-import { CohereTokenizer } from "./CohereTokenizer.js";
+} from "../../model-function/generate-text/prompt-template/TextPromptTemplate";
+import { countTokens } from "../../model-function/tokenize-text/countTokens";
+import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler";
+import { CohereApiConfiguration } from "./CohereApiConfiguration";
+import { failedCohereCallResponseHandler } from "./CohereError";
+import { CohereTokenizer } from "./CohereTokenizer";
 
 export const COHERE_TEXT_GENERATION_MODELS = {
   command: {

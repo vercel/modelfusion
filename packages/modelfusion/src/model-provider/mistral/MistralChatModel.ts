@@ -1,27 +1,27 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { validateTypes } from "../../core/schema/validateTypes.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { validateTypes } from "../../core/schema/validateTypes";
+import { AbstractModel } from "../../model-function/AbstractModel";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel";
 import {
   TextGenerationModelSettings,
   TextStreamingBaseModel,
   textGenerationModelProperties,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
-import { createEventSourceResponseHandler } from "../../util/streaming/createEventSourceResponseHandler.js";
-import { MistralApiConfiguration } from "./MistralApiConfiguration.js";
-import { chat, instruction, text } from "./MistralChatPromptTemplate.js";
-import { failedMistralCallResponseHandler } from "./MistralError.js";
+} from "../../model-function/generate-text/TextGenerationModel";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult";
+import { createEventSourceResponseHandler } from "../../util/streaming/createEventSourceResponseHandler";
+import { MistralApiConfiguration } from "./MistralApiConfiguration";
+import { chat, instruction, text } from "./MistralChatPromptTemplate";
+import { failedMistralCallResponseHandler } from "./MistralError";
 
 export type MistralChatMessage = {
   role: "system" | "user" | "assistant";

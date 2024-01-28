@@ -1,13 +1,10 @@
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { MistralApiConfiguration } from "./MistralApiConfiguration.js";
-import {
-  MistralChatModel,
-  MistralChatModelSettings,
-} from "./MistralChatModel.js";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { MistralApiConfiguration } from "./MistralApiConfiguration";
+import { MistralChatModel, MistralChatModelSettings } from "./MistralChatModel";
 import {
   MistralTextEmbeddingModel,
   MistralTextEmbeddingModelSettings,
-} from "./MistralTextEmbeddingModel.js";
+} from "./MistralTextEmbeddingModel";
 
 /**
  * Creates an API configuration for the Mistral API.
@@ -32,4 +29,4 @@ export function TextEmbedder(settings: MistralTextEmbeddingModelSettings) {
 export {
   MistralChatMessage as ChatMessage,
   MistralChatPrompt as ChatPrompt,
-} from "./MistralChatModel.js";
+} from "./MistralChatModel";

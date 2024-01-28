@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { test, describe } from "vitest";
-import { fixJson } from "./fixJson.js";
+import { fixJson } from "./fixJson";
 
 test("should handle empty input", () => {
   assert.strictEqual(fixJson(""), "");

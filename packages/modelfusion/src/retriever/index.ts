@@ -1,2 +1,2 @@
-export * from "./Retriever.js";
-export * from "./retrieve.js";
+export * from "./Retriever";
+export * from "./retrieve";

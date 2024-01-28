@@ -1,4 +1,4 @@
-import { ThrottleFunction } from "./ThrottleFunction.js";
+import { ThrottleFunction } from "./ThrottleFunction";
 
 class MaxConcurrencyThrottler {
   private maxConcurrentCalls: number;

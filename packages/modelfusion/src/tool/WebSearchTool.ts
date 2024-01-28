@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { FunctionOptions } from "../core/FunctionOptions.js";
-import { zodSchema } from "../core/schema/ZodSchema.js";
-import { Tool } from "./Tool.js";
+import { FunctionOptions } from "../core/FunctionOptions";
+import { zodSchema } from "../core/schema/ZodSchema";
+import { Tool } from "./Tool";
 
 const RETURN_TYPE_SCHEMA = zodSchema(
   z.object({

@@ -1,6 +1,6 @@
-import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { ChatPrompt } from "./ChatPrompt.js";
-import { InstructionPrompt } from "./InstructionPrompt.js";
+import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate";
+import { ChatPrompt } from "./ChatPrompt";
+import { InstructionPrompt } from "./InstructionPrompt";
 
 export interface TextGenerationPromptTemplateProvider<TARGET_PROMPT> {
   text(): TextGenerationPromptTemplate<string, TARGET_PROMPT>;

@@ -1,4 +1,4 @@
-import { runSafe } from "./runSafe.js";
+import { runSafe } from "./runSafe";
 
 it("should catch thrown error in sync function", async () => {
   const error = new Error("test error");

@@ -1,2 +1,2 @@
-export * from "./ExecuteToolEvent.js";
-export * from "./executeTool.js";
+export * from "./ExecuteToolEvent";
+export * from "./executeTool";

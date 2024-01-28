@@ -1,24 +1,24 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   createAudioMpegResponseHandler,
   createTextErrorResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { safeParseJSON } from "../../core/schema/parseJSON.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { Delta } from "../../model-function/Delta.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { safeParseJSON } from "../../core/schema/parseJSON";
+import { AbstractModel } from "../../model-function/AbstractModel";
+import { Delta } from "../../model-function/Delta";
 import {
   SpeechGenerationModelSettings,
   StreamingSpeechGenerationModel,
-} from "../../model-function/generate-speech/SpeechGenerationModel.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { createSimpleWebSocket } from "../../util/SimpleWebSocket.js";
-import { base64ToUint8Array } from "../../util/format/UInt8Utils.js";
-import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
+} from "../../model-function/generate-speech/SpeechGenerationModel";
+import { AsyncQueue } from "../../util/AsyncQueue";
+import { createSimpleWebSocket } from "../../util/SimpleWebSocket";
+import { base64ToUint8Array } from "../../util/format/UInt8Utils";
+import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration";
 
 const elevenLabsModels = [
   "eleven_multilingual_v2",

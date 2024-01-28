@@ -1,4 +1,4 @@
-import { chat, instruction, text } from "./Llama2PromptTemplate.js";
+import { chat, instruction, text } from "./Llama2PromptTemplate";
 
 describe("text prompt", () => {
   it("should format prompt", () => {

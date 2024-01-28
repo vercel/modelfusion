@@ -1,8 +1,8 @@
 import {
   BaseUrlApiConfigurationWithDefaults,
   PartialBaseUrlPartsApiConfigurationOptions,
-} from "../../core/api/BaseUrlApiConfiguration.js";
-import { loadApiKey } from "../../core/api/loadApiKey.js";
+} from "../../core/api/BaseUrlApiConfiguration";
+import { loadApiKey } from "../../core/api/loadApiKey";
 
 /**
  * Creates an API configuration for the Mistral API.

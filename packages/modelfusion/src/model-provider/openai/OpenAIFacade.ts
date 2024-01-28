@@ -1,34 +1,34 @@
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
 import {
   AzureOpenAIApiConfiguration,
   AzureOpenAIApiConfigurationOptions,
-} from "./AzureOpenAIApiConfiguration.js";
-import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
-import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel.js";
+} from "./AzureOpenAIApiConfiguration";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration";
+import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel";
 import {
   OpenAICompletionModel,
   OpenAICompletionModelSettings,
-} from "./OpenAICompletionModel.js";
+} from "./OpenAICompletionModel";
 import {
   OpenAIImageGenerationModel,
   OpenAIImageGenerationSettings,
-} from "./OpenAIImageGenerationModel.js";
+} from "./OpenAIImageGenerationModel";
 import {
   OpenAISpeechModel,
   OpenAISpeechModelSettings,
-} from "./OpenAISpeechModel.js";
+} from "./OpenAISpeechModel";
 import {
   OpenAITextEmbeddingModel,
   OpenAITextEmbeddingModelSettings,
-} from "./OpenAITextEmbeddingModel.js";
+} from "./OpenAITextEmbeddingModel";
 import {
   OpenAITranscriptionModel,
   OpenAITranscriptionModelSettings,
-} from "./OpenAITranscriptionModel.js";
+} from "./OpenAITranscriptionModel";
 import {
   TikTokenTokenizer,
   TikTokenTokenizerSettings,
-} from "./TikTokenTokenizer.js";
+} from "./TikTokenTokenizer";
 
 /**
  * Creates an API configuration for the OpenAI API.
@@ -195,5 +195,5 @@ export function Tokenizer(settings: TikTokenTokenizerSettings) {
   return new TikTokenTokenizer(settings);
 }
 
-export { OpenAIChatPrompt as ChatPrompt } from "./AbstractOpenAIChatModel.js";
-export { OpenAIChatMessage as ChatMessage } from "./OpenAIChatMessage.js";
+export { OpenAIChatPrompt as ChatPrompt } from "./AbstractOpenAIChatModel";
+export { OpenAIChatMessage as ChatMessage } from "./OpenAIChatMessage";

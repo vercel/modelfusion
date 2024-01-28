@@ -1,20 +1,20 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   createJsonResponseHandler,
   createTextErrorResponseHandler,
   postToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { AbstractModel } from "../../model-function/AbstractModel";
 import {
   SpeechGenerationModel,
   SpeechGenerationModelSettings,
-} from "../../model-function/generate-speech/SpeechGenerationModel.js";
-import { base64ToUint8Array } from "../../util/format/UInt8Utils.js";
-import { LmntApiConfiguration } from "./LmntApiConfiguration.js";
+} from "../../model-function/generate-speech/SpeechGenerationModel";
+import { base64ToUint8Array } from "../../util/format/UInt8Utils";
+import { LmntApiConfiguration } from "./LmntApiConfiguration";
 
 export interface LmntSpeechModelSettings extends SpeechGenerationModelSettings {
   api?: ApiConfiguration;

@@ -1,5 +1,5 @@
-import { ModelInformation } from "./ModelInformation.js";
-import { Model, ModelSettings } from "./Model.js";
+import { ModelInformation } from "./ModelInformation";
+import { Model, ModelSettings } from "./Model";
 
 export abstract class AbstractModel<SETTINGS extends ModelSettings>
   implements Model<SETTINGS>

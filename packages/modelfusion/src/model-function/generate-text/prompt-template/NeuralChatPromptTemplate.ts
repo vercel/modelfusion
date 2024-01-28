@@ -1,8 +1,8 @@
-import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { ChatPrompt } from "./ChatPrompt.js";
-import { validateContentIsString } from "./ContentPart.js";
-import { InstructionPrompt } from "./InstructionPrompt.js";
-import { InvalidPromptError } from "./InvalidPromptError.js";
+import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate";
+import { ChatPrompt } from "./ChatPrompt";
+import { validateContentIsString } from "./ContentPart";
+import { InstructionPrompt } from "./InstructionPrompt";
+import { InvalidPromptError } from "./InvalidPromptError";
 
 const roleNames = {
   system: "System",

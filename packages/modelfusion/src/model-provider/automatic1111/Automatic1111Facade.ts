@@ -1,9 +1,9 @@
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration.js";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration";
 import {
   Automatic1111ImageGenerationModel,
   Automatic1111ImageGenerationSettings,
-} from "./Automatic1111ImageGenerationModel.js";
+} from "./Automatic1111ImageGenerationModel";
 
 /**
  * Creates an API configuration for the AUTOMATIC1111 Stable Diffusion Web UI API.

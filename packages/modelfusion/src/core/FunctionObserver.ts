@@ -1,4 +1,4 @@
-import { FunctionEvent } from "./FunctionEvent.js";
+import { FunctionEvent } from "./FunctionEvent";
 
 export interface FunctionObserver {
   /**

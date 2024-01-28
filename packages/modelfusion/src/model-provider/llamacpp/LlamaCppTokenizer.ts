@@ -1,15 +1,15 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
-import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { BasicTokenizer } from "../../model-function/tokenize-text/Tokenizer";
+import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration";
+import { failedLlamaCppCallResponseHandler } from "./LlamaCppError";
 
 /**
  * Tokenizer for LlamaCpp.

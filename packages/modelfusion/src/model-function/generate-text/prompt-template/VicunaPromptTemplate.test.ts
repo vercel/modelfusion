@@ -1,4 +1,4 @@
-import { chat, instruction, text } from "./VicunaPromptTemplate.js";
+import { chat, instruction, text } from "./VicunaPromptTemplate";
 
 describe("text prompt", () => {
   it("should format prompt", () => {

@@ -1,5 +1,5 @@
-import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { SplitFunction } from "./SplitFunction.js";
+import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer";
+import { SplitFunction } from "./SplitFunction";
 
 // when segments is a string, it splits by character, otherwise according to the provided segments
 function splitRecursively({

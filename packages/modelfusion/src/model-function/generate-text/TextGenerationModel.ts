@@ -1,13 +1,13 @@
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { Delta } from "../Delta.js";
-import { Model, ModelSettings } from "../Model.js";
-import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer.js";
-import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate.js";
-import { TextGenerationResult } from "./TextGenerationResult.js";
-import { ChatPrompt } from "./prompt-template/ChatPrompt.js";
-import { InstructionPrompt } from "./prompt-template/InstructionPrompt.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { Delta } from "../Delta";
+import { Model, ModelSettings } from "../Model";
+import { BasicTokenizer, FullTokenizer } from "../tokenize-text/Tokenizer";
+import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate";
+import { TextGenerationResult } from "./TextGenerationResult";
+import { ChatPrompt } from "./prompt-template/ChatPrompt";
+import { InstructionPrompt } from "./prompt-template/InstructionPrompt";
 
 export const textGenerationModelProperties = [
   "maxGenerationTokens",

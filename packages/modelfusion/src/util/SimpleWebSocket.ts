@@ -1,4 +1,4 @@
-import * as Runtime from "./detectRuntime.js";
+import * as Runtime from "./detectRuntime";
 
 export interface SimpleWebSocket {
   send(data: string): void;

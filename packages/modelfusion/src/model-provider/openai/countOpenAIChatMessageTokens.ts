@@ -1,10 +1,10 @@
-import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
-import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
-import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
+import { countTokens } from "../../model-function/tokenize-text/countTokens";
+import { TikTokenTokenizer } from "./TikTokenTokenizer";
+import { OpenAIChatMessage } from "./OpenAIChatMessage";
 import {
   OpenAIChatModelType,
   getOpenAIChatModelInformation,
-} from "./OpenAIChatModel.js";
+} from "./OpenAIChatModel";
 
 /**
  * Prompt tokens that are included automatically for every full

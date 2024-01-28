@@ -1,4 +1,4 @@
-import { chat, instruction, text } from "./MistralInstructPromptTemplate.js";
+import { chat, instruction, text } from "./MistralInstructPromptTemplate";
 
 describe("text prompt", () => {
   it("should format prompt", () => {

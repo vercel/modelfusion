@@ -1,9 +1,9 @@
 import { nanoid as createId } from "nanoid";
-import { ErrorHandler } from "../util/ErrorHandler.js";
-import { FunctionEvent } from "./FunctionEvent.js";
-import { FunctionEventSource } from "./FunctionEventSource.js";
-import { FunctionObserver } from "./FunctionObserver.js";
-import { Run } from "./Run.js";
+import { ErrorHandler } from "../util/ErrorHandler";
+import { FunctionEvent } from "./FunctionEvent";
+import { FunctionEventSource } from "./FunctionEventSource";
+import { FunctionObserver } from "./FunctionObserver";
+import { Run } from "./Run";
 
 export class DefaultRun implements Run {
   readonly runId: string;

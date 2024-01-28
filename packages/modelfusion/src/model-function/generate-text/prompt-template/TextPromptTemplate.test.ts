@@ -1,4 +1,4 @@
-import { chat, instruction, text } from "./TextPromptTemplate.js";
+import { chat, instruction, text } from "./TextPromptTemplate";
 
 describe("text prompt", () => {
   it("should format prompt", () => {

@@ -1,8 +1,8 @@
-import { streamText } from "../../model-function/generate-text/streamText.js";
-import { StreamingTestServer } from "../../test/StreamingTestServer.js";
-import { arrayFromAsync } from "../../test/arrayFromAsync.js";
-import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
-import { CohereTextGenerationModel } from "./CohereTextGenerationModel.js";
+import { streamText } from "../../model-function/generate-text/streamText";
+import { StreamingTestServer } from "../../test/StreamingTestServer";
+import { arrayFromAsync } from "../../test/arrayFromAsync";
+import { CohereApiConfiguration } from "./CohereApiConfiguration";
+import { CohereTextGenerationModel } from "./CohereTextGenerationModel";
 
 describe("streamText", () => {
   const server = new StreamingTestServer("https://api.cohere.ai/v1/generate");

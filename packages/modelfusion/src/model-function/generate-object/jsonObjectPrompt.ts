@@ -1,11 +1,11 @@
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
-import { InstructionPrompt } from "../generate-text/prompt-template/InstructionPrompt.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { parseJSON } from "../../core/schema/parseJSON";
+import { InstructionPrompt } from "../generate-text/prompt-template/InstructionPrompt";
 import {
   FlexibleObjectFromTextPromptTemplate,
   ObjectFromTextPromptTemplate,
-} from "./ObjectFromTextPromptTemplate.js";
+} from "./ObjectFromTextPromptTemplate";
 
 const DEFAULT_SCHEMA_PREFIX = "JSON schema:";
 const DEFAULT_SCHEMA_SUFFIX =

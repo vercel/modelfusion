@@ -1,4 +1,4 @@
-import { instruction, text } from "./AlpacaPromptTemplate.js";
+import { instruction, text } from "./AlpacaPromptTemplate";
 
 describe("text prompt", () => {
   it("should format prompt", () => {

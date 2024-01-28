@@ -1,32 +1,27 @@
 import {
   FlexibleObjectFromTextPromptTemplate,
   ObjectFromTextPromptTemplate,
-} from "../../model-function/generate-object/ObjectFromTextPromptTemplate.js";
-import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel.js";
-import { PromptTemplateFullTextModel } from "../../model-function/generate-text/PromptTemplateFullTextModel.js";
+} from "../../model-function/generate-object/ObjectFromTextPromptTemplate";
+import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel";
+import { PromptTemplateFullTextModel } from "../../model-function/generate-text/PromptTemplateFullTextModel";
 import {
   TextStreamingBaseModel,
   TextStreamingModel,
   textGenerationModelProperties,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel.js";
-import { ToolCallsGenerationModel } from "../../tool/generate-tool-calls/ToolCallsGenerationModel.js";
+} from "../../model-function/generate-text/TextGenerationModel";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel";
+import { ToolCallsGenerationModel } from "../../tool/generate-tool-calls/ToolCallsGenerationModel";
 import {
   AbstractOpenAIChatModel,
   AbstractOpenAIChatSettings,
   OpenAIChatPrompt,
   OpenAIChatResponse,
-} from "./AbstractOpenAIChatModel.js";
-import { OpenAIChatFunctionCallObjectGenerationModel } from "./OpenAIChatFunctionCallObjectGenerationModel.js";
-import {
-  chat,
-  identity,
-  instruction,
-  text,
-} from "./OpenAIChatPromptTemplate.js";
-import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
-import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens.js";
+} from "./AbstractOpenAIChatModel";
+import { OpenAIChatFunctionCallObjectGenerationModel } from "./OpenAIChatFunctionCallObjectGenerationModel";
+import { chat, identity, instruction, text } from "./OpenAIChatPromptTemplate";
+import { TikTokenTokenizer } from "./TikTokenTokenizer";
+import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens";
 
 /*
  * Available OpenAI chat models, their token limits, and pricing.

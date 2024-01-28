@@ -1,4 +1,4 @@
-import { BaseUrlApiConfiguration } from "./BaseUrlApiConfiguration.js";
+import { BaseUrlApiConfiguration } from "./BaseUrlApiConfiguration";
 
 describe("with text URLs", () => {
   it("should assemble the correct url", async () => {

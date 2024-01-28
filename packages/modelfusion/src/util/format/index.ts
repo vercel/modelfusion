@@ -1,1 +1,1 @@
-export * from "./DataContent.js";
+export * from "./DataContent";

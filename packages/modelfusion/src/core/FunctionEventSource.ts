@@ -1,6 +1,6 @@
-import { ErrorHandler } from "../util/ErrorHandler.js";
-import { FunctionEvent } from "./FunctionEvent.js";
-import { FunctionObserver } from "./FunctionObserver.js";
+import { ErrorHandler } from "../util/ErrorHandler";
+import { FunctionEvent } from "./FunctionEvent";
+import { FunctionObserver } from "./FunctionObserver";
 
 export class FunctionEventSource {
   readonly observers: FunctionObserver[];

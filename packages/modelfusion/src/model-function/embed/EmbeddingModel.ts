@@ -1,6 +1,6 @@
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { Vector } from "../../core/Vector.js";
-import { Model, ModelSettings } from "../Model.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { Vector } from "../../core/Vector";
+import { Model, ModelSettings } from "../Model";
 
 export interface EmbeddingModelSettings extends ModelSettings {}
 

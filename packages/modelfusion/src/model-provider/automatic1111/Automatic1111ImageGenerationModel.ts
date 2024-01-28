@@ -1,25 +1,25 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { PromptTemplate } from "../../model-function/PromptTemplate.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { AbstractModel } from "../../model-function/AbstractModel";
+import { PromptTemplate } from "../../model-function/PromptTemplate";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
-} from "../../model-function/generate-image/ImageGenerationModel.js";
-import { PromptTemplateImageGenerationModel } from "../../model-function/generate-image/PromptTemplateImageGenerationModel.js";
-import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration.js";
-import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error.js";
+} from "../../model-function/generate-image/ImageGenerationModel";
+import { PromptTemplateImageGenerationModel } from "../../model-function/generate-image/PromptTemplateImageGenerationModel";
+import { Automatic1111ApiConfiguration } from "./Automatic1111ApiConfiguration";
+import { failedAutomatic1111CallResponseHandler } from "./Automatic1111Error";
 import {
   Automatic1111ImageGenerationPrompt,
   mapBasicPromptToAutomatic1111Format,
-} from "./Automatic1111ImageGenerationPrompt.js";
+} from "./Automatic1111ImageGenerationPrompt";
 
 export interface Automatic1111ImageGenerationSettings
   extends ImageGenerationModelSettings {

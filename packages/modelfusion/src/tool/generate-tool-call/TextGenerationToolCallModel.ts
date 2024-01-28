@@ -1,12 +1,12 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { generateText } from "../../model-function/generate-text/generateText.js";
-import { ToolCallParseError } from "./ToolCallParseError.js";
-import { ToolDefinition } from "../ToolDefinition.js";
-import { ToolCallGenerationModel } from "./ToolCallGenerationModel.js";
+} from "../../model-function/generate-text/TextGenerationModel";
+import { generateText } from "../../model-function/generate-text/generateText";
+import { ToolCallParseError } from "./ToolCallParseError";
+import { ToolDefinition } from "../ToolDefinition";
+import { ToolCallGenerationModel } from "./ToolCallGenerationModel";
 
 export interface ToolCallPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> {
   createPrompt: (

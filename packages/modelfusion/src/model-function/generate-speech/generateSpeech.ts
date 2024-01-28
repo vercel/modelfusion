@@ -1,10 +1,10 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStandardCall } from "../executeStandardCall.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStandardCall } from "../executeStandardCall";
 import {
   SpeechGenerationModel,
   SpeechGenerationModelSettings,
-} from "./SpeechGenerationModel.js";
+} from "./SpeechGenerationModel";
 
 /**
  * Synthesizes speech from text. Also called text-to-speech (TTS).

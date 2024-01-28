@@ -1,9 +1,9 @@
 import {
   BaseUrlApiConfigurationWithDefaults,
   PartialBaseUrlPartsApiConfigurationOptions,
-} from "../../core/api/BaseUrlApiConfiguration.js";
-import { loadApiKey } from "../../core/api/loadApiKey.js";
-import { OpenAICompatibleApiConfiguration } from "./OpenAICompatibleApiConfiguration.js";
+} from "../../core/api/BaseUrlApiConfiguration";
+import { loadApiKey } from "../../core/api/loadApiKey";
+import { OpenAICompatibleApiConfiguration } from "./OpenAICompatibleApiConfiguration";
 
 /**
  * Configuration for the Fireworks.ai API.

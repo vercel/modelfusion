@@ -1,5 +1,5 @@
-import { Schema } from "../../core/schema/Schema.js";
-import { parseEventSourceStreamAsAsyncIterable } from "./parseEventSourceStreamAsAsyncIterable.js";
+import { Schema } from "../../core/schema/Schema";
+import { parseEventSourceStreamAsAsyncIterable } from "./parseEventSourceStreamAsAsyncIterable";
 
 export const createEventSourceResponseHandler =
   <T>(schema: Schema<T>) =>

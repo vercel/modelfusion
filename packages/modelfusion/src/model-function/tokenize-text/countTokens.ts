@@ -1,4 +1,4 @@
-import { BasicTokenizer } from "./Tokenizer.js";
+import { BasicTokenizer } from "./Tokenizer";
 
 /**
  * Count the number of tokens in the given text.

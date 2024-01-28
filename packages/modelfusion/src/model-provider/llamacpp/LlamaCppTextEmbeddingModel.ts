@@ -1,20 +1,20 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { AbstractModel } from "../../model-function/AbstractModel";
 import {
   EmbeddingModel,
   EmbeddingModelSettings,
-} from "../../model-function/embed/EmbeddingModel.js";
-import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
-import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
-import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
+} from "../../model-function/embed/EmbeddingModel";
+import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration";
+import { failedLlamaCppCallResponseHandler } from "./LlamaCppError";
+import { LlamaCppTokenizer } from "./LlamaCppTokenizer";
 
 export interface LlamaCppTextEmbeddingModelSettings
   extends EmbeddingModelSettings {

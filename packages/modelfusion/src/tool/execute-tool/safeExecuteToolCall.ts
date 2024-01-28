@@ -1,10 +1,10 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { Tool } from "../Tool.js";
-import { ToolCall } from "../ToolCall.js";
-import { ToolCallError } from "../ToolCallError.js";
-import { ToolCallResult } from "../ToolCallResult.js";
-import { ToolExecutionError } from "../ToolExecutionError.js";
-import { executeTool } from "./executeTool.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { Tool } from "../Tool";
+import { ToolCall } from "../ToolCall";
+import { ToolCallError } from "../ToolCallError";
+import { ToolCallResult } from "../ToolCallResult";
+import { ToolExecutionError } from "../ToolExecutionError";
+import { executeTool } from "./executeTool";
 
 export async function safeExecuteToolCall<
   TOOL extends Tool<string, unknown, any>, // eslint-disable-line @typescript-eslint/no-explicit-any

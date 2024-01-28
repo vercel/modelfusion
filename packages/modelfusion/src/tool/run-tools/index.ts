@@ -1,2 +1,2 @@
-export * from "./RunToolsEvent.js";
-export * from "./runTools.js";
+export * from "./RunToolsEvent";
+export * from "./runTools";

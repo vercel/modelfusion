@@ -1,2 +1,2 @@
-export * from "./AudioMimeType.js";
-export * from "./getAudioFileExtension.js";
+export * from "./AudioMimeType";
+export * from "./getAudioFileExtension";

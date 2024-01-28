@@ -1,17 +1,17 @@
 import type { PartialDeep } from "type-fest";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { isDeepEqualData } from "../../util/isDeepEqualData.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStreamCall } from "../executeStreamCall.js";
-import { ObjectStreamingModel } from "./ObjectGenerationModel.js";
-import { ObjectStream } from "./ObjectStream.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { isDeepEqualData } from "../../util/isDeepEqualData";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStreamCall } from "../executeStreamCall";
+import { ObjectStreamingModel } from "./ObjectGenerationModel";
+import { ObjectStream } from "./ObjectStream";
 import {
   PromptFunction,
   expandPrompt,
   isPromptFunction,
-} from "../../core/PromptFunction.js";
+} from "../../core/PromptFunction";
 
 /**
  * Generate and stream an object for a prompt and a schema.

@@ -1,4 +1,4 @@
-import { chat, instruction, text } from "./SynthiaPromptTemplate.js";
+import { chat, instruction, text } from "./SynthiaPromptTemplate";
 
 describe("text prompt", () => {
   it("should format prompt", () => {

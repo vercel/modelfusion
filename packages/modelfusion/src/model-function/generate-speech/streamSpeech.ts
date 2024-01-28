@@ -1,11 +1,11 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStreamCall } from "../executeStreamCall.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { AsyncQueue } from "../../util/AsyncQueue";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStreamCall } from "../executeStreamCall";
 import {
   SpeechGenerationModelSettings,
   StreamingSpeechGenerationModel,
-} from "./SpeechGenerationModel.js";
+} from "./SpeechGenerationModel";
 
 /**
  * Stream synthesized speech from text. Also called text-to-speech (TTS).

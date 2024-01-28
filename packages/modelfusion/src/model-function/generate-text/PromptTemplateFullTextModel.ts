@@ -1,13 +1,13 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ToolDefinition } from "../../tool/ToolDefinition.js";
-import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel.js";
-import { ToolCallsGenerationModel } from "../../tool/generate-tool-calls/ToolCallsGenerationModel.js";
-import { PromptTemplateTextStreamingModel } from "./PromptTemplateTextStreamingModel.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { ToolDefinition } from "../../tool/ToolDefinition";
+import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel";
+import { ToolCallsGenerationModel } from "../../tool/generate-tool-calls/ToolCallsGenerationModel";
+import { PromptTemplateTextStreamingModel } from "./PromptTemplateTextStreamingModel";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
-} from "./TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate.js";
+} from "./TextGenerationModel";
+import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate";
 
 export class PromptTemplateFullTextModel<
     PROMPT,

@@ -1,11 +1,11 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { base64ToUint8Array } from "../../util/format/UInt8Utils.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStandardCall } from "../executeStandardCall.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { base64ToUint8Array } from "../../util/format/UInt8Utils";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStandardCall } from "../executeStandardCall";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
-} from "./ImageGenerationModel.js";
+} from "./ImageGenerationModel";
 
 /**
  * Generates an image using a prompt.

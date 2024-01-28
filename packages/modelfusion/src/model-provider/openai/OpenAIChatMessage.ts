@@ -1,9 +1,9 @@
 import {
   ImagePart,
   TextPart,
-} from "../../model-function/generate-text/prompt-template/ContentPart.js";
-import { ToolCall } from "../../tool/ToolCall.js";
-import { convertDataContentToBase64String } from "../../util/format/DataContent.js";
+} from "../../model-function/generate-text/prompt-template/ContentPart";
+import { ToolCall } from "../../tool/ToolCall";
+import { convertDataContentToBase64String } from "../../util/format/DataContent";
 
 export type OpenAIChatMessage =
   | {

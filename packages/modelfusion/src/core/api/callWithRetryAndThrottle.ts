@@ -1,7 +1,7 @@
-import { RetryFunction } from "./RetryFunction.js";
-import { retryNever } from "./retryNever.js";
-import { ThrottleFunction } from "./ThrottleFunction.js";
-import { throttleOff } from "./throttleOff.js";
+import { RetryFunction } from "./RetryFunction";
+import { retryNever } from "./retryNever";
+import { ThrottleFunction } from "./ThrottleFunction";
+import { throttleOff } from "./throttleOff";
 
 export const callWithRetryAndThrottle = async <OUTPUT>({
   retry = retryNever(),

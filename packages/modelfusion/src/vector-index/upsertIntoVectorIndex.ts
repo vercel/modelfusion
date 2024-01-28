@@ -1,12 +1,12 @@
 import { nanoid as createId } from "nanoid";
-import { FunctionOptions } from "../core/FunctionOptions.js";
-import { executeFunctionCall } from "../core/executeFunctionCall.js";
+import { FunctionOptions } from "../core/FunctionOptions";
+import { executeFunctionCall } from "../core/executeFunctionCall";
 import {
   EmbeddingModel,
   EmbeddingModelSettings,
-} from "../model-function/embed/EmbeddingModel.js";
-import { embedMany } from "../model-function/embed/embed.js";
-import { VectorIndex } from "./VectorIndex.js";
+} from "../model-function/embed/EmbeddingModel";
+import { embedMany } from "../model-function/embed/embed";
+import { VectorIndex } from "./VectorIndex";
 
 export async function upsertIntoVectorIndex<VALUE, OBJECT>(
   {

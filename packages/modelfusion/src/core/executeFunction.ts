@@ -1,5 +1,5 @@
-import { FunctionCallOptions, FunctionOptions } from "./FunctionOptions.js";
-import { executeFunctionCall } from "./executeFunctionCall.js";
+import { FunctionCallOptions, FunctionOptions } from "./FunctionOptions";
+import { executeFunctionCall } from "./executeFunctionCall";
 
 export async function executeFunction<INPUT, OUTPUT>(
   fn: (input: INPUT, options: FunctionCallOptions) => PromiseLike<OUTPUT>,

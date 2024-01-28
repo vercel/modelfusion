@@ -1,8 +1,8 @@
 import { nanoid } from "nanoid";
-import { parseJSON } from "../../core/schema/parseJSON.js";
-import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
-import { ToolDefinition } from "../../tool/ToolDefinition.js";
-import { ToolCallPromptTemplate } from "./TextGenerationToolCallModel.js";
+import { parseJSON } from "../../core/schema/parseJSON";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt";
+import { ToolDefinition } from "../../tool/ToolDefinition";
+import { ToolCallPromptTemplate } from "./TextGenerationToolCallModel";
 
 export const jsonToolCallPrompt = {
   text(): ToolCallPromptTemplate<string, InstructionPrompt> {

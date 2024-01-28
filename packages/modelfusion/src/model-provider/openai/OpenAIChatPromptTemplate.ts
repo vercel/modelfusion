@@ -1,8 +1,8 @@
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
-import { OpenAIChatPrompt } from "./AbstractOpenAIChatModel.js";
-import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt";
+import { OpenAIChatPrompt } from "./AbstractOpenAIChatModel";
+import { OpenAIChatMessage } from "./OpenAIChatMessage";
 
 /**
  * OpenAIMessage[] identity chat format.

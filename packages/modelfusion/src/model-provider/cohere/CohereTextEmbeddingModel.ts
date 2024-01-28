@@ -1,21 +1,21 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { AbstractModel } from "../../model-function/AbstractModel";
 import {
   EmbeddingModel,
   EmbeddingModelSettings,
-} from "../../model-function/embed/EmbeddingModel.js";
-import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
-import { failedCohereCallResponseHandler } from "./CohereError.js";
-import { CohereTokenizer } from "./CohereTokenizer.js";
+} from "../../model-function/embed/EmbeddingModel";
+import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer";
+import { CohereApiConfiguration } from "./CohereApiConfiguration";
+import { failedCohereCallResponseHandler } from "./CohereError";
+import { CohereTokenizer } from "./CohereTokenizer";
 
 export const COHERE_TEXT_EMBEDDING_MODELS = {
   "embed-english-light-v2.0": {

@@ -1,4 +1,4 @@
-import { ToolDefinition } from "../ToolDefinition.js";
+import { ToolDefinition } from "../ToolDefinition";
 
 export interface ToolCallsPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> {
   createPrompt: (

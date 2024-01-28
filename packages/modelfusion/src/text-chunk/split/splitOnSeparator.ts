@@ -1,4 +1,4 @@
-import { SplitFunction } from "./SplitFunction.js";
+import { SplitFunction } from "./SplitFunction";
 
 /**
  * Splits text on a separator string.

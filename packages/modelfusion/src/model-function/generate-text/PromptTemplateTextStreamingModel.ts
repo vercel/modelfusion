@@ -1,14 +1,14 @@
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { ObjectFromTextPromptTemplate } from "../generate-object/ObjectFromTextPromptTemplate.js";
-import { ObjectFromTextStreamingModel } from "../generate-object/ObjectFromTextStreamingModel.js";
-import { PromptTemplateTextGenerationModel } from "./PromptTemplateTextGenerationModel.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { ObjectFromTextPromptTemplate } from "../generate-object/ObjectFromTextPromptTemplate";
+import { ObjectFromTextStreamingModel } from "../generate-object/ObjectFromTextStreamingModel";
+import { PromptTemplateTextGenerationModel } from "./PromptTemplateTextGenerationModel";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
-} from "./TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate.js";
+} from "./TextGenerationModel";
+import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate";
 
 export class PromptTemplateTextStreamingModel<
     PROMPT,

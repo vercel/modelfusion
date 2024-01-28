@@ -1,4 +1,4 @@
-import { Cache } from "./Cache.js";
+import { Cache } from "./Cache";
 
 export class MemoryCache implements Cache {
   private readonly cache = new Map<string, unknown>();

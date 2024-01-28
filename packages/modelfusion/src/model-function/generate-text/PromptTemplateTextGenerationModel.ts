@@ -1,19 +1,19 @@
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
 import {
   TextGenerationToolCallModel,
   ToolCallPromptTemplate,
-} from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
-import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/TextGenerationToolCallsModel.js";
-import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate.js";
-import { ObjectFromTextGenerationModel } from "../generate-object/ObjectFromTextGenerationModel.js";
-import { ObjectFromTextPromptTemplate } from "../generate-object/ObjectFromTextPromptTemplate.js";
+} from "../../tool/generate-tool-call/TextGenerationToolCallModel";
+import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/TextGenerationToolCallsModel";
+import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate";
+import { ObjectFromTextGenerationModel } from "../generate-object/ObjectFromTextGenerationModel";
+import { ObjectFromTextPromptTemplate } from "../generate-object/ObjectFromTextPromptTemplate";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "./TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate.js";
+} from "./TextGenerationModel";
+import { TextGenerationPromptTemplate } from "./TextGenerationPromptTemplate";
 
 export class PromptTemplateTextGenerationModel<
   PROMPT,

@@ -1,15 +1,15 @@
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import * as alpacaPrompt from "../../model-function/generate-text/prompt-template/AlpacaPromptTemplate.js";
-import * as chatMlPrompt from "../../model-function/generate-text/prompt-template/ChatMLPromptTemplate.js";
-import * as llama2Prompt from "../../model-function/generate-text/prompt-template/Llama2PromptTemplate.js";
-import * as mistralPrompt from "../../model-function/generate-text/prompt-template/MistralInstructPromptTemplate.js";
-import * as neuralChatPrompt from "../../model-function/generate-text/prompt-template/NeuralChatPromptTemplate.js";
-import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider.js";
-import * as synthiaPrompt from "../../model-function/generate-text/prompt-template/SynthiaPromptTemplate.js";
-import * as textPrompt from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
-import * as vicunaPrompt from "../../model-function/generate-text/prompt-template/VicunaPromptTemplate.js";
-import * as LlamaCppBakLLaVA1Prompt from "./LlamaCppBakLLaVA1PromptTemplate.js";
-import { LlamaCppCompletionPrompt } from "./LlamaCppCompletionModel.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import * as alpacaPrompt from "../../model-function/generate-text/prompt-template/AlpacaPromptTemplate";
+import * as chatMlPrompt from "../../model-function/generate-text/prompt-template/ChatMLPromptTemplate";
+import * as llama2Prompt from "../../model-function/generate-text/prompt-template/Llama2PromptTemplate";
+import * as mistralPrompt from "../../model-function/generate-text/prompt-template/MistralInstructPromptTemplate";
+import * as neuralChatPrompt from "../../model-function/generate-text/prompt-template/NeuralChatPromptTemplate";
+import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider";
+import * as synthiaPrompt from "../../model-function/generate-text/prompt-template/SynthiaPromptTemplate";
+import * as textPrompt from "../../model-function/generate-text/prompt-template/TextPromptTemplate";
+import * as vicunaPrompt from "../../model-function/generate-text/prompt-template/VicunaPromptTemplate";
+import * as LlamaCppBakLLaVA1Prompt from "./LlamaCppBakLLaVA1PromptTemplate";
+import { LlamaCppCompletionPrompt } from "./LlamaCppCompletionModel";
 
 export function asLlamaCppPromptTemplate<SOURCE_PROMPT>(
   promptTemplate: TextGenerationPromptTemplate<SOURCE_PROMPT, string>

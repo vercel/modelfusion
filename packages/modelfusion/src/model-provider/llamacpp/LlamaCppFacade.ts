@@ -1,15 +1,15 @@
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration";
 import {
   LlamaCppCompletionModel,
   LlamaCppCompletionModelSettings,
-} from "./LlamaCppCompletionModel.js";
+} from "./LlamaCppCompletionModel";
 import {
   LlamaCppTextEmbeddingModel,
   LlamaCppTextEmbeddingModelSettings,
-} from "./LlamaCppTextEmbeddingModel.js";
-import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
+} from "./LlamaCppTextEmbeddingModel";
+import { LlamaCppTokenizer } from "./LlamaCppTokenizer";
 
 /**
  * Creates an API configuration for the Llama.cpp server.
@@ -40,6 +40,6 @@ export function Tokenizer(
 /**
  * GBNF grammars. You can use them in the `grammar` option of the `TextGenerator` model.
  */
-export * as grammar from "./LlamaCppGrammars.js";
+export * as grammar from "./LlamaCppGrammars";
 
-export * as prompt from "./LlamaCppPrompt.js";
+export * as prompt from "./LlamaCppPrompt";

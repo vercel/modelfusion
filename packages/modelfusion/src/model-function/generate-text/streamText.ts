@@ -1,8 +1,8 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { PromptFunction, expandPrompt } from "../../core/PromptFunction.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStreamCall } from "../executeStreamCall.js";
-import { TextStreamingModel } from "./TextGenerationModel.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { PromptFunction, expandPrompt } from "../../core/PromptFunction";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStreamCall } from "../executeStreamCall";
+import { TextStreamingModel } from "./TextGenerationModel";
 
 /**
  * Stream the generated text for a prompt as an async iterable.

@@ -1,8 +1,8 @@
-import { Vector } from "../../core/Vector.js";
+import { Vector } from "../../core/Vector";
 import {
   BaseModelCallFinishedEvent,
   BaseModelCallStartedEvent,
-} from "../ModelCallEvent.js";
+} from "../ModelCallEvent";
 
 export interface EmbeddingStartedEvent extends BaseModelCallStartedEvent {
   functionType: "embed";

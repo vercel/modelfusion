@@ -1,9 +1,9 @@
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { PromptTemplate } from "../PromptTemplate.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { PromptTemplate } from "../PromptTemplate";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
-} from "./ImageGenerationModel.js";
+} from "./ImageGenerationModel";
 
 export class PromptTemplateImageGenerationModel<
   PROMPT,

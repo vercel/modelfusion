@@ -1,6 +1,6 @@
 import type { PartialDeep } from "type-fest";
-import { Schema } from "../../core/schema/Schema.js";
-import { parsePartialJson } from "../../util/parsePartialJson.js";
+import { Schema } from "../../core/schema/Schema";
+import { parsePartialJson } from "../../util/parsePartialJson";
 
 export type ObjectStream<OBJECT> = AsyncIterable<{
   partialObject: PartialDeep<OBJECT, { recurseIntoArrays: true }>;

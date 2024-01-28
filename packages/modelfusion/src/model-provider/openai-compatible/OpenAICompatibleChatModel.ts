@@ -1,27 +1,27 @@
 import {
   FlexibleObjectFromTextPromptTemplate,
   ObjectFromTextPromptTemplate,
-} from "../../model-function/generate-object/ObjectFromTextPromptTemplate.js";
-import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel.js";
-import { PromptTemplateFullTextModel } from "../../model-function/generate-text/PromptTemplateFullTextModel.js";
+} from "../../model-function/generate-object/ObjectFromTextPromptTemplate";
+import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel";
+import { PromptTemplateFullTextModel } from "../../model-function/generate-text/PromptTemplateFullTextModel";
 import {
   TextStreamingBaseModel,
   TextStreamingModel,
   textGenerationModelProperties,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel.js";
-import { ToolCallsGenerationModel } from "../../tool/generate-tool-calls/ToolCallsGenerationModel.js";
+} from "../../model-function/generate-text/TextGenerationModel";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import { ToolCallGenerationModel } from "../../tool/generate-tool-call/ToolCallGenerationModel";
+import { ToolCallsGenerationModel } from "../../tool/generate-tool-calls/ToolCallsGenerationModel";
 import {
   AbstractOpenAIChatModel,
   AbstractOpenAIChatSettings,
   OpenAIChatPrompt,
-} from "../openai/AbstractOpenAIChatModel.js";
-import { chat, instruction, text } from "../openai/OpenAIChatPromptTemplate.js";
+} from "../openai/AbstractOpenAIChatModel";
+import { chat, instruction, text } from "../openai/OpenAIChatPromptTemplate";
 import {
   OpenAICompatibleApiConfiguration,
   OpenAICompatibleProviderName,
-} from "./OpenAICompatibleApiConfiguration.js";
+} from "./OpenAICompatibleApiConfiguration";
 
 export interface OpenAICompatibleChatSettings
   extends AbstractOpenAIChatSettings {

@@ -1,14 +1,14 @@
 import { nanoid as createId } from "nanoid";
-import { FunctionEventSource } from "./FunctionEventSource.js";
-import { FunctionCallOptions, FunctionOptions } from "./FunctionOptions.js";
-import { getLogFormat } from "./ModelFusionConfiguration.js";
-import { getFunctionObservers } from "./ModelFusionConfiguration.js";
-import { AbortError } from "./api/AbortError.js";
-import { getFunctionCallLogger } from "./getFunctionCallLogger.js";
-import { getRun } from "./getRun.js";
-import { startDurationMeasurement } from "../util/DurationMeasurement.js";
-import { runSafe } from "../util/runSafe.js";
-import { FunctionEvent } from "./FunctionEvent.js";
+import { FunctionEventSource } from "./FunctionEventSource";
+import { FunctionCallOptions, FunctionOptions } from "./FunctionOptions";
+import { getLogFormat } from "./ModelFusionConfiguration";
+import { getFunctionObservers } from "./ModelFusionConfiguration";
+import { AbortError } from "./api/AbortError";
+import { getFunctionCallLogger } from "./getFunctionCallLogger";
+import { getRun } from "./getRun";
+import { startDurationMeasurement } from "../util/DurationMeasurement";
+import { runSafe } from "../util/runSafe";
+import { FunctionEvent } from "./FunctionEvent";
 
 export async function executeFunctionCall<VALUE>({
   options,

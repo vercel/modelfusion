@@ -1,39 +1,39 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiCallError } from "../../core/api/ApiCallError.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
-import { ResponseHandler, postJsonToApi } from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { safeParseJSON } from "../../core/schema/parseJSON.js";
-import { validateTypes } from "../../core/schema/validateTypes.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiCallError } from "../../core/api/ApiCallError";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
+import { ResponseHandler, postJsonToApi } from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { safeParseJSON } from "../../core/schema/parseJSON";
+import { validateTypes } from "../../core/schema/validateTypes";
+import { AbstractModel } from "../../model-function/AbstractModel";
 import {
   FlexibleObjectFromTextPromptTemplate,
   ObjectFromTextPromptTemplate,
-} from "../../model-function/generate-object/ObjectFromTextPromptTemplate.js";
-import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel.js";
-import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
+} from "../../model-function/generate-object/ObjectFromTextPromptTemplate";
+import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel";
 import {
   TextStreamingBaseModel,
   TextStreamingModel,
   textGenerationModelProperties,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
-import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider.js";
+} from "../../model-function/generate-text/TextGenerationModel";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt";
+import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider";
 import {
   TextGenerationToolCallModel,
   ToolCallPromptTemplate,
-} from "../../tool/generate-tool-call/TextGenerationToolCallModel.js";
-import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/TextGenerationToolCallsModel.js";
-import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate.js";
-import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler.js";
-import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
-import { Text } from "./OllamaCompletionPrompt.js";
-import { failedOllamaCallResponseHandler } from "./OllamaError.js";
-import { OllamaTextGenerationSettings } from "./OllamaTextGenerationSettings.js";
+} from "../../tool/generate-tool-call/TextGenerationToolCallModel";
+import { TextGenerationToolCallsModel } from "../../tool/generate-tool-calls/TextGenerationToolCallsModel";
+import { ToolCallsPromptTemplate } from "../../tool/generate-tool-calls/ToolCallsPromptTemplate";
+import { createJsonStreamResponseHandler } from "../../util/streaming/createJsonStreamResponseHandler";
+import { OllamaApiConfiguration } from "./OllamaApiConfiguration";
+import { Text } from "./OllamaCompletionPrompt";
+import { failedOllamaCallResponseHandler } from "./OllamaError";
+import { OllamaTextGenerationSettings } from "./OllamaTextGenerationSettings";
 
 export interface OllamaCompletionPrompt {
   /**

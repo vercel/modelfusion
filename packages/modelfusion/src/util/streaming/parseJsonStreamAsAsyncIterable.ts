@@ -1,7 +1,7 @@
-import { Schema } from "../../core/schema/Schema.js";
-import { Delta } from "../../model-function/Delta.js";
-import { AsyncQueue } from "../AsyncQueue.js";
-import { parseJsonStream } from "./parseJsonStream.js";
+import { Schema } from "../../core/schema/Schema";
+import { Delta } from "../../model-function/Delta";
+import { AsyncQueue } from "../AsyncQueue";
+import { parseJsonStream } from "./parseJsonStream";
 
 export async function parseJsonStreamAsAsyncIterable<T>({
   stream,

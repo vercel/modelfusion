@@ -1,14 +1,14 @@
 import {
   PromptFunction,
   markAsPromptFunction,
-} from "../../../core/PromptFunction.js";
-import { ToolCallResult } from "../../../tool/ToolCallResult.js";
+} from "../../../core/PromptFunction";
+import { ToolCallResult } from "../../../tool/ToolCallResult";
 import {
   ImagePart,
   TextPart,
   ToolCallPart,
   ToolResponsePart,
-} from "./ContentPart.js";
+} from "./ContentPart";
 
 /**
  * A chat prompt is a combination of a system message and a list

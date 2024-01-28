@@ -1,18 +1,18 @@
 import { fail } from "assert";
 import { z } from "zod";
-import { ApiCallError } from "../../core/api/ApiCallError.js";
-import { retryNever } from "../../core/api/retryNever.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { jsonObjectPrompt } from "../../model-function/generate-object/jsonObjectPrompt.js";
-import { streamObject } from "../../model-function/generate-object/streamObject.js";
-import { generateText } from "../../model-function/generate-text/generateText.js";
-import { streamText } from "../../model-function/generate-text/streamText.js";
-import { JsonTestServer } from "../../test/JsonTestServer.js";
-import { StreamingTestServer } from "../../test/StreamingTestServer.js";
-import { arrayFromAsync } from "../../test/arrayFromAsync.js";
-import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
-import { OllamaCompletionModel } from "./OllamaCompletionModel.js";
-import { Text } from "./OllamaCompletionPrompt.js";
+import { ApiCallError } from "../../core/api/ApiCallError";
+import { retryNever } from "../../core/api/retryNever";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { jsonObjectPrompt } from "../../model-function/generate-object/jsonObjectPrompt";
+import { streamObject } from "../../model-function/generate-object/streamObject";
+import { generateText } from "../../model-function/generate-text/generateText";
+import { streamText } from "../../model-function/generate-text/streamText";
+import { JsonTestServer } from "../../test/JsonTestServer";
+import { StreamingTestServer } from "../../test/StreamingTestServer";
+import { arrayFromAsync } from "../../test/arrayFromAsync";
+import { OllamaApiConfiguration } from "./OllamaApiConfiguration";
+import { OllamaCompletionModel } from "./OllamaCompletionModel";
+import { Text } from "./OllamaCompletionPrompt";
 
 describe("generateText", () => {
   const server = new JsonTestServer("http://127.0.0.1:11434/api/generate");

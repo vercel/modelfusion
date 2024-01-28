@@ -1,1 +1,1 @@
-export * from "./createEventSourceStream.js";
+export * from "./createEventSourceStream";

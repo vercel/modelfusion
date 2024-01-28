@@ -1,17 +1,17 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { Delta } from "../Delta.js";
-import { streamText } from "../generate-text/streamText.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parsePartialJson } from "../../util/parsePartialJson.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { Delta } from "../Delta";
+import { streamText } from "../generate-text/streamText";
+import { AsyncQueue } from "../../util/AsyncQueue";
+import { parsePartialJson } from "../../util/parsePartialJson";
 import {
   TextGenerationModelSettings,
   TextStreamingModel,
-} from "../generate-text/TextGenerationModel.js";
-import { ObjectFromTextGenerationModel } from "./ObjectFromTextGenerationModel.js";
-import { ObjectFromTextPromptTemplate } from "./ObjectFromTextPromptTemplate.js";
-import { ObjectStreamingModel } from "./ObjectGenerationModel.js";
+} from "../generate-text/TextGenerationModel";
+import { ObjectFromTextGenerationModel } from "./ObjectFromTextGenerationModel";
+import { ObjectFromTextPromptTemplate } from "./ObjectFromTextPromptTemplate";
+import { ObjectStreamingModel } from "./ObjectGenerationModel";
 
 export class ObjectFromTextStreamingModel<
     SOURCE_PROMPT,

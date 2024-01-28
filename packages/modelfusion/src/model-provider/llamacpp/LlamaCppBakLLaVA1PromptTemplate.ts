@@ -1,11 +1,11 @@
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart.js";
-import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
-import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError.js";
-import { text as vicunaText } from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
-import { convertDataContentToBase64String } from "../../util/format/DataContent.js";
-import { LlamaCppCompletionPrompt } from "./LlamaCppCompletionModel.js";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt";
+import { validateContentIsString } from "../../model-function/generate-text/prompt-template/ContentPart";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt";
+import { InvalidPromptError } from "../../model-function/generate-text/prompt-template/InvalidPromptError";
+import { text as vicunaText } from "../../model-function/generate-text/prompt-template/TextPromptTemplate";
+import { convertDataContentToBase64String } from "../../util/format/DataContent";
+import { LlamaCppCompletionPrompt } from "./LlamaCppCompletionModel";
 
 // default Vicuna 1 system message
 const DEFAULT_SYSTEM_MESSAGE =

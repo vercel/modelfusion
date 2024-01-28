@@ -1,5 +1,5 @@
-import { Schema } from "./Schema.js";
-import { TypeValidationError } from "./TypeValidationError.js";
+import { Schema } from "./Schema";
+import { TypeValidationError } from "./TypeValidationError";
 
 /**
  * Validates the types of an unknown object using a schema and

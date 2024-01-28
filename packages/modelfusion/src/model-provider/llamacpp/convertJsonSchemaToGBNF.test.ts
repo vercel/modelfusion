@@ -1,4 +1,4 @@
-import { convertJsonSchemaToGBNF } from "./convertJsonSchemaToGBNF.js";
+import { convertJsonSchemaToGBNF } from "./convertJsonSchemaToGBNF";
 
 describe("primitives", () => {
   it("should convert string", () => {

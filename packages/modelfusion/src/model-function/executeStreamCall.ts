@@ -1,24 +1,21 @@
 import { nanoid as createId } from "nanoid";
-import { FunctionEventSource } from "../core/FunctionEventSource.js";
-import {
-  FunctionCallOptions,
-  FunctionOptions,
-} from "../core/FunctionOptions.js";
-import { getLogFormat } from "../core/ModelFusionConfiguration.js";
-import { getFunctionObservers } from "../core/ModelFusionConfiguration.js";
-import { AbortError } from "../core/api/AbortError.js";
-import { getFunctionCallLogger } from "../core/getFunctionCallLogger.js";
-import { getRun } from "../core/getRun.js";
-import { AsyncQueue } from "../util/AsyncQueue.js";
-import { startDurationMeasurement } from "../util/DurationMeasurement.js";
-import { runSafe } from "../util/runSafe.js";
-import { Delta } from "./Delta.js";
-import { Model, ModelSettings } from "./Model.js";
+import { FunctionEventSource } from "../core/FunctionEventSource";
+import { FunctionCallOptions, FunctionOptions } from "../core/FunctionOptions";
+import { getLogFormat } from "../core/ModelFusionConfiguration";
+import { getFunctionObservers } from "../core/ModelFusionConfiguration";
+import { AbortError } from "../core/api/AbortError";
+import { getFunctionCallLogger } from "../core/getFunctionCallLogger";
+import { getRun } from "../core/getRun";
+import { AsyncQueue } from "../util/AsyncQueue";
+import { startDurationMeasurement } from "../util/DurationMeasurement";
+import { runSafe } from "../util/runSafe";
+import { Delta } from "./Delta";
+import { Model, ModelSettings } from "./Model";
 import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
-} from "./ModelCallEvent.js";
-import { ModelCallMetadata } from "./ModelCallMetadata.js";
+} from "./ModelCallEvent";
+import { ModelCallMetadata } from "./ModelCallMetadata";
 
 export async function executeStreamCall<
   DELTA_VALUE,

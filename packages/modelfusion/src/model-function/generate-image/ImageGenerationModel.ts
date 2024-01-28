@@ -1,6 +1,6 @@
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { Model, ModelSettings } from "../Model.js";
-import { PromptTemplate } from "../PromptTemplate.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { Model, ModelSettings } from "../Model";
+import { PromptTemplate } from "../PromptTemplate";
 
 export interface ImageGenerationModelSettings extends ModelSettings {
   /**

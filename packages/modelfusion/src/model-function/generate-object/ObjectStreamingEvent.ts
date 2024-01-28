@@ -1,7 +1,7 @@
 import {
   BaseModelCallFinishedEvent,
   BaseModelCallStartedEvent,
-} from "../ModelCallEvent.js";
+} from "../ModelCallEvent";
 
 export interface ObjectStreamingStartedEvent extends BaseModelCallStartedEvent {
   functionType: "stream-object";

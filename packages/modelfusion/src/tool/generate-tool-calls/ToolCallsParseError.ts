@@ -1,4 +1,4 @@
-import { getErrorMessage } from "../../util/getErrorMessage.js";
+import { getErrorMessage } from "../../util/getErrorMessage";
 
 export class ToolCallsParseError extends Error {
   readonly valueText: string;

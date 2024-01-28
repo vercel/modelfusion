@@ -1,4 +1,4 @@
-import { base64ToUint8Array, uint8ArrayToBase64 } from "./UInt8Utils.js";
+import { base64ToUint8Array, uint8ArrayToBase64 } from "./UInt8Utils";
 
 /**
  * Data content. Can either be a base64-encoded string, a Uint8Array, an ArrayBuffer, or a Buffer.
