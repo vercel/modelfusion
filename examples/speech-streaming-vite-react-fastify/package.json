@@ -21,7 +21,7 @@
     "dotenv": "16.3.1",
     "fastify": "^4.23.2",
     "modelfusion": "0.134.0",
-    "modelfusion-experimental": "0.6.0",
+    "modelfusion-experimental": "0.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwind-merge": "^1.14.0",
