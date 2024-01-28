@@ -9,6 +9,7 @@ export * as MistralInstructPrompt from "./MistralInstructPromptTemplate.js";
 export * as NeuralChatPrompt from "./NeuralChatPromptTemplate.js";
 export * from "./PromptTemplateProvider.js";
 export * as SynthiaPrompt from "./SynthiaPromptTemplate.js";
+export * from "./TextPrompt.js";
 export * as TextPrompt from "./TextPromptTemplate.js";
 export * as VicunaPrompt from "./VicunaPromptTemplate.js";
 export * from "./trimChatPrompt.js";

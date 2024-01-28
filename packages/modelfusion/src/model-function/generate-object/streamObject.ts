@@ -7,6 +7,11 @@ import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStreamCall } from "../executeStreamCall.js";
 import { ObjectStreamingModel } from "./ObjectGenerationModel.js";
 import { ObjectStream } from "./ObjectStream.js";
+import {
+  PromptFunction,
+  expandPrompt,
+  isPromptFunction,
+} from "../../core/PromptFunction.js";
 
 /**
  * Generate and stream an object for a prompt and a schema.
@@ -47,7 +52,10 @@ export async function streamObject<OBJECT, PROMPT>(
   args: {
     model: ObjectStreamingModel<PROMPT>;
     schema: Schema<OBJECT> & JsonSchemaProducer;
-    prompt: PROMPT | ((schema: Schema<OBJECT>) => PROMPT);
+    prompt:
+      | PROMPT
+      | PromptFunction<unknown, PROMPT>
+      | ((schema: Schema<OBJECT>) => PROMPT | PromptFunction<unknown, PROMPT>);
     fullResponse?: false;
   } & FunctionOptions
 ): Promise<ObjectStream<OBJECT>>;
@@ -55,7 +63,10 @@ export async function streamObject<OBJECT, PROMPT>(
   args: {
     model: ObjectStreamingModel<PROMPT>;
     schema: Schema<OBJECT> & JsonSchemaProducer;
-    prompt: PROMPT | ((schema: Schema<OBJECT>) => PROMPT);
+    prompt:
+      | PROMPT
+      | PromptFunction<unknown, PROMPT>
+      | ((schema: Schema<OBJECT>) => PROMPT | PromptFunction<unknown, PROMPT>);
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
@@ -72,7 +83,10 @@ export async function streamObject<OBJECT, PROMPT>({
 }: {
   model: ObjectStreamingModel<PROMPT>;
   schema: Schema<OBJECT> & JsonSchemaProducer;
-  prompt: PROMPT | ((schema: Schema<OBJECT>) => PROMPT);
+  prompt:
+    | PROMPT
+    | PromptFunction<unknown, PROMPT>
+    | ((schema: Schema<OBJECT>) => PROMPT | PromptFunction<unknown, PROMPT>);
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
   | ObjectStream<OBJECT>
@@ -82,11 +96,13 @@ export async function streamObject<OBJECT, PROMPT>({
       metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
     }
 > {
-  // Note: PROMPT must not be a function.
-  const expandedPrompt =
-    typeof prompt === "function"
+  // Resolve the prompt if it is a function (and not a PromptFunction)
+  const resolvedPrompt =
+    typeof prompt === "function" && !isPromptFunction(prompt)
       ? (prompt as (schema: Schema<OBJECT>) => PROMPT)(schema)
       : prompt;
+
+  const expandedPrompt = await expandPrompt(resolvedPrompt);
 
   let accumulatedText = "";
   let accumulatedTextDelta = "";
@@ -111,12 +127,12 @@ export async function streamObject<OBJECT, PROMPT>({
     functionType: "stream-object",
     input: {
       schema,
-      prompt: expandedPrompt,
+      ...expandedPrompt,
     },
     model,
     options,
     startStream: async (options) =>
-      model.doStreamObject(schema, expandedPrompt, options),
+      model.doStreamObject(schema, expandedPrompt.prompt, options),
 
     processDelta(delta) {
       const textDelta = model.extractObjectTextDelta(delta.deltaValue);

@@ -1,4 +1,5 @@
 import { FunctionOptions } from "../../core/FunctionOptions.js";
+import { PromptFunction, expandPrompt } from "../../core/PromptFunction.js";
 import { ModelCallMetadata } from "../ModelCallMetadata.js";
 import { executeStreamCall } from "../executeStreamCall.js";
 import { TextStreamingModel } from "./TextGenerationModel.js";
@@ -31,14 +32,14 @@ import { TextStreamingModel } from "./TextGenerationModel.js";
 export async function streamText<PROMPT>(
   args: {
     model: TextStreamingModel<PROMPT>;
-    prompt: PROMPT;
+    prompt: PROMPT | PromptFunction<unknown, PROMPT>;
     fullResponse?: false;
   } & FunctionOptions
 ): Promise<AsyncIterable<string>>;
 export async function streamText<PROMPT>(
   args: {
     model: TextStreamingModel<PROMPT>;
-    prompt: PROMPT;
+    prompt: PROMPT | PromptFunction<unknown, PROMPT>;
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
@@ -46,6 +47,7 @@ export async function streamText<PROMPT>(
   textPromise: PromiseLike<string>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
+
 export async function streamText<PROMPT>({
   model,
   prompt,
@@ -53,7 +55,7 @@ export async function streamText<PROMPT>({
   ...options
 }: {
   model: TextStreamingModel<PROMPT>;
-  prompt: PROMPT;
+  prompt: PROMPT | PromptFunction<unknown, PROMPT>;
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
   | AsyncIterable<string>
@@ -74,12 +76,15 @@ export async function streamText<PROMPT>({
     resolveText = resolve;
   });
 
+  const expandedPrompt = await expandPrompt(prompt);
+
   const callResponse = await executeStreamCall({
     functionType: "stream-text",
-    input: prompt,
+    input: expandedPrompt,
     model,
     options,
-    startStream: async (options) => model.doStreamText(prompt, options),
+    startStream: async (options) =>
+      model.doStreamText(expandedPrompt.prompt, options),
     processDelta: (delta) => {
       let textDelta = model.extractTextDelta(delta.deltaValue);
 

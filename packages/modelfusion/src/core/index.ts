@@ -6,6 +6,11 @@ export * from "./FunctionObserver.js";
 export * from "./FunctionOptions.js";
 export * from "./LogFormat.js";
 export * as modelfusion from "./ModelFusionConfiguration.js";
+export {
+  PromptFunction,
+  isPromptFunction,
+  markAsPromptFunction,
+} from "./PromptFunction.js";
 export * from "./Run.js";
 export * from "./Vector.js";
 export * from "./api/index.js";

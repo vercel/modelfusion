@@ -1,3 +1,7 @@
+import {
+  PromptFunction,
+  markAsPromptFunction,
+} from "../../../core/PromptFunction";
 import { ImagePart, TextPart } from "./ContentPart";
 
 /**
@@ -34,3 +38,13 @@ export interface InstructionPrompt {
 }
 
 export type InstructionContent = string | Array<TextPart | ImagePart>;
+
+export function createInstructionPrompt<INPUT>(
+  promptFunction: (input: INPUT) => Promise<InstructionPrompt>
+): (input: INPUT) => PromptFunction<INPUT, InstructionPrompt> {
+  return (input: INPUT) =>
+    markAsPromptFunction(async () => ({
+      input,
+      prompt: await promptFunction(input),
+    }));
+}

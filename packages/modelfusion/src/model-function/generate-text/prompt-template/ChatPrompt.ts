@@ -1,3 +1,7 @@
+import {
+  PromptFunction,
+  markAsPromptFunction,
+} from "../../../core/PromptFunction.js";
 import { ToolCallResult } from "../../../tool/ToolCallResult.js";
 import {
   ImagePart,
@@ -116,4 +120,14 @@ function createAssistantContent({
   }
 
   return content;
+}
+
+export function createChatPrompt<INPUT>(
+  promptFunction: (input: INPUT) => Promise<ChatPrompt>
+): (input: INPUT) => PromptFunction<INPUT, ChatPrompt> {
+  return (input: INPUT) =>
+    markAsPromptFunction(async () => ({
+      input,
+      prompt: await promptFunction(input),
+    }));
 }
