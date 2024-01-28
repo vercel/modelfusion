@@ -55,9 +55,9 @@
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist .turbo node_modules",
     "clean:build": "rimraf build dist",
-    "build": "tsup",
-    "dist": "pnpm clean:build && pnpm lint && pnpm build && pnpm dist:copy-files",
-    "dist:copy-files": "copyfiles --flat package.json ./README.md ../../LICENSE ./CHANGELOG.md dist"
+    "build": "tsup && pnpm build:copy-files",
+    "build:copy-files": "copyfiles --flat package.json ./README.md ../../LICENSE ./CHANGELOG.md dist",
+    "dist": "pnpm clean:build && pnpm lint && pnpm build"
   },
   "peerDependencies": {
     "modelfusion": ">=0.134.0"
