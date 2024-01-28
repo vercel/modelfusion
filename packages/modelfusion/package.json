@@ -40,6 +40,7 @@
     ".": {
       "types": "./index.d.ts",
       "import": "./index.js",
+      "module": "./index.js",
       "require": "./index.cjs"
     },
     "./internal": {
@@ -52,15 +53,13 @@
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist .turbo node_modules",
     "clean:build": "rimraf build dist",
-    "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
-    "build:esm": "tsc --outDir dist/",
-    "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
-    "build:copy-files": "copyfiles --flat package.json ../../README.md ../../LICENSE ../../CHANGELOG.md dist",
+    "build": "tsup",
     "test": "vitest --config vitest.config.js --run src",
     "test:watch": "vitest watch --config vitest.config.js",
     "test:coverage": "vitest run --config vitest.config.js --coverage",
     "test:coverage:ui": "vitest --config vitest.config.js --coverage --ui",
-    "dist": "pnpm clean:build && pnpm lint && pnpm test && pnpm build"
+    "dist": "pnpm clean:build && pnpm lint && pnpm test && pnpm build && pnpm dist:copy-files",
+    "dist:copy-files": "copyfiles --flat package.json ../../README.md ../../LICENSE ../../CHANGELOG.md dist"
   },
   "dependencies": {
     "eventsource-parser": "1.1.1",
