@@ -1,7 +1,7 @@
 {
   "name": "modelfusion",
   "description": "The TypeScript library for building AI applications.",
-  "version": "0.133.0",
+  "version": "0.134.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
@@ -40,11 +40,13 @@
     ".": {
       "types": "./index.d.ts",
       "import": "./index.js",
+      "module": "./index.js",
       "require": "./index.cjs"
     },
     "./internal": {
       "types": "./internal/index.d.ts",
       "import": "./internal/index.js",
+      "module": "./internal/index.js",
       "require": "./internal/index.cjs"
     }
   },
@@ -52,15 +54,13 @@
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist .turbo node_modules",
     "clean:build": "rimraf build dist",
-    "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
-    "build:esm": "tsc --outDir dist/",
-    "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
-    "build:copy-files": "copyfiles --flat package.json ../../README.md ../../LICENSE ../../CHANGELOG.md dist",
+    "build": "tsup && pnpm build:copy-files",
+    "build:copy-files": "copyfiles --flat package.json ./README.md ../../LICENSE ./CHANGELOG.md dist",
     "test": "vitest --config vitest.config.js --run src",
     "test:watch": "vitest watch --config vitest.config.js",
     "test:coverage": "vitest run --config vitest.config.js --coverage",
     "test:coverage:ui": "vitest --config vitest.config.js --coverage --ui",
-    "dist": "pnpm clean:build && pnpm lint && pnpm test && pnpm build"
+    "dist": "pnpm clean:build && pnpm lint && pnpm test && pnpm build "
   },
   "dependencies": {
     "eventsource-parser": "1.1.1",
@@ -78,7 +78,7 @@
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
     "@vitest/coverage-v8": "^1.1.0",
-    "@vitest/ui": "1.1.0",
+    "@vitest/ui": "1.2.1",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
     "msw": "2.1.2"

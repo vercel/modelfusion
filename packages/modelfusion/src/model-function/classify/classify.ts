@@ -1,7 +1,7 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStandardCall } from "../executeStandardCall.js";
-import { Classifier, ClassifierSettings } from "./Classifier.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStandardCall } from "../executeStandardCall";
+import { Classifier, ClassifierSettings } from "./Classifier";
 
 export async function classify<VALUE, CLASS extends string | null>(
   args: {

@@ -1,35 +1,35 @@
 import {
   ModelCallFinishedEvent,
   ModelCallStartedEvent,
-} from "../model-function/ModelCallEvent.js";
+} from "../model-function/ModelCallEvent";
 import {
   RetrieveFinishedEvent,
   RetrieveStartedEvent,
-} from "../retriever/RetrieveEvent.js";
+} from "../retriever/RetrieveEvent";
 import {
   ExecuteToolFinishedEvent,
   ExecuteToolStartedEvent,
-} from "../tool/execute-tool/ExecuteToolEvent.js";
+} from "../tool/execute-tool/ExecuteToolEvent";
 import {
   runToolFinishedEvent,
   runToolStartedEvent,
-} from "../tool/run-tool/RunToolEvent.js";
+} from "../tool/run-tool/RunToolEvent";
 import {
   runToolsFinishedEvent,
   runToolsStartedEvent,
-} from "../tool/run-tools/RunToolsEvent.js";
+} from "../tool/run-tools/RunToolsEvent";
 import {
   UpsertIntoVectorIndexFinishedEvent,
   UpsertIntoVectorIndexStartedEvent,
-} from "../vector-index/UpsertIntoVectorIndexEvent.js";
+} from "../vector-index/UpsertIntoVectorIndexEvent";
 import {
   ExecuteFunctionFinishedEvent,
   ExecuteFunctionStartedEvent,
-} from "./ExecuteFunctionEvent.js";
+} from "./ExecuteFunctionEvent";
 import {
   ExtensionFunctionFinishedEvent,
   ExtensionFunctionStartedEvent,
-} from "./ExtensionFunctionEvent.js";
+} from "./ExtensionFunctionEvent";
 
 export interface BaseFunctionEvent {
   /**

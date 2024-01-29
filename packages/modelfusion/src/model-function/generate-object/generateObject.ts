@@ -1,13 +1,18 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStandardCall } from "../executeStandardCall.js";
+import {
+  PromptFunction,
+  expandPrompt,
+  isPromptFunction,
+} from "../../core/PromptFunction";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStandardCall } from "../executeStandardCall";
 import {
   ObjectGenerationModel,
   ObjectGenerationModelSettings,
-} from "./ObjectGenerationModel.js";
-import { ObjectValidationError } from "./ObjectValidationError.js";
+} from "./ObjectGenerationModel";
+import { ObjectValidationError } from "./ObjectValidationError";
 
 /**
  * Generate a typed object for a prompt and a schema.
@@ -52,7 +57,10 @@ export async function generateObject<
   args: {
     model: ObjectGenerationModel<PROMPT, SETTINGS>;
     schema: Schema<OBJECT> & JsonSchemaProducer;
-    prompt: PROMPT | ((schema: Schema<OBJECT>) => PROMPT);
+    prompt:
+      | PROMPT
+      | PromptFunction<unknown, PROMPT>
+      | ((schema: Schema<OBJECT>) => PROMPT | PromptFunction<unknown, PROMPT>);
     fullResponse?: false;
   } & FunctionOptions
 ): Promise<OBJECT>;
@@ -64,7 +72,10 @@ export async function generateObject<
   args: {
     model: ObjectGenerationModel<PROMPT, SETTINGS>;
     schema: Schema<OBJECT> & JsonSchemaProducer;
-    prompt: PROMPT | ((schema: Schema<OBJECT>) => PROMPT);
+    prompt:
+      | PROMPT
+      | PromptFunction<unknown, PROMPT>
+      | ((schema: Schema<OBJECT>) => PROMPT | PromptFunction<unknown, PROMPT>);
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
@@ -85,7 +96,10 @@ export async function generateObject<
 }: {
   model: ObjectGenerationModel<PROMPT, SETTINGS>;
   schema: Schema<OBJECT> & JsonSchemaProducer;
-  prompt: PROMPT | ((schema: Schema<OBJECT>) => PROMPT);
+  prompt:
+    | PROMPT
+    | PromptFunction<unknown, PROMPT>
+    | ((schema: Schema<OBJECT>) => PROMPT | PromptFunction<unknown, PROMPT>);
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
   | OBJECT
@@ -95,24 +109,26 @@ export async function generateObject<
       metadata: ModelCallMetadata;
     }
 > {
-  // Note: PROMPT must not be a function.
-  const expandedPrompt =
-    typeof prompt === "function"
+  // Resolve the prompt if it is a function (and not a PromptFunction)
+  const resolvedPrompt =
+    typeof prompt === "function" && !isPromptFunction(prompt)
       ? (prompt as (schema: Schema<OBJECT>) => PROMPT)(schema)
       : prompt;
+
+  const expandedPrompt = await expandPrompt(resolvedPrompt);
 
   const callResponse = await executeStandardCall({
     functionType: "generate-object",
     input: {
       schema,
-      prompt: expandedPrompt,
+      ...expandedPrompt,
     },
     model,
     options,
     generateResponse: async (options) => {
       const result = await model.doGenerateObject(
         schema,
-        expandedPrompt,
+        expandedPrompt.prompt,
         options
       );
 

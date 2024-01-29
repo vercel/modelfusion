@@ -1,3 +1,3 @@
-export * from "./WhisperCppApiConfiguration.js";
-export * as whispercpp from "./WhisperCppFacade.js";
-export * from "./WhisperCppTranscriptionModel.js";
+export * from "./WhisperCppApiConfiguration";
+export * as whispercpp from "./WhisperCppFacade";
+export * from "./WhisperCppTranscriptionModel";

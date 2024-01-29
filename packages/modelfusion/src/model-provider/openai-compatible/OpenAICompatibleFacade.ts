@@ -1,16 +1,16 @@
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { FireworksAIApiConfiguration } from "./FireworksAIApiConfiguration.js";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { FireworksAIApiConfiguration } from "./FireworksAIApiConfiguration";
 import {
   OpenAICompatibleChatModel,
   OpenAICompatibleChatSettings,
-} from "./OpenAICompatibleChatModel.js";
-import { OpenAICompatibleCompletionModel } from "./OpenAICompatibleCompletionModel.js";
+} from "./OpenAICompatibleChatModel";
+import { OpenAICompatibleCompletionModel } from "./OpenAICompatibleCompletionModel";
 import {
   OpenAICompatibleTextEmbeddingModel,
   OpenAICompatibleTextEmbeddingModelSettings,
-} from "./OpenAICompatibleTextEmbeddingModel.js";
-import { PerplexityApiConfiguration } from "./PerplexityApiConfiguration.js";
-import { TogetherAIApiConfiguration } from "./TogetherAIApiConfiguration.js";
+} from "./OpenAICompatibleTextEmbeddingModel";
+import { PerplexityApiConfiguration } from "./PerplexityApiConfiguration";
+import { TogetherAIApiConfiguration } from "./TogetherAIApiConfiguration";
 
 /**
  * Configuration for the Fireworks.ai API.

@@ -1,16 +1,21 @@
 # Changelog
 
+## v0.7.0 - 2021-01-28
+
+- Compatibility update to ModelFusion `v0.134.0`
+- Switch to `tsup` bundling
+
 ## v0.6.0 - 2021-01-23
 
-Compatibility update to ModelFusion `v0.131.0`
+- Compatibility update to ModelFusion `v0.131.0`
 
 ## v0.5.0 - 2021-01-13
 
-Compatibility update to ModelFusion `v0.122.0`
+- Compatibility update to ModelFusion `v0.122.0`
 
 ## v0.4.0 - 2021-01-07
 
-Compatibility update.
+- Compatibility update.
 
 ## v0.2.0 - 2023-12-28
 

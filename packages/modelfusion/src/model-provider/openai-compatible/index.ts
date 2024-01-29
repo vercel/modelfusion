@@ -1,8 +1,8 @@
-export * from "./FireworksAIApiConfiguration.js";
-export * from "./OpenAICompatibleApiConfiguration.js";
-export * from "./OpenAICompatibleChatModel.js";
-export * from "./OpenAICompatibleCompletionModel.js";
-export * as openaicompatible from "./OpenAICompatibleFacade.js";
-export * from "./OpenAICompatibleTextEmbeddingModel.js";
-export * from "./PerplexityApiConfiguration.js";
-export * from "./TogetherAIApiConfiguration.js";
+export * from "./FireworksAIApiConfiguration";
+export * from "./OpenAICompatibleApiConfiguration";
+export * from "./OpenAICompatibleChatModel";
+export * from "./OpenAICompatibleCompletionModel";
+export * as openaicompatible from "./OpenAICompatibleFacade";
+export * from "./OpenAICompatibleTextEmbeddingModel";
+export * from "./PerplexityApiConfiguration";
+export * from "./TogetherAIApiConfiguration";

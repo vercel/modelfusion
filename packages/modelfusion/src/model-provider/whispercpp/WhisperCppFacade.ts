@@ -1,9 +1,9 @@
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { WhisperCppApiConfiguration } from "./WhisperCppApiConfiguration.js";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { WhisperCppApiConfiguration } from "./WhisperCppApiConfiguration";
 import {
   WhisperCppTranscriptionModel,
   WhisperCppTranscriptionModelSettings,
-} from "./WhisperCppTranscriptionModel.js";
+} from "./WhisperCppTranscriptionModel";
 
 /**
  * Creates an API configuration for the Whisper.cpp server.

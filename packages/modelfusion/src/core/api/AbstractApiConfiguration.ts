@@ -1,7 +1,7 @@
-import { RetryFunction } from "./RetryFunction.js";
-import { ThrottleFunction } from "./ThrottleFunction.js";
-import { ApiConfiguration, HeaderParameters } from "./ApiConfiguration.js";
-import { CustomHeaderProvider } from "./CustomHeaderProvider.js";
+import { RetryFunction } from "./RetryFunction";
+import { ThrottleFunction } from "./ThrottleFunction";
+import { ApiConfiguration, HeaderParameters } from "./ApiConfiguration";
+import { CustomHeaderProvider } from "./CustomHeaderProvider";
 
 export abstract class AbstractApiConfiguration implements ApiConfiguration {
   readonly retry?: RetryFunction;

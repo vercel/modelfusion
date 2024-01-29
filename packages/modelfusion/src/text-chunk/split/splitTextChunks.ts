@@ -1,5 +1,5 @@
-import { TextChunk } from "../TextChunk.js";
-import { SplitFunction } from "./SplitFunction.js";
+import { TextChunk } from "../TextChunk";
+import { SplitFunction } from "./SplitFunction";
 
 export async function splitTextChunks<CHUNK extends TextChunk>(
   splitFunction: SplitFunction,

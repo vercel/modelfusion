@@ -1,19 +1,19 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { AbstractModel } from "../../model-function/AbstractModel";
 import {
   EmbeddingModel,
   EmbeddingModelSettings,
-} from "../../model-function/embed/EmbeddingModel.js";
-import { MistralApiConfiguration } from "./MistralApiConfiguration.js";
-import { failedMistralCallResponseHandler } from "./MistralError.js";
+} from "../../model-function/embed/EmbeddingModel";
+import { MistralApiConfiguration } from "./MistralApiConfiguration";
+import { failedMistralCallResponseHandler } from "./MistralError";
 
 export interface MistralTextEmbeddingModelSettings
   extends EmbeddingModelSettings {

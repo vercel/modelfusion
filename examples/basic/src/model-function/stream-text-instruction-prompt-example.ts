@@ -14,6 +14,7 @@ async function main() {
       .withInstructionPrompt(),
 
     prompt: {
+      system: "You are an award-winning author.",
       instruction: "Write a short story about a robot learning to love.",
     },
   });

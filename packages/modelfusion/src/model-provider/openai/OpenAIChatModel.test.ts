@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { streamObject } from "../../model-function/generate-object/streamObject.js";
-import { streamText } from "../../model-function/generate-text/streamText.js";
-import { StreamingTestServer } from "../../test/StreamingTestServer.js";
-import { arrayFromAsync } from "../../test/arrayFromAsync.js";
-import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
-import { OpenAIChatModel } from "./OpenAIChatModel.js";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { streamObject } from "../../model-function/generate-object/streamObject";
+import { streamText } from "../../model-function/generate-text/streamText";
+import { StreamingTestServer } from "../../test/StreamingTestServer";
+import { arrayFromAsync } from "../../test/arrayFromAsync";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration";
+import { OpenAIChatModel } from "./OpenAIChatModel";
 
 describe("streamText", () => {
   const server = new StreamingTestServer(

@@ -1,6 +1,6 @@
-import { Run } from "../Run.js";
-import { RetryFunction } from "./RetryFunction.js";
-import { ThrottleFunction } from "./ThrottleFunction.js";
+import { Run } from "../Run";
+import { RetryFunction } from "./RetryFunction";
+import { ThrottleFunction } from "./ThrottleFunction";
 
 export type HeaderParameters = {
   functionType: string;

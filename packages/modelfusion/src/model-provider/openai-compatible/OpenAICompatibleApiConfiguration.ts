@@ -1,4 +1,4 @@
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
 
 export type OpenAICompatibleProviderName =
   | `openaicompatible`

@@ -1,22 +1,22 @@
-import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel";
 import {
   TextStreamingBaseModel,
   textGenerationModelProperties,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+} from "../../model-function/generate-text/TextGenerationModel";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
 import {
   chat,
   instruction,
   text,
-} from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
+} from "../../model-function/generate-text/prompt-template/TextPromptTemplate";
 import {
   AbstractOpenAICompletionModel,
   AbstractOpenAICompletionModelSettings,
-} from "../openai/AbstractOpenAICompletionModel.js";
+} from "../openai/AbstractOpenAICompletionModel";
 import {
   OpenAICompatibleApiConfiguration,
   OpenAICompatibleProviderName,
-} from "./OpenAICompatibleApiConfiguration.js";
+} from "./OpenAICompatibleApiConfiguration";
 
 export interface OpenAICompatibleCompletionModelSettings
   extends AbstractOpenAICompletionModelSettings {

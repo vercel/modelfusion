@@ -1,8 +1,8 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { Vector } from "../../core/Vector.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStandardCall } from "../executeStandardCall.js";
-import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { Vector } from "../../core/Vector";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStandardCall } from "../executeStandardCall";
+import { EmbeddingModel, EmbeddingModelSettings } from "./EmbeddingModel";
 
 /**
  * Generate embeddings for multiple values.

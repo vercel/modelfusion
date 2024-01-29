@@ -1,6 +1,6 @@
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { Delta } from "../Delta.js";
-import { Model, ModelSettings } from "../Model.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { Delta } from "../Delta";
+import { Model, ModelSettings } from "../Model";
 
 export interface SpeechGenerationModelSettings extends ModelSettings {}
 

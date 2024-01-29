@@ -1,5 +1,5 @@
-export * from "./StabilityApiConfiguration.js";
-export { StabilityErrorData } from "./StabilityError.js";
-export * as stability from "./StabilityFacade.js";
-export * from "./StabilityImageGenerationModel.js";
-export * from "./StabilityImageGenerationPrompt.js";
+export * from "./StabilityApiConfiguration";
+export { StabilityErrorData } from "./StabilityError";
+export * as stability from "./StabilityFacade";
+export * from "./StabilityImageGenerationModel";
+export * from "./StabilityImageGenerationPrompt";

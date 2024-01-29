@@ -1,8 +1,8 @@
-import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { ChatPrompt } from "./ChatPrompt.js";
-import { validateContentIsString } from "./ContentPart.js";
-import { InstructionPrompt } from "./InstructionPrompt.js";
-import { InvalidPromptError } from "./InvalidPromptError.js";
+import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate";
+import { ChatPrompt } from "./ChatPrompt";
+import { validateContentIsString } from "./ContentPart";
+import { InstructionPrompt } from "./InstructionPrompt";
+import { InvalidPromptError } from "./InvalidPromptError";
 
 // see https://github.com/facebookresearch/llama/blob/6c7fe276574e78057f917549435a2554000a876d/llama/generation.py#L44
 const BEGIN_SEGMENT = "<s>";

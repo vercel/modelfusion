@@ -1,12 +1,12 @@
-import { EmbeddingModel } from "../../model-function/embed/EmbeddingModel.js";
+import { EmbeddingModel } from "../../model-function/embed/EmbeddingModel";
 import {
   AbstractOpenAITextEmbeddingModel,
   AbstractOpenAITextEmbeddingModelSettings,
-} from "../openai/AbstractOpenAITextEmbeddingModel.js";
+} from "../openai/AbstractOpenAITextEmbeddingModel";
 import {
   OpenAICompatibleApiConfiguration,
   OpenAICompatibleProviderName,
-} from "./OpenAICompatibleApiConfiguration.js";
+} from "./OpenAICompatibleApiConfiguration";
 
 export interface OpenAICompatibleTextEmbeddingModelSettings
   extends AbstractOpenAITextEmbeddingModelSettings {

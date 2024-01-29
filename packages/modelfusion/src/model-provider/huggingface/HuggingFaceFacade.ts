@@ -1,13 +1,13 @@
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration";
 import {
   HuggingFaceTextEmbeddingModel,
   HuggingFaceTextEmbeddingModelSettings,
-} from "./HuggingFaceTextEmbeddingModel.js";
+} from "./HuggingFaceTextEmbeddingModel";
 import {
   HuggingFaceTextGenerationModel,
   HuggingFaceTextGenerationModelSettings,
-} from "./HuggingFaceTextGenerationModel.js";
+} from "./HuggingFaceTextGenerationModel";
 
 /**
  * Creates an API configuration for the HuggingFace API.

@@ -1,15 +1,15 @@
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
-import { InstructionPrompt } from "../generate-text/prompt-template/InstructionPrompt.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { parseJSON } from "../../core/schema/parseJSON";
+import { InstructionPrompt } from "../generate-text/prompt-template/InstructionPrompt";
 import {
   FlexibleObjectFromTextPromptTemplate,
   ObjectFromTextPromptTemplate,
-} from "./ObjectFromTextPromptTemplate.js";
+} from "./ObjectFromTextPromptTemplate";
 
 const DEFAULT_SCHEMA_PREFIX = "JSON schema:";
 const DEFAULT_SCHEMA_SUFFIX =
-  "\nYou MUST answer with a JSON object matches the above schema.";
+  "\nYou MUST answer with a JSON object that matches the JSON schema above.";
 
 export const jsonObjectPrompt = {
   custom<SOURCE_PROMPT, TARGET_PROMPT>(
@@ -85,6 +85,7 @@ function createSystemPrompt({
 }) {
   return [
     originalSystemPrompt,
+    originalSystemPrompt != null ? "" : null,
     schemaPrefix,
     JSON.stringify(schema.getJsonSchema()),
     schemaSuffix,

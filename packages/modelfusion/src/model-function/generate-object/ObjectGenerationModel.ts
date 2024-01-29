@@ -1,8 +1,8 @@
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { Delta } from "../Delta.js";
-import { Model, ModelSettings } from "../Model.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { Schema } from "../../core/schema/Schema";
+import { Delta } from "../Delta";
+import { Model, ModelSettings } from "../Model";
 
 export interface ObjectGenerationModelSettings extends ModelSettings {}
 

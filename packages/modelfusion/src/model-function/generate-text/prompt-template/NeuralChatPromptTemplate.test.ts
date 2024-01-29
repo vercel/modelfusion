@@ -1,4 +1,4 @@
-import { chat, instruction, text } from "./NeuralChatPromptTemplate.js";
+import { chat, instruction, text } from "./NeuralChatPromptTemplate";
 
 describe("text prompt", () => {
   it("should format prompt", () => {

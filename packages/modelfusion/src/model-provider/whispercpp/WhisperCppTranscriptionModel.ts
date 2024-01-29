@@ -1,22 +1,22 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiCallError } from "../../core/api/ApiCallError.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
-import { ResponseHandler, postToApi } from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { safeParseJSON } from "../../core/schema/parseJSON.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiCallError } from "../../core/api/ApiCallError";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
+import { ResponseHandler, postToApi } from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { safeParseJSON } from "../../core/schema/parseJSON";
+import { AbstractModel } from "../../model-function/AbstractModel";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
-} from "../../model-function/generate-transcription/TranscriptionModel.js";
-import { getAudioFileExtension } from "../../util/audio/getAudioFileExtension.js";
+} from "../../model-function/generate-transcription/TranscriptionModel";
+import { getAudioFileExtension } from "../../util/audio/getAudioFileExtension";
 import {
   DataContent,
   convertDataContentToUint8Array,
-} from "../../util/format/DataContent.js";
-import { WhisperCppApiConfiguration } from "./WhisperCppApiConfiguration.js";
+} from "../../util/format/DataContent";
+import { WhisperCppApiConfiguration } from "./WhisperCppApiConfiguration";
 
 export interface WhisperCppTranscriptionModelSettings
   extends TranscriptionModelSettings {

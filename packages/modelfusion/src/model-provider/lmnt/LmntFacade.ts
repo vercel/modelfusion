@@ -1,6 +1,6 @@
-import { LmntSpeechModel, LmntSpeechModelSettings } from "./LmntSpeechModel.js";
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { LmntApiConfiguration } from "./LmntApiConfiguration.js";
+import { LmntSpeechModel, LmntSpeechModelSettings } from "./LmntSpeechModel";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { LmntApiConfiguration } from "./LmntApiConfiguration";
 
 /**
  * Creates an API configuration for the LMNT API.

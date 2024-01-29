@@ -1,8 +1,8 @@
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { TextStreamingModel } from "../generate-text/TextGenerationModel.js";
-import { ChatPrompt } from "../generate-text/prompt-template/ChatPrompt.js";
-import { InstructionPrompt } from "../generate-text/prompt-template/InstructionPrompt.js";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { TextStreamingModel } from "../generate-text/TextGenerationModel";
+import { ChatPrompt } from "../generate-text/prompt-template/ChatPrompt";
+import { InstructionPrompt } from "../generate-text/prompt-template/InstructionPrompt";
 
 export type ObjectFromTextPromptTemplate<SOURCE_PROMPT, TARGET_PROMPT> = {
   createPrompt: (

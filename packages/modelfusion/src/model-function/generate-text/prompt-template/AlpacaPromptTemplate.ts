@@ -1,7 +1,7 @@
-import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate.js";
-import { ChatPrompt } from "./ChatPrompt.js";
-import { validateContentIsString } from "./ContentPart.js";
-import { InstructionPrompt } from "./InstructionPrompt.js";
+import { TextGenerationPromptTemplate } from "../TextGenerationPromptTemplate";
+import { ChatPrompt } from "./ChatPrompt";
+import { validateContentIsString } from "./ContentPart";
+import { InstructionPrompt } from "./InstructionPrompt";
 
 const DEFAULT_SYSTEM_PROMPT_INPUT =
   "Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.";

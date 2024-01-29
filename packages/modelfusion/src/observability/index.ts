@@ -1,1 +1,1 @@
-export * from "./helicone/HeliconeOpenAIApiConfiguration.js";
+export * from "./helicone/HeliconeOpenAIApiConfiguration";

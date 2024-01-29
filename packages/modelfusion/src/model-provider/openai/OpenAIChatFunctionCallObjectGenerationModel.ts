@@ -1,18 +1,18 @@
 import SecureJSON from "secure-json-parse";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { ObjectStreamingModel } from "../../model-function/generate-object/ObjectGenerationModel.js";
-import { ObjectParseError } from "../../model-function/generate-object/ObjectParseError.js";
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { parsePartialJson } from "../../util/parsePartialJson.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { ObjectStreamingModel } from "../../model-function/generate-object/ObjectGenerationModel";
+import { ObjectParseError } from "../../model-function/generate-object/ObjectParseError";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import { parsePartialJson } from "../../util/parsePartialJson";
 import {
   OpenAIChatChunk,
   OpenAIChatPrompt,
   OpenAIChatResponseFormat,
-} from "./AbstractOpenAIChatModel.js";
-import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel.js";
-import { chat, instruction, text } from "./OpenAIChatPromptTemplate.js";
+} from "./AbstractOpenAIChatModel";
+import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel";
+import { chat, instruction, text } from "./OpenAIChatPromptTemplate";
 
 export class OpenAIChatFunctionCallObjectGenerationModel<
   PROMPT_TEMPLATE extends TextGenerationPromptTemplate<

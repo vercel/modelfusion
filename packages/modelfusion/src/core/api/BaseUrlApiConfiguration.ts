@@ -1,7 +1,7 @@
-import { AbstractApiConfiguration } from "./AbstractApiConfiguration.js";
-import { CustomHeaderProvider } from "./CustomHeaderProvider.js";
-import { RetryFunction } from "./RetryFunction.js";
-import { ThrottleFunction } from "./ThrottleFunction.js";
+import { AbstractApiConfiguration } from "./AbstractApiConfiguration";
+import { CustomHeaderProvider } from "./CustomHeaderProvider";
+import { RetryFunction } from "./RetryFunction";
+import { ThrottleFunction } from "./ThrottleFunction";
 
 export type UrlParts = {
   protocol: string;

@@ -1,15 +1,15 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { executeFunctionCall } from "../../core/executeFunctionCall.js";
-import { Tool } from "../Tool.js";
-import { ToolCall } from "../ToolCall.js";
-import { ToolCallError } from "../ToolCallError.js";
-import { ToolCallResult } from "../ToolCallResult.js";
-import { safeExecuteToolCall } from "../execute-tool/safeExecuteToolCall.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { executeFunctionCall } from "../../core/executeFunctionCall";
+import { Tool } from "../Tool";
+import { ToolCall } from "../ToolCall";
+import { ToolCallError } from "../ToolCallError";
+import { ToolCallResult } from "../ToolCallResult";
+import { safeExecuteToolCall } from "../execute-tool/safeExecuteToolCall";
 import {
   ToolCallsGenerationModel,
   ToolCallsGenerationModelSettings,
-} from "../generate-tool-calls/ToolCallsGenerationModel.js";
-import { generateToolCalls } from "../generate-tool-calls/generateToolCalls.js";
+} from "../generate-tool-calls/ToolCallsGenerationModel";
+import { generateToolCalls } from "../generate-tool-calls/generateToolCalls";
 
 // In this file, using 'any' is required to allow for flexibility in the inputs. The actual types are
 // retrieved through lookups such as TOOL["name"], such that any does not affect any client.

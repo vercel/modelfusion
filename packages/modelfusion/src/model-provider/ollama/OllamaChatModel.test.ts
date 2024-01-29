@@ -1,7 +1,7 @@
-import { streamText } from "../../model-function/generate-text/streamText.js";
-import { StreamingTestServer } from "../../test/StreamingTestServer.js";
-import { arrayFromAsync } from "../../test/arrayFromAsync.js";
-import { OllamaChatModel } from "./OllamaChatModel.js";
+import { streamText } from "../../model-function/generate-text/streamText";
+import { StreamingTestServer } from "../../test/StreamingTestServer";
+import { arrayFromAsync } from "../../test/arrayFromAsync";
+import { OllamaChatModel } from "./OllamaChatModel";
 
 describe("streamText", () => {
   const server = new StreamingTestServer("http://127.0.0.1:11434/api/chat");

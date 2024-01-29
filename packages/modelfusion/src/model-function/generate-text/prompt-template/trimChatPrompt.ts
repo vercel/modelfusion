@@ -3,8 +3,8 @@ import {
   HasTokenizer,
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "../TextGenerationModel.js";
-import { ChatPrompt } from "./ChatPrompt.js";
+} from "../TextGenerationModel";
+import { ChatPrompt } from "./ChatPrompt";
 
 /**
  * Keeps only the most recent messages in the prompt, while leaving enough space for the completion.

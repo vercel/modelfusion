@@ -1,11 +1,11 @@
-import { FunctionOptions } from "../core/FunctionOptions.js";
-import { embed } from "../model-function/embed/embed.js";
+import { FunctionOptions } from "../core/FunctionOptions";
+import { embed } from "../model-function/embed/embed";
 import {
   EmbeddingModel,
   EmbeddingModelSettings,
-} from "../model-function/embed/EmbeddingModel.js";
-import { Retriever } from "../retriever/Retriever.js";
-import { VectorIndex } from "./VectorIndex.js";
+} from "../model-function/embed/EmbeddingModel";
+import { Retriever } from "../retriever/Retriever";
+import { VectorIndex } from "./VectorIndex";
 
 export interface VectorIndexRetrieverSettings<FILTER> {
   maxResults?: number;

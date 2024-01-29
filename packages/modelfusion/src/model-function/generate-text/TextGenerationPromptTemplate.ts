@@ -1,4 +1,4 @@
-import { PromptTemplate } from "../PromptTemplate.js";
+import { PromptTemplate } from "../PromptTemplate";
 
 /**
  * Prompt templates format a source prompt as a target prompt.

@@ -1,8 +1,8 @@
-import { safeParseJSON } from "../../core/schema/parseJSON.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { Delta } from "../../model-function/Delta.js";
-import { AsyncQueue } from "../AsyncQueue.js";
-import { parseEventSourceStream } from "./parseEventSourceStream.js";
+import { safeParseJSON } from "../../core/schema/parseJSON";
+import { Schema } from "../../core/schema/Schema";
+import { Delta } from "../../model-function/Delta";
+import { AsyncQueue } from "../AsyncQueue";
+import { parseEventSourceStream } from "./parseEventSourceStream";
 
 export async function parseEventSourceStreamAsAsyncIterable<T>({
   stream,

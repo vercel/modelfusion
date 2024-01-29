@@ -1,14 +1,14 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "../generate-text/TextGenerationModel.js";
-import { generateText } from "../generate-text/generateText.js";
-import { ObjectFromTextPromptTemplate } from "./ObjectFromTextPromptTemplate.js";
-import { ObjectGenerationModel } from "./ObjectGenerationModel.js";
-import { ObjectParseError } from "./ObjectParseError.js";
+} from "../generate-text/TextGenerationModel";
+import { generateText } from "../generate-text/generateText";
+import { ObjectFromTextPromptTemplate } from "./ObjectFromTextPromptTemplate";
+import { ObjectGenerationModel } from "./ObjectGenerationModel";
+import { ObjectParseError } from "./ObjectParseError";
 
 export class ObjectFromTextGenerationModel<
   SOURCE_PROMPT,

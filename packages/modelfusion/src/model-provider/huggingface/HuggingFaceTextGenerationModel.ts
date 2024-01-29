@@ -1,23 +1,23 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { validateTypes } from "../../core/schema/validateTypes.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { PromptTemplateTextGenerationModel } from "../../model-function/generate-text/PromptTemplateTextGenerationModel.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { validateTypes } from "../../core/schema/validateTypes";
+import { AbstractModel } from "../../model-function/AbstractModel";
+import { PromptTemplateTextGenerationModel } from "../../model-function/generate-text/PromptTemplateTextGenerationModel";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
   textGenerationModelProperties,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration.js";
-import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError.js";
+} from "../../model-function/generate-text/TextGenerationModel";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import { HuggingFaceApiConfiguration } from "./HuggingFaceApiConfiguration";
+import { failedHuggingFaceCallResponseHandler } from "./HuggingFaceError";
 
 export interface HuggingFaceTextGenerationModelSettings
   extends TextGenerationModelSettings {

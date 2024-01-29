@@ -1,4 +1,4 @@
-import { SafeResult } from "./SafeResult.js";
+import { SafeResult } from "./SafeResult";
 
 export const runSafe = async <OUTPUT>(
   f: () => PromiseLike<OUTPUT>

@@ -82,4 +82,4 @@ root ::= item+
 item ::= "- " [^\r\n\x0b\x0c\x85\u2028\u2029]+ "\n"
 `;
 
-export { convertJsonSchemaToGBNF as fromJsonSchema } from "./convertJsonSchemaToGBNF.js";
+export { convertJsonSchemaToGBNF as fromJsonSchema } from "./convertJsonSchemaToGBNF";

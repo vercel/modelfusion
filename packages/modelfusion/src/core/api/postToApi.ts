@@ -1,7 +1,7 @@
-import { convertDataContentToUint8Array } from "../../util/format/DataContent.js";
-import { Schema } from "../schema/Schema.js";
-import { parseJSON, safeParseJSON } from "../schema/parseJSON.js";
-import { ApiCallError } from "./ApiCallError.js";
+import { convertDataContentToUint8Array } from "../../util/format/DataContent";
+import { Schema } from "../schema/Schema";
+import { parseJSON, safeParseJSON } from "../schema/parseJSON";
+import { ApiCallError } from "./ApiCallError";
 
 export type ResponseHandler<T> = (options: {
   url: string;

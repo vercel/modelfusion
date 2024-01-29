@@ -1,7 +1,7 @@
-import { AbstractApiConfiguration } from "../../core/api/AbstractApiConfiguration.js";
-import { RetryFunction } from "../../core/api/RetryFunction.js";
-import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
-import { loadApiKey } from "../../core/api/loadApiKey.js";
+import { AbstractApiConfiguration } from "../../core/api/AbstractApiConfiguration";
+import { RetryFunction } from "../../core/api/RetryFunction";
+import { ThrottleFunction } from "../../core/api/ThrottleFunction";
+import { loadApiKey } from "../../core/api/loadApiKey";
 
 export type AzureOpenAIApiConfigurationOptions = {
   resourceName: string;

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { createJsonErrorResponseHandler } from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
+import { createJsonErrorResponseHandler } from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
 
 const huggingFaceErrorDataSchema = z.object({
   error: z.array(z.string()).or(z.string()),

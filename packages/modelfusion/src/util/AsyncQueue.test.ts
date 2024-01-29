@@ -1,5 +1,5 @@
-import { delay } from "./delay.js";
-import { AsyncQueue } from "./AsyncQueue.js";
+import { delay } from "./delay";
+import { AsyncQueue } from "./AsyncQueue";
 
 it("should receive values in order for single iterator created before pushing", async () => {
   const asyncQueue = new AsyncQueue<number>();

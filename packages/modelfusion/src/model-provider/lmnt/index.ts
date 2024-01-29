@@ -1,3 +1,3 @@
-export * from "./LmntApiConfiguration.js";
-export * as lmnt from "./LmntFacade.js";
-export * from "./LmntSpeechModel.js";
+export * from "./LmntApiConfiguration";
+export * as lmnt from "./LmntFacade";
+export * from "./LmntSpeechModel";

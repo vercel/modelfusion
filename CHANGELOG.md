@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.134.0 - 2024-01-28
+
+### Added
+
+- Added prompt function support to `generateText`, `streamText`, `generateObject`, and `streamObject`. You can create prompt functions for text, instruction, and chat prompts using `createTextPrompt`, `createInstructionPrompt`, and `createChatPrompt`. Prompt functions allow you to load prompts from external sources and improve the prompt logging. Example:
+
+  ```ts
+  const storyPrompt = createInstructionPrompt(
+    async ({ protagonist }: { protagonist: string }) => ({
+      system: "You are an award-winning author.",
+      instruction: `Write a short story about ${protagonist} learning to love.`,
+    })
+  );
+
+  const text = await generateText({
+    model: openai
+      .ChatTextGenerator({ model: "gpt-3.5-turbo" })
+      .withInstructionPrompt(),
+
+    prompt: storyPrompt({
+      protagonist: "a robot",
+    }),
+  });
+  ```
+
+### Changed
+
+- Refactored build to use `tsup`.
+
 ## v0.133.0 - 2024-01-26
 
 ### Added

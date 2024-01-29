@@ -1,5 +1,5 @@
-import { FunctionObserver } from "./FunctionObserver.js";
-import { LogFormat } from "./LogFormat.js";
+import { FunctionObserver } from "./FunctionObserver";
+import { LogFormat } from "./LogFormat";
 
 let globalLogFormat: LogFormat = undefined;
 let globalFunctionObservers: FunctionObserver[] = [];

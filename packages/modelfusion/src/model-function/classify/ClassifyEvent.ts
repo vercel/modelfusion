@@ -1,7 +1,7 @@
 import {
   BaseModelCallFinishedEvent,
   BaseModelCallStartedEvent,
-} from "../ModelCallEvent.js";
+} from "../ModelCallEvent";
 
 export interface ClassifyStartedEvent extends BaseModelCallStartedEvent {
   functionType: "classify";

@@ -1,22 +1,22 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { PromptTemplate } from "../../model-function/PromptTemplate.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { AbstractModel } from "../../model-function/AbstractModel";
+import { PromptTemplate } from "../../model-function/PromptTemplate";
 import {
   ImageGenerationModel,
   ImageGenerationModelSettings,
-} from "../../model-function/generate-image/ImageGenerationModel.js";
-import { PromptTemplateImageGenerationModel } from "../../model-function/generate-image/PromptTemplateImageGenerationModel.js";
-import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
-import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
+} from "../../model-function/generate-image/ImageGenerationModel";
+import { PromptTemplateImageGenerationModel } from "../../model-function/generate-image/PromptTemplateImageGenerationModel";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration";
+import { failedOpenAICallResponseHandler } from "./OpenAIError";
 
 export const OPENAI_IMAGE_MODELS = {
   "dall-e-2": {

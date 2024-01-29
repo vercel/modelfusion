@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { ApiCallError } from "../../core/api/ApiCallError.js";
+import { ApiCallError } from "../../core/api/ApiCallError";
 import {
   ResponseHandler,
   createJsonErrorResponseHandler,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
 
 const stabilityErrorDataSchema = z.object({
   message: z.string(),

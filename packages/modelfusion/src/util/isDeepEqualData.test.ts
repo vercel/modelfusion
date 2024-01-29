@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { isDeepEqualData } from "./isDeepEqualData.js";
+import { isDeepEqualData } from "./isDeepEqualData";
 
 it("should check if two primitives are equal", async () => {
   let x = 1;

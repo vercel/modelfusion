@@ -1,9 +1,9 @@
-import { BaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { StabilityApiConfiguration } from "./StabilityApiConfiguration.js";
+import { BaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { StabilityApiConfiguration } from "./StabilityApiConfiguration";
 import {
   StabilityImageGenerationModel,
   StabilityImageGenerationSettings,
-} from "./StabilityImageGenerationModel.js";
+} from "./StabilityImageGenerationModel";
 
 /**
  * Creates an API configuration for the Stability AI API.

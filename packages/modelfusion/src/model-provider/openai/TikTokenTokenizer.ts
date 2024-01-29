@@ -1,10 +1,10 @@
 import { Tiktoken } from "js-tiktoken/lite";
 import cl100k_base from "js-tiktoken/ranks/cl100k_base";
-import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer.js";
-import { never } from "../../util/never.js";
-import { OpenAIChatBaseModelType } from "./OpenAIChatModel.js";
-import { OpenAICompletionModelType } from "./OpenAICompletionModel.js";
-import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel.js";
+import { FullTokenizer } from "../../model-function/tokenize-text/Tokenizer";
+import { never } from "../../util/never";
+import { OpenAIChatBaseModelType } from "./OpenAIChatModel";
+import { OpenAICompletionModelType } from "./OpenAICompletionModel";
+import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel";
 
 export type TikTokenTokenizerSettings = {
   model:

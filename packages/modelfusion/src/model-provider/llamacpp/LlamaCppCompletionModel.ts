@@ -1,42 +1,42 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
-import { validateTypes } from "../../core/schema/validateTypes.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { Delta } from "../../model-function/Delta.js";
+} from "../../core/api/postToApi";
+import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
+import { Schema } from "../../core/schema/Schema";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { parseJSON } from "../../core/schema/parseJSON";
+import { validateTypes } from "../../core/schema/validateTypes";
+import { AbstractModel } from "../../model-function/AbstractModel";
+import { Delta } from "../../model-function/Delta";
 import {
   FlexibleObjectFromTextPromptTemplate,
   ObjectFromTextPromptTemplate,
-} from "../../model-function/generate-object/ObjectFromTextPromptTemplate.js";
-import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel.js";
-import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
+} from "../../model-function/generate-object/ObjectFromTextPromptTemplate";
+import { ObjectFromTextStreamingModel } from "../../model-function/generate-object/ObjectFromTextStreamingModel";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel";
 import {
   TextGenerationModelSettings,
   TextStreamingBaseModel,
   TextStreamingModel,
   textGenerationModelProperties,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
-import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt.js";
-import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt.js";
-import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider.js";
-import { AsyncQueue } from "../../util/AsyncQueue.js";
-import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream.js";
-import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration.js";
-import { failedLlamaCppCallResponseHandler } from "./LlamaCppError.js";
-import { Text } from "./LlamaCppPrompt.js";
-import { LlamaCppTokenizer } from "./LlamaCppTokenizer.js";
-import { convertJsonSchemaToGBNF } from "./convertJsonSchemaToGBNF.js";
+} from "../../model-function/generate-text/TextGenerationModel";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
+import { ChatPrompt } from "../../model-function/generate-text/prompt-template/ChatPrompt";
+import { InstructionPrompt } from "../../model-function/generate-text/prompt-template/InstructionPrompt";
+import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider";
+import { AsyncQueue } from "../../util/AsyncQueue";
+import { parseEventSourceStream } from "../../util/streaming/parseEventSourceStream";
+import { LlamaCppApiConfiguration } from "./LlamaCppApiConfiguration";
+import { failedLlamaCppCallResponseHandler } from "./LlamaCppError";
+import { Text } from "./LlamaCppPrompt";
+import { LlamaCppTokenizer } from "./LlamaCppTokenizer";
+import { convertJsonSchemaToGBNF } from "./convertJsonSchemaToGBNF";
 
 export interface LlamaCppCompletionModelSettings<
   CONTEXT_WINDOW_SIZE extends number | undefined,

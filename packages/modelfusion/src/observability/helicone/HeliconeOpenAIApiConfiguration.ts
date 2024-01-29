@@ -1,8 +1,8 @@
-import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration.js";
-import { CustomHeaderProvider } from "../../core/api/CustomHeaderProvider.js";
-import { RetryFunction } from "../../core/api/RetryFunction.js";
-import { ThrottleFunction } from "../../core/api/ThrottleFunction.js";
-import { loadApiKey } from "../../core/api/loadApiKey.js";
+import { BaseUrlApiConfiguration } from "../../core/api/BaseUrlApiConfiguration";
+import { CustomHeaderProvider } from "../../core/api/CustomHeaderProvider";
+import { RetryFunction } from "../../core/api/RetryFunction";
+import { ThrottleFunction } from "../../core/api/ThrottleFunction";
+import { loadApiKey } from "../../core/api/loadApiKey";
 
 export class HeliconeOpenAIApiConfiguration extends BaseUrlApiConfiguration {
   constructor({

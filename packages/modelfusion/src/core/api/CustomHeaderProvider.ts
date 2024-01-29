@@ -1,4 +1,4 @@
-import { HeaderParameters } from "./ApiConfiguration.js";
+import { HeaderParameters } from "./ApiConfiguration";
 
 export type CustomHeaderProvider = (
   headerParameters: HeaderParameters

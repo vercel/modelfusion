@@ -1,11 +1,11 @@
-import { EmbeddingModel } from "../../model-function/embed/EmbeddingModel.js";
-import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
+import { EmbeddingModel } from "../../model-function/embed/EmbeddingModel";
+import { countTokens } from "../../model-function/tokenize-text/countTokens";
 import {
   AbstractOpenAITextEmbeddingModel,
   AbstractOpenAITextEmbeddingModelSettings,
   OpenAITextEmbeddingResponse,
-} from "./AbstractOpenAITextEmbeddingModel.js";
-import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
+} from "./AbstractOpenAITextEmbeddingModel";
+import { TikTokenTokenizer } from "./TikTokenTokenizer";
 
 export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-3-small": {

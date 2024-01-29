@@ -1,10 +1,7 @@
-import {
-  FunctionCallOptions,
-  FunctionOptions,
-} from "../core/FunctionOptions.js";
-import { JsonSchemaProducer } from "../core/schema/JsonSchemaProducer.js";
-import { Schema } from "../core/schema/Schema.js";
-import { ToolDefinition } from "./ToolDefinition.js";
+import { FunctionCallOptions, FunctionOptions } from "../core/FunctionOptions";
+import { JsonSchemaProducer } from "../core/schema/JsonSchemaProducer";
+import { Schema } from "../core/schema/Schema";
+import { ToolDefinition } from "./ToolDefinition";
 
 /**
  * A tool is a function with a name, description and defined inputs that can be used

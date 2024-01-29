@@ -1,31 +1,36 @@
-const { streamText, Llama2Prompt, llamaCpp } = require("modelfusion");
+const { llamacpp, streamText } = require("modelfusion");
 
 require("dotenv").config();
 
 (async () => {
-  // example assumes you are running https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF with llama.cpp
-  const textStream = await streamText(
-    llamacpp
+  const textStream = await streamText({
+    model: llamacpp
       .CompletionTextGenerator({
-        contextWindowSize: 4096, // Llama 2 context window size
+        // run https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF with llama.cpp
+        promptTemplate: llamacpp.prompt.ChatML,
+        contextWindowSize: 4096,
         maxGenerationTokens: 512,
       })
-      .withTextPromptTemplate(Llama2Prompt.chat()),
-    {
+      .withChatPrompt(),
+
+    prompt: {
       system: "You are a celebrated poet.",
       messages: [
         {
           role: "user",
-          content: "Write a short story about a robot learning to love.",
+          content: "Suggest a name for a robot.",
         },
         {
           role: "assistant",
-          content: "Once upon a time, there was a robot who learned to love.",
+          content: "I suggest the name Robbie",
         },
-        { role: "user", content: "That's a great start!" },
+        {
+          role: "user",
+          content: "Write a short story about Robbie learning to love",
+        },
       ],
-    }
-  );
+    },
+  });
 
   for await (const textPart of textStream) {
     process.stdout.write(textPart);

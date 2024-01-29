@@ -1,7 +1,7 @@
-import { FunctionObserver } from "./FunctionObserver.js";
-import { LogFormat } from "./LogFormat.js";
-import { Run } from "./Run.js";
-import { Cache } from "./cache/Cache.js";
+import { FunctionObserver } from "./FunctionObserver";
+import { LogFormat } from "./LogFormat";
+import { Run } from "./Run";
+import { Cache } from "./cache/Cache";
 
 /**
  * Additional settings for ModelFusion functions.

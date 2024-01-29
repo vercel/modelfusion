@@ -1,5 +1,5 @@
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { Model, ModelSettings } from "../Model.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { Model, ModelSettings } from "../Model";
 
 export interface ClassifierSettings extends ModelSettings {}
 

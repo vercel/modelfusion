@@ -1,7 +1,7 @@
 {
   "name": "modelfusion-experimental",
   "description": "Experimental ModelFusion features",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
@@ -35,36 +35,32 @@
     ".": {
       "types": "./index.d.ts",
       "import": "./index.js",
+      "module": "./index.js",
       "require": "./index.cjs"
-    },
-    "./extension": {
-      "types": "./extension/index.d.ts",
-      "import": "./extension/index.js",
-      "require": "./extension/index.cjs"
     },
     "./browser": {
       "types": "./browser/index.d.ts",
       "import": "./browser/index.js",
+      "module": "./browser/index.js",
       "require": "./browser/index.cjs"
     },
     "./fastify-server": {
-      "types": "./server/fastify/index.d.ts",
-      "import": "./server/fastify/index.js",
-      "require": "./server/fastify/index.cjs"
+      "types": "./fastify-server/index.d.ts",
+      "import": "./fastify-server/index.js",
+      "module": "./fastify-server/index.js",
+      "require": "./fastify-server/index.cjs"
     }
   },
   "scripts": {
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist .turbo node_modules",
     "clean:build": "rimraf build dist",
-    "build": "pnpm build:esm && pnpm build:cjs && pnpm build:copy-files",
-    "build:esm": "tsc --outDir dist/",
-    "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
+    "build": "tsup && pnpm build:copy-files",
     "build:copy-files": "copyfiles --flat package.json ./README.md ../../LICENSE ./CHANGELOG.md dist",
     "dist": "pnpm clean:build && pnpm lint && pnpm build"
   },
   "peerDependencies": {
-    "modelfusion": ">=0.131.0"
+    "modelfusion": ">=0.134.0"
   },
   "dependencies": {
     "zod": "3.22.4"
@@ -76,6 +72,6 @@
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
     "fastify": "^4.0.0",
-    "modelfusion": "0.133.0"
+    "modelfusion": "0.134.0"
   }
 }

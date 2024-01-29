@@ -1,9 +1,9 @@
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration.js";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { ElevenLabsApiConfiguration } from "./ElevenLabsApiConfiguration";
 import {
   ElevenLabsSpeechModel,
   ElevenLabsSpeechModelSettings,
-} from "./ElevenLabsSpeechModel.js";
+} from "./ElevenLabsSpeechModel";
 
 /**
  * Creates an API configuration for the ElevenLabs API.

@@ -1,12 +1,12 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { AudioMimeType } from "../../util/audio/AudioMimeType.js";
-import { DataContent } from "../../util/format/DataContent.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStandardCall } from "../executeStandardCall.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { AudioMimeType } from "../../util/audio/AudioMimeType";
+import { DataContent } from "../../util/format/DataContent";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStandardCall } from "../executeStandardCall";
 import {
   TranscriptionModel,
   TranscriptionModelSettings,
-} from "./TranscriptionModel.js";
+} from "./TranscriptionModel";
 
 /**
  * Transcribe audio data into text. Also called speech-to-text (STT) or automatic speech recognition (ASR).

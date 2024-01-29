@@ -1,15 +1,20 @@
-export * from "./DefaultRun.js";
-export * from "./ExecuteFunctionEvent.js";
-export * from "./FunctionEvent.js";
-export * from "./FunctionEventSource.js";
-export * from "./FunctionObserver.js";
-export * from "./FunctionOptions.js";
-export * from "./LogFormat.js";
-export * as modelfusion from "./ModelFusionConfiguration.js";
-export * from "./Run.js";
-export * from "./Vector.js";
-export * from "./api/index.js";
-export * from "./cache/index.js";
-export * from "./executeFunction.js";
-export * from "./getRun.js";
-export * from "./schema/index.js";
+export * from "./DefaultRun";
+export * from "./ExecuteFunctionEvent";
+export * from "./FunctionEvent";
+export * from "./FunctionEventSource";
+export * from "./FunctionObserver";
+export * from "./FunctionOptions";
+export * from "./LogFormat";
+export * as modelfusion from "./ModelFusionConfiguration";
+export {
+  PromptFunction,
+  isPromptFunction,
+  markAsPromptFunction,
+} from "./PromptFunction";
+export * from "./Run";
+export * from "./Vector";
+export * from "./api/index";
+export * from "./cache/index";
+export * from "./executeFunction";
+export * from "./getRun";
+export * from "./schema/index";

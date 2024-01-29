@@ -1,5 +1,5 @@
-import { JsonSchemaProducer } from "./JsonSchemaProducer.js";
-import { Schema } from "./Schema.js";
+import { JsonSchemaProducer } from "./JsonSchemaProducer";
+import { Schema } from "./Schema";
 
 export function uncheckedSchema<OBJECT>(jsonSchema?: unknown) {
   return new UncheckedSchema<OBJECT>(jsonSchema);

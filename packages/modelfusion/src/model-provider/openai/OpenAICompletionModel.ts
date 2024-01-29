@@ -1,21 +1,21 @@
-import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel.js";
+import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel";
 import {
   TextStreamingBaseModel,
   textGenerationModelProperties,
-} from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate.js";
+} from "../../model-function/generate-text/TextGenerationModel";
+import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
 import {
   chat,
   instruction,
   text,
-} from "../../model-function/generate-text/prompt-template/TextPromptTemplate.js";
-import { countTokens } from "../../model-function/tokenize-text/countTokens.js";
+} from "../../model-function/generate-text/prompt-template/TextPromptTemplate";
+import { countTokens } from "../../model-function/tokenize-text/countTokens";
 import {
   AbstractOpenAICompletionModel,
   AbstractOpenAICompletionModelSettings,
   OpenAICompletionResponse,
-} from "./AbstractOpenAICompletionModel.js";
-import { TikTokenTokenizer } from "./TikTokenTokenizer.js";
+} from "./AbstractOpenAICompletionModel";
+import { TikTokenTokenizer } from "./TikTokenTokenizer";
 
 /**
  * @see https://platform.openai.com/docs/models/

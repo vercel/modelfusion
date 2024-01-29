@@ -1,14 +1,14 @@
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { CohereApiConfiguration } from "./CohereApiConfiguration.js";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { CohereApiConfiguration } from "./CohereApiConfiguration";
 import {
   CohereTextEmbeddingModel,
   CohereTextEmbeddingModelSettings,
-} from "./CohereTextEmbeddingModel.js";
+} from "./CohereTextEmbeddingModel";
 import {
   CohereTextGenerationModel,
   CohereTextGenerationModelSettings,
-} from "./CohereTextGenerationModel.js";
-import { CohereTokenizer, CohereTokenizerSettings } from "./CohereTokenizer.js";
+} from "./CohereTextGenerationModel";
+import { CohereTokenizer, CohereTokenizerSettings } from "./CohereTokenizer";
 
 /**
  * Creates an API configuration for the Cohere API.

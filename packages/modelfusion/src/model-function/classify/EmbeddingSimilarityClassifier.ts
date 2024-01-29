@@ -1,9 +1,9 @@
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { Vector } from "../../core/Vector.js";
-import { cosineSimilarity } from "../../util/cosineSimilarity.js";
-import { EmbeddingModel } from "../embed/EmbeddingModel.js";
-import { embed, embedMany } from "../embed/embed.js";
-import { Classifier, ClassifierSettings } from "./Classifier.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { Vector } from "../../core/Vector";
+import { cosineSimilarity } from "../../util/cosineSimilarity";
+import { EmbeddingModel } from "../embed/EmbeddingModel";
+import { embed, embedMany } from "../embed/embed";
+import { Classifier, ClassifierSettings } from "./Classifier";
 
 export interface ValueCluster<VALUE, NAME extends string> {
   name: NAME;

@@ -1,7 +1,7 @@
 import {
   BaseUrlApiConfigurationWithDefaults,
   PartialBaseUrlPartsApiConfigurationOptions,
-} from "../../core/api/BaseUrlApiConfiguration.js";
+} from "../../core/api/BaseUrlApiConfiguration";
 
 /**
  * Creates an API configuration for the Ollama API.

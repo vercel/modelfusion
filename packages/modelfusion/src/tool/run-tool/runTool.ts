@@ -1,13 +1,13 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { executeFunctionCall } from "../../core/executeFunctionCall.js";
-import { Tool } from "../Tool.js";
-import { ToolCallResult } from "../ToolCallResult.js";
-import { safeExecuteToolCall } from "../execute-tool/safeExecuteToolCall.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { executeFunctionCall } from "../../core/executeFunctionCall";
+import { Tool } from "../Tool";
+import { ToolCallResult } from "../ToolCallResult";
+import { safeExecuteToolCall } from "../execute-tool/safeExecuteToolCall";
 import {
   ToolCallGenerationModel,
   ToolCallGenerationModelSettings,
-} from "../generate-tool-call/ToolCallGenerationModel.js";
-import { generateToolCall } from "../generate-tool-call/generateToolCall.js";
+} from "../generate-tool-call/ToolCallGenerationModel";
+import { generateToolCall } from "../generate-tool-call/generateToolCall";
 
 /**
  * `runTool` uses `generateToolCall` to generate parameters for a tool and

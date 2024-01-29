@@ -1,52 +1,52 @@
 import {
   BaseFunctionFinishedEvent,
   BaseFunctionStartedEvent,
-} from "../core/FunctionEvent.js";
+} from "../core/FunctionEvent";
 import {
   ToolCallGenerationFinishedEvent,
   ToolCallGenerationStartedEvent,
-} from "../tool/generate-tool-call/ToolCallGenerationEvent.js";
+} from "../tool/generate-tool-call/ToolCallGenerationEvent";
 import {
   ToolCallsGenerationFinishedEvent,
   ToolCallsGenerationStartedEvent,
-} from "../tool/generate-tool-calls/ToolCallsGenerationEvent.js";
-import { ModelInformation } from "./ModelInformation.js";
+} from "../tool/generate-tool-calls/ToolCallsGenerationEvent";
+import { ModelInformation } from "./ModelInformation";
 import {
   ClassifyFinishedEvent,
   ClassifyStartedEvent,
-} from "./classify/ClassifyEvent.js";
+} from "./classify/ClassifyEvent";
 import {
   EmbeddingFinishedEvent,
   EmbeddingStartedEvent,
-} from "./embed/EmbeddingEvent.js";
+} from "./embed/EmbeddingEvent";
 import {
   ImageGenerationFinishedEvent,
   ImageGenerationStartedEvent,
-} from "./generate-image/ImageGenerationEvent.js";
+} from "./generate-image/ImageGenerationEvent";
 import {
   SpeechGenerationFinishedEvent,
   SpeechGenerationStartedEvent,
   SpeechStreamingFinishedEvent,
   SpeechStreamingStartedEvent,
-} from "./generate-speech/SpeechGenerationEvent.js";
+} from "./generate-speech/SpeechGenerationEvent";
 import {
   ObjectGenerationFinishedEvent,
   ObjectGenerationStartedEvent,
-} from "./generate-object/ObjectGenerationEvent.js";
+} from "./generate-object/ObjectGenerationEvent";
 import {
   ObjectStreamingFinishedEvent,
   ObjectStreamingStartedEvent,
-} from "./generate-object/ObjectStreamingEvent.js";
+} from "./generate-object/ObjectStreamingEvent";
 import {
   TextGenerationFinishedEvent,
   TextGenerationStartedEvent,
   TextStreamingFinishedEvent,
   TextStreamingStartedEvent,
-} from "./generate-text/TextGenerationEvent.js";
+} from "./generate-text/TextGenerationEvent";
 import {
   TranscriptionFinishedEvent,
   TranscriptionStartedEvent,
-} from "./generate-transcription/TranscriptionEvent.js";
+} from "./generate-transcription/TranscriptionEvent";
 
 export interface BaseModelCallStartedEvent extends BaseFunctionStartedEvent {
   model: ModelInformation;

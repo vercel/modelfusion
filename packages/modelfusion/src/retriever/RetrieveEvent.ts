@@ -1,7 +1,7 @@
 import {
   BaseFunctionFinishedEvent,
   BaseFunctionStartedEvent,
-} from "../core/FunctionEvent.js";
+} from "../core/FunctionEvent";
 
 export interface RetrieveStartedEvent extends BaseFunctionStartedEvent {
   functionType: "retrieve";

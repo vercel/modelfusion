@@ -1,5 +1,5 @@
-import { DataContent } from "../../../util/format/DataContent.js";
-import { InvalidPromptError } from "./InvalidPromptError.js";
+import { DataContent } from "../../../util/format/DataContent";
+import { InvalidPromptError } from "./InvalidPromptError";
 
 export interface TextPart {
   type: "text";

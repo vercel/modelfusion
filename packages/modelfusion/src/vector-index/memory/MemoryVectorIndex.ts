@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { Vector } from "../../core/Vector.js";
-import { Schema } from "../../core/schema/Schema.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
-import { cosineSimilarity } from "../../util/cosineSimilarity.js";
-import { VectorIndex } from "../VectorIndex.js";
+import { Vector } from "../../core/Vector";
+import { Schema } from "../../core/schema/Schema";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { parseJSON } from "../../core/schema/parseJSON";
+import { cosineSimilarity } from "../../util/cosineSimilarity";
+import { VectorIndex } from "../VectorIndex";
 
 type Entry<DATA> = {
   id: string;

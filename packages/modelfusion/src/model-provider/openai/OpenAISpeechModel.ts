@@ -1,17 +1,17 @@
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   createAudioMpegResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
+} from "../../core/api/postToApi";
+import { AbstractModel } from "../../model-function/AbstractModel";
 import {
   SpeechGenerationModel,
   SpeechGenerationModelSettings,
-} from "../../model-function/generate-speech/SpeechGenerationModel.js";
-import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
-import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
+} from "../../model-function/generate-speech/SpeechGenerationModel";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration";
+import { failedOpenAICallResponseHandler } from "./OpenAIError";
 
 /**
  * @see https://openai.com/pricing

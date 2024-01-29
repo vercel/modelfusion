@@ -1,7 +1,8 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
-import { executeStreamCall } from "../executeStreamCall.js";
-import { TextStreamingModel } from "./TextGenerationModel.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { PromptFunction, expandPrompt } from "../../core/PromptFunction";
+import { ModelCallMetadata } from "../ModelCallMetadata";
+import { executeStreamCall } from "../executeStreamCall";
+import { TextStreamingModel } from "./TextGenerationModel";
 
 /**
  * Stream the generated text for a prompt as an async iterable.
@@ -31,14 +32,14 @@ import { TextStreamingModel } from "./TextGenerationModel.js";
 export async function streamText<PROMPT>(
   args: {
     model: TextStreamingModel<PROMPT>;
-    prompt: PROMPT;
+    prompt: PROMPT | PromptFunction<unknown, PROMPT>;
     fullResponse?: false;
   } & FunctionOptions
 ): Promise<AsyncIterable<string>>;
 export async function streamText<PROMPT>(
   args: {
     model: TextStreamingModel<PROMPT>;
-    prompt: PROMPT;
+    prompt: PROMPT | PromptFunction<unknown, PROMPT>;
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
@@ -46,6 +47,7 @@ export async function streamText<PROMPT>(
   textPromise: PromiseLike<string>;
   metadata: Omit<ModelCallMetadata, "durationInMs" | "finishTimestamp">;
 }>;
+
 export async function streamText<PROMPT>({
   model,
   prompt,
@@ -53,7 +55,7 @@ export async function streamText<PROMPT>({
   ...options
 }: {
   model: TextStreamingModel<PROMPT>;
-  prompt: PROMPT;
+  prompt: PROMPT | PromptFunction<unknown, PROMPT>;
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
   | AsyncIterable<string>
@@ -74,12 +76,15 @@ export async function streamText<PROMPT>({
     resolveText = resolve;
   });
 
+  const expandedPrompt = await expandPrompt(prompt);
+
   const callResponse = await executeStreamCall({
     functionType: "stream-text",
-    input: prompt,
+    input: expandedPrompt,
     model,
     options,
-    startStream: async (options) => model.doStreamText(prompt, options),
+    startStream: async (options) =>
+      model.doStreamText(expandedPrompt.prompt, options),
     processDelta: (delta) => {
       let textDelta = model.extractTextDelta(delta.deltaValue);
 

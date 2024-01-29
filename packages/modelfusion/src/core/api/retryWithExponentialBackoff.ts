@@ -1,8 +1,8 @@
-import { delay } from "../../util/delay.js";
-import { getErrorMessage } from "../../util/getErrorMessage.js";
-import { ApiCallError } from "./ApiCallError.js";
-import { RetryError } from "./RetryError.js";
-import { RetryFunction } from "./RetryFunction.js";
+import { delay } from "../../util/delay";
+import { getErrorMessage } from "../../util/getErrorMessage";
+import { ApiCallError } from "./ApiCallError";
+import { RetryError } from "./RetryError";
+import { RetryFunction } from "./RetryFunction";
 
 /**
  * The `retryWithExponentialBackoff` strategy retries a failed API call with an exponential backoff.

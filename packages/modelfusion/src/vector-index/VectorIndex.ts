@@ -1,4 +1,4 @@
-import { Vector } from "../core/Vector.js";
+import { Vector } from "../core/Vector";
 
 export interface VectorIndex<DATA, INDEX, FILTER> {
   upsertMany(

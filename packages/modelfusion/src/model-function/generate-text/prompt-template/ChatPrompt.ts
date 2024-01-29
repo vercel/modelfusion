@@ -1,10 +1,14 @@
-import { ToolCallResult } from "../../../tool/ToolCallResult.js";
+import {
+  PromptFunction,
+  markAsPromptFunction,
+} from "../../../core/PromptFunction";
+import { ToolCallResult } from "../../../tool/ToolCallResult";
 import {
   ImagePart,
   TextPart,
   ToolCallPart,
   ToolResponsePart,
-} from "./ContentPart.js";
+} from "./ContentPart";
 
 /**
  * A chat prompt is a combination of a system message and a list
@@ -116,4 +120,14 @@ function createAssistantContent({
   }
 
   return content;
+}
+
+export function createChatPrompt<INPUT>(
+  promptFunction: (input: INPUT) => Promise<ChatPrompt>
+): (input: INPUT) => PromptFunction<INPUT, ChatPrompt> {
+  return (input: INPUT) =>
+    markAsPromptFunction(async () => ({
+      input,
+      prompt: await promptFunction(input),
+    }));
 }

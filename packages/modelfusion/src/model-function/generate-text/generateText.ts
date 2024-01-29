@@ -1,14 +1,15 @@
-import { FunctionOptions } from "../../core/FunctionOptions.js";
-import { executeStandardCall } from "../executeStandardCall.js";
-import { ModelCallMetadata } from "../ModelCallMetadata.js";
+import { FunctionOptions } from "../../core/FunctionOptions";
+import { PromptFunction, expandPrompt } from "../../core/PromptFunction";
+import { executeStandardCall } from "../executeStandardCall";
+import { ModelCallMetadata } from "../ModelCallMetadata";
 import {
   TextGenerationModel,
   TextGenerationModelSettings,
-} from "./TextGenerationModel.js";
+} from "./TextGenerationModel";
 import {
   TextGenerationFinishReason,
   TextGenerationResult,
-} from "./TextGenerationResult.js";
+} from "./TextGenerationResult";
 
 /**
  * Generate text for a prompt and return it as a string.
@@ -33,14 +34,14 @@ import {
 export async function generateText<PROMPT>(
   args: {
     model: TextGenerationModel<PROMPT, TextGenerationModelSettings>;
-    prompt: PROMPT;
+    prompt: PROMPT | PromptFunction<unknown, PROMPT>;
     fullResponse?: false;
   } & FunctionOptions
 ): Promise<string>;
 export async function generateText<PROMPT>(
   args: {
     model: TextGenerationModel<PROMPT, TextGenerationModelSettings>;
-    prompt: PROMPT;
+    prompt: PROMPT | PromptFunction<unknown, PROMPT>;
     fullResponse: true;
   } & FunctionOptions
 ): Promise<{
@@ -58,7 +59,7 @@ export async function generateText<PROMPT>({
   ...options
 }: {
   model: TextGenerationModel<PROMPT, TextGenerationModelSettings>;
-  prompt: PROMPT;
+  prompt: PROMPT | PromptFunction<unknown, PROMPT>;
   fullResponse?: boolean;
 } & FunctionOptions): Promise<
   | string
@@ -71,16 +72,18 @@ export async function generateText<PROMPT>({
       metadata: ModelCallMetadata;
     }
 > {
+  const expandedPrompt = await expandPrompt(prompt);
+
   const callResponse = await executeStandardCall({
     functionType: "generate-text",
-    input: prompt,
+    input: expandedPrompt,
     model,
     options,
     generateResponse: async (options) => {
       async function getGeneratedTexts() {
         if (options?.cache == null) {
           return {
-            ...(await model.doGenerateTexts(prompt, options)),
+            ...(await model.doGenerateTexts(expandedPrompt.prompt, options)),
             cache: undefined,
           };
         }
@@ -93,7 +96,7 @@ export async function generateText<PROMPT>({
           input: {
             model,
             settings: model.settingsForEvent, // TODO should include full model information
-            prompt,
+            prompt: expandedPrompt.prompt,
           },
         };
 
@@ -110,7 +113,10 @@ export async function generateText<PROMPT>({
           cacheErrors = [err];
         }
 
-        const result = await model.doGenerateTexts(prompt, options);
+        const result = await model.doGenerateTexts(
+          expandedPrompt.prompt,
+          options
+        );
 
         try {
           await options.cache.storeValue(cacheKey, result.rawResponse);

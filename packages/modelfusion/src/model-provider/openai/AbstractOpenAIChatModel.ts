@@ -1,23 +1,23 @@
 import { z } from "zod";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { ApiConfiguration } from "../../core/api/ApiConfiguration.js";
-import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle.js";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { ApiConfiguration } from "../../core/api/ApiConfiguration";
+import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
 import {
   ResponseHandler,
   createJsonResponseHandler,
   postJsonToApi,
-} from "../../core/api/postToApi.js";
-import { zodSchema } from "../../core/schema/ZodSchema.js";
-import { parseJSON } from "../../core/schema/parseJSON.js";
-import { validateTypes } from "../../core/schema/validateTypes.js";
-import { AbstractModel } from "../../model-function/AbstractModel.js";
-import { TextGenerationModelSettings } from "../../model-function/generate-text/TextGenerationModel.js";
-import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult.js";
-import { ToolDefinition } from "../../tool/ToolDefinition.js";
-import { createEventSourceResponseHandler } from "../../util/streaming/createEventSourceResponseHandler.js";
-import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration.js";
-import { OpenAIChatMessage } from "./OpenAIChatMessage.js";
-import { failedOpenAICallResponseHandler } from "./OpenAIError.js";
+} from "../../core/api/postToApi";
+import { zodSchema } from "../../core/schema/ZodSchema";
+import { parseJSON } from "../../core/schema/parseJSON";
+import { validateTypes } from "../../core/schema/validateTypes";
+import { AbstractModel } from "../../model-function/AbstractModel";
+import { TextGenerationModelSettings } from "../../model-function/generate-text/TextGenerationModel";
+import { TextGenerationFinishReason } from "../../model-function/generate-text/TextGenerationResult";
+import { ToolDefinition } from "../../tool/ToolDefinition";
+import { createEventSourceResponseHandler } from "../../util/streaming/createEventSourceResponseHandler";
+import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration";
+import { OpenAIChatMessage } from "./OpenAIChatMessage";
+import { failedOpenAICallResponseHandler } from "./OpenAIError";
 
 export interface AbstractOpenAIChatSettings
   extends TextGenerationModelSettings {

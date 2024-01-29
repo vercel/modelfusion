@@ -1,14 +1,14 @@
-import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration.js";
-import { OllamaApiConfiguration } from "./OllamaApiConfiguration.js";
-import { OllamaChatModel, OllamaChatModelSettings } from "./OllamaChatModel.js";
+import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
+import { OllamaApiConfiguration } from "./OllamaApiConfiguration";
+import { OllamaChatModel, OllamaChatModelSettings } from "./OllamaChatModel";
 import {
   OllamaCompletionModel,
   OllamaCompletionModelSettings,
-} from "./OllamaCompletionModel.js";
+} from "./OllamaCompletionModel";
 import {
   OllamaTextEmbeddingModel,
   OllamaTextEmbeddingModelSettings,
-} from "./OllamaTextEmbeddingModel.js";
+} from "./OllamaTextEmbeddingModel";
 
 /**
  * Creates an API configuration for the Ollama API.
@@ -35,6 +35,6 @@ export function TextEmbedder(settings: OllamaTextEmbeddingModelSettings) {
 export {
   OllamaChatMessage as ChatMessage,
   OllamaChatPrompt as ChatPrompt,
-} from "./OllamaChatModel.js";
+} from "./OllamaChatModel";
 
-export * as prompt from "./OllamaCompletionPrompt.js";
+export * as prompt from "./OllamaCompletionPrompt";

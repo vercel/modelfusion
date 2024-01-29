@@ -1,5 +1,5 @@
-import { ModelInformation } from "./ModelInformation.js";
-import { FunctionObserver } from "../core/FunctionObserver.js";
+import { ModelInformation } from "./ModelInformation";
+import { FunctionObserver } from "../core/FunctionObserver";
 
 export interface ModelSettings {
   /**

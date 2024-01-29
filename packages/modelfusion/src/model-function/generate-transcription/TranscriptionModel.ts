@@ -1,6 +1,6 @@
-import { DataContent } from "../../util/format/DataContent.js";
-import { FunctionCallOptions } from "../../core/FunctionOptions.js";
-import { Model, ModelSettings } from "../Model.js";
+import { DataContent } from "../../util/format/DataContent";
+import { FunctionCallOptions } from "../../core/FunctionOptions";
+import { Model, ModelSettings } from "../Model";
 
 export interface TranscriptionModelSettings extends ModelSettings {}
 

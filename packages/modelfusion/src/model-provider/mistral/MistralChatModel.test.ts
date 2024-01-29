@@ -1,8 +1,8 @@
-import { streamText } from "../../model-function/generate-text/streamText.js";
-import { StreamingTestServer } from "../../test/StreamingTestServer.js";
-import { arrayFromAsync } from "../../test/arrayFromAsync.js";
-import { MistralApiConfiguration } from "./MistralApiConfiguration.js";
-import { MistralChatModel } from "./MistralChatModel.js";
+import { streamText } from "../../model-function/generate-text/streamText";
+import { StreamingTestServer } from "../../test/StreamingTestServer";
+import { arrayFromAsync } from "../../test/arrayFromAsync";
+import { MistralApiConfiguration } from "./MistralApiConfiguration";
+import { MistralChatModel } from "./MistralChatModel";
 
 describe("streamText", () => {
   const server = new StreamingTestServer(

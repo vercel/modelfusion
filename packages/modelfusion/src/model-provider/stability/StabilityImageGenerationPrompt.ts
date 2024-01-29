@@ -1,4 +1,4 @@
-import { PromptTemplate } from "../../model-function/PromptTemplate.js";
+import { PromptTemplate } from "../../model-function/PromptTemplate";
 
 export type StabilityImageGenerationPrompt = Array<{
   text: string;
