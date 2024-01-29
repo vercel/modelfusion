@@ -1,4 +1,5 @@
 export * from "./NoSuchToolDefinitionError";
+export * from "./ObjectGeneratorTool";
 export * from "./Tool";
 export * from "./ToolCall";
 export * from "./ToolCallArgumentsValidationError";
