@@ -15,9 +15,11 @@ const enemyGenerator = new ObjectGeneratorTool({
 
   parameters: zodSchema(
     z.object({
-      type: z
+      groupDescription: z
         .string()
-        .describe("The type of the enemy, e.g. human, orc, elf..."),
+        .describe(
+          "Description of the enemy, e.g. 'group of bandits', 'pack of wolves', 'a tall bear', 'a powerful lich', ..."
+        ),
       numberOfOpponents: z.number(),
       location: z.string().describe("The location of the encounter."),
     })
@@ -30,7 +32,7 @@ const enemyGenerator = new ObjectGeneratorTool({
         species: z
           .string()
           .describe(
-            "The species of the enemy, e.g. human, orc, elf, wolf, bear..."
+            "The species of the enemy, e.g. human, orc, elf, wolf, bear, skeleton..."
           ),
         class: z
           .string()
@@ -49,18 +51,18 @@ const enemyGenerator = new ObjectGeneratorTool({
     .CompletionTextGenerator({
       // run https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF with llama.cpp
       promptTemplate: llamacpp.prompt.ChatML,
-      temperature: 0.5,
+      temperature: 1.2,
     })
     .asObjectGenerationModel(jsonObjectPrompt.instruction()),
 
   prompt: createInstructionPrompt(
-    async ({ type, numberOfOpponents, location }) => ({
+    async ({ groupDescription, numberOfOpponents, location }) => ({
       system:
         "You generate enemies for heroes in a fantasy role-playing game set in a medieval fantasy world. " +
         "The list of enemies should be limited to a single encounter. " +
         "The enemy group must be consistent, i.e. it must make sense for the enemies to appear together.",
 
-      instruction: `Generate ${numberOfOpponents} ${type} enemies that the heroes encounter in ${location}.`,
+      instruction: `Generate ${numberOfOpponents} enemies from ${groupDescription} that the heroes encounter in ${location}.`,
     })
   ),
 });
@@ -71,16 +73,18 @@ async function main() {
       .CompletionTextGenerator({
         // run https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF with llama.cpp
         promptTemplate: llamacpp.prompt.ChatML,
-        temperature: 0.7,
+        temperature: 1,
       })
       .withInstructionPrompt()
       .asToolCallGenerationModel(jsonToolCallPrompt.text()),
 
     tool: enemyGenerator,
+
     prompt:
-      "The heros enter a dark cave. They hear a noise. They see something moving in the shadows.",
-    // "The heros enter the backroom of the tavern. They see a group of people sitting at a table.",
-    // "The heros are resting in the forest. They hear a noise. They see something moving between the trees.",
+      // "The heros enter a dark cave. They hear a noise. They see something moving in the shadows.",
+      // "The heros enter the backroom of the tavern. They see a group of people sitting at a table.",
+      // "The heros are resting in the forest. They hear a noise. They see something moving between the trees.",
+      "The heros enter the abandoned graveyard. The moon is full. They see something moving slowly between the graves.",
   });
 
   console.log(`Tool call:`, toolCall);
