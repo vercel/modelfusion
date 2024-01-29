@@ -50,7 +50,7 @@ const enemyGenerator = new ObjectGeneratorTool({
   model: llamacpp
     .CompletionTextGenerator({
       // run https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF with llama.cpp
-      promptTemplate: llamacpp.prompt.ChatML,
+      promptTemplate: llamacpp.prompt.Mistral,
       temperature: 1.2,
     })
     .asObjectGenerationModel(jsonObjectPrompt.instruction()),
@@ -72,7 +72,7 @@ async function main() {
     model: llamacpp
       .CompletionTextGenerator({
         // run https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF with llama.cpp
-        promptTemplate: llamacpp.prompt.ChatML,
+        promptTemplate: llamacpp.prompt.Mistral,
         temperature: 1,
       })
       .withInstructionPrompt()

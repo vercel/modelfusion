@@ -77,7 +77,7 @@ const enemyGenerator = new ObjectGeneratorTool({
   model: llamacpp
     .CompletionTextGenerator({
       // run https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF with llama.cpp
-      promptTemplate: llamacpp.prompt.ChatML,
+      promptTemplate: llamacpp.prompt.Mistral,
       temperature: 1.2,
     })
     .asObjectGenerationModel(jsonObjectPrompt.instruction()),
@@ -107,7 +107,7 @@ const { tool, toolCall, args, ok, result } = await runTool({
   model: llamacpp
     .CompletionTextGenerator({
       // run https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF with llama.cpp
-      promptTemplate: llamacpp.prompt.ChatML,
+      promptTemplate: llamacpp.prompt.Mistral,
       temperature: 0.7,
     })
     .withInstructionPrompt()
