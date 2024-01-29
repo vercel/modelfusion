@@ -42,10 +42,10 @@ const enemyGenerator = new ObjectGeneratorTool({
 
   parameters: zodSchema(
     z.object({
-      groupDescription: z
+      enemyDescription: z
         .string()
         .describe(
-          "Description of the enemy, e.g. 'group of bandits', 'pack of wolves', 'a tall bear', 'a powerful lich', ..."
+          "Examples: 'group of bandits', 'pack of wolves', 'a tall bear', 'a powerful lich', ..."
         ),
       numberOfOpponents: z.number(),
       location: z.string().describe("The location of the encounter."),
@@ -83,13 +83,14 @@ const enemyGenerator = new ObjectGeneratorTool({
     .asObjectGenerationModel(jsonObjectPrompt.instruction()),
 
   prompt: createInstructionPrompt(
-    async ({ groupDescription, numberOfOpponents, location }) => ({
+    async ({ enemyDescription, numberOfOpponents, location }) => ({
       system:
         "You generate enemies for heroes in a fantasy role-playing game set in a medieval fantasy world. " +
         "The list of enemies should be limited to a single encounter. " +
-        "The enemy group must be consistent, i.e. it must make sense for the enemies to appear together.",
+        "The enemy group must be consistent, i.e. it must make sense for the enemies to appear together. " +
+        "There must be at least one enemy.",
 
-      instruction: `Generate ${numberOfOpponents} enemies from ${groupDescription} that the heroes encounter in ${location}.`,
+      instruction: `Generate exactly ${numberOfOpponents} enemies from ${enemyDescription} that the heroes encounter in ${location}.`,
     })
   ),
 });
@@ -108,7 +109,8 @@ const { tool, toolCall, args, ok, result } = await runTool({
     .CompletionTextGenerator({
       // run https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF with llama.cpp
       promptTemplate: llamacpp.prompt.Mistral,
-      temperature: 0.7,
+      temperature: 2,
+      topP: 0.8,
     })
     .withInstructionPrompt()
     .asToolCallGenerationModel(jsonToolCallPrompt.text()),
