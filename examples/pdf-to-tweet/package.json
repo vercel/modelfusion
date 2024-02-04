@@ -9,7 +9,7 @@
   },
   "private": true,
   "dependencies": {
-    "modelfusion": "0.135.0",
+    "modelfusion": "0.135.1",
     "modelfusion-experimental": "0.7.0",
     "commander": "10.0.1",
     "dotenv": "16.3.1",

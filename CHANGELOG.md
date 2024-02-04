@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.135.1 - 2024-02-04
+
+### Fixed
+
+- Try both dynamic imports and require for loading libraries on demand.
+
 ## v0.135.0 - 2024-01-29
 
 ### Added
