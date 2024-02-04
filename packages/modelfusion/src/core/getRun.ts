@@ -11,8 +11,23 @@ let runStorage: RunStorage | undefined;
 async function ensureLoaded() {
   if (detectRuntime() === "node" && !runStorage) {
     // Note: using "async_hooks" instead of "node:async_hooks" to avoid webpack fallback problems.
-    const { AsyncLocalStorage } = await import("async_hooks");
-    runStorage = new AsyncLocalStorage<Run>();
+    // Note: we try both import and require to support both ESM and CJS.
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let AsyncLocalStorage: any;
+
+    try {
+      AsyncLocalStorage = (await import("async_hooks")).AsyncLocalStorage;
+    } catch (error) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        AsyncLocalStorage = require("async_hooks").AsyncLocalStorage;
+      } catch (error) {
+        throw new Error(`Failed to load 'async_hooks' module dynamically.`);
+      }
+    }
+
+    runStorage = new AsyncLocalStorage();
   }
 
   return Promise.resolve();
