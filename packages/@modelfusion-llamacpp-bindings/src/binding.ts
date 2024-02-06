@@ -8,7 +8,12 @@ export interface ILlamaCppBindingsNative {
   greet(strName: string): string;
 }
 
-export class LlamaCppBindings {
+export interface ILlamaCppBindingsNativeConstructor {
+  new (name: string): ILlamaCppBindingsNative;
+  getSystemInfo(): Promise<string>;
+}
+
+export class LlamaCppBindings implements ILlamaCppBindingsNative {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _addonInstance: ILlamaCppBindingsNative;
 

@@ -518,6 +518,7 @@ importers:
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
+    publishDirectory: dist
 
   packages/@modelfusion-pinecone:
     devDependencies:
@@ -11364,6 +11365,22 @@ packages:
     dependencies:
       obliterator: 2.0.4
     dev: false
+
+  /modelfusion@0.131.0:
+    resolution: {integrity: sha512-sMYIslWoaOj4SGzwbSexz0w2w0K4xdy0Mxs79xGCAJUgiVS+U4w6eb18291PGMR0whmbxohqmtsaZ+lJuZJE9g==}
+    engines: {node: '>=18'}
+    dependencies:
+      eventsource-parser: 1.1.1
+      js-tiktoken: 1.0.7
+      nanoid: 3.3.6
+      secure-json-parse: 2.7.0
+      ws: 8.14.2
+      zod: 3.22.4
+      zod-to-json-schema: 3.22.3(zod@3.22.4)
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: true
 
   /mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}

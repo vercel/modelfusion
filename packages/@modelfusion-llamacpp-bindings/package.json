@@ -21,16 +21,7 @@
   "engines": {
     "node": ">=18"
   },
-  "publishConfig": {
-    "directory": "dist",
-    "linkDirectory": true
-  },
-  "exports": {
-    ".": {
-      "types": "./index.d.ts",
-      "import": "./index.js"
-    }
-  },
+  "main": "./dist/index.js",
   "keywords": [
     "modelfusion",
     "llamacpp",
