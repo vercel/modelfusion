@@ -23,8 +23,23 @@ export async function createSimpleWebSocket(
     }
 
     case "node": {
-      // Use ws library (for Node.js):
-      const { default: WebSocket } = await import("ws");
+      // Use ws library (for Node.js).
+      // Note: we try both import and require to support both ESM and CJS.
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let WebSocket: any;
+
+      try {
+        WebSocket = (await import("ws")).default;
+      } catch (error) {
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          WebSocket = require("ws");
+        } catch (error) {
+          throw new Error(`Failed to load 'ws' module dynamically.`);
+        }
+      }
+
       return new WebSocket(url) as SimpleWebSocket;
     }
 

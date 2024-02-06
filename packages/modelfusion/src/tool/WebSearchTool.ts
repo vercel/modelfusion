@@ -76,7 +76,7 @@ export class WebSearchTool<NAME extends string> extends Tool<
     execute,
   }: {
     name: NAME;
-    description: string;
+    description?: string;
     queryDescription?: string;
     execute(
       input: WebSearchToolInput,

@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.135.1 - 2024-02-04
+
+### Fixed
+
+- Try both dynamic imports and require for loading libraries on demand.
+
+## v0.135.0 - 2024-01-29
+
+### Added
+
+- `ObjectGeneratorTool`: a tool to create synthetic or fictional structured data using `generateObject`. [Docs](https://modelfusion.dev/guide/tools/available-tools/object-generator)
+- `jsonToolCallPrompt.instruction()`: Create a instruction prompt for tool calls that uses JSON.
+
+### Changed
+
+- `jsonToolCallPrompt` automatically enables JSON mode or grammars when supported by the model.
+
 ## v0.134.0 - 2024-01-28
 
 ### Added
