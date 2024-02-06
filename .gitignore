@@ -5,6 +5,7 @@
 runs
 node_modules
 package-lock.json
+.cache
 examples/*/build/**
 packages/*/build/**
 packages/*/coverage/**
