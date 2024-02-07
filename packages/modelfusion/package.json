@@ -48,6 +48,12 @@
       "import": "./internal/index.js",
       "module": "./internal/index.js",
       "require": "./internal/index.cjs"
+    },
+    "./node": {
+      "types": "./node/index.d.ts",
+      "import": "./node/index.js",
+      "module": "./node/index.js",
+      "require": "./node/index.cjs"
     }
   },
   "scripts": {

@@ -14,4 +14,11 @@ export default defineConfig([
     dts: true,
     sourcemap: true,
   },
+  {
+    entry: ["src/node/index.ts"],
+    format: ["cjs", "esm"],
+    outDir: "dist/node",
+    dts: true,
+    sourcemap: true,
+  },
 ]);
