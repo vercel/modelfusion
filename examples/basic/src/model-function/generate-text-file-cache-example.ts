@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
-import { FileCache, generateText, openai } from "modelfusion";
+import { generateText, openai } from "modelfusion";
+import { FileCache } from "modelfusion/server";
 
 dotenv.config();
 
