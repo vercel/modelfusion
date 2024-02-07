@@ -1,11 +1,10 @@
 import dotenv from "dotenv";
-import { generateText, openai } from "modelfusion";
-import { FileCache } from "modelfusion/node";
+import { MemoryCache, generateText, openai } from "modelfusion";
 
 dotenv.config();
 
 async function main() {
-  const cache = new FileCache();
+  const cache = new MemoryCache();
 
   const text1 = await generateText({
     model: openai
