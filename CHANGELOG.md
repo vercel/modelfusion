@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.136.0 - 2024-02-07
+
+### Added
+
+- `FileCache` for caching responses to disk. Thanks [@jakedetels](https://github.com/jakedetels) for the feature! Example:
+
+  ```ts
+  import { generateText, openai } from "modelfusion";
+  import { FileCache } from "modelfusion/node";
+
+  const cache = new FileCache();
+
+  const text1 = await generateText({
+    model: openai
+      .ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 1 })
+      .withTextPrompt(),
+    prompt: "Write a short story about a robot learning to love",
+    logging: "basic-text",
+    cache,
+  });
+
+  console.log({ text1 });
+
+  const text2 = await generateText({
+    model: openai
+      .ChatTextGenerator({ model: "gpt-3.5-turbo", temperature: 1 })
+      .withTextPrompt(),
+    prompt: "Write a short story about a robot learning to love",
+    logging: "basic-text",
+    cache,
+  });
+
+  console.log({ text2 }); // same text
+  ```
+
 ## v0.135.1 - 2024-02-04
 
 ### Fixed
