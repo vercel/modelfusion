@@ -37,5 +37,6 @@
     "upsert",
     "whispercpp"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cmake.sourceDirectory": "packages/@modelfusion-llamacpp-bindings"
 }

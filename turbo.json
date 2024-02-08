@@ -1,6 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "setup": {
+      "dependsOn": ["^setup"],
+      "env": [],
+      "outputs": []
+    },
     "build": {
       "dependsOn": ["^build"],
       "env": [],
