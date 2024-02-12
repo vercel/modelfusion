@@ -6,6 +6,11 @@
       "env": [],
       "outputs": ["build/**", "dist/**", ".next/**", "!.next/cache/**"]
     },
+    "build:watch": {
+      "dependsOn": ["^build:watch"],
+      "env": [],
+      "outputs": ["build/**", "dist/**", ".next/**", "!.next/cache/**"]
+    },
     "clean": {
       "dependsOn": ["^clean"]
     },

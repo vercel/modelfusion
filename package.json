@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build:watch": "turbo build:watch",
     "clean": "rimraf .turbo node_modules/.cache/turbo && pnpm --filter \"./packages/**\" clean && pnpm --filter \"./examples/**\" clean",
     "lint": "turbo lint",
     "setup": "husky install",

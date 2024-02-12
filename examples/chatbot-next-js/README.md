@@ -8,15 +8,17 @@ A web chat with an AI assistant.
 
 1. Create `.env.local` file with the following content:
 
-```
+```sh
 OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 ```
 
-2. Run the following commands:
+2. Run the following commands from the root directory of the modelfusion repo:
 
 ```sh
-npm install
-npm run dev
+pnpm install
+pnpm build
+cd examples/chatbot-next-js
+pnpm dev
 ```
 
 3. Go to http://localhost:3000/ in your browser

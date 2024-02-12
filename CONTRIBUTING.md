@@ -18,6 +18,10 @@ Feedback, bug reports and other contributions are welcome.
 pnpm build
 ```
 
+## Watch Mode for Local Development
+
+When running the `pnpm install` command, pnpm will both install all dependencies within the monorepo and symlink dependant workspaces to one another (specifically symlinking the compiled output in each workspace's `dist` folder). Therefore, if you are working on a specific package (e.g., `packages/modelfusion`) and you want your changes to be reflected in the consuming package (e.g., `examples/basic`), you can run `pnpm build:watch` from the monorepo's root directory.
+
 <!-- Links -->
 
 [install-git]: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
