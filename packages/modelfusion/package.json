@@ -61,7 +61,7 @@
     "clean": "rimraf build dist .turbo node_modules",
     "clean:build": "rimraf build dist",
     "build": "tsup && pnpm build:copy-files",
-    "build:copy-files": "copyfiles --flat package.json ./README.md ../../LICENSE ./CHANGELOG.md dist",
+    "build:copy-files": "copyfiles --flat package.json ../../README.md ../../LICENSE ../../CHANGELOG.md dist",
     "test": "vitest --config vitest.config.js --run src",
     "test:watch": "vitest watch --config vitest.config.js",
     "test:coverage": "vitest run --config vitest.config.js --coverage",
