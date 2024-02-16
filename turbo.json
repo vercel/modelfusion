@@ -6,10 +6,10 @@
       "env": [],
       "outputs": ["build/**", "dist/**", ".next/**", "!.next/cache/**"]
     },
-    "build:watch": {
-      "dependsOn": ["^build:watch"],
+    "build:dtsMap": {
+      "dependsOn": ["^build:dtsMap"],
       "env": [],
-      "outputs": ["build/**", "dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": []
     },
     "clean": {
       "dependsOn": ["^clean"]

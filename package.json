@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "build:watch": "turbo build:watch",
+    "build:dtsMap": "turbo build:dtsMap",
     "clean": "rimraf .turbo node_modules/.cache/turbo && pnpm --filter \"./packages/**\" clean && pnpm --filter \"./examples/**\" clean",
     "lint": "turbo lint",
     "setup": "husky install",
