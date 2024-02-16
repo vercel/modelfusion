@@ -1,0 +1,57 @@
+{
+  "name": "@modelfusion/cost-calculator",
+  "description": "A calculator for the API usage costs of AI models (text, image, speech, transcription, etc.) for OpenAI and other providers.",
+  "author": "Lars Grammel",
+  "license": "MIT",
+  "keywords": [
+    "openai",
+    "modelfusion",
+    "calculator",
+    "typescript"
+  ],
+  "homepage": "https://modelfusion.dev/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lgrammel/modelfusion"
+  },
+  "bugs": {
+    "url": "https://github.com/lgrammel/modelfusion/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "private": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "directory": "dist",
+    "linkDirectory": true
+  },
+  "files": [
+    "./*"
+  ],
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  },
+  "scripts": {
+    "lint": "eslint --ext .ts src",
+    "clean": "rimraf build dist .turbo node_modules",
+    "clean:build": "rimraf build dist",
+    "build": "tsup && pnpm build:copy-files",
+    "build:copy-files": "copyfiles --flat package.json README.md ../../LICENSE dist",
+    "dist": "pnpm clean:build && pnpm lint && pnpm build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "18.11.9",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "9.1.0",
+    "modelfusion": "0.136.0"
+  }
+}

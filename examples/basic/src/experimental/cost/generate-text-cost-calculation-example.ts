@@ -4,7 +4,7 @@ import {
   OpenAICostCalculator,
   calculateCost,
   extractSuccessfulModelCalls,
-} from "modelfusion-experimental";
+} from "@modelfusion/cost-calculator";
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ async function main() {
   });
 
   console.log();
-  console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
+  console.log(`Text Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
 }
 
 main().catch(console.error);

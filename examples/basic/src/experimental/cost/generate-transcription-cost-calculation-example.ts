@@ -4,13 +4,16 @@ import {
   OpenAICostCalculator,
   calculateCost,
   extractSuccessfulModelCalls,
-} from "modelfusion-experimental";
+} from "@modelfusion/cost-calculator";
 import fs from "node:fs";
+import path from "node:path";
 
 dotenv.config();
 
 async function main() {
-  const audioData = await fs.promises.readFile("data/test.mp3");
+  const audioData = await fs.promises.readFile(
+    path.join(__dirname, "../../../data/test.mp3")
+  );
 
   const run = new DefaultRun();
 
@@ -18,6 +21,7 @@ async function main() {
     model: openai.Transcriber({ model: "whisper-1" }),
     mimeType: "audio/mp3",
     audioData,
+    run,
   });
 
   console.log(transcription);
@@ -27,7 +31,9 @@ async function main() {
     costCalculators: [new OpenAICostCalculator()],
   });
 
-  console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
+  console.log(
+    `Transcription Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`
+  );
 }
 
 main().catch(console.error);

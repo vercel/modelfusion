@@ -1,23 +1,23 @@
 import {
-  OpenAIChatResponse,
-  OpenAICompletionResponse,
-  OpenAIImageGenerationSettings,
-  OpenAIImageModelType,
-  OpenAISpeechModelType,
-  OpenAITextEmbeddingResponse,
-  OpenAITranscriptionModelType,
-  OpenAITranscriptionVerboseJsonResponse,
-  calculateOpenAIChatCostInMillicents,
-  calculateOpenAICompletionCostInMillicents,
-  calculateOpenAIEmbeddingCostInMillicents,
-  calculateOpenAIImageGenerationCostInMillicents,
-  calculateOpenAISpeechCostInMillicents,
-  calculateOpenAITranscriptionCostInMillicents,
-  isOpenAIChatModel,
-  isOpenAICompletionModel,
-  isOpenAIEmbeddingModel,
+  OpenAIChatResponse, // AbstractOpenAIChatModel.ts
+  OpenAICompletionResponse, // AbstractOpenAICompletionModel.ts
+  OpenAIImageGenerationSettings, // OpenAIImageGenerationModel.ts
+  OpenAIImageModelType, // OpenAIImageGenerationModel.ts
+  OpenAISpeechModelType, // OpenAISpeechModel.ts
+  OpenAITextEmbeddingResponse, // AbstractOpenAITextEmbeddingModel.ts
+  OpenAITranscriptionModelType, // OpenAITranscriptionModel.ts
+  OpenAITranscriptionVerboseJsonResponse, // OpenAITranscriptionModel.ts
+  calculateOpenAIChatCostInMillicents, // OpenAIChatModel.ts
+  calculateOpenAICompletionCostInMillicents, // OpenAICompletionModel.ts
+  calculateOpenAIEmbeddingCostInMillicents, // OpenAITextEmbeddingModel.ts
+  calculateOpenAIImageGenerationCostInMillicents, // OpenAIImageGenerationModel.ts
+  calculateOpenAISpeechCostInMillicents, // OpenAISpeechModel.ts
+  calculateOpenAITranscriptionCostInMillicents, // OpenAITranscriptionModel.ts
+  isOpenAIChatModel, // OpenAIChatModel.ts
+  isOpenAICompletionModel, // OpenAICompletionModel.ts
+  isOpenAIEmbeddingModel, // OpenAITextEmbeddingModel.ts
 } from "modelfusion";
-import { CostCalculator } from "../../cost/CostCalculator.js";
+import { CostCalculator } from "../CostCalculator";
 import { SuccessfulModelCall } from "../SuccessfulModelCall.js";
 
 export class OpenAICostCalculator implements CostCalculator {

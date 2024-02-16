@@ -4,6 +4,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@modelfusion/cost-calculator": "workspace:*",
     "@modelfusion/google-custom-search-tool": "0.10.0",
     "@modelfusion/mathjs-tool": "0.1.1",
     "@modelfusion/pinecone": "0.4.0",

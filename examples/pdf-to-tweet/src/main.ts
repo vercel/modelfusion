@@ -5,7 +5,7 @@ import {
   OpenAICostCalculator,
   calculateCost,
   extractSuccessfulModelCalls,
-} from "modelfusion-experimental";
+} from "@modelfusion/cost-calculator";
 import { createTweetFromPdf } from "./createTweetFromPdf";
 
 dotenv.config();

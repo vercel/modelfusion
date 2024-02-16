@@ -121,6 +121,9 @@ importers:
 
   examples/basic:
     dependencies:
+      '@modelfusion/cost-calculator':
+        specifier: workspace:*
+        version: link:../../packages/@modelfusion-cost-calculator/dist
       '@modelfusion/google-custom-search-tool':
         specifier: 0.10.0
         version: link:../../tools/google-custom-search-tool/dist
@@ -352,6 +355,9 @@ importers:
 
   examples/pdf-to-tweet:
     dependencies:
+      '@modelfusion/cost-calculator':
+        specifier: workspace:*
+        version: link:../../packages/@modelfusion-cost-calculator/dist
       commander:
         specifier: 10.0.1
         version: 10.0.1
@@ -499,6 +505,28 @@ importers:
       '@types/node':
         specifier: 20.2.3
         version: 20.2.3
+
+  packages/@modelfusion-cost-calculator:
+    devDependencies:
+      '@types/node':
+        specifier: 18.11.9
+        version: 18.11.9
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.1.0
+        version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^6.1.0
+        version: 6.15.0(eslint@8.56.0)(typescript@5.3.3)
+      eslint:
+        specifier: ^8.45.0
+        version: 8.56.0
+      eslint-config-prettier:
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
+      modelfusion:
+        specifier: 0.136.0
+        version: link:../modelfusion/dist
+    publishDirectory: dist
 
   packages/@modelfusion-pinecone:
     devDependencies:
