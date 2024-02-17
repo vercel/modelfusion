@@ -15,8 +15,7 @@ import { DefaultRun, generateText, openai } from "modelfusion";
 import {
   OpenAICostCalculator,
   calculateCost,
-  extractSuccessfulModelCalls,
-} from "modelfusion-experimental";
+} from "@modelfusion/cost-calculation";
 
 const run = new DefaultRun();
 
@@ -32,7 +31,7 @@ const text = await generateText({
 
 // calculate the overall cost of the run for the successful calls:
 const cost = await calculateCost({
-  calls: extractSuccessfulModelCalls(run.events),
+  calls: run.getSuccessfulModelCalls(),
   costCalculators: [new OpenAICostCalculator()],
 });
 

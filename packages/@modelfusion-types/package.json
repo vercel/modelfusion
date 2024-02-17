@@ -1,14 +1,11 @@
 {
-  "name": "modelfusion-experimental",
-  "description": "Experimental ModelFusion features",
-  "version": "0.7.0",
+  "name": "@modelfusion/types",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
+    "openai",
     "modelfusion",
-    "ai",
-    "llm",
-    "multimodal"
+    "typescript"
   ],
   "homepage": "https://modelfusion.dev/",
   "repository": {
@@ -35,20 +32,7 @@
     ".": {
       "types": "./index.d.ts",
       "import": "./index.js",
-      "module": "./index.js",
       "require": "./index.cjs"
-    },
-    "./browser": {
-      "types": "./browser/index.d.ts",
-      "import": "./browser/index.js",
-      "module": "./browser/index.js",
-      "require": "./browser/index.cjs"
-    },
-    "./fastify-server": {
-      "types": "./fastify-server/index.d.ts",
-      "import": "./fastify-server/index.js",
-      "module": "./fastify-server/index.js",
-      "require": "./fastify-server/index.cjs"
     }
   },
   "scripts": {
@@ -56,24 +40,18 @@
     "clean": "rimraf build dist .turbo node_modules",
     "clean:build": "rimraf build dist",
     "build": "tsup --dts && pnpm build:copy-files",
-    "build:copy-files": "copyfiles --flat package.json ./README.md ../../LICENSE ./CHANGELOG.md dist",
+    "build:copy-files": "copyfiles --flat package.json README.md ../../LICENSE dist",
     "build:dtsMap": "tsc --emitDeclarationOnly --declaration --declarationMap",
     "dev": "tsup --watch src --onSuccess \"pnpm build:dtsMap\"",
     "dist": "pnpm clean:build && pnpm lint && pnpm build"
   },
-  "peerDependencies": {
-    "modelfusion": ">=workspace:*"
-  },
-  "dependencies": {
-    "zod": "3.22.4"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
-    "fastify": "^4.0.0",
-    "modelfusion": "workspace:*"
+    "zod": "3.22.4"
   }
 }

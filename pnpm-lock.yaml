@@ -139,6 +139,9 @@ importers:
       '@modelfusion/sqlite-vss':
         specifier: 0.4.0
         version: link:../../packages/@modelfusion-sqlite-vss/dist
+      '@modelfusion/types':
+        specifier: workspace:*
+        version: link:../../packages/@modelfusion-types/dist
       '@pinecone-database/pinecone':
         specifier: 0.1.6
         version: 0.1.6
@@ -507,6 +510,10 @@ importers:
         version: 20.2.3
 
   packages/@modelfusion-cost-calculator:
+    dependencies:
+      '@modelfusion/types':
+        specifier: workspace:*
+        version: link:../@modelfusion-types/dist
     devDependencies:
       '@types/node':
         specifier: 18.11.9
@@ -584,6 +591,28 @@ importers:
         version: 0.1.2
     publishDirectory: dist
 
+  packages/@modelfusion-types:
+    devDependencies:
+      '@types/node':
+        specifier: 18.11.9
+        version: 18.11.9
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.1.0
+        version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^6.1.0
+        version: 6.15.0(eslint@8.56.0)(typescript@5.3.3)
+      eslint:
+        specifier: ^8.45.0
+        version: 8.56.0
+      eslint-config-prettier:
+        specifier: 9.1.0
+        version: 9.1.0(eslint@8.56.0)
+      zod:
+        specifier: 3.22.4
+        version: 3.22.4
+    publishDirectory: dist
+
   packages/@modelfusion-vercel-ai:
     devDependencies:
       '@types/better-sqlite3':
@@ -614,6 +643,9 @@ importers:
 
   packages/modelfusion:
     dependencies:
+      '@modelfusion/types':
+        specifier: workspace:*
+        version: link:../@modelfusion-types/dist
       eventsource-parser:
         specifier: 1.1.1
         version: 1.1.1
@@ -693,7 +725,7 @@ importers:
         specifier: ^4.0.0
         version: 4.25.1
       modelfusion:
-        specifier: 0.136.0
+        specifier: workspace:*
         version: link:../modelfusion/dist
     publishDirectory: dist
 

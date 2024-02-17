@@ -1,4 +1,8 @@
 import { z } from "zod";
+import {
+  openAITranscriptionVerboseJsonSchema,
+  OpenAITranscriptionModelType,
+} from "@modelfusion/types";
 import { FunctionCallOptions } from "../../core/FunctionOptions";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
@@ -21,37 +25,6 @@ import {
 } from "../../util/format/DataContent";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration";
 import { failedOpenAICallResponseHandler } from "./OpenAIError";
-
-/**
- * @see https://openai.com/pricing
- */
-export const OPENAI_TRANSCRIPTION_MODELS = {
-  "whisper-1": {
-    costInMillicentsPerSecond: 10, // = 600 / 60,
-  },
-};
-
-export type OpenAITranscriptionModelType =
-  keyof typeof OPENAI_TRANSCRIPTION_MODELS;
-
-export const calculateOpenAITranscriptionCostInMillicents = ({
-  model,
-  response,
-}: {
-  model: OpenAITranscriptionModelType;
-  response: OpenAITranscriptionVerboseJsonResponse;
-}): number | null => {
-  if (model !== "whisper-1") {
-    return null;
-  }
-
-  const durationInSeconds = response.duration;
-
-  return (
-    Math.ceil(durationInSeconds) *
-    OPENAI_TRANSCRIPTION_MODELS[model].costInMillicentsPerSecond
-  );
-};
 
 export interface OpenAITranscriptionModelSettings
   extends TranscriptionModelSettings {
@@ -223,31 +196,31 @@ export type OpenAITranscriptionJsonResponse = z.infer<
   typeof openAITranscriptionJsonSchema
 >;
 
-const openAITranscriptionVerboseJsonSchema = z.object({
-  task: z.literal("transcribe"),
-  language: z.string(),
-  duration: z.number(),
-  segments: z.array(
-    z.object({
-      id: z.number(),
-      seek: z.number(),
-      start: z.number(),
-      end: z.number(),
-      text: z.string(),
-      tokens: z.array(z.number()),
-      temperature: z.number(),
-      avg_logprob: z.number(),
-      compression_ratio: z.number(),
-      no_speech_prob: z.number(),
-      transient: z.boolean().optional(),
-    })
-  ),
-  text: z.string(),
-});
+// const openAITranscriptionVerboseJsonSchema = z.object({
+//   task: z.literal("transcribe"),
+//   language: z.string(),
+//   duration: z.number(),
+//   segments: z.array(
+//     z.object({
+//       id: z.number(),
+//       seek: z.number(),
+//       start: z.number(),
+//       end: z.number(),
+//       text: z.string(),
+//       tokens: z.array(z.number()),
+//       temperature: z.number(),
+//       avg_logprob: z.number(),
+//       compression_ratio: z.number(),
+//       no_speech_prob: z.number(),
+//       transient: z.boolean().optional(),
+//     })
+//   ),
+//   text: z.string(),
+// });
 
-export type OpenAITranscriptionVerboseJsonResponse = z.infer<
-  typeof openAITranscriptionVerboseJsonSchema
->;
+// export type OpenAITranscriptionVerboseJsonResponse = z.infer<
+//   typeof openAITranscriptionVerboseJsonSchema
+// >;
 
 export type OpenAITranscriptionResponseFormatType<T> = {
   type: "json" | "text" | "srt" | "verbose_json" | "vtt";

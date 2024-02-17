@@ -41,11 +41,15 @@
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist .turbo node_modules",
     "clean:build": "rimraf build dist",
-    "build": "tsup && pnpm build:copy-files",
+    "build": "tsup --dts && pnpm build:copy-files",
     "build:copy-files": "copyfiles --flat package.json README.md ../../LICENSE dist",
+    "build:dtsMap": "tsc --emitDeclarationOnly --declaration --declarationMap",
+    "dev": "tsup --watch src --onSuccess \"pnpm build:dtsMap\"",
     "dist": "pnpm clean:build && pnpm lint && pnpm build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@modelfusion/types": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "^6.1.0",

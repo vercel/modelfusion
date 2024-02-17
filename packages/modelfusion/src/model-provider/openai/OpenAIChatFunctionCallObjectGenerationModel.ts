@@ -1,4 +1,6 @@
 import SecureJSON from "secure-json-parse";
+import { OpenAIChatChunk } from "@modelfusion/types";
+
 import { FunctionCallOptions } from "../../core/FunctionOptions";
 import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
 import { Schema } from "../../core/schema/Schema";
@@ -7,7 +9,6 @@ import { ObjectParseError } from "../../model-function/generate-object/ObjectPar
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
 import { parsePartialJson } from "../../util/parsePartialJson";
 import {
-  OpenAIChatChunk,
   OpenAIChatPrompt,
   OpenAIChatResponseFormat,
 } from "./AbstractOpenAIChatModel";

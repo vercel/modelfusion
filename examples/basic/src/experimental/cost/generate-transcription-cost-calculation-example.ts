@@ -3,7 +3,6 @@ import { DefaultRun, generateTranscription, openai } from "modelfusion";
 import {
   OpenAICostCalculator,
   calculateCost,
-  extractSuccessfulModelCalls,
 } from "@modelfusion/cost-calculator";
 import fs from "node:fs";
 import path from "node:path";
@@ -27,7 +26,7 @@ async function main() {
   console.log(transcription);
 
   const cost = await calculateCost({
-    calls: extractSuccessfulModelCalls(run.events),
+    calls: run.getSuccessfulModelCalls(),
     costCalculators: [new OpenAICostCalculator()],
   });
 

@@ -5,6 +5,8 @@ import { FunctionEventSource } from "./FunctionEventSource";
 import { FunctionObserver } from "./FunctionObserver";
 import { Run } from "./Run";
 
+import { ModelCallFinishedEvent } from "../model-function/ModelCallEvent";
+
 export class DefaultRun implements Run {
   readonly runId: string;
   readonly sessionId?: string;
@@ -52,4 +54,16 @@ export class DefaultRun implements Run {
       this.functionEventSource.notify(event);
     },
   };
+
+  getSuccessfulModelCalls() {
+    return this.events.filter(
+      (
+        event
+      ): event is ModelCallFinishedEvent & { result: { status: "success" } } =>
+        "model" in event &&
+        "result" in event &&
+        "status" in event.result &&
+        event.result.status === "success"
+    );
+  }
 }

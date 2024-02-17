@@ -1,24 +1,28 @@
 import {
-  OpenAIChatResponse, // AbstractOpenAIChatModel.ts
-  OpenAICompletionResponse, // AbstractOpenAICompletionModel.ts
-  OpenAIImageGenerationSettings, // OpenAIImageGenerationModel.ts
-  OpenAIImageModelType, // OpenAIImageGenerationModel.ts
-  OpenAISpeechModelType, // OpenAISpeechModel.ts
-  OpenAITextEmbeddingResponse, // AbstractOpenAITextEmbeddingModel.ts
-  OpenAITranscriptionModelType, // OpenAITranscriptionModel.ts
-  OpenAITranscriptionVerboseJsonResponse, // OpenAITranscriptionModel.ts
-  calculateOpenAIChatCostInMillicents, // OpenAIChatModel.ts
-  calculateOpenAICompletionCostInMillicents, // OpenAICompletionModel.ts
-  calculateOpenAIEmbeddingCostInMillicents, // OpenAITextEmbeddingModel.ts
-  calculateOpenAIImageGenerationCostInMillicents, // OpenAIImageGenerationModel.ts
-  calculateOpenAISpeechCostInMillicents, // OpenAISpeechModel.ts
-  calculateOpenAITranscriptionCostInMillicents, // OpenAITranscriptionModel.ts
-  isOpenAIChatModel, // OpenAIChatModel.ts
-  isOpenAICompletionModel, // OpenAICompletionModel.ts
-  isOpenAIEmbeddingModel, // OpenAITextEmbeddingModel.ts
-} from "modelfusion";
+  OpenAIChatResponse,
+  OpenAICompletionResponse,
+  OpenAITextEmbeddingResponse,
+  OpenAIImageModelType,
+  OpenAISpeechModelType,
+  OpenAIImageGenerationCallSettings,
+  OpenAITranscriptionModelType,
+  OpenAITranscriptionVerboseJsonResponse,
+  isOpenAIChatModel,
+  isOpenAICompletionModel,
+  isOpenAIEmbeddingModel,
+} from "@modelfusion/types";
+
+import {
+  calculateOpenAIChatCostInMillicents,
+  calculateOpenAICompletionCostInMillicents,
+  calculateOpenAIEmbeddingCostInMillicents,
+  calculateOpenAIImageGenerationCostInMillicents,
+  calculateOpenAISpeechCostInMillicents,
+  calculateOpenAITranscriptionCostInMillicents,
+} from "./calculators";
+
 import { CostCalculator } from "../CostCalculator";
-import { SuccessfulModelCall } from "../SuccessfulModelCall.js";
+import { SuccessfulModelCall } from "../SuccessfulModelCall";
 
 export class OpenAICostCalculator implements CostCalculator {
   readonly provider = "openai";
@@ -37,7 +41,7 @@ export class OpenAICostCalculator implements CostCalculator {
 
         return calculateOpenAIImageGenerationCostInMillicents({
           model: model as OpenAIImageModelType,
-          settings: call.settings as OpenAIImageGenerationSettings,
+          settings: call.settings as OpenAIImageGenerationCallSettings,
         });
       }
 
@@ -100,7 +104,7 @@ export class OpenAICostCalculator implements CostCalculator {
         }
         return calculateOpenAISpeechCostInMillicents({
           model: model as OpenAISpeechModelType,
-          input: call.input,
+          input: call.input as string,
         });
       }
     }
