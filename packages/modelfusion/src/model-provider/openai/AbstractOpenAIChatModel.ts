@@ -3,8 +3,7 @@ import {
   openaiChatChunkSchema,
   OpenAIChatResponse,
   OpenAIChatChunk,
-} from "@modelfusion/types";
-
+} from "./OpenAIChatModel";
 import { FunctionCallOptions } from "../../core/FunctionOptions";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";

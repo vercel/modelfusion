@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { OpenAIImageGenerationCallSettings } from "@modelfusion/types";
 import { FunctionCallOptions } from "../../core/FunctionOptions";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
@@ -18,6 +17,13 @@ import {
 import { PromptTemplateImageGenerationModel } from "../../model-function/generate-image/PromptTemplateImageGenerationModel";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration";
 import { failedOpenAICallResponseHandler } from "./OpenAIError";
+
+export interface OpenAIImageGenerationCallSettings {
+  model: "dall-e-2" | "dall-e-3";
+  size?: "256x256" | "512x512" | "1024x1024" | "1792x1024" | "1024x1792";
+  quality?: "standard" | "hd";
+  style?: "vivid" | "natural";
+}
 
 export interface OpenAIImageGenerationSettings
   extends ImageGenerationModelSettings,

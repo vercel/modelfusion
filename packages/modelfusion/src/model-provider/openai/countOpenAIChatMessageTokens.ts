@@ -4,7 +4,7 @@ import { OpenAIChatMessage } from "./OpenAIChatMessage";
 import {
   OpenAIChatModelType,
   getOpenAIChatModelInformation,
-} from "@modelfusion/types";
+} from "./OpenAIChatModel";
 
 /**
  * Prompt tokens that are included automatically for every full

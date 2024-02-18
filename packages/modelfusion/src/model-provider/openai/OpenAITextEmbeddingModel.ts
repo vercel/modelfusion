@@ -1,7 +1,4 @@
-import {
-  OPENAI_TEXT_EMBEDDING_MODELS,
-  OpenAITextEmbeddingModelType,
-} from "@modelfusion/types";
+import z from "zod";
 import { EmbeddingModel } from "../../model-function/embed/EmbeddingModel";
 import { countTokens } from "../../model-function/tokenize-text/countTokens";
 import {
@@ -10,10 +7,51 @@ import {
 } from "./AbstractOpenAITextEmbeddingModel";
 import { TikTokenTokenizer } from "./TikTokenTokenizer";
 
+export const OPENAI_TEXT_EMBEDDING_MODELS = {
+  "text-embedding-3-small": {
+    contextWindowSize: 8192,
+    dimensions: 1536,
+  },
+  "text-embedding-3-large": {
+    contextWindowSize: 8192,
+    dimensions: 3072,
+  },
+
+  "text-embedding-ada-002": {
+    contextWindowSize: 8192,
+    dimensions: 1536,
+  },
+};
+
+export type OpenAITextEmbeddingModelType =
+  keyof typeof OPENAI_TEXT_EMBEDDING_MODELS;
+
 export interface OpenAITextEmbeddingModelSettings
   extends AbstractOpenAITextEmbeddingModelSettings {
   model: OpenAITextEmbeddingModelType;
 }
+
+export const openAITextEmbeddingResponseSchema = z.object({
+  object: z.literal("list"),
+  data: z.array(
+    z.object({
+      object: z.literal("embedding"),
+      embedding: z.array(z.number()),
+      index: z.number(),
+    })
+  ),
+  model: z.string(),
+  usage: z
+    .object({
+      prompt_tokens: z.number(),
+      total_tokens: z.number(),
+    })
+    .optional(), // for openai-compatible models
+});
+
+export type OpenAITextEmbeddingResponse = z.infer<
+  typeof openAITextEmbeddingResponseSchema
+>;
 
 /**
  * Create a text embedding model that calls the OpenAI embedding API.

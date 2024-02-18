@@ -1,8 +1,4 @@
 import { z } from "zod";
-import {
-  openAITranscriptionVerboseJsonSchema,
-  OpenAITranscriptionModelType,
-} from "@modelfusion/types";
 import { FunctionCallOptions } from "../../core/FunctionOptions";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
@@ -25,6 +21,8 @@ import {
 } from "../../util/format/DataContent";
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration";
 import { failedOpenAICallResponseHandler } from "./OpenAIError";
+
+type OpenAITranscriptionModelType = "whisper-1";
 
 export interface OpenAITranscriptionModelSettings
   extends TranscriptionModelSettings {
@@ -196,31 +194,31 @@ export type OpenAITranscriptionJsonResponse = z.infer<
   typeof openAITranscriptionJsonSchema
 >;
 
-// const openAITranscriptionVerboseJsonSchema = z.object({
-//   task: z.literal("transcribe"),
-//   language: z.string(),
-//   duration: z.number(),
-//   segments: z.array(
-//     z.object({
-//       id: z.number(),
-//       seek: z.number(),
-//       start: z.number(),
-//       end: z.number(),
-//       text: z.string(),
-//       tokens: z.array(z.number()),
-//       temperature: z.number(),
-//       avg_logprob: z.number(),
-//       compression_ratio: z.number(),
-//       no_speech_prob: z.number(),
-//       transient: z.boolean().optional(),
-//     })
-//   ),
-//   text: z.string(),
-// });
+const openAITranscriptionVerboseJsonSchema = z.object({
+  task: z.literal("transcribe"),
+  language: z.string(),
+  duration: z.number(),
+  segments: z.array(
+    z.object({
+      id: z.number(),
+      seek: z.number(),
+      start: z.number(),
+      end: z.number(),
+      text: z.string(),
+      tokens: z.array(z.number()),
+      temperature: z.number(),
+      avg_logprob: z.number(),
+      compression_ratio: z.number(),
+      no_speech_prob: z.number(),
+      transient: z.boolean().optional(),
+    })
+  ),
+  text: z.string(),
+});
 
-// export type OpenAITranscriptionVerboseJsonResponse = z.infer<
-//   typeof openAITranscriptionVerboseJsonSchema
-// >;
+export type OpenAITranscriptionVerboseJsonResponse = z.infer<
+  typeof openAITranscriptionVerboseJsonSchema
+>;
 
 export type OpenAITranscriptionResponseFormatType<T> = {
   type: "json" | "text" | "srt" | "verbose_json" | "vtt";

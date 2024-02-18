@@ -1,5 +1,4 @@
 import SecureJSON from "secure-json-parse";
-import { OpenAIChatChunk } from "@modelfusion/types";
 
 import { FunctionCallOptions } from "../../core/FunctionOptions";
 import { JsonSchemaProducer } from "../../core/schema/JsonSchemaProducer";
@@ -12,7 +11,11 @@ import {
   OpenAIChatPrompt,
   OpenAIChatResponseFormat,
 } from "./AbstractOpenAIChatModel";
-import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel";
+import {
+  OpenAIChatModel,
+  OpenAIChatChunk,
+  OpenAIChatSettings,
+} from "./OpenAIChatModel";
 import { chat, instruction, text } from "./OpenAIChatPromptTemplate";
 
 export class OpenAIChatFunctionCallObjectGenerationModel<

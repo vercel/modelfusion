@@ -71,7 +71,6 @@
     "dist": "pnpm clean:build && pnpm lint && pnpm test && pnpm build "
   },
   "dependencies": {
-    "@modelfusion/types": "workspace:*",
     "eventsource-parser": "1.1.1",
     "js-tiktoken": "1.0.7",
     "nanoid": "3.3.6",

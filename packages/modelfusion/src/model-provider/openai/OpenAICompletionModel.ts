@@ -1,7 +1,3 @@
-import {
-  getOpenAICompletionModelInformation,
-  OpenAICompletionModelType,
-} from "@modelfusion/types";
 import { PromptTemplateTextStreamingModel } from "../../model-function/generate-text/PromptTemplateTextStreamingModel";
 import {
   TextStreamingBaseModel,
@@ -20,9 +16,26 @@ import {
 } from "./AbstractOpenAICompletionModel";
 import { TikTokenTokenizer } from "./TikTokenTokenizer";
 
+export const OPENAI_TEXT_GENERATION_MODELS = {
+  "gpt-3.5-turbo-instruct": {
+    contextWindowSize: 4097,
+  },
+};
+
+export type OpenAICompletionModelType =
+  keyof typeof OPENAI_TEXT_GENERATION_MODELS;
+
 export interface OpenAICompletionModelSettings
   extends AbstractOpenAICompletionModelSettings {
   model: OpenAICompletionModelType;
+}
+
+export function getOpenAICompletionModelInformation(
+  model: OpenAICompletionModelType
+): {
+  contextWindowSize: number;
+} {
+  return OPENAI_TEXT_GENERATION_MODELS[model];
 }
 
 /**
@@ -50,9 +63,7 @@ export class OpenAICompletionModel
   constructor(settings: OpenAICompletionModelSettings) {
     super(settings);
 
-    const modelInformation = getOpenAICompletionModelInformation(
-      this.settings.model
-    );
+    const modelInformation = OPENAI_TEXT_GENERATION_MODELS[this.settings.model];
 
     this.tokenizer = new TikTokenTokenizer({
       model: this.settings.model,

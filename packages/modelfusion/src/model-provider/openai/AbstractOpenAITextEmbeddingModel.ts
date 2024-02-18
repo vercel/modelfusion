@@ -1,7 +1,7 @@
 import {
   openAITextEmbeddingResponseSchema,
   OpenAITextEmbeddingResponse,
-} from "@modelfusion/types";
+} from "./OpenAITextEmbeddingModel";
 import { FunctionCallOptions } from "../../core/FunctionOptions";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";

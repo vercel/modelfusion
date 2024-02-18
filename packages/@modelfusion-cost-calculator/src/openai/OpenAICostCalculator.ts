@@ -1,24 +1,21 @@
 import {
-  OpenAIChatResponse,
-  OpenAICompletionResponse,
-  OpenAITextEmbeddingResponse,
-  OpenAIImageModelType,
-  OpenAISpeechModelType,
-  OpenAIImageGenerationCallSettings,
-  OpenAITranscriptionModelType,
-  OpenAITranscriptionVerboseJsonResponse,
-  isOpenAIChatModel,
-  isOpenAICompletionModel,
-  isOpenAIEmbeddingModel,
-} from "@modelfusion/types";
-
-import {
   calculateOpenAIChatCostInMillicents,
   calculateOpenAICompletionCostInMillicents,
   calculateOpenAIEmbeddingCostInMillicents,
   calculateOpenAIImageGenerationCostInMillicents,
   calculateOpenAISpeechCostInMillicents,
   calculateOpenAITranscriptionCostInMillicents,
+  isOpenAIEmbeddingModel,
+  TextEmbeddingResponse,
+  OpenAISpeechModelType,
+  TranscriptionResponse,
+  OpenAITranscriptionModelType,
+  OpenAIImageModelType,
+  OpenAIImageGenerationCallSettings,
+  OpenAICompletionResponse,
+  isOpenAICompletionModel,
+  OpenAIChatResponse,
+  isOpenAIChatModel,
 } from "./calculators";
 
 import { CostCalculator } from "../CostCalculator";
@@ -30,33 +27,34 @@ export class OpenAICostCalculator implements CostCalculator {
   async calculateCostInMillicents(
     call: SuccessfulModelCall
   ): Promise<number | null> {
-    const type = call.functionType;
-    const model = call.model.modelName;
+    const { model, functionType, result } = call;
+    const { modelName } = model;
+    const { rawResponse } = result;
 
-    switch (type) {
+    switch (functionType) {
       case "generate-image": {
-        if (model == null) {
+        if (modelName == null) {
           return null;
         }
 
         return calculateOpenAIImageGenerationCostInMillicents({
-          model: model as OpenAIImageModelType,
+          model: modelName as OpenAIImageModelType,
           settings: call.settings as OpenAIImageGenerationCallSettings,
         });
       }
 
       case "embed": {
-        if (model == null) {
+        if (modelName == null) {
           return null;
         }
 
-        if (isOpenAIEmbeddingModel(model)) {
+        if (isOpenAIEmbeddingModel(modelName)) {
           const responses = Array.isArray(call.result.rawResponse)
-            ? (call.result.rawResponse as OpenAITextEmbeddingResponse[])
-            : [call.result.rawResponse as OpenAITextEmbeddingResponse];
+            ? (rawResponse as TextEmbeddingResponse[])
+            : [rawResponse as TextEmbeddingResponse];
 
           return calculateOpenAIEmbeddingCostInMillicents({
-            model,
+            model: modelName,
             responses,
           });
         }
@@ -65,21 +63,21 @@ export class OpenAICostCalculator implements CostCalculator {
 
       case "generate-object":
       case "generate-text": {
-        if (model == null) {
+        if (modelName == null) {
           return null;
         }
 
-        if (isOpenAIChatModel(model)) {
+        if (isOpenAIChatModel(modelName)) {
           return calculateOpenAIChatCostInMillicents({
-            model,
-            response: call.result.rawResponse as OpenAIChatResponse,
+            model: modelName,
+            response: rawResponse as OpenAIChatResponse,
           });
         }
 
-        if (isOpenAICompletionModel(model)) {
+        if (isOpenAICompletionModel(modelName)) {
           return calculateOpenAICompletionCostInMillicents({
-            model,
-            response: call.result.rawResponse as OpenAICompletionResponse,
+            model: modelName,
+            response: rawResponse as OpenAICompletionResponse,
           });
         }
 
@@ -87,23 +85,22 @@ export class OpenAICostCalculator implements CostCalculator {
       }
 
       case "generate-transcription": {
-        if (model == null) {
+        if (modelName == null) {
           return null;
         }
 
         return calculateOpenAITranscriptionCostInMillicents({
-          model: model as OpenAITranscriptionModelType,
-          response: call.result
-            .rawResponse as OpenAITranscriptionVerboseJsonResponse,
+          model: modelName as OpenAITranscriptionModelType,
+          response: call.result.rawResponse as TranscriptionResponse,
         });
       }
 
       case "generate-speech": {
-        if (model == null) {
+        if (modelName == null) {
           return null;
         }
         return calculateOpenAISpeechCostInMillicents({
-          model: model as OpenAISpeechModelType,
+          model: modelName as OpenAISpeechModelType,
           input: call.input as string,
         });
       }

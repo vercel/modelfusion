@@ -1,4 +1,3 @@
-import { OpenAISpeechModelType } from "@modelfusion/types";
 import { FunctionCallOptions } from "../../core/FunctionOptions";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
@@ -22,6 +21,8 @@ export type OpenAISpeechVoice =
   | "nova"
   | "shimmer";
 type OpenAISpeechModelResponseFormat = "mp3" | "opus" | "aac" | "flac";
+
+export type OpenAISpeechModelType = "tts-1" | "tts-1-hd";
 
 export interface OpenAISpeechModelSettings
   extends SpeechGenerationModelSettings {
