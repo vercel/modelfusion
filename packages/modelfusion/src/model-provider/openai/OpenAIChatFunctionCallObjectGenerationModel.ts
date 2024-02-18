@@ -8,14 +8,11 @@ import { ObjectParseError } from "../../model-function/generate-object/ObjectPar
 import { TextGenerationPromptTemplate } from "../../model-function/generate-text/TextGenerationPromptTemplate";
 import { parsePartialJson } from "../../util/parsePartialJson";
 import {
+  OpenAIChatChunk,
   OpenAIChatPrompt,
   OpenAIChatResponseFormat,
 } from "./AbstractOpenAIChatModel";
-import {
-  OpenAIChatModel,
-  OpenAIChatChunk,
-  OpenAIChatSettings,
-} from "./OpenAIChatModel";
+import { OpenAIChatModel, OpenAIChatSettings } from "./OpenAIChatModel";
 import { chat, instruction, text } from "./OpenAIChatPromptTemplate";
 
 export class OpenAIChatFunctionCallObjectGenerationModel<

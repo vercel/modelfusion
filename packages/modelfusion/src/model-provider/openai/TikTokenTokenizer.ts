@@ -6,13 +6,11 @@ import { OpenAIChatBaseModelType } from "./OpenAIChatModel";
 import { OpenAICompletionModelType } from "./OpenAICompletionModel";
 import { OpenAITextEmbeddingModelType } from "./OpenAITextEmbeddingModel";
 
-type TextModelType =
-  | OpenAIChatBaseModelType
-  | OpenAICompletionModelType
-  | OpenAITextEmbeddingModelType;
-
 export type TikTokenTokenizerSettings = {
-  model: TextModelType;
+  model:
+    | OpenAIChatBaseModelType
+    | OpenAICompletionModelType
+    | OpenAITextEmbeddingModelType;
 };
 
 /**
@@ -60,7 +58,12 @@ export class TikTokenTokenizer implements FullTokenizer {
 
 // implemented here (instead of using js-tiktoken) to be able to quickly updated it
 // when new models are released
-function getTiktokenBPE(model: TextModelType) {
+function getTiktokenBPE(
+  model:
+    | OpenAIChatBaseModelType
+    | OpenAICompletionModelType
+    | OpenAITextEmbeddingModelType
+) {
   switch (model) {
     case "gpt-3.5-turbo":
     case "gpt-3.5-turbo-0301":

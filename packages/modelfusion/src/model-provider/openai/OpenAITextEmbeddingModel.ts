@@ -49,10 +49,6 @@ export const openAITextEmbeddingResponseSchema = z.object({
     .optional(), // for openai-compatible models
 });
 
-export type OpenAITextEmbeddingResponse = z.infer<
-  typeof openAITextEmbeddingResponseSchema
->;
-
 /**
  * Create a text embedding model that calls the OpenAI embedding API.
  *

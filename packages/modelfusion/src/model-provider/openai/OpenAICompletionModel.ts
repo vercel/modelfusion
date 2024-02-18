@@ -16,19 +16,15 @@ import {
 } from "./AbstractOpenAICompletionModel";
 import { TikTokenTokenizer } from "./TikTokenTokenizer";
 
+/**
+ * @see https://platform.openai.com/docs/models/
+ * @see https://openai.com/pricing
+ */
 export const OPENAI_TEXT_GENERATION_MODELS = {
   "gpt-3.5-turbo-instruct": {
     contextWindowSize: 4097,
   },
 };
-
-export type OpenAICompletionModelType =
-  keyof typeof OPENAI_TEXT_GENERATION_MODELS;
-
-export interface OpenAICompletionModelSettings
-  extends AbstractOpenAICompletionModelSettings {
-  model: OpenAICompletionModelType;
-}
 
 export function getOpenAICompletionModelInformation(
   model: OpenAICompletionModelType
@@ -36,6 +32,14 @@ export function getOpenAICompletionModelInformation(
   contextWindowSize: number;
 } {
   return OPENAI_TEXT_GENERATION_MODELS[model];
+}
+
+export type OpenAICompletionModelType =
+  keyof typeof OPENAI_TEXT_GENERATION_MODELS;
+
+export interface OpenAICompletionModelSettings
+  extends AbstractOpenAICompletionModelSettings {
+  model: OpenAICompletionModelType;
 }
 
 /**
@@ -63,7 +67,9 @@ export class OpenAICompletionModel
   constructor(settings: OpenAICompletionModelSettings) {
     super(settings);
 
-    const modelInformation = OPENAI_TEXT_GENERATION_MODELS[this.settings.model];
+    const modelInformation = getOpenAICompletionModelInformation(
+      this.settings.model
+    );
 
     this.tokenizer = new TikTokenTokenizer({
       model: this.settings.model,

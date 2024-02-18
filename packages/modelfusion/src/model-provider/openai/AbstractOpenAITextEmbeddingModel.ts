@@ -1,7 +1,4 @@
-import {
-  openAITextEmbeddingResponseSchema,
-  OpenAITextEmbeddingResponse,
-} from "./OpenAITextEmbeddingModel";
+import { z } from "zod";
 import { FunctionCallOptions } from "../../core/FunctionOptions";
 import { ApiConfiguration } from "../../core/api/ApiConfiguration";
 import { callWithRetryAndThrottle } from "../../core/api/callWithRetryAndThrottle";
@@ -95,3 +92,25 @@ export abstract class AbstractOpenAITextEmbeddingModel<
     };
   }
 }
+
+const openAITextEmbeddingResponseSchema = z.object({
+  object: z.literal("list"),
+  data: z.array(
+    z.object({
+      object: z.literal("embedding"),
+      embedding: z.array(z.number()),
+      index: z.number(),
+    })
+  ),
+  model: z.string(),
+  usage: z
+    .object({
+      prompt_tokens: z.number(),
+      total_tokens: z.number(),
+    })
+    .optional(), // for openai-compatible models
+});
+
+export type OpenAITextEmbeddingResponse = z.infer<
+  typeof openAITextEmbeddingResponseSchema
+>;
