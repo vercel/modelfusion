@@ -12,16 +12,17 @@ TypeScript implementation of the classic [BabyAGI](https://github.com/yoheinakaj
 
 1. Create .env file with the following content:
 
-   ```
-   OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
-   ```
+```sh
+OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
+```
 
-2. Run the following commands:
+2. Run the following commands from the root directory of the modelfusion repo:
 
-   ```sh
-   pnpm install
-   pnpm tsx src/BabyAGI.ts --objective "Solve world hunger."
-   ```
+```sh
+pnpm install
+pnpm build
+pnpm tsx examples/babyagi-agent/src/BabyAGI.ts --objective "Solve world hunger."
+```
 
 ## BabyBeeAGI
 
@@ -31,14 +32,15 @@ TypeScript implementation of [BabyBeeAGI](https://github.com/yoheinakajima/babya
 
 1. Create .env file with the following content:
 
-   ```
-   OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
-   SERPAPI_API_KEY="YOUR_SERPAPI_API_KEY"
-   ```
+```sh
+OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
+SERPAPI_API_KEY="YOUR_SERPAPI_API_KEY"
+```
 
-2. Run the following commands:
+2. Run the following commands from the root directory of the modelfusion repo:
 
-   ```sh
-   pnpm install
-   pnpm tsx src/BabyBeeAGI.ts --objective "Research and write a short text about the BabyAGI project"
-   ```
+```sh
+pnpm install
+pnpm build
+pnpm tsx examples/babyagi-agent/src/BabyBeeAGI.ts --objective "Research and write a short text about the BabyAGI project"
+```

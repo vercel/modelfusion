@@ -10,8 +10,8 @@
   "private": true,
   "dependencies": {
     "@modelfusion/cost-calculator": "workspace:*",
-    "modelfusion": "0.136.0",
-    "modelfusion-experimental": "0.7.0",
+    "modelfusion": "workspace:*",
+    "modelfusion-experimental": "workspace:*",
     "commander": "10.0.1",
     "dotenv": "16.3.1",
     "pdfjs-dist": "3.6.172",

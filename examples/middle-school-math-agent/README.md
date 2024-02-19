@@ -14,14 +14,10 @@ Note: GPT-4 can solve these problems without a calculator. This example is just 
 OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 ```
 
-2. Setup:
+2. Run the following commands from the root directory of the modelfusion repo:
 
 ```sh
 pnpm install
-```
-
-3. Run:
-
-```sh
-pnpm tsx src/MiddleSchoolMathAgent.ts
+pnpm build
+pnpm tsx examples/middle-school-math-agent/src/MiddleSchoolMathAgent.ts
 ```
