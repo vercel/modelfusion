@@ -61,7 +61,7 @@
     "clean": "rimraf build dist .turbo node_modules",
     "clean:build": "rimraf build dist",
     "build": "tsup --dts && pnpm build:copy-files",
-    "build:copy-files": "copyfiles --flat package.json ./README.md ../../LICENSE ./CHANGELOG.md dist",
+    "build:copy-files": "copyfiles --flat package.json ../../README.md ../../LICENSE ../../CHANGELOG.md dist",
     "build:dtsMap": "tsc --emitDeclarationOnly --declaration --declarationMap",
     "dev": "tsup --watch src --onSuccess \"pnpm build:dtsMap\"",
     "test": "vitest --config vitest.config.js --run src",
