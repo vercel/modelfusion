@@ -55,8 +55,10 @@
     "lint": "eslint --ext .ts src",
     "clean": "rimraf build dist .turbo node_modules",
     "clean:build": "rimraf build dist",
-    "build": "tsup && pnpm build:copy-files",
+    "build": "tsup --dts && pnpm build:copy-files",
     "build:copy-files": "copyfiles --flat package.json ./README.md ../../LICENSE ./CHANGELOG.md dist",
+    "build:dtsMap": "tsc --emitDeclarationOnly --declaration --declarationMap",
+    "dev": "tsup --watch src --onSuccess \"pnpm build:dtsMap\"",
     "dist": "pnpm clean:build && pnpm lint && pnpm build"
   },
   "peerDependencies": {
@@ -72,6 +74,6 @@
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
     "fastify": "^4.0.0",
-    "modelfusion": "0.136.0"
+    "modelfusion": "workspace:*"
   }
 }

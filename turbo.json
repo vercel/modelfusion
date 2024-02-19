@@ -6,6 +6,11 @@
       "env": [],
       "outputs": ["build/**", "dist/**", ".next/**", "!.next/cache/**"]
     },
+    "build:dtsMap": {
+      "dependsOn": ["^build:dtsMap"],
+      "env": [],
+      "outputs": []
+    },
     "clean": {
       "dependsOn": ["^clean"]
     },

@@ -12,15 +12,17 @@ Examples of using ModelFusion with Next.js 14 (App Router):
 
 1. Create a `.env.local` file with the following content (depending on which demo you want to run)):
 
-```
+```sh
 OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 STABILITY_API_KEY="YOUR_STABILITY_API_KEY"
 ```
 
-2. Run the following commands:
+2. Run the following commands from the root directory of the modelfusion repo:
 
 ```sh
 pnpm install
+pnpm build
+cd examples/nextjs
 pnpm dev
 ```
 

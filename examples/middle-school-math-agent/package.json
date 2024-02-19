@@ -8,8 +8,8 @@
     "clean": "rimraf build dist .turbo node_modules && pnpm clear"
   },
   "dependencies": {
-    "@modelfusion/mathjs-tool": "0.1.1",
-    "modelfusion": "0.136.0",
+    "@modelfusion/mathjs-tool": "workspace:*",
+    "modelfusion": "workspace:*",
     "dotenv": "16.3.1",
     "zod": "3.22.4"
   },

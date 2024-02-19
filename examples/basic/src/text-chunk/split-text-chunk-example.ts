@@ -1,12 +1,16 @@
 import dotenv from "dotenv";
 import { splitAtCharacter, splitTextChunk } from "modelfusion";
 import fs from "node:fs";
+import path from "node:path";
 
 dotenv.config();
 
 async function main() {
   const sanFranciscoWikipediaText = JSON.parse(
-    fs.readFileSync("data/san-francisco-wikipedia.json", "utf8")
+    fs.readFileSync(
+      path.join(__dirname, "../../data/san-francisco-wikipedia.json"),
+      "utf8"
+    )
   ).content as string;
 
   const chunks = await splitTextChunk(

@@ -8,14 +8,14 @@
     "clean": "rimraf build dist .turbo node_modules && pnpm clear"
   },
   "dependencies": {
-    "@modelfusion/mediawiki-search-tool": "^0.1.0",
+    "@modelfusion/mediawiki-search-tool": "workspace:*",
+    "modelfusion": "workspace:*",
+    "modelfusion-experimental": "workspace:*",
     "chalk": "^4",
     "commander": "10.0.1",
     "dotenv": "16.3.1",
     "html-to-text": "9.0.5",
     "jsdom": "^22.1.0",
-    "modelfusion": "0.136.0",
-    "modelfusion-experimental": "0.7.0",
     "zod": "3.22.4"
   },
   "devDependencies": {

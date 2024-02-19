@@ -47,6 +47,7 @@
     "build:esm": "tsc --outDir dist/",
     "build:cjs": "tsc --outDir build/cjs/ -p tsconfig.cjs.json && node bin/prepare-cjs.js",
     "build:copy-files": "copyfiles --flat package.json README.md ../../LICENSE dist",
+    "dev": "tsc --watch --outDir dist/",
     "dist": "pnpm clean:build && pnpm lint && pnpm build"
   },
   "dependencies": {
@@ -58,7 +59,7 @@
     "@typescript-eslint/parser": "^6.1.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
-    "modelfusion": "0.136.0",
+    "modelfusion": "workspace:*",
     "zod": "3.22.4"
   },
   "peerDependencies": {

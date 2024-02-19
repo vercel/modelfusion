@@ -35,6 +35,12 @@ export class GoogleCustomSearchTool<
 
         const data = await result.json();
 
+        if (data.error) {
+          throw new Error(
+            `Google Custom Search API error: ${data.error.message}`
+          );
+        }
+
         const items = data.items.slice(0, this.settings.maxResults ?? 5);
 
         const validationResult = this.returnType.validate({
