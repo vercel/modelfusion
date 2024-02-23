@@ -513,10 +513,10 @@ importers:
         version: 18.11.9
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.1.0
-        version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.3.3)
+        version: 6.21.0(@typescript-eslint/parser@6.21.0)(eslint@8.56.0)(typescript@5.3.3)
       '@typescript-eslint/parser':
         specifier: ^6.1.0
-        version: 6.15.0(eslint@8.56.0)(typescript@5.3.3)
+        version: 6.21.0(eslint@8.56.0)(typescript@5.3.3)
       eslint:
         specifier: ^8.45.0
         version: 8.56.0
