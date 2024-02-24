@@ -1,7 +1,7 @@
 {
   "name": "modelfusion-experimental",
   "description": "Experimental ModelFusion features",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "author": "Lars Grammel",
   "license": "MIT",
   "keywords": [
@@ -62,7 +62,7 @@
     "dist": "pnpm clean:build && pnpm lint && pnpm build"
   },
   "peerDependencies": {
-    "modelfusion": ">=workspace:*"
+    "modelfusion": "0.137.0"
   },
   "dependencies": {
     "zod": "3.22.4"
@@ -74,6 +74,6 @@
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
     "fastify": "^4.0.0",
-    "modelfusion": "workspace:*"
+    "modelfusion": "0.137.0"
   }
 }
