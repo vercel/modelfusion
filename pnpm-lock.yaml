@@ -596,8 +596,8 @@ importers:
         specifier: ^6.1.0
         version: 6.21.0(eslint@8.56.0)(typescript@5.3.3)
       ai:
-        specifier: '>= 2.2.27'
-        version: 2.2.34(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18)
+        specifier: '>= 2.2.36'
+        version: 2.2.36(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18)
       eslint:
         specifier: ^8.45.0
         version: 8.56.0
@@ -5679,8 +5679,8 @@ packages:
       indent-string: 4.0.0
     dev: false
 
-  /ai@2.2.34(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18):
-    resolution: {integrity: sha512-5U/Q9Kkc24vfgq+NpwgbXnS5wgk++ljx1sAyfOFdG2byOR57gkX8wK1gVwiz0CaoZzVj62IqdmnQBoSCAIsbCA==}
+  /ai@2.2.36(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18):
+    resolution: {integrity: sha512-QX3ZXgHjn4cQ233PHne1m7ZP+nfP93CkDEgNCIxuiDp+mhLEIEV10F1Qk3NozJ8mmSoyIJR82ea16kMZKOi8hw==}
     engines: {node: '>=14.6'}
     peerDependencies:
       react: ^18.2.0
