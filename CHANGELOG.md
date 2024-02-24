@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.137.0 - 2024-02-24
+
+### Changed
+
+- Moved cost calculation into `@modelfusion/cost-calculation` package. Thanks [@jakedetels](https://github.com/jakedetels) for the refactoring!
+
 ## v0.136.0 - 2024-02-07
 
 ### Added
