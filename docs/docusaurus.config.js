@@ -18,13 +18,7 @@ const config = {
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "throw",
 
-  scripts: [
-    {
-      src: "https://plausible.io/js/script.js",
-      defer: true,
-      "data-domain": "modelfusion.dev",
-    },
-  ],
+  scripts: [],
 
   i18n: {
     defaultLocale: "en",
