@@ -1,6 +1,6 @@
-import { Cost } from "./Cost.js";
-import { CostCalculator } from "./CostCalculator.js";
-import { SuccessfulModelCall } from "./SuccessfulModelCall.js";
+import { Cost } from "./Cost";
+import { CostCalculator } from "./CostCalculator";
+import { SuccessfulModelCall } from "./SuccessfulModelCall";
 
 export async function calculateCost({
   calls,

@@ -13,7 +13,6 @@ import { countTokens } from "../../model-function/tokenize-text/countTokens";
 import {
   AbstractOpenAICompletionModel,
   AbstractOpenAICompletionModelSettings,
-  OpenAICompletionResponse,
 } from "./AbstractOpenAICompletionModel";
 import { TikTokenTokenizer } from "./TikTokenTokenizer";
 
@@ -24,8 +23,6 @@ import { TikTokenTokenizer } from "./TikTokenTokenizer";
 export const OPENAI_TEXT_GENERATION_MODELS = {
   "gpt-3.5-turbo-instruct": {
     contextWindowSize: 4097,
-    promptTokenCostInMillicents: 0.15,
-    completionTokenCostInMillicents: 0.2,
   },
 };
 
@@ -33,35 +30,12 @@ export function getOpenAICompletionModelInformation(
   model: OpenAICompletionModelType
 ): {
   contextWindowSize: number;
-  promptTokenCostInMillicents: number;
-  completionTokenCostInMillicents: number;
 } {
   return OPENAI_TEXT_GENERATION_MODELS[model];
 }
 
 export type OpenAICompletionModelType =
   keyof typeof OPENAI_TEXT_GENERATION_MODELS;
-
-export const isOpenAICompletionModel = (
-  model: string
-): model is OpenAICompletionModelType => model in OPENAI_TEXT_GENERATION_MODELS;
-
-export const calculateOpenAICompletionCostInMillicents = ({
-  model,
-  response,
-}: {
-  model: OpenAICompletionModelType;
-  response: OpenAICompletionResponse;
-}) => {
-  const modelInformation = getOpenAICompletionModelInformation(model);
-
-  return (
-    response.usage.prompt_tokens *
-      modelInformation.promptTokenCostInMillicents +
-    response.usage.completion_tokens *
-      modelInformation.completionTokenCostInMillicents
-  );
-};
 
 export interface OpenAICompletionModelSettings
   extends AbstractOpenAICompletionModelSettings {

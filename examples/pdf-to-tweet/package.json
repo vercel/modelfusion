@@ -9,6 +9,7 @@
   },
   "private": true,
   "dependencies": {
+    "@modelfusion/cost-calculator": "workspace:*",
     "modelfusion": "workspace:*",
     "modelfusion-experimental": "workspace:*",
     "commander": "10.0.1",

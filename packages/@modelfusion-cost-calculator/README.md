@@ -1,10 +1,8 @@
----
-sidebar_position: 50
----
+# @modelfusion/cost-calculator
 
-# Cost Calculation
+See documentation at [ModelFusion](https://modelfusion.dev/guide/experimental/cost-calculation).
 
-Calls to generative models such as OpenAI's API can get expensive quickly. To keep track of your costs and to enable you to understand them, ModelFusion contains cost calculation functionality. You can use it to log the costs of [runs](/guide/util/run) or even implement budgeting that automatically aborts a run when it exceeds a certain cost.
+Calls to generative models such as OpenAI's API can get expensive quickly. To keep track of your costs and to enable you to understand them, ModelFusion contains cost calculation functionality. You can use it to log the costs of [runs](https://modelfusion.dev/guide/util/run) or even implement budgeting that automatically aborts a run when it exceeds a certain cost.
 
 > ⚠️ Cost calculation is currently only supported for OpenAI models. It depends on the current pricing of the API. The cost calculation can be inaccurate when the pricing changes or when there are e.g. aborted calls.
 
@@ -37,3 +35,7 @@ const cost = await calculateCost({
 
 console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
 ```
+
+## Supported Providers
+
+- OpenAI

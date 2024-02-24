@@ -16,133 +16,48 @@ import {
   AbstractOpenAIChatModel,
   AbstractOpenAIChatSettings,
   OpenAIChatPrompt,
-  OpenAIChatResponse,
 } from "./AbstractOpenAIChatModel";
 import { OpenAIChatFunctionCallObjectGenerationModel } from "./OpenAIChatFunctionCallObjectGenerationModel";
 import { chat, identity, instruction, text } from "./OpenAIChatPromptTemplate";
 import { TikTokenTokenizer } from "./TikTokenTokenizer";
 import { countOpenAIChatPromptTokens } from "./countOpenAIChatMessageTokens";
 
-/*
- * Available OpenAI chat models, their token limits, and pricing.
- *
- * @see https://platform.openai.com/docs/models/
- * @see https://openai.com/pricing
- */
-export const OPENAI_CHAT_MODELS = {
-  "gpt-4": {
-    contextWindowSize: 8192,
-    promptTokenCostInMillicents: 3,
-    completionTokenCostInMillicents: 6,
-  },
-  "gpt-4-0314": {
-    contextWindowSize: 8192,
-    promptTokenCostInMillicents: 3,
-    completionTokenCostInMillicents: 6,
-  },
-  "gpt-4-0613": {
-    contextWindowSize: 8192,
-    promptTokenCostInMillicents: 3,
-    completionTokenCostInMillicents: 6,
-    fineTunedPromptTokenCostInMillicents: null,
-    fineTunedCompletionTokenCostInMillicents: null,
-  },
-  "gpt-4-turbo-preview": {
-    contextWindowSize: 128000,
-    promptTokenCostInMillicents: 1,
-    completionTokenCostInMillicents: 3,
-  },
-  "gpt-4-1106-preview": {
-    contextWindowSize: 128000,
-    promptTokenCostInMillicents: 1,
-    completionTokenCostInMillicents: 3,
-  },
-  "gpt-4-0125-preview": {
-    contextWindowSize: 128000,
-    promptTokenCostInMillicents: 1,
-    completionTokenCostInMillicents: 3,
-  },
-  "gpt-4-vision-preview": {
-    contextWindowSize: 128000,
-    promptTokenCostInMillicents: 1,
-    completionTokenCostInMillicents: 3,
-  },
-  "gpt-4-32k": {
-    contextWindowSize: 32768,
-    promptTokenCostInMillicents: 6,
-    completionTokenCostInMillicents: 12,
-  },
-  "gpt-4-32k-0314": {
-    contextWindowSize: 32768,
-    promptTokenCostInMillicents: 6,
-    completionTokenCostInMillicents: 12,
-  },
-  "gpt-4-32k-0613": {
-    contextWindowSize: 32768,
-    promptTokenCostInMillicents: 6,
-    completionTokenCostInMillicents: 12,
-  },
-  "gpt-3.5-turbo": {
-    contextWindowSize: 4096,
-    promptTokenCostInMillicents: 0.15,
-    completionTokenCostInMillicents: 0.2,
-    fineTunedPromptTokenCostInMillicents: 0.3,
-    fineTunedCompletionTokenCostInMillicents: 0.6,
-  },
-  "gpt-3.5-turbo-0125": {
-    contextWindowSize: 16385,
-    promptTokenCostInMillicents: 0.05,
-    completionTokenCostInMillicents: 0.15,
-  },
-  "gpt-3.5-turbo-1106": {
-    contextWindowSize: 16385,
-    promptTokenCostInMillicents: 0.1,
-    completionTokenCostInMillicents: 0.2,
-  },
-  "gpt-3.5-turbo-0301": {
-    contextWindowSize: 4096,
-    promptTokenCostInMillicents: 0.15,
-    completionTokenCostInMillicents: 0.2,
-  },
-  "gpt-3.5-turbo-0613": {
-    contextWindowSize: 4096,
-    promptTokenCostInMillicents: 0.15,
-    completionTokenCostInMillicents: 0.2,
-    fineTunedPromptTokenCostInMillicents: 1.2,
-    fineTunedCompletionTokenCostInMillicents: 1.6,
-  },
-  "gpt-3.5-turbo-16k": {
-    contextWindowSize: 16384,
-    promptTokenCostInMillicents: 0.3,
-    completionTokenCostInMillicents: 0.4,
-  },
-  "gpt-3.5-turbo-16k-0613": {
-    contextWindowSize: 16384,
-    promptTokenCostInMillicents: 0.3,
-    completionTokenCostInMillicents: 0.4,
-  },
-};
+// https://platform.openai.com/docs/models
+// Open AI base chat models and their context window sizes.
+export const CHAT_MODEL_CONTEXT_WINDOW_SIZES = {
+  "gpt-4": 8192,
+  "gpt-4-0314": 8192,
+  "gpt-4-0613": 8192,
+  "gpt-4-turbo-preview": 128000,
+  "gpt-4-1106-preview": 128000,
+  "gpt-4-0125-preview": 128000,
+  "gpt-4-vision-preview": 128000,
+  "gpt-4-32k": 32768,
+  "gpt-4-32k-0314": 32768,
+  "gpt-4-32k-0613": 32768,
+  "gpt-3.5-turbo": 4096,
+  "gpt-3.5-turbo-0125": 16385,
+  "gpt-3.5-turbo-1106": 16385,
+  "gpt-3.5-turbo-0301": 4096,
+  "gpt-3.5-turbo-0613": 4096,
+  "gpt-3.5-turbo-16k": 16384,
+  "gpt-3.5-turbo-16k-0613": 16384,
+} as const;
 
 export function getOpenAIChatModelInformation(model: OpenAIChatModelType): {
   baseModel: OpenAIChatBaseModelType;
   isFineTuned: boolean;
   contextWindowSize: number;
-  promptTokenCostInMillicents: number | null;
-  completionTokenCostInMillicents: number | null;
 } {
   // Model is already a base model:
-  if (model in OPENAI_CHAT_MODELS) {
-    const baseModelInformation =
-      OPENAI_CHAT_MODELS[model as OpenAIChatBaseModelType];
+  if (model in CHAT_MODEL_CONTEXT_WINDOW_SIZES) {
+    const contextWindowSize =
+      CHAT_MODEL_CONTEXT_WINDOW_SIZES[model as OpenAIChatBaseModelType];
 
     return {
       baseModel: model as OpenAIChatBaseModelType,
       isFineTuned: false,
-      contextWindowSize: baseModelInformation.contextWindowSize,
-      promptTokenCostInMillicents:
-        baseModelInformation.promptTokenCostInMillicents,
-      completionTokenCostInMillicents:
-        baseModelInformation.completionTokenCostInMillicents,
+      contextWindowSize,
     };
   }
 
@@ -153,17 +68,15 @@ export function getOpenAIChatModelInformation(model: OpenAIChatModelType): {
   if (
     ["gpt-3.5-turbo", "gpt-3.5-turbo-0613", "gpt-4-0613"].includes(baseModel)
   ) {
-    const baseModelInformation =
-      OPENAI_CHAT_MODELS[baseModel as FineTuneableOpenAIChatModelType];
+    const contextWindowSize =
+      CHAT_MODEL_CONTEXT_WINDOW_SIZES[
+        baseModel as FineTuneableOpenAIChatModelType
+      ];
 
     return {
       baseModel: baseModel as FineTuneableOpenAIChatModelType,
       isFineTuned: true,
-      contextWindowSize: baseModelInformation.contextWindowSize,
-      promptTokenCostInMillicents:
-        baseModelInformation.fineTunedPromptTokenCostInMillicents,
-      completionTokenCostInMillicents:
-        baseModelInformation.fineTunedCompletionTokenCostInMillicents,
+      contextWindowSize,
     };
   }
 
@@ -178,43 +91,12 @@ type FineTuneableOpenAIChatModelType =
 type FineTunedOpenAIChatModelType =
   `ft:${FineTuneableOpenAIChatModelType}:${string}:${string}:${string}`;
 
-export type OpenAIChatBaseModelType = keyof typeof OPENAI_CHAT_MODELS;
+export type OpenAIChatBaseModelType =
+  keyof typeof CHAT_MODEL_CONTEXT_WINDOW_SIZES;
 
 export type OpenAIChatModelType =
   | OpenAIChatBaseModelType
   | FineTunedOpenAIChatModelType;
-
-export const isOpenAIChatModel = (
-  model: string
-): model is OpenAIChatModelType =>
-  model in OPENAI_CHAT_MODELS ||
-  model.startsWith("ft:gpt-3.5-turbo-0613:") ||
-  model.startsWith("ft:gpt-3.5-turbo:");
-
-export const calculateOpenAIChatCostInMillicents = ({
-  model,
-  response,
-}: {
-  model: OpenAIChatModelType;
-  response: OpenAIChatResponse;
-}): number | null => {
-  const { promptTokenCostInMillicents, completionTokenCostInMillicents } =
-    getOpenAIChatModelInformation(model);
-
-  // null: when cost is unknown, e.g. for fine-tuned models where the price is not yet known
-  if (
-    promptTokenCostInMillicents == null ||
-    completionTokenCostInMillicents == null
-  ) {
-    return null;
-  }
-
-  return (
-    response.usage.prompt_tokens * promptTokenCostInMillicents +
-    response.usage.completion_tokens * completionTokenCostInMillicents
-  );
-};
-
 export interface OpenAIChatSettings extends AbstractOpenAIChatSettings {
   model: OpenAIChatModelType;
 }

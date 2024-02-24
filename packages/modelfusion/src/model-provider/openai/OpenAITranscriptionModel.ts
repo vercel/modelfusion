@@ -22,36 +22,7 @@ import {
 import { OpenAIApiConfiguration } from "./OpenAIApiConfiguration";
 import { failedOpenAICallResponseHandler } from "./OpenAIError";
 
-/**
- * @see https://openai.com/pricing
- */
-export const OPENAI_TRANSCRIPTION_MODELS = {
-  "whisper-1": {
-    costInMillicentsPerSecond: 10, // = 600 / 60,
-  },
-};
-
-export type OpenAITranscriptionModelType =
-  keyof typeof OPENAI_TRANSCRIPTION_MODELS;
-
-export const calculateOpenAITranscriptionCostInMillicents = ({
-  model,
-  response,
-}: {
-  model: OpenAITranscriptionModelType;
-  response: OpenAITranscriptionVerboseJsonResponse;
-}): number | null => {
-  if (model !== "whisper-1") {
-    return null;
-  }
-
-  const durationInSeconds = response.duration;
-
-  return (
-    Math.ceil(durationInSeconds) *
-    OPENAI_TRANSCRIPTION_MODELS[model].costInMillicentsPerSecond
-  );
-};
+type OpenAITranscriptionModelType = "whisper-1";
 
 export interface OpenAITranscriptionModelSettings
   extends TranscriptionModelSettings {

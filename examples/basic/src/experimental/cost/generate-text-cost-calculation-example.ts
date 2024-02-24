@@ -3,8 +3,7 @@ import { DefaultRun, generateText, openai } from "modelfusion";
 import {
   OpenAICostCalculator,
   calculateCost,
-  extractSuccessfulModelCalls,
-} from "modelfusion-experimental";
+} from "@modelfusion/cost-calculator";
 
 dotenv.config();
 
@@ -24,12 +23,12 @@ async function main() {
   console.log(text);
 
   const cost = await calculateCost({
-    calls: extractSuccessfulModelCalls(run.events),
+    calls: run.getSuccessfulModelCalls(),
     costCalculators: [new OpenAICostCalculator()],
   });
 
   console.log();
-  console.log(`Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
+  console.log(`Text Cost: ${cost.formatAsDollarAmount({ decimals: 4 })}`);
 }
 
 main().catch(console.error);

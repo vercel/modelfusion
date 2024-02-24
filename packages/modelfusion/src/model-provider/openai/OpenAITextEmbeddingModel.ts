@@ -1,9 +1,9 @@
+import z from "zod";
 import { EmbeddingModel } from "../../model-function/embed/EmbeddingModel";
 import { countTokens } from "../../model-function/tokenize-text/countTokens";
 import {
   AbstractOpenAITextEmbeddingModel,
   AbstractOpenAITextEmbeddingModelSettings,
-  OpenAITextEmbeddingResponse,
 } from "./AbstractOpenAITextEmbeddingModel";
 import { TikTokenTokenizer } from "./TikTokenTokenizer";
 
@@ -11,51 +11,43 @@ export const OPENAI_TEXT_EMBEDDING_MODELS = {
   "text-embedding-3-small": {
     contextWindowSize: 8192,
     dimensions: 1536,
-    tokenCostInMillicents: 0.002,
   },
   "text-embedding-3-large": {
     contextWindowSize: 8192,
     dimensions: 3072,
-    tokenCostInMillicents: 0.013,
   },
 
   "text-embedding-ada-002": {
     contextWindowSize: 8192,
     dimensions: 1536,
-    tokenCostInMillicents: 0.01,
   },
 };
 
 export type OpenAITextEmbeddingModelType =
   keyof typeof OPENAI_TEXT_EMBEDDING_MODELS;
 
-export const isOpenAIEmbeddingModel = (
-  model: string
-): model is OpenAITextEmbeddingModelType =>
-  model in OPENAI_TEXT_EMBEDDING_MODELS;
-
-export const calculateOpenAIEmbeddingCostInMillicents = ({
-  model,
-  responses,
-}: {
-  model: OpenAITextEmbeddingModelType;
-  responses: OpenAITextEmbeddingResponse[];
-}): number => {
-  let amountInMilliseconds = 0;
-
-  for (const response of responses) {
-    amountInMilliseconds +=
-      response.usage!.total_tokens *
-      OPENAI_TEXT_EMBEDDING_MODELS[model].tokenCostInMillicents;
-  }
-
-  return amountInMilliseconds;
-};
-
 export interface OpenAITextEmbeddingModelSettings
   extends AbstractOpenAITextEmbeddingModelSettings {
   model: OpenAITextEmbeddingModelType;
 }
+
+export const openAITextEmbeddingResponseSchema = z.object({
+  object: z.literal("list"),
+  data: z.array(
+    z.object({
+      object: z.literal("embedding"),
+      embedding: z.array(z.number()),
+      index: z.number(),
+    })
+  ),
+  model: z.string(),
+  usage: z
+    .object({
+      prompt_tokens: z.number(),
+      total_tokens: z.number(),
+    })
+    .optional(), // for openai-compatible models
+});
 
 /**
  * Create a text embedding model that calls the OpenAI embedding API.
