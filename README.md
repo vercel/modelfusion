@@ -22,9 +22,6 @@
 - **Resilience and robustness**: ModelFusion ensures seamless operation through automatic retries, throttling, and error handling mechanisms.
 - **Built for production**: ModelFusion is fully tree-shakeable, can be used in serverless environments, and only uses a minimal set of dependencies.
 
-> [!NOTE]
-> ModelFusion is getting closer to a stable v1, which is expected in Q2/2024. The main API is now mostly stable, but until version 1.0 there may be breaking changes. Feedback and suggestions are welcome.
-
 ## Quick Install
 
 ```sh
