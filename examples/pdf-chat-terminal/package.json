@@ -15,6 +15,6 @@
     "pdfjs-dist": "3.6.172"
   },
   "devDependencies": {
-    "@types/node": "20.2.3"
+    "@types/node": "20.11.30"
   }
 }

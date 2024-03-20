@@ -81,7 +81,7 @@
     "zod-to-json-schema": "3.22.3"
   },
   "devDependencies": {
-    "@types/node": "18.11.9",
+    "@types/node": "20.11.30",
     "@types/ws": "^8.5.7",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",

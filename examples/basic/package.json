@@ -22,7 +22,7 @@
     "zod": "3.22.4"
   },
   "devDependencies": {
-    "@types/node": "20.2.3",
+    "@types/node": "20.11.30",
     "@types/better-sqlite3": "7.6.6"
   },
   "scripts": {
