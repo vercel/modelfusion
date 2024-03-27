@@ -54,13 +54,13 @@
     "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
-    "ai": ">= 2.2.27",
+    "ai": ">= 3.0.15",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "9.1.0",
     "modelfusion": "workspace:*"
   },
   "peerDependencies": {
     "modelfusion": ">=0.89.0",
-    "ai": ">= 2.2.27"
+    "ai": ">= 3.0.15"
   }
 }
