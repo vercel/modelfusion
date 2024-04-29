@@ -5,6 +5,7 @@ export * from "./ContentPart";
 export * from "./InstructionPrompt";
 export * from "./InvalidPromptError";
 export * as Llama2Prompt from "./Llama2PromptTemplate";
+export * as Llama3Prompt from "./Llama3PromptTemplate";
 export * as MistralInstructPrompt from "./MistralInstructPromptTemplate";
 export * as NeuralChatPrompt from "./NeuralChatPromptTemplate";
 export * from "./PromptTemplateProvider";

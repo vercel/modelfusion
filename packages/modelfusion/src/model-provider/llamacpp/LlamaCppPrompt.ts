@@ -2,6 +2,7 @@ import { TextGenerationPromptTemplate } from "../../model-function/generate-text
 import * as alpacaPrompt from "../../model-function/generate-text/prompt-template/AlpacaPromptTemplate";
 import * as chatMlPrompt from "../../model-function/generate-text/prompt-template/ChatMLPromptTemplate";
 import * as llama2Prompt from "../../model-function/generate-text/prompt-template/Llama2PromptTemplate";
+import * as llama3Prompt from "../../model-function/generate-text/prompt-template/Llama3PromptTemplate";
 import * as mistralPrompt from "../../model-function/generate-text/prompt-template/MistralInstructPromptTemplate";
 import * as neuralChatPrompt from "../../model-function/generate-text/prompt-template/NeuralChatPromptTemplate";
 import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider";
@@ -73,6 +74,7 @@ export const Mistral = asLlamaCppTextPromptTemplateProvider(mistralPrompt);
 
 export const ChatML = asLlamaCppTextPromptTemplateProvider(chatMlPrompt);
 export const Llama2 = asLlamaCppTextPromptTemplateProvider(llama2Prompt);
+export const Llama3 = asLlamaCppTextPromptTemplateProvider(llama3Prompt);
 export const NeuralChat =
   asLlamaCppTextPromptTemplateProvider(neuralChatPrompt);
 export const Alpaca = asLlamaCppTextPromptTemplateProvider(alpacaPrompt);

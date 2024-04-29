@@ -1,0 +1,69 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`chat prompt > should format prompt with system message and user-assistant-user messages 1`] = `
+"<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+you are a chatbot<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+1st user message<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+assistant message<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+2nd user message<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+"
+`;
+
+exports[`chat prompt > should format prompt with user message 1`] = `
+"<|begin_of_text|><|start_header_id|>user<|end_header_id|>
+
+user message<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+"
+`;
+
+exports[`chat prompt > should format prompt with user-assistant-user messages 1`] = `
+"<|begin_of_text|><|start_header_id|>user<|end_header_id|>
+
+1st user message<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+assistant message<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+2nd user message<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+"
+`;
+
+exports[`instruction prompt > should format prompt with instruction 1`] = `
+"<|begin_of_text|><|start_header_id|>user<|end_header_id|>
+
+instruction<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+"
+`;
+
+exports[`instruction prompt > should format prompt with instruction and response prefix 1`] = `
+"<|begin_of_text|><|start_header_id|>user<|end_header_id|>
+
+instruction<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+"
+`;
+
+exports[`instruction prompt > should format prompt with system and instruction 1`] = `
+"<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+system<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+instruction<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+"
+`;
+
+exports[`text prompt > should format prompt 1`] = `
+"<|begin_of_text|><|start_header_id|>user<|end_header_id|>
+
+prompt<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+"
+`;
