@@ -28,8 +28,6 @@ async function main() {
       prompt: chat,
     });
 
-    //console.log("Full chat: " + JSON.stringify(chat));
-
     let fullResponse = "";
 
     process.stdout.write("\nAssistant : ");
@@ -41,7 +39,6 @@ async function main() {
     process.stdout.write("\n\n");
 
     chat.messages.push({ role: "assistant", content: fullResponse });
-    //console.log("Full response: " + fullResponse);
   }
 }
 

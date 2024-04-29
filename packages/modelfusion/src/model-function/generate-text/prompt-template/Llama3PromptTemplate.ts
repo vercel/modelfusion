@@ -40,9 +40,6 @@ export function text(): TextGenerationPromptTemplate<string, string> {
     stopSequences: [STOP_SEQUENCE],
     format(prompt) {
       let result = `${BEGIN_SEGMENT}${BEGIN_INSTRUCTION}${prompt}${END_INSTRUCTION}${BEGIN_RESPONSE_ASSISTANT}`;
-
-      //console.log(`text(): ${result}\n--END--`);
-
       return result;
     },
   };
@@ -76,9 +73,6 @@ export function instruction(): TextGenerationPromptTemplate<
       let result = `${BEGIN_SEGMENT}`;
       result += `${prompt.system != null ? `${BEGIN_SYSTEM}${prompt.system}${END_SYSTEM}` : ""}`;
       result += `${BEGIN_INSTRUCTION}${instruction}${END_INSTRUCTION}${BEGIN_RESPONSE_ASSISTANT}`;
-
-      //console.log(`instruction(): ${result}\n--END--`);
-
       return result;
     },
   };
@@ -147,8 +141,6 @@ export function chat(): TextGenerationPromptTemplate<ChatPrompt, string> {
           }
         }
       }
-
-      //console.log(`chat(): ${text}\n--END--`);
 
       return text;
     },
