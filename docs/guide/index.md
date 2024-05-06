@@ -36,5 +36,4 @@ Or use a starter template:
 
 ## Getting Support
 
-- [Join the ModelFusion Discord](https://discord.gg/GqCwYZATem)
 - [Use the ModelFusion issue tracker](https://github.com/lgrammel/modelfusion/issues)

@@ -144,11 +144,6 @@ const config = {
           },
           { to: "blog", label: "Blog", position: "right" },
           {
-            href: "https://discord.gg/GqCwYZATem",
-            label: "Discord",
-            position: "right",
-          },
-          {
             href: "https://github.com/lgrammel/modelfusion",
             label: "GitHub",
             position: "right",
