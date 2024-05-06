@@ -11,7 +11,8 @@
 
 ## Introduction
 
-> [!IMPORTANT] > [ModelFusion has joined Vercel](https://vercel.com/blog/vercel-ai-sdk-3-1-modelfusion-joins-the-team) and is being integrated into the [Vercel AI SDK](https://sdk.vercel.ai/docs/introduction). We are bringing the best parts of modelfusion to the Vercel AI SDK, starting with text generation, structured object generation, and tool calls. Please check out the AI SDK for the latest developments.
+> [!IMPORTANT]
+> [ModelFusion has joined Vercel](https://vercel.com/blog/vercel-ai-sdk-3-1-modelfusion-joins-the-team) and is being integrated into the [Vercel AI SDK](https://sdk.vercel.ai/docs/introduction). We are bringing the best parts of modelfusion to the Vercel AI SDK, starting with text generation, structured object generation, and tool calls. Please check out the AI SDK for the latest developments.
 
 **ModelFusion** is an abstraction layer for integrating AI models into JavaScript and TypeScript applications, unifying the API for common operations such as **text streaming**, **object generation**, and **tool usage**. It provides features to support production environments, including observability hooks, logging, and automatic retries. You can use ModelFusion to build AI applications, chatbots, and agents.
 
