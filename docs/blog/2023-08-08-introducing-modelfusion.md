@@ -54,6 +54,5 @@ Here's what you need to kickstart your journey with ModelFusion:
 
 1. **Explore the Code**: Visit the [ModelFusion GitHub repository](https://github.com/lgrammel/modelfusion) to take a closer look at the source code, contribute, or even raise an issue if you encounter any challenges.
 1. **Read the Docs**: If you want to dive deep into the functionalities, the [ModelFusion documentation](https://modelfusion.dev/) is packed with examples, demo apps, and tutorials that will guide you through various use cases and integrations.
-1. **Join the Community**: Have any questions or need help? Don't hesitate to engage with other like-minded developers in the [ModelFusion Discord](https://discord.gg/GqCwYZATem). We're here to support each other.
 
 If you're working with AI models in JavaScript or TypeScript, explore ModelFusion; your feedback and participation can shape this toolkit to better serve the developer community.
