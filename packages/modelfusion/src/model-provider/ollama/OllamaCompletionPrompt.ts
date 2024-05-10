@@ -2,6 +2,7 @@ import { TextGenerationPromptTemplate } from "../../model-function/generate-text
 import * as alpacaPrompt from "../../model-function/generate-text/prompt-template/AlpacaPromptTemplate";
 import * as chatMlPrompt from "../../model-function/generate-text/prompt-template/ChatMLPromptTemplate";
 import * as llama2Prompt from "../../model-function/generate-text/prompt-template/Llama2PromptTemplate";
+import * as llama3Prompt from "../../model-function/generate-text/prompt-template/Llama3PromptTemplate";
 import * as mistralPrompt from "../../model-function/generate-text/prompt-template/MistralInstructPromptTemplate";
 import * as neuralChatPrompt from "../../model-function/generate-text/prompt-template/NeuralChatPromptTemplate";
 import { TextGenerationPromptTemplateProvider } from "../../model-function/generate-text/prompt-template/PromptTemplateProvider";
@@ -13,6 +14,8 @@ import { OllamaCompletionPrompt } from "./OllamaCompletionModel";
 export function asOllamaCompletionPromptTemplate<SOURCE_PROMPT>(
   promptTemplate: TextGenerationPromptTemplate<SOURCE_PROMPT, string>
 ): TextGenerationPromptTemplate<SOURCE_PROMPT, OllamaCompletionPrompt> {
+  console.log("stopSeq1: " + promptTemplate.stopSequences);
+
   return {
     format: (prompt) => ({
       prompt: promptTemplate.format(prompt),
@@ -75,6 +78,8 @@ export const ChatML =
   asOllamaCompletionTextPromptTemplateProvider(chatMlPrompt);
 export const Llama2 =
   asOllamaCompletionTextPromptTemplateProvider(llama2Prompt);
+export const Llama3 =
+  asOllamaCompletionTextPromptTemplateProvider(llama3Prompt);
 export const NeuralChat =
   asOllamaCompletionTextPromptTemplateProvider(neuralChatPrompt);
 export const Alpaca =
