@@ -74,6 +74,10 @@ export const OPENAI_CHAT_MODEL_COSTS = {
     promptTokenCostInMillicents: 0.3,
     completionTokenCostInMillicents: 0.4,
   },
+  "gpt-4o": {
+    promptTokenCostInMillicents: 2,
+    completionTokenCostInMillicents: 4,
+  },
 } as const;
 
 export type OpenAIChatResponse = {
@@ -86,6 +90,7 @@ export type OpenAIChatResponse = {
 type FineTuneableOpenAIChatModelType =
   | `gpt-3.5-turbo`
   | `gpt-3.5-turbo-0613`
+  | `gpt-4o`
   | `gpt-4-0613`;
 
 type FineTunedOpenAIChatModelType =

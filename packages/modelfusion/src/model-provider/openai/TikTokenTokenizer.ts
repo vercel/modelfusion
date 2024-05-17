@@ -74,6 +74,7 @@ function getTiktokenBPE(
     case "gpt-3.5-turbo-16k-0613":
     case "gpt-3.5-turbo-instruct":
     case "gpt-4":
+    case "gpt-4o":
     case "gpt-4-0314":
     case "gpt-4-0613":
     case "gpt-4-turbo-preview":
