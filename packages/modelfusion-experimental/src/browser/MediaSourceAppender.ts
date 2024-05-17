@@ -1,14 +1,27 @@
 export class MediaSourceAppender {
-  private readonly mediaSource = new MediaSource();
+  private readonly mediaSource = this.getMediaSource();
   private readonly audioChunks: ArrayBuffer[] = [];
 
   private sourceBuffer?: SourceBuffer;
+
+  private getMediaSource() {
+    const anyWindow = (window as any).X;
+
+    if (anyWindow.ManagedMediaSource) {
+      return new anyWindow.ManagedMediaSource();
+    }
+    if (anyWindow.MediaSource) {
+      return new anyWindow.MediaSource();
+    }
+
+    throw "No MediaSource API available";
+  }
 
   constructor(type: string) {
     this.mediaSource.addEventListener("sourceopen", async () => {
       this.sourceBuffer = this.mediaSource.addSourceBuffer(type);
 
-      this.sourceBuffer.addEventListener("updateend", () => {
+      this.sourceBuffer?.addEventListener("updateend", () => {
         this.tryAppendNextChunk();
       });
     });
