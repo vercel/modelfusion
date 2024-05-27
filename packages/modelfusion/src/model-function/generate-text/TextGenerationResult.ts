@@ -17,5 +17,5 @@ export type TextGenerationFinishReason =
   | "tool-calls"
   | "error"
   | "other"
-  | "end_turn
+  | "end_turn"
   | "unknown";
