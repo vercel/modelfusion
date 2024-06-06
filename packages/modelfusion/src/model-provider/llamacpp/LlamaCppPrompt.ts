@@ -9,6 +9,7 @@ import * as synthiaPrompt from "../../model-function/generate-text/prompt-templa
 import * as textPrompt from "../../model-function/generate-text/prompt-template/TextPromptTemplate";
 import * as vicunaPrompt from "../../model-function/generate-text/prompt-template/VicunaPromptTemplate";
 import * as LlamaCppBakLLaVA1Prompt from "./LlamaCppBakLLaVA1PromptTemplate";
+import * as phi3Prompt from "../../model-function/generate-text/prompt-template/Phi3PromptTemplate";
 import { LlamaCppCompletionPrompt } from "./LlamaCppCompletionModel";
 
 export function asLlamaCppPromptTemplate<SOURCE_PROMPT>(
@@ -79,3 +80,4 @@ export const Alpaca = asLlamaCppTextPromptTemplateProvider(alpacaPrompt);
 export const Synthia = asLlamaCppTextPromptTemplateProvider(synthiaPrompt);
 export const Vicuna = asLlamaCppTextPromptTemplateProvider(vicunaPrompt);
 export const BakLLaVA1 = LlamaCppBakLLaVA1Prompt;
+export const Phi3 = asLlamaCppTextPromptTemplateProvider(phi3Prompt);

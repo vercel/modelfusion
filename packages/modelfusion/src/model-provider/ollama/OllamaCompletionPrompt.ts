@@ -8,6 +8,7 @@ import { TextGenerationPromptTemplateProvider } from "../../model-function/gener
 import * as synthiaPrompt from "../../model-function/generate-text/prompt-template/SynthiaPromptTemplate";
 import * as textPrompt from "../../model-function/generate-text/prompt-template/TextPromptTemplate";
 import * as vicunaPrompt from "../../model-function/generate-text/prompt-template/VicunaPromptTemplate";
+import * as phi3Prompt from "../../model-function/generate-text/prompt-template/Phi3PromptTemplate";
 import { OllamaCompletionPrompt } from "./OllamaCompletionModel";
 
 export function asOllamaCompletionPromptTemplate<SOURCE_PROMPT>(
@@ -83,3 +84,4 @@ export const Synthia =
   asOllamaCompletionTextPromptTemplateProvider(synthiaPrompt);
 export const Vicuna =
   asOllamaCompletionTextPromptTemplateProvider(vicunaPrompt);
+export const Phi3 = asOllamaCompletionTextPromptTemplateProvider(phi3Prompt);
