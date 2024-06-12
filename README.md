@@ -375,7 +375,7 @@ With `runTool`, you can ask a tool-compatible language model (e.g. OpenAI chat) 
 ```ts
 const { tool, toolCall, args, ok, result } = await runTool({
   model: openai.ChatTextGenerator({ model: "gpt-3.5-turbo" }),
-  too: calculator,
+  tool: calculator,
   prompt: [openai.ChatMessage.user("What's fourteen times twelve?")],
 });
 
