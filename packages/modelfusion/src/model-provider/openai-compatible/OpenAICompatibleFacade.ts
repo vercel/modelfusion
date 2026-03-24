@@ -1,5 +1,6 @@
 import { PartialBaseUrlPartsApiConfigurationOptions } from "../../core/api/BaseUrlApiConfiguration";
 import { FireworksAIApiConfiguration } from "./FireworksAIApiConfiguration";
+import { MiniMaxApiConfiguration } from "./MiniMaxApiConfiguration";
 import {
   OpenAICompatibleChatModel,
   OpenAICompatibleChatSettings,
@@ -25,6 +26,21 @@ export function FireworksAIApi(
   } = {}
 ) {
   return new FireworksAIApiConfiguration(settings);
+}
+
+/**
+ * Configuration for the MiniMax API.
+ *
+ * It calls the API at https://api.minimax.io/v1 and uses the `MINIMAX_API_KEY` api key environment variable.
+ *
+ * @see https://platform.minimaxi.com/document/Fast%20access
+ */
+export function MiniMaxApi(
+  settings: PartialBaseUrlPartsApiConfigurationOptions & {
+    apiKey?: string;
+  } = {}
+) {
+  return new MiniMaxApiConfiguration(settings);
 }
 
 /**
