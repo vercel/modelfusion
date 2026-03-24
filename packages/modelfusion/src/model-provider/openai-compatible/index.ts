@@ -1,4 +1,5 @@
 export * from "./FireworksAIApiConfiguration";
+export * from "./MiniMaxApiConfiguration";
 export * from "./OpenAICompatibleApiConfiguration";
 export * from "./OpenAICompatibleChatModel";
 export * from "./OpenAICompatibleCompletionModel";
