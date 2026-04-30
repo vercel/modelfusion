@@ -7,6 +7,7 @@ export * from "./InvalidPromptError";
 export * as Llama2Prompt from "./Llama2PromptTemplate";
 export * as MistralInstructPrompt from "./MistralInstructPromptTemplate";
 export * as NeuralChatPrompt from "./NeuralChatPromptTemplate";
+export * as OpenChatPrompt from "./OpenChatPromptTemplate";
 export * from "./PromptTemplateProvider";
 export * as SynthiaPrompt from "./SynthiaPromptTemplate";
 export * from "./TextPrompt";

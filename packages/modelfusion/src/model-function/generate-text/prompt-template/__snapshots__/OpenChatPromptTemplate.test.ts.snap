@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`chat prompt > should format prompt with system message and user-assistant-user messages 1`] = `"you are a chatbot<|end_of_turn|>GPT4 Correct User: 1st user message<|end_of_turn|>GPT4 Correct Assistant: assistant message<|end_of_turn|>GPT4 Correct User: 2nd user message<|end_of_turn|>GPT4 Correct Assistant:"`;
+
+exports[`chat prompt > should format prompt with user message 1`] = `"GPT4 Correct User: user message<|end_of_turn|>GPT4 Correct Assistant:"`;
+
+exports[`chat prompt > should format prompt with user-assistant-user messages 1`] = `"GPT4 Correct User: 1st user message<|end_of_turn|>GPT4 Correct Assistant: assistant message<|end_of_turn|>GPT4 Correct User: 2nd user message<|end_of_turn|>GPT4 Correct Assistant:"`;
+
+exports[`instruction prompt > should format prompt with instruction 1`] = `"GPT4 Correct User: instruction<|end_of_turn|>GPT4 Correct Assistant:"`;
+
+exports[`instruction prompt > should format prompt with instruction and response prefix 1`] = `"GPT4 Correct User: instruction<|end_of_turn|>GPT4 Correct Assistant:response prefix"`;
+
+exports[`instruction prompt > should format prompt with system and instruction 1`] = `"system<|end_of_turn|>GPT4 Correct User: instruction<|end_of_turn|>GPT4 Correct Assistant:"`;
+
+exports[`text prompt > should format prompt 1`] = `"GPT4 Correct User: prompt<|end_of_turn|>GPT4 Correct Assistant:"`;
