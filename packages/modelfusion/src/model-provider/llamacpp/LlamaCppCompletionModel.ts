@@ -557,8 +557,8 @@ async function createLlamaCppFullDeltaIterableQueue(
   // process the stream asynchonously (no 'await' on purpose):
   parseEventSourceStream({ stream })
     .then(async (events) => {
-      try {
-        for await (const event of events) {
+      for await (const event of events) {
+        try {
           const data = event.data;
 
           const eventData = parseJSON({
@@ -571,10 +571,10 @@ async function createLlamaCppFullDeltaIterableQueue(
           if (eventData.stop) {
             queue.close();
           }
+        } catch (error) {
+          queue.push({ type: "error", error });
+          queue.close();
         }
-      } catch (error) {
-        queue.push({ type: "error", error });
-        queue.close();
       }
     })
     .catch((error) => {
