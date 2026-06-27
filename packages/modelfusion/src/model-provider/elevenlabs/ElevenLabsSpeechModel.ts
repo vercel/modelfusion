@@ -206,28 +206,32 @@ export class ElevenLabsSpeechModel
     };
 
     socket.onmessage = (event) => {
-      const parseResult = safeParseJSON({
-        text: event.data,
-        schema: zodSchema(streamingResponseSchema),
-      });
-
-      if (!parseResult.success) {
-        queue.push({ type: "error", error: parseResult.error });
-        return;
-      }
-
-      const response = parseResult.value;
-
-      if ("error" in response) {
-        queue.push({ type: "error", error: response });
-        return;
-      }
-
-      if (!response.isFinal) {
-        queue.push({
-          type: "delta",
-          deltaValue: base64ToUint8Array(response.audio),
+      try {
+        const parseResult = safeParseJSON({
+          text: event.data,
+          schema: zodSchema(streamingResponseSchema),
         });
+
+        if (!parseResult.success) {
+          queue.push({ type: "error", error: parseResult.error });
+          return;
+        }
+
+        const response = parseResult.value;
+
+        if ("error" in response) {
+          queue.push({ type: "error", error: response });
+          return;
+        }
+
+        if (!response.isFinal) {
+          queue.push({
+            type: "delta",
+            deltaValue: base64ToUint8Array(response.audio),
+          });
+        }
+      } catch (error) {
+        queue.push({ type: "error", error: error });
       }
     };
 
